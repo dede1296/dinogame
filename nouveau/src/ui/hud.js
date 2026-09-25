@@ -6,7 +6,7 @@ import { ITEMS, JOURNAL, FOSSIL_PARTS } from "../data/items.js";
 import { ABILITIES, hasAbility } from "../data/abilities.js";
 import { MOVES } from "../battle/moves.js";
 import { statsOf } from "../battle/dino.js";
-import { play, getVolume, setVolume } from "../audio/sounds.js";
+import { play } from "../audio/sounds.js";
 import { debugEnabled, debugTabHtml, runDebugAction } from "../debug/debug.js";
 
 const CSS = `
@@ -247,7 +247,7 @@ class Hud {
       const ov = document.createElement("div");
       ov.className = "overlay";
       ov.innerHTML = `<h2>MENU</h2>
-        <div class="tabs"><button data-t="party" class="on">Équipe</button><button data-t="bag">Sac</button><button data-t="journal">Journal</button><button data-t="options">⚙️ Options</button>${debugEnabled() ? `<button data-t="debug">🛠</button>` : ""}</div>
+        <div class="tabs"><button data-t="party" class="on">Équipe</button><button data-t="bag">Sac</button><button data-t="journal">Journal</button><button data-t="game">💾 Partie</button>${debugEnabled() ? `<button data-t="debug">🛠</button>` : ""}</div>
         <div class="panel"></div><button class="close">Fermer</button>`;
       const panel = ov.querySelector(".panel");
       const show = (tab) => {
@@ -256,12 +256,6 @@ class Hud {
         panel.innerHTML = this.renderTab(tab);
       };
       ov.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.t)));
-      panel.addEventListener("input", (e) => {
-        if (e.target.dataset.opt === "volume") setVolume(e.target.value / 100);
-      });
-      panel.addEventListener("change", (e) => {
-        if (e.target.dataset.opt === "volume") play("ui_ok", { volume: 0.6 });
-      });
       panel.addEventListener("click", (e) => {
         const opt = e.target.closest("button[data-opt]")?.dataset.opt;
         if (opt === "save") this.toast(save() ? "Partie sauvegardée !" : "Sauvegarde impossible : le stockage du navigateur est indisponible.");
@@ -307,23 +301,17 @@ class Hud {
       if (!state.journal.length) return `<div class="empty">Aucune page trouvée. Les pages du journal d'Hélène sont cachées partout sur l'île.</div>`;
       return [...state.journal].sort((a, b) => a - b).map((n) => `<div class="page"><h3>Page ${n} — ${esc(JOURNAL[n].title)}</h3>${esc(JOURNAL[n].text)}</div>`).join("") + `<div class="empty">${state.journal.length} page(s) sur 40</div>`;
     }
-    if (tab === "options") return optionsHtml();
+    if (tab === "game") return gameTabHtml();
     if (tab === "debug") return debugTabHtml();
     return "";
   }
 }
 
-// Settings, controls and leaving the game.
-function optionsHtml() {
-  const btn = (opt, ic, t, s) => `<button class="row opt" data-opt="${opt}"><div class="ic">${ic}</div><div><div class="t">${t}</div><div class="s">${s}</div></div></button>`;
+// Saving and leaving the game (settings live on the title screen).
+function gameTabHtml() {
+  const btn = (opt, ic, t, sub) => `<button class="row opt" data-opt="${opt}"><div class="ic">${ic}</div><div><div class="t">${t}</div><div class="s">${sub}</div></div></button>`;
   return btn("save", "💾", "Sauvegarder", "Enregistre ta progression maintenant.") +
-    `<div class="row"><div class="ic">🔊</div><div style="flex:1"><div class="t">Effets sonores</div>
-      <input type="range" min="0" max="100" step="5" value="${Math.round(getVolume() * 100)}" data-opt="volume" aria-label="Volume des effets sonores" style="width:100%;accent-color:#f2c14e"></div></div>` +
-    `<div class="row"><div class="ic">🎮</div><div><div class="t">Commandes</div>
-      <div class="s"><b>A</b> (Espace / Entrée) : parler, fouiller, valider</div>
-      <div class="s"><b>B</b> (Échap) : retour, annuler · <b>maintenir B</b> (ou Maj) : courir</div>
-      <div class="s"><b>☰</b> (M) : ouvrir ce menu</div></div></div>` +
-    btn("home", "🏠", "Retour à l'accueil", "Sauvegarde, puis revient à l'écran titre et au choix des parties.");
+    btn("home", "🏠", "Retour à l'accueil", "Sauvegarde, puis revient à l'écran titre (réglages, autres parties…).");
 }
 
 export const hud = new Hud();

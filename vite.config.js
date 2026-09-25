@@ -5,6 +5,12 @@ import { VitePWA } from "vite-plugin-pwa";
 // Served from https://dede1296.github.io/dinogame/
 export default defineConfig({
   base: "/dinogame/",
+  // Two games: the classic one at the root, the new adventure under /nouveau/.
+  build: {
+    rollupOptions: {
+      input: { main: "index.html", nouveau: "nouveau/index.html" },
+    },
+  },
   plugins: [
     react(),
     VitePWA({

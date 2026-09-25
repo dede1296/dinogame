@@ -4,9 +4,9 @@ import { BattleScene } from "./scenes/BattleScene.js";
 import { createDino, normalizeDino, heal } from "./battle/dino.js";
 import { hud } from "./ui/hud.js";
 import { resetState, state, setFlag, useSlot } from "./state/game.js";
-import { renderSlots } from "./ui/titleSlots.js";
+import { setupTitle } from "./ui/title.js";
 import { unlockAudio } from "./audio/sounds.js";
-import { consumeJump, setupTitleDebug } from "./debug/debug.js";
+import { consumeJump } from "./debug/debug.js";
 
 unlockAudio();
 import { speciesIndex } from "./story/scripts.js";
@@ -65,8 +65,7 @@ if (new URLSearchParams(location.search).has("demarrer")) {
   start(false);
 } else {
   const title = document.getElementById("title");
-  setupTitleDebug(title);
-  renderSlots(document.getElementById("slots"), (slot, isNew) => {
+  setupTitle(title, (slot, isNew) => {
     title.remove();
     useSlot(slot);
     start(isNew);

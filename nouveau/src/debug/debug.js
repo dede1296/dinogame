@@ -78,42 +78,18 @@ export function consumeJump() {
 const TAPS_TO_TOGGLE = 5;
 const TAP_WINDOW_MS = 2500;
 
-export function setupTitleDebug(title) {
-  const h1 = title.querySelector("h1");
-  const btn = document.createElement("button");
-  btn.id = "debug";
-  btn.textContent = "🛠 Mode débug";
-  btn.style.cssText = "background:#2a2f24;color:#f2c14e;border:2px dashed #f2c14e";
-  btn.hidden = !debugEnabled();
-  title.appendChild(btn);
-  btn.addEventListener("click", () => openChooser(title));
-
+/** Tapping `el` 5 times quickly toggles debug mode; `onToggle(on)` is called after. */
+export function watchTitleTaps(el, onToggle) {
   let taps = [];
-  h1.addEventListener("click", () => {
+  el.addEventListener("click", () => {
     const now = Date.now();
     taps = [...taps.filter((t) => now - t < TAP_WINDOW_MS), now];
     if (taps.length < TAPS_TO_TOGGLE) return;
     taps = [];
     const on = !debugEnabled();
     setDebugEnabled(on);
-    btn.hidden = !on;
-    alert(on ? "Mode débug activé" : "Mode débug désactivé");
+    onToggle(on);
   });
-}
-
-function openChooser(title) {
-  const box = document.createElement("div");
-  box.style.cssText = "position:fixed;inset:0;z-index:20;background:rgba(7,10,5,0.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;overflow:auto";
-  box.innerHTML = `<div class="sub">MODE DÉBUG · CHOISIR UN POINT DE DÉPART</div>` +
-    CHECKPOINTS.map((c) => `<button data-cp="${c.id}" style="background:#e8a020;color:#1a1208;border:none;text-align:left">${c.label}<br><small style="font-weight:500;opacity:0.8">${c.sub}</small></button>`).join("") +
-    `<button data-cp="" style="background:transparent;color:#f6ecd2;border:2px solid #c9953a">Annuler</button>`;
-  box.addEventListener("click", (e) => {
-    const b = e.target.closest("button");
-    if (!b) return;
-    if (!b.dataset.cp) return box.remove();
-    jumpTo(b.dataset.cp);
-  });
-  title.appendChild(box);
 }
 
 // ---------------------------------------------------------------- in-game menu tab

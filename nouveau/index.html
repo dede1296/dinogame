@@ -7,32 +7,76 @@
   <title>Dino·Hybride — L'Île d'Ambrelune</title>
   <link rel="icon" type="image/svg+xml" href="../icon.svg">
   <style>
+    :root { --amber: #f2c14e; --amber-deep: #e8a020; --ink: #1a1208; --cream: #f6ecd2; --glass: rgba(16,14,8,0.62); --line: rgba(242,193,78,0.45); }
     html, body { margin: 0; height: 100%; background: #0c0f08; overflow: hidden; overscroll-behavior: none; touch-action: none; }
     #game, #game canvas { position: fixed; inset: 0; width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
-    #title { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-      background: radial-gradient(ellipse at 50% 70%, #2f5a22 0%, #13200e 55%, #070a05 100%); font-family: system-ui, -apple-system, sans-serif; color: #f6ecd2; text-align: center; padding: 24px; }
-    #title .sub { letter-spacing: 6px; font-size: 12px; color: #f2c14e; font-weight: 700; }
-    #title h1 { margin: 0; font-size: clamp(40px, 11vw, 72px); font-weight: 900; letter-spacing: 3px;
-      background: linear-gradient(180deg, #fff3c8, #e8a020 60%, #8a4a08); -webkit-background-clip: text; background-clip: text; color: transparent;
-      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6)); }
-    #title .tag { opacity: 0.75; font-style: italic; margin-bottom: 18px; }
-    #title button { width: min(280px, 80vw); padding: 15px; border-radius: 14px; font: 800 17px system-ui, sans-serif; cursor: pointer; }
-    #slots { display: flex; flex-direction: column; gap: 10px; }
-    #title .slot { position: relative; display: flex; flex-direction: column; gap: 3px; text-align: left; padding: 12px 48px 12px 16px;
-      background: rgba(232,160,32,0.14); color: #f6ecd2; border: 2px solid #c9953a; }
-    #title .slot.empty { background: transparent; border-style: dashed; opacity: 0.85; }
-    #title .slot b { font-size: 16px; color: #f2c14e; }
-    #title .slot small { font-weight: 500; font-size: 13px; opacity: 0.85; }
-    #title .slot .del { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 18px; padding: 6px; opacity: 0.7; }
+
+    #title { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; color: var(--cream);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+    #title .art { position: absolute; inset: -2%; background: #3a4a22 url("./assets/title/accueil-portrait.webp") center 70% / cover no-repeat;
+      animation: drift 30s ease-in-out infinite alternate; }
+    #title .shade { position: absolute; inset: 0; background:
+      linear-gradient(180deg, rgba(10,8,4,0.55) 0%, rgba(10,8,4,0) 30%, rgba(10,8,4,0) 45%, rgba(10,8,4,0.78) 72%, rgba(8,6,3,0.95) 100%); }
+    @keyframes drift { from { transform: scale(1.02) translateY(0); } to { transform: scale(1.07) translateY(-1.5%); } }
+    @media (prefers-reduced-motion: reduce) { #title .art { animation: none; } }
+
+    #title header { position: relative; margin-top: calc(7vh + env(safe-area-inset-top)); text-align: center; cursor: default; }
+    #title .sub { letter-spacing: 7px; font-size: 12px; color: var(--amber); font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
+    #title h1 { margin: 2px 0 0; font-size: clamp(46px, 13vw, 96px); font-weight: 900; letter-spacing: 4px; line-height: 1;
+      background: linear-gradient(180deg, #fff6d6 0%, #f2c14e 45%, #b8650a 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 3px 0 #4a2606) drop-shadow(0 8px 16px rgba(0,0,0,0.7)); user-select: none; -webkit-user-select: none; }
+    #title .tag { margin-top: 8px; font-style: italic; opacity: 0.92; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
+
+    #menu { position: relative; margin-top: auto; width: min(340px, calc(100vw - 32px)); max-height: 62vh; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 10px; padding: 4px 2px; }
+    #menu h2 { margin: 0 0 2px; font-size: 20px; color: var(--amber); text-shadow: 0 2px 6px #000; }
+    #menu .hint { margin: 0 0 4px; font-size: 13px; opacity: 0.85; }
+    #menu button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; width: 100%; padding: 14px 16px;
+      border-radius: 14px; border: 1.5px solid var(--line); background: var(--glass); color: var(--cream); backdrop-filter: blur(6px);
+      font: 800 17px system-ui, sans-serif; letter-spacing: 0.5px; cursor: pointer; transition: transform 0.12s, background 0.12s, border-color 0.12s; }
+    #menu button small { font-weight: 500; font-size: 12.5px; opacity: 0.85; letter-spacing: 0; }
+    #menu button:hover, #menu button:focus-visible { border-color: var(--amber); background: rgba(40,30,10,0.75); outline: none; transform: translateY(-1px); }
+    #menu button:active { transform: translateY(1px) scale(0.99); }
+    #menu button:disabled { opacity: 0.4; cursor: default; transform: none; }
+    #menu button.primary { background: linear-gradient(180deg, #f6cf62, var(--amber-deep)); color: var(--ink); border-color: #fff0b8;
+      box-shadow: 0 6px 18px rgba(232,160,32,0.35), inset 0 1px 0 rgba(255,255,255,0.6); font-size: 19px; }
+    #menu button.primary small { opacity: 0.8; }
+    #menu button.debug { border-style: dashed; color: var(--amber); }
+    #menu button.back { background: transparent; border-color: transparent; backdrop-filter: none; font-size: 15px; opacity: 0.9; }
+    #menu .slot { align-items: flex-start; text-align: left; padding-right: 52px; }
+    #menu .slot b { color: var(--amber); font-size: 16px; }
+    #menu .slot.empty { border-style: dashed; }
+    #menu .slot .del { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 18px; padding: 8px; opacity: 0.75; }
+    #menu .setting { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--glass); backdrop-filter: blur(6px); }
+    #menu .setting label, #menu .setting > b { font-weight: 800; display: flex; justify-content: space-between; }
+    #menu .setting small { font-size: 13px; opacity: 0.88; }
+    #menu input[type=range] { width: 100%; accent-color: var(--amber); }
+
+    #title footer { position: relative; width: 100%; display: flex; justify-content: space-between; gap: 12px; box-sizing: border-box;
+      padding: 14px 16px calc(10px + env(safe-area-inset-bottom)); font-size: 11px; opacity: 0.6; }
+
+    /* Wide screens: landscape art, logo and menu on the left over the open sky. */
+    @media (min-aspect-ratio: 5/4) {
+      #title { align-items: flex-start; }
+      #title .art { background-image: url("./assets/title/accueil-paysage.webp"); background-position: 60% center; }
+      #title .shade { background: linear-gradient(90deg, rgba(8,6,3,0.88) 0%, rgba(8,6,3,0.55) 34%, rgba(8,6,3,0) 60%); }
+      #title header { margin: calc(8vh + env(safe-area-inset-top)) 0 0 6vw; text-align: left; }
+      #menu { margin: 4vh 0 auto 6vw; }
+    }
   </style>
 </head>
 <body>
   <div id="game"></div>
   <div id="title">
-    <div class="sub">DINO·HYBRIDE</div>
-    <h1>AMBRELUNE</h1>
-    <div class="tag">L'île où dorment les géants</div>
-    <div id="slots"></div>
+    <div class="art" role="img" aria-label="Chloé et son jeune raptor contemplent l'île d'Ambrelune depuis une falaise"></div>
+    <div class="shade"></div>
+    <header>
+      <div class="sub">DINO·HYBRIDE</div>
+      <h1>AMBRELUNE</h1>
+      <div class="tag">L'île où dorment les géants</div>
+    </header>
+    <nav id="menu" aria-label="Menu principal"></nav>
+    <footer><span id="version"></span><span>Sons : Kenney.nl (CC0)</span></footer>
   </div>
   <script type="module" src="./src/main.js"></script>
 </body>

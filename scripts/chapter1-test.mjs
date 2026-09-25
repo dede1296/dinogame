@@ -20,7 +20,7 @@ async function go(q) {
   await rest();
   await page.goto(URL + q);
   await page.waitForTimeout(700);
-  if (await page.$("[data-slot=\"debug\"]")) await page.click("[data-slot=\"debug\"]");
+  if (await page.$("#btn-load:not([disabled])")) { await page.click("#btn-load"); await page.click("[data-slot=\"debug\"]"); }
   await page.waitForTimeout(2200);
 }
 // Advances dialogues, picks the first choice / first battle button, until done() is true.

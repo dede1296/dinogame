@@ -11,10 +11,10 @@ await p.goto(URL); await p.waitForTimeout(800);
 await p.evaluate(() => localStorage.removeItem("dino-debug"));
 await p.reload(); await p.waitForTimeout(800);
 for (let i = 0; i < 5; i++) await p.click("#title h1");
-console.log("BOUTON DEBUG VISIBLE:", await p.isVisible("#debug"));
+console.log("BOUTON DEBUG VISIBLE:", await p.isVisible("#btn-debug"));
 for (const id of ["ch1", "ch1-grotte", "ch1-alpha", "ch1-tronc", "ch2"]) {
   await p.goto(URL); await p.waitForTimeout(600);
-  await p.click("#debug");
+  await p.click("#btn-debug");
   await Promise.all([p.waitForNavigation(), p.click(`[data-cp="${id}"]`)]);
   await p.waitForTimeout(3500);
   const r = await p.evaluate(() => {

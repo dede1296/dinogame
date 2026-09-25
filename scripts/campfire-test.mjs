@@ -22,7 +22,7 @@ console.log("RESPAWN:", await page.evaluate(() => localStorage.getItem("dino-hyb
 // Now force an encounter in the grass below and lose.
 await page.goto("http://localhost:5173/dinogame/nouveau/?rencontre&x=16&y=28");
 await page.waitForTimeout(800);
-await page.click("[data-slot=\"debug\"]");
+await page.click("#btn-load"); await page.click("[data-slot=\"debug\"]");
 await page.waitForTimeout(2500);
 await tap("ArrowLeft");
 for (let t = 0; t < 160; t++) {
