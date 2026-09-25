@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d7a6f"/>
+      <stop offset="1" stop-color="#141810"/>
+    </linearGradient>
+    <linearGradient id="dino" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8c840"/>
+      <stop offset="1" stop-color="#e8a020"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- T-rex silhouette -->
+  <path fill="url(#dino)" d="M300 96h96c22 0 40 18 40 40v36c0 12-10 22-22 22h-54v20h44v28h-44v18c0 40-20 74-50 94l18 62h26v24h-62l-22-68h-26l-18 68h-58v-24h22l14-58c-28-12-50-34-62-62l-72 30-8-26 70-40c2-30 18-56 42-72l46-30V136c0-22 18-40 40-40zm40 34a12 12 0 1 0 0 24 12 12 0 0 0 0-24zM266 276l-30 22 16 20 34-24z"/>
+</svg>
