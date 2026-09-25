@@ -58,6 +58,20 @@ export function normalizeDino(d) {
   return d;
 }
 
+// A Curative Fern restores 40% of max HP (at least 20) and stops bleeding.
+const FERN_RATIO = 0.4;
+const FERN_MIN = 20;
+
+/** Applies a Curative Fern to `d`; returns { amount, curedBleeding }. */
+export function fernHeal(d) {
+  const max = statsOf(d).hp;
+  const amount = Math.min(max - d.hp, Math.max(FERN_MIN, Math.ceil(max * FERN_RATIO)));
+  d.hp += amount;
+  const curedBleeding = d.status?.id === "saigne";
+  if (curedBleeding) d.status = null;
+  return { amount, curedBleeding };
+}
+
 export function heal(d) {
   d.hp = statsOf(d).hp;
   d.status = null;

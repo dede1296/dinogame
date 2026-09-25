@@ -4,7 +4,7 @@
 
 import { TYPE_CHART } from "../../../src/game/types.js";
 import { MOVES, TYPE_NAMES } from "./moves.js";
-import { statsOf, typeOf, xpReward, gainXp, catchDifficulty } from "./dino.js";
+import { statsOf, typeOf, xpReward, gainXp, catchDifficulty, fernHeal } from "./dino.js";
 
 export const STATUS = {
   saigne: { name: "Saignement", icon: "🩸", turns: 99 },
@@ -295,10 +295,9 @@ export class Battle {
     this.bag[item] -= 1;
     const d = this.active("player");
     if (item === "fougere") {
-      const max = statsOf(d).hp, amount = Math.min(max - d.hp, Math.max(20, Math.ceil(max * 0.4)));
-      d.hp += amount;
-      ev.push({ type: "heal", side: "player", amount, hp: d.hp, maxHp: max, text: `${d.nickname} mange une Fougère curative et récupère ${amount} PV.` });
-      if (d.status?.id === "saigne") { d.status = null; ev.push({ type: "status", side: "player", status: null, text: "Le saignement s'arrête." }); }
+      const { amount, curedBleeding } = fernHeal(d);
+      ev.push({ type: "heal", side: "player", amount, hp: d.hp, maxHp: statsOf(d).hp, text: `${d.nickname} mange une Fougère curative et récupère ${amount} PV.` });
+      if (curedBleeding) ev.push({ type: "status", side: "player", status: null, text: "Le saignement s'arrête." });
     } else if (item === "baie") {
       ev.push({ type: "text", text: `${d.nickname} croque une Baie féroce !` });
       this.changeStage("player", "atk", 1, ev);

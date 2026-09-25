@@ -69,9 +69,11 @@ export class WorldScene extends Phaser.Scene {
     if (map.cave) this.createDarkness();
 
     this.onA = () => this.interact();
-    this.onMenu = () => this.openMenu();
+    this.onMenu = () => this.openPanel(() => hud.openMenu());
     hud.handlers.a = [this.onA];
     hud.handlers.menu = [this.onMenu];
+    hud.handlers.party = [() => this.openPanel(() => hud.openParty())];
+    hud.handlers.bag = [() => this.openPanel(() => hud.openBag())];
     hud.handlers.b = [];
 
     this.scale.on("resize", () => this.fitCamera());
@@ -681,13 +683,17 @@ export class WorldScene extends Phaser.Scene {
     this.tweens.add({ targets: e.sprite, alpha: 0, y: e.sprite.y - 60, duration: 900, onComplete: () => e.sprite.destroy() });
   }
 
-  async openMenu() {
+  // Menu screens (☰, team, bag) pause the world while they are open.
+  async openPanel(open) {
     if (this.scriptRunning) return;
     this.scriptRunning = true;
     hud.setBusy(true);
-    await hud.openMenu();
+    const lead = state.party[0];
+    await open();
     hud.setBusy(false);
     this.scriptRunning = false;
+    // The team order changed: the new first dino follows Chloé.
+    if (state.party[0] !== lead) this.refreshFollower();
   }
 
   // ---------------------------------------------------------------- encounters
