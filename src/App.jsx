@@ -14,6 +14,8 @@ import { ACHIEVEMENTS, EQUIPMENT_LIST, QUIZ_QUESTIONS, RIVAL_NAME, RIVAL_APPEARA
 import { generateName } from "./game/names.js";
 import { generateEnemy, computeHP, statsWithLevel, getMaxUses, getAvailableAttacks, STATUS_EFFECTS, computeAttack, TOURNAMENT_TIERS, ENVIRONMENTS } from "./game/combat.js";
 import { STORAGE_KEY, hasStorage, loadSave, writeSave } from "./storage/local.js";
+import { CloudSaveButton } from "./cloud/CloudSave.jsx";
+import { cloudEnabled } from "./cloud/client.js";
 
 export default function DinoBuilder() {
   // Load saved data once at startup
@@ -3218,6 +3220,8 @@ export default function DinoBuilder() {
           <span style={{ opacity: 0.5 }}>|</span>
           <span onClick={() => { setMusicOn(!musicOn); if (!musicOn) startMusic("ambient"); else stopMusic(); }}
             style={{ cursor: "pointer", fontSize: "12px" }}>{musicOn ? "🔊" : "🔇"}</span>
+          {cloudEnabled && <span style={{ opacity: 0.5 }}>|</span>}
+          <CloudSaveButton />
         </div>
       </header>
 
