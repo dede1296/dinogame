@@ -66,9 +66,9 @@ export function unlockAudio() {
 
 /**
  * Plays a sound. `name` is a file name, or a family name picking a random take ("step_grass").
- * @param opts { volume = 1, rate = 1, jitter = 0 (random pitch spread), delay = 0 (s) }
+ * @param opts { volume = 1, rate = 1, jitter = 0 (random pitch spread), delay = 0 (s), echo = 0 (cave reverb level) }
  */
-export function play(name, { volume = 1, rate = 1, jitter = 0, delay = 0 } = {}) {
+export function play(name, { volume = 1, rate = 1, jitter = 0, delay = 0, echo = 0 } = {}) {
   if (!ctx || ctx.state !== "running") return;
   const pool = VARIANTS[name];
   const key = pool ? pool[Math.floor(Math.random() * pool.length)] : name;
@@ -80,5 +80,31 @@ export function play(name, { volume = 1, rate = 1, jitter = 0, delay = 0 } = {})
   const g = ctx.createGain();
   g.gain.value = volume;
   src.connect(g).connect(master);
+  if (echo > 0) {
+    const send = ctx.createGain();
+    send.gain.value = echo;
+    g.connect(send).connect(caveReverb());
+  }
   src.start(ctx.currentTime + delay);
+}
+
+// Shared cave reverb: a long, dark tail (decaying low-passed noise) plus two slap-back echoes.
+let reverb = null;
+function caveReverb() {
+  if (reverb) return reverb;
+  const len = Math.floor(ctx.sampleRate * 2.2);
+  const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = ir.getChannelData(ch);
+    let lp = 0;
+    for (let i = 0; i < len; i++) {
+      lp += 0.25 * (Math.random() * 2 - 1 - lp); // rock absorbs the highs
+      d[i] = lp * Math.pow(1 - i / len, 3);
+    }
+    for (const [t, a] of [[0.13 + ch * 0.02, 0.5], [0.29 + ch * 0.03, 0.3]]) d[Math.floor(t * ctx.sampleRate)] += a;
+  }
+  reverb = ctx.createConvolver();
+  reverb.buffer = ir;
+  reverb.connect(master);
+  return reverb;
 }

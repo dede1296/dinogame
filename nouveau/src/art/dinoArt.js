@@ -289,6 +289,8 @@ function headPart(headDino, teethDino, p, id, rand) {
   return {
     svg: `${neck}<g transform="translate(${pt(end)}) scale(${s.toFixed(3)})">${inner}</g>`,
     reach: { x: end[0] + 100 * s, y: end[1] - 80 * s },
+    // Eye centre, relative to the neck joint.
+    eye: [end[0] + head.eye[0] * s, end[1] + head.eye[1] * s],
     fierce,
   };
 }
@@ -698,5 +700,6 @@ export function buildDino(build, options = {}) {
   const layers = order.map((k) => `<g class="part part-${k}" transform="translate(${pt(parts[k].at)})"><g class="anim-${k}">${parts[k].svg}</g></g>`).join("");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox.join(" ")}"><defs>${defs}</defs>${layers}</svg>`;
 
-  return { id, svg, defs, parts, order, joints, viewBox, ground, posture, palette: p };
+  const eye = [joints.neck[0] + head.eye[0], joints.neck[1] + head.eye[1]];
+  return { id, svg, defs, parts, order, joints, viewBox, ground, eye, posture, palette: p };
 }

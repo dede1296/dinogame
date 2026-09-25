@@ -99,6 +99,8 @@ export function dinoTexture(scene, build, size, options = {}) {
       if (!scene.textures.exists(key)) scene.textures.addImage(key, img);
       // The dino stands on its ground line inside the viewBox.
       anchors[key] = { x: (0 - dino.viewBox[0]) / vw, y: (dino.ground - dino.viewBox[1]) / vh };
+      // Side views also record where the eye is (used for glowing eyes in caves).
+      if (dino.eye) anchors[key].eye = { x: (dino.eye[0] - dino.viewBox[0]) / vw, y: (dino.eye[1] - dino.viewBox[1]) / vh };
       resolve(key);
     };
     img.onerror = () => resolve(null);

@@ -461,7 +461,8 @@ export class WorldScene extends Phaser.Scene {
   stepSound(x, y, inGrass) {
     const g = (TILES[this.rows[y][x]] || {}).ground;
     const kind = inGrass ? "step_grass" : { planks: "step_wood", floor: "step_wood", carpet: "step_carpet", stone: "step_stone", cave: "step_stone", path: "step_stone" }[g] || "step_grass";
-    play(kind, { volume: inGrass ? 0.5 : 0.28, jitter: 0.08 });
+    // In caves, footsteps echo off the rock walls.
+    play(kind, { volume: inGrass ? 0.5 : 0.28, jitter: 0.08, echo: this.map.cave ? 0.55 : 0 });
     if (inGrass) play("cloth", { volume: 0.12, jitter: 0.2 });
   }
 
@@ -744,10 +745,11 @@ export class WorldScene extends Phaser.Scene {
       const a = anchors[key];
       ent.sprite = this.add.image(x * TILE + TILE / 2, (y + 1) * TILE - 4, key).setOrigin(a.x, a.y).setDepth((y + 1) * TILE - 2).setFlipX(Math.random() < 0.5);
       this.tweens.add({ targets: ent.sprite, scaleY: 1.04, duration: 800 + Math.random() * 500, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
-      // In the dark, two glowing eyes give them away.
-      if (this.map.cave) {
-        ent.eyes = this.add.image(0, 0, this.eyesTexture()).setDepth(DARK_DEPTH + 1).setBlendMode(Phaser.BlendModes.ADD);
-        this.tweens.add({ targets: ent.eyes, alpha: 0.55, duration: 1200 + Math.random() * 800, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+      // In the dark, a glowing eye gives them away.
+      if (this.map.cave && a.eye) {
+        ent.eyeAnchor = a;
+        ent.eyes = this.add.image(0, 0, this.eyesTexture()).setDepth(DARK_DEPTH + 1).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0.55);
+        this.tweens.add({ targets: ent.eyes, alpha: 0.25, duration: 1200 + Math.random() * 800, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
         // Now and then, a blink.
         this.time.addEvent({ delay: 2500 + Math.random() * 3000, loop: true, callback: () => ent.eyes?.active && this.tweens.add({ targets: ent.eyes, scaleY: 0.1, duration: 80, yoyo: true }) });
         this.placeEyes(ent);
@@ -756,26 +758,28 @@ export class WorldScene extends Phaser.Scene {
     this.time.addEvent({ delay: 1400 + Math.random() * 1600, loop: true, callback: () => this.roam(ent) });
   }
 
-  // Two small glowing eyes, seen through the cave darkness.
+  // A small glow for the one eye visible in side view, seen through the cave darkness.
   eyesTexture() {
-    if (!this.textures.exists("eyes")) {
+    if (!this.textures.exists("eye-glow")) {
       const c = document.createElement("canvas");
-      c.width = 40; c.height = 16;
+      c.width = c.height = 16;
       const ctx = c.getContext("2d");
-      for (const x of [12, 28]) {
-        const g = ctx.createRadialGradient(x, 8, 0, x, 8, 8);
-        g.addColorStop(0, "rgba(255,250,200,1)"); g.addColorStop(0.3, "rgba(255,220,90,0.9)"); g.addColorStop(1, "rgba(255,180,40,0)");
-        ctx.fillStyle = g;
-        ctx.fillRect(x - 8, 0, 16, 16);
-      }
-      this.textures.addCanvas("eyes", c);
+      const g = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+      g.addColorStop(0, "rgba(255,235,160,0.8)"); g.addColorStop(0.25, "rgba(230,180,60,0.45)"); g.addColorStop(0.6, "rgba(200,140,30,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 16, 16);
+      this.textures.addCanvas("eye-glow", c);
     }
-    return "eyes";
+    return "eye-glow";
   }
 
+  // Put the glow on the dino's actual eye (the sprite origin is its feet anchor).
+  // Phaser mirrors a flipped image inside its own frame, not around the origin.
   placeEyes(ent) {
-    const s = ent.sprite;
-    ent.eyes?.setPosition(s.x + (s.flipX ? -1 : 1) * s.displayWidth * 0.3, s.y - s.displayHeight * 0.55);
+    const s = ent.sprite, a = ent.eyeAnchor;
+    if (!ent.eyes || !a) return;
+    const ex = s.flipX ? 1 - a.eye.x : a.eye.x;
+    ent.eyes.setPosition(s.x + (ex - a.x) * s.displayWidth, s.y + (a.eye.y - a.y) * s.displayHeight);
   }
 
   roam(ent) {
@@ -807,6 +811,7 @@ export class WorldScene extends Phaser.Scene {
     hud.setBusy(true);
     if (ent.sprite) {
       ent.sprite.setFlipX(this.px < ent.x);
+      this.placeEyes(ent);
       this.tweens.add({ targets: ent.sprite, y: ent.sprite.y - 10, duration: 110, yoyo: true, repeat: 1 });
     }
     play("hit_soft", { volume: 0.5 });
