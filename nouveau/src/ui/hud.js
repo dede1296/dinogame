@@ -6,7 +6,7 @@ import { ITEMS, JOURNAL, FOSSIL_PARTS } from "../data/items.js";
 import { ABILITIES, hasAbility } from "../data/abilities.js";
 import { MOVES } from "../battle/moves.js";
 import { statsOf } from "../battle/dino.js";
-import { play } from "../audio/sounds.js";
+import { play, getVolume, setVolume } from "../audio/sounds.js";
 import { debugEnabled, debugTabHtml, runDebugAction } from "../debug/debug.js";
 
 const CSS = `
@@ -31,6 +31,8 @@ const CSS = `
 .choices button { min-width: 170px; padding: 11px 16px; border-radius: 12px; text-align: left; background: rgba(34,30,20,0.96); border: 2px solid #6b5530; font-size: 16px; }
 .choices button:hover, .choices button:focus { border-color: #f2c14e; outline: none; }
 .toast { position: absolute; left: 50%; top: calc(70px + env(safe-area-inset-top)); transform: translateX(-50%); padding: 10px 18px; border-radius: 12px; background: rgba(20,18,12,0.92); border: 2px solid #c9953a; font-weight: 700; animation: toast 2.6s ease forwards; width: max-content; max-width: calc(100vw - 32px); text-align: center; line-height: 1.35; }
+/* Inside the menu, messages show above the Close button instead of over the tabs. */
+.overlay ~ .toast { top: auto; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 2; }
 @keyframes toast { 0% { opacity: 0; transform: translate(-50%, -10px); } 10%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 .banner { position: absolute; left: 16px; top: calc(14px + env(safe-area-inset-top)); padding: 8px 16px 8px 12px; border-left: 4px solid #f2c14e; background: linear-gradient(90deg, rgba(20,18,12,0.85), rgba(20,18,12,0)); font-weight: 800; font-size: 18px; letter-spacing: 0.5px; animation: banner 3.2s ease forwards; }
 .banner small { display: block; font-weight: 500; font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; }
@@ -44,6 +46,7 @@ const CSS = `
 .row { display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); margin-bottom: 8px; }
 .row .ic { font-size: 26px; width: 34px; text-align: center; }
 .row .t { font-weight: 700; } .row .s { font-size: 13px; opacity: 0.7; }
+.row.opt { width: 100%; text-align: left; cursor: pointer; font: inherit; color: inherit; border: 1px solid rgba(246,236,210,0.2); }
 .page { padding: 16px; border-radius: 12px; background: #efe2c2; color: #3a2a18; margin-bottom: 10px; font-family: Georgia, serif; white-space: pre-line; line-height: 1.5; }
 .page h3 { margin: 0 0 8px; font-size: 17px; }
 .close { margin-top: 12px; padding: 13px; border-radius: 12px; background: #c9953a; color: #1a1208; font-weight: 800; border: none; font-size: 16px; }
@@ -62,6 +65,8 @@ class Hud {
     this.handlers = { a: [], b: [], menu: [] };
     this.busy = false;
     this.advance = null;
+    // Holding B makes Chloé run.
+    this.bHeld = false;
   }
 
   init() {
@@ -117,10 +122,10 @@ class Hud {
 
   bindButtons() {
     const hook = (el, name) => {
-      const fire = (e) => { e.preventDefault(); el.classList.add("on"); this.fire(name); };
+      const fire = (e) => { e.preventDefault(); el.classList.add("on"); if (name === "b") this.bHeld = true; this.fire(name); };
       el.addEventListener("touchstart", fire, { passive: false });
       el.addEventListener("mousedown", fire);
-      const off = () => el.classList.remove("on");
+      const off = () => { el.classList.remove("on"); if (name === "b") this.bHeld = false; };
       el.addEventListener("touchend", off);
       el.addEventListener("mouseup", off);
       el.addEventListener("mouseleave", off);
@@ -134,6 +139,7 @@ class Hud {
     window.addEventListener("keydown", (e) => {
       const d = KEYS[e.key] || KEYS[e.key.toLowerCase?.()];
       if (d) { this.pressDir(d); e.preventDefault(); return; }
+      if (e.key === "Shift" || e.key === "Escape" || e.key === "Backspace") this.bHeld = true;
       if (e.repeat) return;
       if (e.key === " " || e.key === "Enter") { this.fire("a"); e.preventDefault(); }
       else if (e.key === "Escape" || e.key === "Backspace") this.fire("b");
@@ -142,8 +148,9 @@ class Hud {
     window.addEventListener("keyup", (e) => {
       const d = KEYS[e.key] || KEYS[e.key.toLowerCase?.()];
       if (d) this.releaseDir(d);
+      if (e.key === "Shift" || e.key === "Escape" || e.key === "Backspace") this.bHeld = false;
     });
-    window.addEventListener("blur", () => { this.dirStack = []; });
+    window.addEventListener("blur", () => { this.dirStack = []; this.bHeld = false; });
   }
 
   on(name, fn) { this.handlers[name].push(fn); }
@@ -240,19 +247,26 @@ class Hud {
       const ov = document.createElement("div");
       ov.className = "overlay";
       ov.innerHTML = `<h2>MENU</h2>
-        <div class="tabs"><button data-t="party" class="on">Équipe</button><button data-t="bag">Sac</button><button data-t="journal">Journal</button><button data-t="save">Sauvegarder</button>${debugEnabled() ? `<button data-t="debug">🛠</button>` : ""}</div>
+        <div class="tabs"><button data-t="party" class="on">Équipe</button><button data-t="bag">Sac</button><button data-t="journal">Journal</button><button data-t="options">⚙️ Options</button>${debugEnabled() ? `<button data-t="debug">🛠</button>` : ""}</div>
         <div class="panel"></div><button class="close">Fermer</button>`;
       const panel = ov.querySelector(".panel");
       const show = (tab) => {
         ov.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.t === tab));
         play("ui_move", { volume: 0.4 });
         panel.innerHTML = this.renderTab(tab);
-        if (tab === "save") {
-          const ok = save();
-          panel.innerHTML = `<div class="row"><div class="ic">${ok ? "💾" : "⚠️"}</div><div><div class="t">${ok ? "Partie sauvegardée" : "Sauvegarde impossible"}</div><div class="s">${ok ? new Date().toLocaleString("fr-FR") : "Le stockage du navigateur est indisponible."}</div></div></div>`;
-        }
       };
       ov.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.t)));
+      panel.addEventListener("input", (e) => {
+        if (e.target.dataset.opt === "volume") setVolume(e.target.value / 100);
+      });
+      panel.addEventListener("change", (e) => {
+        if (e.target.dataset.opt === "volume") play("ui_ok", { volume: 0.6 });
+      });
+      panel.addEventListener("click", (e) => {
+        const opt = e.target.closest("button[data-opt]")?.dataset.opt;
+        if (opt === "save") this.toast(save() ? "Partie sauvegardée !" : "Sauvegarde impossible : le stockage du navigateur est indisponible.");
+        if (opt === "home" && confirm("Revenir à l'écran d'accueil ? Ta partie sera sauvegardée.")) { save(); location.reload(); }
+      });
       panel.addEventListener("click", (e) => {
         const b = e.target.closest("[data-dbg]");
         if (!b) return;
@@ -293,9 +307,23 @@ class Hud {
       if (!state.journal.length) return `<div class="empty">Aucune page trouvée. Les pages du journal d'Hélène sont cachées partout sur l'île.</div>`;
       return [...state.journal].sort((a, b) => a - b).map((n) => `<div class="page"><h3>Page ${n} — ${esc(JOURNAL[n].title)}</h3>${esc(JOURNAL[n].text)}</div>`).join("") + `<div class="empty">${state.journal.length} page(s) sur 40</div>`;
     }
+    if (tab === "options") return optionsHtml();
     if (tab === "debug") return debugTabHtml();
     return "";
   }
+}
+
+// Settings, controls and leaving the game.
+function optionsHtml() {
+  const btn = (opt, ic, t, s) => `<button class="row opt" data-opt="${opt}"><div class="ic">${ic}</div><div><div class="t">${t}</div><div class="s">${s}</div></div></button>`;
+  return btn("save", "💾", "Sauvegarder", "Enregistre ta progression maintenant.") +
+    `<div class="row"><div class="ic">🔊</div><div style="flex:1"><div class="t">Effets sonores</div>
+      <input type="range" min="0" max="100" step="5" value="${Math.round(getVolume() * 100)}" data-opt="volume" aria-label="Volume des effets sonores" style="width:100%;accent-color:#f2c14e"></div></div>` +
+    `<div class="row"><div class="ic">🎮</div><div><div class="t">Commandes</div>
+      <div class="s"><b>A</b> (Espace / Entrée) : parler, fouiller, valider</div>
+      <div class="s"><b>B</b> (Échap) : retour, annuler · <b>maintenir B</b> (ou Maj) : courir</div>
+      <div class="s"><b>☰</b> (M) : ouvrir ce menu</div></div></div>` +
+    btn("home", "🏠", "Retour à l'accueil", "Sauvegarde, puis revient à l'écran titre et au choix des parties.");
 }
 
 export const hud = new Hud();

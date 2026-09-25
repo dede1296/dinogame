@@ -18,6 +18,27 @@ for (const n of NAMES) {
 
 let ctx = null;
 let master = null;
+
+// Sound effects volume (0..1), a per-device setting shared by every save slot.
+const VOLUME_KEY = "dino-volume";
+const DEFAULT_VOLUME = 0.8;
+let volume = readVolume();
+
+function readVolume() {
+  try {
+    const v = parseFloat(localStorage.getItem(VOLUME_KEY));
+    return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : DEFAULT_VOLUME;
+  } catch { return DEFAULT_VOLUME; }
+}
+
+export const getVolume = () => volume;
+
+export function setVolume(v) {
+  volume = Math.min(1, Math.max(0, v));
+  try { localStorage.setItem(VOLUME_KEY, String(volume)); } catch { /* storage unavailable */ }
+  if (master) master.gain.value = volume;
+}
+
 const buffers = {};
 let loading = null;
 
@@ -27,7 +48,7 @@ export function audioContext() {
     if (!AC) return null;
     ctx = new AC();
     master = ctx.createGain();
-    master.gain.value = 0.8;
+    master.gain.value = volume;
     master.connect(ctx.destination);
   }
   if (ctx.state === "suspended") ctx.resume();

@@ -19,6 +19,8 @@ import { rollWild } from "../battle/wild.js";
 const CHUNK = 12;
 const FOLLOWER_SCALE = 0.25; // px per art unit
 const STEP_MS = 190;
+// Holding B: steps take this fraction of the normal time.
+const RUN_FACTOR = 0.55;
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const OPPOSITE = { up: "down", down: "up", left: "right", right: "left" };
 
@@ -425,6 +427,7 @@ export class WorldScene extends Phaser.Scene {
 
   step(nx, ny) {
     this.moving = true;
+    const ms = hud.bHeld ? STEP_MS * RUN_FACTOR : STEP_MS;
     const prev = { x: this.px, y: this.py };
     this.px = nx;
     this.py = ny;
@@ -434,7 +437,7 @@ export class WorldScene extends Phaser.Scene {
       targets: this.player,
       x: nx * TILE + TILE / 2,
       y: (ny + 1) * TILE,
-      duration: STEP_MS,
+      duration: ms,
       onUpdate: () => this.player.setDepth(this.player.y - 1),
       onComplete: () => {
         this.moving = false;
@@ -449,7 +452,7 @@ export class WorldScene extends Phaser.Scene {
       this.faceFollower(fx - this.fx, fy - this.fy);
       this.fx = fx; this.fy = fy;
       this.tweens.add({
-        targets: this.follower, x: fx * TILE + TILE / 2, y: (fy + 1) * TILE - 4, duration: STEP_MS,
+        targets: this.follower, x: fx * TILE + TILE / 2, y: (fy + 1) * TILE - 4, duration: ms,
         onUpdate: () => this.follower.setDepth(this.follower.y - 2),
       });
     }
