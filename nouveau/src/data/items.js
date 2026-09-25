@@ -5,6 +5,7 @@ export const ITEMS = {
   ambre: { name: "Fragment d'ambre", icon: "🟠", desc: "Contient l'ADN d'une espèce. À analyser au Cabinet." },
   fossile: { name: "Fragment de fossile", icon: "🦴", desc: "Réunis un squelette complet pour faire revivre une espèce rare." },
   journal: { name: "Page du journal d'Hélène", icon: "📜", desc: "Une page arrachée du journal de ta grand-mère." },
+  collier: { name: "Collier d'ambre", icon: "📿", desc: "Lancé sur un dino sauvage affaibli, il peut le capturer." },
   piece: { name: "Pièces", icon: "🪙", desc: "La monnaie de Port-Ambre." },
 };
 

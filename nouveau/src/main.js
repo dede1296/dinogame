@@ -1,6 +1,7 @@
 import * as Phaser from "phaser";
 import { WorldScene } from "./scenes/WorldScene.js";
-import { EncounterScene } from "./scenes/EncounterScene.js";
+import { BattleScene } from "./scenes/BattleScene.js";
+import { createDino, normalizeDino } from "./battle/dino.js";
 import { hud } from "./ui/hud.js";
 import { hasSave, resetState, state, setFlag } from "./state/game.js";
 import { speciesIndex } from "./story/scripts.js";
@@ -15,6 +16,7 @@ let game = null;
 
 function start(newGame) {
   if (newGame) resetState();
+  state.party = state.party.map(normalizeDino);
   const { w, h } = size();
   game = new Phaser.Game({
     type: Phaser.AUTO,
@@ -31,11 +33,12 @@ function start(newGame) {
   const spawn = q.has("x") ? { x: +q.get("x"), y: +q.get("y"), dir: "down" } : null;
   if (q.has("dino")) {
     const i = speciesIndex(q.get("dino"));
-    state.party = [{ speciesIdx: i, speciesName: q.get("dino"), nickname: "Test", level: 5, xp: 0, build: { head: i, teeth: i, frontLegs: i, backLegs: i, back: i, tail: i, color: i } }];
+    state.party = [createDino({ head: i, teeth: i, frontLegs: i, backLegs: i, back: i, tail: i, color: i }, +(q.get("niveau") || 5), "Test")];
+    state.bag = { fougere: 3, baie: 2, collier: 5 };
     setFlag("starter"); setFlag("maia_met");
   }
   game.scene.add("World", WorldScene, true, { newGame: newGame && !spawn, map: q.get("carte") || undefined, spawn });
-  game.scene.add("Encounter", EncounterScene, false);
+  game.scene.add("Battle", BattleScene, false);
   window.addEventListener("resize", () => {
     const s = size();
     game.scale.resize(s.w, s.h);

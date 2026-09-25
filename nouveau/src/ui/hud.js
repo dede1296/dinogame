@@ -46,6 +46,7 @@ const CSS = `
 .fade { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity 0.35s; pointer-events: none; }
 .fade.on { opacity: 1; }
 .hud.busy .pad, .hud.busy .btns .b { opacity: 0.35; }
+.hud.in-battle .pad, .hud.in-battle .btns, .hud.in-battle .menubtn, .hud.in-battle .banner { display: none; }
 `;
 
 const KEYS = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", z: "up", w: "up", s: "down", q: "left", a: "left", d: "right" };

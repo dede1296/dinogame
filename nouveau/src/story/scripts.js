@@ -55,7 +55,7 @@ export const SCRIPTS = {
     await say("Randonneur", "Astuce : appuie sur A face à un endroit suspect. On ne trouve que ce qu'on cherche !");
   },
 
-  async roc({ say, flag, setFlag }) {
+  async roc({ say, flag, setFlag, heal, give }) {
     if (!flag("met_roc")) {
       await say(ROC, "Chloé ! Enfin… Tu as bien grandi depuis la photo qu'Hélène gardait sur son bureau.");
       await say(ROC, "Je suis Anselme Roc. J'ai travaillé trente ans aux côtés de ta grand-mère.");
@@ -76,9 +76,16 @@ export const SCRIPTS = {
       await say(ROC, "Écoute-moi. Au nord du village s'étendent les Plaines des Fougères. Marche dans les hautes herbes et tu croiseras des dinos sauvages.");
       await say(ROC, "Rapporte-moi des fragments d'ambre : chacun contient l'ADN d'une espèce. Avec eux, le Cabinet pourra créer des hybrides.");
       await say(ROC, "Et Chloé… si tu trouves des pages du journal d'Hélène, apporte-les-moi. Elle écrivait tout.");
+      await say(ROC, "Tiens, prends ça. Des Colliers d'ambre : lance-en un sur un dino sauvage affaibli et il te suivra peut-être.");
+      give("collier", 5);
+      give("fougere", 3);
+      await say(null, "Tu reçois 5 Colliers d'ambre et 3 Fougères curatives !");
+      await say(ROC, "Et si ton équipe est épuisée, reviens me voir. Le Cabinet soigne tous les dinos.");
       setFlag("roc_after");
       return;
     }
+    heal();
+    await say(ROC, "Laisse-moi examiner ton équipe… Voilà, tes dinos sont en pleine forme !");
     await say(ROC, "Le tronc qui barre la route de la forêt ? Il faudra un dino très fort pour le déplacer. Continue d'explorer les Plaines en attendant.");
   },
 

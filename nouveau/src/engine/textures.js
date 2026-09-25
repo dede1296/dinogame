@@ -75,12 +75,16 @@ export function characterTexture(scene, look) {
 // options.view: "side" (default), "front" or "back".
 export function dinoTexture(scene, build, size, options = {}) {
   const view = options.view || "side";
-  const key = `dino-${view}-${Object.values(build).join("-")}-${options.unitScale || size}-${options.pattern || "none"}`;
+  const sizeKey = options.fit ? `${options.fit.w}x${options.fit.h}` : options.unitScale || size;
+  const key = `dino-${view}-${Object.values(build).join("-")}-${sizeKey}-${options.pattern || "none"}`;
   if (scene.textures.exists(key)) return Promise.resolve(key);
   const id = key.replace(/[^\w]/g, "");
   const dino = view === "side" ? buildDino(build, { ...options, id }) : buildDinoView(build, view, { ...options, id });
   const [, , vw, vh] = dino.viewBox;
-  const height = options.unitScale ? Math.round(vh * options.unitScale) : size;
+  // options.fit = { w, h }: the largest size fitting that box, keeping proportions.
+  const height = options.fit
+    ? Math.round(Math.min(options.fit.h, (options.fit.w * vh) / vw))
+    : options.unitScale ? Math.round(vh * options.unitScale) : size;
   const width = Math.round((vw / vh) * height);
   const svg = dino.svg.replace("<svg ", `<svg width="${width}" height="${height}" `);
   return new Promise((resolve) => {

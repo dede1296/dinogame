@@ -12,6 +12,8 @@ import { state, save, flag, setFlag, addItem } from "../state/game.js";
 import { ITEMS, JOURNAL, FOSSIL_PARTS } from "../data/items.js";
 import { SCRIPTS, STARTERS, speciesIndex } from "../story/scripts.js";
 import { ENCOUNTERS, ENCOUNTER_RATE } from "../data/encounters.js";
+import { createDino, heal } from "../battle/dino.js";
+import { rollWild } from "../battle/wild.js";
 
 const CHUNK = 12;
 const FOLLOWER_SCALE = 0.25; // px per art unit
@@ -515,7 +517,8 @@ export class WorldScene extends Phaser.Scene {
       flag,
       setFlag,
       save: () => save(),
-      heal: () => {},
+      heal: () => { state.party.forEach(heal); },
+      give: (id, qty = 1) => addItem(id, qty),
       giveStarter: (i) => this.giveStarter(i),
       pushBack: () => this.pushBack(),
       hideNpc: (id) => this.hideNpc(id),
@@ -527,7 +530,7 @@ export class WorldScene extends Phaser.Scene {
     const s = STARTERS[i];
     const idx = speciesIndex(s.species);
     const build = { head: idx, teeth: idx, frontLegs: idx, backLegs: idx, back: idx, tail: idx, color: idx };
-    state.party.push({ speciesIdx: idx, speciesName: s.species, nickname: s.nickname, level: 5, xp: 0, build });
+    state.party.push(createDino(build, 5, s.nickname));
     setFlag("starter");
     state.flags.starterIndex = i;
     const ped = this.entities.find((e) => e.kind === "pedestal" && e.starter === i);
@@ -566,9 +569,9 @@ export class WorldScene extends Phaser.Scene {
   // ---------------------------------------------------------------- encounters
   maybeEncounter() {
     const zone = this.zoneAt(this.py);
-    if (!zone.encounters || !state.party.length || this.scriptRunning) return;
+    if (!zone.encounters || !state.party.some((d) => d.hp > 0) || this.scriptRunning) return;
     if (Math.random() > (location.search.includes("rencontre") ? 1 : ENCOUNTER_RATE)) return;
-    const table = ENCOUNTERS[zone.encounters];
+    const wild = rollWild(ENCOUNTERS[zone.encounters]);
     this.scriptRunning = true;
     hud.setBusy(true);
     const cam = this.cameras.main;
@@ -579,15 +582,22 @@ export class WorldScene extends Phaser.Scene {
       cam.fadeOut(260, 0, 0, 0);
       cam.once("camerafadeoutcomplete", () => {
         this.scene.pause();
-        this.scene.launch("Encounter", { table, zoneName: zone.name, zoneKey: zone.encounters });
+        this.scene.launch("Battle", { wild, zone: zone.encounters });
       });
     });
   }
 
-  resumeFromEncounter() {
-    this.cameras.main.fadeIn(300, 0, 0, 0);
+  resumeFromBattle(result) {
     hud.setBusy(false);
     this.scriptRunning = false;
+    if (result === "lose") {
+      // Like a Pokémon Center: wake up at the Cabinet, team healed.
+      state.party.forEach(heal);
+      save();
+      this.warp({ map: "cabinet", x: 6, y: 5, dir: "up" });
+      return;
+    }
+    this.cameras.main.fadeIn(300, 0, 0, 0);
   }
 
   // ---------------------------------------------------------------- camera
