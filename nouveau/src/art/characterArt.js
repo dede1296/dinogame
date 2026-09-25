@@ -8,12 +8,13 @@ export const DIRS = ["down", "left", "right", "up"];
 
 const OUT = "#2a1a10";
 
+// `scale`: adults 1, Chloé (12 years old) a bit smaller, the little boy smaller still.
 export const LOOKS = {
-  chloe: { skin: "#f1c7a3", hair: "#9a4320", hairStyle: "ponytail", top: "#2f8f8a", vest: "#c9a86a", bottom: "#4f5f3a", shoes: "#6b4526", pack: "#b8742a" },
+  chloe: { scale: 0.88, skin: "#f1c7a3", hair: "#9a4320", hairStyle: "ponytail", top: "#2f8f8a", vest: "#c9a86a", bottom: "#4f5f3a", shoes: "#6b4526", pack: "#b8742a" },
   professor: { skin: "#eac09a", hair: "#c9c6c0", hairStyle: "bald", top: "#f4f1ea", coat: true, bottom: "#5a5f66", shoes: "#3a2a1a", glasses: true, beard: "#c9c6c0" },
   maia: { skin: "#a8704a", hair: "#1e1410", hairStyle: "curly", bandana: "#c0392b", top: "#e0a030", bottom: "#2f4f7a", shoes: "#3a2a1a" },
   fisher: { skin: "#e2b08a", hair: "#6a4a30", hairStyle: "short", hat: "#2f4f7a", top: "#e8c230", bottom: "#3a4a5a", shoes: "#2a2a2a", beard: "#6a4a30" },
-  kid: { skin: "#f5d0b0", hair: "#e8c060", hairStyle: "short", top: "#d04a4a", stripes: "#f4f1ea", bottom: "#3a5a8a", shoes: "#f4f1ea", small: true },
+  kid: { skin: "#f5d0b0", hair: "#e8c060", hairStyle: "short", top: "#d04a4a", stripes: "#f4f1ea", bottom: "#3a5a8a", shoes: "#f4f1ea", scale: 0.78 },
   elder: { skin: "#eac5a5", hair: "#f0ede6", hairStyle: "bun", top: "#7a4a8a", shawl: true, bottom: "#5a4a6a", shoes: "#3a2a1a" },
   hiker: { skin: "#d8a47e", hair: "#3a2a1a", hairStyle: "short", hat: "#4f7a3a", top: "#b8a070", bottom: "#6a5a3a", shoes: "#4a3020", pack: "#4f6a3a", bigPack: true },
 };
@@ -35,7 +36,7 @@ function ellipse(ctx, x, y, rx, ry, fill, stroke = OUT, lw = 2) {
 }
 
 function drawFrame(ctx, look, dir, frame) {
-  const s = look.small ? 0.86 : 1;
+  const s = look.scale || 1;
   ctx.save();
   ctx.translate(24, 62);
   ctx.scale(s, s);

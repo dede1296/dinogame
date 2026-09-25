@@ -282,10 +282,13 @@ export class WorldScene extends Phaser.Scene {
     this.followerKeys = { side, front: front || side, back: backView || side };
     const key = this.dir === "up" ? this.followerKeys.back : this.dir === "down" ? this.followerKeys.front : side;
     const a = anchors[key];
+    // Start two tiles behind the player when there is room.
     const back = DELTA[OPPOSITE[this.dir]];
-    this.fx = this.px + back[0];
-    this.fy = this.py + back[1];
-    if (this.blocked(this.fx, this.fy, true)) { this.fx = this.px; this.fy = this.py; }
+    const spots = [[2 * back[0], 2 * back[1]], [back[0], back[1]]];
+    const [ox, oy] = spots.find(([dx, dy]) => !this.blocked(this.px + dx, this.py + dy, true)) || [0, 0];
+    this.fx = this.px + ox;
+    this.fy = this.py + oy;
+    this.trail = [];
     this.follower = this.add.image(this.fx * TILE + TILE / 2, (this.fy + 1) * TILE - 4, key).setOrigin(a.x, a.y);
     this.follower.setDepth(this.follower.y - 2);
     this.followerBreath = this.tweens.add({ targets: this.follower, scaleY: 1.03, duration: 1100, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
@@ -349,8 +352,11 @@ export class WorldScene extends Phaser.Scene {
         this.onStepEnd();
       },
     });
-    if (this.follower) {
-      const fx = prev.x, fy = prev.y;
+    // The follower walks the same path as the player, two steps behind.
+    this.trail.push(prev);
+    if (this.trail.length > 2) this.trail.shift();
+    if (this.follower && this.trail.length === 2) {
+      const { x: fx, y: fy } = this.trail[0];
       this.faceFollower(fx - this.fx, fy - this.fy);
       this.fx = fx; this.fy = fy;
       this.tweens.add({
