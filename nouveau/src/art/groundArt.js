@@ -8,8 +8,9 @@
 import { TILE, tileAt } from "../world/tiles.js";
 import { hash } from "../world/mapBuilder.js";
 
-const PRIORITY = { water: 0, sand: 1, path: 2, stone: 3, grass: 4 };
-const RECT_GROUNDS = new Set(["planks", "cliff", "floor", "wall", "carpet"]);
+const PRIORITY = { water: 0, cave: 0.5, sand: 1, path: 2, stone: 3, grass: 4 };
+const RECT_GROUNDS = new Set(["planks", "cliff", "floor", "wall", "carpet", "cavewall"]);
+const isRock = (n) => n === "cliff" || n === "cavewall";
 
 const COLORS = {
   grass: ["#5f9139", "#6a9c40", "#578834"],
@@ -17,6 +18,7 @@ const COLORS = {
   sand: ["#e7d29c", "#e1ca91", "#ecd9a6"],
   water: ["#2f7fa8", "#2a76a0", "#3587b0"],
   stone: ["#7a6f5c", "#7a6f5c", "#7a6f5c"],
+  cave: ["#4a4046", "#453b42", "#4e444a"],
 };
 
 function rng(x, y, salt) {
@@ -279,6 +281,67 @@ function cliff(ctx, px, py, r, rows, x, y) {
   if (right) { ctx.fillStyle = "rgba(30,25,20,0.35)"; ctx.fillRect(px + TILE - 3, py, 3, TILE); }
 }
 
+// Cave floor: packed dark earth, pebbles and cracks. `gravel` marks the tiles where wild dinos lurk.
+function caveDetail(ctx, px, py, r, gravel) {
+  for (let i = 0; i < (gravel ? 16 : 5); i++) {
+    const tone = gravel ? 40 + Math.floor(r() * 50) : 70 + Math.floor(r() * 40);
+    ctx.fillStyle = `rgba(${tone},${tone - 8},${tone},${gravel ? 0.8 : 0.55})`;
+    ctx.beginPath();
+    ctx.ellipse(px + r() * TILE, py + r() * TILE, 1.5 + r() * (gravel ? 3 : 4), 1 + r() * 2.5, r() * 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  if (r() < 0.35) {
+    ctx.strokeStyle = "rgba(20,14,20,0.45)";
+    ctx.lineWidth = 1.2;
+    let x = px + r() * TILE, y = py + r() * TILE;
+    ctx.beginPath(); ctx.moveTo(x, y);
+    for (let k = 0; k < 3; k++) { x += (r() - 0.5) * 18; y += (r() - 0.5) * 18; ctx.lineTo(x, y); }
+    ctx.stroke();
+  }
+}
+
+// Cave rock: a dark mass seen from above, with a lit face where it meets the floor.
+function caveWall(ctx, px, py, r, rows, x, y) {
+  const front = groundOf(rows, x, y + 1) !== "cavewall";
+  const left = groundOf(rows, x - 1, y) !== "cavewall", right = groundOf(rows, x + 1, y) !== "cavewall";
+  const back = groundOf(rows, x, y - 1) !== "cavewall";
+  ctx.fillStyle = "#1c171d";
+  ctx.fillRect(px, py, TILE, TILE);
+  for (let i = 0; i < 4; i++) {
+    ctx.fillStyle = `rgba(${r() < 0.5 ? "10,8,12" : "70,60,72"},0.4)`;
+    ctx.beginPath();
+    ctx.ellipse(px + r() * 48, py + r() * 48, 5 + r() * 9, 3 + r() * 5, r() * 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  if (back) { ctx.fillStyle = "rgba(120,105,120,0.35)"; ctx.fillRect(px, py, TILE, 3); }
+  if (front) {
+    const top = py + 12;
+    const g = ctx.createLinearGradient(0, top, 0, py + TILE);
+    g.addColorStop(0, "#5a4f5a");
+    g.addColorStop(1, "#342c35");
+    ctx.fillStyle = g;
+    ctx.fillRect(px, top, TILE, TILE - 12);
+    ctx.strokeStyle = "rgba(15,10,16,0.6)";
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 4; i++) {
+      const sx = px + 5 + r() * 38;
+      ctx.beginPath(); ctx.moveTo(sx, top + 2); ctx.lineTo(sx + (r() - 0.5) * 8, py + TILE - 2); ctx.stroke();
+    }
+    ctx.fillStyle = "rgba(190,170,190,0.3)";
+    ctx.fillRect(px, top, TILE, 2);
+    // Amber veins glinting in the rock.
+    if (r() < 0.22) {
+      const vx = px + 8 + r() * 30, vy = top + 8 + r() * 18;
+      ctx.fillStyle = "#e89a30";
+      ctx.beginPath(); ctx.moveTo(vx, vy - 5); ctx.lineTo(vx + 3, vy); ctx.lineTo(vx, vy + 3); ctx.lineTo(vx - 3, vy); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "rgba(255,200,110,0.25)";
+      ctx.beginPath(); ctx.arc(vx, vy, 9, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  if (left) { ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.fillRect(px, py, 3, TILE); }
+  if (right) { ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.fillRect(px + TILE - 3, py, 3, TILE); }
+}
+
 function floor(ctx, px, py, r) {
   for (let j = 0; j < 4; j++) {
     const shade = 165 + Math.floor(r() * 18);
@@ -431,7 +494,7 @@ function maskFrom(field, x0, y0, w, h, shore) {
 }
 
 // ---------------------------------------------------------------- main
-const ORGANIC = ["water", "sand", "path", "stone", "grass"];
+const ORGANIC = ["water", "cave", "sand", "path", "stone", "grass"];
 const isLand = (g) => g !== null && g !== "water" && g !== "planks" && g !== "floor" && g !== "wall" && g !== "carpet";
 
 /**
@@ -459,7 +522,7 @@ export function paintGround(ctx, rows, x0, y0, w, h) {
   //    priority (so there is never a gap under the terrain drawn above it).
   for (const g of ORGANIC.slice(1)) {
     const pr = PRIORITY[g];
-    const field = buildField(rows, x0, y0, w, h, (n) => (n in PRIORITY ? PRIORITY[n] >= pr : n === "cliff"));
+    const field = buildField(rows, x0, y0, w, h, (n) => (n in PRIORITY ? PRIORITY[n] >= pr : n === "cliff" || (n === "cavewall" && g === "cave")));
     if (!field) continue;
     const { mask, shoreCanvas } = maskFrom(field, x0, y0, w, h, g === "sand");
     if (shoreCanvas) ctx.drawImage(shoreCanvas, 0, 0, W, H);
@@ -489,13 +552,14 @@ export function paintGround(ctx, rows, x0, y0, w, h) {
       else if (g === "path") pathDetail(l, px, py, r);
       else if (g === "sand") sandDetail(l, px, py, r);
       else if (g === "stone") stoneDetail(l, px, py, r);
+      else if (g === "cave") caveDetail(l, px, py, r, rows[y]?.[x] === "g");
     }, 3);
     l.restore();
     l.globalCompositeOperation = "destination-in";
     l.drawImage(mask, 0, 0, W, H);
 
     ctx.save();
-    if (g === "grass" || g === "stone") {
+    if (g === "grass" || g === "stone" || g === "cave") {
       ctx.shadowColor = "rgba(25,35,12,0.4)";
       ctx.shadowBlur = 5;
       ctx.shadowOffsetY = 2;
@@ -528,11 +592,12 @@ export function paintGround(ctx, rows, x0, y0, w, h) {
     else if (g === "floor") floor(ctx, px, py, r);
     else if (g === "wall") wall(ctx, px, py, rows, x, y);
     else if (g === "carpet") carpet(ctx, px, py, rows, x, y);
+    else if (g === "cavewall") caveWall(ctx, px, py, r, rows, x, y);
   });
 
   // 5. Shadows cast by cliffs on the ground below.
   inChunk((x, y) => {
-    if (groundOf(rows, x, y) === "cliff" || groundOf(rows, x, y - 1) !== "cliff") return;
+    if (isRock(groundOf(rows, x, y)) || !isRock(groundOf(rows, x, y - 1))) return;
     const px = x * T, py = y * T;
     const sh = ctx.createLinearGradient(0, py, 0, py + 16);
     sh.addColorStop(0, "rgba(20,25,15,0.4)");

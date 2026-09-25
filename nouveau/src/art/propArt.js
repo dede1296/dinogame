@@ -489,3 +489,76 @@ export function flame() {
   });
   return { canvas, ax: 18, ay: 42 };
 }
+
+export function stalagmite(variant = 0) {
+  const W = 48, H = 76;
+  const canvas = make(W, H, (ctx) => {
+    groundShadow(ctx, 24, 68, 18, 6, 0.45);
+    const spikes = variant ? [[24, 22, 12], [12, 44, 6], [35, 48, 5]] : [[20, 14, 11], [33, 38, 7]];
+    for (const [x, top, w] of spikes) {
+      const g = ctx.createLinearGradient(x - w, 0, x + w, 0);
+      g.addColorStop(0, "#2b242d"); g.addColorStop(0.45, "#6a5d6a"); g.addColorStop(1, "#2b242d");
+      ctx.fillStyle = g;
+      ctx.strokeStyle = "#161216"; ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x - w, 68); ctx.quadraticCurveTo(x - w * 0.5, top + (68 - top) * 0.4, x, top);
+      ctx.quadraticCurveTo(x + w * 0.5, top + (68 - top) * 0.4, x + w, 68);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "rgba(200,180,200,0.25)"; ctx.lineWidth = 1;
+      for (let k = 1; k < 4; k++) { const yy = top + (68 - top) * k / 4; ctx.beginPath(); ctx.moveTo(x - w * k / 5, yy); ctx.lineTo(x + w * k / 6, yy + 2); ctx.stroke(); }
+    }
+  });
+  return { canvas, ax: 24, ay: 68 };
+}
+
+export function crystal() {
+  const W = 64, H = 80;
+  const canvas = make(W, H, (ctx) => {
+    const glow = ctx.createRadialGradient(32, 50, 0, 32, 50, 32);
+    glow.addColorStop(0, "rgba(255,180,70,0.5)"); glow.addColorStop(1, "rgba(255,180,70,0)");
+    ctx.fillStyle = glow; ctx.fillRect(0, 10, W, 70);
+    groundShadow(ctx, 32, 70, 16, 5, 0.4);
+    for (const [x, top, w, lean] of [[32, 14, 8, 0], [20, 38, 5, -8], [44, 34, 6, 7], [27, 48, 4, -3]]) {
+      ctx.fillStyle = "#d9831f"; ctx.strokeStyle = "#5a300a"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x - w, 70); ctx.lineTo(x - w + lean * 0.3, top + 8); ctx.lineTo(x + lean, top); ctx.lineTo(x + w + lean * 0.3, top + 8); ctx.lineTo(x + w, 70); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "rgba(255,230,150,0.75)";
+      ctx.beginPath(); ctx.moveTo(x - w * 0.4, 66); ctx.lineTo(x - w * 0.4 + lean * 0.3, top + 10); ctx.lineTo(x + lean * 0.8, top + 3); ctx.lineTo(x + lean * 0.1, 66); ctx.closePath(); ctx.fill();
+    }
+  });
+  return { canvas, ax: 32, ay: 70 };
+}
+
+// Rope ladder going up through a shaft of daylight.
+export function ladder() {
+  const W = 48, H = 110;
+  const canvas = make(W, H, (ctx) => {
+    const light = ctx.createLinearGradient(0, 0, 0, H);
+    light.addColorStop(0, "rgba(255,245,200,0.55)"); light.addColorStop(1, "rgba(255,245,200,0)");
+    ctx.fillStyle = light;
+    ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(40, 0); ctx.lineTo(46, H); ctx.lineTo(2, H); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "#6b4a2a"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(14, 100); ctx.moveTo(34, 0); ctx.lineTo(34, 100); ctx.stroke();
+    ctx.lineWidth = 4; ctx.strokeStyle = "#9a6e3e";
+    for (let y = 12; y < 100; y += 14) { ctx.beginPath(); ctx.moveTo(14, y); ctx.lineTo(34, y + 1); ctx.stroke(); }
+  });
+  return { canvas, ax: 0, ay: 102 };
+}
+
+// A dark hole in the cave floor leading down.
+export function hole() {
+  const W = 56, H = 40;
+  const canvas = make(W, H, (ctx) => {
+    ctx.fillStyle = "#5a4f5a";
+    ctx.beginPath(); ctx.ellipse(28, 22, 24, 14, 0, 0, Math.PI * 2); ctx.fill();
+    const g = ctx.createRadialGradient(28, 24, 2, 28, 22, 22);
+    g.addColorStop(0, "#000"); g.addColorStop(0.7, "#0a070b"); g.addColorStop(1, "#2a222b");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.ellipse(28, 23, 20, 11, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#6b4a2a"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(22, 14); ctx.lineTo(22, 34); ctx.moveTo(34, 14); ctx.lineTo(34, 34); ctx.stroke();
+    ctx.strokeStyle = "#9a6e3e";
+    for (const y of [18, 25, 32]) { ctx.beginPath(); ctx.moveTo(22, y); ctx.lineTo(34, y); ctx.stroke(); }
+  });
+  return { canvas, ax: 4, ay: 38 };
+}

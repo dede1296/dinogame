@@ -16,6 +16,7 @@ export const LOOKS = {
   fisher: { skin: "#e2b08a", hair: "#6a4a30", hairStyle: "short", hat: "#2f4f7a", top: "#e8c230", bottom: "#3a4a5a", shoes: "#2a2a2a", beard: "#6a4a30" },
   kid: { skin: "#f5d0b0", hair: "#e8c060", hairStyle: "short", top: "#d04a4a", stripes: "#f4f1ea", bottom: "#3a5a8a", shoes: "#f4f1ea", scale: 0.78 },
   elder: { skin: "#eac5a5", hair: "#f0ede6", hairStyle: "bun", top: "#7a4a8a", shawl: true, bottom: "#5a4a6a", shoes: "#3a2a1a" },
+  grunt: { skin: "#d9b294", hair: "#1c1622", hairStyle: "hood", top: "#2a2230", bottom: "#1c1822", shoes: "#141014", mask: "#5a2a7a", sash: "#8a3fc0" },
   hiker: { skin: "#d8a47e", hair: "#3a2a1a", hairStyle: "short", hat: "#4f7a3a", top: "#b8a070", bottom: "#6a5a3a", shoes: "#4a3020", pack: "#4f6a3a", bigPack: true },
 };
 
@@ -96,6 +97,12 @@ function drawFrame(ctx, look, dir, frame) {
     if (dir === "down") { ctx.beginPath(); ctx.moveTo(24, 30); ctx.lineTo(24, 48); ctx.stroke(); }
   }
   if (look.shawl) rr(ctx, 12, 28, 24, 9, 4, "#c0a0d0");
+  if (look.sash) {
+    ctx.fillStyle = look.sash;
+    ctx.save(); ctx.beginPath(); ctx.roundRect(13, 29, 22, 18, 6); ctx.clip();
+    ctx.beginPath(); ctx.moveTo(13, 30); ctx.lineTo(18, 30); ctx.lineTo(35, 44); ctx.lineTo(35, 48); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
   if (look.pack && dir === "down") {
     ctx.fillStyle = look.pack;
     ctx.fillRect(14, 30, 3, 14); ctx.fillRect(31, 30, 3, 14);
@@ -118,7 +125,18 @@ function drawFrame(ctx, look, dir, frame) {
   ctx.fillStyle = hair;
   ctx.strokeStyle = OUT;
   ctx.lineWidth = 2;
-  if (look.hairStyle === "bald") {
+  if (look.hairStyle === "hood") {
+    // Hood: a dark shell around the face (evenodd cut-out), full from behind.
+    ctx.beginPath();
+    if (dir === "up") ctx.ellipse(24, 17, 15, 14.5, 0, 0, Math.PI * 2);
+    else {
+      ctx.moveTo(8, 30); ctx.bezierCurveTo(6, 8, 14, 1, 24, 1); ctx.bezierCurveTo(34, 1, 42, 8, 40, 30); ctx.closePath();
+      if (side) ctx.ellipse(28, 20, 9, 9.5, 0, 0, Math.PI * 2);
+      else ctx.ellipse(24, 20, 10.5, 10, 0, 0, Math.PI * 2);
+    }
+    ctx.fill("evenodd");
+    ctx.stroke();
+  } else if (look.hairStyle === "bald") {
     ctx.beginPath(); ctx.ellipse(24, 14, 13, 5, 0, Math.PI, 0); ctx.fill();
     if (dir !== "up") { ctx.beginPath(); ctx.ellipse(side ? 16 : 13, 18, 3, 5, 0, 0, Math.PI * 2); ctx.fill(); if (!side) { ctx.beginPath(); ctx.ellipse(35, 18, 3, 5, 0, 0, Math.PI * 2); ctx.fill(); } }
   } else {
@@ -162,8 +180,14 @@ function drawFrame(ctx, look, dir, frame) {
       for (const x of ex) { ctx.beginPath(); ctx.arc(x, 20, 4, 0, Math.PI * 2); ctx.stroke(); }
       if (!side) { ctx.beginPath(); ctx.moveTo(23, 20); ctx.lineTo(25, 20); ctx.stroke(); }
     }
+    if (look.mask) {
+      // Obsidian half-mask with glowing violet eye slits.
+      rr(ctx, side ? 22 : 12, 15, side ? 15 : 24, 9, 4, look.mask);
+      ctx.fillStyle = "#e6b8ff";
+      for (const x of ex) { ctx.beginPath(); ctx.ellipse(x, 19.5, 2.6, 1.3, 0, 0, Math.PI * 2); ctx.fill(); }
+    }
     ctx.fillStyle = "rgba(230,110,100,0.35)";
-    if (!side) { ctx.beginPath(); ctx.arc(16, 25, 2.5, 0, Math.PI * 2); ctx.arc(32, 25, 2.5, 0, Math.PI * 2); ctx.fill(); }
+    if (!side && !look.mask) { ctx.beginPath(); ctx.arc(16, 25, 2.5, 0, Math.PI * 2); ctx.arc(32, 25, 2.5, 0, Math.PI * 2); ctx.fill(); }
     if (look.beard) {
       ctx.fillStyle = look.beard;
       ctx.beginPath(); ctx.ellipse(side ? 28 : 24, 27, side ? 7 : 9, 5, 0, 0, Math.PI); ctx.fill();

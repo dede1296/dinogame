@@ -7,6 +7,14 @@ export const ENCOUNTERS = {
     ["Iguanodon", 14, [3, 5]],
     ["Gallimimus", 14, [3, 5]],
   ],
+  grotte: [
+    ["Pteranodon", 26, [5, 7]],
+    ["Archaeopteryx", 20, [5, 7]],
+    ["Troodon", 18, [5, 8]],
+    ["Pachycephalosaurus", 16, [6, 8]],
+    ["Ankylosaurus", 8, [7, 8]],
+    ["Protoceratops", 12, [5, 7]],
+  ],
 };
 
 // Chance per step in tall grass.

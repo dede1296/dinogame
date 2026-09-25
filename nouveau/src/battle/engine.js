@@ -19,7 +19,8 @@ const effectiveness = (moveType, defType) => (moveType === "neutre" ? 1 : TYPE_C
 export class Battle {
   /**
    * @param player { team: dino[] }        the player's party (mutated: hp, xp, level…)
-   * @param foe    { team: dino[], trainer?: { name } }
+   * @param foe    { team: dino[], trainer?: { name, boss?, reward? } }
+   *               boss: a lone named creature (Alpha…): no trainer name, no catch, no escape.
    * @param bag    { itemId: qty }         mutated when items are used
    */
   constructor({ player, foe, bag, rng = Math.random }) {
@@ -43,7 +44,9 @@ export class Battle {
 
   name(side) {
     const d = this.active(side);
-    return side === "player" ? d.nickname : this.wild ? `${d.speciesName} sauvage` : `le ${d.speciesName} de ${this.trainer.name}`;
+    if (side === "player") return d.nickname;
+    if (this.wild) return `${d.speciesName} sauvage`;
+    return this.trainer.boss ? d.nickname : `le ${d.speciesName} de ${this.trainer.name}`;
   }
 
   // ---------------------------------------------------------------- turn
@@ -250,7 +253,7 @@ export class Battle {
 
   tryRun(ev) {
     if (!this.wild) {
-      ev.push({ type: "text", text: "On ne fuit pas un combat de dresseur !" });
+      ev.push({ type: "text", text: this.trainer.boss ? "Impossible de fuir : il te barre la route !" : "On ne fuit pas un combat de dresseur !" });
       return false;
     }
     this.escapeTries += 1;
@@ -266,7 +269,7 @@ export class Battle {
 
   tryCatch(ev) {
     if (!this.wild) {
-      ev.push({ type: "text", text: "On ne peut pas capturer le dino d'un dresseur !" });
+      ev.push({ type: "text", text: this.trainer.boss ? "Il est bien trop puissant pour être capturé !" : "On ne peut pas capturer le dino d'un dresseur !" });
       return false;
     }
     if (!this.bag.collier) return false;
@@ -315,6 +318,8 @@ export class Battle {
         score = mv.power * mv.accuracy * effectiveness(mv.type, typeOf(me.build)) * (mv.type === typeOf(foe.build) ? 1.25 : 1);
       } else if (mv.effect?.heal) {
         score = foe.hp < maxHp * 0.4 ? 120 : 5;
+      } else if (mv.effect?.self && Object.keys(mv.effect.self).some((k) => this.sides.foe.stages[k] >= 2)) {
+        score = 4; // already boosted: stacking more makes the fight a slog
       } else {
         score = 35; // stat or status moves: occasionally useful
       }

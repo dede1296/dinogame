@@ -3,6 +3,10 @@
 
 import { state, save } from "../state/game.js";
 import { ITEMS, JOURNAL, FOSSIL_PARTS } from "../data/items.js";
+import { ABILITIES, hasAbility } from "../data/abilities.js";
+import { MOVES } from "../battle/moves.js";
+import { statsOf } from "../battle/dino.js";
+import { play } from "../audio/sounds.js";
 
 const CSS = `
 .hud { position: fixed; inset: 0; z-index: 5; pointer-events: none; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #f6ecd2; user-select: none; -webkit-user-select: none; }
@@ -175,6 +179,7 @@ class Hud {
         if (!done) { finish(); return; }
         this.advance = null;
         box.remove();
+        play("text", { volume: 0.25 });
         resolve();
       };
       this.advance = next;
@@ -189,12 +194,13 @@ class Hud {
       options.forEach((label, i) => {
         const b = document.createElement("button");
         b.textContent = label;
-        b.addEventListener("click", () => { this.advance = null; box.remove(); resolve(i); });
+        b.addEventListener("click", () => { play(i === options.length - 1 ? "ui_back" : "ui_ok", { volume: 0.5 }); this.advance = null; box.remove(); resolve(i); });
         box.appendChild(b);
       });
       this.root.appendChild(box);
       // A picks the first option, B the last (usually "Non" / "Annuler").
       this.advance = (btn) => {
+        play(btn === "a" ? "ui_ok" : "ui_back", { volume: 0.5 });
         this.advance = null;
         box.remove();
         resolve(btn === "a" ? 0 : options.length - 1);
@@ -238,6 +244,7 @@ class Hud {
       const panel = ov.querySelector(".panel");
       const show = (tab) => {
         ov.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.t === tab));
+        play("ui_move", { volume: 0.4 });
         panel.innerHTML = this.renderTab(tab);
         if (tab === "save") {
           const ok = save();
@@ -245,10 +252,11 @@ class Hud {
         }
       };
       ov.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.t)));
-      const close = () => { this.advance = null; ov.remove(); resolve(); };
+      const close = () => { play("ui_close", { volume: 0.5 }); this.advance = null; ov.remove(); resolve(); };
       ov.querySelector(".close").addEventListener("click", close);
       this.advance = (btn) => { if (btn === "b") close(); };
       this.root.appendChild(ov);
+      play("ui_open", { volume: 0.5 });
       show("party");
     });
   }
@@ -257,7 +265,11 @@ class Hud {
     const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
     if (tab === "party") {
       if (!state.party.length) return `<div class="empty">Tu n'as pas encore de dino. Va voir le Professeur Roc au Cabinet.</div>`;
-      return state.party.map((d) => `<div class="row"><div class="ic">🦖</div><div><div class="t">${esc(d.nickname)}</div><div class="s">${esc(d.speciesName)} · Niv. ${d.level}</div></div></div>`).join("");
+      return state.party.map((d) => {
+        const abil = Object.entries(ABILITIES).filter(([id]) => hasAbility(d, id)).map(([, a]) => `${a.icon} ${a.name}`).join(" · ");
+        const moves = d.moves.map((m) => MOVES[m.id].name).join(", ");
+        return `<div class="row"><div class="ic">🦖</div><div><div class="t">${esc(d.nickname)} · Niv. ${d.level}</div><div class="s">${esc(d.speciesName)} · ${d.hp}/${statsOf(d).hp} PV</div><div class="s">${esc(moves)}</div>${abil ? `<div class="s" style="color:#f2c14e;opacity:1">Exploration : ${abil}</div>` : ""}</div></div>`;
+      }).join("") + (state.box?.length ? `<div class="empty">${state.box.length} dino(s) en pension au Cabinet.</div>` : "");
     }
     if (tab === "bag") {
       const rows = Object.entries(state.bag).filter(([, q]) => q > 0).map(([id, q]) => {

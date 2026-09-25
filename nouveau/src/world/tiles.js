@@ -26,6 +26,12 @@ export const TILES = {
   "f": { ground: "floor" },
   "w": { ground: "wall", solid: true },
   "c": { ground: "carpet" },
+  // Caves.
+  "n": { ground: "cave" },
+  "g": { ground: "cave", encounter: true }, // gravel: wild dinos
+  "W": { ground: "cavewall", solid: true },
+  "k": { ground: "cave", prop: "stalagmite", solid: true },
+  "a": { ground: "cave", prop: "crystal", solid: true },
 };
 
 export function tileAt(rows, x, y) {

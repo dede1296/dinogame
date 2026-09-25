@@ -92,8 +92,9 @@ export const ambreluneSud = {
     { type: "sign", x: 21, y: 3, text: "↑ Forêt Jurassique" },
 
     // Obstacles that future abilities will clear.
-    { type: "blocker", kind: "boulder", x: 36, y: 22, text: "Un énorme rocher bloque l'entrée de la grotte. Un dino très fort pourrait peut-être le pousser…" },
-    { type: "blocker", kind: "log", x: 22, y: 0, w: 2, text: "Un tronc géant barre le chemin de la forêt. Le Professeur Roc saura peut-être quoi faire." },
+    { type: "blocker", id: "rocher", kind: "boulder", x: 36, y: 22, script: "rocher", flagHidden: "rocher_brise", text: "Un énorme rocher bloque l'entrée de la grotte. Un dino très fort pourrait peut-être le pousser…" },
+    { type: "warp", id: "entreeGrotte", x: 36, y: 22, caveMouth: true, flagShown: "rocher_brise", to: { map: "grotte1", x: 15, y: 26, dir: "up" } },
+    { type: "blocker", id: "tronc", kind: "log", x: 22, y: 0, w: 2, script: "tronc", flagHidden: "tronc_coupe", text: "Un tronc géant barre le chemin de la forêt. Le Professeur Roc saura peut-être quoi faire." },
 
     // Items on the ground.
     { type: "item", x: 5, y: 12, item: "fougere", qty: 1, flag: "item_p1" },
@@ -111,6 +112,8 @@ export const ambreluneSud = {
     { type: "npc", id: "enfant", look: "kid", x: 19, y: 53, dir: "down", script: "enfant", wander: 2 },
     { type: "npc", id: "mamie", look: "elder", x: 12, y: 55, dir: "right", script: "mamie" },
     { type: "npc", id: "maia", look: "maia", x: 23, y: 40, dir: "down", script: "maia", flagHidden: "maia_met" },
+    { type: "npc", id: "maia2", look: "maia", x: 21, y: 1, dir: "right", script: "maiaTronc", flagShown: "alpha_battu", flagHidden: "maia_battue" },
+    { type: "trigger", id: "foret", x: 22, y: 0, w: 2, h: 1, script: "foretJurassique", flagShown: "tronc_coupe" },
     { type: "npc", id: "randonneur", look: "hiker", x: 19, y: 23, dir: "right", script: "randonneur" },
   ],
   start: { x: 22, y: 70, dir: "up" },

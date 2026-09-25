@@ -4,6 +4,7 @@
 
 import { DINOS } from "../../../src/data/dinos.js";
 import { state } from "../state/game.js";
+import { CHAPTER1, rocHint } from "./chapter1.js";
 
 export const STARTERS = [
   { species: "Velociraptor", nickname: "Vif", pitch: "Rapide et malin. Il frappe le premier, mais encaisse mal les coups.", type: "Vent 💨" },
@@ -19,6 +20,8 @@ const ROC = "Prof. Roc";
 const MAIA = "Maïa";
 
 export const SCRIPTS = {
+  ...CHAPTER1,
+
   async intro({ say, wait }) {
     await wait(400);
     await say(null, "Après trois jours de mer, la brume se déchire enfin.");
@@ -87,7 +90,7 @@ export const SCRIPTS = {
     heal();
     setRespawn({ x: 6, y: 5, dir: "up", name: "au Cabinet" });
     await say(ROC, "Laisse-moi examiner ton équipe… Voilà, tes dinos sont en pleine forme !");
-    await say(ROC, "Le tronc qui barre la route de la forêt ? Il faudra un dino très fort pour le déplacer. Continue d'explorer les Plaines en attendant.");
+    for (const line of rocHint()) await say(ROC, line);
   },
 
   async starter({ say, choose, flag, giveStarter }, index) {

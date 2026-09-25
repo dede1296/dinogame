@@ -10,6 +10,7 @@ const THEMES = {
 };
 
 export function paintArena(width, height, zone = "plaines") {
+  if (zone === "grotte") return paintCave(width, height);
   const t = THEMES[zone] || THEMES.plaines;
   const c = document.createElement("canvas");
   c.width = width;
@@ -70,9 +71,69 @@ export function paintArena(width, height, zone = "plaines") {
   return c;
 }
 
-// Grassy platform a dino stands on.
-export function paintPlatform(width) {
-  const t = THEMES.plaines;
+// Grotte des Échos: dark rock, stalactites, glowing amber veins.
+function paintCave(W, H) {
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const ctx = c.getContext("2d");
+  const horizon = H * 0.5;
+  const back = ctx.createLinearGradient(0, 0, 0, horizon);
+  back.addColorStop(0, "#0d0a10"); back.addColorStop(1, "#2a2230");
+  ctx.fillStyle = back;
+  ctx.fillRect(0, 0, W, horizon + 2);
+  // Rock columns receding into the dark.
+  for (let layer = 0; layer < 3; layer++) {
+    ctx.fillStyle = ["#1a1520", "#241d2a", "#2f2735"][layer];
+    for (let i = 0; i < 9; i++) {
+      const x = (i / 8) * W + (hash(i, layer, 80) - 0.5) * W * 0.12, w = W * (0.05 + hash(i, layer + 3, 80) * 0.06);
+      ctx.beginPath();
+      ctx.moveTo(x - w, horizon + 4);
+      ctx.bezierCurveTo(x - w * 0.6, horizon * 0.6, x - w * 0.8, horizon * 0.3, x - w * 0.4, 0);
+      ctx.lineTo(x + w * 0.5, 0);
+      ctx.bezierCurveTo(x + w * 0.9, horizon * 0.35, x + w * 0.5, horizon * 0.65, x + w, horizon + 4);
+      ctx.fill();
+    }
+  }
+  // Stalactites.
+  for (let i = 0; i < 26; i++) {
+    const x = hash(i, 1, 81) * W, w = 6 + hash(i, 2, 81) * 18, h = H * (0.05 + hash(i, 3, 81) * 0.14);
+    ctx.fillStyle = i % 2 ? "#3a3040" : "#2c2432";
+    ctx.beginPath(); ctx.moveTo(x - w, 0); ctx.quadraticCurveTo(x - w * 0.2, h * 0.6, x, h); ctx.quadraticCurveTo(x + w * 0.2, h * 0.6, x + w, 0); ctx.fill();
+  }
+  // Amber crystals glowing in the walls.
+  for (let i = 0; i < 9; i++) {
+    const x = hash(i, 4, 82) * W, y = horizon * (0.35 + hash(i, 5, 82) * 0.6), r = 5 + hash(i, 6, 82) * 8;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 6);
+    g.addColorStop(0, "rgba(255,170,60,0.45)"); g.addColorStop(1, "rgba(255,170,60,0)");
+    ctx.fillStyle = g; ctx.fillRect(x - r * 6, y - r * 6, r * 12, r * 12);
+    ctx.fillStyle = "#f2a83a";
+    ctx.beginPath(); ctx.moveTo(x, y - r * 1.6); ctx.lineTo(x + r * 0.6, y); ctx.lineTo(x, y + r * 0.5); ctx.lineTo(x - r * 0.6, y); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#ffe2a0";
+    ctx.beginPath(); ctx.moveTo(x, y - r * 1.2); ctx.lineTo(x + r * 0.25, y - r * 0.2); ctx.lineTo(x - r * 0.2, y - r * 0.1); ctx.closePath(); ctx.fill();
+  }
+  // Floor.
+  const g = ctx.createLinearGradient(0, horizon, 0, H);
+  g.addColorStop(0, "#3a3238"); g.addColorStop(1, "#211c22");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, horizon - 2, W, H - horizon + 2);
+  for (let i = 0; i < 260; i++) {
+    const y = horizon + Math.pow(hash(i, 7, 83), 0.7) * (H - horizon);
+    const x = hash(i, 8, 83) * W, s = 2 + ((y - horizon) / (H - horizon)) * 7;
+    ctx.fillStyle = hash(i, 9, 83) < 0.5 ? "rgba(15,10,18,0.5)" : "rgba(120,105,115,0.35)";
+    ctx.beginPath(); ctx.ellipse(x, y, s, s * 0.45, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  // Mist near the floor.
+  const mist = ctx.createLinearGradient(0, horizon - H * 0.04, 0, horizon + H * 0.1);
+  mist.addColorStop(0, "rgba(150,120,170,0)"); mist.addColorStop(0.5, "rgba(150,120,170,0.18)"); mist.addColorStop(1, "rgba(150,120,170,0)");
+  ctx.fillStyle = mist;
+  ctx.fillRect(0, horizon - H * 0.04, W, H * 0.14);
+  return c;
+}
+
+// Platform a dino stands on (grass outside, bare stone in caves).
+export function paintPlatform(width, zone = "plaines") {
+  const t = zone === "grotte" ? { platform: ["#6a5e66", "#3a3238"] } : THEMES.plaines;
+  const cave = zone === "grotte";
   const h = width * 0.26;
   const c = document.createElement("canvas");
   c.width = width;
@@ -90,7 +151,7 @@ export function paintPlatform(width) {
   for (let i = 0; i < 70; i++) {
     const a = hash(i, 1, 74) * Math.PI * 2, r = Math.sqrt(hash(i, 2, 74));
     const x = cx + Math.cos(a) * r * width * 0.44, y = cy + Math.sin(a) * r * h * 0.34;
-    ctx.strokeStyle = hash(i, 3, 74) < 0.5 ? "rgba(50,90,25,0.6)" : "rgba(190,230,120,0.5)";
+    ctx.strokeStyle = cave ? (hash(i, 3, 74) < 0.5 ? "rgba(20,15,22,0.5)" : "rgba(170,150,160,0.35)") : hash(i, 3, 74) < 0.5 ? "rgba(50,90,25,0.6)" : "rgba(190,230,120,0.5)";
     ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 2, y - 6); ctx.stroke();
   }

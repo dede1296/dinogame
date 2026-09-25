@@ -1,9 +1,12 @@
 import * as Phaser from "phaser";
 import { WorldScene } from "./scenes/WorldScene.js";
 import { BattleScene } from "./scenes/BattleScene.js";
-import { createDino, normalizeDino } from "./battle/dino.js";
+import { createDino, normalizeDino, heal } from "./battle/dino.js";
 import { hud } from "./ui/hud.js";
 import { hasSave, resetState, state, setFlag } from "./state/game.js";
+import { unlockAudio } from "./audio/sounds.js";
+
+unlockAudio();
 import { speciesIndex } from "./story/scripts.js";
 
 // Render at device resolution (capped) so the vector-style art stays sharp.
@@ -17,6 +20,8 @@ let game = null;
 function start(newGame) {
   if (newGame) resetState();
   state.party = state.party.map(normalizeDino);
+  // Test hook: the automated tests set this flag to start with a healed team.
+  if (state.healOnLoad) { state.party.forEach(heal); delete state.healOnLoad; }
   const { w, h } = size();
   game = new Phaser.Game({
     type: Phaser.AUTO,
@@ -37,6 +42,7 @@ function start(newGame) {
     state.bag = { fougere: 3, baie: 2, collier: 5 };
     setFlag("starter"); setFlag("maia_met");
   }
+  window.__game = game; // debug handle for the automated tests
   game.scene.add("World", WorldScene, true, { newGame: newGame && !spawn, map: q.get("carte") || undefined, spawn });
   game.scene.add("Battle", BattleScene, false);
   window.addEventListener("resize", () => {

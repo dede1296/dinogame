@@ -13,6 +13,7 @@ import { ITEMS, JOURNAL, FOSSIL_PARTS } from "../data/items.js";
 import { SCRIPTS, STARTERS, speciesIndex } from "../story/scripts.js";
 import { ENCOUNTERS, ENCOUNTER_RATE } from "../data/encounters.js";
 import { createDino, heal } from "../battle/dino.js";
+import { play } from "../audio/sounds.js";
 import { rollWild } from "../battle/wild.js";
 
 const CHUNK = 12;
@@ -21,7 +22,9 @@ const STEP_MS = 190;
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const OPPOSITE = { up: "down", down: "up", left: "right", right: "left" };
 
-const PROP_VARIANTS = { tree: 3, pine: 2, bush: 2, rock: 2 };
+const DARK_DEPTH = 1e6;
+const DARK_SCALE = 2.3;
+const PROP_VARIANTS = { tree: 3, pine: 2, bush: 2, rock: 2, stalagmite: 2 };
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -50,13 +53,16 @@ export class WorldScene extends Phaser.Scene {
     // The scene object is reused across restarts (warps): reset per-map state.
     this.follower = null;
     this.idleFrames = 0;
+    this.darkness = null;
+    this.battleResolve = null;
 
     this.buildGround();
     this.buildProps();
     this.buildEntities();
     this.createPlayer();
     this.setupCamera();
-    if (!map.interior) this.createAmbience();
+    if (!map.interior && !map.cave) this.createAmbience();
+    if (map.cave) this.createDarkness();
 
     this.onA = () => this.interact();
     this.onMenu = () => this.openMenu();
@@ -167,10 +173,16 @@ export class WorldScene extends Phaser.Scene {
   }
 
   buildEntities() {
-    for (const e of this.map.entities) {
+    for (const e of this.map.entities) this.addEntity(e);
+  }
+
+  // Creates one entity (also used by scripts to make things appear: a cave entrance, a ladder…).
+  addEntity(e) {
+    {
       const ent = { ...e };
-      if (ent.flag && flag(ent.flag)) continue; // already collected
-      if (ent.flagHidden && flag(ent.flagHidden)) continue;
+      if (ent.flag && flag(ent.flag)) return null; // already collected
+      if (ent.flagHidden && flag(ent.flagHidden)) return null;
+      if (ent.flagShown && !flag(ent.flagShown)) return null;
       this.entities.push(ent);
       const cx = ent.x * TILE + TILE / 2, by = (ent.y + 1) * TILE;
       switch (ent.type) {
@@ -234,9 +246,71 @@ export class WorldScene extends Phaser.Scene {
           if (ent.wander) this.time.addEvent({ delay: 2200 + Math.random() * 1800, loop: true, callback: () => this.wander(ent) });
           break;
         }
+        case "boss": {
+          // A wild creature standing in the world (the forced hybrid, an Alpha…).
+          const idx = ent.species.map((s) => speciesIndex(s));
+          const [a, b = a] = idx;
+          ent.build = { head: a, teeth: b, frontLegs: b, backLegs: a, back: a, tail: b, color: a };
+          const w = ent.big ? 3 : 1;
+          for (let i = 0; i < w; i++) this.occupy(ent.x + i, ent.y, ent);
+          dinoTexture(this, ent.build, 0, { unitScale: ent.big ? 0.62 : 0.34, customColor: ent.tint }).then((key) => {
+            if (!key || !this.scene.isActive() || ent.gone) return;
+            const an = anchors[key];
+            const x = ent.x * TILE + (w * TILE) / 2;
+            ent.sprite = this.add.image(x, by, key).setOrigin(an.x, an.y).setDepth(by - 1).setFlipX(ent.dir === "left");
+            this.tweens.add({ targets: ent.sprite, scaleY: 1.04, duration: ent.big ? 1800 : 700, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+          });
+          break;
+        }
+        case "warp":
+          if (ent.caveMouth) this.placeSprite(propTexture(this, "cave"), cx, ent.y * TILE, ent.y * TILE - 1);
+          break;
         default:
           break;
       }
+      return ent;
+    }
+  }
+
+  // Removes an entity with a small effect: "shatter" (rock), "cut" (log), "fade".
+  removeEntity(id, style = "fade") {
+    const e = this.entities.find((x) => x.id === id);
+    if (!e) return Promise.resolve();
+    e.gone = true;
+    for (const [k, v] of [...this.occupied]) if (v === e) this.occupied.delete(k);
+    this.entities = this.entities.filter((x) => x !== e);
+    const s = e.sprite;
+    if (!s) return Promise.resolve();
+    return new Promise((resolve) => {
+      if (style === "shatter") {
+        for (let i = 0; i < 14; i++) {
+          const bit = this.add.rectangle(s.x + (Math.random() - 0.5) * 30, s.y - 20 - Math.random() * 30, 6 + Math.random() * 8, 5 + Math.random() * 6, Math.random() < 0.5 ? 0x7a7060 : 0x9a917c).setDepth(s.depth + 1);
+          this.tweens.add({ targets: bit, x: bit.x + (Math.random() - 0.5) * 140, y: bit.y + 20 + Math.random() * 40, angle: Math.random() * 360, alpha: 0, duration: 700 + Math.random() * 300, ease: "Quad.easeOut", onComplete: () => bit.destroy() });
+        }
+        this.tweens.add({ targets: s, scale: 0.2, alpha: 0, duration: 320, onComplete: () => { s.destroy(); resolve(); } });
+      } else if (style === "cut") {
+        this.tweens.add({ targets: s, y: s.y + 10, angle: 8, alpha: 0, duration: 700, ease: "Quad.easeIn", onComplete: () => { s.destroy(); resolve(); } });
+      } else {
+        this.tweens.add({ targets: s, alpha: 0, duration: 900, onComplete: () => { s.destroy(); resolve(); } });
+      }
+    });
+  }
+
+  // Walks an NPC along a list of directions; resolves when it arrives.
+  async walkNpc(id, dirs) {
+    const e = this.entities.find((x) => x.id === id);
+    if (!e?.sprite) return;
+    for (const dir of dirs) {
+      const [dx, dy] = DELTA[dir];
+      this.occupied.delete(`${e.x},${e.y}`);
+      e.x += dx; e.y += dy;
+      this.occupy(e.x, e.y, e);
+      e.sprite.setFrame(`${dir}-1`);
+      await new Promise((r) => this.tweens.add({
+        targets: e.sprite, x: e.x * TILE + TILE / 2, y: (e.y + 1) * TILE, duration: STEP_MS * 1.3,
+        onUpdate: () => e.sprite.setDepth(e.sprite.y - 1), onComplete: r,
+      }));
+      e.sprite.setFrame(`${dir}-0`);
     }
   }
 
@@ -285,7 +359,7 @@ export class WorldScene extends Phaser.Scene {
     const d = state.party[0];
     if (!d || this.follower) return;
     // Side, front and back views at the same scale; the follower turns to face its path.
-    const [side, front, backView] = await Promise.all(["side", "front", "back"].map((view) => dinoTexture(this, d.build, 0, { view, unitScale: FOLLOWER_SCALE })));
+    const [side, front, backView] = await Promise.all(["side", "front", "back"].map((view) => dinoTexture(this, d.build, 0, { view, unitScale: FOLLOWER_SCALE, customColor: d.tint })));
     if (!side || !this.scene.isActive() || this.follower) return;
     this.followerKeys = { side, front: front || side, back: backView || side };
     const key = this.dir === "up" ? this.followerKeys.back : this.dir === "down" ? this.followerKeys.front : side;
@@ -326,6 +400,7 @@ export class WorldScene extends Phaser.Scene {
 
   update() {
     this.paintPendingChunks();
+    this.updateDarkness();
     if (this.moving || this.scriptRunning || hud.busy) return;
     const d = hud.dir;
     if (!d) {
@@ -336,6 +411,8 @@ export class WorldScene extends Phaser.Scene {
     const [dx, dy] = DELTA[d];
     const nx = this.px + dx, ny = this.py + dy;
     if (this.blocked(nx, ny)) {
+      const now = performance.now();
+      if (now - (this.lastBump || 0) > 420) { this.lastBump = now; play("bump", { volume: 0.35, jitter: 0.05 }); }
       this.player.setFrame(`${d}-0`);
       return;
     }
@@ -374,6 +451,14 @@ export class WorldScene extends Phaser.Scene {
     }
     const grass = this.tallGrass.get(`${nx},${ny}`);
     if (grass) this.rustle(grass);
+    this.stepSound(nx, ny, !!grass);
+  }
+
+  stepSound(x, y, inGrass) {
+    const g = (TILES[this.rows[y][x]] || {}).ground;
+    const kind = inGrass ? "step_grass" : { planks: "step_wood", floor: "step_wood", carpet: "step_carpet", stone: "step_stone", cave: "step_stone", path: "step_stone" }[g] || "step_grass";
+    play(kind, { volume: inGrass ? 0.5 : 0.28, jitter: 0.08 });
+    if (inGrass) play("cloth", { volume: 0.12, jitter: 0.2 });
   }
 
   rustle(sprite) {
@@ -388,7 +473,7 @@ export class WorldScene extends Phaser.Scene {
     state.y = this.py;
     state.dir = this.dir;
     const e = this.entityAt(this.px, this.py);
-    if (e?.type === "door" && !e.locked) return this.warp(e.to);
+    if (e?.type === "door" && !e.locked) { play("door_open", { volume: 0.6 }); return this.warp(e.to); }
     const warp = this.entities.find((w) => w.type === "warp" && w.x === this.px && w.y === this.py);
     if (warp) return this.warp(warp.to);
     const trig = this.entities.find((t) => t.type === "trigger" && this.px >= t.x && this.px < t.x + t.w && this.py >= t.y && this.py < t.y + t.h);
@@ -444,7 +529,10 @@ export class WorldScene extends Phaser.Scene {
       case "sign":
         return this.runLines([e.text]);
       case "blocker":
+        if (e.script) return this.runScript(e.script, e);
         return this.runLines([e.text]);
+      case "boss":
+        return this.runScript(e.script, e);
       case "door":
         if (e.locked) return this.runLines([e.locked]);
         return;
@@ -491,6 +579,7 @@ export class WorldScene extends Phaser.Scene {
       line = `Tu as trouvé : ${it.name}${(e.qty || 1) > 1 ? ` ×${e.qty}` : ""} !`;
     }
     this.cameras.main.flash(120, 255, 230, 160);
+    play(e.item === "journal" ? "page" : e.item === "piece" ? "coins" : "item", { volume: 0.7 });
     await hud.say(null, hidden ? `Il y a quelque chose ici… ${line}` : line);
     save();
     hud.setBusy(false);
@@ -526,6 +615,18 @@ export class WorldScene extends Phaser.Scene {
       heal: () => { state.party.forEach(heal); },
       // Rest point: after a defeat, Chloé wakes up here (see resumeFromBattle).
       setRespawn: (point) => { state.respawn = { map: this.mapId, ...point }; },
+      battle: (opts) => this.startBattle(opts),
+      sound: (name, opts) => play(name, opts),
+      shake: (ms = 300, k = 0.01) => this.cameras.main.shake(ms, k),
+      flash: (ms = 200, r = 255, g = 255, b = 255) => this.cameras.main.flash(ms, r, g, b),
+      removeEntity: (id, style) => this.removeEntity(id, style),
+      // Makes a map entity (hidden by `flagShown`) appear now.
+      spawn: (id, overrides = {}) => { const def = this.map.entities.find((x) => x.id === id); if (def) this.addEntity({ ...def, ...overrides, flagShown: null }); },
+      walkNpc: (id, dirs) => this.walkNpc(id, dirs),
+      refreshFollower: () => this.refreshFollower(),
+      giveJournal: (page) => { if (!state.journal.includes(page)) state.journal.push(page); play("page"); },
+      warp: (to) => this.warp(to),
+      playerDir: () => this.dir,
       give: (id, qty = 1) => addItem(id, qty),
       giveStarter: (i) => this.giveStarter(i),
       pushBack: () => this.pushBack(),
@@ -544,6 +645,11 @@ export class WorldScene extends Phaser.Scene {
     const ped = this.entities.find((e) => e.kind === "pedestal" && e.starter === i);
     ped?.sprite?.setTint(0x999999);
     save();
+    this.createFollower();
+  }
+
+  refreshFollower() {
+    if (this.follower) { this.follower.destroy(); this.follower = null; }
     this.createFollower();
   }
 
@@ -578,7 +684,7 @@ export class WorldScene extends Phaser.Scene {
   maybeEncounter() {
     const zone = this.zoneAt(this.py);
     if (!zone.encounters || !state.party.some((d) => d.hp > 0) || this.scriptRunning) return;
-    if (Math.random() > (location.search.includes("rencontre") ? 1 : ENCOUNTER_RATE)) return;
+    if (Math.random() > (location.search.includes("rencontre") ? 1 : zone.rate ?? ENCOUNTER_RATE)) return;
     const wild = rollWild(ENCOUNTERS[zone.encounters]);
     this.scriptRunning = true;
     hud.setBusy(true);
@@ -595,7 +701,34 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  // Scripted battle (trainer, boss): resolves with "win" | "lose".
+  startBattle(opts) {
+    return new Promise((resolve) => {
+      this.battleResolve = resolve;
+      const cam = this.cameras.main;
+      cam.flash(200, 255, 255, 255);
+      cam.shake(200, 0.004);
+      this.time.delayedCall(260, () => {
+        cam.fadeOut(260, 0, 0, 0);
+        cam.once("camerafadeoutcomplete", () => {
+          this.scene.pause();
+          this.scene.launch("Battle", { zone: this.zoneAt(this.py).encounters || "plaines", ...opts });
+        });
+      });
+    });
+  }
+
   resumeFromBattle(result) {
+    const scripted = this.battleResolve;
+    this.battleResolve = null;
+    if (scripted) {
+      if (result !== "lose") {
+        this.cameras.main.fadeIn(300, 0, 0, 0);
+        scripted(result);
+        return;
+      }
+      scripted(result);
+    }
     hud.setBusy(false);
     this.scriptRunning = false;
     if (result === "lose") {
@@ -610,18 +743,75 @@ export class WorldScene extends Phaser.Scene {
     this.cameras.main.fadeIn(300, 0, 0, 0);
   }
 
+  // Soft additive light (radial gradient), `radius` in px.
+  glow(x, y, radius, color, alpha) {
+    if (!this.textures.exists("glow")) {
+      const c = document.createElement("canvas");
+      c.width = c.height = 128;
+      const ctx = c.getContext("2d");
+      const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.35, "rgba(255,255,255,0.45)"); g.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 128, 128);
+      this.textures.addCanvas("glow", c);
+    }
+    return this.add.image(x, y, "glow").setScale(radius / 64).setTint(color).setAlpha(alpha).setBlendMode(Phaser.BlendModes.ADD);
+  }
+
+  // Caves: darkness everywhere except a halo around Chloé.
+  createDarkness() {
+    if (!this.textures.exists("darkness")) {
+      const c = document.createElement("canvas");
+      c.width = c.height = 256;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "rgba(6,4,8,0.9)";
+      ctx.fillRect(0, 0, 256, 256);
+      ctx.globalCompositeOperation = "destination-out";
+      const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 120);
+      g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(0.3, "rgba(0,0,0,0.92)"); g.addColorStop(0.62, "rgba(0,0,0,0.35)"); g.addColorStop(0.9, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 256, 256);
+      this.textures.addCanvas("darkness", c);
+    }
+    this.darkness = this.add.image(this.player.x, this.player.y - 24, "darkness").setScale(DARK_SCALE).setDepth(DARK_DEPTH);
+    // Beyond the halo image, plain darkness.
+    this.darkRim = this.add.graphics().setDepth(DARK_DEPTH);
+    // Amber crystals glow through the dark.
+    for (let y = 0; y < this.H; y++) for (let x = 0; x < this.W; x++) {
+      if (this.rows[y][x] !== "a") continue;
+      const glow = this.glow(x * TILE + TILE / 2, y * TILE + 16, 80, 0xff9a30, 0.3).setDepth(DARK_DEPTH + 1);
+      this.tweens.add({ targets: glow, alpha: 0.45, duration: 1400 + hash(x, y, 3) * 900, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+    }
+  }
+
+  updateDarkness() {
+    if (!this.darkness) return;
+    const x = this.player.x, y = this.player.y - 24;
+    this.darkness.setPosition(x, y);
+    const half = (256 * DARK_SCALE) / 2, v = this.cameras.main.worldView;
+    const g = this.darkRim;
+    g.clear();
+    g.fillStyle(0x060408, 0.9);
+    const L = x - half, R = x + half, T = y - half, B = y + half;
+    const pad = 200;
+    if (v.x < L) g.fillRect(v.x - pad, v.y - pad, L - v.x + pad, v.height + pad * 2);
+    if (v.right > R) g.fillRect(R, v.y - pad, v.right - R + pad, v.height + pad * 2);
+    if (v.y < T) g.fillRect(L, v.y - pad, R - L, T - v.y + pad);
+    if (v.bottom > B) g.fillRect(L, B, R - L, v.bottom - B + pad);
+  }
+
   lightFire(x, y) {
-    const glow = this.add.circle(x, y - 14, 46, 0xffa040, 0.16).setDepth(y + 1).setBlendMode(Phaser.BlendModes.ADD);
+    const glow = this.glow(x, y - 14, this.map.cave ? 110 : 60, 0xffa040, 0.35).setDepth(this.map.cave ? DARK_DEPTH + 1 : y + 1);
     const fl = propTexture(this, "flame");
-    const flame = this.add.image(x, y - 10, fl).setOrigin(anchors[fl].x, anchors[fl].y).setDepth(y + 2);
+    const flame = this.add.image(x, y - 10, fl).setOrigin(anchors[fl].x, anchors[fl].y).setDepth(this.map.cave ? DARK_DEPTH + 2 : y + 2);
     this.tweens.add({ targets: flame, scaleY: 1.18, scaleX: 0.9, duration: 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
-    this.tweens.add({ targets: glow, alpha: 0.26, scale: 1.08, duration: 420, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+    this.tweens.add({ targets: glow, alpha: 0.5, scale: glow.scale * 1.08, duration: 420, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
   }
 
   // ---------------------------------------------------------------- camera
   setupCamera() {
     const cam = this.cameras.main;
-    cam.setBackgroundColor(this.map.interior ? "#140e0a" : "#1c4f6a");
+    cam.setBackgroundColor(this.map.interior ? "#140e0a" : this.map.cave ? "#0c090d" : "#1c4f6a");
     this.fitCamera();
     cam.startFollow(this.player, true, 0.14, 0.14);
   }

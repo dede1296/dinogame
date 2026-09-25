@@ -3,3 +3,6 @@ dist/
 *.local
 .DS_Store
 .shots/
+
+# Contient des clés d'API (Gemini…) : ne jamais publier
+.mcp.json

@@ -37,6 +37,10 @@ export function propTexture(scene, kind, variant = 0) {
     sparkle: () => props.sparkle(),
     campfire: () => props.campfire(),
     flame: () => props.flame(),
+    stalagmite: () => props.stalagmite(variant),
+    crystal: () => props.crystal(),
+    ladder: () => props.ladder(),
+    hole: () => props.hole(),
   }[kind];
   return addCanvas(scene, key, factory());
 }
@@ -78,7 +82,7 @@ export function characterTexture(scene, look) {
 export function dinoTexture(scene, build, size, options = {}) {
   const view = options.view || "side";
   const sizeKey = options.fit ? `${options.fit.w}x${options.fit.h}` : options.unitScale || size;
-  const key = `dino-${view}-${Object.values(build).join("-")}-${sizeKey}-${options.pattern || "none"}`;
+  const key = `dino-${view}-${Object.values(build).join("-")}-${sizeKey}-${options.pattern || "none"}-${options.customColor || ""}`;
   if (scene.textures.exists(key)) return Promise.resolve(key);
   const id = key.replace(/[^\w]/g, "");
   const dino = view === "side" ? buildDino(build, { ...options, id }) : buildDinoView(build, view, { ...options, id });

@@ -11,6 +11,7 @@ import { dinoTexture, anchors, propTexture } from "../engine/textures.js";
 import { paintArena, paintPlatform, paintSpark } from "../art/battleArt.js";
 import { playCry } from "../../../src/audio/cry.js";
 import { playSfx } from "../../../src/audio/sfx.js";
+import { play } from "../audio/sounds.js";
 
 const hex = (c) => parseInt(c.replace("#", ""), 16);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -36,8 +37,9 @@ export class BattleScene extends Phaser.Scene {
     hud.root.classList.add("in-battle");
 
     // Backdrop, platforms and particle texture.
-    const arenaKey = `arena-${W}x${H}`;
-    if (!this.textures.exists(arenaKey)) this.textures.addCanvas(arenaKey, paintArena(W, H, this.opts.zone));
+    const zone = this.opts.zone || "plaines";
+    const arenaKey = `arena-${zone}-${W}x${H}`;
+    if (!this.textures.exists(arenaKey)) this.textures.addCanvas(arenaKey, paintArena(W, H, zone));
     this.add.image(0, 0, arenaKey).setOrigin(0);
     if (!this.textures.exists("spark")) this.textures.addCanvas("spark", paintSpark());
 
@@ -49,8 +51,8 @@ export class BattleScene extends Phaser.Scene {
     };
     for (const side of ["foe", "player"]) {
       const p = this.pos[side];
-      const plat = paintPlatform(Math.round(p.w * 1.1));
-      const key = `plat-${side}-${W}x${H}`;
+      const plat = paintPlatform(Math.round(p.w * 1.1), zone);
+      const key = `plat-${zone}-${side}-${W}x${H}`;
       if (!this.textures.exists(key)) this.textures.addCanvas(key, plat.canvas);
       this.add.image(p.x, p.y, key).setOrigin(0.5, plat.footY / plat.canvas.height);
     }
@@ -75,7 +77,8 @@ export class BattleScene extends Phaser.Scene {
   async run() {
     const b = this.battle;
     await this.enter("foe", true);
-    await this.ui.message(b.wild ? `Un ${b.active("foe").speciesName} sauvage (Niv. ${b.active("foe").level}) surgit !` : `${b.trainer.name} veut se battre !`);
+    await this.ui.message(b.wild ? `Un ${b.active("foe").speciesName} sauvage (Niv. ${b.active("foe").level}) surgit !`
+      : b.trainer.boss ? (b.trainer.intro || `${b.active("foe").nickname} se dresse devant toi !`) : `${b.trainer.name} veut se battre !`);
     await this.enter("player");
     await this.ui.message(`Vas-y, ${b.active("player").nickname} !`, { hold: 500 });
 
@@ -168,7 +171,13 @@ export class BattleScene extends Phaser.Scene {
   async finishBattle(result) {
     if (result === "win") {
       playSfx("victory");
-      await this.ui.message(this.battle.wild ? "Victoire !" : `Tu as battu ${this.battle.trainer.name} !`);
+      const t = this.battle.trainer;
+      await this.ui.message(!t ? "Victoire !" : t.boss ? `Tu as vaincu ${this.battle.active("foe").nickname} !` : `Tu as battu ${t.name} !`);
+      if (t?.reward) {
+        state.money += t.reward;
+        play("coins");
+        await this.ui.message(`Tu gagnes ${t.reward} pièces.`);
+      }
     } else if (result === "catch") {
       playSfx("victory");
       const d = this.battle.active("foe");
@@ -184,7 +193,7 @@ export class BattleScene extends Phaser.Scene {
       }
     } else if (result === "lose") {
       playSfx("defeat");
-      await this.ui.message("Tous tes dinos sont K.O. … Tu cours te réfugier au Cabinet.");
+      await this.ui.message("Tous tes dinos sont K.O. … Tu cours te mettre à l'abri.");
     }
     save();
     await sleep(300);
@@ -206,7 +215,7 @@ export class BattleScene extends Phaser.Scene {
   async enter(side, first = false) {
     const d = this.battle.active(side);
     const p = this.pos[side];
-    const key = await dinoTexture(this, d.build, 0, { fit: { w: Math.round(p.w), h: Math.round(p.h) } });
+    const key = await dinoTexture(this, d.build, 0, { fit: { w: Math.round(p.w), h: Math.round(p.h) }, customColor: d.tint });
     this.sprites[side]?.destroy();
     const a = anchors[key];
     const startX = side === "foe" ? this.W + p.w : -p.w;
@@ -295,6 +304,7 @@ export class BattleScene extends Phaser.Scene {
     const max = e.maxHp;
     if (!e.bleed) {
       playSfx(e.crit ? "crit" : "hit");
+      play(e.crit ? "hit_1" : "hit_0", { volume: 0.8, jitter: 0.08 });
       try { navigator.vibrate?.(e.crit ? 120 : 40); } catch {}
       this.cameras.main.shake(e.crit ? 300 : 160, e.crit ? 0.012 : 0.005);
       if (e.crit) this.cameras.main.flash(120, 255, 255, 255);

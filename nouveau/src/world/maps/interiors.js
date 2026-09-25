@@ -19,7 +19,7 @@ export const cabinet = {
   ],
   entities: [
     { type: "warp", x: 6, y: 9, to: { map: "ambreluneSud", x: 29, y: 48, dir: "down" } },
-    { type: "decor", kind: "machine", x: 5, y: 0, w: 3, h: 3, solid: true, text: "LE CABINET — Hybrideur d'ADN, modèle H.V. III. Les voyants clignotent faiblement." },
+    { type: "decor", kind: "machine", x: 5, y: 0, w: 3, h: 3, solid: true, script: "hybrideur" },
     { type: "decor", kind: "shelf", x: 0, y: 1, w: 2, h: 2, solid: true, text: "Des centaines de fioles d'ambre, étiquetées à la main par Hélène." },
     { type: "decor", kind: "shelf", x: 11, y: 1, w: 2, h: 2, solid: true, text: "« Traité d'hybridation, tome IV ». Beaucoup de pages sont arrachées." },
     { type: "decor", kind: "desk", x: 1, y: 5, w: 2, h: 2, solid: true, text: "Le bureau d'Hélène. Une tasse de thé froid, et des plans de la Grotte des Échos." },

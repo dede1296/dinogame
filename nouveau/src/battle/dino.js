@@ -102,3 +102,33 @@ export function catchDifficulty(build) {
   if (head.rarity === "rare") return 0.55;
   return head.head.size >= 8 ? 0.7 : 0.9;
 }
+
+// Body parts the Cabinet's hybridizer can replace.
+export const GRAFT_PARTS = {
+  head: "Tête", teeth: "Mâchoire", frontLegs: "Pattes avant", backLegs: "Pattes arrière", back: "Dos", tail: "Queue", color: "Couleur",
+};
+
+/**
+ * Grafts the part of species `speciesIdx` onto `d` (keeps level, XP and nickname).
+ * Returns the moves it learned: [{ move, replaced }].
+ */
+export function graft(d, part, speciesIdx) {
+  const ratio = d.hp / statsOf(d).hp;
+  d.build = { ...d.build, [part]: speciesIdx };
+  d.speciesName = speciesName(d.build);
+  d.hp = Math.max(1, Math.round(statsOf(d).hp * ratio));
+  const learned = [];
+  for (const m of learnset(d.build, DINOS).filter((x) => x.level <= d.level)) {
+    if (d.moves.some((k) => k.id === m.id)) continue;
+    let replaced = null;
+    if (d.moves.length >= MAX_MOVES) {
+      const weakest = d.moves.reduce((w, k) => (MOVES[k.id].power < MOVES[w.id].power ? k : w));
+      if (MOVES[weakest.id].power >= MOVES[m.id].power) continue;
+      replaced = weakest.id;
+      d.moves = d.moves.filter((k) => k !== weakest);
+    }
+    d.moves.push({ id: m.id, pp: MOVES[m.id].pp });
+    learned.push({ move: m.id, replaced });
+  }
+  return learned;
+}
