@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Aperçu du monde</title>
+  <style>body { margin: 0; background: #111; } canvas { display: block; }</style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <script type="module">
+    import { paintGround } from "./src/art/groundArt.js";
+    import { ambreluneSud } from "./src/world/maps/ambreluneSud.js";
+    import { TILE } from "./src/world/tiles.js";
+
+    // ?x=&y=&w=&h= : zone de la carte à afficher (en cases).
+    const q = new URLSearchParams(location.search);
+    const x = +(q.get("x") ?? 0), y = +(q.get("y") ?? 10), w = +(q.get("w") ?? 26), h = +(q.get("h") ?? 20);
+    const c = document.getElementById("c");
+    c.width = w * TILE; c.height = h * TILE;
+    paintGround(c.getContext("2d"), ambreluneSud.rows, x, y, w, h);
+    window.__drawn = true;
+  </script>
+</body>
+</html>

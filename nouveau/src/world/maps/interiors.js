@@ -1,0 +1,60 @@
+// Building interiors. Each map's bottom-center door warps back outside.
+
+export const cabinet = {
+  id: "cabinet",
+  name: "Le Cabinet",
+  interior: true,
+  music: "cabinet",
+  rows: [
+    "wwwwwwwwwwwww",
+    "wwwwwwwwwwwww",
+    "fffffffffffff",
+    "fffffffffffff",
+    "ffffcccccffff",
+    "ffffcccccffff",
+    "ffffcccccffff",
+    "fffffffffffff",
+    "fffffffffffff",
+    "wwwwwwfwwwwww",
+  ],
+  entities: [
+    { type: "warp", x: 6, y: 9, to: { map: "ambreluneSud", x: 29, y: 48, dir: "down" } },
+    { type: "decor", kind: "machine", x: 5, y: 0, w: 3, h: 3, solid: true, text: "LE CABINET — Hybrideur d'ADN, modèle H.V. III. Les voyants clignotent faiblement." },
+    { type: "decor", kind: "shelf", x: 0, y: 1, w: 2, h: 2, solid: true, text: "Des centaines de fioles d'ambre, étiquetées à la main par Hélène." },
+    { type: "decor", kind: "shelf", x: 11, y: 1, w: 2, h: 2, solid: true, text: "« Traité d'hybridation, tome IV ». Beaucoup de pages sont arrachées." },
+    { type: "decor", kind: "desk", x: 1, y: 5, w: 2, h: 2, solid: true, text: "Le bureau d'Hélène. Une tasse de thé froid, et des plans de la Grotte des Échos." },
+    { type: "decor", kind: "pedestal", x: 9, y: 4, w: 1, h: 1, solid: true, starter: 0 },
+    { type: "decor", kind: "pedestal", x: 10, y: 5, w: 1, h: 1, solid: true, starter: 1 },
+    { type: "decor", kind: "pedestal", x: 11, y: 4, w: 1, h: 1, solid: true, starter: 2 },
+    { type: "decor", kind: "plant", x: 0, y: 8, w: 1, h: 1, solid: true },
+    { type: "decor", kind: "plant", x: 12, y: 8, w: 1, h: 1, solid: true },
+    { type: "npc", id: "roc", look: "professor", x: 6, y: 4, dir: "down", script: "roc" },
+    { type: "hidden", x: 12, y: 2, item: "journal", page: 2, flag: "journal_2" },
+  ],
+};
+
+export const maison = {
+  id: "maison",
+  name: "Maison d'Hélène",
+  interior: true,
+  music: "maison",
+  rows: [
+    "wwwwwwwww",
+    "wwwwwwwww",
+    "fffffffff",
+    "ffcccccff",
+    "ffcccccff",
+    "fffffffff",
+    "fffffffff",
+    "wwwwfwwww",
+  ],
+  entities: [
+    { type: "warp", x: 4, y: 7, to: { map: "ambreluneSud", x: 8, y: 51, dir: "down" } },
+    { type: "decor", kind: "bed", x: 0, y: 2, w: 1, h: 2, solid: true, script: "lit" },
+    { type: "decor", kind: "table", x: 6, y: 3, w: 2, h: 1, solid: true, script: "lettre" },
+    { type: "decor", kind: "shelf", x: 7, y: 0, w: 2, h: 2, solid: true, text: "Des albums photo. Sur l'un d'eux, Hélène pose devant le volcan avec un petit dino aux yeux dorés." },
+    { type: "decor", kind: "fireplace", x: 3, y: 0, w: 2, h: 2, solid: true, text: "La cheminée est froide depuis longtemps." },
+    { type: "decor", kind: "plant", x: 8, y: 6, w: 1, h: 1, solid: true },
+    { type: "hidden", x: 0, y: 6, item: "piece", qty: 50, flag: "hidden_maison" },
+  ],
+};
