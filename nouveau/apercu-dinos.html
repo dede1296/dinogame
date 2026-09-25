@@ -56,6 +56,12 @@
       document.head.insertAdjacentHTML("beforeend", "<style>.grid{grid-template-columns:1fr 1fr}.card svg{height:430px}</style>");
       samples.splice(0, samples.length, samples[0], samples[2], samples[10], samples[11]);
     }
+    // ?solo=N : un seul dino, très grand.
+    const solo = new URLSearchParams(location.search).get("solo");
+    if (solo !== null) {
+      document.head.insertAdjacentHTML("beforeend", "<style>.grid{grid-template-columns:1fr}.card svg{height:900px}</style>");
+      samples.splice(0, samples.length, samples[Number(solo)]);
+    }
     for (const [label, build] of samples) {
       const dino = buildDino(build, { pattern: label.startsWith("Hybride : Tri") ? "stripes" : "none" });
       const card = document.createElement("div");

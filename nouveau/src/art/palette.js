@@ -26,15 +26,15 @@ function vivid(hex, amount = 0.35) {
 
 // Palette for one dino, derived from its donor color.
 export function makePalette(baseColor, accentColor) {
-  const base = vivid(lighten(baseColor, 0.12));
-  const accent = vivid(accentColor || mix(baseColor, "#e8a020", 0.55), 0.5);
+  const base = vivid(lighten(baseColor, 0.06), 0.14);
+  const accent = vivid(accentColor || mix(baseColor, "#c98a2a", 0.45), 0.25);
   return {
     base,
     light: lighten(base, 0.28),
     shade: darken(base, 0.28),
     deep: darken(base, 0.5),
-    belly: mix(base, "#f6e7c1", 0.62),
-    bellyShade: mix(base, "#d9c08e", 0.45),
+    belly: mix(base, "#e9dbb6", 0.5),
+    bellyShade: mix(base, "#b9a276", 0.45),
     outline: mix(base, "#140c08", 0.78),
     accent,
     accentLight: lighten(accent, 0.3),
