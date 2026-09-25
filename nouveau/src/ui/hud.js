@@ -7,6 +7,7 @@ import { ABILITIES, hasAbility } from "../data/abilities.js";
 import { MOVES } from "../battle/moves.js";
 import { statsOf } from "../battle/dino.js";
 import { play } from "../audio/sounds.js";
+import { debugEnabled, debugTabHtml, runDebugAction } from "../debug/debug.js";
 
 const CSS = `
 .hud { position: fixed; inset: 0; z-index: 5; pointer-events: none; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #f6ecd2; user-select: none; -webkit-user-select: none; }
@@ -239,7 +240,7 @@ class Hud {
       const ov = document.createElement("div");
       ov.className = "overlay";
       ov.innerHTML = `<h2>MENU</h2>
-        <div class="tabs"><button data-t="party" class="on">Équipe</button><button data-t="bag">Sac</button><button data-t="journal">Journal</button><button data-t="save">Sauvegarder</button></div>
+        <div class="tabs"><button data-t="party" class="on">Équipe</button><button data-t="bag">Sac</button><button data-t="journal">Journal</button><button data-t="save">Sauvegarder</button>${debugEnabled() ? `<button data-t="debug">🛠</button>` : ""}</div>
         <div class="panel"></div><button class="close">Fermer</button>`;
       const panel = ov.querySelector(".panel");
       const show = (tab) => {
@@ -252,6 +253,13 @@ class Hud {
         }
       };
       ov.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.t)));
+      panel.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-dbg]");
+        if (!b) return;
+        const msg = runDebugAction(b.dataset.dbg);
+        show("debug");
+        if (msg) this.toast(msg);
+      });
       const close = () => { play("ui_close", { volume: 0.5 }); this.advance = null; ov.remove(); resolve(); };
       ov.querySelector(".close").addEventListener("click", close);
       this.advance = (btn) => { if (btn === "b") close(); };
@@ -285,6 +293,7 @@ class Hud {
       if (!state.journal.length) return `<div class="empty">Aucune page trouvée. Les pages du journal d'Hélène sont cachées partout sur l'île.</div>`;
       return [...state.journal].sort((a, b) => a - b).map((n) => `<div class="page"><h3>Page ${n} — ${esc(JOURNAL[n].title)}</h3>${esc(JOURNAL[n].text)}</div>`).join("") + `<div class="empty">${state.journal.length} page(s) sur 40</div>`;
     }
+    if (tab === "debug") return debugTabHtml();
     return "";
   }
 }

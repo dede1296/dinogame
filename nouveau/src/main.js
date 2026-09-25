@@ -3,8 +3,10 @@ import { WorldScene } from "./scenes/WorldScene.js";
 import { BattleScene } from "./scenes/BattleScene.js";
 import { createDino, normalizeDino, heal } from "./battle/dino.js";
 import { hud } from "./ui/hud.js";
-import { hasSave, resetState, state, setFlag } from "./state/game.js";
+import { resetState, state, setFlag, useSlot } from "./state/game.js";
+import { renderSlots } from "./ui/titleSlots.js";
 import { unlockAudio } from "./audio/sounds.js";
+import { consumeJump, setupTitleDebug } from "./debug/debug.js";
 
 unlockAudio();
 import { speciesIndex } from "./story/scripts.js";
@@ -51,18 +53,22 @@ function start(newGame) {
   });
 }
 
-// ?demarrer : lance directement une nouvelle partie (tests).
+// ?demarrer : lance directement une nouvelle partie dans la sauvegarde débug (tests).
 if (new URLSearchParams(location.search).has("demarrer")) {
   document.getElementById("title").remove();
+  useSlot("debug");
   start(true);
+} else if (consumeJump()) {
+  // Debug mode just picked a checkpoint (saved in the debug slot): go straight into the game.
+  document.getElementById("title").remove();
+  useSlot("debug");
+  start(false);
 } else {
   const title = document.getElementById("title");
-  const cont = document.getElementById("continue");
-  if (hasSave()) cont.hidden = false;
-  cont.addEventListener("click", () => { title.remove(); start(false); });
-  document.getElementById("new").addEventListener("click", () => {
-    if (hasSave() && !confirm("Commencer une nouvelle partie ? La progression actuelle sera effacée.")) return;
+  setupTitleDebug(title);
+  renderSlots(document.getElementById("slots"), (slot, isNew) => {
     title.remove();
-    start(true);
+    useSlot(slot);
+    start(isNew);
   });
 }

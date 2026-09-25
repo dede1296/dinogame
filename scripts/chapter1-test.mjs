@@ -4,21 +4,23 @@ import { chromium } from "playwright-core";
 const LEVEL = process.argv[2] || 14;
 const browser = await chromium.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true });
 const page = await browser.newPage({ viewport: { width: 430, height: 900 }, deviceScaleFactor: 1 });
+// The debug slot card only shows on the title screen when debug mode is on.
+await page.addInitScript(() => localStorage.setItem("dino-debug", "1"));
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 const URL = "http://localhost:5173/dinogame/nouveau/?";
 const tap = async (k) => { await page.keyboard.down(k); await page.waitForTimeout(60); await page.keyboard.up(k); await page.waitForTimeout(420); };
-const st = () => page.evaluate(() => JSON.parse(localStorage.getItem("dino-hybride-v2")));
-const liveFlags = () => page.evaluate(() => { try { return JSON.parse(localStorage.getItem("dino-hybride-v2")).flags; } catch { return {}; } });
+const st = () => page.evaluate(() => JSON.parse(localStorage.getItem("dino-hybride-v2-debug")));
+const liveFlags = () => page.evaluate(() => { try { return JSON.parse(localStorage.getItem("dino-hybride-v2-debug")).flags; } catch { return {}; } });
 // Like resting at a campfire: full HP (read back by the game on load via normalizeDino/heal).
 async function rest() {
-  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("dino-hybride-v2")); s.party.forEach((d) => { d.hp = 999; d.status = null; }); s.healOnLoad = true; localStorage.setItem("dino-hybride-v2", JSON.stringify(s)); });
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("dino-hybride-v2-debug")); s.party.forEach((d) => { d.hp = 999; d.status = null; }); s.healOnLoad = true; localStorage.setItem("dino-hybride-v2-debug", JSON.stringify(s)); });
 }
 async function go(q) {
   await rest();
   await page.goto(URL + q);
   await page.waitForTimeout(700);
-  if (await page.$("#continue:not([hidden])")) await page.click("#continue");
+  if (await page.$("[data-slot=\"debug\"]")) await page.click("[data-slot=\"debug\"]");
   await page.waitForTimeout(2200);
 }
 // Advances dialogues, picks the first choice / first battle button, until done() is true.
@@ -73,7 +75,7 @@ await step("route de la forêt", async () => {
   return seen;
 });
 await step("hybrideur : greffe de griffes de raptor", async () => {
-  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("dino-hybride-v2")); s.amber = ["Velociraptor"]; s.map = "cabinet"; localStorage.setItem("dino-hybride-v2", JSON.stringify(s)); });
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("dino-hybride-v2-debug")); s.amber = ["Velociraptor"]; s.map = "cabinet"; localStorage.setItem("dino-hybride-v2-debug", JSON.stringify(s)); });
   await go("carte=cabinet&x=6&y=3");
   await tap("ArrowUp"); await tap(" ");
   // dino 1, ambre 1, partie : Pattes avant (3e), confirmer.

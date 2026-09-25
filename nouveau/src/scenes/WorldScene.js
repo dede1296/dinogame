@@ -690,7 +690,7 @@ export class WorldScene extends Phaser.Scene {
   // ---------------------------------------------------------------- encounters
   maybeEncounter() {
     const zone = this.zoneAt(this.py);
-    if (!zone.encounters || !state.party.some((d) => d.hp > 0) || this.scriptRunning) return;
+    if (!zone.encounters || !state.party.some((d) => d.hp > 0) || this.scriptRunning || state.flags.debug_noenc) return;
     if (Math.random() > (location.search.includes("rencontre") ? 1 : zone.rate ?? ENCOUNTER_RATE)) return;
     this.launchWild(rollWild(ENCOUNTERS[zone.encounters]), zone.encounters);
   }

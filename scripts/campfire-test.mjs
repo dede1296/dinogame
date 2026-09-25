@@ -2,6 +2,8 @@
 import { chromium } from "playwright-core";
 const browser = await chromium.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true });
 const page = await browser.newPage({ viewport: { width: 430, height: 900 }, deviceScaleFactor: 1 });
+// The debug slot card only shows on the title screen when debug mode is on.
+await page.addInitScript(() => localStorage.setItem("dino-debug", "1"));
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 const tap = async (k) => { await page.keyboard.down(k); await page.waitForTimeout(80); await page.keyboard.up(k); await page.waitForTimeout(350); };
@@ -16,11 +18,11 @@ const choices = await page.$$eval(".choices button, .choice button, button", (x)
 console.log("CHOIX:", choices);
 await page.click("text=Se reposer et sauvegarder");
 for (let i = 0; i < 6; i++) { await page.waitForTimeout(900); await tap(" "); }
-console.log("RESPAWN:", await page.evaluate(() => localStorage.getItem("dino-hybride-v2") && JSON.parse(localStorage.getItem("dino-hybride-v2")).respawn));
+console.log("RESPAWN:", await page.evaluate(() => localStorage.getItem("dino-hybride-v2-debug") && JSON.parse(localStorage.getItem("dino-hybride-v2-debug")).respawn));
 // Now force an encounter in the grass below and lose.
 await page.goto("http://localhost:5173/dinogame/nouveau/?rencontre&x=16&y=28");
 await page.waitForTimeout(800);
-await page.click("#continue");
+await page.click("[data-slot=\"debug\"]");
 await page.waitForTimeout(2500);
 await tap("ArrowLeft");
 for (let t = 0; t < 160; t++) {
@@ -30,7 +32,7 @@ for (let t = 0; t < 160; t++) {
   if (t > 5 && !(await page.$(".bhud"))) break;
 }
 await page.waitForTimeout(2500);
-const s = await page.evaluate(() => JSON.parse(localStorage.getItem("dino-hybride-v2")));
+const s = await page.evaluate(() => JSON.parse(localStorage.getItem("dino-hybride-v2-debug")));
 console.log("APRES DEFAITE:", s.map, s.x, s.y, "PV:", s.party.map((d) => d.hp));
 console.log("TOAST:", await page.evaluate(() => document.body.innerText.match(/Tu te réveilles[^\n]*/)?.[0]));
 await page.screenshot({ path: ".shots/test/reveil-" + Date.now() + ".png" });

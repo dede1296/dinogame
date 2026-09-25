@@ -1,6 +1,10 @@
 // Persistent game state for the new game (separate save from the classic game).
 
-const SAVE_KEY = "dino-hybride-v2";
+// Three save slots, plus a separate one for debug mode so it never touches real games.
+// Slot 1 keeps the original key, so older saves show up there.
+export const SLOTS = [1, 2, 3];
+const keyOf = (slot) => (slot === 1 ? "dino-hybride-v2" : `dino-hybride-v2-${slot}`);
+let slot = 1;
 
 function fresh() {
   return {
@@ -23,34 +27,56 @@ function fresh() {
   };
 }
 
-export const state = load() || fresh();
+export const state = fresh();
 
-function load() {
+function read(s) {
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
+    const raw = localStorage.getItem(keyOf(s));
     return raw ? { ...fresh(), ...JSON.parse(raw) } : null;
   } catch {
     return null;
   }
 }
 
+function replaceState(next) {
+  for (const k of Object.keys(state)) delete state[k];
+  Object.assign(state, next);
+}
+
+/** Makes `s` (1, 2, 3 or "debug") the active slot and loads it (or a fresh game). */
+export function useSlot(s) {
+  slot = s;
+  replaceState(read(s) || fresh());
+}
+
+/** Short summary of a slot for the title screen, or null when empty. */
+export function slotInfo(s) {
+  const d = read(s);
+  if (!d) return null;
+  return { lead: d.party[0] || null, count: d.party.length, savedAt: d.savedAt, flags: d.flags };
+}
+
+export function deleteSlot(s) {
+  try { localStorage.removeItem(keyOf(s)); } catch { /* storage unavailable */ }
+}
+
 export function save() {
   try {
     state.savedAt = Date.now();
-    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    localStorage.setItem(keyOf(slot), JSON.stringify(state));
     return true;
   } catch {
     return false;
   }
 }
 
-export function hasSave() {
-  try { return localStorage.getItem(SAVE_KEY) !== null; } catch { return false; }
+export function hasSave(s = slot) {
+  try { return localStorage.getItem(keyOf(s)) !== null; } catch { return false; }
 }
 
 export function resetState() {
-  Object.assign(state, fresh());
-  try { localStorage.removeItem(SAVE_KEY); } catch {}
+  replaceState(fresh());
+  deleteSlot(slot);
 }
 
 export const flag = (k) => !!state.flags[k];
