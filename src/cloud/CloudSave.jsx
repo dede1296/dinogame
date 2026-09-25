@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore } from "react";
-import { subscribe, getState, sendCode, verifyCode, signOut, syncNow, resolveConflict } from "./sync.js";
+import { subscribe, getState, signIn, signUp, signOut, syncNow, resolveConflict } from "./sync.js";
 import { describeSave } from "../storage/local.js";
 
 const STATUS = {
@@ -32,8 +32,8 @@ export function CloudSaveButton() {
 
 function CloudSavePanel({ cloud, onClose }) {
   const [email, setEmail] = useState(cloud.user?.email || "");
-  const [code, setCode] = useState("");
-  const [step, setStep] = useState("email"); // email | code
+  const [password, setPassword] = useState("");
+  const [mode, setMode] = useState("signin"); // signin | signup
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
 
@@ -83,31 +83,25 @@ function CloudSavePanel({ cloud, onClose }) {
             </button>
             <button style={secondary} disabled={busy} onClick={() => run(signOut)}>Se déconnecter</button>
           </>
-        ) : step === "email" ? (
+        ) : (
           <>
             <p style={text}>
-              Relie le jeu à une adresse e-mail pour retrouver ta progression sur n'importe quel téléphone.
-              Tu recevras un code à recopier ici.
+              {mode === "signup"
+                ? "Crée un compte pour garder ta progression en ligne et la retrouver sur n'importe quel téléphone."
+                : "Connecte-toi pour retrouver ta progression sauvegardée en ligne."}
             </p>
             <input style={input} type="email" inputMode="email" autoComplete="email" placeholder="adresse@email.com"
               value={email} onChange={(e) => setEmail(e.target.value.trim())} />
-            <button style={primary} disabled={busy || !email.includes("@")}
-              onClick={() => run(async () => { await sendCode(email); setStep("code"); })}>
-              {busy ? "Envoi…" : "Recevoir un code"}
+            <input style={input} type="password" placeholder="Mot de passe (6 caractères min.)"
+              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+              value={password} onChange={(e) => setPassword(e.target.value)} />
+            <button style={primary} disabled={busy || !email.includes("@") || password.length < 6}
+              onClick={() => run(() => (mode === "signup" ? signUp : signIn)(email, password))}>
+              {busy ? "Un instant…" : mode === "signup" ? "Créer le compte" : "Se connecter"}
             </button>
-          </>
-        ) : (
-          <>
-            <p style={text}>Un code a été envoyé à <strong>{email}</strong>. Recopie-le ici :</p>
-            <input style={{ ...input, letterSpacing: "6px", textAlign: "center", fontSize: "20px" }}
-              inputMode="numeric" autoComplete="one-time-code" maxLength={10} placeholder="123456"
-              value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} />
-            <button style={primary} disabled={busy || code.length < 6}
-              onClick={() => run(() => verifyCode(email, code))}>
-              {busy ? "Vérification…" : "Valider"}
-            </button>
-            <button style={secondary} disabled={busy} onClick={() => { setStep("email"); setCode(""); }}>
-              ← Changer d'adresse
+            <button style={secondary} disabled={busy}
+              onClick={() => { setMode(mode === "signup" ? "signin" : "signup"); setError(null); }}>
+              {mode === "signup" ? "J'ai déjà un compte" : "Première fois ? Créer un compte"}
             </button>
           </>
         )}
@@ -121,7 +115,10 @@ function CloudSavePanel({ cloud, onClose }) {
 
 function translateError(e) {
   const msg = e?.message || String(e);
-  if (/expired|invalid/i.test(msg)) return "Code incorrect ou expiré. Redemande un code.";
+  if (msg === "EMAIL_CONFIRMATION_REQUIRED") return "Compte créé, mais Supabase demande une confirmation par e-mail : désactive « Confirm email » dans les réglages.";
+  if (/invalid login credentials/i.test(msg)) return "E-mail ou mot de passe incorrect.";
+  if (/already registered/i.test(msg)) return "Ce compte existe déjà : connecte-toi plutôt.";
+  if (/password/i.test(msg)) return "Mot de passe trop faible (6 caractères minimum).";
   if (/rate limit|too many/i.test(msg)) return "Trop de demandes. Réessaie dans quelques minutes.";
   if (/fetch|network/i.test(msg)) return "Pas de connexion internet.";
   return msg;

@@ -129,14 +129,17 @@ export async function resolveConflict(keep) {
 }
 
 // ---------- auth ----------
-export async function sendCode(email) {
-  const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+// Email + password, with "Confirm email" disabled in Supabase: no email is ever sent,
+// which avoids the custom-SMTP requirement for editing email templates.
+export async function signIn(email, password) {
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
 }
 
-export async function verifyCode(email, token) {
-  const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
+export async function signUp(email, password) {
+  const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
+  if (!data.session) throw new Error("EMAIL_CONFIRMATION_REQUIRED");
 }
 
 export async function signOut() {
