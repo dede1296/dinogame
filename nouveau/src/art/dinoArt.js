@@ -12,9 +12,9 @@ import { makePalette } from "./palette.js";
 import { tube, pt, along, seeded } from "./geometry.js";
 
 const OUTLINE = 3.2;
-const PREDATORS = new Set(["tyrant", "raptor", "spino", "marine"]);
-const BIPED = new Set(["tyrant", "raptor", "spino", "hadrosaur"]);
-const QUAD = new Set(["sauropod", "ceratopsian", "armored"]);
+export const PREDATORS = new Set(["tyrant", "raptor", "spino", "marine"]);
+export const BIPED = new Set(["tyrant", "raptor", "spino", "hadrosaur"]);
+export const QUAD = new Set(["sauropod", "ceratopsian", "armored"]);
 
 // ---------------------------------------------------------------- body
 // One torso silhouette per posture. `top` approximates the back line as an ellipse
@@ -160,7 +160,7 @@ const BLOOD = "#7d0c0c";
 const BLOOD_LIGHT = "#b81c1c";
 
 // A carnivore mouth (sharp teeth donor) gets a gaping jaw, gums, jagged teeth and blood.
-const isFierce = (teethDino) => (teethDino.teeth.sharp || 0) >= 7 && (teethDino.teeth.count || 0) > 0;
+export const isFierce = (teethDino) => (teethDino.teeth.sharp || 0) >= 7 && (teethDino.teeth.count || 0) > 0;
 
 function bloodDrop(x, y, size, rand) {
   const len = size * (1.5 + rand() * 2.5);
@@ -516,7 +516,7 @@ let uid = 0;
 
 // Irregular pebbly reptile scales, as a seamless tile: each pebble is also drawn
 // shifted by one tile in every direction so edges wrap cleanly.
-const PEBBLE_TILE = 40;
+export const PEBBLE_TILE = 40;
 const PEBBLES = (() => {
   const rand = seeded(4242);
   const list = [];
@@ -525,7 +525,7 @@ const PEBBLES = (() => {
   }
   return list;
 })();
-function pebbleTile(p) {
+export function pebbleTile(p) {
   let out = "";
   for (const { x, y, rx, ry, a } of PEBBLES) {
     for (const dx of [-PEBBLE_TILE, 0, PEBBLE_TILE]) {

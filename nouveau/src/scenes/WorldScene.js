@@ -14,6 +14,7 @@ import { SCRIPTS, STARTERS, speciesIndex } from "../story/scripts.js";
 import { ENCOUNTERS, ENCOUNTER_RATE } from "../data/encounters.js";
 
 const CHUNK = 12;
+const FOLLOWER_SCALE = 0.25; // px per art unit
 const STEP_MS = 190;
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const OPPOSITE = { up: "down", down: "up", left: "right", right: "left" };
@@ -275,16 +276,30 @@ export class WorldScene extends Phaser.Scene {
   async createFollower() {
     const d = state.party[0];
     if (!d || this.follower) return;
-    const key = await dinoTexture(this, d.build, 58);
-    if (!key || !this.scene.isActive()) return;
+    // Side, front and back views at the same scale; the follower turns to face its path.
+    const [side, front, backView] = await Promise.all(["side", "front", "back"].map((view) => dinoTexture(this, d.build, 0, { view, unitScale: FOLLOWER_SCALE })));
+    if (!side || !this.scene.isActive() || this.follower) return;
+    this.followerKeys = { side, front: front || side, back: backView || side };
+    const key = this.dir === "up" ? this.followerKeys.back : this.dir === "down" ? this.followerKeys.front : side;
     const a = anchors[key];
     const back = DELTA[OPPOSITE[this.dir]];
     this.fx = this.px + back[0];
     this.fy = this.py + back[1];
     if (this.blocked(this.fx, this.fy, true)) { this.fx = this.px; this.fy = this.py; }
-    this.follower = this.add.image(this.fx * TILE + TILE / 2, (this.fy + 1) * TILE - 4, key).setOrigin(a.x, a.y).setScale(0.9);
+    this.follower = this.add.image(this.fx * TILE + TILE / 2, (this.fy + 1) * TILE - 4, key).setOrigin(a.x, a.y);
     this.follower.setDepth(this.follower.y - 2);
-    this.followerBreath = this.tweens.add({ targets: this.follower, scaleY: 0.925, duration: 1100, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+    this.followerBreath = this.tweens.add({ targets: this.follower, scaleY: 1.03, duration: 1100, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+  }
+
+  faceFollower(dx, dy) {
+    if (!this.followerKeys || (!dx && !dy)) return;
+    const k = dy > 0 ? "front" : dy < 0 ? "back" : "side";
+    const key = this.followerKeys[k];
+    if (this.follower.texture.key !== key) {
+      const a = anchors[key];
+      this.follower.setTexture(key).setOrigin(a.x, a.y);
+    }
+    this.follower.setFlipX(k === "side" && dx < 0);
   }
 
   blocked(x, y, ignoreEntities = false) {
@@ -336,7 +351,7 @@ export class WorldScene extends Phaser.Scene {
     });
     if (this.follower) {
       const fx = prev.x, fy = prev.y;
-      if (fx !== this.fx) this.follower.setFlipX(fx < this.fx);
+      this.faceFollower(fx - this.fx, fy - this.fy);
       this.fx = fx; this.fy = fy;
       this.tweens.add({
         targets: this.follower, x: fx * TILE + TILE / 2, y: (fy + 1) * TILE - 4, duration: STEP_MS,

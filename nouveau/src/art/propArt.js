@@ -40,7 +40,7 @@ const TREE_PALETTES = [
 
 export function tree(variant = 0) {
   const [outline, dark, mid, light, glow] = TREE_PALETTES[variant % TREE_PALETTES.length];
-  const W = 124, H = 150, cx = 62, base = 140;
+  const W = 124, H = 172, cx = 62, base = 162;
   const canvas = make(W, H, (ctx) => {
     groundShadow(ctx, cx + 6, base - 2, 44, 14, 0.38);
     // Trunk with bark and roots.

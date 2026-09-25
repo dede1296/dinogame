@@ -4,6 +4,7 @@ import * as props from "../art/propArt.js";
 import { building, furniture } from "../art/buildingArt.js";
 import { characterSheet, FRAME_W, FRAME_H, DIRS } from "../art/characterArt.js";
 import { buildDino } from "../art/dinoArt.js";
+import { buildDinoView } from "../art/dinoViews.js";
 
 // Anchor (origin) of every generated texture, so sprites can be placed by their base.
 export const anchors = {};
@@ -69,11 +70,17 @@ export function characterTexture(scene, look) {
 }
 
 // Rasterizes a dino (vector art) at a given height; resolves with the texture key.
-export function dinoTexture(scene, build, height, options = {}) {
-  const key = `dino-${Object.values(build).join("-")}-${height}-${options.pattern || "none"}`;
+// `size` is the image height in px; with options.unitScale a fixed px-per-unit scale
+// is used instead, so the side/front/back views of one dino match in size.
+// options.view: "side" (default), "front" or "back".
+export function dinoTexture(scene, build, size, options = {}) {
+  const view = options.view || "side";
+  const key = `dino-${view}-${Object.values(build).join("-")}-${options.unitScale || size}-${options.pattern || "none"}`;
   if (scene.textures.exists(key)) return Promise.resolve(key);
-  const dino = buildDino(build, { ...options, id: key.replace(/[^\w]/g, "") });
+  const id = key.replace(/[^\w]/g, "");
+  const dino = view === "side" ? buildDino(build, { ...options, id }) : buildDinoView(build, view, { ...options, id });
   const [, , vw, vh] = dino.viewBox;
+  const height = options.unitScale ? Math.round(vh * options.unitScale) : size;
   const width = Math.round((vw / vh) * height);
   const svg = dino.svg.replace("<svg ", `<svg width="${width}" height="${height}" `);
   return new Promise((resolve) => {
