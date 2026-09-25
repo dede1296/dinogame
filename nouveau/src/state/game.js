@@ -15,6 +15,8 @@ function fresh() {
     fossils: [],    // fossil parts found
     journal: [],    // page numbers found
     party: [],      // dinos: { species, nickname, level, xp }
+    // Where Chloé wakes up after losing a battle: the last place she rested.
+    respawn: { map: "cabinet", x: 6, y: 5, dir: "up", name: "au Cabinet" },
     money: 0,
     playTime: 0,
     savedAt: null,

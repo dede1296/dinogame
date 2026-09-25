@@ -71,6 +71,11 @@ export class WorldScene extends Phaser.Scene {
     state.map = this.mapId;
     this.cameras.main.fadeIn(350, 0, 0, 0);
     if (this.newGame) setTimeout(() => this.runScript("intro"), 700);
+    if (state.pendingToast) {
+      const t = state.pendingToast;
+      delete state.pendingToast;
+      setTimeout(() => hud.toast(t), 700);
+    }
   }
 
   // ---------------------------------------------------------------- ground
@@ -191,6 +196,7 @@ export class WorldScene extends Phaser.Scene {
           ent.sprite = this.add.image(x, y, key).setOrigin(a.x, a.y).setDepth(y);
           if (ent.solid) for (let j = ent.y; j < ent.y + h; j++) for (let i = ent.x; i < ent.x + w; i++) this.occupy(i, j, ent);
           if (ent.kind === "pedestal" && flag("starter") && state.flags.starterIndex === ent.starter) ent.sprite.setTint(0x999999);
+          if (ent.kind === "campfire") this.lightFire(ent.x * TILE + TILE / 2, y);
           break;
         }
         case "sign":
@@ -448,7 +454,7 @@ export class WorldScene extends Phaser.Scene {
         return this.pickUp(e, true);
       case "decor":
         if (e.kind === "pedestal") return this.runScript("starter", e.starter);
-        if (e.script) return this.runScript(e.script);
+        if (e.script) return this.runScript(e.script, e.arg);
         if (e.text) return this.runLines([e.text]);
         return;
       default:
@@ -518,6 +524,8 @@ export class WorldScene extends Phaser.Scene {
       setFlag,
       save: () => save(),
       heal: () => { state.party.forEach(heal); },
+      // Rest point: after a defeat, Chloé wakes up here (see resumeFromBattle).
+      setRespawn: (point) => { state.respawn = { map: this.mapId, ...point }; },
       give: (id, qty = 1) => addItem(id, qty),
       giveStarter: (i) => this.giveStarter(i),
       pushBack: () => this.pushBack(),
@@ -591,13 +599,23 @@ export class WorldScene extends Phaser.Scene {
     hud.setBusy(false);
     this.scriptRunning = false;
     if (result === "lose") {
-      // Like a Pokémon Center: wake up at the Cabinet, team healed.
+      // Like a Pokémon Center: wake up at the last rest point, team healed.
+      // Nothing else is lost (levels, items, story progress).
+      const { map, x, y, dir, name } = state.respawn;
       state.party.forEach(heal);
-      save();
-      this.warp({ map: "cabinet", x: 6, y: 5, dir: "up" });
+      state.pendingToast = `Tu te réveilles ${name}. Tes dinos se sont reposés.`;
+      this.warp({ map, x, y, dir });
       return;
     }
     this.cameras.main.fadeIn(300, 0, 0, 0);
+  }
+
+  lightFire(x, y) {
+    const glow = this.add.circle(x, y - 14, 46, 0xffa040, 0.16).setDepth(y + 1).setBlendMode(Phaser.BlendModes.ADD);
+    const fl = propTexture(this, "flame");
+    const flame = this.add.image(x, y - 10, fl).setOrigin(anchors[fl].x, anchors[fl].y).setDepth(y + 2);
+    this.tweens.add({ targets: flame, scaleY: 1.18, scaleX: 0.9, duration: 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+    this.tweens.add({ targets: glow, alpha: 0.26, scale: 1.08, duration: 420, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
   }
 
   // ---------------------------------------------------------------- camera

@@ -80,6 +80,7 @@ export const ambreluneSud = {
     { type: "building", kind: "hut", x: 11, y: 57, w: 4, h: 3 },
     { type: "building", kind: "hut", x: 30, y: 57, w: 4, h: 3 },
     { type: "decor", kind: "boat", x: 21, y: 72, w: 4, h: 2, solid: true },
+    { type: "decor", kind: "campfire", x: 16, y: 25, w: 1, h: 1, solid: true, script: "feuDeCamp", arg: { x: 16, y: 26, dir: "up", name: "près du feu de camp des Plaines" } },
     { type: "decor", kind: "skull", x: 25, y: 15, w: 3, h: 2, solid: true, script: "crane" },
     { type: "trigger", x: 20, y: 42, w: 5, h: 1, script: "sortieVillage" },
 

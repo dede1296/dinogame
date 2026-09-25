@@ -35,6 +35,8 @@ export function propTexture(scene, kind, variant = 0) {
     boat: () => props.boat(),
     orb: () => props.itemOrb(),
     sparkle: () => props.sparkle(),
+    campfire: () => props.campfire(),
+    flame: () => props.flame(),
   }[kind];
   return addCanvas(scene, key, factory());
 }

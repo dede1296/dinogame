@@ -25,7 +25,7 @@ const CSS = `
 .choices { position: absolute; right: max(12px, calc(50% - 280px)); bottom: calc(300px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 6px; pointer-events: auto; }
 .choices button { min-width: 170px; padding: 11px 16px; border-radius: 12px; text-align: left; background: rgba(34,30,20,0.96); border: 2px solid #6b5530; font-size: 16px; }
 .choices button:hover, .choices button:focus { border-color: #f2c14e; outline: none; }
-.toast { position: absolute; left: 50%; top: calc(70px + env(safe-area-inset-top)); transform: translateX(-50%); padding: 10px 18px; border-radius: 12px; background: rgba(20,18,12,0.92); border: 2px solid #c9953a; font-weight: 700; animation: toast 2.6s ease forwards; white-space: nowrap; }
+.toast { position: absolute; left: 50%; top: calc(70px + env(safe-area-inset-top)); transform: translateX(-50%); padding: 10px 18px; border-radius: 12px; background: rgba(20,18,12,0.92); border: 2px solid #c9953a; font-weight: 700; animation: toast 2.6s ease forwards; width: max-content; max-width: calc(100vw - 32px); text-align: center; line-height: 1.35; }
 @keyframes toast { 0% { opacity: 0; transform: translate(-50%, -10px); } 10%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 .banner { position: absolute; left: 16px; top: calc(14px + env(safe-area-inset-top)); padding: 8px 16px 8px 12px; border-left: 4px solid #f2c14e; background: linear-gradient(90deg, rgba(20,18,12,0.85), rgba(20,18,12,0)); font-weight: 800; font-size: 18px; letter-spacing: 0.5px; animation: banner 3.2s ease forwards; }
 .banner small { display: block; font-weight: 500; font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; }

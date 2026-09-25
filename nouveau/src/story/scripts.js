@@ -55,7 +55,7 @@ export const SCRIPTS = {
     await say("Randonneur", "Astuce : appuie sur A face à un endroit suspect. On ne trouve que ce qu'on cherche !");
   },
 
-  async roc({ say, flag, setFlag, heal, give }) {
+  async roc({ say, flag, setFlag, heal, give, setRespawn }) {
     if (!flag("met_roc")) {
       await say(ROC, "Chloé ! Enfin… Tu as bien grandi depuis la photo qu'Hélène gardait sur son bureau.");
       await say(ROC, "Je suis Anselme Roc. J'ai travaillé trente ans aux côtés de ta grand-mère.");
@@ -85,6 +85,7 @@ export const SCRIPTS = {
       return;
     }
     heal();
+    setRespawn({ x: 6, y: 5, dir: "up", name: "au Cabinet" });
     await say(ROC, "Laisse-moi examiner ton équipe… Voilà, tes dinos sont en pleine forme !");
     await say(ROC, "Le tronc qui barre la route de la forêt ? Il faudra un dino très fort pour le déplacer. Continue d'explorer les Plaines en attendant.");
   },
@@ -118,13 +119,26 @@ export const SCRIPTS = {
     }
   },
 
-  async lit({ say, choose, heal, save }) {
+  async lit({ say, choose, heal, save, setRespawn }) {
     await say(null, "Le lit d'Hélène. Les draps sentent encore la lavande.");
     const c = await choose(["Se reposer et sauvegarder", "Non"]);
     if (c !== 0) return;
     heal();
+    setRespawn({ x: 1, y: 3, dir: "left", name: "dans le lit d'Hélène" });
     save();
     await say(null, "Tu te reposes un moment. Tes dinos sont en pleine forme. Partie sauvegardée.");
+  },
+
+  // Campfires: rest points in each region. After a defeat, Chloé wakes up at the last one used.
+  async feuDeCamp({ say, choose, heal, save, setRespawn }, spot) {
+    await say(null, "Un feu de camp crépite doucement. Quelqu'un l'entretient pour les voyageurs.");
+    const c = await choose(["Se reposer et sauvegarder", "Repartir"]);
+    if (c !== 0) return;
+    heal();
+    setRespawn(spot);
+    save();
+    await say(null, "Tu te réchauffes près des flammes. Tes dinos sont en pleine forme. Partie sauvegardée.");
+    await say(null, "Si tu perds un combat, tu reviendras ici.");
   },
 
   // Trigger at the northern edge of the village.

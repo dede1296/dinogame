@@ -444,3 +444,48 @@ export function butterfly(color = "#f2c94c") {
     ctx.fillRect(5.5, 2, 1, 7);
   });
 }
+
+// Campfire: stone ring and crossed logs (the flame is a separate, animated sprite).
+export function campfire() {
+  const W = 64, H = 56;
+  const canvas = make(W, H, (ctx) => {
+    groundShadow(ctx, 32, 44, 28, 9, 0.35);
+    ctx.fillStyle = "#2a1c10";
+    ctx.beginPath(); ctx.ellipse(32, 42, 18, 7, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.lineCap = "round";
+    for (const [x1, y1, x2, y2] of [[16, 46, 46, 36], [18, 36, 48, 46], [24, 48, 40, 34]]) {
+      ctx.strokeStyle = "#3b2414"; ctx.lineWidth = 9;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      ctx.strokeStyle = "#7a5230"; ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    }
+    circle(ctx, 32, 41, 6, "#e0672a");
+    circle(ctx, 32, 41, 3, "#ffd36a");
+    for (let i = 0; i < 9; i++) {
+      const a = (i / 9) * Math.PI * 2;
+      const x = 32 + Math.cos(a) * 22, y = 42 + Math.sin(a) * 9;
+      ctx.fillStyle = i % 2 ? "#8d877a" : "#a9a392";
+      ctx.strokeStyle = "#4b473e"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(x, y, 6, 4.5, a, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+  });
+  return { canvas, ax: 8, ay: 52 };
+}
+
+export function flame() {
+  const W = 36, H = 44;
+  const canvas = make(W, H, (ctx) => {
+    const tongue = (w, h, fill) => {
+      ctx.fillStyle = fill;
+      ctx.beginPath();
+      ctx.moveTo(18 - w, 42);
+      ctx.bezierCurveTo(18 - w * 1.2, 42 - h * 0.5, 18 - w * 0.2, 42 - h * 0.7, 18, 42 - h);
+      ctx.bezierCurveTo(18 + w * 0.4, 42 - h * 0.6, 18 + w * 1.2, 42 - h * 0.45, 18 + w, 42);
+      ctx.closePath(); ctx.fill();
+    };
+    tongue(15, 40, "#d9481e");
+    tongue(11, 30, "#f28a2a");
+    tongue(6, 18, "#ffe07a");
+  });
+  return { canvas, ax: 18, ay: 42 };
+}
