@@ -51,6 +51,11 @@
     ];
 
     const grid = document.getElementById("grid");
+    // ?grand : quelques dinos en grand pour juger les détails.
+    if (location.search.includes("grand")) {
+      document.head.insertAdjacentHTML("beforeend", "<style>.grid{grid-template-columns:1fr 1fr}.card svg{height:430px}</style>");
+      samples.splice(0, samples.length, samples[0], samples[2], samples[10], samples[11]);
+    }
     for (const [label, build] of samples) {
       const dino = buildDino(build, { pattern: label.startsWith("Hybride : Tri") ? "stripes" : "none" });
       const card = document.createElement("div");

@@ -99,9 +99,9 @@ const HEADS = {
     nostril: [64, -12],
     beak: "M 68,-10 C 78,-8 88,0 86,6 C 80,10 72,10 66,8 Z",
     extras: (p) => `
-      <path d="M 26,-28 C 30,-52 44,-66 62,-70 C 52,-58 44,-44 40,-28 Z" fill="${p.claw}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M 26,-28 C 30,-52 44,-66 62,-70 C 52,-58 44,-44 40,-28 Z" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>
       <path d="M 16,-26 C 16,-44 24,-56 36,-60 C 30,-50 28,-38 28,-26 Z" fill="${p.clawShade}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 60,-18 C 62,-30 68,-36 76,-38 C 72,-30 70,-22 70,-14 Z" fill="${p.claw}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>`,
+      <path d="M 60,-18 C 62,-30 68,-36 76,-38 C 72,-30 70,-22 70,-14 Z" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>`,
   },
   armored: {
     neck: { len: 16, angle: -8, w0: 46, w1: 40 },
@@ -112,8 +112,8 @@ const HEADS = {
     nostril: [62, -14],
     extras: (p) => `
       ${[6, 22, 38].map((x) => `<ellipse cx="${x}" cy="${-27 + Math.abs(x - 22) * 0.12}" rx="8" ry="5" fill="${p.accent}" stroke="${p.outline}" stroke-width="2.5"/>`).join("")}
-      <path d="M -4,-18 L -20,-26 L -8,-8 Z" fill="${p.claw}" stroke="${p.outline}" stroke-width="2.5" stroke-linejoin="round"/>
-      <path d="M -2,2 L -18,10 L -4,10 Z" fill="${p.claw}" stroke="${p.outline}" stroke-width="2.5" stroke-linejoin="round"/>`,
+      <path d="M -4,-18 L -20,-26 L -8,-8 Z" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M -2,2 L -18,10 L -4,10 Z" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="2.5" stroke-linejoin="round"/>`,
   },
   hadrosaur: {
     neck: { len: 50, angle: -50, w0: 40, w1: 30 },
@@ -168,7 +168,7 @@ function teethMarkup(head, teeth, p) {
     d += `M ${x - w / 2},${y} L ${x},${y + h} L ${x + w / 2},${y} Z `;
     if (teeth.sharp > 5 && i % 2) d += `M ${x - w / 2},${y + 2} L ${x},${y + 2 - h * 0.7} L ${x + w / 2},${y + 2} Z `;
   }
-  return `<path d="${d}" fill="${p.tooth}" stroke="${p.outline}" stroke-width="1.5" stroke-linejoin="round"/>`;
+  return `<path d="${d}" fill="${p.toothFill}" stroke="${p.outline}" stroke-width="1.5" stroke-linejoin="round"/>`;
 }
 
 function eyeMarkup(head, family, p, id) {
@@ -184,6 +184,9 @@ function eyeMarkup(head, family, p, id) {
     <circle cx="${x + 1}" cy="${y}" r="${r * 0.72}" fill="${iris}"/>
     ${pupil}
     <circle cx="${x - r * 0.25}" cy="${y - r * 0.35}" r="${r * 0.25}" fill="#fff"/>
+    <circle cx="${x + r * 0.35}" cy="${y + r * 0.35}" r="${r * 0.12}" fill="#fff" opacity="0.7"/>
+    <path d="M ${x - r - 1.5},${y - (predator ? r * 0.15 : r * 0.45)} Q ${x},${y - r * 1.75} ${x + r + 1.5},${y - (predator ? r * 0.05 : r * 0.45)} Q ${x},${y - (predator ? r * 0.55 : r * 1.05)} ${x - r - 1.5},${y - (predator ? r * 0.15 : r * 0.45)} Z" fill="${p.shade}" stroke="${p.outline}" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M ${x - r * 0.9},${y + r * 1.05} Q ${x},${y + r * 1.45} ${x + r * 0.9},${y + r * 1.05}" fill="none" stroke="${p.shade}" stroke-width="1.6" opacity="0.8"/>
     ${head.brow ? `<path d="${head.brow}" fill="none" stroke="${p.outline}" stroke-width="4" stroke-linecap="round"/>` : ""}`;
 }
 
@@ -224,7 +227,7 @@ function headPart(headDino, teethDino, p, id) {
     <path d="M ${head.mouth[0]},${head.mouth[2]} L ${head.mouth[1]},${head.mouth[2] - 1}" stroke="${p.mouth}" stroke-width="5" stroke-linecap="round"/>
     ${teethMarkup(head, teethDino.teeth, p)}
     <path d="${head.skull}" fill="url(#${id}-body)" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
-    ${head.beak ? `<path d="${head.beak}" fill="${p.claw}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>` : ""}
+    ${head.beak ? `<path d="${head.beak}" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>` : ""}
     ${head.extras(p)}
     <circle cx="${head.nostril[0]}" cy="${head.nostril[1]}" r="2.2" fill="${p.outline}"/>
     ${eyeMarkup(head, family, p, id)}
@@ -252,7 +255,7 @@ function tailPart(tailDino, backDino, p, id) {
     ornament = [0, 1, 2, 3].map((i) => {
       const q = along(pts, 0.72 + i * 0.07);
       const dir = i % 2 ? 1 : -1;
-      return `<path d="M ${q.x - 5},${q.y} L ${q.x - 14},${q.y + dir * 34} L ${q.x + 5},${q.y} Z" fill="${p.claw}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>`;
+      return `<path d="M ${q.x - 5},${q.y} L ${q.x - 14},${q.y + dir * 34} L ${q.x + 5},${q.y} Z" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="3" stroke-linejoin="round"/>`;
     }).join("");
   } else if (family === "armored" && tailDino.tail.power >= 9) {
     ornament = `<path d="M ${tip[0] + 12},${tip[1] - 16} C ${tip[0] - 14},${tip[1] - 24} ${tip[0] - 26},${tip[1] - 8} ${tip[0] - 22},${tip[1] + 4} C ${tip[0] - 18},${tip[1] + 20} ${tip[0] + 6},${tip[1] + 22} ${tip[0] + 14},${tip[1] + 12} Z" fill="url(#${id}-accent)" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
@@ -290,7 +293,7 @@ function claws(x, y, n, len, p, up = false) {
       ? `M ${cx},${y} q 6,-${len} ${len * 0.9},-${len * 0.4} q -4,${len * 0.2} -${len * 0.5},${len * 0.6} Z `
       : `M ${cx},${y - 3} q ${len},0 ${len * 1.1},${len * 0.6} q -${len * 0.6},-${len * 0.1} -${len * 1.1},${len * 0.1} Z `;
   }
-  return `<path d="${d}" fill="${p.claw}" stroke="${p.outline}" stroke-width="2" stroke-linejoin="round"/>`;
+  return `<path d="${d}" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="2" stroke-linejoin="round"/>`;
 }
 
 // Hind leg, pivot at the hip. Returns markup and its height (hip to ground).
@@ -304,7 +307,7 @@ function hindLeg(dino, posture, p, id, far) {
       h: 60,
       svg: `<path d="${tube([[0, -8], [0, 22], [-2, 50]], [w + 10, w, w * 0.9])}" fill="${fill}" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
         <path d="M ${-w * 0.5},52 C ${-w * 0.55},62 ${w * 0.5},62 ${w * 0.5},52 Z" fill="${fill}" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
-        ${[0, 1, 2].map((i) => `<ellipse cx="${-w * 0.25 + i * w * 0.28}" cy="58" rx="4.5" ry="3.5" fill="${p.claw}" stroke="${p.outline}" stroke-width="1.8"/>`).join("")}`,
+        ${[0, 1, 2].map((i) => `<ellipse cx="${-w * 0.25 + i * w * 0.28}" cy="58" rx="4.5" ry="3.5" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="1.8"/>`).join("")}`,
     };
   }
   if (posture === "flyer") {
@@ -328,7 +331,7 @@ function hindLeg(dino, posture, p, id, far) {
     <path d="${tube([[-4, 38], [4, 60], [2, 76]], slender ? [14, 11, 10] : [22, 16, 14])}" fill="${fill}" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
     <path d="M -10,74 C -12,82 -8,86 0,86 L 26,86 C 34,86 34,78 26,76 L 8,72 Z" fill="${fill}" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
     ${claws(18, 82, 2, 9, p)}
-    ${slender ? `<path d="M 4,74 C -2,62 8,54 18,60 C 12,60 8,66 10,74 Z" fill="${p.claw}" stroke="${p.outline}" stroke-width="2.2" stroke-linejoin="round"/>` : ""}`;
+    ${slender ? `<path d="M 4,74 C -2,62 8,54 18,60 C 12,60 8,66 10,74 Z" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="2.2" stroke-linejoin="round"/>` : ""}`;
   return { h: 86, svg };
 }
 
@@ -342,7 +345,7 @@ function frontLimb(dino, posture, p, id, far, height) {
     const h = height - 2;
     return `<path d="${tube([[0, -6], [2, h * 0.45], [0, h - 8]], [w + 6, w, w * 0.9])}" fill="${fill}" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
       <path d="M ${-w * 0.5},${h - 6} C ${-w * 0.55},${h + 4} ${w * 0.5},${h + 4} ${w * 0.5},${h - 6} Z" fill="${fill}" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
-      ${[0, 1, 2].map((i) => `<ellipse cx="${-w * 0.25 + i * w * 0.28}" cy="${h}" rx="4" ry="3.2" fill="${p.claw}" stroke="${p.outline}" stroke-width="1.8"/>`).join("")}`;
+      ${[0, 1, 2].map((i) => `<ellipse cx="${-w * 0.25 + i * w * 0.28}" cy="${h}" rx="4" ry="3.2" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="1.8"/>`).join("")}`;
   }
   if (posture === "flyer") {
     // Raised membrane wing: arm up to the wrist, long finger sweeping back to the tip,
@@ -394,7 +397,7 @@ function dorsalPart(backDino, p, id, rand, backY) {
     const bumps = [-64, -44, -24, -4, 16, 36, 56].map((x) => {
       const y = backY(x) + 6;
       return `<path d="M ${x - 9},${y} C ${x - 9},${y - 12} ${x + 9},${y - 12} ${x + 9},${y} Z" fill="url(#${id}-accent)" stroke="${p.outline}" stroke-width="3"/>
-        ${spikes >= 6 ? `<path d="M ${x - 4},${y - 8} L ${x},${y - 20} L ${x + 4},${y - 8} Z" fill="${p.claw}" stroke="${p.outline}" stroke-width="2.2" stroke-linejoin="round"/>` : ""}`;
+        ${spikes >= 6 ? `<path d="M ${x - 4},${y - 8} L ${x},${y - 20} L ${x + 4},${y - 8} Z" fill="${p.clawFill}" stroke="${p.outline}" stroke-width="2.2" stroke-linejoin="round"/>` : ""}`;
     });
     return { svg: bumps.join(""), height: 20 };
   }
@@ -452,6 +455,16 @@ function postureOf(backLegsDino) {
 
 let uid = 0;
 
+// Adds scales, volume shading and skin grain on top of every skin-colored shape
+// (fills using the body/limb/far gradients) of a part.
+const SKIN_FILL = /<path d="([^"]+)" fill="url\(#([\w-]+)-(body|limb|far)\)"([^>]*)\/>/g;
+function skin(svg, id) {
+  return svg.replace(SKIN_FILL, (match, d) => `${match}
+    <path d="${d}" fill="url(#${id}-scales)" mask="url(#${id}-fade)"/>
+    <path d="${d}" fill="url(#${id}-ao)"/>
+    <path d="${d}" fill="#000" filter="url(#${id}-grain)" opacity="0.2"/>`);
+}
+
 /**
  * Builds the vector art for a hybrid.
  * @param build { head, teeth, frontLegs, backLegs, back, tail, color } — indices into DINOS
@@ -465,6 +478,8 @@ export function buildDino(build, options = {}) {
   const headD = D("head"), teethD = D("teeth"), frontD = D("frontLegs"), backLegsD = D("backLegs");
   const backD = D("back"), tailD = D("tail"), colorD = D("color");
   const p = makePalette(options.customColor || colorD.color, options.accentColor);
+  p.clawFill = `url(#${id}-claw)`;
+  p.toothFill = `url(#${id}-tooth)`;
   const rand = seeded(Object.values(build).reduce((a, v, i) => a * 31 + (v || 0) * (i + 7), 17));
   const posture = postureOf(backLegsD);
 
@@ -482,14 +497,38 @@ export function buildDino(build, options = {}) {
   const frontFar = frontLimb(frontD, posture, p, id, true, shoulderToGround);
 
   const [bcx, bcy, brx, bry] = B.top;
+  // Natural mottling: darker blotches concentrated on the back.
+  let mottle = "";
+  for (let i = 0; i < 14; i++) {
+    const x = bcx - brx * 0.8 + rand() * brx * 1.6;
+    const y = bcy - bry * (0.35 + rand() * 0.55);
+    mottle += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${(3 + rand() * 7).toFixed(1)}" ry="${(2 + rand() * 4).toFixed(1)}" fill="${p.deep}" opacity="${(0.12 + rand() * 0.14).toFixed(2)}"/>`;
+  }
+  // Belly plates: transverse bands following the underside.
+  let plates = "";
+  for (let k = -0.62; k <= 0.66; k += 0.11) {
+    const x = bcx + 12 + k * brx;
+    const y = bcy + bry * (0.5 + 0.1 * Math.cos(k * 2.2));
+    plates += `<path d="M ${(x - 2).toFixed(1)},${(y - 4).toFixed(1)} Q ${(x + 3).toFixed(1)},${(y + bry * 0.3).toFixed(1)} ${(x - 1).toFixed(1)},${(y + bry * 0.6).toFixed(1)}" stroke="${p.bellyShade}" stroke-width="1.6" fill="none" opacity="0.7"/>`;
+  }
+  const [hx, hy] = joints.hip, [sx, sy] = joints.shoulder;
   const body = `
     <path d="${B.path}" fill="url(#${id}-body)" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>
     <g clip-path="url(#${id}-clip)">
+      <ellipse cx="${bcx}" cy="${bcy - bry * 0.75}" rx="${brx * 0.95}" ry="${bry * 0.45}" fill="${p.shade}" opacity="0.32"/>
+      ${mottle}
       <ellipse cx="${bcx + 12}" cy="${bcy + bry * 0.8}" rx="${brx * 0.9}" ry="${bry * 0.52}" fill="url(#${id}-belly)"/>
-      ${[-0.5, -0.25, 0, 0.25, 0.5].map((k) => { const x = bcx + 12 + k * brx; const y = bcy + bry * 0.62; return `<path d="M ${x - 8},${y} Q ${x},${y + 6} ${x + 8},${y}" stroke="${p.bellyShade}" stroke-width="2" fill="none" opacity="0.6"/>`; }).join("")}
+      ${plates}
+      <path d="${B.path}" fill="url(#${id}-scales)" mask="url(#${id}-fade)"/>
+      <ellipse cx="${hx}" cy="${hy - 4}" rx="34" ry="30" fill="url(#${id}-joint)"/>
+      <ellipse cx="${sx}" cy="${sy}" rx="26" ry="24" fill="url(#${id}-joint)"/>
+      <path d="M ${hx + 22},${hy - 26} q 6,10 2,22 M ${hx + 28},${hy - 20} q 5,8 1,16" stroke="${p.deep}" stroke-width="1.8" fill="none" opacity="0.45" stroke-linecap="round"/>
+      <path d="${B.path}" fill="url(#${id}-ao)"/>
+      <path d="${B.path}" fill="#000" filter="url(#${id}-grain)" opacity="0.22"/>
     </g>
     ${patternMarkup(options.pattern, p, id, rand)}
-    <ellipse cx="${bcx - 8}" cy="${bcy - bry * 0.66}" rx="${brx * 0.5}" ry="${bry * 0.18}" fill="#fff" opacity="0.16"/>
+    <ellipse cx="${bcx - 8}" cy="${bcy - bry * 0.66}" rx="${brx * 0.5}" ry="${bry * 0.16}" fill="#fff" opacity="0.18"/>
+    <ellipse cx="${bcx - 22}" cy="${bcy - bry * 0.74}" rx="${brx * 0.2}" ry="${bry * 0.06}" fill="#fff" opacity="0.25"/>
     <path d="${B.path}" fill="none" stroke="${p.outline}" stroke-width="${OUTLINE}" stroke-linejoin="round"/>`;
 
   const defs = `
@@ -511,17 +550,42 @@ export function buildDino(build, options = {}) {
     <linearGradient id="${id}-wing" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="${p.accentLight}" stop-opacity="0.95"/><stop offset="1" stop-color="${p.shade}" stop-opacity="0.95"/>
     </linearGradient>
-    <clipPath id="${id}-clip"><path d="${B.path}"/></clipPath>`;
+    <clipPath id="${id}-clip"><path d="${B.path}"/></clipPath>
+    <pattern id="${id}-scales" width="16" height="12" patternUnits="userSpaceOnUse">
+      <path d="M 0,12 a 8,7 0 0 1 16,0 M -8,6 a 8,7 0 0 1 16,0 M 8,6 a 8,7 0 0 1 16,0" fill="none" stroke="${p.deep}" stroke-width="1.4" opacity="0.32"/>
+      <path d="M 3,10.5 a 5,4.5 0 0 1 10,0 M -5,4.5 a 5,4.5 0 0 1 10,0 M 11,4.5 a 5,4.5 0 0 1 10,0" fill="none" stroke="#fff" stroke-width="1" opacity="0.14"/>
+    </pattern>
+    <linearGradient id="${id}-fadegrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff"/><stop offset="0.45" stop-color="#fff"/><stop offset="0.8" stop-color="#000"/>
+    </linearGradient>
+    <mask id="${id}-fade" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="url(#${id}-fadegrad)"/></mask>
+    <linearGradient id="${id}-ao" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="${id}-joint">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="0.7" stop-color="#000" stop-opacity="0.06"/><stop offset="1" stop-color="#000" stop-opacity="0.2"/>
+    </radialGradient>
+    <linearGradient id="${id}-claw" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffaf0"/><stop offset="0.6" stop-color="${p.claw}"/><stop offset="1" stop-color="${p.clawShade}"/>
+    </linearGradient>
+    <linearGradient id="${id}-tooth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffdf6"/><stop offset="1" stop-color="#e4d6ae"/>
+    </linearGradient>
+    <filter id="${id}-grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.22" numOctaves="3" seed="${Math.floor(rand() * 999)}" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.25" result="speckle"/>
+      <feComposite in="speckle" in2="SourceAlpha" operator="in"/>
+    </filter>`;
 
   const parts = {
     dorsal: { svg: dorsal.svg, at: [0, 0] },
-    hindFar: { svg: hindFar.svg, at: [joints.hip[0] + 16, joints.hip[1] - 6] },
-    frontFar: { svg: frontFar, at: [joints.shoulder[0] + 14, joints.shoulder[1] - 6] },
-    tail: { svg: tail.svg, at: joints.tail },
+    hindFar: { svg: skin(hindFar.svg, id), at: [joints.hip[0] + 16, joints.hip[1] - 6] },
+    frontFar: { svg: skin(frontFar, id), at: [joints.shoulder[0] + 14, joints.shoulder[1] - 6] },
+    tail: { svg: skin(tail.svg, id), at: joints.tail },
     body: { svg: body, at: [0, 0] },
-    hind: { svg: hind.svg, at: joints.hip },
-    head: { svg: head.svg, at: joints.neck },
-    front: { svg: front, at: joints.shoulder },
+    hind: { svg: skin(hind.svg, id), at: joints.hip },
+    head: { svg: skin(head.svg, id), at: joints.neck },
+    front: { svg: skin(front, id), at: joints.shoulder },
   };
   // Flyers fold the far wing behind the body; drop the duplicate for other postures' arms.
   const order = posture === "flyer"
