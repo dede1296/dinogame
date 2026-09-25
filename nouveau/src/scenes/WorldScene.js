@@ -618,6 +618,7 @@ export class WorldScene extends Phaser.Scene {
   scriptApi() {
     return {
       say: (n, t) => hud.say(n, t),
+      letter: (paragraphs, sign) => hud.letter(paragraphs, sign),
       choose: (o) => hud.choose(o),
       toast: (t) => hud.toast(t),
       wait: (ms) => new Promise((r) => setTimeout(r, ms)),

@@ -5,6 +5,10 @@ import { statsOf, fernHeal } from "../battle/dino.js";
 import { ITEMS, FOSSIL_PARTS } from "../data/items.js";
 import { play } from "../audio/sounds.js";
 import { openScreen, actionSheet, esc } from "./screen.js";
+import { artImg } from "./art.js";
+
+// Illustration name for each bag entry (the grouped treasures reuse an item picture).
+const artOf = (id) => ({ _ambre: "ambre", _fossiles: "fossile" }[id] || id);
 
 const POCKETS = [
   { id: "soins", icon: "🌿", name: "Soins", items: ["fougere", "baie"] },
@@ -33,7 +37,7 @@ export function openBag(hud) {
   let pocket = POCKETS[0].id;
   let selected = null;
   return openScreen(hud, {
-    title: "Sac", icon: "🎒", className: "bag",
+    title: "Sac", icon: artImg("sac", "🎒"), className: "bag",
     render(body, api) {
       const p = POCKETS.find((x) => x.id === pocket);
       const list = entries(p);
@@ -41,9 +45,9 @@ export function openBag(hud) {
       const cur = list.find((x) => x.id === selected);
       body.innerHTML = `
         <div class="pockets">${POCKETS.map((x) => `<button data-p="${x.id}" class="${x.id === pocket ? "on" : ""}"><span>${x.icon}</span>${x.name}</button>`).join("")}</div>
-        ${list.map((x) => `<button class="item ${x.id === selected ? "on" : ""}" data-it="${x.id}"><div class="ic">${x.icon}</div><div>${esc(x.name)}</div><div class="qty">×${x.q}</div></button>`).join("") || `<div class="scr-empty">Cette poche est vide.</div>`}
-        ${cur ? `<div class="item-desc"><b>${esc(cur.name)}</b><br>${esc(cur.desc)}${cur.id === "fougere" ? `<button class="btn-main" data-use="fougere">Utiliser sur un dino</button>` : USE_HINT[cur.id] ? `<br><i style="opacity:0.8">${esc(USE_HINT[cur.id])}</i>` : ""}</div>` : ""}
-        <div class="money">🪙 ${state.money} pièces</div>`;
+        ${list.map((x) => `<button class="item ${x.id === selected ? "on" : ""}" data-it="${x.id}"><div class="ic">${artImg(artOf(x.id), x.icon)}</div><div>${esc(x.name)}</div><div class="qty">×${x.q}</div></button>`).join("") || `<div class="scr-empty">Cette poche est vide.</div>`}
+        ${cur ? `<div class="item-desc"><div class="big">${artImg(artOf(cur.id), cur.icon)}</div><b>${esc(cur.name)}</b><br>${esc(cur.desc)}${cur.id === "fougere" ? `<button class="btn-main" data-use="fougere">Utiliser sur un dino</button>` : USE_HINT[cur.id] ? `<br><i style="opacity:0.8">${esc(USE_HINT[cur.id])}</i>` : ""}</div>` : ""}
+        <div class="money">${artImg("piece", "🪙")} ${state.money} pièces</div>`;
       body.onclick = async (e) => {
         const pk = e.target.closest("[data-p]");
         if (pk) { pocket = pk.dataset.p; selected = null; play("ui_move", { volume: 0.4 }); return api.rerender(); }

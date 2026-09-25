@@ -5,6 +5,8 @@ import { play } from "../audio/sounds.js";
 import { openMainMenu } from "./mainMenu.js";
 import { openParty } from "./partyScreen.js";
 import { openBag } from "./bagScreen.js";
+import { showLetter } from "./letter.js";
+import { artImg } from "./art.js";
 
 const CSS = `
 .hud { position: fixed; inset: 0; z-index: 5; pointer-events: none; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #f6ecd2; user-select: none; -webkit-user-select: none; }
@@ -21,6 +23,7 @@ const CSS = `
 .btns div.on { background: rgba(232,160,32,0.6); color: #1a1208; }
 .topbtns { position: absolute; right: 14px; top: calc(12px + env(safe-area-inset-top)); display: flex; gap: 8px; pointer-events: auto; }
 .topbtns button { width: 46px; height: 46px; border-radius: 12px; background: rgba(20,24,16,0.6); border: 2px solid rgba(246,236,210,0.25); font-size: 22px; display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(4px); }
+.topbtns button img { width: 34px; height: 34px; pointer-events: none; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
 .topbtns button:active { background: rgba(232,160,32,0.55); border-color: #f2c14e; }
 .dialog { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(190px + env(safe-area-inset-bottom)); width: min(560px, calc(100% - 24px)); min-height: 96px; padding: 16px 18px 20px; border-radius: 16px; background: linear-gradient(180deg, rgba(34,30,20,0.95), rgba(20,18,12,0.95)); border: 2px solid #c9953a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); pointer-events: auto; font-size: 17px; line-height: 1.45; white-space: pre-line; }
 .dialog .name { position: absolute; top: -14px; left: 16px; padding: 3px 12px; border-radius: 10px; background: #c9953a; color: #1a1208; font-weight: 800; font-size: 13px; letter-spacing: 0.5px; }
@@ -71,7 +74,7 @@ class Hud {
       <div class="fade"></div>
       <div class="pad"><div class="u">▲</div><div class="l">◀</div><div class="r">▶</div><div class="d">▼</div></div>
       <div class="btns"><div class="a">A</div><div class="b">B</div></div>
-      <div class="topbtns"><button class="partybtn" aria-label="Équipe">🦖</button><button class="bagbtn" aria-label="Sac">🎒</button><button class="menubtn" aria-label="Menu">☰</button></div>`;
+      <div class="topbtns"><button class="partybtn" aria-label="Équipe">${artImg("equipe", "🦖")}</button><button class="bagbtn" aria-label="Sac">${artImg("sac", "🎒")}</button><button class="menubtn" aria-label="Menu">☰</button></div>`;
     document.body.appendChild(this.root);
     this.fadeEl = this.root.querySelector(".fade");
     this.bindPad();
@@ -241,6 +244,7 @@ class Hud {
   openMenu() { return openMainMenu(this); }
   openParty() { return openParty(this); }
   openBag() { return openBag(this); }
+  letter(paragraphs, sign) { return showLetter(this, paragraphs, sign); }
 }
 
 export const hud = new Hud();

@@ -10,6 +10,7 @@ import { TYPE_CHART, TYPE_EMOJI } from "../../../src/game/types.js";
 import { play } from "../audio/sounds.js";
 import { openScreen, actionSheet, esc, hpColor } from "./screen.js";
 import { portraitSrc } from "./dinoPortrait.js";
+import { artImg } from "./art.js";
 
 // Tinted pill: the type colour as text and border over a faint wash of it.
 const pill = (color, text) => `<span class="tag" style="color:${color};background:${color}26;border:1px solid ${color}59">${text}</span>`;
@@ -35,7 +36,7 @@ function card(d, i, pickFrom) {
 export function openParty(hud) {
   let pickFrom = null; // index of the dino being moved, if any
   return openScreen(hud, {
-    title: "Équipe", icon: "🦖", className: "party",
+    title: "Équipe", icon: artImg("equipe", "🦖"), className: "party",
     render(body, api) {
       if (!state.party.length) {
         body.innerHTML = `<div class="scr-empty">Tu n'as pas encore de dino.<br>Va voir le Professeur Roc au Cabinet.</div>`;

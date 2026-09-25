@@ -112,10 +112,14 @@ export const SCRIPTS = {
     await say(ROC, "Excellent choix. Hélène aurait choisi le même, j'en suis sûr.");
   },
 
-  async lettre({ say, flag, setFlag }) {
+  async lettre({ say, letter, flag, setFlag }) {
     await say(null, "Une lettre posée sur la table, adressée à « Chloé ». L'écriture de ta grand-mère.");
-    await say("Hélène", "« Ma chérie. Si tout s'est passé comme je le crains, je suis déjà dans la montagne.\n\nJ'ai commis une erreur il y a trente ans. Une erreur qui dort sous le volcan. Je dois la réparer seule. »");
-    await say("Hélène", "« J'ai caché les pages de mon journal sur toute l'île, pour qu'ils ne les trouvent pas. Toi, tu sauras les lire. Commence par l'endroit où tout a commencé. — H. »");
+    await letter([
+      "Ma chérie,",
+      "Si tout s'est passé comme je le crains, je suis déjà dans la montagne.",
+      "J'ai commis une erreur il y a trente ans. Une erreur qui dort sous le volcan. Je dois la réparer seule.",
+      "J'ai caché les pages de mon journal sur toute l'île, pour qu'ils ne les trouvent pas. Toi, tu sauras les lire. Commence par l'endroit où tout a commencé.",
+    ], "— H.");
     if (!flag("letter_read")) {
       setFlag("letter_read");
       await say("Chloé", "« Là où tout a commencé »… Le grand crâne dans les Plaines ?");
