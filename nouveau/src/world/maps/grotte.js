@@ -59,7 +59,9 @@ export const grotte1 = {
   cave: true,
   music: "grotte",
   rows: level1(),
-  zones: [{ name: "Grotte des Échos", y0: 0, y1: 28, encounters: "grotte", rate: 0.07 }],
+  zones: [{ name: "Grotte des Échos", y0: 0, y1: 28, encounters: "grotte", rate: 0.015 }],
+  // Visible wild dinos (their glowing eyes show in the dark).
+  roamers: [{ table: "grotte", count: 4, area: [2, 2, 28, 22], wander: 2 }],
   entities: [
     { type: "warp", x: 15, y: 27, to: { map: "ambreluneSud", x: 36, y: 23, dir: "down" } },
     { type: "decor", kind: "campfire", x: 12, y: 23, w: 1, h: 1, solid: true, script: "feuDeCamp", arg: { x: 12, y: 24, dir: "up", name: "près du feu de camp de la grotte" } },
@@ -82,7 +84,8 @@ export const grotte2 = {
   cave: true,
   music: "grotte",
   rows: level2(),
-  zones: [{ name: "Profondeurs des Échos", y0: 0, y1: 26, encounters: "grotte", rate: 0.07 }],
+  zones: [{ name: "Profondeurs des Échos", y0: 0, y1: 26, encounters: "grotte", rate: 0.015 }],
+  roamers: [{ table: "grotte", count: 4, area: [2, 2, 30, 16], wander: 2 }],
   entities: [
     { type: "decor", kind: "ladder", x: 5, y: 2, w: 1, h: 1, solid: true, script: "echelleHaut" },
     { type: "npc", id: "sbire2", look: "grunt", x: 12, y: 6, dir: "left", script: "sbire2", flagHidden: "sbire2_battu" },

@@ -17,7 +17,7 @@ export const ENCOUNTERS = {
   ],
 };
 
-// Chance per step in tall grass.
-export const ENCOUNTER_RATE = 0.1;
+// Chance per step in tall grass (kept low: most wild dinos are visible, see map `roamers`).
+export const ENCOUNTER_RATE = 0.03;
 // Chance that a wild dino is a natural hybrid of the zone's species.
 export const HYBRID_RATE = 0.06;

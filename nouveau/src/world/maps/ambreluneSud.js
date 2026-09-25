@@ -72,6 +72,8 @@ export const ambreluneSud = {
     { name: "Plaines des Fougères", y0: 0, y1: 41, music: "plaines", encounters: "plaines" },
     { name: "Port-Ambre", y0: 41, y1: 74, music: "village" },
   ],
+  // Wild dinos you can see along the paths and meadows of the Plains.
+  roamers: [{ table: "plaines", count: 8, area: [3, 2, 41, 39], wander: 3, avoidGrass: true }],
   entities: [
     // Buildings (footprint in tiles; `door` is the tile you walk into).
     { type: "building", kind: "cabinet", x: 26, y: 43, w: 7, h: 5, door: { x: 29, y: 47, to: { map: "cabinet", x: 6, y: 8, dir: "up" } } },

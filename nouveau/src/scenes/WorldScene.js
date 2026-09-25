@@ -55,11 +55,13 @@ export class WorldScene extends Phaser.Scene {
     this.idleFrames = 0;
     this.darkness = null;
     this.battleResolve = null;
+    this.pendingRoamer = null;
 
     this.buildGround();
     this.buildProps();
     this.buildEntities();
     this.createPlayer();
+    this.spawnRoamers();
     this.setupCamera();
     if (!map.interior && !map.cave) this.createAmbience();
     if (map.cave) this.createDarkness();
@@ -410,6 +412,8 @@ export class WorldScene extends Phaser.Scene {
     this.dir = d;
     const [dx, dy] = DELTA[d];
     const nx = this.px + dx, ny = this.py + dy;
+    const wild = this.entityAt(nx, ny);
+    if (wild?.type === "wild") return this.fightRoamer(wild);
     if (this.blocked(nx, ny)) {
       const now = performance.now();
       if (now - (this.lastBump || 0) > 420) { this.lastBump = now; play("bump", { volume: 0.35, jitter: 0.05 }); }
@@ -533,6 +537,8 @@ export class WorldScene extends Phaser.Scene {
         return this.runLines([e.text]);
       case "boss":
         return this.runScript(e.script, e);
+      case "wild":
+        return this.fightRoamer(e);
       case "door":
         if (e.locked) return this.runLines([e.locked]);
         return;
@@ -685,7 +691,10 @@ export class WorldScene extends Phaser.Scene {
     const zone = this.zoneAt(this.py);
     if (!zone.encounters || !state.party.some((d) => d.hp > 0) || this.scriptRunning) return;
     if (Math.random() > (location.search.includes("rencontre") ? 1 : zone.rate ?? ENCOUNTER_RATE)) return;
-    const wild = rollWild(ENCOUNTERS[zone.encounters]);
+    this.launchWild(rollWild(ENCOUNTERS[zone.encounters]), zone.encounters);
+  }
+
+  launchWild(wild, zone) {
     this.scriptRunning = true;
     hud.setBusy(true);
     const cam = this.cameras.main;
@@ -696,9 +705,120 @@ export class WorldScene extends Phaser.Scene {
       cam.fadeOut(260, 0, 0, 0);
       cam.once("camerafadeoutcomplete", () => {
         this.scene.pause();
-        this.scene.launch("Battle", { wild, zone: zone.encounters });
+        this.scene.launch("Battle", { wild, zone });
       });
     });
+  }
+
+  // Visible wild dinos: they wander near the paths and in the caves, so the player
+  // can see them coming and choose to fight (walk into them / press A) or go around.
+  spawnRoamers() {
+    this.roamers = [];
+    for (const r of this.map.roamers || []) {
+      const [x0, y0, x1, y1] = r.area;
+      for (let i = 0, tries = 0; i < r.count && tries < 400; tries++) {
+        const x = x0 + Math.floor(Math.random() * (x1 - x0)), y = y0 + Math.floor(Math.random() * (y1 - y0));
+        if (!this.roamerCanStand(x, y, r) || Math.hypot(x - this.px, y - this.py) < 5) continue;
+        if (this.roamers.some((o) => Math.hypot(o.x - x, o.y - y) < 4)) continue;
+        this.addRoamer(x, y, r);
+        i++;
+      }
+    }
+  }
+
+  roamerCanStand(x, y, r) {
+    if (this.blocked(x, y) || this.entityAt(x, y)) return false;
+    const t = TILES[this.rows[y][x]];
+    if (r.avoidGrass && t.prop === "tallgrass") return false;
+    // Keep doorways, warps and story triggers clear.
+    return !this.map.entities.some((e) => (e.type === "trigger" || e.type === "warp") && x >= e.x - 1 && x <= e.x + (e.w || 1) && y >= e.y - 1 && y <= e.y + (e.h || 1));
+  }
+
+  addRoamer(x, y, r) {
+    const ent = { type: "wild", id: `wild-${this.roamers.length}`, x, y, home: { x, y }, zone: r.table, wild: rollWild(ENCOUNTERS[r.table]), rule: r };
+    this.roamers.push(ent);
+    this.entities.push(ent);
+    this.occupy(x, y, ent);
+    dinoTexture(this, ent.wild.build, 0, { unitScale: FOLLOWER_SCALE, customColor: ent.wild.tint }).then((key) => {
+      if (!key || !this.scene.isActive() || ent.gone) return;
+      const a = anchors[key];
+      ent.sprite = this.add.image(x * TILE + TILE / 2, (y + 1) * TILE - 4, key).setOrigin(a.x, a.y).setDepth((y + 1) * TILE - 2).setFlipX(Math.random() < 0.5);
+      this.tweens.add({ targets: ent.sprite, scaleY: 1.04, duration: 800 + Math.random() * 500, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+      // In the dark, two glowing eyes give them away.
+      if (this.map.cave) {
+        ent.eyes = this.add.image(0, 0, this.eyesTexture()).setDepth(DARK_DEPTH + 1).setBlendMode(Phaser.BlendModes.ADD);
+        this.tweens.add({ targets: ent.eyes, alpha: 0.55, duration: 1200 + Math.random() * 800, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+        // Now and then, a blink.
+        this.time.addEvent({ delay: 2500 + Math.random() * 3000, loop: true, callback: () => ent.eyes?.active && this.tweens.add({ targets: ent.eyes, scaleY: 0.1, duration: 80, yoyo: true }) });
+        this.placeEyes(ent);
+      }
+    });
+    this.time.addEvent({ delay: 1400 + Math.random() * 1600, loop: true, callback: () => this.roam(ent) });
+  }
+
+  // Two small glowing eyes, seen through the cave darkness.
+  eyesTexture() {
+    if (!this.textures.exists("eyes")) {
+      const c = document.createElement("canvas");
+      c.width = 40; c.height = 16;
+      const ctx = c.getContext("2d");
+      for (const x of [12, 28]) {
+        const g = ctx.createRadialGradient(x, 8, 0, x, 8, 8);
+        g.addColorStop(0, "rgba(255,250,200,1)"); g.addColorStop(0.3, "rgba(255,220,90,0.9)"); g.addColorStop(1, "rgba(255,180,40,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(x - 8, 0, 16, 16);
+      }
+      this.textures.addCanvas("eyes", c);
+    }
+    return "eyes";
+  }
+
+  placeEyes(ent) {
+    const s = ent.sprite;
+    ent.eyes?.setPosition(s.x + (s.flipX ? -1 : 1) * s.displayWidth * 0.3, s.y - s.displayHeight * 0.55);
+  }
+
+  roam(ent) {
+    if (ent.gone || ent.moving || !ent.sprite || this.scriptRunning || Math.random() < 0.35) return;
+    const dirs = Object.keys(DELTA);
+    const [dx, dy] = DELTA[dirs[Math.floor(Math.random() * 4)]];
+    const nx = ent.x + dx, ny = ent.y + dy;
+    const R = ent.rule.wander ?? 3;
+    if (Math.abs(nx - ent.home.x) > R || Math.abs(ny - ent.home.y) > R) return;
+    if (!this.roamerCanStand(nx, ny, ent.rule) || (nx === this.px && ny === this.py) || (nx === this.fx && ny === this.fy)) return;
+    this.occupied.delete(`${ent.x},${ent.y}`);
+    ent.x = nx; ent.y = ny;
+    this.occupy(nx, ny, ent);
+    if (dx) ent.sprite.setFlipX(dx < 0);
+    ent.moving = true;
+    this.tweens.add({
+      targets: ent.sprite, x: nx * TILE + TILE / 2, y: (ny + 1) * TILE - 4, duration: STEP_MS * 2,
+      onUpdate: () => { ent.sprite.setDepth(ent.sprite.y - 2); this.placeEyes(ent); },
+      onComplete: () => { ent.moving = false; },
+    });
+  }
+
+  fightRoamer(ent) {
+    if (this.scriptRunning || this.moving || ent.gone) return;
+    if (!state.party.length) return this.runLines(["Un dino sauvage ! Sans compagnon, mieux vaut ne pas l'approcher…"]);
+    if (!state.party.some((d) => d.hp > 0)) return this.runLines(["Tes dinos sont trop fatigués pour se battre. Va te reposer d'abord !"]);
+    this.pendingRoamer = ent;
+    this.scriptRunning = true;
+    hud.setBusy(true);
+    if (ent.sprite) {
+      ent.sprite.setFlipX(this.px < ent.x);
+      this.tweens.add({ targets: ent.sprite, y: ent.sprite.y - 10, duration: 110, yoyo: true, repeat: 1 });
+    }
+    play("hit_soft", { volume: 0.5 });
+    this.time.delayedCall(300, () => this.launchWild(ent.wild, ent.zone));
+  }
+
+  removeRoamer(ent) {
+    ent.gone = true;
+    this.occupied.delete(`${ent.x},${ent.y}`);
+    this.entities = this.entities.filter((x) => x !== ent);
+    ent.eyes?.destroy();
+    if (ent.sprite) this.tweens.add({ targets: ent.sprite, alpha: 0, duration: 500, onComplete: () => ent.sprite.destroy() });
   }
 
   // Scripted battle (trainer, boss): resolves with "win" | "lose".
@@ -721,6 +841,10 @@ export class WorldScene extends Phaser.Scene {
   resumeFromBattle(result) {
     const scripted = this.battleResolve;
     this.battleResolve = null;
+    // A visible wild dino that was fought (beaten, caught or fled from) leaves the map.
+    const roamer = this.pendingRoamer;
+    this.pendingRoamer = null;
+    if (roamer && result !== "lose") this.removeRoamer(roamer);
     if (scripted) {
       if (result !== "lose") {
         this.cameras.main.fadeIn(300, 0, 0, 0);
