@@ -7,6 +7,9 @@ create table if not exists public.saves (
   updated_at timestamptz not null default now()
 );
 
+-- Les joueurs connectés peuvent utiliser la table (les règles ci-dessous limitent à leur ligne).
+grant select, insert, update on public.saves to authenticated;
+
 -- Chaque joueur ne peut lire et écrire que sa propre sauvegarde.
 alter table public.saves enable row level security;
 
