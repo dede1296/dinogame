@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aperçu des dinos</title>
+  <style>
+    body { margin: 0; background: #1b2a1e; color: #f3ead2; font-family: system-ui, sans-serif; }
+    h1 { font-size: 18px; margin: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; padding: 0 16px 24px; }
+    .card { background: radial-gradient(ellipse at 50% 85%, #3c5a34 0%, #24361f 70%); border-radius: 14px; padding: 8px; }
+    .card svg { width: 100%; height: 200px; display: block; }
+    .card p { margin: 4px 8px 6px; font-size: 13px; }
+    .card small { display: block; opacity: 0.6; font-size: 11px; }
+    .shadow { fill: rgba(0,0,0,0.25); }
+    /* Idle animation rig: each part pivots on its joint. */
+    .anim-head { animation: headBob 2.6s ease-in-out infinite; transform-origin: 0 0; }
+    .anim-tail { animation: tailSway 3.2s ease-in-out infinite; transform-origin: 0 0; }
+    .anim-body, .anim-dorsal { animation: breathe 2.6s ease-in-out infinite; transform-origin: 0 40px; }
+    .anim-front { animation: armSwing 2.6s ease-in-out infinite; transform-origin: 0 0; }
+    @keyframes headBob { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-4deg); } }
+    @keyframes tailSway { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(5deg); } }
+    @keyframes breathe { 0%,100% { transform: scale(1, 1); } 50% { transform: scale(1.015, 1.03); } }
+    @keyframes armSwing { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } }
+  </style>
+</head>
+<body>
+  <h1>Aperçu — dinos purs et hybrides</h1>
+  <div class="grid" id="grid"></div>
+  <script type="module">
+    import { DINOS } from "../src/data/dinos.js";
+    import { buildDino } from "./src/art/dinoArt.js";
+
+    const idx = (name) => DINOS.findIndex((d) => d.name.startsWith(name));
+    const pure = (name) => { const i = idx(name); return { head: i, teeth: i, frontLegs: i, backLegs: i, back: i, tail: i, color: i }; };
+    const hybrid = (parts) => Object.fromEntries(Object.entries(parts).map(([k, v]) => [k, idx(v)]));
+
+    const samples = [
+      ["Tyrannosaurus Rex", pure("Tyrannosaurus")],
+      ["Velociraptor", pure("Velociraptor")],
+      ["Triceratops", pure("Triceratops")],
+      ["Brachiosaurus", pure("Brachiosaurus")],
+      ["Stegosaurus", pure("Stegosaurus")],
+      ["Spinosaurus", pure("Spinosaurus")],
+      ["Ankylosaurus", pure("Ankylosaurus")],
+      ["Parasaurolophus", pure("Parasaurolophus")],
+      ["Pteranodon", pure("Pteranodon")],
+      ["Mosasaurus", pure("Mosasaurus")],
+      ["Hybride : tête de T-Rex, dos de Spino, queue d'Anky", hybrid({ head: "Tyrannosaurus", teeth: "Tyrannosaurus", frontLegs: "Velociraptor", backLegs: "Tyrannosaurus", back: "Spinosaurus", tail: "Ankylosaurus", color: "Carnotaurus" })],
+      ["Hybride : Tricératops-raptor", hybrid({ head: "Triceratops", teeth: "Velociraptor", frontLegs: "Velociraptor", backLegs: "Velociraptor", back: "Stegosaurus", tail: "Velociraptor", color: "Pyroraptor" })],
+    ];
+
+    const grid = document.getElementById("grid");
+    for (const [label, build] of samples) {
+      const dino = buildDino(build, { pattern: label.startsWith("Hybride : Tri") ? "stripes" : "none" });
+      const card = document.createElement("div");
+      card.className = "card";
+      const [x, y, w, h] = dino.viewBox;
+      card.innerHTML = dino.svg
+        .replace("<defs>", `<ellipse class="shadow" cx="0" cy="${dino.ground}" rx="110" ry="10"/><defs>`)
+        + `<p>${label}<small>posture : ${dino.posture}</small></p>`;
+      grid.appendChild(card);
+    }
+  </script>
+</body>
+</html>
