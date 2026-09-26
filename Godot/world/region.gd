@@ -16,6 +16,8 @@ extends Node2D
 @export var zone_name := ""
 ## Levels of the wild dinos here; the party learns faster while behind.
 @export var levels := Vector2i(2, 5)
+## Amber pebbles hidden in the zone (see Search): how many there are to find.
+@export var pebbles := 0
 @export var music: AudioStream
 ## The sounds of the place, under the music: a kind of place of AmbienceDB (&"plaines"…).
 @export var ambience_id: StringName
@@ -33,6 +35,7 @@ extends Node2D
 ## Chances per game hour that rain or mist sets in here.
 @export_range(0.0, 1.0) var rain_chance := 0.08
 @export_range(0.0, 1.0) var mist_chance := 0.1
+@export_range(0.0, 1.0) var storm_chance := 0.03
 ## Relief, one text row per tile row: 0–9 = level (1.2 m each), r = ramp between levels,
 ## anything else = 0 (small zones and interiors). Empty = flat zone, or height_data.
 @export var relief: PackedStringArray = []

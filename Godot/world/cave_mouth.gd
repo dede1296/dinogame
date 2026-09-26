@@ -12,6 +12,11 @@ extends Node2D
 @export var height := 2.3
 
 
+func _ready() -> void:
+	if not Engine.is_editor_hint():
+		add_to_group(&"cave_mouth")   # the companion reacts near one
+
+
 func _draw() -> void:
 	if Engine.is_editor_hint():
 		var w := width * 48.0

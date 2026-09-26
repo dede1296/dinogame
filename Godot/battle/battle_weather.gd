@@ -12,8 +12,15 @@ const DAYLIGHT := [
 ]
 ## The fighters are lit a little more than the backdrop, so they stay easy to read.
 const FIGHTER_LIFT := 0.35
-const RAIN_DROPS := 160
-const RAIN := Color(0.85, 0.9, 1.0, 0.3)
+const RAIN_DROPS := 110
+const RAIN := Color(0.85, 0.9, 1.0, 0.2)
+## A storm: more rain, and lightning flashes over the scene every so often (s).
+const STORM_RAIN := 1.8
+const LIGHTNING_EVERY := Vector2(5.0, 12.0)
+const THUNDER: Array[AudioStream] = [preload("res://assets/audio/ambience/tonnerre-1.mp3"), preload("res://assets/audio/ambience/tonnerre-2.mp3")]
+
+var _flash: ColorRect
+var _next_lightning := 3.0
 
 
 ## Adds the weather over `world` (the fighters) and tints `backdrop` and `world` for the hour.
@@ -36,7 +43,9 @@ static func tint(hour: float, weather: StringName) -> Color:
 		if hour <= b[0]:
 			c = (a[1] as Color).lerp(b[1], smoothstep(a[0], b[0], hour))
 			break
-	if weather == &"rain":
+	if weather == &"storm":
+		c = c.lerp(Color(0.5, 0.54, 0.62) * c.get_luminance(), 0.55) * 0.75
+	elif weather == &"rain":
 		c = c.lerp(Color(0.62, 0.66, 0.72) * c.get_luminance(), 0.45) * 0.92
 	elif weather == &"mist":
 		c = c.lerp(Color(0.8, 0.83, 0.86) * maxf(c.get_luminance(), 0.4), 0.3)
@@ -48,8 +57,31 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if Game.weather == &"mist":
 		_add_mist()
-	elif Game.weather == &"rain":
-		_add_rain()
+	elif Game.is_raining():
+		_add_rain(STORM_RAIN if Game.weather == &"storm" else 1.0)
+	if Game.weather == &"storm":
+		_flash = ColorRect.new()
+		_flash.color = Color(0.9, 0.93, 1.0, 0.0)
+		_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(_flash)
+		_flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+
+func _process(delta: float) -> void:
+	if _flash == null:
+		return
+	_next_lightning -= delta
+	if _next_lightning > 0.0:
+		return
+	_next_lightning = randf_range(LIGHTNING_EVERY.x, LIGHTNING_EVERY.y)
+	var t := create_tween()
+	t.tween_property(_flash, "color:a", 0.55, 0.04)
+	t.tween_property(_flash, "color:a", 0.1, 0.1)
+	t.tween_property(_flash, "color:a", 0.35, 0.04)
+	t.tween_property(_flash, "color:a", 0.0, 0.35)
+	var far := randf()
+	get_tree().create_timer(lerpf(0.4, 2.2, far)).timeout.connect(func() -> void:
+		Audio.play_sfx(THUNDER[0 if far > 0.5 else 1], lerpf(-4.0, -11.0, far), 0.08))
 
 
 ## A pale veil, thick over the far part of the scene (the top), thin in front.
@@ -73,11 +105,11 @@ func _add_mist() -> void:
 	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
-## Light, slanted streaks across the whole screen.
-func _add_rain() -> void:
+## Light, fine slanted streaks across the whole screen (`more`: a storm's heavier rain).
+func _add_rain(more := 1.0) -> void:
 	var screen := get_viewport().get_visible_rect().size
 	var p := CPUParticles2D.new()
-	p.amount = Quality.scaled(RAIN_DROPS)
+	p.amount = Quality.scaled(roundi(RAIN_DROPS * more))
 	p.lifetime = 0.7
 	p.preprocess = 0.7
 	p.position = Vector2(screen.x / 2.0, -40.0)
@@ -96,8 +128,8 @@ func _add_rain() -> void:
 	streak.gradient = g
 	streak.fill_from = Vector2(0.5, 0.0)
 	streak.fill_to = Vector2(0.5, 1.0)
-	streak.width = 2
-	streak.height = 34
+	streak.width = 1
+	streak.height = 24
 	p.texture = streak
 	p.color = RAIN
 	add_child(p)

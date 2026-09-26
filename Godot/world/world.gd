@@ -29,6 +29,8 @@ const COMPANION_OFFSET := Vector2(-34, 8)
 const ZONE_FADE := 0.3
 const RAIN_SOUND := preload("res://assets/audio/ambience/pluie.mp3")
 const RAIN_DB := -7.0   # a light rain, under the zone's ambience
+const STORM_SOUND := preload("res://assets/audio/ambience/orage.mp3")
+const STORM_DB := -4.0
 ## The map: Chloé sees this far around her (tiles), checked this often (s).
 const EXPLORE_RADIUS := 11.0
 const EXPLORE_EVERY := 0.25
@@ -106,7 +108,7 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF) -> void:
 	region_holder.add_child(region)
 	Game.region_id = id
 	Game.zone_level = roundi((region.levels.x + region.levels.y) / 2.0)
-	Game.climate = {"rain": region.rain_chance, "mist": region.mist_chance}
+	Game.climate = {"rain": region.rain_chance, "mist": region.mist_chance, "storm": region.storm_chance}
 
 	if pos == Vector2.INF:
 		pos = region.spawn_point(spawn)
@@ -188,7 +190,13 @@ func _can_stand(p: Vector2) -> bool:
 
 
 func _weather_sound() -> void:
-	Audio.play_weather(RAIN_SOUND if Game.weather == &"rain" else null, 3.0, RAIN_DB)
+	match Game.weather:
+		&"rain":
+			Audio.play_weather(RAIN_SOUND, 3.0, RAIN_DB)
+		&"storm":
+			Audio.play_weather(STORM_SOUND, 3.0, STORM_DB)
+		_:
+			Audio.play_weather(null, 3.0)
 
 
 func _store_position() -> void:

@@ -10,7 +10,7 @@ const AMBER := Color(0.98, 0.76, 0.35)
 const INK := Color(0.106, 0.122, 0.157, 0.97)
 const HOURS := [["Aube", 6.0], ["Midi", 12.0], ["Crépuscule", 19.0], ["Nuit", 23.0]]
 const SPEEDS := [1.0, 10.0, 60.0]
-const WEATHER_NAMES := {&"clear": "Beau temps", &"rain": "Pluie", &"mist": "Brume"}
+const WEATHER_NAMES := {&"clear": "Beau temps", &"rain": "Pluie", &"mist": "Brume", &"storm": "Orage"}
 
 var _was_paused := false
 var _species_ids: Array = []

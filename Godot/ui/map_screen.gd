@@ -116,6 +116,8 @@ func _build() -> void:
 	var title := _label(_region.display_name, 30, GOLD)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(title)
+	if _region.pebbles > 0:
+		head.add_child(_label("Galets d'ambre : %d / %d" % [Game.pebbles_found(String(Game.region_id)), _region.pebbles], 20, GOLD))
 	head.add_child(_label("Exploré : %d %%" % floori(_explored_share() * 100.0), 20, Color(SettingsMenu.CREAM, 0.8)))
 	var close := Button.new()
 	close.text = "✕"

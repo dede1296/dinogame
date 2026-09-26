@@ -34,6 +34,12 @@ static func build() -> Region:
 	var entities: Node2D = root.get_node("Entities")
 	_scatter(root, entities)
 	_story(root, entities)
+	_rest_spots(entities)
+	# 30 amber pebbles: 8 in trees, 8 under stones, 8 buried (Flair), 6 in nooks worth the climb.
+	B.hide_pebbles(root, entities, Vector2i(60, 86), 3007, 8, 8,
+		[Vector2(45, 64), Vector2(70, 72), Vector2(30, 52), Vector2(52, 36), Vector2(88, 58),
+			Vector2(100, 24), Vector2(15, 33), Vector2(110, 75)],
+		[Vector2(70, 15), Vector2(102, 10), Vector2(85, 50), Vector2(24, 71), Vector2(12, 32), Vector2(46, 34)])
 	_places(root)
 	_habitats(root)
 	return root
@@ -135,6 +141,17 @@ static func _story(root: Region, entities: Node2D) -> void:
 	B.sign(entities, B.cell(100.4, 64.8), &"panneau_crane")
 	B.dino_npc(root, "Alpha", &"triceratops", 107.2, 63.8, {"event": &"alpha_plaines", "size": 1.35, "flip": true,
 		"show_flag": &"crane_ouvert", "hide_flag": &"sceau_plaines"})
+
+
+## Campfires and benches to rest by (see Rest), the ground around them cleared.
+static func _rest_spots(entities: Node2D) -> void:
+	for p: Array in [["feu_camp", 56.0, 51.0], ["feu_camp", 29.5, 70.5], ["feu_camp", 92.0, 11.2],
+			["banc", 78.0, 44.4], ["banc", 62.8, 66.0]]:
+		var at := B.cell(p[1], p[2])
+		for c in entities.get_children():
+			if c.get_script() == Prop and c.position.distance_to(at) < 2.6 * B.TILE:
+				c.free()
+		B.prop(entities, p[0], at)
 
 
 static func _places(root: Region) -> void:

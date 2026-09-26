@@ -2,7 +2,8 @@
 // Lit as if rounded (a foliage ball, a rock), darker at the foot, so it has volume.
 // Always faces the camera (also when casting shadows), upright; sways in the wind; the top
 // leans away when Chloé walks through; a tall one turns see-through when it hides her.
-// Per instance (INSTANCE_CUSTOM): x = flipped, y = scale.
+// Per instance (INSTANCE_CUSTOM): x = flipped, y = scale, z = shake (a tree searched),
+// w = lift in metres (a stone turned over).
 shader_type spatial;
 render_mode cull_disabled;
 
@@ -37,6 +38,8 @@ void vertex() {
 	vec2 d = origin.xz - player_world.xz;
 	float near = 1.0 - smoothstep(0.0, push_radius, length(d));
 	VERTEX.x += (s + (d.x >= 0.0 ? 1.0 : -1.0) * near * push) * top;
+	VERTEX.x += INSTANCE_CUSTOM.z * sin(TIME * 42.0) * 0.16 * (0.3 + top);
+	VERTEX.y += INSTANCE_CUSTOM.w;
 
 	// Face the main camera (in the shadow pass too, so shadows match), stay upright.
 	vec3 right = normalize(vec3(MAIN_CAM_INV_VIEW_MATRIX[0].x, 0.0, MAIN_CAM_INV_VIEW_MATRIX[0].z));

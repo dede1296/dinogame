@@ -31,6 +31,9 @@ const TUFTS_PER_CELL := 3
 const CHUNK := 16
 const VIEW_RANGE := 72.0
 const GRASS_RANGE := 46.0
+## A campfire's flame (tools/draw-placeholders.mjs, as the web version drew it), metres wide.
+const FLAME := preload("res://assets/art/props/flamme.png")
+const FLAME_WIDTH := 0.7
 ## How far a neighbouring zone is shown beyond an exit (tiles).
 const PREVIEW_DEPTH := 26.0
 ## Trees filling the "forest" tiles (weights by repetition).
@@ -38,7 +41,11 @@ const FOREST_TREES := ["arbre_rond", "araucaria", "arbre_rond", "fougere_arbre",
 const CAVE := preload("res://world/view3d/cave_mouth.gdshader")
 const OCCLUDER_HEIGHT := 2.2               # metres: taller scenery may hide Chloé
 const POLLEN_MOTES := 60
-const RAIN_DROPS := 450
+const RAIN_DROPS := 320
+## A storm: this much more rain, flashes of lightning every so often (s), thunder after them.
+const STORM_RAIN := 1.8
+const LIGHTNING_EVERY := Vector2(6.0, 16.0)
+const THUNDER: Array[AudioStream] = [preload("res://assets/audio/ambience/tonnerre-1.mp3"), preload("res://assets/audio/ambience/tonnerre-2.mp3")]
 const WEATHER_BLEND := 0.6                  # how fast rain and mist come and go
 ## A 2D move longer than this in one physics step is a teleport, not blended (px).
 const TELEPORT := 96.0
@@ -69,6 +76,11 @@ var _player_cur := Vector2.ZERO
 var _sun: DirectionalLight3D
 var _env: Environment
 var _pollen: CPUParticles3D
+var _wildlife: Wildlife
+## Scenery props drawn in a MultiMesh -> [MultiMesh, index] (to shake or lift one of them).
+var _instances := {}
+## The "!" over Chloé's dino when it senses something hidden nearby.
+var _hint: Label3D
 var _contact_mesh: PlaneMesh
 ## Where neighbour zones are shown beyond the edges (world tiles).
 var _bands: Array[Rect2] = []
@@ -76,10 +88,14 @@ var _zones := {}
 var _rain: CPUParticles3D
 var _ground_mat: ShaderMaterial
 var _rain_amount := 0.0                     # 0..1, blended towards the weather
+var _storm_amount := 0.0
+var _flash := 0.0                           # lightning: 1 at the flash, fading
+var _next_lightning := 8.0
 var _mist_amount := 0.0
 
 
 func _ready() -> void:
+	add_to_group(&"world_view")
 	_sun = DirectionalLight3D.new()
 	_sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	_sun.directional_shadow_max_distance = 45.0
@@ -104,9 +120,12 @@ func _ready() -> void:
 	camera.current = true
 	_pollen = _make_pollen()
 	add_child(_pollen)
+	_wildlife = Wildlife.new()
+	add_child(_wildlife)
 	_rain = _make_rain()
 	add_child(_rain)
-	_rain_amount = 1.0 if Game.weather == &"rain" else 0.0
+	_rain_amount = 1.0 if Game.is_raining() else 0.0
+	_storm_amount = 1.0 if Game.weather == &"storm" else 0.0
 	_mist_amount = 1.0 if Game.weather == &"mist" else 0.0
 	Quality.changed.connect(_apply_quality)
 	_apply_quality()
@@ -139,6 +158,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	for p in _proxies:
 		_free_proxy(p)
 	_proxies.clear()
+	_instances.clear()
 	if _zone:
 		_zone.queue_free()
 	if _region and _region.entities.child_entered_tree.is_connected(_on_entity_added):
@@ -400,11 +420,180 @@ func _build_scenery() -> void:
 			var def: Dictionary = Prop.KINDS.get(n.kind, {})
 			if def.get("float", false):
 				at.y = maxf(at.y, HeightMap.WATER_LEVEL + 0.06)
-			groups[n.kind].append([at, n.flip, 1.0])
+			groups[n.kind].append([at, n.flip, 1.0, n])
 			if def.get("light", false) and Quality.setting(&"lights"):
 				_add_lamp(at)
+			if n.kind == "feu_camp":
+				_add_fire(at)
 	for kind: String in groups:
 		_add_billboards(kind, groups[kind])
+
+
+## Shakes (a tree searched) or lifts (a stone turned over) one scenery prop, for `time` s.
+func nudge(prop: Node2D, shake: float, lift: float, time := 0.8) -> void:
+	var ref: Array = _instances.get(prop, [])
+	if ref.is_empty():
+		return
+	var mm: MultiMesh = ref[0]
+	var i: int = ref[1]
+	var base := mm.get_instance_custom_data(i)
+	create_tween().tween_method(func(t: float) -> void:
+		mm.set_instance_custom_data(i, Color(base.r, base.g, shake * (1.0 - t), lift * sin(PI * t))), 0.0, 1.0, time)
+
+
+## A burst of little bits at `p` (2D world position): leaves from a tree, earth dug up,
+## sparkles of amber. `colours`: picked at random per bit.
+func burst(p: Vector2, colours: Array[Color], amount := 18, height := 1.0, spread := 0.8) -> void:
+	var bits := CPUParticles3D.new()
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.16, 0.16)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	mat.vertex_color_use_as_albedo = true
+	quad.material = mat
+	bits.mesh = quad
+	bits.amount = Quality.scaled(amount)
+	bits.one_shot = true
+	bits.explosiveness = 0.9
+	bits.lifetime = 1.3
+	bits.direction = Vector3.UP
+	bits.spread = 70.0
+	bits.initial_velocity_min = 1.0
+	bits.initial_velocity_max = 2.4
+	bits.gravity = Vector3(0, -3.2, 0)
+	bits.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+	bits.emission_sphere_radius = spread
+	# Each bit takes one of the colours (spread evenly along the initial-colour ramp).
+	var ramp := Gradient.new()
+	var offsets := PackedFloat32Array()
+	for i in colours.size():
+		offsets.append(i / maxf(colours.size() - 1.0, 1.0))
+	ramp.offsets = offsets
+	ramp.colors = PackedColorArray(colours)
+	ramp.interpolation_mode = Gradient.GRADIENT_INTERPOLATE_CONSTANT
+	bits.color_initial_ramp = ramp
+	bits.scale_amount_min = 0.6
+	bits.scale_amount_max = 1.3
+	bits.position = heights.to_3d(p) + Vector3(0, height, 0)
+	_zone.add_child(bits)
+	bits.emitting = true
+	bits.finished.connect(bits.queue_free)
+
+
+## Something found pops up from `p` (2D world position), `height` m up, and fades away.
+func pop_up(p: Vector2, picture: Texture2D, height := 0.3) -> void:
+	var item := Sprite3D.new()
+	item.texture = picture
+	item.pixel_size = 0.4 / maxf(picture.get_width(), 1.0)
+	item.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	item.no_depth_test = true
+	item.render_priority = 9
+	var from := heights.to_3d(p) + Vector3(0, height, 0)
+	item.position = from
+	_zone.add_child(item)
+	var t := item.create_tween().set_parallel(true)
+	t.tween_property(item, "position", from + Vector3(0, 1.1, 0), 1.1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.tween_property(item, "modulate:a", 0.0, 0.4).set_delay(1.0)
+	t.chain().tween_callback(item.queue_free)
+
+
+## A little sign over `who` (what the dino thinks: "~" the water, "♥" a fire…), rising
+## and fading away.
+func emote(who: Node2D, text: String) -> void:
+	var label := Label3D.new()
+	label.text = text
+	label.font_size = 110
+	label.outline_size = 30
+	label.modulate = Color(0.26, 0.14, 0.05)
+	label.outline_modulate = Color(1.0, 0.95, 0.85)
+	label.pixel_size = 0.012
+	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	label.no_depth_test = true
+	label.render_priority = 10
+	var from := heights.to_3d(who.global_position) + Vector3(0.25, 1.9, 0)
+	label.position = from
+	_zone.add_child(label)
+	var t := label.create_tween().set_parallel(true)
+	t.tween_property(label, "position", from + Vector3(0, 0.5, 0), 1.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	t.tween_property(label, "modulate:a", 0.0, 0.5).set_delay(1.3)
+	t.tween_property(label, "outline_modulate:a", 0.0, 0.5).set_delay(1.3)
+	t.chain().tween_callback(label.queue_free)
+
+
+## Shows (or hides) the "!" over Chloé's dino, which senses something hidden nearby.
+func show_hint(dino: Node2D, on: bool) -> void:
+	if _hint == null or not is_instance_valid(_hint):
+		_hint = Label3D.new()
+		_hint.text = "!"
+		_hint.font_size = 110
+		_hint.outline_size = 34
+		_hint.modulate = Color(0.26, 0.14, 0.05)
+		_hint.outline_modulate = Color(1.0, 0.84, 0.36)
+		_hint.pixel_size = 0.014
+		_hint.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		_hint.no_depth_test = true
+		_hint.render_priority = 10
+		_zone.add_child(_hint)
+	_hint.visible = on
+	if on:
+		_hint.position = heights.to_3d(dino.global_position) + Vector3(0.25, 2.1 + 0.1 * sin(Time.get_ticks_msec() / 150.0), 0)
+
+
+## A campfire's flame (the web version's picture, flickering), a few embers rising, and its
+## wavering light.
+func _add_fire(at: Vector3) -> void:
+	var flame := Sprite3D.new()
+	flame.texture = FLAME
+	flame.pixel_size = FLAME_WIDTH / FLAME.get_width()
+	flame.centered = false
+	flame.offset = Vector2(-FLAME.get_width() / 2.0, 0.0)
+	flame.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+	flame.shaded = false
+	flame.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+	flame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	flame.position = at + Vector3(0, 0.08, 0.02)
+	_zone.add_child(flame)
+	# The web version's flicker: taller and narrower, back again, 170 ms each way.
+	var t := flame.create_tween().set_loops()
+	t.tween_property(flame, "scale", Vector3(0.9, 1.18, 1.0), 0.17).set_trans(Tween.TRANS_SINE)
+	t.tween_property(flame, "scale", Vector3.ONE, 0.17).set_trans(Tween.TRANS_SINE)
+	var embers := CPUParticles3D.new()
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.05, 0.05)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	mat.vertex_color_use_as_albedo = true
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	quad.material = mat
+	embers.mesh = quad
+	embers.amount = Quality.scaled(8)
+	embers.lifetime = 1.6
+	embers.direction = Vector3.UP
+	embers.spread = 20.0
+	embers.initial_velocity_min = 0.4
+	embers.initial_velocity_max = 0.8
+	embers.gravity = Vector3(0.1, 0.2, 0)
+	embers.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+	embers.emission_sphere_radius = 0.15
+	var fade := Gradient.new()
+	fade.colors = PackedColorArray([Color(1.0, 0.8, 0.35, 1.0), Color(1.0, 0.35, 0.05, 0.0)])
+	embers.color_ramp = fade
+	embers.position = at + Vector3(0, 0.5, 0.05)
+	_zone.add_child(embers)
+	if Quality.setting(&"lights"):
+		var light := OmniLight3D.new()
+		light.light_color = Color(1.0, 0.62, 0.28)
+		light.light_energy = 1.6
+		light.omni_range = 5.0
+		light.shadow_enabled = false
+		light.position = at + Vector3(0, 0.8, 0.2)
+		_zone.add_child(light)
+		var w := light.create_tween().set_loops()
+		w.tween_property(light, "light_energy", 1.2, 0.13).set_trans(Tween.TRANS_SINE)
+		w.tween_property(light, "light_energy", 1.8, 0.17).set_trans(Tween.TRANS_SINE)
+		w.tween_property(light, "light_energy", 1.4, 0.11).set_trans(Tween.TRANS_SINE)
 
 
 ## A warm glow around a lantern, a lamp, the incubator.
@@ -529,6 +718,8 @@ func _add_multimesh(quad: QuadMesh, items: Array, shadows: bool, range_end := VI
 			var at: Vector3 = it[0]
 			mm.set_instance_transform(i, Transform3D(Basis(), at))
 			mm.set_instance_custom_data(i, Color(1.0 if it[1] else 0.0, it[2], 0.0, 0.0))
+			if it.size() > 3:
+				_instances[it[3]] = [mm, i]
 			lo = lo.min(at)
 			hi = hi.max(at)
 		var inst := MultiMeshInstance3D.new()
@@ -740,9 +931,13 @@ func _process(delta: float) -> void:
 		camera.target = feet
 		RenderingServer.global_shader_parameter_set(&"player_world", feet)
 		_pollen.position = camera.target + Vector3(0, 1.5, 0)
+		_wildlife.heights = heights
+		_wildlife.update(delta, camera.target, Game.clock / 60.0, _rain_amount, not _region.indoor)
 		_rain.position = camera.target + Vector3(0, 9.0, 2.0)
 	var blend := 1.0 - exp(-WEATHER_BLEND * delta)
-	_rain_amount = lerpf(_rain_amount, 1.0 if Game.weather == &"rain" else 0.0, blend)
+	_rain_amount = lerpf(_rain_amount, 1.0 if Game.is_raining() else 0.0, blend)
+	_storm_amount = lerpf(_storm_amount, 1.0 if Game.weather == &"storm" else 0.0, blend)
+	_lightning(delta)
 	_mist_amount = lerpf(_mist_amount, 1.0 if Game.weather == &"mist" else 0.0, blend)
 	_update_sky(Game.clock / 60.0)
 	(camera.attributes as CameraAttributesPractical).dof_blur_far_distance = camera.distance() + 13.0
@@ -923,7 +1118,7 @@ func _make_rain() -> CPUParticles3D:
 	p.initial_velocity_max = 14.0
 	p.gravity = Vector3(0, -9.0, 0)
 	var q := QuadMesh.new()
-	q.size = Vector2(0.014, 0.42)
+	q.size = Vector2(0.008, 0.3)
 	var m := StandardMaterial3D.new()
 	m.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y
 	m.vertex_color_use_as_albedo = true
@@ -935,6 +1130,24 @@ func _make_rain() -> CPUParticles3D:
 
 
 # ------------------------------------------------------------------ sky
+
+## In a storm, a flash of lightning now and then, and its thunder a moment later (farther
+## away: later and softer).
+func _lightning(delta: float) -> void:
+	_flash = maxf(0.0, _flash - delta * 3.5)
+	if _storm_amount < 0.5 or (_region and _region.indoor):
+		return
+	_next_lightning -= delta
+	if _next_lightning > 0.0:
+		return
+	_next_lightning = randf_range(LIGHTNING_EVERY.x, LIGHTNING_EVERY.y)
+	_flash = 1.0
+	# A second, weaker flicker just after, like real lightning.
+	get_tree().create_timer(0.12).timeout.connect(func() -> void: _flash = maxf(_flash, 0.6))
+	var far := randf()
+	get_tree().create_timer(lerpf(0.4, 2.8, far)).timeout.connect(func() -> void:
+		Audio.play_sfx(THUNDER[0 if far > 0.5 else 1], lerpf(-3.0, -10.0, far), 0.08))
+
 
 ## Inside: a warm light from above, dimmer and bluer at night; no weather, black around.
 func _indoor_light(hour: float) -> void:
@@ -992,8 +1205,18 @@ func _update_sky(hour: float) -> void:
 	_env.fog_depth_begin = lerpf(lerpf(near + 8.0, near + 2.0, rain), near - 1.0, mist)
 	_env.fog_depth_end = lerpf(lerpf(near + 46.0, near + 28.0, rain), near + 14.0, mist)
 	_pollen.visible = hour > 6.0 and hour < 20.0 and rain < 0.3
+	# Fine, faint streaks; a storm: more of them, a little more visible.
 	_rain.emitting = rain > 0.05
-	_rain.color = Color(0.82, 0.87, 0.96, 0.26 * rain)
+	var drops := Quality.scaled(roundi(RAIN_DROPS * (STORM_RAIN if _storm_amount > 0.5 else 1.0)))
+	if _rain.amount != drops:
+		_rain.amount = drops
+	_rain.color = Color(0.82, 0.87, 0.96, (0.16 + 0.08 * _storm_amount) * rain)
+	# A storm: a darker sky, and the lightning's flash.
+	var gloom := 1.0 - 0.5 * _storm_amount
+	_sun.light_energy *= gloom
+	_env.ambient_light_energy = _env.ambient_light_energy * gloom + _flash * 2.2
+	_env.background_color = _env.background_color * gloom
+	_env.fog_light_color = _env.background_color
 	if _ground_mat:
 		_ground_mat.set_shader_parameter("wetness", rain)
 	RenderingServer.global_shader_parameter_set(&"sun_dir", _sun.global_transform.basis.z.normalized())

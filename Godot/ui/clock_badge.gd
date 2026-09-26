@@ -8,6 +8,7 @@ const ICONS := {
 	&"moon": preload("res://assets/art/ui/meteo_lune.png"),
 	&"rain": preload("res://assets/art/ui/meteo_pluie.png"),
 	&"mist": preload("res://assets/art/ui/meteo_brume.png"),
+	&"storm": preload("res://assets/art/ui/meteo_orage.png"),
 }
 const HOLD_S := 1.0          # long press for the debug panel
 const RIGHT_OF_MENU := 96.0  # room left for the menu button (76 px + gap)
@@ -71,7 +72,9 @@ func _refresh() -> void:
 	var minutes := int(Game.clock)
 	_label.text = "%02d:%02d" % [floori(minutes / 60.0), minutes % 60]
 	var key := &"sun"
-	if Game.weather == &"rain":
+	if Game.weather == &"storm":
+		key = &"storm"
+	elif Game.weather == &"rain":
 		key = &"rain"
 	elif Game.weather == &"mist":
 		key = &"mist"

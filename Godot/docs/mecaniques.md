@@ -105,6 +105,24 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
   autres zones, et le **pourcentage exploré** (le sol praticable ; bois et eau ne comptent pas).
 - Le jeu est en pause pendant la lecture de la carte.
 
+### Fouiller l'île ✅
+
+- **Secouer un arbre** (A devant lui) : il tremble, des feuilles tombent ; une fois par jour et par
+  arbre, une chance qu'une **baie** tombe. **Soulever une petite pierre** : ce qui vit dessous.
+- **Galets d'ambre** : 30 dans les Plaines (~100 sur l'île) : dans des arbres, sous des pierres,
+  **enterrés** (seul un dino avec **Flair** voit la terre remuée et creuse) ou posés dans des
+  recoins qui valent l'escalade. Chacun donne de l'expérience à l'équipe ; le compteur est sur la
+  carte. (Ce qu'ils permettront d'obtenir : à décider, étape 3.)
+- **Le dino de tête sent les cachettes** : un « ! » au-dessus de lui et un petit cri quand un galet
+  caché est tout près ; il saute de joie quand on le trouve. Il **réagit aux lieux** : l'eau (~),
+  un feu (♥), une grotte (?).
+- **Feux de camp et bancs** : se reposer une heure, attendre le soir ou le matin (le temps passe,
+  l'équipe est soignée, petit air de repos) ; au feu, la partie est sauvegardée. Le feu éclaire la
+  nuit et crépite quand on s'en approche.
+- **Vie ambiante** : papillons le jour, lucioles la nuit (pas sous la pluie).
+- Des messages brefs en haut de l'écran (« +1 baie », « Galet d'ambre ! 7 / 30 ») n'arrêtent
+  pas le jeu.
+
 ### Rencontres
 
 - **Dinos visibles** ✅ : ils errent dans leur habitat. On peut les éviter, les observer ou aller au
@@ -122,7 +140,7 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
   nuit. Certaines espèces ne sortent que la nuit (Troodon, Leaellynasaura…).
 - **La pleine lune** revient régulièrement : l'ambre luit, révèle des passages secrets et des pages
   cachées, et fait sortir des espèces très rares.
-- **Météo par région** : pluie dans la Forêt et le Marais, brume, tempêtes de sable, neige. Elle
+- **Météo par région** ✅ (beau temps, pluie fine, brume, **orage** : ciel sombre, éclairs, tonnerre ; aussi en combat) ; plus tard : tempêtes de sable, neige. Elle
   change l'ambiance, certaines apparitions et certains effets en combat.
 
 ### Capacités d'exploration
@@ -135,7 +153,7 @@ introduit l'espèce qui ouvre la suite, ce qui rend la collection utile.
 | **Tranche** ✅ | Troncs, ronces | Raptors (Velociraptor, Deinonychus…) | Plaines (Vif, ou un Velociraptor sauvage) |
 | **Charge** ✅ | Rochers | Cératopsiens, cuirassés | Plaines (Bastion, ou un Protoceratops) |
 | **Résonance** | Portes et filons d'ambre éteints ; passages cachés (comme une pleine lune, à la demande) | Ornithopodes à crête (Parasaurolophus, Corythosaurus) | Plaines (Écho, ou un Parasaurolophus) |
-| **Flair** | Objets enfouis : fossiles, ambre, pages | Compsognathus, Oviraptor, Troodon | Plaines (facultatif) |
+| **Flair** ✅ | Objets enfouis : galets d'ambre (puis fossiles, pages) | Compsognathus, Oviraptor, Troodon | Plaines (facultatif) |
 | **Coup de crâne** | Murs fissurés | Pachycéphalosaures | Forêt |
 | **Nage** | Eau profonde, rivières | Spinosauridés (Baryonyx…) | Marais |
 | **Plongée** | Grottes sous-marines | Reptiles marins (Plesiosaurus…) | Côte |

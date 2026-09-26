@@ -63,6 +63,10 @@ const KINDS := {
 	"grand_crane": {"scale": 0.66, "foot": 0.01, "solid": Vector2(192, 30), "sway": 0.0, "shadow": 0.0},
 	"socle": {"scale": 0.32, "foot": 0.06, "solid": 24.0, "sway": 0.0, "shadow": 64.0},
 	"mur_cabinet": {"scale": 0.5, "foot": 0.0, "solid": Vector2(171, 60), "sway": 0.0, "shadow": 0.0},
+	# Searching the island (provisional pictures: tools/draw-placeholders.mjs).
+	"galet": {"scale": 0.06, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 16.0},
+	"monticule": {"scale": 0.14, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"feu_camp": {"scale": 0.25, "foot": 0.07, "solid": 24.0, "sway": 0.0, "shadow": 60.0},
 }
 
 @export_enum("arbre_rond", "araucaria", "fougere_arbre", "buisson", "rocher", "cailloux", "tronc", "ronces",
@@ -70,7 +74,8 @@ const KINDS := {
 	"maison_blanche", "maison_jaune", "maison_port", "cabinet", "barque", "caisses", "tonneau", "filet", "bitte",
 	"lanterne", "casiers", "cordage", "banc", "sechoir", "ancre", "bac_fleurs",
 	"bureau", "bibliotheque", "couveuse", "fougere_pot", "lampe", "fauteuil", "etabli", "mur_cabinet", "socle",
-	"porte_ambre", "ecaille", "serrure", "stalagmite", "cristaux", "rocher_grotte", "grand_crane")
+	"porte_ambre", "ecaille", "serrure", "stalagmite", "cristaux", "rocher_grotte", "grand_crane",
+	"galet", "monticule", "feu_camp")
 var kind := "arbre_rond":
 	set(value):
 		kind = value
@@ -79,6 +84,8 @@ var kind := "arbre_rond":
 	set(value):
 		flip = value
 		_build()
+## A tree or a stone hiding an amber pebble: its story flag (see Search).
+@export var hidden_pebble: StringName
 
 var sprite: Sprite2D
 var _shape: CollisionShape2D
@@ -90,7 +97,24 @@ func _ready() -> void:
 	collision_mask = 0
 	if not Engine.is_editor_hint():
 		Quality.changed.connect(_build)
+		# Plain scenery that can be searched (a tree shaken, a stone turned over, a bench).
+		if kind == "feu_camp":
+			add_to_group(&"fire")   # heard crackling nearby (world.gd, AmbienceDB)
+		if get_script() == Prop and Search.can_search(self):
+			add_to_group(&"interactable")
+			if hidden_pebble != &"" and not Game.flag(hidden_pebble):
+				add_to_group(&"secret")
 	_build()
+
+
+## Searching this piece of scenery (only the kinds of Search.KINDS are interactable).
+func interact(player: Player) -> void:
+	await Search.search(self, player)
+
+
+## Still hides an amber pebble (the companion senses it).
+func is_hiding() -> bool:
+	return hidden_pebble != &"" and not Game.flag(hidden_pebble)
 
 
 func _build() -> void:

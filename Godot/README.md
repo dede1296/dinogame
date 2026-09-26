@@ -109,6 +109,11 @@ docs/       bible du jeu (lore, histoire, mécaniques, bestiaire), direction art
   boucle (fondu enchaîné, jamais de couture audible), dont certaines suivent la distance à la mer
   ou à un feu (nœuds du groupe `fire`), et des sons ponctuels (oiseaux le jour, mouettes, rafales,
   gouttes). Un nouveau son : l'ajouter dans `tools/prepare-ambience.mjs` (même volume pour tous).
+- **Fouiller, se reposer** : un arbre (`arbre_rond`, `fougere_arbre`, `araucaria`) ou des
+  `cailloux` se fouillent tout seuls (`world/search.gd`) ; un `banc` ou un `feu_camp` permet de se
+  reposer (`world/rest.gd`). Les galets d'ambre d'une zone se cachent dans son plan avec
+  `ZoneBuilder.hide_pebbles` (arbres, pierres, terre à creuser au Flair, recoins ; seulement là où
+  Chloé peut aller) ; leur nombre est `Region.pebbles`.
 - **Un dialogue** : `data/dialogue_db.gd` (les répliques dépendent des drapeaux d'histoire).
 
 ## Qualité graphique (Basse / Moyenne / Haute)
@@ -133,6 +138,7 @@ décor, densité des herbes, ombres de nuages, lumières, détail de l'eau, imag
 |---|---|
 | `node Godot/tools/gen-sound.mjs ambience/pluie 22 loop "<description>"` | Génère un son (ElevenLabs, clé dans `.env.local`) dans `assets/audio/` |
 | `AUDIO_MODULES=<node_modules> node Godot/tools/prepare-ambience.mjs [nom…]` | Sons d'ambiance MP3 → Ogg au même volume (et sifflement retiré si besoin) dans `assets/audio/ambience/` |
+| `node Godot/tools/draw-placeholders.mjs` | Images dessinées en vectoriel : feu de camp, flamme et papillon (comme la version web), galet et monticule (provisoires) |
 | `node Godot/tools/process-art.mjs` | Planches nano-banana (JPG magenta) → PNG détourés, frames alignées, textures raccordables |
 | `godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario=monde\|story\|plaines2\|raccords\|perf\|battle\|fight\|quality\|zones\|meteo\|debug\|ui_combat\|combat_meteo\|prologue\|title` | Test automatique avec captures d'écran et vérification sauvegarde/chargement |
 | `node Godot/tools/render-phaser-music.mjs plaines 6` | Enregistre un thème de la musique Phaser en boucle Ogg sans couture (voir l'en-tête) |

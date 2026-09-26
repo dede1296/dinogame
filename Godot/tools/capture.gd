@@ -73,6 +73,40 @@ const SCENARIOS := {
 		[12.1, "zone", &"grotte_echos"], [16.0, "audio", null],
 		[16.1, "zone", &"cabinet"], [20.0, "audio", null],
 	],
+	"fouille": [
+		[0.9, "calm", 300.0],
+		[1.0, "tp_secret", "arbre"], [2.4, "shot", "f0_arbre_indice"], [2.5, "hold", "move_up"], [2.6, "hold", ""],
+		[2.8, "press", "interact"], [3.1, "shot", "f1_secoue"], [4.0, "shot", "f2_galet_arbre"],
+		[4.4, "tp_secret", "cailloux"], [5.8, "hold", "move_up"], [5.9, "hold", ""], [6.1, "press", "interact"],
+		[6.4, "shot", "f3_pierre"], [7.3, "shot", "f3b_galet_pierre"],
+		[7.6, "give", "compsognathus"], [7.7, "tp_secret", "monticule"], [9.2, "shot", "f4_monticule"],
+		[9.3, "hold", "move_up"], [9.4, "hold", ""], [9.6, "press", "interact"], [10.3, "shot", "f5_creuse"], [11.8, "shot", "f5b_galet_creuse"],
+		[12.2, "tp_secret", "galet"], [13.6, "shot", "f6_galet_visible"], [13.7, "hold", "move_up"], [13.8, "hold", ""],
+		[14.0, "press", "interact"], [15.0, "shot", "f7_galet_ramasse"],
+		[15.4, "tp_secret", "arbre_vide"], [16.8, "hold", "move_up"], [16.9, "hold", ""], [17.1, "press", "interact"], [17.5, "shot", "f8_arbre_vide"],
+		[18.6, "map", null], [19.3, "shot", "f9_carte"], [19.4, "press", "cancel"],
+		[19.8, "check", null],
+	],
+	"repos": [
+		[0.9, "calm", 300.0], [1.0, "clock", 21.5], [1.1, "tp_prop", ["feu_camp", Vector2(0, 150)]], [3.0, "shot", "r0_feu_nuit"], [3.1, "audio", null],
+		[3.2, "hold", "move_up"], [4.1, "hold", ""], [4.3, "press", "interact"], [5.2, "shot", "r1_choix"], [5.3, "pick", 2],
+		[9.5, "shot", "r2_reveil_au_feu"], [9.6, "state", null], [9.7, "audio", null], [11.0, "audio", null], [12.5, "audio", null],
+		[16.0, "tp_prop", ["banc", Vector2(0, 56)]], [17.4, "hold", "move_up"], [17.5, "hold", ""], [17.7, "press", "interact"], [17.8, "pick", 0],
+		[22.0, "shot", "r3_banc"], [22.1, "state", null], [30.0, "audio", null],
+	],
+	"vie": [
+		[0.9, "calm", 300.0], [0.95, "weather", &"clear"], [1.0, "clock", 11.0], [1.1, "tp", Vector2(60.0, 62.0)], [3.5, "shot", "v0_papillons"],
+		[3.6, "tp", Vector2(58.0, 27.5)], [4.6, "shot", "v1_grotte_reaction"],
+		[4.7, "tp", Vector2(79.0, 51.9)], [5.7, "shot", "v2_eau_reaction"],
+		[5.8, "clock", 22.5], [5.9, "weather", &"clear"], [6.0, "tp", Vector2(60.0, 62.0)], [9.0, "shot", "v3_lucioles"], [9.1, "perf", "nuit_lucioles"],
+	],
+	"orage": [
+		[0.9, "calm", 300.0], [1.0, "clock", 15.0], [1.05, "tp", Vector2(60.0, 62.0)], [1.1, "weather", &"rain"], [7.0, "shot", "o0_pluie_fine"],
+		[7.1, "weather", &"storm"], [13.0, "shot", "o1_orage"], [13.1, "flash", null], [13.17, "shot", "o2_eclair"], [13.3, "audio", null], [15.0, "audio", null],
+		[15.2, "battle", [&"protoceratops", 3]], [18.2, "shot", "o3_combat_orage"],
+		[17.1, "auto", true], [30.0, "auto", false],
+		[30.5, "give", "compsognathus"], [30.6, "card", 1], [31.3, "shot", "o4_fiche_compso"], [31.4, "close", null], [31.5, "card", 0], [32.2, "shot", "o5_fiche_vif"],
+	],
 	"prologue": [
 		[1.6, "shot", "90_arrivee"], [1.7, "auto", true], [9.0, "shot", "91_maia_ponton"], [16.0, "auto", false],
 		[16.5, "state", null], [16.6, "shot", "92_port"],
@@ -305,6 +339,43 @@ func _run(command: String, arg: Variant) -> void:
 			for n in current_scene.get("region").get_node("Entities").get_children():
 				if n.has_method("calm_down"):
 					n.call("calm_down", arg)
+		"tp_secret":   # next to (just south of) a hiding place of an amber pebble, facing it
+			var found: Node2D = null
+			for n in current_scene.get("region").get_node("Entities").get_children():
+				var k: String = n.get("kind") if "kind" in n else ""
+				var hides: bool = n.has_method("is_hiding") and n.call("is_hiding")
+				var ok := false
+				match arg:
+					"arbre": ok = k in ["arbre_rond", "fougere_arbre", "araucaria"] and hides
+					"arbre_vide": ok = k == "arbre_rond" and not hides and n.get_script() == load("res://world/prop.gd")
+					"cailloux": ok = k == "cailloux" and hides
+					"monticule": ok = n.get_script() == load("res://world/dig_spot.gd")
+					"galet": ok = k == "galet"
+				if ok:
+					found = n
+					break
+			if found == null:
+				print("tp_secret : rien pour ", arg)
+			else:
+				print("tp_secret ", arg, " : ", (found.global_position / TILE).snapped(Vector2(0.1, 0.1)))
+				var pos := found.global_position + Vector2(-40, 56)
+				current_scene.get("player").call("teleport", pos)
+				current_scene.get("companion").call("teleport", pos + Vector2(-34, 8))
+		"tp_prop":   # [kind, offset (px)]: next to the first prop of that kind
+			for n in current_scene.get("region").get_node("Entities").get_children():
+				if n.get("kind") == arg[0]:
+					print("tp_prop ", arg[0], " : ", (n.global_position / TILE).snapped(Vector2(0.1, 0.1)))
+					var pos: Vector2 = n.global_position + arg[1]
+					current_scene.get("player").call("teleport", pos)
+					current_scene.get("companion").call("teleport", pos + Vector2(-34, 8))
+					break
+		"flash":   # a lightning flash now
+			current_scene.get("_view").set("_next_lightning", 0.0)
+		"card":   # the sheet of party dino #arg
+			var bar: Node = current_scene.find_children("*", "PartyBar", true, false)[0]
+			bar.call("_open_card", root.get_node("Game").get("party")[arg])
+		"give":
+			root.get_node("Game").call("add_caught", load("res://game/dino.gd").create(StringName(arg), 6))
 		"map":
 			current_scene.call("_open_map")
 		"vsync":
@@ -319,7 +390,7 @@ func _run(command: String, arg: Variant) -> void:
 			var zone: Node = current_scene.get("region")
 			var wild := zone.get_node("Entities").get_children().filter(func(n: Node) -> bool: return n.has_signal("encountered"))
 			print("zone=", game.get("region_id"), " moment=", game.call("phase"), " météo=", game.get("weather"), " pause=", paused, " dinos visibles=", wild.map(func(n: Node) -> String: return "%s niv.%s" % [n.get("species_id"), n.get("level_range")]),
-				" joueur=", (current_scene.get("player").global_position / TILE).round(), " fps=", Engine.get_frames_per_second(), " drapeaux=", game.get("flags").keys())
+				" jour=", game.get("day"), " heure=%.1f" % (float(game.get("clock")) / 60.0), " joueur=", (current_scene.get("player").global_position / TILE).round(), " fps=", Engine.get_frames_per_second(), " drapeaux=", game.get("flags").keys())
 		"auto":
 			_auto = arg
 		"check":
@@ -328,6 +399,7 @@ func _run(command: String, arg: Variant) -> void:
 			var save := root.get_node("Save")
 			print("save: ", save.call("save_game"), " load: ", save.call("load_game"), " flags après chargement: ", game.get("flags"))
 			print("position sauvegardée: ", game.get("player_position"))
+			print("galets trouvés : ", game.call("pebbles_found", "plaines"), "  baies : ", game.call("item_count", "baie"), "  jour : ", game.get("day"))
 			var explored: Dictionary = game.get("explored")
 			for id: String in explored:
 				var seen: PackedByteArray = explored[id]

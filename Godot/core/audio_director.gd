@@ -71,10 +71,11 @@ func play_weather(stream: AudioStream, fade := 3.0, volume_db := 0.0) -> void:
 
 ## Switches to another theme (a battle) and remembers where the current one was, so
 ## pop_music() resumes it at the same point instead of from the start.
-func push_music(stream: AudioStream, fade := 0.3) -> void:
+## `loop`: false for a tune played once over the place (resting), then pop_music().
+func push_music(stream: AudioStream, fade := 0.3, loop := true) -> void:
 	var current := _music[_music_active]
 	_music_stack.append({"stream": current.stream if current.playing else null, "position": current.get_playback_position()})
-	play_music(stream, fade)
+	play_music(stream, fade, 0.0, 0.0, loop)
 
 
 func pop_music(fade := 1.2) -> void:

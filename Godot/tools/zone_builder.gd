@@ -240,6 +240,103 @@ static func dock(root: Region, cells: Rect2) -> Dock:
 	return d
 
 
+## Hides the zone's amber pebbles (see Search), flags "galet_<zone>_<n>", only where Chloé
+## can walk to from tile `from` (not on the mountains around):
+##   `in_trees` / `under_stones` of the scenery already placed (spread over the map),
+##   `buried`: tiles where a dino with Flair digs, `in_sight`: tiles where one simply lies.
+## Tiles that are not reachable open ground move to the nearest one that is. Sets root.pebbles.
+static func hide_pebbles(root: Region, entities: Node, from: Vector2i, seed_value: int, in_trees: int,
+		under_stones: int, buried: Array, in_sight: Array) -> void:
+	var reach := _reachable(root, from)
+	var reachable := func(p: Node2D) -> bool: return reach.has(Vector2i((p.position / TILE).floor()))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var flag := func(i: int) -> StringName: return StringName("galet_%s_%02d" % [root.region_id, i])
+	var n := 0
+	var trees := entities.get_children().filter(func(p: Node) -> bool:
+		return p.get_script() == Prop and p.kind in Search.TREES and reachable.call(p))
+	var stones := entities.get_children().filter(func(p: Node) -> bool:
+		return p.get_script() == Prop and p.kind in Search.STONES and reachable.call(p))
+	for p: Prop in _spread(trees, in_trees, rng) + _spread(stones, under_stones, rng):
+		p.hidden_pebble = flag.call(n)
+		n += 1
+	var terrain: TileMapLayer = root.get_node("Terrain")
+	for t: Vector2 in buried:
+		var spot := DigSpot.new()
+		spot.name = "Monticule%02d" % n
+		spot.pebble = flag.call(n)
+		spot.position = _open_ground(terrain, reach, t)
+		entities.add_child(spot, true)
+		n += 1
+	for t: Vector2 in in_sight:
+		var p: Pickup = prop(entities, "galet", _open_ground(terrain, reach, t), false, load("res://world/pickup.gd"))
+		p.name = "Galet%02d" % n
+		p.taken_flag = flag.call(n)
+		n += 1
+	root.pebbles = n
+
+
+## `count` of `nodes`, far apart from each other (greedy, from a shuffled start).
+static func _spread(nodes: Array, count: int, rng: RandomNumberGenerator) -> Array:
+	var pool := nodes.duplicate()
+	for i in range(pool.size() - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var tmp: Variant = pool[i]
+		pool[i] = pool[j]
+		pool[j] = tmp
+	var picked := []
+	while picked.size() < count and not pool.is_empty():
+		var best: Node2D = null
+		var best_gap := -1.0
+		for c: Node2D in pool:
+			var gap := INF
+			for p: Node2D in picked:
+				gap = minf(gap, c.position.distance_to(p.position))
+			if gap > best_gap:
+				best_gap = gap
+				best = c
+		picked.append(best)
+		pool.erase(best)
+	return picked
+
+
+## The middle of the nearest reachable open ground tile (grass, tall grass, sand) to tile `t`.
+static func _open_ground(terrain: TileMapLayer, reach: Dictionary, t: Vector2) -> Vector2:
+	for r in 8:
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				var c := Vector2i(t) + Vector2i(dx, dy)
+				var data := terrain.get_cell_tile_data(c)
+				if reach.has(c) and data and String(data.get_custom_data("terrain")) in ["grass", "tall_grass", "sand"]:
+					return cell(c.x + 0.5, c.y + 0.6)
+	push_warning("Pas de sol accessible près de %s" % t)
+	return cell(t.x, t.y)
+
+
+## Tiles Chloé can walk to from `from`: walkable ground, no cliff between two of them.
+static func _reachable(root: Region, from: Vector2i) -> Dictionary:
+	var terrain: TileMapLayer = root.get_node("Terrain")
+	var seen := {from: true}
+	var queue: Array[Vector2i] = [from]
+	var i := 0
+	while i < queue.size():
+		var c := queue[i]
+		i += 1
+		var h := root.tile_height(c)
+		for d: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			var n := c + d
+			if seen.has(n):
+				continue
+			var data := terrain.get_cell_tile_data(n)
+			if data == null or not String(data.get_custom_data("terrain")) in ["grass", "path", "tall_grass", "sand"]:
+				continue
+			if absf(root.tile_height(n) - h) > Region.CLIFF_STEP:
+				continue
+			seen[n] = true
+			queue.append(n)
+	return seen
+
+
 ## Saves the zone; refuses to overwrite unless `force`.
 static func save(root: Region, path: String, force: bool) -> Error:
 	if FileAccess.file_exists(path) and not force:

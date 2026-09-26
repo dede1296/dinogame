@@ -8,7 +8,7 @@ signal party_changed
 signal xp_awarded(dino: Dino, amount: int, levels: int)
 ## The time of day moved to another phase (&"dawn", &"day", &"dusk", &"night").
 signal phase_changed(phase: StringName)
-## The weather changed (&"clear", &"rain", &"mist").
+## The weather changed (&"clear", &"rain", &"mist", &"storm").
 signal weather_changed(weather: StringName)
 
 ## The three hatchlings Hélène left for Chloé: species -> default name. Each one beats
@@ -27,7 +27,7 @@ const XP_SHARE := 0.6
 ## Game clock: minutes of the day (0–1440); one game hour lasts CLOCK_HOUR_S real seconds.
 const CLOCK_HOUR_S := 60.0
 const START_CLOCK := 9.0 * 60.0
-const WEATHERS: Array[StringName] = [&"clear", &"rain", &"mist"]
+const WEATHERS: Array[StringName] = [&"clear", &"rain", &"mist", &"storm"]
 ## Each game hour, a spell of rain or mist ends with this chance.
 const WEATHER_CLEARS := 0.35
 
@@ -44,6 +44,10 @@ var dex_caught: Dictionary = {}
 var flags: Dictionary = {}
 var play_time := 0.0
 var clock := START_CLOCK
+## Days since the start of the game (1 = the first); a new one begins at midnight.
+var day := 1
+## Things searched in the world (a tree shaken, a stone lifted): their id -> the day it was.
+var searched: Dictionary = {}
 ## Typical level of the current zone (set by the world): behind it, dinos learn faster.
 var zone_level := 0
 ## Old zone ids of the Plaines (before it became one open map) -> arrival point in it.
@@ -68,7 +72,10 @@ var _phase: StringName = &""
 
 func _process(delta: float) -> void:
 	play_time += delta
+	var before := clock
 	clock = fmod(clock + delta * time_scale * 60.0 / CLOCK_HOUR_S, 1440.0)
+	if clock < before:
+		day += 1
 	var hour := int(clock / 60.0)
 	if hour != _hour:
 		if _hour >= 0:
@@ -78,6 +85,20 @@ func _process(delta: float) -> void:
 	if now != _phase:
 		_phase = now
 		phase_changed.emit(now)
+
+
+## Time passes until `hour` (resting by a fire, on a bench): the next time it is that hour.
+func pass_time_until(hour: float) -> void:
+	var target := hour * 60.0
+	if target <= clock:
+		day += 1
+	clock = target
+
+
+## Amber pebbles found in zone `zone` (flags "galet_<zone>_<n>"), or in the whole island.
+func pebbles_found(zone := "") -> int:
+	var prefix := "galet_%s_" % zone if zone != "" else "galet_"
+	return flags.keys().filter(func(k: String) -> bool: return k.begins_with(prefix)).size()
 
 
 ## Part of the day: dawn 5h–7h, day 7h–18h, dusk 18h–20h30, night otherwise.
@@ -104,6 +125,13 @@ func _roll_weather(hour: int) -> void:
 		set_weather(&"mist")
 	elif roll < mist + float(climate.get("rain", 0.0)):
 		set_weather(&"rain")
+	elif roll < mist + float(climate.get("rain", 0.0)) + float(climate.get("storm", 0.0)):
+		set_weather(&"storm")
+
+
+## Rain falls (a shower or a storm).
+func is_raining() -> bool:
+	return weather == &"rain" or weather == &"storm"
 
 
 func set_weather(value: StringName) -> void:
@@ -161,6 +189,8 @@ func new_game() -> void:
 	dex_seen = {}
 	dex_caught = {}
 	explored = {}
+	searched = {}
+	day = 1
 	play_time = 0.0
 	clock = START_CLOCK
 	weather = &"clear"
@@ -195,6 +225,10 @@ func use_item(id: String) -> bool:
 		return false
 	items[id] -= 1
 	return true
+
+
+func give_item(id: String, amount := 1) -> void:
+	items[id] = item_count(id) + amount
 
 
 ## A caught dino joins the party, or the box when the party is full. Returns true if in the party.
@@ -278,7 +312,8 @@ func explored_mask(id: StringName, size: Vector2i) -> PackedByteArray:
 	return seen
 
 
-static func explore_cells(size: Vector2i) -> Vector2i:
+@warning_ignore("integer_division")   # whole cells, rounded up
+func explore_cells(size: Vector2i) -> Vector2i:
 	return (size + Vector2i.ONE * (EXPLORE_CELL - 1)) / EXPLORE_CELL
 
 
@@ -299,6 +334,8 @@ func to_dict() -> Dictionary:
 		"explored": seen,
 		"play_time": play_time,
 		"clock": clock,
+		"day": day,
+		"searched": searched,
 		"weather": String(weather),
 	}
 
@@ -336,6 +373,8 @@ func from_dict(data: Dictionary) -> void:
 		explored[String(id)] = Marshalls.base64_to_raw(String(seen[id]))
 	play_time = data.get("play_time", 0.0)
 	clock = fmod(float(data.get("clock", START_CLOCK)), 1440.0)
+	day = int(data.get("day", 1))
+	searched = data.get("searched", {})
 	weather = StringName(data.get("weather", "clear"))
 	if not weather in WEATHERS:
 		weather = &"clear"

@@ -55,11 +55,18 @@ func _add_glow() -> void:
 
 func interact(player: Player) -> void:
 	player.face_towards(global_position)
-	Audio.play_sfx(ITEM_SFX)
+	# (An amber pebble has its own chime, played by Search.found_pebble.)
+	if not String(taken_flag).begins_with("galet_"):
+		Audio.play_sfx(ITEM_SFX)
 	remove_from_group(&"interactable")
 	var t := create_tween().set_parallel(true)
 	t.tween_property(sprite, "position:y", sprite.position.y - 26.0, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	t.tween_property(self, "modulate:a", 0.0, 0.5).set_delay(0.3)
+	# An amber pebble: no lines, just counted (see Search).
+	if String(taken_flag).begins_with("galet_"):
+		await Search.found_pebble(self, taken_flag, global_position)
+		queue_free()
+		return
 	await Dialogue.run(DialogueDB.lines(dialogue_id))
 	if taken_flag != &"":
 		Game.set_flag(taken_flag)

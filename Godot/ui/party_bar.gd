@@ -166,7 +166,7 @@ func _open_card(d: Dino) -> void:
 		"Attaque %d · Défense %d · Vitesse %d" % [s["atk"], s["def"], s["spd"]],
 		"Attaques : " + ", ".join(d.moves.map(func(m: Dictionary) -> String: return MovesDB.move(m["id"])["name"])),
 		d.species().description,
-	]:
+	] + Abilities.describe(d):
 		var l := Label.new()
 		l.text = line
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
