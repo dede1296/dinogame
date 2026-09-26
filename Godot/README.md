@@ -25,7 +25,7 @@ la musique des Plaines (le même thème que Phaser) et l'ambiance sonore.
   ```
 
 Contrôles : flèches/ZQSD-WASD ou manette pour bouger, Espace/Entrée/E (ou A) pour interagir,
-F3 (ou tap à trois doigts) pour l'overlay de performances.
+F3 (ou tap à trois doigts) pour afficher ou masquer l'overlay de performances (masqué au lancement).
 
 ## Organisation
 
@@ -70,15 +70,19 @@ docs/       direction artistique, protocole de comparaison
 Les APK et builds Web sont des **artefacts**, jamais versionnés (`build/` est ignoré).
 Le workflow `.github/workflows/godot-build.yml` les produit sur GitHub :
 
-- onglet *Actions* › « Godot — APK Android et build Web » › *Run workflow* → artefacts
-  `Ambrelune-android` (APK) et `Ambrelune-web` ;
-- tag `godot-v0.1.0` (par ex.) → GitHub Release avec `Ambrelune.apk`, à télécharger
-  directement depuis le S25 Ultra.
+- **chaque push sur `godot-prototype`** touchant `Godot/` publie une Release
+  « Ambrelune Godot — build N » avec `Ambrelune.apk`, à télécharger directement depuis le
+  téléphone : https://github.com/dede1296/dinogame/releases ;
+- tag `godot-v0.1.0` (par ex.) → Release nommée, pour marquer une version ;
+- les artefacts `Ambrelune-android` et `Ambrelune-web` restent aussi sur chaque run (onglet *Actions*).
 
-Pour garder la même signature d'un build à l'autre (mise à jour sans désinstaller), créer un
-keystore une fois et le mettre dans le secret `ANDROID_DEBUG_KEYSTORE_BASE64` :
+**Signature** : les APK sont signés avec une clé fixe (secret GitHub
+`ANDROID_DEBUG_KEYSTORE_BASE64`), donc une nouvelle version s'installe par-dessus l'ancienne.
+La clé est conservée hors du dépôt, dans `C:\Users\Greg\ambrelune-signature\` (à sauvegarder :
+sans elle, il faudra désinstaller une fois pour changer de clé). Elle a été créée ainsi :
 ```
-keytool -genkeypair -keystore ambrelune.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+MSYS_NO_PATHCONV=1 openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 10000 -subj "/CN=Ambrelune/O=Dinogame/C=FR"
+openssl pkcs12 -export -inkey key.pem -in cert.pem -name androiddebugkey -passout pass:android -out ambrelune.keystore
 base64 -w0 ambrelune.keystore   # → valeur du secret
 ```
 Export local possible aussi (SDK Android + Java 17 + modèles d'export 4.7.2 requis, non

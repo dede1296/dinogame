@@ -23,7 +23,7 @@ func _ready() -> void:
 	_label.add_theme_constant_override("outline_size", 5)
 	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_label)
-	visible = true   # prototype: always on, for the comparison
+	visible = false   # shown on demand: three-finger tap or F3
 
 
 func _process(delta: float) -> void:

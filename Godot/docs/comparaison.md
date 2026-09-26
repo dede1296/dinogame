@@ -86,4 +86,9 @@ propre fil audio.
 - Première utilisation des particules : une image lente (compilation de shader). Préchauffage
   ajouté au lancement du combat ; à vérifier sur le téléphone.
 
-### S25 Ultra — *à faire* (après le premier APK)
+### 2026-09-26 — S25 Ultra, APK build 2 (Godot)
+
+- Exploration : **120 FPS** (fréquence max de l'écran), pire image **8,3 ms** = aucune image perdue.
+- Latence audio affichée : 0 ms — valeur non fournie par Godot sur Android, **pas une mesure** :
+  juger à l'oreille (bouton A → son) en parallèle avec Phaser.
+- *À compléter :* combat, musique longue (10 min), arrière-plan/retour, chauffe, relevés Phaser.
