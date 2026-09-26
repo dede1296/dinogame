@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+import { ambreluneServiceWorker } from "./nouveau/pwa/vitePlugin.js";
 
 // Served from https://dede1296.github.io/dinogame/
 export default defineConfig({
@@ -13,6 +14,8 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    // Ambrelune (/nouveau/) is its own installable app with its own service worker.
+    ambreluneServiceWorker(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg", "apple-touch-icon.png"],
@@ -33,6 +36,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png}"],
+        // The classic game's worker must leave Ambrelune alone (it has its own worker).
+        globIgnores: ["nouveau/**", "assets/nouveau-*.js"],
+        navigateFallbackDenylist: [/\/nouveau\//],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       },
     }),

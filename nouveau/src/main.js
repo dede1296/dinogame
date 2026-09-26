@@ -3,10 +3,11 @@ import { WorldScene } from "./scenes/WorldScene.js";
 import { BattleScene } from "./scenes/BattleScene.js";
 import { createDino, normalizeDino, heal } from "./battle/dino.js";
 import { hud } from "./ui/hud.js";
-import { resetState, state, setFlag, useSlot } from "./state/game.js";
+import { resetState, state, setFlag, useSlot, autosave } from "./state/game.js";
 import { setupTitle } from "./ui/title.js";
 import { unlockAudio } from "./audio/sounds.js";
 import { consumeJump } from "./debug/debug.js";
+import { setupServiceWorker, requestPersistentStorage, autosaveOnHide } from "./pwa.js";
 
 unlockAudio();
 import { speciesIndex } from "./story/scripts.js";
@@ -18,6 +19,22 @@ const size = () => ({ w: Math.round(window.innerWidth * DPR), h: Math.round(wind
 hud.init();
 
 let game = null;
+
+// Installable app: offline cache and updates (production only), and saves kept safe.
+setupServiceWorker({
+  onUpdate: () => {
+    // On the title screen, simply reload into the new version; in a game, tell the player.
+    if (document.getElementById("title")) location.reload();
+    else hud.toast("Nouvelle version d'Ambrelune installée : elle s'appliquera au prochain lancement.");
+  },
+});
+requestPersistentStorage();
+// Only in a stable moment: exploring the map, no battle, cutscene or menu open.
+autosaveOnHide(() => {
+  if (!game || window.__noAutosave) return false;
+  const world = game.scene.getScene("World");
+  return game.scene.isActive("World") && !game.scene.isActive("Battle") && !!world && !world.scriptRunning;
+}, autosave);
 
 function start(newGame) {
   if (newGame) resetState();

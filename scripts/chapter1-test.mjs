@@ -4,6 +4,7 @@ import { chromium } from "playwright-core";
 const LEVEL = process.argv[2] || 14;
 const browser = await chromium.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true });
 const page = await browser.newPage({ viewport: { width: 430, height: 900 }, deviceScaleFactor: 1 });
+await page.addInitScript(() => { window.__noAutosave = true; }); // the test edits the save itself
 // The debug slot card only shows on the title screen when debug mode is on.
 await page.addInitScript(() => localStorage.setItem("dino-debug", "1"));
 const errors = [];

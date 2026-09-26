@@ -56,3 +56,13 @@ const m = await sharp(paper).metadata();
 const cx = Math.round(m.width * 0.035), cy = Math.round(m.height * 0.03);
 await sharp(paper).extract({ left: cx, top: cy, width: m.width - 2 * cx, height: m.height - 2 * cy }).resize({ width: 720 }).webp({ quality: 80 }).toFile(`${OUT}/papier.webp`);
 console.log(fs.readdirSync(OUT).map((n) => `${n} ${Math.round(fs.statSync(`${OUT}/${n}`).size / 1024)} Ko`).join("\n"));
+
+// App icons for the installable Ambrelune (PWA). The emblem sits inside the central
+// safe zone, so the same picture serves as the "maskable" icon Android crops.
+const APP_ICON = find("q1fu47");
+const ICON_DIR = "public/nouveau/icons";
+fs.mkdirSync(ICON_DIR, { recursive: true });
+for (const [name, size] of [["icon-192.png", 192], ["icon-512.png", 512], ["apple-touch-icon.png", 180], ["favicon-48.png", 48]]) {
+  await sharp(APP_ICON).resize(size, size).png({ compressionLevel: 9, palette: true, quality: 90, dither: 1 }).toFile(`${ICON_DIR}/${name}`);
+}
+console.log(fs.readdirSync(ICON_DIR).map((n) => `${n} ${Math.round(fs.statSync(`${ICON_DIR}/${n}`).size / 1024)} Ko`).join("\n"));

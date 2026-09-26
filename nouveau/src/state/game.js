@@ -70,6 +70,17 @@ export function save() {
   }
 }
 
+/**
+ * Automatic save (app sent to the background): skipped if this slot was saved more
+ * recently somewhere else (another tab or the installed app), so it never overwrites
+ * newer progress.
+ */
+export function autosave() {
+  const stored = read(slot);
+  if (stored && (stored.savedAt || 0) > (state.savedAt || 0)) return false;
+  return save();
+}
+
 export function hasSave(s = slot) {
   try { return localStorage.getItem(keyOf(s)) !== null; } catch { return false; }
 }
