@@ -6,7 +6,7 @@ const page = await browser.newPage({ viewport: { width: +w, height: +h }, device
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
-await page.goto(`http://localhost:5173/dinogame/nouveau/?${q}`);
+await page.goto(`http://localhost:5173/dinogame/?${q}`);
 await page.waitForTimeout(+wait);
 const file = `.shots/test/${name}-${Date.now()}.png`;
 await page.screenshot({ path: file });

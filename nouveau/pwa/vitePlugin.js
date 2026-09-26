@@ -1,4 +1,4 @@
-// Vite plugin: writes dist/nouveau/sw.js from nouveau/pwa/sw.js, with the list of files
+// Vite plugin: writes dist/sw.js from nouveau/pwa/sw.js, with the list of files
 // Ambrelune needs (its JS chunks, sounds, images, icons) and a build id that changes only
 // when one of them changes. Runs on `vite build` only.
 
@@ -8,7 +8,12 @@ import crypto from "node:crypto";
 const TEMPLATE = new URL("./sw.js", import.meta.url);
 const PUBLIC_FILES = ["manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", "icons/favicon-48.png"];
 
-export function ambreluneServiceWorker({ entry = "nouveau", dir = "nouveau" } = {}) {
+/**
+ * @param entry   name of Ambrelune's entry in rollupOptions.input
+ * @param html    its page in the build output
+ * @param srcDir  folder holding Ambrelune's code and assets (its files get cached)
+ */
+export function ambreluneServiceWorker({ entry = "main", html = "index.html", srcDir = "nouveau" } = {}) {
   return {
     name: "ambrelune-service-worker",
     apply: "build",
@@ -27,28 +32,19 @@ export function ambreluneServiceWorker({ entry = "nouveau", dir = "nouveau" } = 
       Object.values(bundle).filter((c) => c.type === "chunk" && c.isEntry && c.name === entry).forEach((c) => visit(c.fileName));
       // Assets used by the page itself (title screen images in the HTML's CSS).
       for (const item of Object.values(bundle)) {
-        if (item.type === "asset" && (item.originalFileNames || []).some((n) => n.replace(/\\/g, "/").startsWith(`${dir}/`))) files.add(item.fileName);
+        if (item.type === "asset" && (item.originalFileNames || []).some((n) => n.replace(/\\/g, "/").startsWith(`${srcDir}/`))) files.add(item.fileName);
       }
-      files.delete(`${dir}/index.html`);
+      files.delete(html);
 
-      // The classic game's PWA plugin injects its manifest and worker registration into
-      // every page: Ambrelune has its own, so remove them from its page.
-      const page = bundle[`${dir}/index.html`];
-      if (page) {
-        page.source = String(page.source)
-          .replace(/<link rel="manifest" href="[^"]*\/manifest\.webmanifest">/g, (tag) => (tag.includes(`/${dir}/`) ? tag : ""))
-          .replace(/<script id="vite-plugin-pwa:register-sw"[^>]*><\/script>/g, "");
-      }
-
-      // URLs relative to the worker, which lives in /<base>/nouveau/.
-      const urls = ["./", ...PUBLIC_FILES, ...[...files].sort().map((f) => `../${f}`)];
-      const html = page?.source || "";
+      // URLs relative to the worker, which lives at the site root (/<base>/sw.js).
+      const urls = ["./", ...PUBLIC_FILES, ...[...files].sort()];
+      const page = String(bundle[html]?.source || "");
       const template = fs.readFileSync(TEMPLATE, "utf8");
-      const build = crypto.createHash("sha256").update(urls.join("\n")).update(String(html)).update(template).digest("hex").slice(0, 12);
+      const build = crypto.createHash("sha256").update(urls.join("\n")).update(page).update(template).digest("hex").slice(0, 12);
       const source = template
         .replace("__BUILD__", build)
         .replace("__PRECACHE__", JSON.stringify(urls, null, 2));
-      this.emitFile({ type: "asset", fileName: `${dir}/sw.js`, source });
+      this.emitFile({ type: "asset", fileName: "sw.js", source });
     },
   };
 }

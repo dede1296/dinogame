@@ -1,5 +1,6 @@
 // Ambrelune service worker (template: BUILD and PRECACHE are filled in at build time by
-// nouveau/pwa/vitePlugin.js). Scope: /dinogame/nouveau/ only.
+// nouveau/pwa/vitePlugin.js). Lives at /dinogame/sw.js; only Ambrelune's page is handled
+// (the classic game under /dinogame/ancien/ is left alone).
 //
 // - The game page is always fetched from the network first (so a new deploy shows up on
 //   the next launch); the cached copy is only used offline or on a very slow network.
@@ -15,6 +16,9 @@ const CACHE = `ambrelune-${BUILD}`;
 const FONT_CACHE = "ambrelune-fonts";
 const NETWORK_TIMEOUT_MS = 4000;
 const INDEX_URL = new URL("./", self.registration.scope).href;
+const INDEX_PATH = new URL(INDEX_URL).pathname;
+// Caches that are not ours: the classic game's former worker (Workbox) lived at this same URL.
+const isObsolete = (key) => (key.startsWith("ambrelune-") && key !== CACHE && key !== FONT_CACHE) || key.startsWith("workbox-");
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -27,7 +31,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("ambrelune-") && k !== CACHE && k !== FONT_CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter(isObsolete).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
@@ -36,8 +40,9 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
-  if (req.mode === "navigate" && url.origin === self.location.origin) {
-    event.respondWith(pageNetworkFirst(req));
+  const isGamePage = url.pathname === INDEX_PATH || url.pathname === `${INDEX_PATH}index.html`;
+  if (req.mode === "navigate") {
+    if (url.origin === self.location.origin && isGamePage) event.respondWith(pageNetworkFirst(req));
   } else if (url.origin === self.location.origin) {
     // ignoreVary: module scripts send an Origin header that some servers list in Vary.
     event.respondWith(caches.match(req, { cacheName: CACHE, ignoreVary: true }).then((hit) => hit || fetch(req)));

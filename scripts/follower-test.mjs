@@ -4,7 +4,7 @@ const browser = await chromium.launch({ executablePath: "C:/Program Files (x86)/
 const page = await browser.newPage({ viewport: { width: 430, height: 900 }, deviceScaleFactor: 2 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-await page.goto("http://localhost:5173/dinogame/nouveau/?demarrer&dino=" + (process.argv[2] || "Triceratops") + "&x=22&y=52");
+await page.goto("http://localhost:5173/dinogame/?demarrer&dino=" + (process.argv[2] || "Triceratops") + "&x=22&y=52");
 await page.waitForTimeout(3000);
 const walk = async (k, n) => { for (let i = 0; i < n; i++) { await page.keyboard.down(k); await page.waitForTimeout(70); await page.keyboard.up(k); await page.waitForTimeout(240); } };
 await walk("ArrowDown", 3); await page.waitForTimeout(400); await page.screenshot({ path: ".shots/test/10-suit-bas.png" });

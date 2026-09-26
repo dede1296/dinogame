@@ -3,7 +3,7 @@ import { chromium } from "playwright-core";
 const b = await chromium.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true });
 const p = await b.newPage({ viewport: { width: 430, height: 900 } });
 const errors = []; p.on("pageerror", (e) => errors.push(e.message)); p.on("dialog", (d) => d.dismiss());
-await p.goto("http://localhost:5173/dinogame/nouveau/?demarrer&dino=Velociraptor&niveau=10&carte=ambreluneSud&x=22&y=36"); await p.waitForTimeout(3500);
+await p.goto("http://localhost:5173/dinogame/?demarrer&dino=Velociraptor&niveau=10&carte=ambreluneSud&x=22&y=36"); await p.waitForTimeout(3500);
 await p.evaluate(() => { const w = window.__game.scene.getScene("World"); w.map.zones.forEach((z) => (z.encounters = null)); w.roamers.forEach((r) => w.removeRoamer(r)); });
 const walk = async (run) => {
   const y0 = await p.evaluate(() => window.__game.scene.getScene("World").py);
@@ -45,7 +45,7 @@ await p.click('[data-m="save"]'); await p.waitForTimeout(300);
 console.log("SAUVEGARDE:", await p.locator(".toast").last().textContent(), "ACCUEIL DANS LE MENU:", await p.isVisible('[data-m="home"]'));
 await p.keyboard.press("Escape");
 // Title screen: settings (volume saved on the device).
-await p.goto("http://localhost:5173/dinogame/nouveau/"); await p.waitForTimeout(800);
+await p.goto("http://localhost:5173/dinogame/"); await p.waitForTimeout(800);
 await p.screenshot({ path: ".shots/test/accueil.png" });
 await p.click("#btn-settings");
 await p.$eval("#vol", (el) => { el.value = 30; el.dispatchEvent(new Event("input", { bubbles: true })); });

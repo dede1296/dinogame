@@ -4,7 +4,7 @@ const browser = await chromium.launch({ executablePath: "C:/Program Files (x86)/
 const page = await browser.newPage({ viewport: { width: 430, height: 900 }, deviceScaleFactor: 1 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-await page.goto("http://localhost:5173/dinogame/nouveau/?demarrer&dino=Spinosaurus&niveau=30&carte=grotte1&x=12&y=15");
+await page.goto("http://localhost:5173/dinogame/?demarrer&dino=Spinosaurus&niveau=30&carte=grotte1&x=12&y=15");
 await page.waitForTimeout(3500);
 // Put Chloé just left of the first roamer, facing it, then walk into it.
 const info = await page.evaluate(() => {

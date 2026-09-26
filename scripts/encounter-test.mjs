@@ -4,7 +4,7 @@ const browser = await chromium.launch({ executablePath: "C:/Program Files (x86)/
 const page = await browser.newPage({ viewport: { width: 430, height: 900 }, deviceScaleFactor: 2 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-await page.goto("http://localhost:5173/dinogame/nouveau/?demarrer&dino=Spinosaurus&rencontre&x=27&y=36");
+await page.goto("http://localhost:5173/dinogame/?demarrer&dino=Spinosaurus&rencontre&x=27&y=36");
 await page.waitForTimeout(3000);
 await page.screenshot({ path: ".shots/test/08-herbes.png" });
 await page.keyboard.down("ArrowDown"); await page.waitForTimeout(80); await page.keyboard.up("ArrowDown");

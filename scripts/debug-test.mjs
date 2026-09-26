@@ -6,7 +6,7 @@ const p = await b.newPage({ viewport: { width: 430, height: 900 } });
 await p.addInitScript(() => { if (!localStorage.getItem("dino-hybride-v2")) localStorage.setItem("dino-hybride-v2", JSON.stringify({ party: [], flags: {}, savedAt: 1 })); });
 const errors = []; p.on("pageerror", (e) => errors.push(e.message));
 p.on("dialog", (d) => d.accept());
-const URL = "http://localhost:5173/dinogame/nouveau/";
+const URL = "http://localhost:5173/dinogame/";
 await p.goto(URL); await p.waitForTimeout(800);
 await p.evaluate(() => localStorage.removeItem("dino-debug"));
 await p.reload(); await p.waitForTimeout(800);

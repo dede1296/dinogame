@@ -9,7 +9,7 @@ await page.addInitScript(() => { window.__noAutosave = true; }); // the test edi
 await page.addInitScript(() => localStorage.setItem("dino-debug", "1"));
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-const URL = "http://localhost:5173/dinogame/nouveau/?";
+const URL = "http://localhost:5173/dinogame/?";
 const tap = async (k) => { await page.keyboard.down(k); await page.waitForTimeout(60); await page.keyboard.up(k); await page.waitForTimeout(420); };
 const st = () => page.evaluate(() => JSON.parse(localStorage.getItem("dino-hybride-v2-debug")));
 const liveFlags = () => page.evaluate(() => { try { return JSON.parse(localStorage.getItem("dino-hybride-v2-debug")).flags; } catch { return {}; } });

@@ -7,7 +7,7 @@ await page.addInitScript(() => localStorage.setItem("dino-debug", "1"));
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 const tap = async (k) => { await page.keyboard.down(k); await page.waitForTimeout(80); await page.keyboard.up(k); await page.waitForTimeout(350); };
-await page.goto("http://localhost:5173/dinogame/nouveau/?demarrer&dino=Compsognathus&niveau=1&x=16&y=26");
+await page.goto("http://localhost:5173/dinogame/?demarrer&dino=Compsognathus&niveau=1&x=16&y=26");
 await page.waitForTimeout(2500);
 await tap("ArrowUp");
 await page.screenshot({ path: ".shots/test/feu-" + Date.now() + ".png" });
@@ -20,7 +20,7 @@ await page.click("text=Se reposer et sauvegarder");
 for (let i = 0; i < 6; i++) { await page.waitForTimeout(900); await tap(" "); }
 console.log("RESPAWN:", await page.evaluate(() => localStorage.getItem("dino-hybride-v2-debug") && JSON.parse(localStorage.getItem("dino-hybride-v2-debug")).respawn));
 // Now force an encounter in the grass below and lose.
-await page.goto("http://localhost:5173/dinogame/nouveau/?rencontre&x=16&y=28");
+await page.goto("http://localhost:5173/dinogame/?rencontre&x=16&y=28");
 await page.waitForTimeout(800);
 await page.click("#btn-load"); await page.click("[data-slot=\"debug\"]");
 await page.waitForTimeout(2500);

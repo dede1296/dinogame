@@ -4,7 +4,7 @@ import { chromium } from "playwright-core";
 import fs from "node:fs";
 
 const EDGE = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe";
-const URL = "http://localhost:5173/dinogame/nouveau/?demarrer";
+const URL = "http://localhost:5173/dinogame/?demarrer";
 const OUT = ".shots/test";
 fs.mkdirSync(OUT, { recursive: true });
 

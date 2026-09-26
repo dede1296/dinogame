@@ -9,9 +9,9 @@ import path from "node:path";
 
 const OUT = path.join(os.tmpdir(), "ambrelune-pwa-test");
 const PORT = 4199;
-const URL = `http://localhost:${PORT}/dinogame/nouveau/`;
+const URL = `http://localhost:${PORT}/dinogame/`;
 const build = () => execSync(`npx vite build --outDir "${OUT}" --emptyOutDir`, { stdio: "ignore" });
-const buildId = () => fs.readFileSync(path.join(OUT, "nouveau/sw.js"), "utf8").match(/BUILD = "([^"]+)"/)[1];
+const buildId = () => fs.readFileSync(path.join(OUT, "sw.js"), "utf8").match(/BUILD = "([^"]+)"/)[1];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 build();
@@ -70,6 +70,11 @@ try {
   const didReload = await reloaded; await page.waitForTimeout(1500);
   const caches2 = await page.evaluate(async () => (await caches.keys()).join(", "));
   console.log("MISE À JOUR:", `${oldBuild} → ${newBuild}`, "| rechargée sur l'accueil:", didReload, "| caches:", caches2, caches2.includes(oldBuild) ? "(ancien cache encore là !)" : "(ancien cache supprimé)");
+  // 5. The classic game still works at /ancien/, and the old address redirects to Ambrelune.
+  await page.goto(URL.replace("/dinogame/", "/dinogame/ancien/")); await page.waitForTimeout(2500);
+  console.log("ANCIEN JEU (/ancien/):", await page.evaluate(() => document.querySelector("#root")?.children.length > 0 ? `ok (${document.title})` : "ÉCHEC"));
+  await page.goto(`${URL}nouveau/`); await page.waitForURL(URL, { timeout: 8000 }).catch(() => {}); await page.waitForTimeout(1500);
+  console.log("ANCIENNE ADRESSE /nouveau/ →", page.url().replace(`http://localhost:${PORT}`, ""), await page.isVisible("#menu") ? "(accueil Ambrelune)" : "(ÉCHEC)");
   console.log("ERREURS:", errors);
 } finally {
   fs.writeFileSync(version, original);

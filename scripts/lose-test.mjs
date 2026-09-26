@@ -4,7 +4,7 @@ const browser = await chromium.launch({ executablePath: "C:/Program Files (x86)/
 const page = await browser.newPage({ viewport: { width: 430, height: 900 }, deviceScaleFactor: 1 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-await page.goto("http://localhost:5173/dinogame/nouveau/?demarrer&dino=Compsognathus&niveau=1&rencontre&x=27&y=36");
+await page.goto("http://localhost:5173/dinogame/?demarrer&dino=Compsognathus&niveau=1&rencontre&x=27&y=36");
 await page.waitForTimeout(2500);
 await page.keyboard.down("ArrowDown"); await page.waitForTimeout(80); await page.keyboard.up("ArrowDown");
 for (let t = 0; t < 160; t++) {
