@@ -1,6 +1,6 @@
 // The ☰ menu, like Pokémon's Start menu: a list on the right side of the screen.
 
-import { state, save } from "../state/game.js";
+import { state, save, currentSlot } from "../state/game.js";
 import { JOURNAL } from "../data/items.js";
 import { debugEnabled, debugTabHtml, runDebugAction } from "../debug/debug.js";
 import { openScreen, esc } from "./screen.js";
@@ -23,7 +23,8 @@ export function openMainMenu(hud) {
   return openScreen(hud, {
     title: "Menu", className: "mainmenu",
     render(body, api) {
-      const entries = debugEnabled() ? [...ENTRIES, { id: "debug", icon: "🛠", label: "Débug" }] : ENTRIES;
+      // Debug tools only in the debug game, never in the three real saves.
+      const entries = debugEnabled() && currentSlot() === "debug" ? [...ENTRIES, { id: "debug", icon: "🛠", label: "Débug" }] : ENTRIES;
       body.innerHTML = entries.map((e) => `<button class="mm${e.id === "home" ? " home" : ""}" data-m="${e.id}"><span>${e.icon}</span>${e.label}</button>`).join("");
       body.querySelector(".mm")?.focus();
       body.onclick = async (ev) => {

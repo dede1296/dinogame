@@ -6,6 +6,9 @@ export const SLOTS = [1, 2, 3];
 const keyOf = (slot) => (slot === 1 ? "dino-hybride-v2" : `dino-hybride-v2-${slot}`);
 let slot = 1;
 
+/** The active save slot: 1, 2, 3 or "debug". */
+export const currentSlot = () => slot;
+
 function fresh() {
   return {
     version: 1,
