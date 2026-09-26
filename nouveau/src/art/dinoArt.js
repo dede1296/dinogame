@@ -701,5 +701,6 @@ export function buildDino(build, options = {}) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox.join(" ")}"><defs>${defs}</defs>${layers}</svg>`;
 
   const eye = [joints.neck[0] + head.eye[0], joints.neck[1] + head.eye[1]];
-  return { id, svg, defs, parts, order, joints, viewBox, ground, eye, posture, palette: p };
+  const seat = [B.top[0], B.top[1] - B.top[3] * 0.8];
+  return { id, svg, defs, parts, order, joints, viewBox, ground, eye, seat, posture, palette: p };
 }

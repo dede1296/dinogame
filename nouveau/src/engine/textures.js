@@ -101,6 +101,8 @@ export function dinoTexture(scene, build, size, options = {}) {
       anchors[key] = { x: (0 - dino.viewBox[0]) / vw, y: (dino.ground - dino.viewBox[1]) / vh };
       // Side views also record where the eye is (used for glowing eyes in caves).
       if (dino.eye) anchors[key].eye = { x: (dino.eye[0] - dino.viewBox[0]) / vw, y: (dino.eye[1] - dino.viewBox[1]) / vh };
+      // …and where a rider sits (riding a dino on the map).
+      if (dino.seat) anchors[key].seat = { x: (dino.seat[0] - dino.viewBox[0]) / vw, y: (dino.seat[1] - dino.viewBox[1]) / vh };
       resolve(key);
     };
     img.onerror = () => resolve(null);

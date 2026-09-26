@@ -281,5 +281,5 @@ export function buildDinoView(build, view, options = {}) {
   const viewBox = [-halfW, Math.round(minY), halfW * 2, Math.round(10 - minY)];
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox.join(" ")}"><defs>${defs}</defs>
     <ellipse cx="0" cy="-2" rx="${(B.w * 0.55).toFixed(1)}" ry="8" fill="rgba(0,0,0,0.25)"/>${layers.join("")}</svg>`;
-  return { svg, viewBox, ground: 0, posture };
+  return { svg, viewBox, ground: 0, posture, seat: [0, B.cy - (B.h / 2) * 0.8] };
 }

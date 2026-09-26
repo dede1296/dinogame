@@ -17,6 +17,7 @@ import { play } from "../audio/sounds.js";
 import { rollWild } from "../battle/wild.js";
 import { playCry, preloadCry } from "../audio/cries.js";
 import { DINOS } from "../../../src/data/dinos.js";
+import { riding } from "./riding.js";
 import { setDexPlace, markSeen, markCaught, dexSpeciesOf, syncDexWithTeam } from "../data/dex.js";
 
 const CHUNK = 12;
@@ -63,6 +64,8 @@ export class WorldScene extends Phaser.Scene {
     this.stepParity = 0;
     // The scene object is reused across restarts (warps): reset per-map state.
     this.follower = null;
+    this.riding = false;
+    this.stepMs = STEP_MS;
     this.idleFrames = 0;
     this.darkness = null;
     this.battleResolve = null;
@@ -84,7 +87,9 @@ export class WorldScene extends Phaser.Scene {
     hud.handlers.party = [() => this.openPanel(() => hud.openParty())];
     hud.handlers.bag = [() => this.openPanel(() => hud.openBag())];
     hud.handlers.dex = [() => this.openPanel(() => hud.openDex())];
+    hud.handlers.ride = [() => this.toggleRide()];
     syncDexWithTeam();
+    this.refreshRideButton();
     hud.handlers.b = [];
 
     this.scale.on("resize", () => this.fitCamera());
@@ -372,9 +377,10 @@ export class WorldScene extends Phaser.Scene {
     this.createFollower();
   }
 
-  async createFollower() {
-    const d = state.party[0];
+  // The dino walking behind Chloé: the lead one, or the mount while riding.
+  async createFollower(d = state.party[0]) {
     if (!d || this.follower) return;
+    this.followerDino = d;
     // Side, front and back views at the same scale; the follower turns to face its path.
     const [side, front, backView] = await Promise.all(["side", "front", "back"].map((view) => dinoTexture(this, d.build, 0, { view, unitScale: FOLLOWER_SCALE, customColor: d.tint })));
     if (!side || !this.scene.isActive() || this.follower) return;
@@ -397,7 +403,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   petFollower(d) {
-    if (this.scriptRunning || this.follower?.hopping) return;
+    if (this.scriptRunning || this.riding || this.follower?.hopping) return;
     playCry(d, { mood: "happy", echo: this.map.cave ? 0.4 : 0 });
     const f = this.follower;
     f.hopping = true;
@@ -429,6 +435,7 @@ export class WorldScene extends Phaser.Scene {
   update(time) {
     this.paintPendingChunks();
     this.updateDarkness();
+    if (this.riding) this.placeRider();
     if (time - (this.lastDexCheck || 0) > DEX_CHECK_MS) { this.lastDexCheck = time; this.noticeRoamers(); }
     if (this.moving || this.scriptRunning || hud.busy) return;
     const d = hud.dir;
@@ -437,6 +444,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     this.dir = d;
+    if (this.riding) this.faceFollower(...DELTA[d]);
     const [dx, dy] = DELTA[d];
     const nx = this.px + dx, ny = this.py + dy;
     const wild = this.entityAt(nx, ny);
@@ -451,6 +459,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   step(nx, ny) {
+    if (this.riding) return this.rideStep(nx, ny);
     this.moving = true;
     const ms = hud.bHeld ? STEP_MS * RUN_FACTOR : STEP_MS;
     const prev = { x: this.px, y: this.py };
@@ -530,6 +539,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   async warp(to) {
+    this.dismount(true);
     this.scriptRunning = true;
     await hud.fade(true);
     state.map = to.map;
@@ -721,7 +731,8 @@ export class WorldScene extends Phaser.Scene {
     hud.setBusy(false);
     this.scriptRunning = false;
     // The team order changed: the new first dino follows Chloé.
-    if (state.party[0] !== lead) this.refreshFollower();
+    if (state.party[0] !== lead && !this.riding) this.refreshFollower();
+    this.refreshRideButton();
   }
 
   // ---------------------------------------------------------------- encounters
@@ -733,6 +744,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   launchWild(wild, zone) {
+    this.dismount(true);
     this.scriptRunning = true;
     hud.setBusy(true);
     const cam = this.cameras.main;
@@ -900,6 +912,7 @@ export class WorldScene extends Phaser.Scene {
 
   // Scripted battle (trainer, boss): resolves with "win" | "lose".
   startBattle(opts) {
+    this.dismount(true);
     return new Promise((resolve) => {
       this.battleResolve = resolve;
       const cam = this.cameras.main;
@@ -916,6 +929,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   resumeFromBattle(result) {
+    this.refreshRideButton(); // a capture may have brought a dino that can be ridden
     const scripted = this.battleResolve;
     this.battleResolve = null;
     // A visible wild dino that was fought (beaten, caught or fled from) leaves the map.
@@ -1081,3 +1095,6 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 }
+
+// Riding a dino (ability "Monture"): see riding.js.
+Object.assign(WorldScene.prototype, riding);
