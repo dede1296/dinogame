@@ -1,0 +1,50 @@
+# Project Rules
+
+## Autonomy
+- Work autonomously and make reasonable technical decisions without asking me to choose tools, skills, agents or workflows.
+- Use available specialized skills, agents and workflows when they materially improve the task, including ECC when installed.
+- Delegate specialized or independent work when useful; use parallel delegation when appropriate.
+- Do not delegate trivial work when delegation adds overhead.
+- Integrate and verify delegated results yourself.
+
+## Context & Tokens
+- Minimize unnecessary context and token usage.
+- Read only relevant files, code, logs and documentation.
+- Prefer targeted inspection over full-project scans.
+- Do not reread unchanged material or repeat successful checks without a reason.
+- Stop investigating when sufficient evidence exists to proceed safely.
+- Never perform a check merely because it is available.
+
+## Verification
+- Match verification depth to the scope and risk of the change.
+- Start with modified code and direct dependencies; expand only when justified.
+- Run the smallest meaningful test or validation.
+- Do not run the full test suite, broad audits or extensive reviews for every change.
+- Increase validation for complex, security-sensitive or high-impact changes.
+- Never claim a check was performed if it was not.
+
+## Visual Checks
+- For UI changes, verify only the affected visual area.
+- Prefer targeted screenshots/browser inspection over full-page capture.
+- Do not recheck unchanged UI.
+- For non-visual changes, skip visual verification.
+
+## Framework & Security
+- Respect project-specific instructions and installed framework versions.
+- For Next.js, follow `AGENTS.md` and relevant local Next.js documentation.
+- Treat authentication, authorization, databases, APIs, Supabase, secrets and external integrations as security-sensitive.
+- Use targeted security validation when justified.
+
+## Implementation
+- Make the smallest correct change.
+- Preserve existing architecture and conventions.
+- Avoid unrelated refactoring and unnecessary dependencies.
+- When debugging, identify the root cause before changing code.
+- For complex tasks, plan first; for simple tasks, execute directly.
+
+## Completion
+- Before finishing, verify the result at a level appropriate to the task.
+- Stop when the requested behavior works and further checks would provide little additional confidence.
+- Do not continue scanning, testing or refactoring merely for completeness.
+
+**Priority: autonomy, proportional verification, minimal context usage, and correctness.**

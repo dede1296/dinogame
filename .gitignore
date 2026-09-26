@@ -6,3 +6,11 @@ dist/
 
 # Contient des clés d'API (Gemini…) : ne jamais publier
 .mcp.json
+
+# Anciens essais Unity (le jeu est sous Godot)
+Unity/
+
+# Local : images brutes générées, état des outils, réglages de l'éditeur de ce poste
+generated_imgs/
+.everything-claude-code/
+.vscode/
