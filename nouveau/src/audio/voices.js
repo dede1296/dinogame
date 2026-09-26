@@ -39,44 +39,75 @@ function bus(ctx) {
 // ---------------------------------------------------------------- blips
 // pitch (Hz), wave, formant (the vowel colour, Hz), every: one blip per this many letters.
 const PROFILES = {
-  "Prof. Roc": { pitch: 150, wave: "triangle", formant: 900, every: 4 },
+  "Prof. Roc": { pitch: 150, wave: "sawtooth", formant: 900, every: 4 },
   "Maïa": { pitch: 360, wave: "square", formant: 1700, every: 3 },
-  "Chloé": { pitch: 300, wave: "triangle", formant: 1500, every: 3 },
-  "Hélène": { pitch: 250, wave: "sine", formant: 1100, every: 4 },
-  "Rosalie": { pitch: 280, wave: "triangle", formant: 1300, every: 3 },
-  "Mamie Rose": { pitch: 230, wave: "sine", formant: 1000, every: 4 },
+  "Chloé": { pitch: 300, wave: "square", formant: 1500, every: 3 },
+  "Hélène": { pitch: 250, wave: "triangle", formant: 1100, every: 4 },
+  "Rosalie": { pitch: 280, wave: "sawtooth", formant: 1300, every: 3 },
+  "Mamie Rose": { pitch: 230, wave: "triangle", formant: 1000, every: 4 },
   "Pêcheur": { pitch: 130, wave: "sawtooth", formant: 800, every: 4 },
-  "Randonneur": { pitch: 170, wave: "triangle", formant: 1000, every: 3 },
+  "Randonneur": { pitch: 170, wave: "sawtooth", formant: 1000, every: 3 },
   "Petit Léo": { pitch: 420, wave: "square", formant: 2000, every: 2 },
 };
 // Anyone else (villagers, hooded grunts…): a neutral middle voice.
-const DEFAULT_PROFILE = { pitch: 200, wave: "triangle", formant: 1100, every: 3 };
-const BLIP_S = 0.055;
-const BLIP_LEVEL = 0.07;
+const DEFAULT_PROFILE = { pitch: 200, wave: "sawtooth", formant: 1100, every: 3 };
+const BLIP_S = 0.06;
+// Every voice is brought to this loudness (RMS of one blip), whatever its pitch or timbre.
+const TARGET_RMS = 0.07;
+const loudness = new Map(); // profile -> gain that brings it to TARGET_RMS
 
 export const blipEvery = (speaker) => (PROFILES[speaker] || DEFAULT_PROFILE).every;
+
+// One blip: a rich tone, softened above the vowel and lifted at its formant.
+function scheduleBlip(ctx, out, p, t, level, detune = 0) {
+  const osc = ctx.createOscillator();
+  osc.type = p.wave;
+  osc.frequency.value = p.pitch * (1 + detune);
+  const soft = ctx.createBiquadFilter();
+  soft.type = "lowpass";
+  soft.frequency.value = p.formant * 2.2;
+  const vowel = ctx.createBiquadFilter();
+  vowel.type = "peaking";
+  vowel.frequency.value = p.formant;
+  vowel.Q.value = 1.4;
+  vowel.gain.value = 10;
+  const env = ctx.createGain();
+  env.gain.setValueAtTime(0, t);
+  env.gain.linearRampToValueAtTime(level, t + 0.006);
+  env.gain.exponentialRampToValueAtTime(0.0001, t + BLIP_S);
+  osc.connect(soft).connect(vowel).connect(env).connect(out);
+  osc.start(t);
+  osc.stop(t + BLIP_S + 0.01);
+}
+
+// Measures a voice once (offline) and works out the gain that evens it out.
+function measure(p) {
+  if (loudness.has(p)) return;
+  loudness.set(p, null);
+  const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  if (!OAC) return;
+  const rate = 22050, off = new OAC(1, Math.round(rate * (BLIP_S + 0.02)), rate);
+  scheduleBlip(off, off.destination, p, 0, 1);
+  off.startRendering().then((buf) => {
+    const d = buf.getChannelData(0);
+    let sum = 0; for (const v of d) sum += v * v;
+    const rms = Math.sqrt(sum / d.length);
+    loudness.set(p, rms ? TARGET_RMS / rms : 1);
+  }).catch(() => loudness.set(p, 1));
+}
 
 /** One little voice blip for `speaker` (narration has none). */
 export function blip(speaker) {
   const ctx = audioContext();
   if (!speaker || !ctx || ctx.state !== "running" || !voiceVolume) return;
   const p = PROFILES[speaker] || DEFAULT_PROFILE;
-  const t = ctx.currentTime;
-  const osc = ctx.createOscillator();
-  osc.type = p.wave;
-  osc.frequency.value = p.pitch * (1 + (Math.random() * 2 - 1) * 0.12);
-  const vowel = ctx.createBiquadFilter();
-  vowel.type = "bandpass";
-  vowel.frequency.value = p.formant * (0.85 + Math.random() * 0.3);
-  vowel.Q.value = 3;
-  const env = ctx.createGain();
-  env.gain.setValueAtTime(0, t);
-  env.gain.linearRampToValueAtTime(BLIP_LEVEL * 4, t + 0.006);
-  env.gain.exponentialRampToValueAtTime(0.0001, t + BLIP_S);
-  osc.connect(vowel).connect(env).connect(bus(ctx));
-  osc.start(t);
-  osc.stop(t + BLIP_S + 0.01);
+  measure(p);
+  const level = Math.min(1, loudness.get(p) ?? 0.3);
+  scheduleBlip(ctx, bus(ctx), p, ctx.currentTime, level, (Math.random() * 2 - 1) * 0.12);
 }
+
+/** Measured gain of each voice (for the tests). */
+export const blipLevels = () => Object.fromEntries(Object.entries(PROFILES).map(([name, p]) => [name, loudness.get(p) ?? null]));
 
 // ---------------------------------------------------------------- recorded lines
 const buffers = new Map(); // line id -> Promise<AudioBuffer | null>
