@@ -18,7 +18,7 @@ const headers = { "xi-api-key": key, "Content-Type": "application/json" };
 async function ensureVoices() {
   const mine = (await (await fetch(`${API}/voices`, { headers })).json()).voices.map((v) => v.voice_id);
   for (const [speaker, v] of Object.entries(VOICE_ACTORS)) {
-    if (mine.includes(v.id)) continue;
+    if (!v.owner || mine.includes(v.id)) continue; // ElevenLabs' own voices need no adding
     const res = await fetch(`${API}/voices/add/${v.owner}/${v.id}`, { method: "POST", headers, body: JSON.stringify({ new_name: `Ambrelune ${speaker}` }) });
     const body = await res.json();
     if (!res.ok) throw new Error(`Voix de ${speaker} : ${JSON.stringify(body).slice(0, 200)}`);
@@ -31,7 +31,7 @@ async function speak(line) {
   const actor = VOICE_ACTORS[line.speaker];
   const res = await fetch(`${API}/text-to-speech/${actor.id}?output_format=mp3_44100_64`, {
     method: "POST", headers,
-    body: JSON.stringify({ text: line.text, model_id: MODEL, voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.35 } }),
+    body: JSON.stringify({ text: line.text, model_id: MODEL, language_code: "fr", voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.3 } }),
   });
   if (!res.ok) throw new Error(`${line.id} : HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
   const file = `${OUT}/${line.id}.mp3`;

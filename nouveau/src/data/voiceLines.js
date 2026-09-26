@@ -4,11 +4,14 @@
 // A dialogue line is voiced when its text is exactly one of these: keep them in sync
 // with the story scripts.
 
-// Who speaks with which ElevenLabs voice (native French voices from the shared library).
+// Who speaks with which ElevenLabs voice. The free plan only allows ElevenLabs' own
+// voices through the API (French with a slight accent); native French library voices
+// need a paid plan: Grandma Clo (EMuO6fFLrXKOryHzij6K) for Hélène, HenryD
+// (59dhv4BKONM60oDSKECM) for Roc, Adina (FvmvwvObRqIHojkEGh5N) for Maïa.
 export const VOICE_ACTORS = {
-  "Hélène": { id: "EMuO6fFLrXKOryHzij6K", owner: "0d357fe193958d2ae321dbd731cdbbec967b8b7c6e820f8eaad75a0aa7dc647a", name: "Grandma Clo" },
-  "Prof. Roc": { id: "59dhv4BKONM60oDSKECM", owner: "347f6d2a5eb4a99431e77bc2d2173e7c033d830ff1c7c6df2d4ef2fa18324e6c", name: "HenryD" },
-  "Maïa": { id: "FvmvwvObRqIHojkEGh5N", owner: "c8ab8bd8aef5940934e8f7ff32a59c17a48c3ef104cd5296a5842912dbdf88c5", name: "Adina" },
+  "Hélène": { id: "XrExE9yKIg1WjnnlVkGX", name: "Matilda" },
+  "Prof. Roc": { id: "pqHfZKP75CvOlQylNhV4", name: "Bill" },
+  "Maïa": { id: "cgSgspJ2msm6clMCkdW9", name: "Jessica" },
 };
 
 // Hélène's letter, shown on old paper and read aloud.
