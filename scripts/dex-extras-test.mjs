@@ -59,7 +59,7 @@ await p.keyboard.press("Escape"); await p.keyboard.press("Escape"); await p.wait
 
 // 5. Professor Roc: 10 species caught → a reward.
 const texts = await p.evaluate(async () => {
-  const { state } = await import("/dinogame/nouveau/src/state/game.js");
+  const state = window.__state;
   const { DINOS } = await import("/dinogame/src/data/dinos.js");
   Object.assign(state.flags, { met_roc: true, starter: true, roc_after: true });
   state.dex = state.dex || { seen: {}, caught: {} };

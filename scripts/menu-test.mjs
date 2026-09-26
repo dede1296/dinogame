@@ -16,7 +16,7 @@ const walk = async (run) => {
 console.log("CASES EN MARCHANT:", await walk(false), "EN COURANT:", await walk(true));
 // Team screen: two dinos, a hurt one; summary, swap (the new lead follows Chloé), fern from the bag.
 await p.evaluate(async () => {
-  const { state } = await import("/dinogame/nouveau/src/state/game.js");
+  const state = window.__state;
   const { createDino } = await import("/dinogame/nouveau/src/battle/dino.js");
   const i = 47; // any species
   state.party = [...state.party, createDino({ head: i, teeth: i, frontLegs: i, backLegs: i, back: i, tail: i, color: i }, 8, "Second")];
@@ -30,7 +30,7 @@ await p.click('.scr-sheet [data-i="0"]'); await p.waitForTimeout(400);
 await p.screenshot({ path: ".shots/test/resume.png", fullPage: true });
 await p.keyboard.press("Escape"); await p.waitForTimeout(300);
 await p.click('.pcard[data-i="1"]'); await p.click('.scr-sheet [data-i="1"]'); await p.click('.pcard[data-i="0"]');
-const order = await p.evaluate(async () => (await import("/dinogame/nouveau/src/state/game.js")).state.party.map((d) => d.nickname));
+const order = await p.evaluate(async () => window.__state.party.map((d) => d.nickname));
 await p.keyboard.press("Escape"); await p.waitForTimeout(1500);
 console.log("ORDRE APRES ECHANGE:", order, "COMPAGNON:", await p.evaluate(() => window.__game.scene.getScene("World").follower?.texture.key.includes("-47-") ?? "aucun"));
 await p.click(".bagbtn"); await p.waitForTimeout(300);
