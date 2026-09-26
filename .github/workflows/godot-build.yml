@@ -10,6 +10,9 @@ on:
   workflow_dispatch:
   push:
     tags: ["godot-v*"]
+    # Chaque mise à jour du prototype sur sa branche produit un APK (onglet Actions).
+    branches: [godot-prototype]
+    paths: ["Godot/**", ".github/workflows/godot-build.yml"]
 
 permissions:
   contents: write
