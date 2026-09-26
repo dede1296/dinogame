@@ -9,6 +9,7 @@ import { openBag } from "./bagScreen.js";
 import { openDex } from "./dexScreen.js";
 import { showLetter } from "./letter.js";
 import { artImg } from "./art.js";
+import { openDinoPicker } from "./debugPicker.js";
 
 const ENTRIES = [
   { id: "dex", icon: artImg("dex", "📖"), label: "Dinodex" },
@@ -66,9 +67,10 @@ function openDebug(hud) {
     title: "Débug", icon: "🛠",
     render(body, api) {
       body.innerHTML = debugTabHtml();
-      body.onclick = (e) => {
+      body.onclick = async (e) => {
         const b = e.target.closest("[data-dbg]");
         if (!b) return;
+        if (b.dataset.dbg === "pick") { await openDinoPicker(hud); return api.rerender(); }
         const msg = runDebugAction(b.dataset.dbg);
         api.rerender();
         if (msg) api.toast(msg);

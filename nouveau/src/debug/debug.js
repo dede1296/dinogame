@@ -97,7 +97,8 @@ const onOff = (k) => (state.flags[k] ? "ON" : "OFF");
 
 export function debugTabHtml() {
   const btn = (act, label, sub) => `<button class="row dbg" data-dbg="${act}" style="width:100%;text-align:left;cursor:pointer;font:inherit;color:inherit;background:rgba(255,255,255,0.05);border:1px solid rgba(246,236,210,0.2);border-radius:10px"><div class="ic">🛠</div><div><div class="t">${label}</div><div class="s">${sub}</div></div></button>`;
-  return btn("levels", "+5 niveaux", "Toute l'équipe gagne 5 niveaux.") +
+  return btn("pick", "Choisir un dino…", "N'importe quelle espèce rejoint l'équipe en tête (pour tester Monture, etc.).") +
+    btn("levels", "+5 niveaux", "Toute l'équipe gagne 5 niveaux.") +
     btn("heal", "Soigner l'équipe", "PV et statut remis à neuf.") +
     btn("pass", `Passe-partout : ${onOff("debug_pass")}`, "Le premier dino peut utiliser toutes les capacités (Charge, Tranche…).") +
     btn("noenc", `Rencontres dans les herbes : ${state.flags.debug_noenc ? "OFF" : "ON"}`, "Les dinos visibles restent sur la carte.") +
