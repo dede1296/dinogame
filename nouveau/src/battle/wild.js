@@ -3,6 +3,7 @@
 import { DINOS } from "../../../src/data/dinos.js";
 import { createDino } from "./dino.js";
 import { HYBRID_RATE } from "../data/encounters.js";
+import { SHINY_RATE, makeShiny } from "./shiny.js";
 
 const indexOf = (name) => DINOS.findIndex((d) => d.name.startsWith(name));
 
@@ -22,5 +23,6 @@ export function rollWild(table, rng = Math.random) {
   if (rng() < HYBRID_RATE) {
     for (const k of ["teeth", "back", "tail", "color"]) if (rng() < 0.6) build[k] = indexOf(pickWeighted(table, rng)[0]);
   }
-  return createDino(build, level);
+  const d = createDino(build, level);
+  return rng() < SHINY_RATE ? makeShiny(d) : d;
 }

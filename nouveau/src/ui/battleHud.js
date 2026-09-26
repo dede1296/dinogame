@@ -65,7 +65,7 @@ export class BattleHud {
   showCard(side, dino) {
     const el = this.root.querySelector(`.card.${side === "player" ? "me" : "foe"}`);
     el.classList.remove("hidden");
-    el.querySelector(".nm").textContent = side === "player" ? dino.nickname : dino.speciesName;
+    el.querySelector(".nm").textContent = (dino.shiny ? "✨ " : "") + (side === "player" ? dino.nickname : dino.speciesName);
     el.querySelector(".lv").textContent = `Niv. ${dino.level}`;
     this.updateTags(side, dino);
     this.setHp(side, dino.hp, statsOf(dino).hp, true);

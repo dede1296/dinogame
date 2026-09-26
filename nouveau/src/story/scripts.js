@@ -5,6 +5,8 @@
 import { DINOS } from "../../../src/data/dinos.js";
 import { state } from "../state/game.js";
 import { CHAPTER1, rocHint } from "./chapter1.js";
+import { ITEMS } from "../data/items.js";
+import { dexCounts, rocComment, pendingRocRewards, nextRocReward } from "../data/dex.js";
 
 export const STARTERS = [
   { species: "Velociraptor", nickname: "Vif", pitch: "Rapide et malin. Il frappe le premier, mais encaisse mal les coups.", type: "Vent 💨" },
@@ -17,6 +19,27 @@ export function speciesIndex(name) {
 }
 
 const ROC = "Prof. Roc";
+
+// Like Professor Oak: Roc looks at the Dinodex and rewards every 10 species caught.
+async function rocDexEvaluation(say, give) {
+  const { seen, caught } = dexCounts();
+  const rewards = pendingRocRewards();
+  if (!rewards.length) {
+    const next = nextRocReward();
+    if (next && caught) await say(ROC, `Ton Dinodex : ${caught} espèce${caught > 1 ? "s" : ""} possédée${caught > 1 ? "s" : ""}. Reviens me voir à ${next.at}, j'aurai quelque chose pour toi.`);
+    return;
+  }
+  await say(ROC, `Montre-moi ton Dinodex… ${seen} espèces vues, ${caught} possédées !`);
+  await say(ROC, rocComment(caught));
+  for (const r of rewards) {
+    for (const [id, qty] of Object.entries(r.items)) give(id, qty);
+    if (r.money) state.money += r.money;
+    const list = Object.entries(r.items).map(([id, qty]) => `${qty} × ${ITEMS[id].name}`);
+    if (r.money) list.push(`${r.money} pièces`);
+    await say(null, `Pour tes ${r.at} espèces, tu reçois : ${list.join(", ")} !`);
+    state.flags.rocDexReward = r.at;
+  }
+}
 const MAIA = "Maïa";
 
 export const SCRIPTS = {
@@ -90,6 +113,7 @@ export const SCRIPTS = {
     heal();
     setRespawn({ x: 6, y: 5, dir: "up", name: "au Cabinet" });
     await say(ROC, "Laisse-moi examiner ton équipe… Voilà, tes dinos sont en pleine forme !");
+    await rocDexEvaluation(say, give);
     for (const line of rocHint()) await say(ROC, line);
   },
 

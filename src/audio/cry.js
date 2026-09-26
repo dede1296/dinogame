@@ -7,7 +7,15 @@ export function playCry(build) {
   const ctx = new AC();
   // Resume if suspended (iOS Safari)
   if (ctx.state === "suspended") ctx.resume();
+  const duration = scheduleCry(ctx, ctx.destination, build);
+  setTimeout(() => { try { ctx.close(); } catch (e) {} }, (duration + 3) * 1000);
+}
 
+/**
+ * Schedules the cry of `build` on `ctx` (a live or offline AudioContext), into `output`.
+ * Returns its duration in seconds (without the reverb tail).
+ */
+export function scheduleCry(ctx, output, build) {
   const headD = DINOS[build.head];
   const teethD = DINOS[build.teeth];
   const tailD = DINOS[build.tail];
@@ -29,7 +37,7 @@ export function playCry(build) {
   // Master routing: dry + wet (reverb) buses
   const master = ctx.createGain();
   master.gain.value = 0.55;
-  master.connect(ctx.destination);
+  master.connect(output);
 
   const isUnderwater = cryType.includes("underwater") || cryType.includes("whale");
   const isCold = cryType.includes("cold");
@@ -69,5 +77,5 @@ export function playCry(build) {
     duration = cryRoar(ctx, t0, sendWet, sendDry, params);
   }
 
-  setTimeout(() => { try { ctx.close(); } catch (e) {} }, (duration + 3) * 1000);
+  return duration;
 }

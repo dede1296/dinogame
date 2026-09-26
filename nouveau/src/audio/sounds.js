@@ -109,6 +109,11 @@ export function play(name, { volume = 1, rate = 1, jitter = 0, delay = 0, echo =
   src.start(ctx.currentTime + delay);
 }
 
+/** Input of the shared cave reverb, for sounds played outside play() (dino cries). */
+export function echoInput() {
+  return audioContext() ? caveReverb() : null;
+}
+
 // Shared cave reverb: a long, dark tail (decaying low-passed noise) plus two slap-back echoes.
 let reverb = null;
 function caveReverb() {

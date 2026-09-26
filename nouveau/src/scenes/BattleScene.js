@@ -9,13 +9,17 @@ import { hud } from "../ui/hud.js";
 import { state, save } from "../state/game.js";
 import { dinoTexture, anchors, propTexture } from "../engine/textures.js";
 import { paintArena, paintPlatform, paintSpark } from "../art/battleArt.js";
-import { playCry } from "../../../src/audio/cry.js";
+import { playCry } from "../audio/cries.js";
 import { playSfx } from "../../../src/audio/sfx.js";
 import { play } from "../audio/sounds.js";
-import { markSeen, markCaught, dexSpeciesOf } from "../data/dex.js";
+import { markSeen, markCaught, dexSpeciesOf, dexCounts } from "../data/dex.js";
 
 const hex = (c) => parseInt(c.replace("#", ""), 16);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Below this share of its HP, a dino's cry sounds weak.
+const LOW_HP = 0.3;
+// The Professor rewards every this many species caught (see ROC_REWARDS).
+const ROC_MILESTONE = 10;
 
 // Solid white flash on hit (Phaser 4 tint modes).
 function flashWhite(sprite, on) {
@@ -185,7 +189,7 @@ export class BattleScene extends Phaser.Scene {
       d.nickname = d.speciesName;
       d.hp = Math.max(1, d.hp);
       d.dexSpecies = dexSpeciesOf(d);
-      const newInDex = markCaught(d.dexSpecies);
+      const newInDex = markCaught(d.dexSpecies, { shiny: !!d.shiny });
       if (state.party.length < 4) {
         state.party.push(d);
         await this.ui.message(`${d.speciesName} rejoint ton équipe !`);
@@ -195,6 +199,7 @@ export class BattleScene extends Phaser.Scene {
         await this.ui.message(`Ton équipe est complète : ${d.speciesName} est envoyé au Cabinet.`);
       }
       if (newInDex) await this.ui.message(`Les données de ${d.dexSpecies} sont ajoutées au Dinodex !`);
+      if (newInDex && dexCounts().caught % ROC_MILESTONE === 0) await this.ui.message(`${dexCounts().caught} espèces possédées ! Le Professeur Roc voudra sûrement voir ton Dinodex.`);
     } else if (result === "lose") {
       playSfx("defeat");
       await this.ui.message("Tous tes dinos sont K.O. … Tu cours te mettre à l'abri.");
@@ -228,9 +233,11 @@ export class BattleScene extends Phaser.Scene {
     this.sprites[side] = s;
     await new Promise((r) => this.tweens.add({ targets: s, x: p.x, duration: 650, ease: "Back.easeOut", onComplete: r }));
     this.breathe(side);
-    if (first || side === "foe") { try { playCry(d.build); } catch {} }
-    if (side === "foe") markSeen(dexSpeciesOf(d));
+    // Its cry, weaker when it comes in badly hurt; the foe's from the right, ours from the left.
+    if (first || side === "foe") playCry(d, { mood: d.hp / statsOf(d).hp < LOW_HP ? "weak" : "normal", pan: side === "foe" ? 0.35 : -0.35 });
+    if (side === "foe") markSeen(dexSpeciesOf(d), { shiny: !!d.shiny });
     this.ui.showCard(side, d);
+    if (d.shiny) await this.shinyEntrance(s, side);
     await sleep(side === "foe" && first ? 350 : 150);
   }
 
@@ -255,8 +262,10 @@ export class BattleScene extends Phaser.Scene {
     const color = hex(TYPE_COLORS[move.type]);
     const fx = move.fx;
     this.tweens.killTweensOf(s);
+    // A short battle cry as it attacks.
+    if (move.power && fx !== "roar") playCry(this.battle.active(side), { mood: "attack", volume: 0.75, pan: side === "foe" ? 0.35 : -0.35 });
     if (["roar", "shield", "heal"].includes(fx)) {
-      if (fx === "roar") { try { playCry(this.battle.active(side).build); } catch {} this.rings(s.x, s.y - s.displayHeight * 0.6, color); this.cameras.main.shake(300, 0.006); }
+      if (fx === "roar") { playCry(this.battle.active(side), { mood: "roar", pan: side === "foe" ? 0.35 : -0.35 }); this.rings(s.x, s.y - s.displayHeight * 0.6, color); this.cameras.main.shake(300, 0.006); }
       if (fx === "shield") this.rings(s.x, s.y - s.displayHeight * 0.45, hex("#f2c14e"), true);
       await this.bounce(s);
       this.breathe(side);
@@ -308,6 +317,8 @@ export class BattleScene extends Phaser.Scene {
     const s = this.sprites[e.side];
     const max = e.maxHp;
     if (!e.bleed) {
+      // The hurt dino yelps (louder on a critical hit).
+      playCry(this.battle.active(e.side), { mood: "hurt", volume: e.crit ? 1 : 0.7, pan: e.side === "foe" ? 0.35 : -0.35 });
       playSfx(e.crit ? "crit" : "hit");
       play(e.crit ? "hit_1" : "hit_0", { volume: 0.8, jitter: 0.08 });
       try { navigator.vibrate?.(e.crit ? 120 : 40); } catch {}
@@ -329,10 +340,23 @@ export class BattleScene extends Phaser.Scene {
 
   async faint(side) {
     const s = this.sprites[side];
-    try { playCry(this.battle.active(side).build); } catch {}
+    playCry(this.battle.active(side), { mood: "faint", pan: side === "foe" ? 0.35 : -0.35 });
     this.tweens.killTweensOf(s);
     await new Promise((r) => this.tweens.add({ targets: s, y: s.y + 60, alpha: 0, angle: side === "foe" ? 8 : -8, duration: 700, ease: "Quad.easeIn", onComplete: r }));
     this.ui.hideCard(side);
+  }
+
+  // Shiny dino: a burst of sparkles and a chime, like shiny Pokémon.
+  async shinyEntrance(s, side) {
+    play("glass", { volume: 0.7 });
+    const cx = s.x, cy = s.y - s.displayHeight * 0.55;
+    for (let i = 0; i < 10; i++) {
+      const a = (i / 10) * Math.PI * 2, r = s.displayWidth * (0.35 + Math.random() * 0.25);
+      const star = this.add.star(cx, cy, 4, 3, 10, 0xfff3b0).setDepth(5).setAlpha(0);
+      this.tweens.add({ targets: star, x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * 0.7, alpha: { from: 1, to: 0 }, angle: 90, scale: { from: 0.6, to: 1.4 }, duration: 700, delay: i * 35, ease: "Quad.easeOut", onComplete: () => star.destroy() });
+    }
+    await sleep(500);
+    if (side === "foe") await this.ui.message("✨ Il brille ! C'est une forme chromatique, très rare !");
   }
 
   dodge(side) {

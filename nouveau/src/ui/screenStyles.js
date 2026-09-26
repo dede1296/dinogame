@@ -150,4 +150,18 @@ img.caught { filter: drop-shadow(0 3px 4px rgba(0,0,0,0.45)); }
 .dex-big { width: 120px; height: 96px; display: grid; place-items: center; }
 .dex-big img { width: 120px; height: 92px; object-fit: contain; }
 .dex-big img.egg { width: 84px; height: 84px; }
+
+.dshiny { position: absolute; bottom: 4px; right: 6px; font-size: 13px; }
+.dex-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.chip { padding: 5px 10px; border-radius: 999px; background: var(--s-card-hi); border: 1px solid var(--s-line); color: inherit; font: 600 12px system-ui, sans-serif; cursor: pointer; }
+.chip.on { border-color: var(--s-accent); color: var(--s-accent); }
+.dex-big img:not(.egg) { cursor: pointer; }
+.habitat { padding: 12px; border-radius: 16px; background: var(--s-card); border: 1px solid var(--s-line); display: flex; flex-direction: column; gap: 6px; }
+.hab-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; }
+.hab-top span { font-size: 12px; color: var(--s-accent); font-weight: 700; }
+.hab-bar { position: relative; height: 6px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.hab-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; }
+.hab-bar i.seen { background: rgba(245,185,66,0.35); }
+.hab-bar i.caught { background: linear-gradient(90deg, var(--s-accent-2), var(--s-accent)); }
+.hab-sub { font-size: 11.5px; color: var(--s-mute); }
 `;

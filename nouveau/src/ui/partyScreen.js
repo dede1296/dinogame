@@ -11,6 +11,7 @@ import { play } from "../audio/sounds.js";
 import { openScreen, actionSheet, esc, hpColor } from "./screen.js";
 import { portraitSrc } from "./dinoPortrait.js";
 import { artImg } from "./art.js";
+import { playCry } from "../audio/cries.js";
 
 // Tinted pill: the type colour as text and border over a faint wash of it.
 const pill = (color, text) => `<span class="tag" style="color:${color};background:${color}26;border:1px solid ${color}59">${text}</span>`;
@@ -26,7 +27,7 @@ function card(d, i, pickFrom) {
   const cls = ["pcard", i === 0 ? "lead" : "", d.hp <= 0 ? "ko" : "", pickFrom === i ? "pick" : ""].join(" ");
   return `<button class="${cls}" data-i="${i}">
     <div class="pic"><img src="${portraitSrc(d)}" alt=""></div>
-    <div><div class="nm">${esc(d.nickname)}<small>Niv. ${d.level}</small></div>
+    <div><div class="nm">${d.shiny ? "✨ " : ""}${esc(d.nickname)}<small>Niv. ${d.level}</small></div>
       <div class="sp">${esc(d.speciesName)}${i === 0 ? `<span class="lead-badge">En tête</span>` : ""}</div>
       ${typeTag(typeOf(d.build))}${statusTag(d)}${d.hp <= 0 ? pill("#f87171", "K.O.") : ""}
       ${hpBar(d)}</div></button>`;
@@ -99,6 +100,7 @@ export function openSummary(hud, d) {
   return openScreen(hud, {
     title: d.nickname, icon: "📋", className: "summary",
     render(body) {
+      body.onclick = (e) => { if (e.target.closest(".sum-top img")) playCry(d, { mood: "happy" }); };
       const t = typeOf(d.build), s = statsOf(d), { strong, weak, resists } = matchups(t);
       const tags = (list) => list.map(typeTag).join("") || "—";
       const stat = (label, v) => `<div class="stat"><span>${label}</span><b>${v}</b><div class="bar"><i style="width:${Math.min(100, (v / STAT_MAX_SHOWN) * 100)}%"></i></div></div>`;

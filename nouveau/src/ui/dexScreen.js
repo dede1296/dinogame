@@ -4,7 +4,9 @@
 import { DINOS } from "../../../src/data/dinos.js";
 import { FAMILY_TYPES } from "../../../src/game/types.js";
 import { computeStats } from "../../../src/game/stats.js";
-import { dexStatus, dexInfo, dexCounts, dexHints, formatNumber } from "../data/dex.js";
+import { dexStatus, dexInfo, dexCounts, dexHints, dexHabitats, formatNumber } from "../data/dex.js";
+import { shinyColor } from "../battle/shiny.js";
+import { playCry } from "../audio/cries.js";
 import { play } from "../audio/sounds.js";
 import { openScreen, esc } from "./screen.js";
 import { portraitSrc } from "./dinoPortrait.js";
@@ -16,20 +18,20 @@ const FAMILY_NAMES = {
   spino: "Spinosauridé", hadrosaur: "Hadrosaure", flyer: "Ptérosaure", marine: "Reptile marin",
 };
 const RARITY_NAMES = { rare: "Rare", epic: "Mystérieux", legendary: "Légendaire" };
-const FILTERS = [["all", "Tous"], ["seen", "Vus"], ["caught", "Possédés"]];
+const FILTERS = [["all", "Tous"], ["seen", "Vus"], ["caught", "Possédés"], ["habitats", "Habitats"]];
 
-const pureDino = (i) => ({ build: { head: i, teeth: i, frontLegs: i, backLegs: i, back: i, tail: i, color: i } });
+const pureDino = (i, shiny = false) => ({ build: { head: i, teeth: i, frontLegs: i, backLegs: i, back: i, tail: i, color: i }, tint: shiny ? shinyColor(i) : undefined });
 const when = (t) => new Date(t).toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
 
-function picture(i, status, cls = "") {
+function picture(i, status, cls = "", shiny = false) {
   if (status === "unseen") return `<img class="egg ${cls}" src="${artUrl("oeuf")}" alt="">`;
-  return `<img class="${status} ${cls}" src="${portraitSrc(pureDino(i))}" alt="">`;
+  return `<img class="${status} ${cls}" src="${portraitSrc(pureDino(i, shiny))}" alt="">`;
 }
 
 function card(sp, i) {
   const status = dexStatus(sp.name);
   return `<button class="dcard ${status}" data-i="${i}" aria-label="${esc(sp.name)}">
-    <span class="dnum">${formatNumber(i + 1)}</span>${status === "caught" ? `<span class="dball">${artImg("collier", "✓")}</span>` : ""}
+    <span class="dnum">${formatNumber(i + 1)}</span>${status === "caught" ? `<span class="dball">${artImg("collier", "✓")}</span>` : ""}${dexInfo(sp.name).caught?.shiny ? `<span class="dshiny">✨</span>` : ""}
     <div class="dpic">${picture(i, status)}</div><div class="dname">${esc(sp.name)}</div></button>`;
 }
 
@@ -39,10 +41,9 @@ export function openDex(hud) {
     title: "Dinodex", icon: artImg("dex", "📖"), className: "dex",
     render(body, api) {
       const { seen, caught, total } = dexCounts();
+      if (filter === "habitats") return renderHabitats(body, api, counts(seen, caught, total));
       const list = DINOS.map((sp, i) => ({ sp, i })).filter(({ sp }) => filter === "all" || (filter === "seen" ? dexStatus(sp.name) !== "unseen" : dexStatus(sp.name) === "caught"));
-      body.innerHTML = `
-        <div class="dex-count"><span>Vus <b>${seen}</b></span><span>Possédés <b>${caught}</b></span><span class="of">sur ${total}</span></div>
-        <div class="pockets">${FILTERS.map(([id, label]) => `<button data-f="${id}" class="${id === filter ? "on" : ""}">${label}</button>`).join("")}</div>
+      body.innerHTML = `${counts(seen, caught, total)}${tabs(filter)}
         <div class="dgrid">${list.map(({ sp, i }) => card(sp, i)).join("") || `<div class="scr-empty">Rien ici pour l'instant.</div>`}</div>`;
       body.onclick = async (e) => {
         const f = e.target.closest("[data-f]");
@@ -52,25 +53,50 @@ export function openDex(hud) {
       };
     },
   });
+
+  // One block per zone with wild dinos: "3/5 possédées", like Pokémon's habitat view.
+  function renderHabitats(body, api, header) {
+    body.innerHTML = header + tabs(filter) + dexHabitats().map((h) => `
+      <div class="habitat"><div class="hab-top"><b>${esc(h.name)}</b><span>${h.caught}/${h.species.length} possédées</span></div>
+        <div class="hab-bar"><i class="seen" style="width:${(h.seen / h.species.length) * 100}%"></i><i class="caught" style="width:${(h.caught / h.species.length) * 100}%"></i></div>
+        <div class="hab-sub">${h.seen}/${h.species.length} espèces vues</div>
+        <div class="dgrid">${h.species.map((n) => { const i = DINOS.findIndex((d) => d.name === n); return card(DINOS[i], i); }).join("")}</div></div>`).join("");
+    body.onclick = async (e) => {
+      const f = e.target.closest("[data-f]");
+      if (f) { filter = f.dataset.f; play("ui_move", { volume: 0.4 }); return api.rerender(); }
+      const c = e.target.closest(".dcard");
+      if (c) await openEntry(hud, +c.dataset.i);
+    };
+  }
 }
+
+const counts = (seen, caught, total) => `<div class="dex-count"><span>Vus <b>${seen}</b></span><span>Possédés <b>${caught}</b></span><span class="of">sur ${total}</span></div>`;
+const tabs = (filter) => `<div class="pockets">${FILTERS.map(([id, label]) => `<button data-f="${id}" class="${id === filter ? "on" : ""}">${label}</button>`).join("")}</div>`;
 
 function openEntry(hud, i) {
   const sp = DINOS[i];
   const status = dexStatus(sp.name);
   const { seen, caught } = dexInfo(sp.name);
   const type = FAMILY_TYPES[sp.family];
+  let showShiny = false;
   return openScreen(hud, {
     title: `Dinodex ${formatNumber(i + 1)}`, className: "dex-entry",
-    render(body) {
+    render(body, api) {
       const badge = { unseen: "🥚 Pas encore vu", seen: "👁️ Vu", caught: "✅ Possédé" }[status];
-      const top = `<div class="sum-top dex-top"><div class="dex-big">${picture(i, status)}</div>
+      const top = `<div class="sum-top dex-top"><div class="dex-big">${picture(i, status, "", showShiny)}</div>
         <div><h3>${esc(sp.name)}</h3><div class="sp">${badge}</div>
-        ${status !== "unseen" ? `${typeTag(type)}<div class="sp" style="margin-top:6px">${FAMILY_NAMES[sp.family] || ""} · ${esc(sp.era)}${sp.rarity ? ` · ${RARITY_NAMES[sp.rarity] || ""}` : ""}</div>` : `<div class="sp">Un œuf mystérieux… Trouve cette espèce pour en savoir plus.</div>`}</div></div>`;
+        ${status !== "unseen" ? `${typeTag(type)}<div class="sp" style="margin-top:6px">${FAMILY_NAMES[sp.family] || ""} · ${esc(sp.era)}${sp.rarity ? ` · ${RARITY_NAMES[sp.rarity] || ""}` : ""}</div>
+          <div class="dex-actions"><button class="chip" data-cry>🔊 Cri</button>${caught?.shiny ? `<button class="chip ${showShiny ? "on" : ""}" data-shiny>✨ Chromatique</button>` : ""}</div>` : `<div class="sp">Un œuf mystérieux… Trouve cette espèce pour en savoir plus.</div>`}</div></div>`;
       const log = status === "unseen" ? "" : `<div class="sum-sec"><h4>Carnet</h4>
         <div class="ms">Vu pour la première fois ${seen?.place ? `: ${esc(seen.place)}, ` : ""}le ${when(seen.at)}${seen.count > 1 ? ` · croisé ${seen.count} fois` : ""}.</div>
-        ${caught ? `<div class="ms">Possédé depuis le ${when(caught.at)}${caught.place ? ` (${esc(caught.place)})` : ""}.</div>` : ""}</div>`;
+        ${caught ? `<div class="ms">Possédé depuis le ${when(caught.at)}${caught.place ? ` (${esc(caught.place)})` : ""}.</div>` : ""}
+        ${seen?.shiny ? `<div class="ms">✨ Forme chromatique ${caught?.shiny ? "possédée" : "aperçue"} !</div>` : ""}</div>`;
       const hints = status === "caught" ? "" : `<div class="sum-sec"><h4>Où le trouver</h4>${dexHints(sp.name).map((h) => `<div class="ms">• ${esc(h)}</div>`).join("")}</div>`;
       body.innerHTML = top + log + (status !== "unseen" ? typesSection(type) : "") + (status === "caught" ? statsSection(i) : "") + hints;
+      body.onclick = (e) => {
+        if (e.target.closest("[data-cry]") || e.target.closest(".dex-big img:not(.egg)")) playCry(pureDino(i));
+        if (e.target.closest("[data-shiny]")) { showShiny = !showShiny; api.rerender(); }
+      };
     },
   });
 }

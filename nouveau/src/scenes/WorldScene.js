@@ -15,6 +15,7 @@ import { ENCOUNTERS, ENCOUNTER_RATE } from "../data/encounters.js";
 import { createDino, heal } from "../battle/dino.js";
 import { play } from "../audio/sounds.js";
 import { rollWild } from "../battle/wild.js";
+import { playCry, preloadCry } from "../audio/cries.js";
 import { DINOS } from "../../../src/data/dinos.js";
 import { setDexPlace, markSeen, markCaught, dexSpeciesOf, syncDexWithTeam } from "../data/dex.js";
 
@@ -26,6 +27,9 @@ const RUN_FACTOR = 0.55;
 // Dinodex: a visible wild dino this close (in tiles) is "seen"; checked this often.
 const DEX_SIGHT_TILES = 4;
 const DEX_CHECK_MS = 500;
+// Wild dino cries: heard within this many tiles, about this often (ms, randomised ×1–2).
+const CRY_HEAR_TILES = 8;
+const CRY_EVERY_MS = 7000;
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const OPPOSITE = { up: "down", down: "up", left: "right", right: "left" };
 
@@ -387,6 +391,17 @@ export class WorldScene extends Phaser.Scene {
     this.follower = this.add.image(this.fx * TILE + TILE / 2, (this.fy + 1) * TILE - 4, key).setOrigin(a.x, a.y);
     this.follower.setDepth(this.follower.y - 2);
     this.followerBreath = this.tweens.add({ targets: this.follower, scaleY: 1.03, duration: 1100, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+    // Tap your dino: it cries happily and hops.
+    preloadCry(d);
+    this.follower.setInteractive({ useHandCursor: true }).on("pointerdown", () => this.petFollower(d));
+  }
+
+  petFollower(d) {
+    if (this.scriptRunning || this.follower?.hopping) return;
+    playCry(d, { mood: "happy", echo: this.map.cave ? 0.4 : 0 });
+    const f = this.follower;
+    f.hopping = true;
+    this.tweens.add({ targets: f, y: f.y - 14, duration: 140, yoyo: true, repeat: 1, ease: "Quad.easeOut", onComplete: () => { f.hopping = false; } });
   }
 
   faceFollower(dx, dy) {
@@ -777,6 +792,28 @@ export class WorldScene extends Phaser.Scene {
       }
     });
     this.time.addEvent({ delay: 1400 + Math.random() * 1600, loop: true, callback: () => this.roam(ent) });
+    // Now and then it calls out: heard when Chloé is near enough.
+    this.time.addEvent({ delay: CRY_EVERY_MS + Math.random() * CRY_EVERY_MS, loop: true, callback: () => this.roamerCry(ent) });
+    if (ent.wild.shiny) this.time.addEvent({ delay: 1800, loop: true, callback: () => this.shinySparkle(ent) });
+  }
+
+  // A wild dino's cry, quieter and more muffled with distance, from its side of the screen.
+  roamerCry(ent) {
+    if (ent.gone || !ent.sprite || this.scriptRunning) return;
+    const dx = ent.x - this.px, dist = Math.hypot(dx, ent.y - this.py);
+    if (dist > CRY_HEAR_TILES) return;
+    const far = dist / CRY_HEAR_TILES;
+    playCry(ent.wild, { volume: 0.9 * (1 - far) + 0.1, distance: far, pan: dx / CRY_HEAR_TILES, echo: this.map.cave ? 0.6 : 0 });
+  }
+
+  // Shiny wild dino: a few twinkles around it.
+  shinySparkle(ent) {
+    if (ent.gone || !ent.sprite) return;
+    const s = ent.sprite;
+    for (let i = 0; i < 3; i++) {
+      const star = this.add.star(s.x + (Math.random() - 0.5) * s.displayWidth, s.y - Math.random() * s.displayHeight, 4, 2, 6, 0xfff3b0).setDepth(DARK_DEPTH + 2).setAlpha(0);
+      this.tweens.add({ targets: star, alpha: { from: 1, to: 0 }, scale: { from: 0.4, to: 1.3 }, angle: 90, duration: 600, delay: i * 180, onComplete: () => star.destroy() });
+    }
   }
 
   // Wild dinos Chloé walks near count as "seen" in the Dinodex (like crossing them).
@@ -785,7 +822,10 @@ export class WorldScene extends Phaser.Scene {
       if (r.gone || r.dexNoticed || !r.sprite || Math.max(Math.abs(r.x - this.px), Math.abs(r.y - this.py)) > DEX_SIGHT_TILES) continue;
       r.dexNoticed = true;
       const name = dexSpeciesOf(r.wild);
-      if (markSeen(name)) hud.toast(`Nouvelle espèce aperçue : ${name} ! Elle est notée dans le Dinodex.`);
+      const isNew = markSeen(name, { shiny: !!r.wild.shiny });
+      if (r.wild.shiny) hud.toast(`✨ Un ${name} chromatique ! Il brille… ne le laisse pas filer !`);
+      else if (isNew) hud.toast(`Nouvelle espèce aperçue : ${name} ! Elle est notée dans le Dinodex.`);
+      if (isNew || r.wild.shiny) this.roamerCry(r);
     }
   }
 

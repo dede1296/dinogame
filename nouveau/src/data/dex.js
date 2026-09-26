@@ -19,22 +19,24 @@ export function dexSpeciesOf(d) {
   return d.dexSpecies || DINOS[d.build?.head]?.name || null;
 }
 
-/** Marks a species as seen; returns true the first time. */
-export function markSeen(name) {
+/** Marks a species as seen (`shiny`: its shiny form was seen); returns true the first time. */
+export function markSeen(name, { shiny = false } = {}) {
   if (!name) return false;
   const seen = dex().seen;
-  const first = !seen[name];
-  seen[name] = { at: seen[name]?.at || Date.now(), place: seen[name]?.place || place, count: (seen[name]?.count || 0) + 1 };
-  return first;
+  const prev = seen[name];
+  seen[name] = { at: prev?.at || Date.now(), place: prev?.place || place, count: (prev?.count || 0) + 1, shiny: !!(prev?.shiny || shiny) };
+  return !prev;
 }
 
 /** Marks a species as caught (and seen); returns true the first time. */
-export function markCaught(name) {
+export function markCaught(name, { shiny = false } = {}) {
   if (!name) return false;
-  if (!dex().seen[name]) markSeen(name);
+  if (!dex().seen[name]) markSeen(name, { shiny });
+  else if (shiny) dex().seen[name].shiny = true;
   const caught = dex().caught;
   const first = !caught[name];
-  if (first) caught[name] = { at: Date.now(), place };
+  if (first) caught[name] = { at: Date.now(), place, shiny };
+  else if (shiny) caught[name].shiny = true;
   return first;
 }
 
@@ -58,7 +60,7 @@ export function syncDexWithTeam() {
   if (starter && state.flags.starter) markCaught(DINOS.find((d) => d.name.startsWith(starter))?.name);
   for (const d of [...state.party, ...(state.box || [])]) {
     const pure = Object.values(d.build).every((v) => v === d.build.head);
-    if (d.dexSpecies || pure) markCaught(dexSpeciesOf(d));
+    if (d.dexSpecies || pure) markCaught(dexSpeciesOf(d), { shiny: !!d.shiny });
   }
 }
 
@@ -104,4 +106,52 @@ export function dexHints(name) {
   else if (!zones.length && sp && FAMILY_RUMOURS[sp.family]) hints.push(`On raconte que… ${FAMILY_RUMOURS[sp.family]}`);
   if (sp?.rarity && RARITY[sp.rarity]) hints.push(RARITY[sp.rarity]);
   return hints.length ? hints : ["Personne ne sait encore où le trouver. Explore l'île !"];
+}
+
+// ---------------------------------------------------------------- habitats
+const HABITAT_NAMES = { plaines: "Plaines des Fougères", grotte: "Grotte des Échos" };
+
+/** Each zone with wild dinos: its species and how many were seen / caught. */
+export function dexHabitats() {
+  return Object.entries(ENCOUNTERS).map(([id, list]) => {
+    const species = [...new Set(list.map(([n]) => DINOS.find((d) => d.name.startsWith(n))?.name).filter(Boolean))];
+    return {
+      id, name: HABITAT_NAMES[id] || id, species,
+      seen: species.filter((n) => dexStatus(n) !== "unseen").length,
+      caught: species.filter((n) => dexStatus(n) === "caught").length,
+    };
+  });
+}
+
+// ---------------------------------------------------------------- Professor Roc
+// Like Professor Oak's Pokédex evaluations: a reward every 10 species caught.
+export const ROC_REWARDS = [
+  { at: 10, items: { collier: 5, fougere: 3 } },
+  { at: 20, items: { collier: 8, baie: 3 } },
+  { at: 30, items: { collier: 10, fougere: 5 }, money: 150 },
+  { at: 40, items: { collier: 12, baie: 5 }, money: 250 },
+  { at: 50, items: { collier: 15, fougere: 8 }, money: 400 },
+  { at: 60, items: { collier: 20, fougere: 10, baie: 10 }, money: 600 },
+];
+const ROC_COMMENTS = [
+  [0, "C'est un bon début. Chaque espèce compte : observe-les bien."],
+  [5, "Tu commences à connaître les Plaines. Hélène serait contente."],
+  [10, "Déjà une belle collection ! Tu as l'œil, c'est sûr."],
+  [20, "Impressionnant. Même Hélène n'en avait pas autant à ses débuts."],
+  [35, "Ton Dinodex devient une vraie encyclopédie de l'île !"],
+  [50, "Incroyable… Il ne te manque presque plus rien."],
+  [65, "Toutes les espèces ! Tu as terminé le Dinodex. Hélène n'y était jamais arrivée."],
+];
+
+export const rocComment = (caught) => ROC_COMMENTS.filter(([n]) => caught >= n).at(-1)[1];
+
+/** Rewards reached but not yet given by the Professor. */
+export function pendingRocRewards() {
+  const done = state.flags.rocDexReward || 0, caught = dexCounts().caught;
+  return ROC_REWARDS.filter((r) => r.at > done && r.at <= caught);
+}
+
+/** The next reward still to reach, or null. */
+export function nextRocReward() {
+  return ROC_REWARDS.find((r) => r.at > dexCounts().caught) || null;
 }
