@@ -1,80 +1,194 @@
 extends Node2D
-## The exploration screen: loads the current region, places Chloé and her dino, sets the
-## camera, music and ambience, and handles what regions report (encounters…).
+## The exploration screen: runs the current zone in 2D (Chloé, her lead dino, collisions,
+## exits, encounters, saves) and shows it in 2.5D through a WorldView; sets the music and
+## ambience, spawns the dinos of the zone's habitats, handles what the zone reports.
+## The 2D nodes are not drawn; the 2D camera still follows Chloé for positional sounds.
 
-const REGIONS := {
-	&"plaines_sud": "res://regions/plaines/plaines_sud.tscn",
+const ZONES := {
+	&"port_ambre": "res://regions/port/port_ambre.tscn",
+	&"cabinet": "res://regions/port/cabinet.tscn",
+	&"plaines": "res://regions/plaines/plaines.tscn",
+	&"grotte_echos": "res://regions/plaines/grotte_echos.tscn",
+	&"antre_crane": "res://regions/plaines/antre_crane.tscn",
 }
 const PLAYER := preload("res://actors/player.tscn")
 const COMPANION := preload("res://actors/companion.tscn")
-const DETAIL_INTERVAL := Vector2(7.0, 18.0)   # seconds between ambience details (birds…)
+## The sea is heard from this far (tiles), louder as Chloé comes closer; a fire, from this far.
+const SEA_HEAR_TILES := 16.0
+const FIRE_HEAR_TILES := 7.0
 const BATTLE := preload("res://battle/battle_scene.gd")
-## Tall grass: chance of a wild dino per step, and calm steps after a battle.
-## Phaser uses 3 % per 48 px tile; Chloé's steps here are 38 px.
+## Tall grass: chance of a hidden dino per step (Chloé's steps are 38 px), and calm steps
+## after a battle. When the lead dino is far above the zone, weak dinos keep away.
 const ENCOUNTER_RATE := 0.03
 const CALM_STEPS := 6
-## [species, min level, max level] met in the tall grass (the slice has one species).
-const ENCOUNTERS := [[&"protoceratops", 2, 4]]
-
+const OUTLEVELED_BY := 5
+const OUTLEVELED_RATE := 0.25
+## Experience for the whole party when a species is met for the first time.
+const XP_NEW_SPECIES := 10
+const COMPANION_OFFSET := Vector2(-34, 8)
+const ZONE_FADE := 0.3
+const RAIN_SOUND := preload("res://assets/audio/ambience/pluie.mp3")
+const RAIN_DB := -7.0   # a light rain, under the zone's ambience
+## The map: Chloé sees this far around her (tiles), checked this often (s).
+const EXPLORE_RADIUS := 11.0
+const EXPLORE_EVERY := 0.25
 var region: Region
 var player: Player
 var companion: Companion
 
 @onready var region_holder: Node2D = $RegionHolder
-@onready var clouds: ColorRect = $CloudShadows
-@onready var banner: Label = $Hud/Banner
+@onready var hud: CanvasLayer = $Hud
 
-var _detail_timer := 3.0
+## Per tile of the zone: distance (tiles) to the nearest sea water (see _find_sea).
+var _sea_distance := PackedFloat32Array()
 var _steps_since_battle := 0
+var _changing_zone := false
+var _view: WorldView
+var _banner: ZoneBanner
+var _map_button: Button
+var _explore_timer := 0.0
 
 
 func _ready() -> void:
-	(clouds.material as ShaderMaterial).set_shader_parameter("noise_tex", WorldNoise.texture())
-	if Game.party.is_empty():   # scene launched on its own (F6 in the editor)
+	# Only the 3D view is drawn; the 2D world keeps playing underneath.
+	region_holder.visible = false
+	$CloudShadows.visible = false
+	_view = WorldView.new()
+	add_child(_view)
+	$Hud/Banner.queue_free()
+	_banner = ZoneBanner.new()
+	hud.add_child(_banner)
+	if not Game.in_game:   # scene launched on its own (F6 in the editor)
 		Game.new_game()
-	_load_region(Game.region_id)
-	_add_pollen(player.get_node("Camera"))
+		Game.give_starter(&"velociraptor")
+		Game.set_flag(&"prologue_done")
+	player = PLAYER.instantiate()
+	player.stepped.connect(_on_player_stepped)
+	companion = COMPANION.instantiate()
+	companion.player = player
+	var id := Game.region_id
+	var pos := Game.player_position if Game.has_position else Vector2.INF
+	_enter_zone(id, Game.arrival if Game.arrival != &"" else &"Depart", pos)
+	Game.arrival = &""
+	_view.camera.touch_controls = $TouchControls
+	Game.phase_changed.connect(func(_phase: StringName) -> void: _spawn_roamers())
+	Game.weather_changed.connect(func(_w: StringName) -> void: _weather_sound())
+	_weather_sound()
+	SettingsMenu.add_open_button(hud)
+	_map_button = MapScreen.add_open_button(hud, _open_map)
+	_map_button.visible = not region.indoor
+	hud.add_child(PartyBar.new())
+	hud.add_child(ClockBadge.new())
 	Save.enabled = true
 	Save.before_save = _store_position
 
 
 func _exit_tree() -> void:
 	Save.enabled = false
+	Audio.play_weather(null, 0.8)
 
 
-func _load_region(id: StringName) -> void:
-	if not REGIONS.has(id):
-		push_error("Région inconnue : %s — retour au départ" % id)
+# ------------------------------------------------------------------ zones
+
+## Shows zone `id` with Chloé at `pos` (Vector2.INF: at the `spawn` marker).
+func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF) -> void:
+	if not ZONES.has(id):
+		push_error("Zone inconnue : %s — retour au départ" % id)
 		id = Game.START_REGION
-		Game.has_position = false
-	region = load(REGIONS[id]).instantiate()
+		pos = Vector2.INF
+	var previous := region
+	if previous:
+		for actor in [player, companion]:
+			actor.get_parent().remove_child(actor)
+		region_holder.remove_child(previous)
+		previous.queue_free()
+	region = load(ZONES[id]).instantiate()
 	region_holder.add_child(region)
-
-	player = PLAYER.instantiate()
-	region.entities.add_child(player)
-	var pos := Game.player_position if Game.has_position and Game.region_id == id else region.spawn_point()
-	player.teleport(pos)
-	player.surface_at = region.surface_at
-	player.stepped.connect(_on_player_stepped)
 	Game.region_id = id
+	Game.zone_level = roundi((region.levels.x + region.levels.y) / 2.0)
+	Game.climate = {"rain": region.rain_chance, "mist": region.mist_chance}
 
-	companion = COMPANION.instantiate()
-	companion.player = player
+	if pos == Vector2.INF:
+		pos = region.spawn_point(spawn)
+	region.entities.add_child(player)
 	region.entities.add_child(companion)
-	companion.teleport(pos + Vector2(-34, 8))
+	player.surface_at = region.surface_at
+	player.teleport(pos)
+	companion.teleport(pos + COMPANION_OFFSET)
 
-	var bounds := region.bounds()
-	(player.get_node("Camera") as Camera2D).call(&"fit_to", bounds)
-	clouds.position = bounds.position - Vector2(200, 200)
-	clouds.size = bounds.size + Vector2(400, 400)
+	(player.get_node("Camera") as Camera2D).call(&"fit_to", region.bounds())
 
 	for node in region.entities.get_children():
 		if node is WildDino:
 			node.encountered.connect(_on_encountered)
+	for exit in region.exits():
+		exit.taken.connect(_on_exit_taken)
+	_spawn_roamers()
+	_view.show_zone(region, player, ZONES)
+	_explore()
+	if _map_button:
+		_map_button.visible = not region.indoor
+	# The story may have something to play here (the prologue…).
+	Story.on_zone_entered.call_deferred(id)
 
 	Audio.play_music(region.music)
-	Audio.play_ambience(region.ambience, 2.5)
-	_show_banner(region.display_name)
+	_find_sea()
+	Audio.play_ambience(region.ambience_id)
+	_show_banner(region.zone_name if region.zone_name != "" else region.display_name,
+		region.display_name if region.zone_name != "" else "")
+
+
+func _on_exit_taken(exit: ZoneExit) -> void:
+	if player.busy or _changing_zone:
+		return
+	if not exit.is_open():
+		player.busy = true
+		player.velocity = Vector2.ZERO
+		# Step back out of the exit, towards the middle of the zone.
+		var back := (region.bounds().get_center() - player.global_position).normalized() * 40.0
+		player.teleport(player.global_position + back)
+		await Dialogue.run(DialogueDB.lines(exit.blocked_dialogue))
+		player.busy = false
+		return
+	goto_zone(exit.target_zone, exit.target_spawn)
+
+
+## Goes to another zone with a fade (an exit, or the debug panel).
+func goto_zone(id: StringName, spawn: StringName = &"Depart") -> void:
+	if _changing_zone or not ZONES.has(id):
+		return
+	_changing_zone = true
+	player.busy = true
+	await Router.fade_out(ZONE_FADE)
+	_enter_zone(id, spawn)
+	Save.save_game()
+	await Router.fade_in(ZONE_FADE)
+	player.busy = false
+	_changing_zone = false
+
+
+## The habitats' roaming dinos for the current part of the day.
+func _spawn_roamers() -> void:
+	if region == null:
+		return
+	var phase := Game.phase()
+	for h in region.habitats():
+		for w in h.spawn_roamers(phase, region.entities, _can_stand):
+			w.encountered.connect(_on_encountered)
+
+
+## Free ground for a dino: grass or path, nothing solid there, away from Chloé.
+func _can_stand(p: Vector2) -> bool:
+	if region.surface_at(p) == &"water" or p.distance_to(player.global_position) < 200.0:
+		return false
+	var query := PhysicsPointQueryParameters2D.new()
+	query.position = p
+	query.collision_mask = 1
+	return get_world_2d().direct_space_state.intersect_point(query, 1).is_empty()
+
+
+func _weather_sound() -> void:
+	Audio.play_weather(RAIN_SOUND if Game.weather == &"rain" else null, 3.0, RAIN_DB)
 
 
 func _store_position() -> void:
@@ -83,48 +197,109 @@ func _store_position() -> void:
 		Game.has_position = true
 
 
+# ------------------------------------------------------------------ ambience
+
 func _process(delta: float) -> void:
-	_detail_timer -= delta
-	if _detail_timer <= 0.0 and region and not region.ambience_details.is_empty():
-		_detail_timer = randf_range(DETAIL_INTERVAL.x, DETAIL_INTERVAL.y)
-		Audio.play_sfx(region.ambience_details.pick_random(), -14.0, 0.06)
+	_explore_timer -= delta
+	if _explore_timer <= 0.0:
+		_explore_timer = EXPLORE_EVERY
+		_explore()
+		_hear_surroundings()
 
 
-## Motes of pollen drifting in the sunlight around the camera (in world space, so they
-## stay put when the camera moves).
-func _add_pollen(camera: Node2D) -> void:
-	var p := CPUParticles2D.new()
-	p.amount = 36
-	p.lifetime = 7.0
-	p.preprocess = 7.0
-	p.local_coords = false
-	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	p.emission_rect_extents = Vector2(760, 440)
-	p.direction = Vector2(1, -0.3)
-	p.spread = 60.0
-	p.gravity = Vector2(4, -3)
-	p.initial_velocity_min = 4.0
-	p.initial_velocity_max = 14.0
-	p.scale_amount_min = 1.5
-	p.scale_amount_max = 3.5
-	p.z_index = 90
-	var fade := Gradient.new()
-	fade.set_color(0, Color(1, 0.95, 0.7, 0))
-	fade.add_point(0.2, Color(1, 0.95, 0.7, 0.75))
-	fade.add_point(0.8, Color(1, 0.95, 0.7, 0.75))
-	fade.set_color(fade.get_point_count() - 1, Color(1, 0.95, 0.7, 0))
-	p.color_ramp = fade
-	camera.add_child(p)
+## The sea and the fires sound louder as Chloé comes near them.
+func _hear_surroundings() -> void:
+	if region == null:
+		return
+	var tile := Vector2i(player.global_position / region.tile_size())
+	var size := region.map_size()
+	var sea := 0.0
+	if not _sea_distance.is_empty():
+		var c := tile.clamp(Vector2i.ZERO, size - Vector2i.ONE)
+		sea = clampf(1.0 - _sea_distance[c.y * size.x + c.x] / SEA_HEAR_TILES, 0.0, 1.0)
+	var fire := 0.0
+	for f in get_tree().get_nodes_in_group(&"fire"):
+		var d := (f as Node2D).global_position.distance_to(player.global_position) / region.tile_size().x
+		fire = maxf(fire, clampf(1.0 - d / FIRE_HEAR_TILES, 0.0, 1.0))
+	Audio.ambience.set_mix("sea", sea)
+	Audio.ambience.set_mix("fire", fire)
 
 
-func _show_banner(text: String) -> void:
-	banner.text = text
-	banner.modulate.a = 0.0
-	var t := create_tween()
-	t.tween_property(banner, "modulate:a", 1.0, 0.6).set_delay(0.4)
-	t.tween_interval(2.2)
-	t.tween_property(banner, "modulate:a", 0.0, 0.8)
+## The sea: the water touching the edge of the zone, and all the water joined to it (a pond
+## is not the sea). Stores each tile's distance to it, for _hear_surroundings.
+func _find_sea() -> void:
+	_sea_distance = PackedFloat32Array()
+	if region.indoor:
+		return
+	var size := region.map_size()
+	var t := region.tile_size()
+	var is_water := func(c: Vector2i) -> bool: return region.surface_at((Vector2(c) + Vector2(0.5, 0.5)) * t) == &"water"
+	var sea := {}
+	var queue: Array[Vector2i] = []
+	for x in size.x:
+		for y in [0, size.y - 1]:
+			queue.append(Vector2i(x, y))
+	for y in size.y:
+		for x in [0, size.x - 1]:
+			queue.append(Vector2i(x, y))
+	queue = queue.filter(func(c: Vector2i) -> bool: return is_water.call(c))
+	for c in queue:
+		sea[c] = true
+	var i := 0
+	while i < queue.size():
+		var c := queue[i]
+		i += 1
+		for d: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			var n := c + d
+			if n.x >= 0 and n.y >= 0 and n.x < size.x and n.y < size.y and not sea.has(n) and is_water.call(n):
+				sea[n] = true
+				queue.append(n)
+	if sea.is_empty():
+		return
+	# Distance to it, spreading out from its tiles (in tiles, by steps).
+	_sea_distance.resize(size.x * size.y)
+	_sea_distance.fill(INF)
+	var front: Array[Vector2i] = []
+	for c: Vector2i in sea:
+		_sea_distance[c.y * size.x + c.x] = 0.0
+		front.append(c)
+	i = 0
+	while i < front.size():
+		var c := front[i]
+		i += 1
+		var here := _sea_distance[c.y * size.x + c.x]
+		if here >= SEA_HEAR_TILES:
+			continue
+		for d: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			var n := c + d
+			if n.x >= 0 and n.y >= 0 and n.x < size.x and n.y < size.y and _sea_distance[n.y * size.x + n.x] > here + 1.0:
+				_sea_distance[n.y * size.x + n.x] = here + 1.0
+				front.append(n)
 
+
+## What Chloé sees around her appears on the map.
+func _explore() -> void:
+	if region and not region.indoor:
+		Game.explore(Game.region_id, region.map_size(), player.global_position / region.tile_size(), EXPLORE_RADIUS)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"map"):
+		get_viewport().set_input_as_handled()
+		_open_map()
+
+
+func _open_map() -> void:
+	if player.busy or _changing_zone or get_tree().paused or region.indoor:
+		return
+	MapScreen.open(self, region, _view.map_layers(), player.global_position / region.tile_size())
+
+
+func _show_banner(title: String, subtitle := "") -> void:
+	_banner.show_zone(title, subtitle)
+
+
+# ------------------------------------------------------------------ encounters
 
 ## A wild dino touched Chloé.
 func _on_encountered(wild: WildDino) -> void:
@@ -134,38 +309,49 @@ func _on_encountered(wild: WildDino) -> void:
 	if not is_instance_valid(wild):
 		return
 	if result in ["win", "catch"]:
-		wild.queue_free()   # back next time the region is loaded
+		wild.queue_free()   # back next time the zone is loaded
 	else:
 		wild.calm_down(5.0)
 
 
-## A step in the tall grass may start a battle (Phaser rate); a few calm steps after one.
+## A step in the tall grass may start a battle with a dino of the habitat there.
 func _on_player_stepped(surface: StringName) -> void:
 	_steps_since_battle += 1
 	# Resting while walking: the party slowly gets its strength back.
 	for d in Game.party:
 		d.hp = mini(d.max_hp(), d.hp + 1)
-	if surface != &"tall_grass" or _steps_since_battle < CALM_STEPS or player.busy:
+	if surface != &"tall_grass" or _steps_since_battle < CALM_STEPS or player.busy or _changing_zone:
 		return
-	if randf() < ENCOUNTER_RATE:
-		var row: Array = ENCOUNTERS.pick_random()
-		_battle(Dino.create(row[0], randi_range(row[1], row[2])))
+	var habitat := region.habitat_at(player.global_position)
+	if habitat == null:
+		return
+	var rate := ENCOUNTER_RATE
+	var lead := Game.lead_dino()
+	if lead and lead.level >= region.levels.y + OUTLEVELED_BY:
+		rate *= OUTLEVELED_RATE
+	if randf() >= rate:
+		return
+	var e := habitat.pick_hidden(Game.phase())
+	if e:
+		_battle(Dino.create(e.species, e.roll_level()))
 
 
 ## Plays a wild battle over the paused world, then applies its outcome.
-func _battle(wild: Dino) -> String:
+## `rules`: see BattleScene.run (an Alpha: no collar, no running away).
+func _battle(wild: Dino, rules := {}) -> String:
 	player.busy = true
 	player.velocity = Vector2.ZERO
+	var first_sighting := not Game.dex_seen.has(String(wild.species().id))
 	await Router.battle_flash()
 	get_tree().paused = true
 	var battle: CanvasLayer = BATTLE.new()
 	add_child(battle)
 	Router.end_transition(0.25)
-	var result: String = await battle.run(wild)
+	var result: String = await battle.run(wild, rules)
 	battle.queue_free()
 	get_tree().paused = false
 	Audio.pop_music()
-	Audio.fade_ambience(BATTLE.AMBIENCE_DB, 1.5)
+	Audio.fade_ambience(0.0, 1.5)
 	_steps_since_battle = 0
 	match result:
 		"catch":
@@ -174,9 +360,12 @@ func _battle(wild: Dino) -> String:
 			await Dialogue.run([{"text": "%s rejoint ton équipe !" % wild.nickname if in_party else "%s est envoyé au Cabinet." % wild.nickname}])
 		"lose":
 			Game.heal_party()
-			player.teleport(region.spawn_point())
-			companion.teleport(player.global_position + Vector2(-34, 8))
-			await Dialogue.run([{"text": "Chloé ramène son équipe épuisée à l'entrée des Plaines. Après un peu de repos, tout le monde va mieux."}])
+			player.teleport(region.spawn_point(rules.get("lose_spawn", &"Depart")))
+			companion.teleport(player.global_position + COMPANION_OFFSET)
+			await Dialogue.run([{"text": "Chloé ramène son équipe épuisée à l'entrée de la zone. Après un peu de repos, tout le monde va mieux."}])
+	# Discovering a species teaches the whole party something.
+	if first_sighting and result != "lose":
+		Game.award_team_xp(XP_NEW_SPECIES)
 	Save.save_game()
 	player.busy = false
 	return result

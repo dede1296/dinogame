@@ -1,0 +1,196 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://world/region.gd" id="1_56oru"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/plaines.ogg" id="2_ij26q"]
+[ext_resource type="Texture2D" path="res://assets/art/ground/plancher.png" id="3_2sie2"]
+[ext_resource type="TileSet" path="res://regions/terrain_tileset.tres" id="4_gdhfx"]
+[ext_resource type="Script" path="res://world/ground.gd" id="5_w618k"]
+[ext_resource type="Script" path="res://world/tall_grass.gd" id="6_osk4j"]
+[ext_resource type="Script" path="res://world/prop.gd" id="7_lcsmi"]
+[ext_resource type="PackedScene" path="res://actors/npc.tscn" id="8_vkm6t"]
+[ext_resource type="Script" path="res://actors/npc.gd" id="9_ct8vd"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/roc.png" id="10_yvwj8"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="11_6yp8w"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="12_5mdr5"]
+[ext_resource type="Script" path="res://actors/dino_npc.gd" id="13_tik4p"]
+[ext_resource type="Script" path="res://world/zone_exit.gd" id="14_dwlnw"]
+
+[node name="Cabinet" type="Node2D" unique_id=748810469]
+script = ExtResource("1_56oru")
+region_id = &"cabinet"
+display_name = "Port-Ambre"
+zone_name = "Le Cabinet d'Hélène"
+levels = Vector2i(1, 1)
+music = ExtResource("2_ij26q")
+ambience_id = &"cabinet"
+indoor = true
+ground_tex = ExtResource("3_2sie2")
+relief = PackedStringArray()
+
+[node name="Terrain" type="TileMapLayer" parent="." unique_id=125341001]
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAANAAAAAAAAAAAAAAAOAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAEAAAAAAAAAAAAPAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAAAAAAAAAAOAAIAAAAAAAAAAAAPAAIAAAAAAAAAAAAAAAMAAAAAAAAAAAABAAMAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAAJAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAANAAMAAAAAAAAAAAAOAAMAAAAAAAAAAAAPAAMAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAANAAQAAAAAAAAAAAAOAAQAAAAAAAAAAAAPAAQAAAAAAAAAAAAAAAUAAAAAAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAAAAAAAAAAEAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAGAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAJAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAMAAUAAAAAAAAAAAANAAUAAAAAAAAAAAAOAAUAAAAAAAAAAAAPAAUAAAAAAAAAAAAAAAYAAAAAAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAAOAAYAAAAAAAAAAAAPAAYAAAAAAAAAAAAAAAcAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAANAAcAAAAAAAAAAAAOAAcAAAAAAAAAAAAPAAcAAAAAAAAAAAAAAAgAAAAAAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAAAAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAOAAgAAAAAAAAAAAAPAAgAAAAAAAAAAAAAAAkAAAAAAAAAAAABAAkAAAAAAAAAAAACAAkAAAAAAAAAAAADAAkAAAAAAAAAAAAEAAkAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAkAAAAAAAAAAAAHAAkAAAAAAAAAAAAIAAkAAAAAAAAAAAAJAAkAAAAAAAAAAAAKAAkAAAAAAAAAAAALAAkAAAAAAAAAAAAMAAkAAAAAAAAAAAANAAkAAAAAAAAAAAAOAAkAAAAAAAAAAAAPAAkAAAAAAAAAAAAAAAoAAAAAAAAAAAABAAoAAAAAAAAAAAACAAoAAAAAAAAAAAADAAoAAAAAAAAAAAAEAAoAAAAAAAAAAAAFAAoAAAAAAAAAAAAGAAoAAAAAAAAAAAAHAAoAAAAAAAAAAAAIAAoAAAAAAAAAAAAJAAoAAAAAAAAAAAAKAAoAAAAAAAAAAAALAAoAAAAAAAAAAAAMAAoAAAAAAAAAAAANAAoAAAAAAAAAAAAOAAoAAAAAAAAAAAAPAAoAAAAAAAAAAAA=")
+tile_set = ExtResource("4_gdhfx")
+
+[node name="Ground" type="ColorRect" parent="." unique_id=824253456 node_paths=PackedStringArray("terrain")]
+z_index = -10
+script = ExtResource("5_w618k")
+terrain = NodePath("../Terrain")
+
+[node name="Entities" type="Node2D" parent="." unique_id=1431005831]
+y_sort_enabled = true
+
+[node name="TallGrass" type="Node2D" parent="Entities" unique_id=1820601110 node_paths=PackedStringArray("terrain")]
+script = ExtResource("6_osk4j")
+terrain = NodePath("../../Terrain")
+
+[node name="MurCabinet" type="StaticBody2D" parent="Entities" unique_id=461779047]
+position = Vector2(86.4, 62.4)
+script = ExtResource("7_lcsmi")
+kind = "mur_cabinet"
+
+[node name="MurCabinet2" type="StaticBody2D" parent="Entities" unique_id=1071476896]
+position = Vector2(254.4, 62.4)
+script = ExtResource("7_lcsmi")
+kind = "mur_cabinet"
+
+[node name="MurCabinet3" type="StaticBody2D" parent="Entities" unique_id=880008100]
+position = Vector2(422.4, 62.4)
+script = ExtResource("7_lcsmi")
+kind = "mur_cabinet"
+
+[node name="MurCabinet4" type="StaticBody2D" parent="Entities" unique_id=1430640045]
+position = Vector2(590.4, 62.4)
+script = ExtResource("7_lcsmi")
+kind = "mur_cabinet"
+
+[node name="MurCabinet5" type="StaticBody2D" parent="Entities" unique_id=181846355]
+position = Vector2(691.2, 62.4)
+script = ExtResource("7_lcsmi")
+kind = "mur_cabinet"
+
+[node name="Bibliotheque" type="StaticBody2D" parent="Entities" unique_id=1493515602]
+position = Vector2(76.8, 91.2)
+script = ExtResource("7_lcsmi")
+kind = "bibliotheque"
+
+[node name="Bureau" type="StaticBody2D" parent="Entities" unique_id=1385142260]
+position = Vector2(249.6, 144)
+script = ExtResource("7_lcsmi")
+kind = "bureau"
+
+[node name="Lampe" type="StaticBody2D" parent="Entities" unique_id=1985509112]
+position = Vector2(355.2, 91.2)
+script = ExtResource("7_lcsmi")
+kind = "lampe"
+
+[node name="Fauteuil" type="StaticBody2D" parent="Entities" unique_id=678591708]
+position = Vector2(451.2, 163.2)
+script = ExtResource("7_lcsmi")
+kind = "fauteuil"
+
+[node name="Etabli" type="StaticBody2D" parent="Entities" unique_id=2078758726]
+position = Vector2(537.6, 96)
+script = ExtResource("7_lcsmi")
+kind = "etabli"
+
+[node name="Couveuse" type="StaticBody2D" parent="Entities" unique_id=1505957325]
+position = Vector2(662.4, 153.6)
+script = ExtResource("7_lcsmi")
+kind = "couveuse"
+
+[node name="FougerePot" type="StaticBody2D" parent="Entities" unique_id=267116358]
+position = Vector2(43.2, 460.8)
+script = ExtResource("7_lcsmi")
+kind = "fougere_pot"
+
+[node name="FougerePot2" type="StaticBody2D" parent="Entities" unique_id=2057044065]
+position = Vector2(724.8, 460.8)
+script = ExtResource("7_lcsmi")
+kind = "fougere_pot"
+
+[node name="Roc" type="StaticBody2D" parent="Entities" unique_id=892569670 instance=ExtResource("8_vkm6t")]
+position = Vector2(312, 220.8)
+collision_mask = 0
+script = ExtResource("9_ct8vd")
+display_name = "Prof. Roc"
+sheet = ExtResource("10_yvwj8")
+event = &"roc"
+
+[node name="Isaure" type="StaticBody2D" parent="Entities" unique_id=1095361316 instance=ExtResource("8_vkm6t")]
+position = Vector2(192, 336)
+collision_mask = 0
+script = ExtResource("9_ct8vd")
+display_name = "Isaure"
+sheet = ExtResource("11_6yp8w")
+facing = "right"
+show_flag = &"prologue_arrived"
+hide_flag = &"maia_left"
+
+[node name="Maia" type="StaticBody2D" parent="Entities" unique_id=1543811395 instance=ExtResource("8_vkm6t")]
+position = Vector2(249.6, 364.8)
+collision_mask = 0
+script = ExtResource("9_ct8vd")
+display_name = "Maïa"
+sheet = ExtResource("12_5mdr5")
+facing = "right"
+show_flag = &"prologue_arrived"
+hide_flag = &"maia_left"
+
+[node name="Socle" type="StaticBody2D" parent="Entities" unique_id=757171980]
+position = Vector2(590.4, 274.56)
+script = ExtResource("7_lcsmi")
+kind = "socle"
+
+[node name="Bebe_velociraptor" type="StaticBody2D" parent="Entities" unique_id=1535352176]
+position = Vector2(590.4, 278.4)
+script = ExtResource("13_tik4p")
+event = &"choose_starter"
+flip = true
+size_scale = 0.6
+lift = 36.0
+
+[node name="Socle2" type="StaticBody2D" parent="Entities" unique_id=967414408]
+position = Vector2(662.4, 308.16)
+script = ExtResource("7_lcsmi")
+kind = "socle"
+
+[node name="Bebe_ankylosaurus" type="StaticBody2D" parent="Entities" unique_id=1268119744]
+position = Vector2(662.4, 312)
+script = ExtResource("13_tik4p")
+species_id = &"ankylosaurus"
+event = &"choose_starter"
+flip = true
+size_scale = 0.6
+lift = 36.0
+
+[node name="Socle3" type="StaticBody2D" parent="Entities" unique_id=1040852497]
+position = Vector2(729.6, 274.56)
+script = ExtResource("7_lcsmi")
+kind = "socle"
+
+[node name="Bebe_parasaurolophus" type="StaticBody2D" parent="Entities" unique_id=1778335382]
+position = Vector2(729.6, 278.4)
+script = ExtResource("13_tik4p")
+species_id = &"parasaurolophus"
+event = &"choose_starter"
+flip = true
+size_scale = 0.6
+lift = 36.0
+
+[node name="Spawns" type="Node2D" parent="." unique_id=1354940828]
+
+[node name="Depart" type="Marker2D" parent="Spawns" unique_id=1324384716]
+position = Vector2(384, 451.2)
+
+[node name="Habitats" type="Node2D" parent="." unique_id=107112196]
+
+[node name="Exits" type="Node2D" parent="." unique_id=426386162]
+
+[node name="VersPortAmbre" type="Area2D" parent="Exits" unique_id=59182995]
+position = Vector2(336, 501.59998)
+script = ExtResource("14_dwlnw")
+size = Vector2(96, 26.400002)
+target_zone = &"port_ambre"
+target_spawn = &"DepuisCabinet"
+required_flag = &"prologue_done"
+blocked_dialogue = &"cabinet_bloque"

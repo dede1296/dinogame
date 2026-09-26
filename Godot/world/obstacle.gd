@@ -7,8 +7,11 @@ extends Prop
 const SFX := {
 	&"tranche": preload("res://assets/audio/sfx/slice.wav"),
 	&"charge": preload("res://assets/audio/sfx/rock_heavy.wav"),
+	&"resonance": preload("res://assets/audio/sfx/glass.wav"),
 }
 const CHOP := preload("res://assets/audio/sfx/chop.wav")
+## Experience for the whole party when the way is cleared.
+const XP_CLEARED := 15
 
 @export var ability: StringName = &"tranche"
 ## Story flag set when cleared (must be unique in the game).
@@ -44,6 +47,7 @@ func interact(player: Player) -> void:
 	await _break()
 	if cleared_flag != &"":
 		Game.set_flag(cleared_flag)
+	Game.award_team_xp(XP_CLEARED)
 	Save.save_game()
 
 
@@ -56,8 +60,13 @@ func _break() -> void:
 	if cam and cam.has_method(&"shake"):
 		cam.shake(6.0, 0.25)
 	var t := create_tween().set_parallel(true)
-	t.tween_property(sprite, "scale", sprite.scale * Vector2(1.15, 0.2), 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
-	t.tween_property(self, "modulate:a", 0.0, 0.35)
+	if ability == &"resonance":
+		# The amber wakes up: it glows, then melts away.
+		t.tween_property(self, "modulate", Color(2.2, 1.7, 0.9), 0.6)
+		t.chain().tween_property(self, "modulate:a", 0.0, 0.7)
+	else:
+		t.tween_property(sprite, "scale", sprite.scale * Vector2(1.15, 0.2), 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+		t.tween_property(self, "modulate:a", 0.0, 0.35)
 	await t.finished
 	await get_tree().create_timer(0.6).timeout
 	queue_free()
@@ -65,7 +74,7 @@ func _break() -> void:
 
 func _spawn_debris() -> void:
 	var p := CPUParticles2D.new()
-	p.amount = 28
+	p.amount = Quality.scaled(28)
 	p.one_shot = true
 	p.explosiveness = 0.95
 	p.lifetime = 0.9

@@ -3,8 +3,9 @@
 //     frames stay aligned on a common baseline), scaled, re-packed without gaps;
 //   - prop sheets: keyed, split per grid cell and cropped to each prop;
 //   - ground textures: made seamless (half-offset cross-fade) and scaled.
-// Usage (from the repository root): node Godot/tools/process-art.mjs
-// `sharp` comes from the repository's node_modules (already used by the Phaser tools).
+// Usage (from the repository root): node Godot/tools/process-art.mjs [name …]
+//   With names, only the outputs whose path contains one of them (e.g. "parasaurolophus").
+// `sharp` comes from the repository's node_modules.
 import sharp from "sharp";
 import fs from "node:fs";
 import path from "node:path";
@@ -108,13 +109,16 @@ async function sheet({ id, rows, cols, frameHeight, out, cell = null }) {
 async function sheetInCells({ id, rows, cols, frameHeight, out, cell: [cw0, ch0] }) {
   const img = await loadKeyed(find(id));
   const cw = img.w / cols, ch = img.h / rows;
-  const boxes = [];
-  let unionH = 0;
-  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-    const b = alphaBox(img, Math.round(c * cw + INSET), Math.round(r * ch + INSET), Math.round((c + 1) * cw - INSET), Math.round((r + 1) * ch - INSET));
-    boxes.push(b);
-    if (b) unionH = Math.max(unionH, b.maxY - b.minY + 1);
+  // Each drawing is found whole (a crest may stick out of its grid cell) and given to the
+  // cell under its centre.
+  const boxes = new Array(rows * cols).fill(null);
+  for (const b of findObjects(img, { gap: -1, minArea: 400 })) {
+    const c = Math.floor((b.minX + b.maxX) / 2 / cw), r = Math.floor((b.minY + b.maxY) / 2 / ch);
+    const i = r * cols + c;
+    if (r < rows && c < cols && (!boxes[i] || (b.maxX - b.minX) * (b.maxY - b.minY) > (boxes[i].maxX - boxes[i].minX) * (boxes[i].maxY - boxes[i].minY))) boxes[i] = b;
   }
+  let unionH = 0;
+  for (const b of boxes) if (b) unionH = Math.max(unionH, b.maxY - b.minY + 1);
   const scale = frameHeight / unionH;
   const base = rawImage(img);
   const composites = [];
@@ -122,13 +126,55 @@ async function sheetInCells({ id, rows, cols, frameHeight, out, cell: [cw0, ch0]
     if (!b) continue;
     const width = b.maxX - b.minX + 1, height = b.maxY - b.minY + 1;
     const w = Math.min(cw0, Math.round(width * scale)), h = Math.min(ch0, Math.round(height * scale));
-    const frame = await base.clone().extract({ left: b.minX, top: b.minY, width, height }).resize(w, h).png().toBuffer();
+    // The box may catch the tip of a neighbouring drawing: keep only the main blob.
+    const raw = await base.clone().extract({ left: b.minX, top: b.minY, width, height }).raw().toBuffer();
+    keepLargestBlob(raw, width, height);
+    const frame = await sharp(raw, { raw: { width, height, channels: 4 } }).resize(w, h).png().toBuffer();
     const col = i % cols, row = Math.floor(i / cols);
     composites.push({ input: frame, left: col * cw0 + Math.round((cw0 - w) / 2), top: row * ch0 + ch0 - 4 - h });
   }
   await sharp({ create: { width: cw0 * cols, height: ch0 * rows, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
     .composite(composites).png({ compressionLevel: 9 }).toFile(out);
   return `${out} (${cols}x${rows} frames de ${cw0}x${ch0})`;
+}
+
+// Lit objects painted with a glow: the glow over the magenta background stays pink.
+const GLOWING = ["lanterne", "lampe", "couveuse"];
+
+/** Clears (in place, RGBA raw) the half-transparent pinkish pixels around a glowing object. */
+function removePinkHalo(data) {
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    if (data[i + 3] < 250 && Math.min(r, b) - g > 18) data[i + 3] = 0;
+  }
+}
+
+/** Clears (in place, RGBA raw) every opaque blob but the largest one. */
+function keepLargestBlob(data, w, h) {
+  const label = new Int32Array(w * h).fill(-1);
+  const sizes = [];
+  for (let s = 0; s < w * h; s++) {
+    if (label[s] >= 0 || data[s * 4 + 3] < 24) continue;
+    const id = sizes.length;
+    let size = 0;
+    const stack = [s];
+    label[s] = id;
+    while (stack.length) {
+      const j = stack.pop(), x = j % w, y = (j / w) | 0;
+      size++;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const k = ny * w + nx;
+        if (label[k] >= 0 || data[k * 4 + 3] < 24) continue;
+        label[k] = id;
+        stack.push(k);
+      }
+    }
+    sizes.push(size);
+  }
+  const keep = sizes.indexOf(Math.max(...sizes));
+  for (let s = 0; s < w * h; s++) if (label[s] !== keep && data[s * 4 + 3] >= 24) data[s * 4 + 3] = 0;
 }
 
 /**
@@ -193,22 +239,49 @@ function findObjects(img, { step = 4, gap = 6, minArea = 60 } = {}) {
 }
 
 /** Prop sheet → one PNG per object, cropped to it. `names` in reading order (null = skip). */
-async function props({ id, scale, names, outDir }) {
+/**
+ * `boxes`: [x, y, w, h] per name, when objects touch on the sheet (each crop then keeps only
+ * its largest blob, so the neighbour's edge goes).
+ */
+async function props({ id, scale, names, outDir, gap = 6, boxes = null }) {
   const img = await loadKeyed(find(id));
   const base = rawImage(img);
-  const objects = findObjects(img);
-  if (objects.length !== names.length) throw new Error(`${id} : ${objects.length} objets trouvés, ${names.length} noms attendus`);
+  const objects = boxes
+    ? boxes.map(([x, y, w, h]) => ({ minX: x, minY: y, maxX: Math.min(img.w - 1, x + w - 1), maxY: Math.min(img.h - 1, y + h - 1) }))
+    : findObjects(img, { gap });
+  if (objects.length !== names.length) throw new Error(`${id} : ${objects.length} objets trouvés, ${names.length} noms attendus : ${objects.map((b) => `[${b.minX},${b.minY} ${b.maxX - b.minX}x${b.maxY - b.minY}]`).join(" ")}`);
   const done = [];
   for (const [n, b] of objects.entries()) {
     const name = names[n];
     if (!name) continue;
     const width = b.maxX - b.minX + 1, height = b.maxY - b.minY + 1;
     const out = path.join(outDir, `${name}.png`);
-    await base.clone().extract({ left: b.minX, top: b.minY, width, height })
+    const raw = await base.clone().extract({ left: b.minX, top: b.minY, width, height }).raw().toBuffer();
+    if (boxes) keepLargestBlob(raw, width, height);
+    if (GLOWING.includes(name)) removePinkHalo(raw);
+    await sharp(raw, { raw: { width, height, channels: 4 } })
       .resize(Math.round(width * scale), Math.round(height * scale)).png({ compressionLevel: 9 }).toFile(out);
     done.push(`${name} ${Math.round(width * scale)}x${Math.round(height * scale)}`);
   }
   return `${outDir}: ${done.join(", ")}`;
+}
+
+/** Icon sheet → one PNG per grid cell (names in reading order), each trimmed and fitted in size x size. */
+async function icons({ id, cols, rows, names, size, outDir }) {
+  const img = await loadKeyed(find(id));
+  const base = rawImage(img);
+  const cw = img.w / cols, ch = img.h / rows;
+  const done = [];
+  for (let i = 0; i < names.length; i++) {
+    const c = i % cols, r = Math.floor(i / cols);
+    const b = alphaBox(img, Math.round(c * cw + INSET), Math.round(r * ch + INSET), Math.round((c + 1) * cw - INSET), Math.round((r + 1) * ch - INSET));
+    if (!b) continue;
+    const out = path.join(outDir, names[i] + ".png");
+    await base.clone().extract({ left: b.minX, top: b.minY, width: b.maxX - b.minX + 1, height: b.maxY - b.minY + 1 })
+      .resize(size, size, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png({ compressionLevel: 9 }).toFile(out);
+    done.push(names[i]);
+  }
+  return outDir + ": " + done.join(", ");
 }
 
 /** Ground texture → seamless square: cross-fades the image with its half-offset copy. */
@@ -231,22 +304,57 @@ async function seamless({ id, size, out }) {
 
 for (const d of ["characters", "dinos", "props", "ground", "battle", "ui"]) fs.mkdirSync(path.join(OUT, d), { recursive: true });
 
-const results = await Promise.all([
-  sheet({ id: "0wbmww", rows: 4, cols: 4, frameHeight: 176, out: `${OUT}/characters/chloe.png` }),
-  sheet({ id: "5fwqyr", rows: 4, cols: 4, frameHeight: 176, out: `${OUT}/characters/maia.png` }),
-  sheet({ id: "8v65ka", rows: 2, cols: 3, frameHeight: 200, out: `${OUT}/dinos/velociraptor.png` }),
-  sheet({ id: "n6zd1g", rows: 2, cols: 3, frameHeight: 150, out: `${OUT}/dinos/protoceratops.png` }),
+// [output path (for the name filter), job]
+// Cell size of ankylosaurus.png (its front/back views share it).
+const ANKY_CELL = [205, 148];
+const JOBS = [
+  [`${OUT}/characters/chloe.png`, (out) => sheet({ id: "0wbmww", rows: 4, cols: 4, frameHeight: 176, out })],
+  [`${OUT}/characters/maia.png`, (out) => sheet({ id: "5fwqyr", rows: 4, cols: 4, frameHeight: 176, out })],
+  [`${OUT}/dinos/velociraptor.png`, (out) => sheet({ id: "8v65ka", rows: 2, cols: 3, frameHeight: 200, out })],
+  [`${OUT}/dinos/protoceratops.png`, (out) => sheet({ id: "n6zd1g", rows: 2, cols: 3, frameHeight: 150, out })],
+  [`${OUT}/dinos/parasaurolophus.png`, (out) => sheet({ id: "a9ze6l", rows: 2, cols: 3, frameHeight: 170, out })],
   // Front (row 1) and back (row 2) views, in cells the size of the side-view frames.
-  sheet({ id: "xljkyo", rows: 2, cols: 4, frameHeight: 196, cell: [254, 208], out: `${OUT}/dinos/velociraptor_face_dos.png` }),
-  sheet({ id: "mmzqed", rows: 2, cols: 4, frameHeight: 148, cell: [237, 158], out: `${OUT}/dinos/protoceratops_face_dos.png` }),
-  props({
-    id: "to7ui1", scale: 0.6, outDir: `${OUT}/props`,
+  [`${OUT}/dinos/velociraptor_face_dos.png`, (out) => sheet({ id: "xljkyo", rows: 2, cols: 4, frameHeight: 196, cell: [254, 208], out })],
+  [`${OUT}/dinos/protoceratops_face_dos.png`, (out) => sheet({ id: "mmzqed", rows: 2, cols: 4, frameHeight: 148, cell: [237, 158], out })],
+  [`${OUT}/dinos/parasaurolophus_face_dos.png`, (out) => sheet({ id: "5rxgy6", rows: 2, cols: 4, frameHeight: 168, cell: [251, 178], out })],
+  [`${OUT}/props`, (outDir) => props({
+    id: "to7ui1", scale: 0.6, outDir,
     names: ["arbre_rond", "fougere_arbre", "araucaria", "buisson", "rocher", "cailloux", "tronc", "ronces",
       "hautes_herbes", "fougeres", "fleurs_roses", "fleurs_violettes", "panneau", "cloture", "ambre", "souche"],
-  }),
+  })],
+  [`${OUT}/characters/roc.png`, (out) => sheet({ id: "b0tan1", rows: 4, cols: 4, frameHeight: 176, out })],
+  [`${OUT}/characters/isaure.png`, (out) => sheet({ id: "zp5pby", rows: 4, cols: 4, frameHeight: 176, out })],
+  [`${OUT}/dinos/ankylosaurus.png`, (out) => sheet({ id: "96xapm", rows: 2, cols: 3, frameHeight: 140, out })],
+  [`${OUT}/dinos/ankylosaurus_face_dos.png`, (out) => sheet({ id: "zuksn4", rows: 2, cols: 4, frameHeight: 138, cell: ANKY_CELL, out })],
+  [`${OUT}/port/batiments`, () => props({ id: "2bcnde", scale: 0.5, outDir: `${OUT}/props`, names: ["maison_blanche", "maison_jaune", "maison_port", "cabinet"] })],
+  [`${OUT}/port/objets`, () => props({ id: "axfrx2", scale: 0.45,
+    boxes: [[96, 92, 700, 392], [856, 76, 504, 412], [1464, 80, 316, 412], [0, 0, 1, 1], [96, 516, 640, 460], [928, 580, 324, 368],
+      [1440, 528, 256, 432], [0, 0, 1, 1], [120, 950, 520, 440], [900, 1044, 388, 304], [0, 0, 1, 1], [1800, 950, 510, 420],
+      [176, 1392, 420, 360], [0, 0, 1, 1], [1320, 1280, 428, 460], [1920, 1376, 328, 368]], outDir: `${OUT}/props`, names: ["barque", "caisses", "tonneau", null, "filet", "bitte", "lanterne", null, "casiers", "cordage", null, "banc", "sechoir", null, "ancre", "bac_fleurs"] })],
+  [`${OUT}/cabinet/mobilier`, () => props({ id: "c4yp4q", scale: 0.5, outDir: `${OUT}/props`, names: ["bureau", "bibliotheque", "couveuse", "fougere_pot", "lampe", "fauteuil", "etabli", "mur_cabinet"] })],
+  [`${OUT}/cabinet/socle`, () => props({ id: "387vok", scale: 0.5, outDir: `${OUT}/props`, names: ["socle", null, null, null] })],
+  [`${OUT}/dinos/triceratops.png`, (out) => sheet({ id: "9fbgbo", rows: 2, cols: 3, frameHeight: 200, out })],
+  [`${OUT}/dinos/compsognathus.png`, (out) => sheet({ id: "n0lakg", rows: 2, cols: 3, frameHeight: 120, out })],
+  [`${OUT}/dinos/dimorphodon.png`, (out) => sheet({ id: "xv3qwx", rows: 2, cols: 3, frameHeight: 150, out })],
+  [`${OUT}/dinos/psittacosaurus.png`, (out) => sheet({ id: "7uecxo", rows: 2, cols: 3, frameHeight: 135, out })],
+  [`${OUT}/dinos/troodon.png`, (out) => sheet({ id: "dxw3iu", rows: 2, cols: 3, frameHeight: 170, out })],
+  [`${OUT}/dinos/triceratops_face_dos.png`, (out) => sheet({ id: "3yx8z0", rows: 2, cols: 4, frameHeight: 198, cell: [305, 208], out })],
+  [`${OUT}/dinos/compsognathus_face_dos.png`, (out) => sheet({ id: "58xw1u", rows: 2, cols: 4, frameHeight: 118, cell: [172, 128], out })],
+  [`${OUT}/dinos/dimorphodon_face_dos.png`, (out) => sheet({ id: "dmfd01", rows: 2, cols: 4, frameHeight: 148, cell: [177, 158], out })],
+  [`${OUT}/dinos/psittacosaurus_face_dos.png`, (out) => sheet({ id: "ubfx9o", rows: 2, cols: 4, frameHeight: 133, cell: [205, 143], out })],
+  [`${OUT}/dinos/troodon_face_dos.png`, (out) => sheet({ id: "hm8dx6", rows: 2, cols: 4, frameHeight: 168, cell: [214, 178], out })],
+  [`${OUT}/plaines/objets`, () => props({ id: "f424k7", scale: 0.5, outDir: `${OUT}/props`, names: ["porte_ambre", "ecaille", "serrure", "stalagmite", "cristaux", "rocher_grotte"] })],
+  [`${OUT}/ground/paves.png`, (out) => seamless({ id: "rfr8xj", size: 512, out })],
+  [`${OUT}/ground/plancher.png`, (out) => seamless({ id: "wyzdq7", size: 512, out })],
+  [`${OUT}/ui/meteo`, () => icons({ id: "na9sb3", cols: 2, rows: 2, size: 96, outDir: `${OUT}/ui`, names: ["meteo_soleil", "meteo_lune", "meteo_pluie", "meteo_brume"] })],
   // Battle backdrops: plain resize (opaque).
-  sharp(find("frasoq")).resize(1920).jpeg({ quality: 86, mozjpeg: true }).toFile(`${OUT}/battle/plaines.jpg`).then(() => `${OUT}/battle/plaines.jpg`),
-  seamless({ id: "eszvx5", size: 512, out: `${OUT}/ground/herbe.png` }),
-  seamless({ id: "oxlhun", size: 512, out: `${OUT}/ground/terre.png` }),
-]);
+  [`${OUT}/battle/plaines.jpg`, (out) => sharp(find("frasoq")).resize(1920).jpeg({ quality: 86, mozjpeg: true }).toFile(out).then(() => out)],
+  [`${OUT}/ground/herbe.png`, (out) => seamless({ id: "eszvx5", size: 512, out })],
+  [`${OUT}/ground/terre.png`, (out) => seamless({ id: "oxlhun", size: 512, out })],
+  [`${OUT}/ground/falaise.png`, (out) => seamless({ id: "o3jvsq", size: 512, out })],
+];
+const ONLY = process.argv.slice(2);
+const results = await Promise.all(JOBS
+  .filter(([out]) => ONLY.length === 0 || ONLY.some((name) => out.includes(name)))
+  .map(([out, job]) => job(out)));
 console.log(results.join("\n"));

@@ -10,7 +10,6 @@ extends RefCounted
 
 const STATUS_TURNS := {"saigne": 0, "etourdi": 1, "peur": 3}
 const STAT_NAMES := {"atk": "L'attaque", "def": "La défense", "spd": "La vitesse"}
-const XP_SHARE := 0.5   # part of the XP for party members who did not fight
 
 var team: Array[Dino]     # the player's party; `active` is the dino in battle
 var active := 0
@@ -211,15 +210,16 @@ func _check_faints(ev: Array) -> bool:
 	return false
 
 
-## XP for the dinos that fought; a share for the rest of the party (Phaser rules).
+## XP for the dinos that fought; a share for the rest of the party (Game.XP_SHARE).
 func _give_xp(ev: Array) -> void:
 	var reward := foe.xp_reward()
 	for d in team:
 		if d.hp <= 0:
 			continue
-		var amount := reward if _fought.has(d) else int(reward * XP_SHARE)
-		ev.append({"type": "xp", "dino": d, "amount": amount, "text": "%s gagne %d points d'expérience." % [d.nickname, amount]})
-		for e: Dictionary in d.gain_xp(amount):
+		var amount := reward if _fought.has(d) else int(reward * Game.XP_SHARE)
+		var gained := maxi(1, roundi(amount * Game.catch_up(d)))
+		ev.append({"type": "xp", "dino": d, "amount": gained, "text": "%s gagne %d points d'expérience." % [d.nickname, gained]})
+		for e: Dictionary in Game.award_xp(d, amount):
 			if e["type"] == "level":
 				ev.append({"type": "level", "dino": d, "text": "%s passe au niveau %d !" % [d.nickname, e["level"]]})
 			else:

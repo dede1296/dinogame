@@ -41,6 +41,7 @@ func _process(delta: float) -> void:
 		AudioServer.get_output_latency() * 1000.0,
 		RenderingServer.get_current_rendering_method(),
 		OS.get_name(),
+		Quality.level_name(),
 	]
 	_elapsed = 0.0
 	_frames = 0

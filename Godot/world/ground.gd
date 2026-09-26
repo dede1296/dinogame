@@ -27,7 +27,15 @@ var _pending := false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if not Engine.is_editor_hint():
+		Quality.changed.connect(_apply_quality)
 	_queue_rebuild()
+
+
+func _apply_quality() -> void:
+	var mat := material as ShaderMaterial
+	if mat:
+		mat.set_shader_parameter("water_detail", Engine.is_editor_hint() or Quality.setting(&"water_detail"))
 
 
 func _queue_rebuild() -> void:
@@ -63,3 +71,4 @@ func _rebuild() -> void:
 	mat.set_shader_parameter("grass_tex", GRASS_TEX)
 	mat.set_shader_parameter("dirt_tex", DIRT_TEX)
 	mat.set_shader_parameter("noise_tex", WorldNoise.texture())
+	_apply_quality()

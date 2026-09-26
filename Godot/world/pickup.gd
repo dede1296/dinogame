@@ -5,6 +5,8 @@ extends Prop
 ## lines (which set the story flags) and disappears for good.
 
 const ITEM_SFX := preload("res://assets/audio/sfx/item.wav")
+## Experience for the whole party: exploring pays as much as fighting.
+const XP_FOUND := 30
 
 ## Story flag meaning "already picked up".
 @export var taken_flag: StringName
@@ -22,6 +24,12 @@ func _ready() -> void:
 		return
 	add_to_group(&"interactable")
 	_add_glow()
+	Quality.changed.connect(_apply_quality)
+	_apply_quality()
+
+
+func _apply_quality() -> void:
+	_glow.visible = Quality.setting(&"lights")
 
 
 func _add_glow() -> void:
@@ -55,5 +63,6 @@ func interact(player: Player) -> void:
 	await Dialogue.run(DialogueDB.lines(dialogue_id))
 	if taken_flag != &"":
 		Game.set_flag(taken_flag)
+	Game.award_team_xp(XP_FOUND)
 	Save.save_game()
 	queue_free()

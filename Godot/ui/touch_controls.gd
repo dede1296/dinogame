@@ -42,7 +42,9 @@ func _add_button(label: String, action: StringName, corner_offset: Vector2, colo
 	button.visibility_mode = TouchScreenButton.VISIBILITY_TOUCHSCREEN_ONLY
 	var anchor := Control.new()
 	anchor.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	anchor.position = corner_offset - Vector2(BUTTON_RADIUS, BUTTON_RADIUS)
+	# Keep clear of the notch / camera hole (the offsets already include the comfort margin).
+	var inset := SafeArea.insets(get_viewport()) - Vector2(SafeArea.COMFORT, SafeArea.COMFORT)
+	anchor.position = corner_offset - Vector2(BUTTON_RADIUS, BUTTON_RADIUS) - inset
 	anchor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(anchor)
 	anchor.add_child(button)
@@ -78,7 +80,7 @@ func _input(event: InputEvent) -> void:
 		if not visible:
 			visible = true   # first touch on a device that didn't report a touch screen
 		var half := get_viewport().get_visible_rect().size.x * 0.5
-		if event.pressed and _touch_index < 0 and event.position.x < half:
+		if event.pressed and _touch_index < 0 and event.position.x < half and not _on_blocker(event.position):
 			_touch_index = event.index
 			_origin = event.position
 			_knob = Vector2.ZERO
@@ -91,6 +93,26 @@ func _input(event: InputEvent) -> void:
 		_knob = (event.position - _origin).limit_length(RADIUS)
 		_apply(_knob / RADIUS)
 		_pad.queue_redraw()
+
+
+## Lets go of the joystick (a second finger came down: that is a pinch, not a move).
+func release_stick() -> void:
+	_touch_index = -1
+	_knob = Vector2.ZERO
+	_apply(Vector2.ZERO)
+	if _pad:
+		_pad.queue_redraw()
+
+
+## Touches on some on-screen controls (the party portraits) are theirs, not the joystick's.
+func _on_blocker(pos: Vector2) -> bool:
+	if get_tree().paused:
+		return true
+	for node in get_tree().get_nodes_in_group(&"touch_blockers"):
+		var c := node as Control
+		if c and c.is_visible_in_tree() and c.get_global_rect().has_point(pos):
+			return true
+	return false
 
 
 ## The app going to the background (call, Home button…) may never deliver the finger's

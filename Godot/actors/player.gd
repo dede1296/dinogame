@@ -96,7 +96,8 @@ func _interact() -> void:
 	var best_score := INF
 	for node in get_tree().get_nodes_in_group(&"interactable"):
 		var target := node as Node2D
-		if target == null or not target.is_visible_in_tree():
+		# `visible`, not is_visible_in_tree(): the 2D world is not drawn (the 3D view shows it).
+		if target == null or not target.visible:
 			continue
 		var to := target.global_position - global_position
 		var dist := to.length()

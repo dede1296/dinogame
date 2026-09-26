@@ -1,14 +1,28 @@
-# Ambrelune — prototype Godot
+# Ambrelune — Godot
 
-Version parallèle d'Ambrelune dans **Godot 4.7** (renderer **Mobile**), pour comparer avec la
-version Phaser (`../nouveau/`) avant toute décision de migration. **Rien ici ne modifie la
-version Phaser** : les assets réutilisés y sont *copiés*, jamais déplacés.
+**Base principale et unique** du développement d'Ambrelune depuis le 2026-09-26 : **Godot 4.7**,
+renderer **Mobile**, **Android d'abord** (paysage, tactile). La version Phaser (`../nouveau/`)
+n'évolue plus : elle sert de **référence** (mécaniques, données, dialogues, art, sons). Rien ici ne
+la modifie ; les assets réutilisés y sont *copiés*, jamais déplacés.
 
-Contenu actuel (vertical slice, étape 1) : une portion des **Plaines des Fougères** avec Chloé,
-Vif (son Velociraptor), des Protoceratops sauvages, Maïa, le tronc à trancher (**Tranche**),
-le rocher de la grotte (**Charge**, à débloquer par hybridation), le fragment d'ambre et la
-page 1 du journal d'Hélène (voix enregistrée), la sauvegarde locale, les contrôles tactiles,
-la musique des Plaines (le même thème que Phaser) et l'ambiance sonore.
+**Rendu 2,5D** : le monde se joue en 2D (physique, collisions, sorties, rencontres, sauvegarde
+restent en 2D) et s'affiche en 3D par une couche de vue (`world/view3d/`) : sol en relief
+(niveaux, falaises, rampes, eau creusée), décor et personnages dessinés debout face à la caméra,
+soleil et lune avec ombres, brume, flou lointain, caméra inclinée zoomable (pincement, molette,
+réglage). Aucun nœud 2D du monde n'est dessiné ; la caméra 2D sert encore au son positionnel.
+
+Contenu actuel (vertical slice) : le prologue (Port-Ambre, le Cabinet du Pr Roc, le choix du
+petit), puis les **Plaines des Fougères** en **une seule grande carte ouverte** (120 × 90 cases :
+route du port, carrefour, étang, anse et sa plage, bosquet d'Hélène derrière le tronc à trancher
+(**Tranche**), Grotte des Échos dans sa colline derrière le rocher (**Charge**), falaises derrière
+la porte d'ambre (**Résonance**) avec le poste d'observation d'Hélène, Grand Crâne et l'antre de son Alpha),
+bordée de montagnes, de forêt et de mer ; la carte du monde qui se dévoile en explorant ; jour et
+nuit, météo, habitats par lieu et par heure, la barre d'équipe, les pages du journal d'Hélène,
+la sauvegarde locale, les contrôles tactiles, la musique et l'ambiance sonore.
+
+**La bible du jeu** (lore, histoire complète, mécaniques, bestiaire) est dans `docs/` :
+[lore](docs/lore.md) · [histoire](docs/histoire.md) · [mécaniques](docs/mecaniques.md) ·
+[bestiaire](docs/bestiaire.md).
 
 ## Lancer
 
@@ -25,45 +39,105 @@ la musique des Plaines (le même thème que Phaser) et l'ambiance sonore.
   ```
 
 Contrôles : flèches/ZQSD-WASD ou manette pour bouger, Espace/Entrée/E (ou A) pour interagir,
-F3 (ou tap à trois doigts) pour afficher ou masquer l'overlay de performances (masqué au lancement).
+M (ou le bouton carte sous ☰) pour la carte, F3 (ou tap à trois doigts) pour afficher ou masquer l'overlay de performances (masqué au lancement).
+
+**Mode débogage** : appui long sur l'horloge (en haut à droite) ou F2 : changer l'heure et la
+vitesse du temps, forcer la météo (beau temps, pluie, brume), mettre n'importe quelle espèce en
+tête d'équipe ou la combattre, soigner, donner de l'expérience ou des objets, aller dans une zone,
+afficher les performances. À masquer avant une vraie sortie publique.
 
 ## Organisation
 
 ```
-core/       autoloads : Game (état), Save (sauvegarde), Audio (bus, fondus), Router (transitions)
+core/       autoloads : Quality (niveau graphique), Game (état), Save (sauvegarde),
+            Audio (bus, fondus), Router (transitions)
 data/       données éditables : espèces (.tres), capacités, dialogues
-game/       logique pure (Dino : construction par parties → hybrides)
+game/       logique pure (Dino : stats par parties, niveaux, attaques)
 actors/     Chloé, compagnon, dinos sauvages, PNJ (+ SheetFrames : planches → animations)
-world/      région, sol (shader), décor (Prop), obstacles, objets, herbes hautes, caméra
-regions/    une scène par région + le TileSet de terrain partagé
-ui/         dialogue, contrôles tactiles, overlay de performances (autoloads)
+world/      zone (Region : terrain, relief, falaises), décor (Prop), obstacles, objets, habitats, sorties
+world/view3d/  rendu 2,5D : WorldView (reflet 3D de la zone), HeightMap (relief), CameraRig, shaders
+regions/    une scène par zone (regions/<région>/<zone>.tscn) + le TileSet de terrain partagé
+ui/         dialogue, contrôles tactiles, overlay de performances (autoloads),
+            Paramètres (SettingsMenu), carte du monde (MapScreen), marges des encoches (SafeArea)
 scenes/     écran titre
 assets/     art (généré par nano-banana → tools/process-art.mjs), audio
-tools/      outils de production (exclus des exports)
-docs/       direction artistique, protocole de comparaison
+tools/      outils de production (exclus des exports) : plans des zones (tools/zones/),
+            images des grandes régions (tools/maps/)
+docs/       bible du jeu (lore, histoire, mécaniques, bestiaire), direction artistique
 ```
 
 ### Ajouter du contenu
 
-- **Un dino** : une planche nano-banana (fond magenta, 2×3 cases, profil vers la droite) →
-  l'ajouter dans `tools/process-art.mjs` → créer `data/species/<id>.tres` (dupliquer un
+- **Un dino** : une planche nano-banana (fond magenta, 2×3 cases, profil vers la droite) et une
+  planche face/dos (2×4, obtenue en retouchant une planche existante avec le profil en référence) →
+  les ajouter dans `tools/process-art.mjs` (`node Godot/tools/process-art.mjs <nom>`) → créer `data/species/<id>.tres` (dupliquer un
   existant dans l'Inspecteur) → l'inscrire dans `data/species_db.gd`.
 - **Un décor** : ajouter un nœud *Prop* dans `Entities` et choisir son `kind` dans l'Inspecteur
   (sprite, ombre, collision et balancement viennent de `world/prop.gd`).
-- **Le terrain** : sélectionner `Terrain` (TileMapLayer) et peindre chemin / hautes herbes /
-  eau ; le sol peint et les herbes se mettent à jour en direct dans l'éditeur.
-- **Une région** : dupliquer `regions/plaines/plaines_sud.tscn`, l'inscrire dans
-  `world/world.gd` (`REGIONS`). La région donne sa musique et son ambiance (Inspecteur).
+- **Le terrain** : sélectionner `Terrain` (TileMapLayer) et peindre herbe / chemin / hautes
+  herbes / eau / forêt / sable ; le sol peint et les herbes se mettent à jour en direct dans
+  l'éditeur. La forêt est infranchissable : ses arbres sont posés automatiquement à l'affichage
+  (densité selon la qualité ; des buissons plutôt que des arbres le long des chemins).
+- **Le relief** : propriété `relief` de la zone (Inspecteur, ou `RELIEF` dans le plan de la zone) :
+  une ligne de caractères par rangée de cases, `0`–`9` = niveau (1,2 m chacun), `r` = rampe.
+  Entre deux niveaux, une falaise infranchissable est créée automatiquement. Les grandes régions
+  ont plutôt une hauteur libre par case (`height_data`, lue dans leur image de relief) :
+  une falaise apparaît là où deux cases voisines diffèrent de plus de 0,75 m.
+- **Une zone** : écrire son plan dans `tools/zones/<id>.gd` (terrain en caractères, décor,
+  panneaux, points d'arrivée, sorties, habitats ; voir `port_ambre.gd`), la générer
+  avec `tools/build_zone.gd`, puis l'inscrire dans `world/world.gd` (`ZONES`). Ensuite, la scène
+  s'édite dans Godot. La zone donne sa musique, son ambiance, ses niveaux (Inspecteur).
+- **Une grande région ouverte** (comme les Plaines) : deux images, 1 pixel = 1 case, dans
+  `tools/maps/` : `<id>_sols.png` (le sol, par couleurs exactes : herbe, chemin, hautes herbes,
+  eau, forêt, sable ; voir `SOLS` dans `gen-plaines.mjs`) et `<id>_relief.png` (gris : 1 niveau
+  de gris = 5 cm). Elles se retouchent dans n'importe quel logiciel de dessin, ou se régénèrent
+  depuis leur script (`node Godot/tools/maps/gen-plaines.mjs`, qui les écrase). Le plan
+  (`tools/zones/plaines.gd`) les lit via `ZoneBuilder.region_from_maps` et y ajoute le décor
+  semé, l'histoire, les points d'arrivée, les sorties et les habitats ; puis
+  `build_zone.gd -- plaines --force`. Les entrées de grotte sont des nœuds *CaveMouth* (un trou
+  sombre au fond d'une encoche du relief) ; la sortie se place juste devant.
+- **La carte du monde** : rien à faire, elle se dessine depuis le sol et le relief de la zone.
+  Les noms affichés sont ceux des habitats (`label`), les sorties y sont fléchées (noms dans
+  `MapScreen.ZONE_NAMES`). Ce que Chloé a vu est enregistré dans la sauvegarde (`Game.explored`).
+- **Les dinos d'une zone** : des nœuds *Habitat* (dans `Habitats`) : une zone rectangulaire et
+  sa liste de *Encounter* (espèce, niveaux, poids, moment de la journée, caché dans les herbes
+  ou visible en liberté). Les dinos visibles apparaissent selon l'heure.
+- **Un passage entre zones** : un nœud *ZoneExit* (dans `Exits`) : zone et point d'arrivée cibles.
+  Les points d'arrivée (`Spawns`) doivent être hors des sorties.
+- **Une ambiance sonore** : la zone nomme son type de lieu (`ambience_id` : `plaines`, `port`,
+  `grotte`, `cabinet`…) ; chaque type est décrit dans `data/ambience_db.gd` : des nappes en
+  boucle (fondu enchaîné, jamais de couture audible), dont certaines suivent la distance à la mer
+  ou à un feu (nœuds du groupe `fire`), et des sons ponctuels (oiseaux le jour, mouettes, rafales,
+  gouttes). Un nouveau son : l'ajouter dans `tools/prepare-ambience.mjs` (même volume pour tous).
 - **Un dialogue** : `data/dialogue_db.gd` (les répliques dépendent des drapeaux d'histoire).
+
+## Qualité graphique (Basse / Moyenne / Haute)
+
+Tout ce qui coûte au GPU passe par l'autoload **`Quality`** (`core/quality.gd`), jamais par des
+tests de niveau dispersés : les profils sont dans `Quality.PROFILES` (particules, balancement du
+décor, densité des herbes, ombres de nuages, lumières, détail de l'eau, images/s max).
+
+- **Premier lancement** : niveau proposé d'après le GPU (Adreno / Mali / Immortalis / Xclipse /
+  PowerVR) et la mémoire du téléphone ; marqué « Recommandée » dans les réglages.
+- **Joueur** : *Paramètres → Graphismes* (écran titre, ou bouton ☰ en jeu, qui met en pause).
+  Enregistré dans `user://settings.cfg`, à part de la sauvegarde de partie.
+- **Nouvel effet** : lire un réglage et suivre les changements, par exemple
+  `p.amount = Quality.scaled(40)` et `Quality.changed.connect(_apply_quality)`. Un nouveau
+  réglage = une clé de plus dans les trois profils.
+- **Tester** : `scenario=quality` de `tools/capture.gd` capture les trois niveaux et le menu ;
+  l'overlay de performances (F3 / tap à trois doigts) affiche le niveau actif.
 
 ## Outils
 
 | Outil | Rôle |
 |---|---|
+| `node Godot/tools/gen-sound.mjs ambience/pluie 22 loop "<description>"` | Génère un son (ElevenLabs, clé dans `.env.local`) dans `assets/audio/` |
+| `AUDIO_MODULES=<node_modules> node Godot/tools/prepare-ambience.mjs [nom…]` | Sons d'ambiance MP3 → Ogg au même volume (et sifflement retiré si besoin) dans `assets/audio/ambience/` |
 | `node Godot/tools/process-art.mjs` | Planches nano-banana (JPG magenta) → PNG détourés, frames alignées, textures raccordables |
-| `godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario=walk\|story` | Test automatique avec captures d'écran et vérification sauvegarde/chargement |
+| `godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario=monde\|story\|plaines2\|raccords\|perf\|battle\|fight\|quality\|zones\|meteo\|debug\|ui_combat\|combat_meteo\|prologue\|title` | Test automatique avec captures d'écran et vérification sauvegarde/chargement |
 | `node Godot/tools/render-phaser-music.mjs plaines 6` | Enregistre un thème de la musique Phaser en boucle Ogg sans couture (voir l'en-tête) |
-| `tools/bootstrap_plaines.gd` | A généré la première région (une fois) ; la scène s'édite désormais dans Godot |
+| `godot --headless --path Godot --script res://tools/build_zone.gd -- <id>` | Génère une zone depuis son plan `tools/zones/<id>.gd` (refuse d'écraser sans `--force`) |
+| `node Godot/tools/maps/gen-plaines.mjs` | Redessine les images de sol et de relief des Plaines (`tools/maps/`), à regénérer ensuite avec `build_zone.gd` |
 
 ## Builds (Android, Web)
 

@@ -20,11 +20,18 @@ const FOE_SPOT := Vector2(0.78, 0.49)
 const PLAYER_SCALE := 1.2
 const FOE_SCALE := 0.95
 const AMBER := Color(0.98, 0.72, 0.28)
-const AMBIENCE_IN_BATTLE_DB := -22.0
-const AMBIENCE_DB := -4.0   # its level in default_bus_layout.tres
-const PANEL_BG := Color(0.106, 0.122, 0.157, 0.92)
+const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
+const PANEL_BG := Color(0.09, 0.1, 0.13, 0.84)
+const CARD_BG := Color(0.14, 0.16, 0.2, 0.94)
+const CREAM := Color(0.97, 0.94, 0.87)
+const MUTED := Color(0.97, 0.94, 0.87, 0.62)
+const MENU_BUTTON := Vector2(150, 54)
+const MOVE_CARD := Vector2(236, 60)
+const MENU_WIDTH := 482.0   # the moves grid: two cards and a gap
+const EDGE := 16.0
 
 var engine: BattleEngine
+var _rules := {}
 
 var _root: Control
 var _backdrop: TextureRect
@@ -34,8 +41,9 @@ var _foe_sprite: AnimatedSprite2D
 var _foe_panel: Dictionary
 var _player_panel: Dictionary
 var _message: Label
-var _menu: GridContainer
-var _moves_menu: GridContainer
+var _menu: HBoxContainer
+var _moves_menu: VBoxContainer
+var _moves_grid: GridContainer
 var _cry: AudioStreamPlayer
 var _waiting_tap := false
 var _say_id := 0
@@ -51,7 +59,10 @@ func _ready() -> void:
 
 
 ## Plays a whole wild battle. Returns "win", "lose", "run" or "catch".
-func run(wild: Dino) -> String:
+## `rules`: {"catch": false, "run": false} for a battle of honour (an Alpha), "intro": its
+## first line, "music": its theme.
+func run(wild: Dino, rules := {}) -> String:
+	_rules = rules
 	engine = BattleEngine.new(Game.party, wild)
 	Game.mark_seen(wild.species().id)
 	_setup_dino(_foe_sprite, wild, true)
@@ -59,7 +70,7 @@ func run(wild: Dino) -> String:
 	_refresh_panel(_foe_panel, wild)
 	_refresh_panel(_player_panel, engine.player())
 	_layout()
-	Audio.push_music(MUSIC, 0.15)
+	Audio.push_music(_rules.get("music", MUSIC), 0.15)
 	Audio.fade_ambience(AMBIENCE_IN_BATTLE_DB)
 	await _intro()
 	while not engine.over:
@@ -84,7 +95,7 @@ func _intro() -> void:
 	await t.finished
 	_cry_of(engine.foe, "neutre")
 	create_tween().tween_property(_foe_panel["box"], "modulate:a", 1.0, 0.3)
-	await _say("Un %s sauvage apparaît !" % engine.foe.species_name())
+	await _say(_rules.get("intro", "Un %s sauvage apparaît !" % engine.foe.species_name()))
 	var t2 := create_tween()
 	t2.tween_property(_player_sprite, "position", player_home, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	await t2.finished
@@ -105,31 +116,32 @@ func _show_menu(menu: Control) -> void:
 	_menu.visible = menu == _menu
 	_moves_menu.visible = menu == _moves_menu
 	if menu == _menu:
-		(_menu.get_child(1) as Button).text = "Collier ×%d" % Game.item_count("collier")
-		(_menu.get_child(1) as Button).disabled = Game.item_count("collier") <= 0
+		var collar := _menu.get_child(1) as Button
+		collar.text = "Collier ×%d" % Game.item_count("collier")
+		collar.disabled = Game.item_count("collier") <= 0
+		collar.visible = _rules.get("catch", true)
+		_menu.get_child(2).visible = _rules.get("run", true)
 		_menu.get_child(0).grab_focus()
 	elif menu == _moves_menu:
 		_fill_moves()
-		_moves_menu.get_child(0).grab_focus()
+		_moves_grid.get_child(0).grab_focus()
 
 
+## One card per move (2 × 2 at most): name, type, power points, the type's colour on the side.
 func _fill_moves() -> void:
-	for child in _moves_menu.get_children():
-		_moves_menu.remove_child(child)
+	for child in _moves_grid.get_children():
+		_moves_grid.remove_child(child)
 		child.queue_free()
 	var d := engine.player()
 	for i in d.moves.size():
 		var slot: Dictionary = d.moves[i]
 		var move := MovesDB.move(slot["id"])
-		var b := _button("%s\n%s · PP %d/%d" % [move["name"], MovesDB.TYPE_NAMES[move["type"]], slot["pp"], move["pp"]],
+		var card := _move_card(move["name"], "%s · PP %d/%d" % [MovesDB.TYPE_NAMES[move["type"]], slot["pp"], move["pp"]],
 			MovesDB.TYPE_COLORS[move["type"]])
-		b.add_theme_font_size_override("font_size", 19)
-		b.disabled = slot["pp"] <= 0
-		b.pressed.connect(func() -> void: _action_chosen.emit({"type": "move", "index": i}))
-		_moves_menu.add_child(b)
-	var back := _button("Retour", Color(0.35, 0.4, 0.45))
-	back.pressed.connect(func() -> void: _show_menu(_menu))
-	_moves_menu.add_child(back)
+		card.disabled = slot["pp"] <= 0
+		card.modulate.a = 0.45 if card.disabled else 1.0
+		card.pressed.connect(func() -> void: _action_chosen.emit({"type": "move", "index": i}))
+		_moves_grid.add_child(card)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -358,7 +370,7 @@ func _outro(result: String) -> void:
 func _burst(pos: Vector2, color: Color, amount: int, speed: float) -> void:
 	var p := CPUParticles2D.new()
 	p.position = pos
-	p.amount = amount
+	p.amount = Quality.scaled(amount)
 	p.one_shot = true
 	p.explosiveness = 0.9
 	p.lifetime = 0.7
@@ -382,7 +394,7 @@ func _stat_particles(side: String, up: bool) -> void:
 	var s := _sprite(side)
 	var p := CPUParticles2D.new()
 	p.position = s.position + Vector2(0, -40)
-	p.amount = 18
+	p.amount = Quality.scaled(18)
 	p.one_shot = true
 	p.lifetime = 0.8
 	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
@@ -524,112 +536,173 @@ func _build_ui() -> void:
 			_foe_sprite = s
 		else:
 			_player_sprite = s
+	# Same sky as the exploration: hour and weather.
+	BattleWeather.apply(_root, _backdrop, _world)
 
 	_cry = AudioStreamPlayer.new()
 	_cry.bus = &"SFX"
 	add_child(_cry)
 
 	_foe_panel = _make_panel(false)
-	_foe_panel["box"].set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_foe_panel["box"].position = Vector2(40, 36)
+	_foe_panel["box"].position = Vector2(EDGE + 8, EDGE)
 	_player_panel = _make_panel(true)
 	var pbox: Control = _player_panel["box"]
-	pbox.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	pbox.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	pbox.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	pbox.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	pbox.offset_left = -420
-	pbox.offset_right = -24
-	pbox.offset_bottom = -186
-	pbox.offset_top = -300
+	pbox.offset_left = EDGE + 8
+	pbox.offset_right = EDGE + 8
+	pbox.offset_top = -112
+	pbox.offset_bottom = -112
 
-	var bottom := PanelContainer.new()
-	bottom.add_theme_stylebox_override("panel", _style(PANEL_BG, AMBER, 16))
-	bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bottom.offset_top = -168
-	bottom.offset_left = 16
-	bottom.offset_right = -16
-	bottom.offset_bottom = -12
-	_root.add_child(bottom)
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 16)
-	bottom.add_child(row)
+	# The message, bottom-left; the menus sit to its right.
+	var bar := PanelContainer.new()
+	bar.add_theme_stylebox_override("panel", _accent_style(PANEL_BG, AMBER, 12))
+	bar.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	bar.offset_left = EDGE
+	bar.offset_right = -(MENU_WIDTH + EDGE * 2)
+	bar.offset_top = -98
+	bar.offset_bottom = -EDGE
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(bar)
 	_message = Label.new()
-	_message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_message.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_message.add_theme_font_size_override("font_size", 26)
-	_message.add_theme_color_override("font_color", Color(0.96, 0.93, 0.86))
-	row.add_child(_message)
+	_message.add_theme_font_size_override("font_size", 22)
+	_message.add_theme_color_override("font_color", CREAM)
+	bar.add_child(_message)
 
-	_menu = GridContainer.new()
-	_menu.columns = 2
-	_menu.custom_minimum_size = Vector2(470, 0)
-	row.add_child(_menu)
-	var attack := _button("Attaquer", Color(0.8, 0.35, 0.2))
+	_menu = HBoxContainer.new()
+	_menu.add_theme_constant_override("separation", 10)
+	_anchor_bottom_right(_menu, 24.0)
+	_root.add_child(_menu)
+	var attack := _button("Attaquer", Color(0.86, 0.38, 0.22))
 	attack.pressed.connect(func() -> void: _show_menu(_moves_menu))
-	var catch_button := _button("Collier", AMBER.darkened(0.2))
+	var catch_button := _button("Collier", AMBER)
 	catch_button.pressed.connect(func() -> void:
 		if Game.use_item("collier"):
 			_action_chosen.emit({"type": "catch"}))
-	var run_button := _button("Fuir", Color(0.35, 0.4, 0.45))
+	var run_button := _button("Fuir", Color(0.5, 0.58, 0.66))
 	run_button.pressed.connect(func() -> void: _action_chosen.emit({"type": "run"}))
 	for b in [attack, catch_button, run_button]:
 		_menu.add_child(b)
-	_moves_menu = GridContainer.new()
-	_moves_menu.columns = 2
-	_moves_menu.custom_minimum_size = Vector2(560, 0)
-	row.add_child(_moves_menu)
+
+	# The moves grow upwards from the bottom-right corner: never cut, whatever their number.
+	_moves_menu = VBoxContainer.new()
+	_moves_menu.add_theme_constant_override("separation", 10)
+	_anchor_bottom_right(_moves_menu, EDGE)
+	_root.add_child(_moves_menu)
+	var back := _button("◀  Retour", Color(0.5, 0.58, 0.66))
+	back.custom_minimum_size = Vector2(150, 44)
+	back.size_flags_horizontal = Control.SIZE_SHRINK_END
+	back.add_theme_font_size_override("font_size", 17)
+	back.pressed.connect(func() -> void: _show_menu(_menu))
+	_moves_menu.add_child(back)
+	_moves_grid = GridContainer.new()
+	_moves_grid.columns = 2
+	_moves_grid.add_theme_constant_override("h_separation", 10)
+	_moves_grid.add_theme_constant_override("v_separation", 10)
+	_moves_menu.add_child(_moves_grid)
 	_show_menu(null)
+
+
+func _anchor_bottom_right(c: Control, bottom: float) -> void:
+	c.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	c.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	c.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	c.offset_left = -EDGE
+	c.offset_right = -EDGE
+	c.offset_top = -bottom
+	c.offset_bottom = -bottom
 
 
 func _make_panel(with_numbers: bool) -> Dictionary:
 	var box := PanelContainer.new()
-	box.add_theme_stylebox_override("panel", _style(PANEL_BG, AMBER, 14))
-	box.custom_minimum_size = Vector2(380, 0)
+	box.add_theme_stylebox_override("panel", _accent_style(PANEL_BG, AMBER, 12))
+	box.custom_minimum_size = Vector2(300, 0)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(box)
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 6)
+	v.add_theme_constant_override("separation", 5)
 	box.add_child(v)
 	var name_label := Label.new()
-	name_label.add_theme_font_size_override("font_size", 22)
-	name_label.add_theme_color_override("font_color", Color(1, 0.95, 0.85))
+	name_label.add_theme_font_size_override("font_size", 19)
+	name_label.add_theme_color_override("font_color", CREAM)
 	v.add_child(name_label)
 	var hp := ProgressBar.new()
 	hp.show_percentage = false
-	hp.custom_minimum_size = Vector2(0, 16)
-	hp.add_theme_stylebox_override("background", _style(Color(0.05, 0.05, 0.06), Color(0, 0, 0, 0), 8, 0))
-	hp.add_theme_stylebox_override("fill", _style(Color(0.36, 0.78, 0.35), Color(0, 0, 0, 0), 8, 0))
+	hp.custom_minimum_size = Vector2(0, 10)
+	hp.add_theme_stylebox_override("background", _bar_style(Color(0, 0, 0, 0.5), 5))
+	hp.add_theme_stylebox_override("fill", _bar_style(Color(0.36, 0.78, 0.35), 5))
 	v.add_child(hp)
 	var panel := {"box": box, "name": name_label, "hp": hp}
 	if with_numbers:
 		var hp_text := Label.new()
 		hp_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		hp_text.add_theme_font_size_override("font_size", 18)
-		hp_text.add_theme_color_override("font_color", Color(0.9, 0.88, 0.8))
+		hp_text.add_theme_font_size_override("font_size", 14)
+		hp_text.add_theme_color_override("font_color", MUTED)
 		v.add_child(hp_text)
 		var xp := ProgressBar.new()
 		xp.show_percentage = false
-		xp.custom_minimum_size = Vector2(0, 7)
-		xp.add_theme_stylebox_override("background", _style(Color(0.05, 0.05, 0.06), Color(0, 0, 0, 0), 4, 0))
-		xp.add_theme_stylebox_override("fill", _style(Color(0.35, 0.7, 0.95), Color(0, 0, 0, 0), 4, 0))
+		xp.custom_minimum_size = Vector2(0, 4)
+		xp.add_theme_stylebox_override("background", _bar_style(Color(0, 0, 0, 0.5), 2))
+		xp.add_theme_stylebox_override("fill", _bar_style(Color(0.4, 0.72, 0.98), 2))
 		v.add_child(xp)
 		panel["hp_text"] = hp_text
 		panel["xp"] = xp
 	return panel
 
 
+## A compact action button: dark, with the action's colour as a strip on the left.
 func _button(text: String, color: Color) -> Button:
 	var b := Button.new()
 	b.text = text
-	b.custom_minimum_size = Vector2(0, 64)
-	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	b.add_theme_font_size_override("font_size", 24)
-	b.add_theme_stylebox_override("normal", _style(color.darkened(0.25), color.lightened(0.2), 12))
-	b.add_theme_stylebox_override("hover", _style(color, Color(1, 0.9, 0.6), 12))
-	b.add_theme_stylebox_override("pressed", _style(color.lightened(0.1), Color(1, 0.9, 0.6), 12))
-	b.add_theme_stylebox_override("focus", _style(color, Color(1, 0.9, 0.6), 12))
-	b.add_theme_stylebox_override("disabled", _style(Color(0.2, 0.2, 0.22), Color(0.3, 0.3, 0.32), 12))
+	b.custom_minimum_size = MENU_BUTTON
+	b.add_theme_font_size_override("font_size", 20)
+	b.add_theme_color_override("font_color", CREAM)
+	b.add_theme_color_override("font_disabled_color", Color(CREAM, 0.35))
+	b.add_theme_stylebox_override("normal", _accent_style(CARD_BG, color, 10, 5))
+	b.add_theme_stylebox_override("hover", _accent_style(CARD_BG.lightened(0.08), color, 10, 5))
+	b.add_theme_stylebox_override("pressed", _accent_style(color.darkened(0.45), color, 10, 5))
+	b.add_theme_stylebox_override("focus", _accent_style(Color(0, 0, 0, 0), color.lightened(0.3), 10, 5, 2))
+	b.add_theme_stylebox_override("disabled", _accent_style(Color(0.12, 0.12, 0.14, 0.8), Color(0.3, 0.3, 0.32), 10, 5))
 	return b
+
+
+## A move: its name, and below it the type and power points, smaller.
+func _move_card(title: String, detail: String, color: Color) -> Button:
+	var b := _button("", color)
+	b.custom_minimum_size = MOVE_CARD
+	var v := VBoxContainer.new()
+	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	v.offset_left = 18
+	v.offset_right = -10
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_theme_constant_override("separation", 0)
+	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(v)
+	for line: Array in [[title, 19, CREAM], [detail, 14, MUTED]]:
+		var l := Label.new()
+		l.text = line[0]
+		l.add_theme_font_size_override("font_size", line[1])
+		l.add_theme_color_override("font_color", line[2])
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		v.add_child(l)
+	return b
+
+
+## A progress bar's part: rounded, no inner margin (so the bar keeps its thin height).
+static func _bar_style(bg: Color, radius: int) -> StyleBoxFlat:
+	var s := _style(bg, Color(0, 0, 0, 0), radius, 0)
+	s.set_content_margin_all(0)
+	return s
+
+
+## Rounded box with a coloured strip on its left edge (and an optional thin outline).
+static func _accent_style(bg: Color, accent: Color, radius: int, strip := 4, outline := 0) -> StyleBoxFlat:
+	var s := _style(bg, accent, radius, outline)
+	s.border_width_left = strip
+	s.content_margin_left = 14 + strip
+	return s
 
 
 static func _style(bg: Color, border: Color, radius: int, border_width := 3) -> StyleBoxFlat:

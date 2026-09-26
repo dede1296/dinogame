@@ -1,6 +1,8 @@
 extends CanvasLayer
 ## Dialogue box (autoload "Dialogue"). `await Dialogue.run(DialogueDB.lines(id))` shows a
 ## script step by step (see DialogueDB); advances with the interact button or a tap.
+## A character's line is typed with its little voice (VoiceBlips), unless a recorded voice
+## plays; a "letter" step shows a handwritten page (LetterView).
 
 signal finished
 
@@ -18,6 +20,9 @@ var _voice: AudioStreamPlayer
 var _advance_requested := false
 var _last_advance := 0.0
 var _typing := false
+var _in_letter := false
+var _choosing := false
+var _cancel_requested := false
 
 
 func _ready() -> void:
@@ -30,6 +35,55 @@ func _ready() -> void:
 	add_child(_voice)
 
 
+## Asks a question: shows `text` said by `who`, then one button per option above the box.
+## Returns the index of the chosen option (B / back = the last one, usually "Non" or "Annuler").
+func choose(who: String, text: String, options: Array) -> int:
+	active = true
+	_panel.visible = true
+	_panel.modulate.a = 1.0
+	await _show_line(who, text, false)
+	_next_marker.visible = false
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 8)
+	column.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	column.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	column.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	column.offset_right = -24
+	column.offset_bottom = -206
+	add_child(column)
+	var picked := [-1]
+	for i in options.size():
+		var b := Button.new()
+		b.text = options[i]
+		b.custom_minimum_size = Vector2(300, 54)
+		b.add_theme_font_size_override("font_size", 21)
+		b.add_theme_color_override("font_color", Color(0.97, 0.94, 0.87))
+		for state in ["normal", "hover", "pressed", "focus"]:
+			var sb := StyleBoxFlat.new()
+			sb.bg_color = Color(0.45, 0.29, 0.08) if state == "pressed" else Color(0.14, 0.16, 0.2, 0.96)
+			sb.border_color = Color(0.98, 0.76, 0.35) if state == "focus" else Color(0.79, 0.54, 0.16)
+			sb.set_border_width_all(2)
+			sb.border_width_left = 5
+			sb.set_corner_radius_all(10)
+			sb.content_margin_left = 18
+			sb.content_margin_right = 14
+			b.add_theme_stylebox_override(state, sb)
+		b.pressed.connect(func() -> void: picked[0] = i)
+		column.add_child(b)
+	(column.get_child(0) as Button).grab_focus()
+	_choosing = true
+	while picked[0] < 0:
+		if _cancel_requested:
+			picked[0] = options.size() - 1
+		await get_tree().process_frame
+	_choosing = false
+	_cancel_requested = false
+	column.queue_free()
+	_panel.visible = false
+	active = false
+	return picked[0]
+
+
 func run(steps: Array) -> void:
 	if steps.is_empty():
 		return
@@ -40,10 +94,18 @@ func run(steps: Array) -> void:
 	for step: Dictionary in steps:
 		if step.has("flag"):
 			Game.set_flag(step["flag"])
+		elif step.has("letter"):
+			_panel.visible = false
+			_in_letter = true
+			await LetterView.open(get_tree(), step["letter"], step.get("sign", ""), step.get("voice", ""))
+			_in_letter = false
+			_panel.visible = true
 		elif step.has("voice"):
 			_play_voice(step["voice"])
 		elif step.has("text"):
 			await _show_line(step.get("who", ""), step["text"])
+		elif step.has("text_fn"):   # a line worked out when it is shown (a count…)
+			await _show_line(step.get("who", ""), (step["text_fn"] as Callable).call())
 	if _voice.playing:
 		_voice.stop()
 		Audio.duck(0.0)
@@ -64,7 +126,8 @@ func _play_voice(path: String) -> void:
 	_voice.finished.connect(func() -> void: Audio.duck(0.0), CONNECT_ONE_SHOT)
 
 
-func _show_line(who: String, text: String) -> void:
+## `wait`: false = return once the line is typed (a question waits for its answer instead).
+func _show_line(who: String, text: String, wait := true) -> void:
 	_name_tag.visible = who != ""
 	_name_tag.text = who
 	_text.text = text
@@ -74,23 +137,43 @@ func _show_line(who: String, text: String) -> void:
 	_typing = true
 	var total := _text.get_total_character_count()
 	var shown := 0.0
+	var plain := _text.get_parsed_text()
+	var blip_every := VoiceBlips.every(who)
+	var last_blip := -blip_every
 	while shown < total:
 		if _advance_requested:   # tap while typing: show the whole line
 			_advance_requested = false
 			break
 		shown += CHARS_PER_SECOND * get_process_delta_time()
 		_text.visible_characters = int(shown)
+		# The speaker's little voice, one blip every few letters (not over a recorded voice).
+		var at := mini(int(shown), plain.length()) - 1
+		if who != "" and not _voice.playing and at - last_blip >= blip_every and at >= 0 and _is_letter(plain[at]):
+			last_blip = at
+			VoiceBlips.blip(who)
 		await get_tree().process_frame
 	_text.visible_characters = -1
 	_typing = false
 	_next_marker.visible = true
+	if not wait:
+		return
 	while not _advance_requested:
 		await get_tree().process_frame
 	_advance_requested = false
 
 
+static func _is_letter(c: String) -> bool:
+	return c.to_upper() != c.to_lower()
+
+
 func _input(event: InputEvent) -> void:
-	if not active:
+	if not active or _in_letter:
+		return
+	if _choosing:
+		# The buttons take the taps; B / back picks the last option.
+		if event.is_action_pressed(&"cancel"):
+			get_viewport().set_input_as_handled()
+			_cancel_requested = true
 		return
 	var pressed: bool = event.is_action_pressed(&"interact") \
 		or (event is InputEventScreenTouch and event.pressed)

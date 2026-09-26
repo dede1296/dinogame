@@ -14,6 +14,8 @@ uniform float texture_px = 320.0;
 uniform vec4 water_deep : source_color = vec4(0.13, 0.38, 0.47, 1.0);
 uniform vec4 water_shallow : source_color = vec4(0.33, 0.62, 0.62, 1.0);
 uniform vec4 foam : source_color = vec4(0.93, 0.95, 0.86, 1.0);
+// Off on low quality: ripples, glints and foam are skipped (the water keeps its colours).
+uniform bool water_detail = true;
 
 varying vec2 world;
 
@@ -49,16 +51,19 @@ void fragment() {
 	float wv = m.b + grain * 0.12;
 	float water = smoothstep(0.48, 0.53, wv);
 	float depth = smoothstep(0.5, 0.95, wv);
-	vec2 flow = world / 160.0 + vec2(TIME * 0.02, TIME * 0.013);
-	float ripple = noise(flow) * 0.6 + noise(flow * 2.3 - vec2(TIME * 0.03, 0.0)) * 0.4;
 	vec3 wcol = mix(water_shallow.rgb, water_deep.rgb, depth);
-	wcol += smoothstep(0.62, 0.8, ripple) * 0.12;
-	float glint = smoothstep(0.83, 0.9, noise(world / 45.0 + vec2(TIME * 0.05, -TIME * 0.04)));
-	wcol += glint * 0.35 * depth;
+	float foam_line = 0.0;
+	if (water_detail && wv > 0.4) {
+		vec2 flow = world / 160.0 + vec2(TIME * 0.02, TIME * 0.013);
+		float ripple = noise(flow) * 0.6 + noise(flow * 2.3 - vec2(TIME * 0.03, 0.0)) * 0.4;
+		wcol += smoothstep(0.62, 0.8, ripple) * 0.12;
+		float glint = smoothstep(0.83, 0.9, noise(world / 45.0 + vec2(TIME * 0.05, -TIME * 0.04)));
+		wcol += glint * 0.35 * depth;
+		foam_line = smoothstep(0.47, 0.5, wv) * (1.0 - smoothstep(0.52, 0.56, wv));
+		foam_line *= 0.55 + 0.45 * sin(TIME * 1.6 + (world.x + world.y) * 0.05);
+	}
 	float shore = smoothstep(0.36, 0.48, wv) * (1.0 - water);
 	col *= 1.0 - shore * 0.3;
-	float foam_line = smoothstep(0.47, 0.5, wv) * (1.0 - smoothstep(0.52, 0.56, wv));
-	foam_line *= 0.55 + 0.45 * sin(TIME * 1.6 + (world.x + world.y) * 0.05);
 	col = mix(col, wcol, water);
 	col = mix(col, foam.rgb, foam_line * 0.7);
 

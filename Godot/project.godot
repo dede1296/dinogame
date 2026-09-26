@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Ambrelune"
-config/description="Ambrelune — prototype Godot (vertical slice des Plaines des Fougères)"
+config/description="Ambrelune — aventure et collection de dinosaures (Godot, Android d'abord)"
 config/version="0.1.0"
 run/main_scene="res://scenes/boot/boot.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+Quality="*res://core/quality.gd"
 Game="*res://core/game_state.gd"
 Save="*res://core/save_system.gd"
 Audio="*res://core/audio_director.gd"
@@ -91,6 +92,12 @@ toggle_debug={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194334,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+map={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":77,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":4,"pressure":0.0,"pressed":true,"script":null)
+]
+}
 
 [input_devices]
 
@@ -120,4 +127,16 @@ textures/vram_compression/import_etc2_astc=true
 player_position={
 "type": "vec2",
 "value": Vector2(0, 0)
+}
+player_world={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+sun_dir={
+"type": "vec3",
+"value": Vector3(0, 1, 0)
+}
+sun_light={
+"type": "float",
+"value": 1.0
 }

@@ -4,12 +4,32 @@ extends Node
 
 signal flag_changed(id: StringName, value: Variant)
 signal party_changed
+## A dino gained experience (`levels`: levels gained); the party bar shows it.
+signal xp_awarded(dino: Dino, amount: int, levels: int)
+## The time of day moved to another phase (&"dawn", &"day", &"dusk", &"night").
+signal phase_changed(phase: StringName)
+## The weather changed (&"clear", &"rain", &"mist").
+signal weather_changed(weather: StringName)
 
-const STARTER_SPECIES := &"velociraptor"
-const STARTER_NICKNAME := "Vif"
-const START_REGION := &"plaines_sud"
-const PARTY_MAX := 4
-const START_ITEMS := {"collier": 5}
+## The three hatchlings Hélène left for Chloé: species -> default name. Each one beats
+## the next (vent > nature > pierre > vent): Maïa takes the one strong against Chloé's.
+const STARTERS := {&"velociraptor": "Vif", &"ankylosaurus": "Bastion", &"parasaurolophus": "Écho"}
+const STARTER_LEVEL := 5
+## Zone where a new game starts (region_id holds the current zone).
+const START_REGION := &"port_ambre"
+const PARTY_MAX := 5
+## Chloé arrives with nothing: Roc gives the collars and berries the morning after.
+const START_ITEMS := {}
+## HP given back by a berry.
+const BERRY_HP := 20
+## Party members who did not fight get this share of a battle's experience.
+const XP_SHARE := 0.6
+## Game clock: minutes of the day (0–1440); one game hour lasts CLOCK_HOUR_S real seconds.
+const CLOCK_HOUR_S := 60.0
+const START_CLOCK := 9.0 * 60.0
+const WEATHERS: Array[StringName] = [&"clear", &"rain", &"mist"]
+## Each game hour, a spell of rain or mist ends with this chance.
+const WEATHER_CLEARS := 0.35
 
 var region_id: StringName = START_REGION
 ## Where Chloé stands in the region; `has_position` is false until the first save in a region.
@@ -23,10 +43,114 @@ var dex_seen: Dictionary = {}   # species id -> first time seen (unix seconds)
 var dex_caught: Dictionary = {}
 var flags: Dictionary = {}
 var play_time := 0.0
+var clock := START_CLOCK
+## Typical level of the current zone (set by the world): behind it, dinos learn faster.
+var zone_level := 0
+## Old zone ids of the Plaines (before it became one open map) -> arrival point in it.
+const OLD_ZONES := {"plaines_debarcadere": "Debarcadere", "plaines_sud": "Carrefour", "plaines_falaises": "Falaises", "plaines_crane": "Crane"}
+## Where to arrive in the zone when there is no saved position (&"" = its start).
+var arrival: StringName
+## A game is loaded or started (a scene launched alone in the editor starts one).
+var in_game := false
+var weather: StringName = &"clear"
+## Chances per game hour of rain and mist starting, from the current zone (set by the world).
+var climate := {"rain": 0.08, "mist": 0.1}
+## Debug: how fast the clock runs (1 = normal).
+var time_scale := 1.0
+## The map: what Chloé has seen of each zone. Zone id -> one byte per square of
+## EXPLORE_CELL tiles, row by row (0 unseen … 255 seen; in between, the soft edge).
+const EXPLORE_CELL := 2
+var explored: Dictionary = {}
+var _hour := -1
+
+var _phase: StringName = &""
 
 
 func _process(delta: float) -> void:
 	play_time += delta
+	clock = fmod(clock + delta * time_scale * 60.0 / CLOCK_HOUR_S, 1440.0)
+	var hour := int(clock / 60.0)
+	if hour != _hour:
+		if _hour >= 0:
+			_roll_weather(hour)
+		_hour = hour
+	var now := phase()
+	if now != _phase:
+		_phase = now
+		phase_changed.emit(now)
+
+
+## Part of the day: dawn 5h–7h, day 7h–18h, dusk 18h–20h30, night otherwise.
+func phase() -> StringName:
+	var h := clock / 60.0
+	if h >= 5.0 and h < 7.0:
+		return &"dawn"
+	if h >= 7.0 and h < 18.0:
+		return &"day"
+	if h >= 18.0 and h < 20.5:
+		return &"dusk"
+	return &"night"
+
+
+## Each new hour the weather may turn (mist is likelier at dawn).
+func _roll_weather(hour: int) -> void:
+	if weather != &"clear":
+		if randf() < WEATHER_CLEARS:
+			set_weather(&"clear")
+		return
+	var mist: float = climate.get("mist", 0.0) * (3.0 if hour >= 4 and hour <= 8 else 1.0)
+	var roll := randf()
+	if roll < mist:
+		set_weather(&"mist")
+	elif roll < mist + float(climate.get("rain", 0.0)):
+		set_weather(&"rain")
+
+
+func set_weather(value: StringName) -> void:
+	if value == weather or not value in WEATHERS:
+		return
+	weather = value
+	weather_changed.emit(value)
+
+
+## Experience multiplier that lets a dino behind the zone's level catch up (and slows one ahead).
+func catch_up(d: Dino) -> float:
+	if zone_level <= 0:
+		return 1.0
+	return clampf(1.0 + (zone_level - d.level) * 0.25, 0.5, 3.0)
+
+
+## Gives experience to one dino (with catch-up). Returns its gain_xp() events.
+func award_xp(d: Dino, amount: int) -> Array:
+	var gained := maxi(1, roundi(amount * catch_up(d)))
+	var events := d.gain_xp(gained)
+	xp_awarded.emit(d, gained, events.filter(func(e: Dictionary) -> bool: return e["type"] == "level").size())
+	return events
+
+
+## Experience for the whole party from exploring (a page, a new species, a cleared obstacle…).
+func award_team_xp(amount: int) -> void:
+	for d in party:
+		award_xp(d, amount)
+
+
+## Makes the dino at `index` the lead (it follows Chloé and fights first).
+func set_lead(index: int) -> void:
+	if index <= 0 or index >= party.size():
+		return
+	var d: Dino = party[index]
+	party.remove_at(index)
+	party.insert(0, d)
+	party_changed.emit()
+
+
+## Feeds a berry to `d`. Returns false when there is none or it is already healthy.
+func feed_berry(d: Dino) -> bool:
+	if d.hp >= d.max_hp() or not use_item("baie"):
+		return false
+	d.hp = mini(d.max_hp(), d.hp + BERRY_HP)
+	party_changed.emit()
+	return true
 
 
 func new_game() -> void:
@@ -36,12 +160,30 @@ func new_game() -> void:
 	flags = {}
 	dex_seen = {}
 	dex_caught = {}
+	explored = {}
 	play_time = 0.0
-	party = [Dino.create(STARTER_SPECIES, 5, STARTER_NICKNAME)]
+	clock = START_CLOCK
+	weather = &"clear"
+	party = []
 	box = []
 	items = START_ITEMS.duplicate()
-	mark_caught(STARTER_SPECIES)
+	in_game = true
 	party_changed.emit()
+
+
+## Chloé takes one of the three hatchlings (the prologue; or directly, for tests).
+func give_starter(species: StringName) -> Dino:
+	var d := Dino.create(species, STARTER_LEVEL, STARTERS.get(species, ""))
+	party.insert(0, d)
+	mark_caught(species)
+	flags["starter"] = String(species)
+	var others := STARTERS.keys().filter(func(k: StringName) -> bool: return k != species)
+	# Maïa gets the one that beats Chloé's; the Ombre Noire steals the last one.
+	var maia: StringName = others[0] if MovesDB.effectiveness(MovesDB.FAMILY_TYPES[SpeciesDB.get_species(others[0]).family], d.type()) > 1.0 else others[1]
+	flags["maia_starter"] = String(maia)
+	flags["stolen_starter"] = String(others[1] if maia == others[0] else others[0])
+	party_changed.emit()
+	return d
 
 
 func item_count(id: String) -> int:
@@ -110,7 +252,40 @@ func ability_user(ability: StringName) -> Dino:
 	return null
 
 
+## Chloé sees the ground within `radius` tiles of `tile` in zone `id` (`size` tiles).
+func explore(id: StringName, size: Vector2i, tile: Vector2, radius: float) -> void:
+	var cells := explore_cells(size)
+	var seen := explored_mask(id, size)
+	var c := tile / EXPLORE_CELL
+	var r := radius / EXPLORE_CELL
+	for y in range(maxi(0, floori(c.y - r - 1.0)), mini(cells.y, ceili(c.y + r + 1.0))):
+		for x in range(maxi(0, floori(c.x - r - 1.0)), mini(cells.x, ceili(c.x + r + 1.0))):
+			var v := int(clampf(r + 0.5 - Vector2(x + 0.5, y + 0.5).distance_to(c), 0.0, 1.0) * 255.0)
+			var i := y * cells.x + x
+			if v > seen[i]:
+				seen[i] = v
+	explored[String(id)] = seen
+
+
+## What Chloé has seen of zone `id` (`size` tiles; see `explored`): nothing at first.
+func explored_mask(id: StringName, size: Vector2i) -> PackedByteArray:
+	var cells := explore_cells(size)
+	var seen: PackedByteArray = explored.get(String(id), PackedByteArray())
+	if seen.size() != cells.x * cells.y:   # a zone not visited yet, or its map changed size
+		seen = PackedByteArray()
+		seen.resize(cells.x * cells.y)
+		seen.fill(0)
+	return seen
+
+
+static func explore_cells(size: Vector2i) -> Vector2i:
+	return (size + Vector2i.ONE * (EXPLORE_CELL - 1)) / EXPLORE_CELL
+
+
 func to_dict() -> Dictionary:
+	var seen := {}
+	for id: String in explored:
+		seen[id] = Marshalls.raw_to_base64(explored[id])
 	return {
 		"region": String(region_id),
 		"position": [player_position.x, player_position.y],
@@ -121,22 +296,29 @@ func to_dict() -> Dictionary:
 		"dex_seen": dex_seen,
 		"dex_caught": dex_caught,
 		"flags": flags,
+		"explored": seen,
 		"play_time": play_time,
+		"clock": clock,
+		"weather": String(weather),
 	}
 
 
 func from_dict(data: Dictionary) -> void:
+	in_game = true
 	region_id = StringName(data.get("region", START_REGION))
 	var pos: Array = data.get("position", [0, 0])
 	player_position = Vector2(pos[0], pos[1])
 	has_position = data.get("has_position", false)
+	# The Plaines used to be small separate zones: now one region, arriving near the old spot.
+	if OLD_ZONES.has(String(region_id)):
+		arrival = StringName(OLD_ZONES[String(region_id)])
+		region_id = &"plaines"
+		has_position = false
 	party.clear()
 	for d in data.get("party", []):
 		var dino := Dino.from_dict(d)
 		if dino:
 			party.append(dino)
-	if party.is_empty():
-		party = [Dino.create(STARTER_SPECIES, 5, STARTER_NICKNAME)]
 	box.clear()
 	for d in data.get("box", []):
 		var dino := Dino.from_dict(d)
@@ -148,5 +330,18 @@ func from_dict(data: Dictionary) -> void:
 	dex_seen = data.get("dex_seen", {})
 	dex_caught = data.get("dex_caught", {})
 	flags = data.get("flags", {})
+	explored = {}
+	var seen: Dictionary = data.get("explored", {})
+	for id in seen:
+		explored[String(id)] = Marshalls.base64_to_raw(String(seen[id]))
 	play_time = data.get("play_time", 0.0)
+	clock = fmod(float(data.get("clock", START_CLOCK)), 1440.0)
+	weather = StringName(data.get("weather", "clear"))
+	if not weather in WEATHERS:
+		weather = &"clear"
+	weather_changed.emit(weather)
+	# Saves from before the prologue existed: their dino was Vif, and they were past the port.
+	if not party.is_empty() and not flags.has("starter"):
+		flags["starter"] = "velociraptor"
+		flags["prologue_done"] = true
 	party_changed.emit()

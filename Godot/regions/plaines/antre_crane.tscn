@@ -1,0 +1,113 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://world/region.gd" id="1_nbwsq"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/plaines.ogg" id="2_kuvb3"]
+[ext_resource type="Texture2D" path="res://assets/art/ground/grotte_sol.png" id="3_cdwu8"]
+[ext_resource type="TileSet" path="res://regions/terrain_tileset.tres" id="4_tosif"]
+[ext_resource type="Script" path="res://world/ground.gd" id="5_mi0jp"]
+[ext_resource type="Script" path="res://world/tall_grass.gd" id="6_26jya"]
+[ext_resource type="Script" path="res://world/prop.gd" id="7_voo3s"]
+[ext_resource type="Script" path="res://world/cave_mouth.gd" id="8_002dh"]
+[ext_resource type="Script" path="res://world/zone_exit.gd" id="9_adn4x"]
+
+[node name="AntreCrane" type="Node2D" unique_id=852710342]
+script = ExtResource("1_nbwsq")
+region_id = &"antre_crane"
+display_name = "Plaines des Fougères"
+zone_name = "Antre du gardien"
+levels = Vector2i(7, 8)
+music = ExtResource("2_kuvb3")
+ambience_id = &"grotte"
+indoor = true
+cave = true
+ground_tex = ExtResource("3_cdwu8")
+relief = PackedStringArray("33333333333333", "33333333333333", "11000000000011", "10000000000001", "10000000000001", "10000000000001", "11000000000011", "11110000001111", "11111100111111", "11111100111111", "11111100111111", "11111100111111")
+
+[node name="Terrain" type="TileMapLayer" parent="." unique_id=1950182314]
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAANAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAAAAAAAAAAAAAMAAAAAAAAAAAABAAMAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAAJAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAANAAMAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAANAAQAAAAAAAAAAAAAAAUAAAAAAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAAAAAAAAAAEAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAGAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAJAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAMAAUAAAAAAAAAAAANAAUAAAAAAAAAAAAAAAYAAAAAAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAAAAAcAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAANAAcAAAAAAAAAAAAAAAgAAAAAAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAAAAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAAAAkAAAAAAAAAAAABAAkAAAAAAAAAAAACAAkAAAAAAAAAAAADAAkAAAAAAAAAAAAEAAkAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAkAAAAAAAAAAAAHAAkAAAAAAAAAAAAIAAkAAAAAAAAAAAAJAAkAAAAAAAAAAAAKAAkAAAAAAAAAAAALAAkAAAAAAAAAAAAMAAkAAAAAAAAAAAANAAkAAAAAAAAAAAAAAAoAAAAAAAAAAAABAAoAAAAAAAAAAAACAAoAAAAAAAAAAAADAAoAAAAAAAAAAAAEAAoAAAAAAAAAAAAFAAoAAAAAAAAAAAAGAAoAAAAAAAAAAAAHAAoAAAAAAAAAAAAIAAoAAAAAAAAAAAAJAAoAAAAAAAAAAAAKAAoAAAAAAAAAAAALAAoAAAAAAAAAAAAMAAoAAAAAAAAAAAANAAoAAAAAAAAAAAAAAAsAAAAAAAAAAAABAAsAAAAAAAAAAAACAAsAAAAAAAAAAAADAAsAAAAAAAAAAAAEAAsAAAAAAAAAAAAFAAsAAAAAAAAAAAAGAAsAAAAAAAAAAAAHAAsAAAAAAAAAAAAIAAsAAAAAAAAAAAAJAAsAAAAAAAAAAAAKAAsAAAAAAAAAAAALAAsAAAAAAAAAAAAMAAsAAAAAAAAAAAANAAsAAAAAAAAAAAA=")
+tile_set = ExtResource("4_tosif")
+
+[node name="Ground" type="ColorRect" parent="." unique_id=1883920572 node_paths=PackedStringArray("terrain")]
+z_index = -10
+script = ExtResource("5_mi0jp")
+terrain = NodePath("../Terrain")
+
+[node name="Entities" type="Node2D" parent="." unique_id=428789139]
+y_sort_enabled = true
+
+[node name="TallGrass" type="Node2D" parent="Entities" unique_id=171999220 node_paths=PackedStringArray("terrain")]
+script = ExtResource("6_26jya")
+terrain = NodePath("../../Terrain")
+
+[node name="Stalagmite" type="StaticBody2D" parent="Entities" unique_id=1272781775]
+position = Vector2(124.8, 172.8)
+script = ExtResource("7_voo3s")
+kind = "stalagmite"
+
+[node name="Stalagmite2" type="StaticBody2D" parent="Entities" unique_id=570215768]
+position = Vector2(552, 201.6)
+script = ExtResource("7_voo3s")
+kind = "stalagmite"
+
+[node name="Cristaux" type="StaticBody2D" parent="Entities" unique_id=1199678499]
+position = Vector2(163.2, 302.4)
+script = ExtResource("7_voo3s")
+kind = "cristaux"
+
+[node name="Cristaux2" type="StaticBody2D" parent="Entities" unique_id=1941609036]
+position = Vector2(499.2, 139.2)
+script = ExtResource("7_voo3s")
+kind = "cristaux"
+
+[node name="RocherGrotte" type="StaticBody2D" parent="Entities" unique_id=821078593]
+position = Vector2(537.6, 307.2)
+script = ExtResource("7_voo3s")
+kind = "rocher_grotte"
+
+[node name="Cailloux" type="StaticBody2D" parent="Entities" unique_id=692611676]
+position = Vector2(220.8, 134.4)
+script = ExtResource("7_voo3s")
+kind = "cailloux"
+
+[node name="Cailloux2" type="StaticBody2D" parent="Entities" unique_id=1071859806]
+position = Vector2(441.6, 316.8)
+script = ExtResource("7_voo3s")
+kind = "cailloux"
+
+[node name="Stalagmite3" type="StaticBody2D" parent="Entities" unique_id=878630738]
+position = Vector2(249.6, 355.2)
+script = ExtResource("7_voo3s")
+kind = "stalagmite"
+
+[node name="TunnelGardien" type="Node2D" parent="Entities" unique_id=1257132673]
+position = Vector2(336, 96)
+script = ExtResource("8_002dh")
+width = 2.0
+height = 2.4
+
+[node name="Spawns" type="Node2D" parent="." unique_id=1479095116]
+
+[node name="Depart" type="Marker2D" parent="Spawns" unique_id=737948820]
+position = Vector2(336, 499.2)
+
+[node name="DepuisPlaines" type="Marker2D" parent="Spawns" unique_id=538482134]
+position = Vector2(336, 499.2)
+
+[node name="Habitats" type="Node2D" parent="." unique_id=1697607201]
+
+[node name="Exits" type="Node2D" parent="." unique_id=249553862]
+
+[node name="VersAntreCrane" type="Area2D" parent="Exits" unique_id=59420955]
+position = Vector2(288, 96)
+script = ExtResource("9_adn4x")
+size = Vector2(96, 33.6)
+target_zone = &"antre_crane"
+required_flag = &"gardien_eveille"
+blocked_dialogue = &"antre_gardien"
+
+[node name="VersPlaines" type="Area2D" parent="Exits" unique_id=2071684458]
+position = Vector2(288, 549.6)
+script = ExtResource("9_adn4x")
+size = Vector2(96, 26.400002)
+target_zone = &"plaines"
+target_spawn = &"DepuisAntre"

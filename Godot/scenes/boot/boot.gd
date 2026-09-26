@@ -5,6 +5,7 @@ const WORLD := "res://world/world.tscn"
 
 @onready var continue_button: Button = %Continue
 @onready var new_button: Button = %NewGame
+@onready var settings_button: Button = %Settings
 @onready var version_label: Label = %Version
 
 
@@ -12,7 +13,9 @@ func _ready() -> void:
 	continue_button.visible = Save.has_save()
 	continue_button.pressed.connect(_on_continue)
 	new_button.pressed.connect(_on_new_game)
-	version_label.text = "Prototype Godot %s · %s · rendu %s" % [
+	settings_button.pressed.connect(func() -> void:
+		SettingsMenu.open(self).closed.connect(settings_button.grab_focus))
+	version_label.text = "Ambrelune %s · Godot %s · rendu %s" % [
 		ProjectSettings.get_setting("application/config/version"),
 		Engine.get_version_info()["string"],
 		RenderingServer.get_current_rendering_method(),
@@ -31,3 +34,4 @@ func _on_continue() -> void:
 func _on_new_game() -> void:
 	Game.new_game()
 	Router.go_to(WORLD)
+

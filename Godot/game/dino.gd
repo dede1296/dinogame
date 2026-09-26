@@ -1,8 +1,7 @@
 class_name Dino
 extends RefCounted
 ## One dino owned or met by Chloé. Its body is a "build": which species each part comes
-## from. A pure dino has every part from its own species; the Cabinet's hybridizer
-## replaces parts (a raptor with a Protoceratops head gets Charge).
+## from (every part from its own species). Stats and moves are computed from the parts.
 ## Stats, experience and move learning follow the Phaser version (battle/dino.js).
 
 const PARTS: Array[StringName] = [&"head", &"teeth", &"front_legs", &"back_legs", &"back", &"tail"]

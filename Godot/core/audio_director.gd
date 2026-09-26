@@ -1,7 +1,8 @@
 extends Node
 ## All the game's sound goes through here, on separate buses (see default_bus_layout.tres):
 ##   Music     — one theme at a time, streamed, cross-faded when the place or situation changes;
-##   Ambience  — the zone's background loop, cross-faded the same way;
+##   Ambience  — the sounds of the place (AmbiencePlayer: layered loops and calls, see
+##               AmbienceDB), and the weather's (rain) on top of them;
 ##   SFX       — short one-shot sounds from a pool of players (many at once);
 ## Positional sounds (a dino crying nearby) use AudioStreamPlayer2D on the "SFX" bus directly.
 
@@ -13,23 +14,30 @@ const SILENT_DB := -60.0
 
 var _music: Array[AudioStreamPlayer] = []
 var _music_active := 0
-var _ambience: Array[AudioStreamPlayer] = []
-var _ambience_active := 0
+var ambience: AmbiencePlayer
 var _sfx: Array[AudioStreamPlayer] = []
 var _sfx_next := 0
 var _music_tween: Tween
-var _ambience_tween: Tween
+var _weather: Array[AudioStreamPlayer] = []
+var _weather_active := 0
+var _weather_tween: Tween
 var _duck_tween: Tween
 var _music_stack: Array = []
+## Each bus's normal level (default_bus_layout.tres): ducks and fades are relative to it.
+var _base_db := {}
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	for bus in [MUSIC_BUS, AMBIENCE_BUS, SFX_BUS]:
+		_base_db[bus] = AudioServer.get_bus_volume_db(AudioServer.get_bus_index(bus))
 	for i in 2:
 		_music.append(_make_player(MUSIC_BUS))
-		_ambience.append(_make_player(AMBIENCE_BUS))
+		_weather.append(_make_player(AMBIENCE_BUS))
 	for i in SFX_VOICES:
 		_sfx.append(_make_player(SFX_BUS))
+	ambience = AmbiencePlayer.new()
+	add_child(ambience)
 
 
 func _make_player(bus: StringName) -> AudioStreamPlayer:
@@ -48,11 +56,17 @@ func play_music(stream: AudioStream, fade := 1.5, volume_db := 0.0, from := 0.0,
 		_music_active = 1 - _music_active
 
 
-func play_ambience(stream: AudioStream, fade := 2.0, volume_db := 0.0) -> void:
-	var tween := _crossfade(_ambience, _ambience_active, stream, fade, volume_db, _ambience_tween)
+## The sounds of a kind of place (AmbienceDB id; &"" = silence), faded in over the previous.
+func play_ambience(id: StringName) -> void:
+	ambience.play(id)
+
+
+## The weather's loop over the ambience (rain…); null fades it out.
+func play_weather(stream: AudioStream, fade := 3.0, volume_db := 0.0) -> void:
+	var tween := _crossfade(_weather, _weather_active, stream, fade, volume_db, _weather_tween)
 	if tween:
-		_ambience_tween = tween
-		_ambience_active = 1 - _ambience_active
+		_weather_tween = tween
+		_weather_active = 1 - _weather_active
 
 
 ## Switches to another theme (a battle) and remembers where the current one was, so
@@ -116,7 +130,7 @@ func play_sfx(stream: AudioStream, volume_db := 0.0, pitch_jitter := 0.0) -> voi
 	p.play()
 
 
-## Lowers the music and ambience (battle intro, dialogue with a voice line…); 0 dB restores them.
+## Lowers the music and ambience by db below their normal level (a voice line…); 0 restores them.
 func duck(db: float, time := 0.4) -> void:
 	# A new duck replaces the one in progress (two tweens on one bus would fight).
 	if _duck_tween and _duck_tween.is_valid():
@@ -124,14 +138,15 @@ func duck(db: float, time := 0.4) -> void:
 	_duck_tween = create_tween().set_parallel(true)
 	for bus in [MUSIC_BUS, AMBIENCE_BUS]:
 		var idx := AudioServer.get_bus_index(bus)
-		_duck_tween.tween_method(func(v: float) -> void: AudioServer.set_bus_volume_db(idx, v), AudioServer.get_bus_volume_db(idx), db, time)
+		_duck_tween.tween_method(func(v: float) -> void: AudioServer.set_bus_volume_db(idx, v), AudioServer.get_bus_volume_db(idx), _base_db[bus] + db, time)
 
 
-## Fades the ambience bus (battles lower the birds and the wind under their music).
+## Fades the ambience by db below its normal level (battles lower the birds and the wind
+## under their music); 0 restores it.
 func fade_ambience(db: float, time := 0.5) -> void:
 	var idx := AudioServer.get_bus_index(AMBIENCE_BUS)
 	create_tween().tween_method(func(v: float) -> void: AudioServer.set_bus_volume_db(idx, v),
-		AudioServer.get_bus_volume_db(idx), db, time)
+		AudioServer.get_bus_volume_db(idx), _base_db[AMBIENCE_BUS] + db, time)
 
 
 func set_bus_volume(bus: StringName, linear: float) -> void:

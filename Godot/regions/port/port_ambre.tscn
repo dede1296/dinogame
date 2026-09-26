@@ -1,0 +1,816 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://world/region.gd" id="1_phv0c"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/plaines.ogg" id="2_te28e"]
+[ext_resource type="Texture2D" path="res://assets/art/ground/paves.png" id="3_qd7iu"]
+[ext_resource type="TileSet" path="res://regions/terrain_tileset.tres" id="4_j46vj"]
+[ext_resource type="Script" path="res://world/ground.gd" id="5_j6fx8"]
+[ext_resource type="Script" path="res://world/tall_grass.gd" id="6_6o4dc"]
+[ext_resource type="Script" path="res://world/prop.gd" id="7_802ut"]
+[ext_resource type="Script" path="res://world/sign.gd" id="8_5tasp"]
+[ext_resource type="PackedScene" path="res://actors/npc.tscn" id="9_dth6l"]
+[ext_resource type="Script" path="res://actors/npc.gd" id="10_f4v4p"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="11_m714b"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="12_aqdj1"]
+[ext_resource type="Script" path="res://world/zone_exit.gd" id="13_5q2di"]
+[ext_resource type="Script" path="res://world/dock.gd" id="14_n28m7"]
+
+[node name="PortAmbre" type="Node2D" unique_id=819084958]
+script = ExtResource("1_phv0c")
+region_id = &"port_ambre"
+display_name = "Port-Ambre"
+levels = Vector2i(1, 1)
+music = ExtResource("2_te28e")
+ambience_id = &"port"
+path_tex = ExtResource("3_qd7iu")
+paved_rect = Rect2(0, 8.6, 40, 16)
+rain_chance = 0.1
+mist_chance = 0.12
+relief = PackedStringArray()
+
+[node name="Terrain" type="TileMapLayer" parent="." unique_id=388598256]
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAANAAAAAAAAAAAAAAAOAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAQAAAAAAABAAAAAAARAAAAAAABAAAAAAASAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAVAAAAAAAAAAAAAAAWAAAAAAAAAAAAAAAXAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAZAAAAAAAAAAAAAAAaAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAdAAAAAAAAAAAAAAAeAAAAAAAAAAAAAAAfAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAhAAAAAAAAAAAAAAAiAAAAAAAAAAAAAAAjAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAlAAAAAAAAAAAAAAAmAAAAAAAAAAAAAAAnAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAEAAAAAAAAAAAAPAAEAAAAAAAAAAAAQAAEAAAABAAAAAAARAAEAAAABAAAAAAASAAEAAAAAAAAAAAATAAEAAAAAAAAAAAAUAAEAAAAAAAAAAAAVAAEAAAAAAAAAAAAWAAEAAAAAAAAAAAAXAAEAAAAAAAAAAAAYAAEAAAAAAAAAAAAZAAEAAAAAAAAAAAAaAAEAAAAAAAAAAAAbAAEAAAAAAAAAAAAcAAEAAAAAAAAAAAAdAAEAAAAAAAAAAAAeAAEAAAAAAAAAAAAfAAEAAAAAAAAAAAAgAAEAAAAAAAAAAAAhAAEAAAAAAAAAAAAiAAEAAAAAAAAAAAAjAAEAAAAAAAAAAAAkAAEAAAAAAAAAAAAlAAEAAAAAAAAAAAAmAAEAAAAAAAAAAAAnAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAAAAAAAAAAOAAIAAAAAAAAAAAAPAAIAAAAAAAAAAAAQAAIAAAABAAAAAAARAAIAAAABAAAAAAASAAIAAAAAAAAAAAATAAIAAAAAAAAAAAAUAAIAAAAAAAAAAAAVAAIAAAAAAAAAAAAWAAIAAAAAAAAAAAAXAAIAAAAAAAAAAAAYAAIAAAAAAAAAAAAZAAIAAAAAAAAAAAAaAAIAAAAAAAAAAAAbAAIAAAAAAAAAAAAcAAIAAAAAAAAAAAAdAAIAAAAAAAAAAAAeAAIAAAAAAAAAAAAfAAIAAAAAAAAAAAAgAAIAAAAAAAAAAAAhAAIAAAAAAAAAAAAiAAIAAAAAAAAAAAAjAAIAAAAAAAAAAAAkAAIAAAAAAAAAAAAlAAIAAAAAAAAAAAAmAAIAAAAAAAAAAAAnAAIAAAAAAAAAAAAAAAMAAAAAAAAAAAABAAMAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAAJAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAANAAMAAAAAAAAAAAAOAAMAAAAAAAAAAAAPAAMAAAAAAAAAAAAQAAMAAAABAAAAAAARAAMAAAABAAAAAAASAAMAAAAAAAAAAAATAAMAAAAAAAAAAAAUAAMAAAAAAAAAAAAVAAMAAAAAAAAAAAAWAAMAAAAAAAAAAAAXAAMAAAAAAAAAAAAYAAMAAAAAAAAAAAAZAAMAAAAAAAAAAAAaAAMAAAAAAAAAAAAbAAMAAAAAAAAAAAAcAAMAAAAAAAAAAAAdAAMAAAAAAAAAAAAeAAMAAAAAAAAAAAAfAAMAAAAAAAAAAAAgAAMAAAAAAAAAAAAhAAMAAAAAAAAAAAAiAAMAAAAAAAAAAAAjAAMAAAAAAAAAAAAkAAMAAAAAAAAAAAAlAAMAAAAAAAAAAAAmAAMAAAAAAAAAAAAnAAMAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAANAAQAAAAAAAAAAAAOAAQAAAAAAAAAAAAPAAQAAAAAAAAAAAAQAAQAAAABAAAAAAARAAQAAAABAAAAAAASAAQAAAAAAAAAAAATAAQAAAAAAAAAAAAUAAQAAAAAAAAAAAAVAAQAAAAAAAAAAAAWAAQAAAAAAAAAAAAXAAQAAAAAAAAAAAAYAAQAAAAAAAAAAAAZAAQAAAAAAAAAAAAaAAQAAAAAAAAAAAAbAAQAAAAAAAAAAAAcAAQAAAAAAAAAAAAdAAQAAAAAAAAAAAAeAAQAAAAAAAAAAAAfAAQAAAAAAAAAAAAgAAQAAAAAAAAAAAAhAAQAAAAAAAAAAAAiAAQAAAAAAAAAAAAjAAQAAAAAAAAAAAAkAAQAAAAAAAAAAAAlAAQAAAAAAAAAAAAmAAQAAAAAAAAAAAAnAAQAAAAAAAAAAAAAAAUAAAAAAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAAAAAAAAAAEAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAGAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAJAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAMAAUAAAAAAAAAAAANAAUAAAAAAAAAAAAOAAUAAAAAAAAAAAAPAAUAAAAAAAAAAAAQAAUAAAABAAAAAAARAAUAAAABAAAAAAASAAUAAAAAAAAAAAATAAUAAAAAAAAAAAAUAAUAAAAAAAAAAAAVAAUAAAAAAAAAAAAWAAUAAAAAAAAAAAAXAAUAAAAAAAAAAAAYAAUAAAAAAAAAAAAZAAUAAAAAAAAAAAAaAAUAAAAAAAAAAAAbAAUAAAAAAAAAAAAcAAUAAAAAAAAAAAAdAAUAAAAAAAAAAAAeAAUAAAAAAAAAAAAfAAUAAAAAAAAAAAAgAAUAAAAAAAAAAAAhAAUAAAAAAAAAAAAiAAUAAAAAAAAAAAAjAAUAAAAAAAAAAAAkAAUAAAAAAAAAAAAlAAUAAAAAAAAAAAAmAAUAAAAAAAAAAAAnAAUAAAAAAAAAAAAAAAYAAAAAAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAAOAAYAAAAAAAAAAAAPAAYAAAAAAAAAAAAQAAYAAAABAAAAAAARAAYAAAABAAAAAAASAAYAAAAAAAAAAAATAAYAAAAAAAAAAAAUAAYAAAAAAAAAAAAVAAYAAAAAAAAAAAAWAAYAAAAAAAAAAAAXAAYAAAAAAAAAAAAYAAYAAAAAAAAAAAAZAAYAAAAAAAAAAAAaAAYAAAAAAAAAAAAbAAYAAAAAAAAAAAAcAAYAAAAAAAAAAAAdAAYAAAAAAAAAAAAeAAYAAAAAAAAAAAAfAAYAAAAAAAAAAAAgAAYAAAAAAAAAAAAhAAYAAAAAAAAAAAAiAAYAAAAAAAAAAAAjAAYAAAAAAAAAAAAkAAYAAAAAAAAAAAAlAAYAAAAAAAAAAAAmAAYAAAAAAAAAAAAnAAYAAAAAAAAAAAAAAAcAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAANAAcAAAAAAAAAAAAOAAcAAAAAAAAAAAAPAAcAAAAAAAAAAAAQAAcAAAABAAAAAAARAAcAAAABAAAAAAASAAcAAAAAAAAAAAATAAcAAAAAAAAAAAAUAAcAAAAAAAAAAAAVAAcAAAAAAAAAAAAWAAcAAAAAAAAAAAAXAAcAAAAAAAAAAAAYAAcAAAAAAAAAAAAZAAcAAAAAAAAAAAAaAAcAAAAAAAAAAAAbAAcAAAAAAAAAAAAcAAcAAAAAAAAAAAAdAAcAAAAAAAAAAAAeAAcAAAAAAAAAAAAfAAcAAAAAAAAAAAAgAAcAAAAAAAAAAAAhAAcAAAAAAAAAAAAiAAcAAAAAAAAAAAAjAAcAAAAAAAAAAAAkAAcAAAAAAAAAAAAlAAcAAAAAAAAAAAAmAAcAAAAAAAAAAAAnAAcAAAAAAAAAAAAAAAgAAAAAAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAAAAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAOAAgAAAAAAAAAAAAPAAgAAAAAAAAAAAAQAAgAAAABAAAAAAARAAgAAAABAAAAAAASAAgAAAAAAAAAAAATAAgAAAAAAAAAAAAUAAgAAAAAAAAAAAAVAAgAAAAAAAAAAAAWAAgAAAAAAAAAAAAXAAgAAAAAAAAAAAAYAAgAAAAAAAAAAAAZAAgAAAAAAAAAAAAaAAgAAAAAAAAAAAAbAAgAAAAAAAAAAAAcAAgAAAAAAAAAAAAdAAgAAAAAAAAAAAAeAAgAAAAAAAAAAAAfAAgAAAAAAAAAAAAgAAgAAAAAAAAAAAAhAAgAAAAAAAAAAAAiAAgAAAAAAAAAAAAjAAgAAAAAAAAAAAAkAAgAAAAAAAAAAAAlAAgAAAAAAAAAAAAmAAgAAAAAAAAAAAAnAAgAAAAAAAAAAAAAAAkAAAAAAAAAAAABAAkAAAAAAAAAAAACAAkAAAABAAAAAAADAAkAAAABAAAAAAAEAAkAAAABAAAAAAAFAAkAAAABAAAAAAAGAAkAAAABAAAAAAAHAAkAAAABAAAAAAAIAAkAAAABAAAAAAAJAAkAAAABAAAAAAAKAAkAAAABAAAAAAALAAkAAAABAAAAAAAMAAkAAAABAAAAAAANAAkAAAABAAAAAAAOAAkAAAABAAAAAAAPAAkAAAABAAAAAAAQAAkAAAABAAAAAAARAAkAAAABAAAAAAASAAkAAAABAAAAAAATAAkAAAABAAAAAAAUAAkAAAABAAAAAAAVAAkAAAABAAAAAAAWAAkAAAABAAAAAAAXAAkAAAABAAAAAAAYAAkAAAABAAAAAAAZAAkAAAABAAAAAAAaAAkAAAABAAAAAAAbAAkAAAABAAAAAAAcAAkAAAABAAAAAAAdAAkAAAABAAAAAAAeAAkAAAABAAAAAAAfAAkAAAABAAAAAAAgAAkAAAABAAAAAAAhAAkAAAABAAAAAAAiAAkAAAABAAAAAAAjAAkAAAABAAAAAAAkAAkAAAABAAAAAAAlAAkAAAABAAAAAAAmAAkAAAAAAAAAAAAnAAkAAAAAAAAAAAAAAAoAAAAAAAAAAAABAAoAAAAAAAAAAAACAAoAAAABAAAAAAADAAoAAAABAAAAAAAEAAoAAAABAAAAAAAFAAoAAAABAAAAAAAGAAoAAAABAAAAAAAHAAoAAAABAAAAAAAIAAoAAAABAAAAAAAJAAoAAAABAAAAAAAKAAoAAAABAAAAAAALAAoAAAABAAAAAAAMAAoAAAABAAAAAAANAAoAAAABAAAAAAAOAAoAAAABAAAAAAAPAAoAAAABAAAAAAAQAAoAAAABAAAAAAARAAoAAAABAAAAAAASAAoAAAABAAAAAAATAAoAAAABAAAAAAAUAAoAAAABAAAAAAAVAAoAAAABAAAAAAAWAAoAAAABAAAAAAAXAAoAAAABAAAAAAAYAAoAAAABAAAAAAAZAAoAAAABAAAAAAAaAAoAAAABAAAAAAAbAAoAAAABAAAAAAAcAAoAAAABAAAAAAAdAAoAAAABAAAAAAAeAAoAAAABAAAAAAAfAAoAAAABAAAAAAAgAAoAAAABAAAAAAAhAAoAAAABAAAAAAAiAAoAAAABAAAAAAAjAAoAAAABAAAAAAAkAAoAAAABAAAAAAAlAAoAAAABAAAAAAAmAAoAAAAAAAAAAAAnAAoAAAAAAAAAAAAAAAsAAAAAAAAAAAABAAsAAAAAAAAAAAACAAsAAAABAAAAAAADAAsAAAABAAAAAAAEAAsAAAABAAAAAAAFAAsAAAABAAAAAAAGAAsAAAABAAAAAAAHAAsAAAABAAAAAAAIAAsAAAABAAAAAAAJAAsAAAABAAAA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AAAAAA8AAAABAAAAAAABAA8AAAABAAAAAAACAA8AAAABAAAAAAADAA8AAAABAAAAAAAEAA8AAAABAAAAAAAFAA8AAAABAAAAAAAGAA8AAAABAAAAAAAHAA8AAAABAAAAAAAIAA8AAAABAAAAAAAJAA8AAAABAAAAAAAKAA8AAAABAAAAAAALAA8AAAABAAAAAAAMAA8AAAABAAAAAAANAA8AAAABAAAAAAAOAA8AAAABAAAAAAAPAA8AAAABAAAAAAAQAA8AAAABAAAAAAARAA8AAAABAAAAAAASAA8AAAABAAAAAAATAA8AAAABAAAAAAAUAA8AAAABAAAAAAAVAA8AAAABAAAAAAAWAA8AAAABAAAAAAAXAA8AAAABAAAAAAAYAA8AAAABAAAAAAAZAA8AAAABAAAAAAAaAA8AAAABAAAAAAAbAA8AAAABAAAAAAAcAA8AAAABAAAAAAAdAA8AAAABAAAAAAAeAA8AAAABAAAAAAAfAA8AAAABAAAAAAAgAA8AAAABAAAAAAAhAA8AAAABAAAAAAAiAA8AAAABAAAAAAAjAA8AAAABAAAAAAAkAA8AAAABAAAAAAAlAA8AAAABAAAAAAAmAA8AAAABAAAAAAAnAA8AAAABAAAAAAAAABAAAAABAAAAAAABABAAAAABAAAAAAACABAAAAABAAAAAAADABAAAAABAAAAAAAEABAAAAABAAAAAAAFABAAAAABAAAAAAAGABAAAAABAAAAAAAHABAAAAABAAAAAAAIABAAAAABAAAAAAAJABAAAAABAAAAAAAKABAAAAABAAAAAAALABAAAAABAAAAAAAMABAAAAABAAAAAAANABAAAAABAAAAAAAOABAAAAABAAAAAAAPABAAAAABAAAAAAAQABAAAAABAAAAAAARABAAAAABAAAAAAASABAAAAABAAAAAAATABAAAAABAAAAAAAUABAAAAABAAAAAAAVABAAAAABAAAAAAAWABAAAAABAAAAAAAXABAAAAABAAAAAAAYABAAAAABAAAAAAAZABAAAAABAAAAAAAaABAAAAABAAAAAAAbABAAAAABAAAAAAAcABAAAAABAAAAAAAdABAAAAABAAAAAAAeABAAAAABAAAAAAAfABAAAAABAAAAAAAgABAAAAABAAAAAAAhABAAAAABAAAAAAAiABAAAAABAAAAAAAjABAAAAABAAAAAAAkABAAAAABAAAAAAAlABAAAAABAAAAAAAmABAAAAABAAAAAAAnABAAAAABAAAAAAAAABEAAAADAAAAAAABABEAAAADAAAAAAACABEAAAADAAAAAAADABEAAAADAAAAAAAEABEAAAADAAAAAAAFABEAAAADAAAAAAAGABEAAAADAAAAAAAHABEAAAADAAAAAAAIABEAAAADAAAAAAAJABEAAAADAAAAAAAKABEAAAADAAAAAAALABEAAAADAAAAAAAMABEAAAADAAAAAAANABEAAAADAAAAAAAOABEAAAADAAAAAAAPABEAAAADAAAAAAAQABEAAAADAAAAAAARABEAAAADAAAAAAASABEAAAABAAAAAAATABEAAAABAAAAAAAUABEAAAABAAAAAAAVABEAAAADAAAAAAAWABEAAAADAAAAAAAXABEAAAADAAAAAAAYABEAAAADAAAAAAAZABEAAAADAAAAAAAaABEAAAADAAAAAAAbABEAAAADAAAAAAAcABEAAAADAAAAAAAdABEAAAADAAAAAAAeABEAAAADAAAAAAAfABEAAAADAAAAAAAgABEAAAADAAAAAAAhABEAAAADAAAAAAAiABEAAAADAAAAAAAjABEAAAADAAAAAAAkABEAAAADAAAAAAAlABEAAAADAAAAAAAmABEAAAADAAAAAAAnABEAAAADAAAAAAAAABIAAAADAAAAAAABABIAAAADAAAAAAACABIAAAADAAAAAAADABIAAAADAAAAAAAEABIAAAADAAAAAAAFABIAAAADAAAAAAAGABIAAAADAAAAAAAHABIAAAADAAAAAAAIABIAAAADAAAAAAAJABIAAAADAAAAAAAKABIAAAADAAAAAAALABIAAAADAAAAAAAMABIAAAADAAAAAAANABIAAAADAAAAAAAOABIAAAADAAAAAAAPABIAAAADAAAAAAAQABIAAAADAAAAAAARABIAAAADAAAAAAASABIAAAABAAAAAAATABIAAAABAAAAAAAUABIAAAABAAAAAAAVABIAAAADAAAAAAAWABIAAAADAAAAAAAXABIAAAADAAAAAAAYABIAAAADAAAAAAAZABIAAAADAAAAAAAaABIAAAADAAAAAAAbABIAAAADAAAAAAAcABIAAAADAAAAAAAdABIAAAADAAAAAAAeABIAAAADAAAAAAAfABIAAAADAAAAAAAgABIAAAADAAAAAAAhABIAAAADAAAAAAAiABIAAAADAAAAAAAjABIAAAADAAAAAAAkABIAAAADAAAAAAAlABIAAAADAAAAAAAmABIAAAADAAAAAAAnABIAAAADAAAAAAAAABMAAAADAAAAAAABABMAAAADAAAAAAACABMAAAADAAAAAAADABMAAAADAAAAAAAEABMAAAADAAAAAAAFABMAAAADAAAAAAAGABMAAAADAAAAAAAHABMAAAADAAAAAAAIABMAAAADAAAAAAAJABMAAAADAAAAAAAKABMAAAADAAAAAAALABMAAAADAAAAAAAMABMAAAADAAAAAAANABMAAAADAAAAAAAOABMAAAADAAAAAAAPABMAAAADAAAAAAAQABMAAAADAAAAAAARABMAAAADAAAAAAASABMAAAABAAAAAAATABMAAAABAAAAAAAUABMAAAABAAAAAAAVABMAAAADAAAAAAAWABMAAAADAAAAAAAXABMAAAADAAAAAAAYABMAAAADAAAAAAAZABMAAAADAAAAAAAaABMAAAADAAAAAAAbABMAAAADAAAAAAAcABMAAAADAAAAAAAdABMAAAADAAAAAAAeABMAAAADAAAAAAAfABMAAAADAAAAAAAgABMAAAADAAAAAAAhABMAAAADAAAAAAAiABMAAAADAAAAAAAjABMAAAADAAAAAAAkABMAAAADAAAAAAAlABMAAAADAAAAAAAmABMAAAADAAAAAAAnABMAAAADAAAAAAAAABQAAAADAAAAAAABABQAAAADAAAAAAACABQAAAADAAAAAAADABQAAAADAAAAAAAEABQAAAADAAAAAAAFABQAAAADAAAAAAAGABQAAAADAAAAAAAHABQAAAADAAAAAAAIABQAAAADAAAAAAAJABQAAAADAAAAAAAKABQAAAADAAAAAAALABQAAAADAAAAAAAMABQAAAADAAAAAAANABQAAAADAAAAAAAOABQAAAADAAAAAAAPABQAAAADAAAAAAAQABQAAAADAAAAAAARABQAAAADAAAAAAASABQAAAABAAAAAAATABQAAAABAAAAAAAUABQAAAABAAAAAAAVABQAAAADAAAAAAAWABQAAAADAAAAAAAXABQAAAADAAAAAAAYABQAAAADAAAAAAAZABQAAAADAAAAAAAaABQAAAADAAAAAAAbABQAAAADAAAAAAAcABQAAAADAAAAAAAdABQAAAADAAAAAAAeABQAAAADAAAAAAAfABQAAAADAAAAAAAgABQAAAADAAAAAAAhABQAAAADAAAAAAAiABQAAAADAAAAAAAjABQAAAADAAAAAAAkABQAAAADAAAAAAAlABQAAAADAAAAAAAmABQAAAADAAAAAAAnABQAAAADAAAAAAAAABUAAAADAAAAAAABABUAAAADAAAAAAACABUAAAADAAAAAAADABUAAAADAAAAAAAEABUAAAADAAAAAAAFABUAAAADAAAAAAAGABUAAAADAAAAAAAHABUAAAADAAAAAAAIABUAAAADAAAAAAAJABUAAAADAAAAAAAKABUAAAADAAAAAAALABUAAAADAAAAAAAMABUAAAADAAAAAAANABUAAAADAAAAAAAOABUAAAADAAAAAAAPABUAAAADAAAAAAAQABUAAAADAAAAAAARABUAAAADAAAAAAASABUAAAABAAAAAAATABUAAAABAAAAAAAUABUAAAABAAAAAAAVABUAAAADAAAAAAAWABUAAAADAAAAAAAXABUAAAADAAAAAAAYABUAAAADAAAAAAAZABUAAAADAAAAAAAaABUAAAADAAAAAAAbABUAAAADAAAAAAAcABUAAAADAAAAAAAdABUAAAADAAAAAAAeABUAAAADAAAAAAAfABUAAAADAAAAAAAgABUAAAADAAAAAAAhABUAAAADAAAAAAAiABUAAAADAAAAAAAjABUAAAADAAAAAAAkABUAAAADAAAAAAAlABUAAAADAAAAAAAmABUAAAADAAAAAAAnABUAAAADAAAAAAAAABYAAAADAAAAAAABABYAAAADAAAAAAACABYAAAADAAAAAAADABYAAAADAAAAAAAEABYAAAADAAAAAAAFABYAAAADAAAAAAAGABYAAAADAAAAAAAHABYAAAADAAAAAAAIABYAAAADAAAAAAAJABYAAAADAAAAAAAKABYAAAADAAAAAAALABYAAAADAAAAAAAMABYAAAADAAAAAAANABYAAAADAAAAAAAOABYAAAADAAAAAAAPABYAAAADAAAAAAAQABYAAAADAAAAAAARABYAAAADAAAAAAASABYAAAABAAAAAAATABYAAAABAAAAAAAUABYAAAABAAAAAAAVABYAAAADAAAAAAAWABYAAAADAAAAAAAXABYAAAADAAAAAAAYABYAAAADAAAAAAAZABYAAAADAAAAAAAaABYAAAADAAAAAAAbABYAAAADAAAAAAAcABYAAAADAAAAAAAdABYAAAADAAAAAAAeABYAAAADAAAAAAAfABYAAAADAAAAAAAgABYAAAADAAAAAAAhABYAAAADAAAAAAAiABYAAAADAAAAAAAjABYAAAADAAAAAAAkABYAAAADAAAAAAAlABYAAAADAAAAAAAmABYAAAADAAAAAAAnABYAAAADAAAAAAAAABcAAAADAAAAAAABABcAAAADAAAAAAACABcAAAADAAAAAAADABcAAAADAAAAAAAEABcAAAADAAAAAAAFABcAAAADAAAAAAAGABcAAAADAAAAAAAHABcAAAADAAAAAAAIABcAAAADAAAAAAAJABcAAAADAAAAAAAKABcAAAADAAAAAAALABcAAAADAAAAAAAMABcAAAADAAAAAAANABcAAAADAAAAAAAOABcAAAADAAAAAAAPABcAAAADAAAAAAAQABcAAAADAAAAAAARABcAAAADAAAAAAASABcAAAADAAAAAAATABcAAAADAAAAAAAUABcAAAADAAAAAAAVABcAAAADAAAAAAAWABcAAAADAAAAAAAXABcAAAADAAAAAAAYABcAAAADAAAAAAAZABcAAAADAAAAAAAaABcAAAADAAAAAAAbABcAAAADAAAAAAAcABcAAAADAAAAAAAdABcAAAADAAAAAAAeABcAAAADAAAAAAAfABcAAAADAAAAAAAgABcAAAADAAAAAAAhABcAAAADAAAAAAAiABcAAAADAAAAAAAjABcAAAADAAAAAAAkABcAAAADAAAAAAAlABcAAAADAAAAAAAmABcAAAADAAAAAAAnABcAAAADAAAAAAA=")
+tile_set = ExtResource("4_j46vj")
+
+[node name="Ground" type="ColorRect" parent="." unique_id=1189091816 node_paths=PackedStringArray("terrain")]
+z_index = -10
+script = ExtResource("5_j6fx8")
+terrain = NodePath("../Terrain")
+
+[node name="Entities" type="Node2D" parent="." unique_id=896731491]
+y_sort_enabled = true
+
+[node name="TallGrass" type="Node2D" parent="Entities" unique_id=1080745407 node_paths=PackedStringArray("terrain")]
+script = ExtResource("6_6o4dc")
+terrain = NodePath("../../Terrain")
+
+[node name="Araucaria" type="StaticBody2D" parent="Entities" unique_id=194131559]
+position = Vector2(-31.259825, -12.157593)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="Araucaria2" type="StaticBody2D" parent="Entities" unique_id=1178535229]
+position = Vector2(85.2811, -10.817989)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="ArbreRond" type="StaticBody2D" parent="Entities" unique_id=1585375250]
+position = Vector2(163.21837, 1.4192052)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond2" type="StaticBody2D" parent="Entities" unique_id=1099518529]
+position = Vector2(264.69934, 3.5890408)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond3" type="StaticBody2D" parent="Entities" unique_id=1639855887]
+position = Vector2(349.01016, -3.6880934)
+script = ExtResource("7_802ut")
+
+[node name="FougereArbre" type="StaticBody2D" parent="Entities" unique_id=758365764]
+position = Vector2(452.91446, 3.9069033)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="ArbreRond4" type="StaticBody2D" parent="Entities" unique_id=2050711625]
+position = Vector2(556.51715, -1.4224229)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond5" type="StaticBody2D" parent="Entities" unique_id=395544402]
+position = Vector2(650.2603, -4.7326303)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond6" type="StaticBody2D" parent="Entities" unique_id=664479418]
+position = Vector2(1036.3517, -11.368581)
+script = ExtResource("7_802ut")
+
+[node name="FougereArbre2" type="StaticBody2D" parent="Entities" unique_id=2079405317]
+position = Vector2(1123.0817, -3.134185)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="ArbreRond7" type="StaticBody2D" parent="Entities" unique_id=1984593686]
+position = Vector2(1231.3358, 3.8920674)
+script = ExtResource("7_802ut")
+
+[node name="Araucaria3" type="StaticBody2D" parent="Entities" unique_id=289425955]
+position = Vector2(1329.6165, -13.684315)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="ArbreRond8" type="StaticBody2D" parent="Entities" unique_id=1832549085]
+position = Vector2(1415.8846, -12.333314)
+script = ExtResource("7_802ut")
+
+[node name="Araucaria4" type="StaticBody2D" parent="Entities" unique_id=2074954799]
+position = Vector2(1504.6221, 2.2968225)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="ArbreRond9" type="StaticBody2D" parent="Entities" unique_id=2050695465]
+position = Vector2(1606.3634, -7.0579786)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond10" type="StaticBody2D" parent="Entities" unique_id=1084974125]
+position = Vector2(1716.8004, -9.326984)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="Araucaria5" type="StaticBody2D" parent="Entities" unique_id=1644247630]
+position = Vector2(1805.4557, 3.9197206)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="ArbreRond11" type="StaticBody2D" parent="Entities" unique_id=2141379566]
+position = Vector2(1899.3519, -2.6618273)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond12" type="StaticBody2D" parent="Entities" unique_id=1394984069]
+position = Vector2(35.63538, 46.01106)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="Araucaria6" type="StaticBody2D" parent="Entities" unique_id=1116402516]
+position = Vector2(109.44874, 39.937435)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="ArbreRond13" type="StaticBody2D" parent="Entities" unique_id=1506447917]
+position = Vector2(204.69965, 34.746433)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="FougereArbre3" type="StaticBody2D" parent="Entities" unique_id=1840068936]
+position = Vector2(307.53152, 49.263012)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="FougereArbre4" type="StaticBody2D" parent="Entities" unique_id=980943806]
+position = Vector2(404.92868, 48.566868)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="FougereArbre5" type="StaticBody2D" parent="Entities" unique_id=1098042716]
+position = Vector2(499.33362, 44.300816)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="FougereArbre6" type="StaticBody2D" parent="Entities" unique_id=569737399]
+position = Vector2(600.9453, 35.82487)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="Araucaria7" type="StaticBody2D" parent="Entities" unique_id=63736726]
+position = Vector2(988.4563, 42.175163)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="ArbreRond14" type="StaticBody2D" parent="Entities" unique_id=1675143727]
+position = Vector2(1069.3658, 36.92467)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="Araucaria8" type="StaticBody2D" parent="Entities" unique_id=118346128]
+position = Vector2(1183.2319, 51.847992)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="ArbreRond15" type="StaticBody2D" parent="Entities" unique_id=501632832]
+position = Vector2(1267.8424, 51.908325)
+script = ExtResource("7_802ut")
+
+[node name="FougereArbre7" type="StaticBody2D" parent="Entities" unique_id=1751694218]
+position = Vector2(1380.7115, 49.16352)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="FougereArbre8" type="StaticBody2D" parent="Entities" unique_id=1075432206]
+position = Vector2(1456.1903, 44.931263)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="FougereArbre9" type="StaticBody2D" parent="Entities" unique_id=584194277]
+position = Vector2(1550.0851, 52.31781)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="ArbreRond16" type="StaticBody2D" parent="Entities" unique_id=246347444]
+position = Vector2(1653.6635, 42.017452)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond17" type="StaticBody2D" parent="Entities" unique_id=1620363883]
+position = Vector2(1764.6921, 46.045223)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond18" type="StaticBody2D" parent="Entities" unique_id=1169977837]
+position = Vector2(1844.3431, 48.069515)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond19" type="StaticBody2D" parent="Entities" unique_id=573501642]
+position = Vector2(1930.5114, 44.837994)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="FougereArbre10" type="StaticBody2D" parent="Entities" unique_id=1510018811]
+position = Vector2(-15.692176, 90.39246)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="ArbreRond20" type="StaticBody2D" parent="Entities" unique_id=712587650]
+position = Vector2(67.03669, 83.81684)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="FougereArbre11" type="StaticBody2D" parent="Entities" unique_id=545037675]
+position = Vector2(158.68909, 99.304344)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="ArbreRond21" type="StaticBody2D" parent="Entities" unique_id=2124072428]
+position = Vector2(256.00677, 82.869865)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="Araucaria9" type="StaticBody2D" parent="Entities" unique_id=1626363950]
+position = Vector2(373.60706, 83.881294)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="Araucaria10" type="StaticBody2D" parent="Entities" unique_id=1046299805]
+position = Vector2(445.58282, 99.842804)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="ArbreRond22" type="StaticBody2D" parent="Entities" unique_id=172704810]
+position = Vector2(563.12415, 85.54395)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="FougereArbre12" type="StaticBody2D" parent="Entities" unique_id=1162215324]
+position = Vector2(645.5139, 85.34352)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="ArbreRond23" type="StaticBody2D" parent="Entities" unique_id=654847140]
+position = Vector2(1018.2414, 93.088684)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="FougereArbre13" type="StaticBody2D" parent="Entities" unique_id=1123739702]
+position = Vector2(1132.0879, 82.96414)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="Araucaria11" type="StaticBody2D" parent="Entities" unique_id=237436671]
+position = Vector2(1216.1256, 85.549934)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="ArbreRond24" type="StaticBody2D" parent="Entities" unique_id=612941388]
+position = Vector2(1332.0297, 89.189735)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond25" type="StaticBody2D" parent="Entities" unique_id=1365073082]
+position = Vector2(1425.6191, 92.71624)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="FougereArbre14" type="StaticBody2D" parent="Entities" unique_id=1939617454]
+position = Vector2(1521.0831, 98.102234)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="ArbreRond26" type="StaticBody2D" parent="Entities" unique_id=1746284858]
+position = Vector2(1600.5472, 85.42789)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond27" type="StaticBody2D" parent="Entities" unique_id=1936282762]
+position = Vector2(1710.028, 90.94696)
+script = ExtResource("7_802ut")
+
+[node name="Araucaria12" type="StaticBody2D" parent="Entities" unique_id=1950199986]
+position = Vector2(1803.7655, 93.88079)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="ArbreRond28" type="StaticBody2D" parent="Entities" unique_id=895319675]
+position = Vector2(1907.9948, 93.50615)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond29" type="StaticBody2D" parent="Entities" unique_id=1506931669]
+position = Vector2(24.998081, 139.61108)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond30" type="StaticBody2D" parent="Entities" unique_id=669116842]
+position = Vector2(1839.7621, 130.24681)
+script = ExtResource("7_802ut")
+
+[node name="FougereArbre15" type="StaticBody2D" parent="Entities" unique_id=705715488]
+position = Vector2(1952.233, 143.08818)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="ArbreRond31" type="StaticBody2D" parent="Entities" unique_id=810182672]
+position = Vector2(-32.470406, 181.94165)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond32" type="StaticBody2D" parent="Entities" unique_id=1775449918]
+position = Vector2(85.15872, 181.45343)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="FougereArbre16" type="StaticBody2D" parent="Entities" unique_id=1901635436]
+position = Vector2(1903.7416, 188.71365)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="Araucaria13" type="StaticBody2D" parent="Entities" unique_id=359833824]
+position = Vector2(17.382206, 239.42854)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="ArbreRond33" type="StaticBody2D" parent="Entities" unique_id=282838341]
+position = Vector2(1835.7814, 226.95215)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond34" type="StaticBody2D" parent="Entities" unique_id=1916191154]
+position = Vector2(1954.9412, 241.39693)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond35" type="StaticBody2D" parent="Entities" unique_id=649375116]
+position = Vector2(-24.037987, 289.5386)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond36" type="StaticBody2D" parent="Entities" unique_id=215943129]
+position = Vector2(71.46175, 287.0593)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="Araucaria14" type="StaticBody2D" parent="Entities" unique_id=851627851]
+position = Vector2(1903.0281, 274.87244)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="Araucaria15" type="StaticBody2D" parent="Entities" unique_id=1314075708]
+position = Vector2(35.20525, 332.66965)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="ArbreRond37" type="StaticBody2D" parent="Entities" unique_id=1410781212]
+position = Vector2(1848.5684, 329.36368)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="FougereArbre17" type="StaticBody2D" parent="Entities" unique_id=992815311]
+position = Vector2(1937.5267, 339.914)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="Araucaria16" type="StaticBody2D" parent="Entities" unique_id=300732025]
+position = Vector2(-27.107395, 382.8938)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="FougereArbre18" type="StaticBody2D" parent="Entities" unique_id=411992593]
+position = Vector2(77.949135, 370.88046)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="ArbreRond38" type="StaticBody2D" parent="Entities" unique_id=1692541681]
+position = Vector2(1897.9781, 383.96503)
+script = ExtResource("7_802ut")
+
+[node name="Araucaria17" type="StaticBody2D" parent="Entities" unique_id=2064448131]
+position = Vector2(25.88553, 430.1622)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="FougereArbre19" type="StaticBody2D" parent="Entities" unique_id=223728196]
+position = Vector2(1848.5476, 421.38153)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="ArbreRond39" type="StaticBody2D" parent="Entities" unique_id=176239381]
+position = Vector2(1938.1987, 417.71384)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="ArbreRond40" type="StaticBody2D" parent="Entities" unique_id=618039053]
+position = Vector2(-34.650734, 482.2843)
+script = ExtResource("7_802ut")
+
+[node name="Araucaria18" type="StaticBody2D" parent="Entities" unique_id=1890298501]
+position = Vector2(57.76217, 481.73004)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="FougereArbre20" type="StaticBody2D" parent="Entities" unique_id=957539118]
+position = Vector2(1907.3159, 471.09613)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="ArbreRond41" type="StaticBody2D" parent="Entities" unique_id=19554287]
+position = Vector2(34.85, 519.6812)
+script = ExtResource("7_802ut")
+flip = true
+
+[node name="Araucaria19" type="StaticBody2D" parent="Entities" unique_id=580484050]
+position = Vector2(1860.656, 529.14014)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="Araucaria20" type="StaticBody2D" parent="Entities" unique_id=471062713]
+position = Vector2(1948.2487, 513.6076)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+flip = true
+
+[node name="ArbreRond42" type="StaticBody2D" parent="Entities" unique_id=1251396816]
+position = Vector2(-33.580833, 574.69226)
+script = ExtResource("7_802ut")
+
+[node name="FougereArbre21" type="StaticBody2D" parent="Entities" unique_id=795817413]
+position = Vector2(60.87352, 574.9318)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="ArbreRond43" type="StaticBody2D" parent="Entities" unique_id=967953822]
+position = Vector2(1905.9371, 565.97)
+script = ExtResource("7_802ut")
+
+[node name="ArbreRond44" type="StaticBody2D" parent="Entities" unique_id=1744273840]
+position = Vector2(37.37841, 612.0259)
+script = ExtResource("7_802ut")
+
+[node name="Araucaria21" type="StaticBody2D" parent="Entities" unique_id=1612088965]
+position = Vector2(1851.9556, 618.3641)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="FougereArbre22" type="StaticBody2D" parent="Entities" unique_id=1175915008]
+position = Vector2(1935.5962, 616.5651)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="ArbreRond45" type="StaticBody2D" parent="Entities" unique_id=1402929622]
+position = Vector2(-34.70099, 669.7691)
+script = ExtResource("7_802ut")
+
+[node name="Araucaria22" type="StaticBody2D" parent="Entities" unique_id=518282187]
+position = Vector2(73.50493, 658.7136)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="FougereArbre23" type="StaticBody2D" parent="Entities" unique_id=1027262942]
+position = Vector2(1898.0017, 675.37134)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+flip = true
+
+[node name="FougereArbre24" type="StaticBody2D" parent="Entities" unique_id=743810961]
+position = Vector2(17.403961, 709.7588)
+script = ExtResource("7_802ut")
+kind = "fougere_arbre"
+
+[node name="Araucaria23" type="StaticBody2D" parent="Entities" unique_id=2004570554]
+position = Vector2(1851.6006, 714.97394)
+script = ExtResource("7_802ut")
+kind = "araucaria"
+
+[node name="ArbreRond46" type="StaticBody2D" parent="Entities" unique_id=1992260135]
+position = Vector2(1944.8807, 714.2997)
+script = ExtResource("7_802ut")
+
+[node name="FleursRoses" type="StaticBody2D" parent="Entities" unique_id=326286384]
+position = Vector2(1808.8271, 614.692)
+script = ExtResource("7_802ut")
+kind = "fleurs_roses"
+
+[node name="FleursRoses2" type="StaticBody2D" parent="Entities" unique_id=178609784]
+position = Vector2(639.8964, 614.207)
+script = ExtResource("7_802ut")
+kind = "fleurs_roses"
+
+[node name="Fougeres" type="StaticBody2D" parent="Entities" unique_id=1889535523]
+position = Vector2(1272.8306, 650.71564)
+script = ExtResource("7_802ut")
+kind = "fougeres"
+flip = true
+
+[node name="FleursRoses3" type="StaticBody2D" parent="Entities" unique_id=1887847507]
+position = Vector2(1034.684, 653.13153)
+script = ExtResource("7_802ut")
+kind = "fleurs_roses"
+
+[node name="Fougeres2" type="StaticBody2D" parent="Entities" unique_id=1178505124]
+position = Vector2(612.87024, 650.82587)
+script = ExtResource("7_802ut")
+kind = "fougeres"
+flip = true
+
+[node name="FleursRoses4" type="StaticBody2D" parent="Entities" unique_id=1795942278]
+position = Vector2(1023.5145, 619.1081)
+script = ExtResource("7_802ut")
+kind = "fleurs_roses"
+
+[node name="FleursViolettes" type="StaticBody2D" parent="Entities" unique_id=1767204390]
+position = Vector2(550.9769, 661.0884)
+script = ExtResource("7_802ut")
+kind = "fleurs_violettes"
+
+[node name="Fougeres3" type="StaticBody2D" parent="Entities" unique_id=1160119030]
+position = Vector2(1087.1735, 695.964)
+script = ExtResource("7_802ut")
+kind = "fougeres"
+
+[node name="FleursRoses5" type="StaticBody2D" parent="Entities" unique_id=1259647154]
+position = Vector2(1042.6316, 608.517)
+script = ExtResource("7_802ut")
+kind = "fleurs_roses"
+
+[node name="FleursViolettes2" type="StaticBody2D" parent="Entities" unique_id=509422841]
+position = Vector2(123.089935, 270.76764)
+script = ExtResource("7_802ut")
+kind = "fleurs_violettes"
+flip = true
+
+[node name="Fougeres4" type="StaticBody2D" parent="Entities" unique_id=1675237573]
+position = Vector2(129.50403, 187.03024)
+script = ExtResource("7_802ut")
+kind = "fougeres"
+flip = true
+
+[node name="Fougeres5" type="StaticBody2D" parent="Entities" unique_id=1369988684]
+position = Vector2(359.14032, 699.29333)
+script = ExtResource("7_802ut")
+kind = "fougeres"
+flip = true
+
+[node name="Fougeres6" type="StaticBody2D" parent="Entities" unique_id=1267140305]
+position = Vector2(1094.0371, 131.32356)
+script = ExtResource("7_802ut")
+kind = "fougeres"
+
+[node name="FleursViolettes3" type="StaticBody2D" parent="Entities" unique_id=1742667114]
+position = Vector2(1141.4734, 709.6415)
+script = ExtResource("7_802ut")
+kind = "fleurs_violettes"
+flip = true
+
+[node name="FleursViolettes4" type="StaticBody2D" parent="Entities" unique_id=264456213]
+position = Vector2(1067.3489, 126.82521)
+script = ExtResource("7_802ut")
+kind = "fleurs_violettes"
+flip = true
+
+[node name="FleursRoses6" type="StaticBody2D" parent="Entities" unique_id=376892803]
+position = Vector2(454.3366, 120.75748)
+script = ExtResource("7_802ut")
+kind = "fleurs_roses"
+
+[node name="MaisonBlanche" type="StaticBody2D" parent="Entities" unique_id=1225567142]
+position = Vector2(312, 398.4)
+script = ExtResource("7_802ut")
+kind = "maison_blanche"
+
+[node name="MaisonJaune" type="StaticBody2D" parent="Entities" unique_id=1923029549]
+position = Vector2(604.8, 398.4)
+script = ExtResource("7_802ut")
+kind = "maison_jaune"
+
+[node name="MaisonPort" type="StaticBody2D" parent="Entities" unique_id=2094350004]
+position = Vector2(1152, 398.4)
+script = ExtResource("7_802ut")
+kind = "maison_port"
+
+[node name="Cabinet" type="StaticBody2D" parent="Entities" unique_id=1740044401]
+position = Vector2(1512, 398.4)
+script = ExtResource("7_802ut")
+kind = "cabinet"
+
+[node name="Lanterne" type="StaticBody2D" parent="Entities" unique_id=1250118120]
+position = Vector2(480, 432)
+script = ExtResource("7_802ut")
+kind = "lanterne"
+
+[node name="Lanterne2" type="StaticBody2D" parent="Entities" unique_id=735136834]
+position = Vector2(777.6, 432)
+script = ExtResource("7_802ut")
+kind = "lanterne"
+
+[node name="Lanterne3" type="StaticBody2D" parent="Entities" unique_id=844313308]
+position = Vector2(998.4, 432)
+script = ExtResource("7_802ut")
+kind = "lanterne"
+
+[node name="Lanterne4" type="StaticBody2D" parent="Entities" unique_id=2024591913]
+position = Vector2(1334.4, 432)
+script = ExtResource("7_802ut")
+kind = "lanterne"
+
+[node name="BacFleurs" type="StaticBody2D" parent="Entities" unique_id=1775792737]
+position = Vector2(412.8, 417.6)
+script = ExtResource("7_802ut")
+kind = "bac_fleurs"
+
+[node name="BacFleurs2" type="StaticBody2D" parent="Entities" unique_id=2147356218]
+position = Vector2(691.2, 417.6)
+script = ExtResource("7_802ut")
+kind = "bac_fleurs"
+
+[node name="Tonneau" type="StaticBody2D" parent="Entities" unique_id=2288589]
+position = Vector2(1065.6, 422.4)
+script = ExtResource("7_802ut")
+kind = "tonneau"
+
+[node name="Caisses" type="StaticBody2D" parent="Entities" unique_id=1657331440]
+position = Vector2(1267.2, 427.2)
+script = ExtResource("7_802ut")
+kind = "caisses"
+
+[node name="Filet" type="StaticBody2D" parent="Entities" unique_id=29916268]
+position = Vector2(240, 662.4)
+script = ExtResource("7_802ut")
+kind = "filet"
+
+[node name="Sechoir" type="StaticBody2D" parent="Entities" unique_id=192893658]
+position = Vector2(460.8, 652.8)
+script = ExtResource("7_802ut")
+kind = "sechoir"
+
+[node name="Banc" type="StaticBody2D" parent="Entities" unique_id=357570759]
+position = Vector2(652.8, 633.6)
+script = ExtResource("7_802ut")
+kind = "banc"
+
+[node name="Casiers" type="StaticBody2D" parent="Entities" unique_id=1281584860]
+position = Vector2(1132.8, 662.4)
+script = ExtResource("7_802ut")
+kind = "casiers"
+
+[node name="Ancre" type="StaticBody2D" parent="Entities" unique_id=1960549461]
+position = Vector2(1401.6, 652.8)
+script = ExtResource("7_802ut")
+kind = "ancre"
+
+[node name="BacFleurs3" type="StaticBody2D" parent="Entities" unique_id=1555357173]
+position = Vector2(1632, 633.6)
+script = ExtResource("7_802ut")
+kind = "bac_fleurs"
+
+[node name="Tonneau2" type="StaticBody2D" parent="Entities" unique_id=1627222007]
+position = Vector2(1689.6, 652.8)
+script = ExtResource("7_802ut")
+kind = "tonneau"
+
+[node name="Bitte" type="StaticBody2D" parent="Entities" unique_id=675285768]
+position = Vector2(216, 806.4)
+script = ExtResource("7_802ut")
+kind = "bitte"
+
+[node name="Bitte2" type="StaticBody2D" parent="Entities" unique_id=949949440]
+position = Vector2(528, 806.4)
+script = ExtResource("7_802ut")
+kind = "bitte"
+
+[node name="Bitte3" type="StaticBody2D" parent="Entities" unique_id=13293314]
+position = Vector2(1248, 806.4)
+script = ExtResource("7_802ut")
+kind = "bitte"
+
+[node name="Bitte4" type="StaticBody2D" parent="Entities" unique_id=1313989025]
+position = Vector2(1584, 806.4)
+script = ExtResource("7_802ut")
+kind = "bitte"
+
+[node name="Caisses2" type="StaticBody2D" parent="Entities" unique_id=1695102458]
+position = Vector2(1420.8, 753.6)
+script = ExtResource("7_802ut")
+kind = "caisses"
+
+[node name="Tonneau3" type="StaticBody2D" parent="Entities" unique_id=2105092768]
+position = Vector2(1497.6, 739.2)
+script = ExtResource("7_802ut")
+kind = "tonneau"
+
+[node name="Cordage" type="StaticBody2D" parent="Entities" unique_id=130720850]
+position = Vector2(1056, 787.2)
+script = ExtResource("7_802ut")
+kind = "cordage"
+
+[node name="Casiers2" type="StaticBody2D" parent="Entities" unique_id=1875089396]
+position = Vector2(384, 748.8)
+script = ExtResource("7_802ut")
+kind = "casiers"
+
+[node name="Barque" type="StaticBody2D" parent="Entities" unique_id=1907761124]
+position = Vector2(1113.6, 979.2)
+script = ExtResource("7_802ut")
+kind = "barque"
+
+[node name="Barque2" type="StaticBody2D" parent="Entities" unique_id=1617637645]
+position = Vector2(748.8, 940.8)
+script = ExtResource("7_802ut")
+kind = "barque"
+flip = true
+
+[node name="Barque3" type="StaticBody2D" parent="Entities" unique_id=1611491738]
+position = Vector2(1368, 921.6)
+script = ExtResource("7_802ut")
+kind = "barque"
+
+[node name="Panneau" type="StaticBody2D" parent="Entities" unique_id=909794123]
+position = Vector2(998.4, 134.4)
+script = ExtResource("8_5tasp")
+dialogue_id = &"panneau_plaines"
+kind = "panneau"
+flip = true
+
+[node name="IsaureQuai" type="StaticBody2D" parent="Entities" unique_id=337644020 instance=ExtResource("9_dth6l")]
+position = Vector2(974.4, 1027.2)
+collision_mask = 0
+script = ExtResource("10_f4v4p")
+display_name = "Isaure"
+sheet = ExtResource("11_m714b")
+facing = "left"
+hide_flag = &"prologue_arrived"
+
+[node name="MaiaQuai" type="StaticBody2D" parent="Entities" unique_id=441771343 instance=ExtResource("9_dth6l")]
+position = Vector2(950.4, 758.4)
+collision_mask = 0
+script = ExtResource("10_f4v4p")
+display_name = "Maïa"
+sheet = ExtResource("12_aqdj1")
+hide_flag = &"prologue_arrived"
+
+[node name="Isaure" type="StaticBody2D" parent="Entities" unique_id=266287412 instance=ExtResource("9_dth6l")]
+position = Vector2(1084.8, 753.6)
+collision_mask = 0
+script = ExtResource("10_f4v4p")
+display_name = "Isaure"
+sheet = ExtResource("11_m714b")
+dialogue_id = &"isaure"
+show_flag = &"prologue_done"
+
+[node name="Spawns" type="Node2D" parent="." unique_id=617539090]
+
+[node name="Depart" type="Marker2D" parent="Spawns" unique_id=1105087951]
+position = Vector2(912, 1017.6)
+
+[node name="DepuisPlaines" type="Marker2D" parent="Spawns" unique_id=1952346312]
+position = Vector2(816, 72)
+
+[node name="DepuisCabinet" type="Marker2D" parent="Spawns" unique_id=827266]
+position = Vector2(1512, 465.6)
+
+[node name="Habitats" type="Node2D" parent="." unique_id=813942720]
+
+[node name="Exits" type="Node2D" parent="." unique_id=1123431556]
+
+[node name="VersPlaines" type="Area2D" parent="Exits" unique_id=255425732]
+position = Vector2(720, 0)
+script = ExtResource("13_5q2di")
+size = Vector2(192, 26.400002)
+target_zone = &"plaines"
+target_spawn = &"DepuisPort"
+required_flag = &"prologue_done"
+blocked_dialogue = &"port_bloque"
+
+[node name="VersCabinet" type="Area2D" parent="Exits" unique_id=1551206092]
+position = Vector2(1483.2, 400.80002)
+script = ExtResource("13_5q2di")
+size = Vector2(57.600002, 24)
+target_zone = &"cabinet"
+
+[node name="Ponton" type="Node2D" parent="." unique_id=1008886813]
+position = Vector2(864, 816)
+script = ExtResource("14_n28m7")

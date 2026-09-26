@@ -5,6 +5,13 @@ class_name SpeciesDB
 const PATHS := {
 	&"velociraptor": "res://data/species/velociraptor.tres",
 	&"protoceratops": "res://data/species/protoceratops.tres",
+	&"parasaurolophus": "res://data/species/parasaurolophus.tres",
+	&"ankylosaurus": "res://data/species/ankylosaurus.tres",
+	&"troodon": "res://data/species/troodon.tres",
+	&"psittacosaurus": "res://data/species/psittacosaurus.tres",
+	&"dimorphodon": "res://data/species/dimorphodon.tres",
+	&"compsognathus": "res://data/species/compsognathus.tres",
+	&"triceratops": "res://data/species/triceratops.tres",
 }
 
 static var _cache: Dictionary = {}
