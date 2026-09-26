@@ -126,4 +126,28 @@ export const SCREEN_CSS = `
 .scr-sheet button small { font-weight: 500; font-size: 11.5px; color: var(--s-mute); }
 .scr-sheet button:disabled { opacity: 0.35; cursor: default; }
 .scr-sheet button.cancel { background: transparent; border-color: transparent; color: var(--s-mute); }
+
+/* Dinodex */
+.dex-count { display: flex; gap: 14px; align-items: baseline; font-size: 13px; color: var(--s-mute); padding: 0 4px; }
+.dex-count b { color: var(--s-accent); font-size: 16px; margin-left: 3px; }
+.dex-count .of { margin-left: auto; }
+.dgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.dcard { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 18px 4px 8px; border-radius: 14px; cursor: pointer;
+  background: var(--s-card); border: 1px solid var(--s-line); color: inherit; font: inherit; transition: background 0.15s, border-color 0.15s, transform 0.1s; }
+.dcard:hover, .dcard:focus-visible { background: var(--s-card-hi); border-color: rgba(255,255,255,0.2); outline: none; }
+.dcard:active { transform: scale(0.97); }
+.dcard.caught { background: radial-gradient(ellipse at 50% 35%, rgba(245,185,66,0.16), var(--s-card) 70%); border-color: rgba(245,185,66,0.35); }
+.dnum { position: absolute; top: 5px; left: 8px; font-size: 10px; font-weight: 700; color: var(--s-mute); font-variant-numeric: tabular-nums; }
+.dball { position: absolute; top: 3px; right: 5px; }
+.dball img { width: 18px; height: 18px; display: block; }
+.dpic { height: 54px; display: grid; place-items: center; }
+.dpic img { width: 80px; height: 52px; object-fit: contain; }
+.dcard img.egg { width: 46px; height: 46px; }
+img.seen { filter: grayscale(1) brightness(0.75) opacity(0.55); }
+img.caught { filter: drop-shadow(0 3px 4px rgba(0,0,0,0.45)); }
+.dname { font-size: 11.5px; font-weight: 600; text-align: center; line-height: 1.2; min-height: 2.4em; display: flex; align-items: center; }
+.dcard.unseen .dname { color: var(--s-mute); }
+.dex-big { width: 120px; height: 96px; display: grid; place-items: center; }
+.dex-big img { width: 120px; height: 92px; object-fit: contain; }
+.dex-big img.egg { width: 84px; height: 84px; }
 `;

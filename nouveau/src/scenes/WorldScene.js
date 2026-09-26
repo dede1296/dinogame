@@ -15,12 +15,17 @@ import { ENCOUNTERS, ENCOUNTER_RATE } from "../data/encounters.js";
 import { createDino, heal } from "../battle/dino.js";
 import { play } from "../audio/sounds.js";
 import { rollWild } from "../battle/wild.js";
+import { DINOS } from "../../../src/data/dinos.js";
+import { setDexPlace, markSeen, markCaught, dexSpeciesOf, syncDexWithTeam } from "../data/dex.js";
 
 const CHUNK = 12;
 const FOLLOWER_SCALE = 0.25; // px per art unit
 const STEP_MS = 190;
 // Holding B: steps take this fraction of the normal time.
 const RUN_FACTOR = 0.55;
+// Dinodex: a visible wild dino this close (in tiles) is "seen"; checked this often.
+const DEX_SIGHT_TILES = 4;
+const DEX_CHECK_MS = 500;
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const OPPOSITE = { up: "down", down: "up", left: "right", right: "left" };
 
@@ -74,6 +79,8 @@ export class WorldScene extends Phaser.Scene {
     hud.handlers.menu = [this.onMenu];
     hud.handlers.party = [() => this.openPanel(() => hud.openParty())];
     hud.handlers.bag = [() => this.openPanel(() => hud.openBag())];
+    hud.handlers.dex = [() => this.openPanel(() => hud.openDex())];
+    syncDexWithTeam();
     hud.handlers.b = [];
 
     this.scale.on("resize", () => this.fitCamera());
@@ -404,9 +411,10 @@ export class WorldScene extends Phaser.Scene {
     return true;
   }
 
-  update() {
+  update(time) {
     this.paintPendingChunks();
     this.updateDarkness();
+    if (time - (this.lastDexCheck || 0) > DEX_CHECK_MS) { this.lastDexCheck = time; this.noticeRoamers(); }
     if (this.moving || this.scriptRunning || hud.busy) return;
     const d = hud.dir;
     if (!d) {
@@ -501,6 +509,7 @@ export class WorldScene extends Phaser.Scene {
     const z = this.zoneAt(this.py);
     if (z.name !== this.currentZone || force) {
       this.currentZone = z.name;
+      setDexPlace(z.name);
       hud.banner(z.name, this.map.interior ? "" : "Ambrelune");
     }
   }
@@ -655,6 +664,8 @@ export class WorldScene extends Phaser.Scene {
     state.party.push(createDino(build, 5, s.nickname));
     setFlag("starter");
     state.flags.starterIndex = i;
+    state.party[state.party.length - 1].dexSpecies = DINOS[idx].name;
+    markCaught(DINOS[idx].name);
     const ped = this.entities.find((e) => e.kind === "pedestal" && e.starter === i);
     ped?.sprite?.setTint(0x999999);
     save();
@@ -766,6 +777,16 @@ export class WorldScene extends Phaser.Scene {
       }
     });
     this.time.addEvent({ delay: 1400 + Math.random() * 1600, loop: true, callback: () => this.roam(ent) });
+  }
+
+  // Wild dinos Chloé walks near count as "seen" in the Dinodex (like crossing them).
+  noticeRoamers() {
+    for (const r of this.roamers || []) {
+      if (r.gone || r.dexNoticed || !r.sprite || Math.max(Math.abs(r.x - this.px), Math.abs(r.y - this.py)) > DEX_SIGHT_TILES) continue;
+      r.dexNoticed = true;
+      const name = dexSpeciesOf(r.wild);
+      if (markSeen(name)) hud.toast(`Nouvelle espèce aperçue : ${name} ! Elle est notée dans le Dinodex.`);
+    }
   }
 
   // A small glow for the one eye visible in side view, seen through the cave darkness.

@@ -86,7 +86,7 @@ async function dinoActions(hud, i, api, startMove) {
 }
 
 // Types this dino's own type hits hard, and the types that hit it hard.
-function matchups(t) {
+export function matchups(t) {
   const strong = Object.keys(TYPE_CHART[t] || {}).filter((x) => TYPE_CHART[t][x] > 1);
   const weak = Object.keys(TYPE_CHART).filter((a) => (TYPE_CHART[a][t] || 1) > 1);
   const resists = Object.keys(TYPE_CHART).filter((a) => (TYPE_CHART[a][t] || 1) < 1);

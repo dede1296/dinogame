@@ -5,6 +5,7 @@ import { play } from "../audio/sounds.js";
 import { openMainMenu } from "./mainMenu.js";
 import { openParty } from "./partyScreen.js";
 import { openBag } from "./bagScreen.js";
+import { openDex } from "./dexScreen.js";
 import { showLetter } from "./letter.js";
 import { artImg } from "./art.js";
 
@@ -57,7 +58,7 @@ const KEYS = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: 
 class Hud {
   constructor() {
     this.dirStack = [];
-    this.handlers = { a: [], b: [], menu: [], party: [], bag: [] };
+    this.handlers = { a: [], b: [], menu: [], party: [], bag: [], dex: [] };
     this.busy = false;
     this.advance = null;
     // Holding B makes Chloé run.
@@ -74,7 +75,7 @@ class Hud {
       <div class="fade"></div>
       <div class="pad"><div class="u">▲</div><div class="l">◀</div><div class="r">▶</div><div class="d">▼</div></div>
       <div class="btns"><div class="a">A</div><div class="b">B</div></div>
-      <div class="topbtns"><button class="partybtn" aria-label="Équipe">${artImg("equipe", "🦖")}</button><button class="bagbtn" aria-label="Sac">${artImg("sac", "🎒")}</button><button class="menubtn" aria-label="Menu">☰</button></div>`;
+      <div class="topbtns"><button class="dexbtn" aria-label="Dinodex">${artImg("dex", "📖")}</button><button class="partybtn" aria-label="Équipe">${artImg("equipe", "🦖")}</button><button class="bagbtn" aria-label="Sac">${artImg("sac", "🎒")}</button><button class="menubtn" aria-label="Menu">☰</button></div>`;
     document.body.appendChild(this.root);
     this.fadeEl = this.root.querySelector(".fade");
     this.bindPad();
@@ -130,6 +131,7 @@ class Hud {
     this.root.querySelector(".menubtn").addEventListener("click", () => this.fire("menu"));
     this.root.querySelector(".partybtn").addEventListener("click", () => this.fire("party"));
     this.root.querySelector(".bagbtn").addEventListener("click", () => this.fire("bag"));
+    this.root.querySelector(".dexbtn").addEventListener("click", () => this.fire("dex"));
   }
 
   bindKeys() {
@@ -143,6 +145,7 @@ class Hud {
       else if (e.key === "m" || e.key === "Tab") { this.fire("menu"); e.preventDefault(); }
       else if (e.key === "e") this.fire("party");
       else if (e.key === "i") this.fire("bag");
+      else if (e.key === "x") this.fire("dex");
     });
     window.addEventListener("keyup", (e) => {
       const d = KEYS[e.key] || KEYS[e.key.toLowerCase?.()];
@@ -244,6 +247,7 @@ class Hud {
   openMenu() { return openMainMenu(this); }
   openParty() { return openParty(this); }
   openBag() { return openBag(this); }
+  openDex() { return openDex(this); }
   letter(paragraphs, sign) { return showLetter(this, paragraphs, sign); }
 }
 

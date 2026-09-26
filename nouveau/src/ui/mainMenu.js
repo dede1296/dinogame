@@ -6,10 +6,12 @@ import { debugEnabled, debugTabHtml, runDebugAction } from "../debug/debug.js";
 import { openScreen, esc } from "./screen.js";
 import { openParty } from "./partyScreen.js";
 import { openBag } from "./bagScreen.js";
+import { openDex } from "./dexScreen.js";
 import { showLetter } from "./letter.js";
 import { artImg } from "./art.js";
 
 const ENTRIES = [
+  { id: "dex", icon: artImg("dex", "📖"), label: "Dinodex" },
   { id: "party", icon: artImg("equipe", "🦖"), label: "Équipe" },
   { id: "bag", icon: artImg("sac", "🎒"), label: "Sac" },
   { id: "journal", icon: artImg("journal", "📜"), label: "Journal" },
@@ -26,6 +28,7 @@ export function openMainMenu(hud) {
       body.querySelector(".mm")?.focus();
       body.onclick = async (ev) => {
         const id = ev.target.closest("[data-m]")?.dataset.m;
+        if (id === "dex") await openDex(hud);
         if (id === "party") await openParty(hud);
         if (id === "bag") await openBag(hud);
         if (id === "journal") await openJournal(hud);

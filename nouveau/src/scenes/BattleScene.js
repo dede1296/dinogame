@@ -12,6 +12,7 @@ import { paintArena, paintPlatform, paintSpark } from "../art/battleArt.js";
 import { playCry } from "../../../src/audio/cry.js";
 import { playSfx } from "../../../src/audio/sfx.js";
 import { play } from "../audio/sounds.js";
+import { markSeen, markCaught, dexSpeciesOf } from "../data/dex.js";
 
 const hex = (c) => parseInt(c.replace("#", ""), 16);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -183,6 +184,8 @@ export class BattleScene extends Phaser.Scene {
       const d = this.battle.active("foe");
       d.nickname = d.speciesName;
       d.hp = Math.max(1, d.hp);
+      d.dexSpecies = dexSpeciesOf(d);
+      const newInDex = markCaught(d.dexSpecies);
       if (state.party.length < 4) {
         state.party.push(d);
         await this.ui.message(`${d.speciesName} rejoint ton équipe !`);
@@ -191,6 +194,7 @@ export class BattleScene extends Phaser.Scene {
         state.box.push(d);
         await this.ui.message(`Ton équipe est complète : ${d.speciesName} est envoyé au Cabinet.`);
       }
+      if (newInDex) await this.ui.message(`Les données de ${d.dexSpecies} sont ajoutées au Dinodex !`);
     } else if (result === "lose") {
       playSfx("defeat");
       await this.ui.message("Tous tes dinos sont K.O. … Tu cours te mettre à l'abri.");
@@ -225,6 +229,7 @@ export class BattleScene extends Phaser.Scene {
     await new Promise((r) => this.tweens.add({ targets: s, x: p.x, duration: 650, ease: "Back.easeOut", onComplete: r }));
     this.breathe(side);
     if (first || side === "foe") { try { playCry(d.build); } catch {} }
+    if (side === "foe") markSeen(dexSpeciesOf(d));
     this.ui.showCard(side, d);
     await sleep(side === "foe" && first ? 350 : 150);
   }
