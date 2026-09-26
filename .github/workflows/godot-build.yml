@@ -114,3 +114,18 @@ jobs:
         with:
           files: Godot/build/android/Ambrelune.apk
           prerelease: true
+
+      # Chaque push sur la branche du prototype publie une Release « build N » : l'APK se
+      # télécharge directement depuis la page Releases (téléphone, sans compte ni zip).
+      - name: GitHub Release (build de la branche)
+        if: github.ref == 'refs/heads/godot-prototype'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: godot-build-${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          name: Ambrelune Godot — build ${{ github.run_number }}
+          body: |
+            Prototype Godot d'Ambrelune, commit ${{ github.sha }}.
+            Installer : télécharger Ambrelune.apk sur le téléphone puis l'ouvrir.
+          files: Godot/build/android/Ambrelune.apk
+          prerelease: true
