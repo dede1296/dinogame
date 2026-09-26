@@ -75,7 +75,8 @@ async function loadRecording(key) {
   const res = await fetch(new URL(`../../assets/cries/${key}.mp3`, import.meta.url));
   if (!res.ok) return null;
   const data = await res.arrayBuffer();
-  const buf = await new Promise((ok, ko) => ctx.decodeAudioData(data, ok, ko));
+  if (!(res.headers.get("content-type") || "").includes("audio")) return null;
+  const buf = await ctx.decodeAudioData(data);
   return normalize(trimSilence(buf));
 }
 

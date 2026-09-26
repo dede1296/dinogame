@@ -3,6 +3,7 @@
 import { play } from "../audio/sounds.js";
 import { artUrl } from "./art.js";
 import { esc } from "./screen.js";
+import { speakLine } from "../audio/voices.js";
 
 const CSS = `
 .letter { position: absolute; inset: 0; z-index: 4; pointer-events: auto; display: grid; place-items: center; padding: 20px;
@@ -22,7 +23,7 @@ const CSS = `
 let styled = false;
 
 /** Shows `paragraphs` (array of strings) signed by `sign`; resolves when closed. */
-export function showLetter(hud, paragraphs, sign = "") {
+export function showLetter(hud, paragraphs, sign = "", voiceId = null) {
   if (!styled) {
     const style = document.createElement("style");
     style.textContent = CSS;
@@ -34,7 +35,10 @@ export function showLetter(hud, paragraphs, sign = "") {
     el.className = "letter";
     el.innerHTML = `<div class="letter-paper" style="background-image:url('${artUrl("papier")}')">${paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}${sign ? `<p class="sign">${esc(sign)}</p>` : ""}</div><div class="letter-hint">Touche l'écran ou appuie sur A pour ranger la lettre</div>`;
     const prevAdvance = hud.advance;
-    const close = () => { hud.advance = prevAdvance; el.remove(); play("page", { volume: 0.5 }); resolve(); };
+    // Read aloud when it has a recording (Hélène's letter).
+    let stopVoice = null, closed = false;
+    if (voiceId) speakLine(voiceId).then((stop) => { if (closed) stop?.(); else stopVoice = stop; });
+    const close = () => { closed = true; stopVoice?.(); hud.advance = prevAdvance; el.remove(); play("page", { volume: 0.5 }); resolve(); };
     el.addEventListener("click", close);
     hud.advance = close;
     hud.root.appendChild(el);

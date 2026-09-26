@@ -8,6 +8,7 @@ import { openBag } from "./bagScreen.js";
 import { openDex } from "./dexScreen.js";
 import { openShop } from "./shopScreen.js";
 import { showLetter } from "./letter.js";
+import { blip, blipEvery, isVoiced, speakLine } from "../audio/voices.js";
 import { artImg } from "./art.js";
 
 const CSS = `
@@ -179,15 +180,23 @@ class Hud {
       if (name) box.querySelector(".name").textContent = name;
       this.root.appendChild(box);
       const txt = box.querySelector(".txt"), more = box.querySelector(".more");
-      let i = 0, done = false;
+      // A voiced line plays its recording; any other line gets the speaker's blips.
+      const voiced = isVoiced(text);
+      let stopVoice = null, closed = false;
+      if (voiced) speakLine(text).then((stop) => { if (closed) stop?.(); else stopVoice = stop; });
+      const blipTicks = Math.max(1, Math.round(blipEvery(name) / 2));
+      let i = 0, tick = 0, done = false;
       const timer = setInterval(() => {
         i += 2;
         txt.textContent = text.slice(0, i);
+        if (!voiced && tick++ % blipTicks === 0 && /\p{L}/u.test(text.slice(i - 2, i))) blip(name);
         if (i >= text.length) finish();
       }, 22);
       const finish = () => { clearInterval(timer); txt.textContent = text; done = true; more.hidden = false; };
       const next = () => {
         if (!done) { finish(); return; }
+        closed = true;
+        stopVoice?.();
         this.advance = null;
         box.remove();
         play("text", { volume: 0.25 });
@@ -250,7 +259,7 @@ class Hud {
   openBag() { return openBag(this); }
   openDex() { return openDex(this); }
   openShop(id) { return openShop(this, id); }
-  letter(paragraphs, sign) { return showLetter(this, paragraphs, sign); }
+  letter(paragraphs, sign, voiceId) { return showLetter(this, paragraphs, sign, voiceId); }
 }
 
 export const hud = new Hud();

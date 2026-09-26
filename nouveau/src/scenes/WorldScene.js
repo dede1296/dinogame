@@ -642,7 +642,7 @@ export class WorldScene extends Phaser.Scene {
   scriptApi() {
     return {
       say: (n, t) => hud.say(n, t),
-      letter: (paragraphs, sign) => hud.letter(paragraphs, sign),
+      letter: (paragraphs, sign, voiceId) => hud.letter(paragraphs, sign, voiceId),
       shop: (id) => hud.openShop(id),
       choose: (o) => hud.choose(o),
       toast: (t) => hud.toast(t),

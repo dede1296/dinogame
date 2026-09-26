@@ -3,6 +3,7 @@
 import { SLOTS, slotInfo, deleteSlot, hasSave } from "../state/game.js";
 import { getVolume, setVolume, play } from "../audio/sounds.js";
 import { getCryVolume, setCryVolume, playCry } from "../audio/cries.js";
+import { getVoiceVolume, setVoiceVolume, blip } from "../audio/voices.js";
 import { speciesIndex } from "../story/scripts.js";
 import { debugEnabled, watchTitleTaps, CHECKPOINTS, jumpTo } from "../debug/debug.js";
 import { VERSION, VERSION_LABEL } from "../version.js";
@@ -68,6 +69,8 @@ const SCREENS = {
         <input id="vol" type="range" min="0" max="100" step="5" value="${Math.round(getVolume() * 100)}"></div>
       <div class="setting"><label for="cryvol">🦖 Cris des dinos <output id="cryvol-out">${Math.round(getCryVolume() * 100)} %</output></label>
         <input id="cryvol" type="range" min="0" max="100" step="5" value="${Math.round(getCryVolume() * 100)}"></div>
+      <div class="setting"><label for="voicevol">🗣️ Voix des personnages <output id="voicevol-out">${Math.round(getVoiceVolume() * 100)} %</output></label>
+        <input id="voicevol" type="range" min="0" max="100" step="5" value="${Math.round(getVoiceVolume() * 100)}"></div>
       <div class="setting"><b>🎮 Commandes</b>
         <small><b>A</b> (Espace / Entrée) : parler, fouiller, valider</small>
         <small><b>B</b> (Échap) : retour, annuler</small>
@@ -113,12 +116,14 @@ export function setupTitle(title, onPick) {
   menu.addEventListener("input", (e) => {
     if (e.target.id === "vol") setVolume(e.target.value / 100);
     else if (e.target.id === "cryvol") setCryVolume(e.target.value / 100);
+    else if (e.target.id === "voicevol") setVoiceVolume(e.target.value / 100);
     else return;
     menu.querySelector(`#${e.target.id}-out`).textContent = `${e.target.value} %`;
   });
   // Let the player hear the new level: a click for the effects, a raptor call for the cries.
   menu.addEventListener("change", (e) => {
     if (e.target.id === "vol") play("ui_ok", { volume: 0.6 });
+    if (e.target.id === "voicevol") [0, 70, 140].forEach((ms) => setTimeout(() => blip("Maïa"), ms));
     if (e.target.id === "cryvol") { const i = speciesIndex("Velociraptor"); playCry({ head: i, teeth: i, frontLegs: i, backLegs: i, back: i, tail: i, color: i }); }
   });
 
