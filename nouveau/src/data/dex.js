@@ -65,47 +65,67 @@ export function syncDexWithTeam() {
 }
 
 // ---------------------------------------------------------------- hints
+// Where to find a species is always told as hearsay, with varied voices ("On dit que…",
+// "Un vieux pêcheur raconte…"). Each species keeps its own wording, so the Dinodex does
+// not change every time it is opened, but neighbouring entries sound different.
+
+// Where each zone's dinos live, as the end of a sentence.
 const ZONES = {
   plaines: "dans les hautes herbes et le long des chemins des Plaines des Fougères",
   grotte: "dans l'obscurité de la Grotte des Échos",
 };
-// Rumours about the regions still to explore (see HISTOIRE.md).
-const FAMILY_RUMOURS = {
-  raptor: "On entend des cris de meute dans la Forêt Jurassique, au nord des Plaines.",
-  sauropod: "On aperçoit parfois de longs cous au-dessus des arbres de la Forêt Jurassique.",
-  spino: "Un grand chasseur à voile rôderait dans les eaux du Marais Brumeux.",
-  hadrosaur: "Des troupeaux paissent au bord du Marais Brumeux.",
-  tyrant: "Les canyons du Désert Aride abritent de grands prédateurs.",
-  armored: "Les dinos cuirassés aiment les rochers brûlants du Désert Aride.",
-  ceratopsian: "Les cornus préfèrent les grands espaces : Plaines, puis Désert Aride.",
-  marine: "Il vivrait dans les grottes marines de la Côte Préhistorique.",
-  flyer: "Il nicherait tout là-haut, dans les Cieux Éternels.",
+// Regions still to explore (see HISTOIRE.md), by family.
+const FAMILY_PLACES = {
+  raptor: "en meute dans la Forêt Jurassique, au nord des Plaines",
+  sauropod: "au-dessus des arbres de la Forêt Jurassique, où l'on voit dépasser de longs cous",
+  spino: "dans les eaux troubles du Marais Brumeux",
+  hadrosaur: "en troupeau au bord du Marais Brumeux",
+  tyrant: "dans les canyons du Désert Aride",
+  armored: "sur les rochers brûlants du Désert Aride",
+  ceratopsian: "dans les grands espaces, des Plaines jusqu'au Désert Aride",
+  marine: "dans les grottes marines de la Côte Préhistorique",
+  flyer: "tout là-haut, dans les nids des Cieux Éternels",
 };
-const SPECIAL = {
-  Cryolophosaurus: "Il supporte le froid des Monts Gelés.",
-  Glaciodonte: "On dit qu'il dort sous la glace des Monts Gelés.",
-  Infernodonte: "Né des flammes de la Plaine Volcanique, raconte la légende.",
-  Indominus: "Espèce oubliée : un squelette fossile complet pourrait la faire revivre.",
-  "Titanosaure d'Or": "Espèce oubliée : un squelette fossile complet pourrait la faire revivre.",
+const SPECIAL_PLACES = {
+  Cryolophosaurus: "dans le froid des Monts Gelés",
+  Glaciodonte: "endormi sous la glace des Monts Gelés",
+  Infernodonte: "dans les flammes de la Plaine Volcanique",
 };
+
+// The voices that pass the word around: `{lieu}` is where, `{nom}` the species.
+const VOICES = [
+  "On dit qu'on en croise {lieu}.",
+  "Des rumeurs parlent d'un {nom} aperçu {lieu}.",
+  "Un vieux pêcheur de Port-Ambre jure en avoir vu {lieu}.",
+  "D'après les randonneurs, il faudrait chercher {lieu}.",
+  "Hélène avait griffonné dans son carnet : « {nom} — {lieu} ».",
+  "Maïa prétend en avoir suivi la trace {lieu}.",
+  "On raconte au village qu'il vit {lieu}.",
+  "Le Professeur Roc a entendu dire qu'il se cache {lieu}.",
+];
+
 const RARITY = {
   rare: "Espèce rare : ouvre l'œil.",
   epic: "Espèce mystérieuse : très peu l'ont vue.",
   legendary: "Espèce légendaire.",
 };
 
-/** Hints on where or how to find a species, most useful first. */
+const voiceFor = (name, n) => VOICES[(dexNumber(name) + n) % VOICES.length];
+const rumour = (name, place, n = 0) => voiceFor(name, n).replace("{lieu}", place).replace("{nom}", name);
+
+/** Hints on where or how to find a species, as rumours, most useful first. */
 export function dexHints(name) {
   const hints = [];
   const zones = Object.entries(ENCOUNTERS).filter(([, list]) => list.some(([n]) => n === name)).map(([z]) => ZONES[z]).filter(Boolean);
-  if (zones.length) hints.push(`Se rencontre ${zones.join(", et ")}.`);
-  if (STARTERS.some((s) => name.startsWith(s.species))) hints.push("L'un des trois bébés confiés par le Professeur Roc, au Cabinet.");
-  if (name === "Triceratops") hints.push("Le Tricératops Alpha dort sous le grand crâne des Plaines.");
+  zones.forEach((place, k) => hints.push(rumour(name, place, k)));
+  if (STARTERS.some((s) => name.startsWith(s.species))) hints.push("On raconte qu'Hélène en avait confié un œuf au Professeur Roc, au Cabinet de Port-Ambre.");
+  if (name === "Triceratops") hints.push("On murmure qu'un Tricératops immense dort sous le grand crâne des Plaines.");
   const sp = DINOS.find((d) => d.name === name);
-  if (SPECIAL[name]) hints.push(SPECIAL[name]);
-  else if (!zones.length && sp && FAMILY_RUMOURS[sp.family]) hints.push(`On raconte que… ${FAMILY_RUMOURS[sp.family]}`);
+  if (name === "Indominus" || name === "Titanosaure d'Or") hints.push("Une légende dit qu'un squelette fossile complet pourrait faire revivre cette espèce oubliée.");
+  else if (SPECIAL_PLACES[name]) hints.push(rumour(name, SPECIAL_PLACES[name], 3));
+  else if (!zones.length && sp && FAMILY_PLACES[sp.family]) hints.push(rumour(name, FAMILY_PLACES[sp.family], 5));
   if (sp?.rarity && RARITY[sp.rarity]) hints.push(RARITY[sp.rarity]);
-  return hints.length ? hints : ["Personne ne sait encore où le trouver. Explore l'île !"];
+  return hints.length ? hints : ["Personne n'en a jamais parlé… Explore l'île !"];
 }
 
 // ---------------------------------------------------------------- habitats

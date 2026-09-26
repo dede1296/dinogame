@@ -117,6 +117,12 @@ export const SCRIPTS = {
     for (const line of rocHint()) await say(ROC, line);
   },
 
+  async boutique({ say, shop }) {
+    await say("Rosalie", "Bienvenue à la boutique ! Colliers, fougères, baies… Tout ce qu'il faut pour partir à l'aventure.");
+    await shop("portAmbre");
+    await say("Rosalie", "Reviens quand tu veux. Et fais attention à toi sur les chemins !");
+  },
+
   async starter({ say, choose, flag, giveStarter }, index) {
     const s = STARTERS[index];
     if (flag("starter")) {

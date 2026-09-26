@@ -79,7 +79,7 @@ export const ambreluneSud = {
     { type: "building", kind: "cabinet", x: 26, y: 43, w: 7, h: 5, door: { x: 29, y: 47, to: { map: "cabinet", x: 6, y: 8, dir: "up" } } },
     { type: "building", kind: "house", x: 6, y: 47, w: 5, h: 4, door: { x: 8, y: 50, to: { map: "maison", x: 4, y: 6, dir: "up" } } },
     { type: "building", kind: "harbour", x: 34, y: 48, w: 5, h: 4, door: { x: 36, y: 51, locked: "La capitainerie est fermée. Le capitaine doit être en mer." } },
-    { type: "building", kind: "hut", x: 11, y: 57, w: 4, h: 3 },
+    { type: "building", kind: "shop", x: 11, y: 57, w: 4, h: 3, door: { x: 13, y: 59, to: { map: "boutique", x: 4, y: 5, dir: "up" } } },
     { type: "building", kind: "hut", x: 30, y: 57, w: 4, h: 3 },
     { type: "decor", kind: "boat", x: 21, y: 72, w: 4, h: 2, solid: true },
     { type: "decor", kind: "campfire", x: 16, y: 25, w: 1, h: 1, solid: true, script: "feuDeCamp", arg: { x: 16, y: 26, dir: "up", name: "près du feu de camp des Plaines" } },

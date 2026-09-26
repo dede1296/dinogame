@@ -11,7 +11,7 @@ const find = (id) => `${SRC}/${fs.readdirSync(SRC).find((n) => n.includes(id))}`
 const ICONS = {
   fougere: "myqpi9", baie: "tuci35", collier: "qpujbh", ambre: "vq0i7y", fossile: "1fsk6b",
   journal: "zcx4vk", piece: "oiupys", sceau_plaines: "bjqxil", sac: "z8g1q8", equipe: "8ftl0r",
-  dex: "v77yls", oeuf: "z99t1z",
+  dex: "v77yls", oeuf: "z99t1z", boutique: "7vqxdx",
 };
 const ICON_SIZE = 160;
 // Background removal by flood fill from the image border, so dark outlines inside

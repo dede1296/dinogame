@@ -226,6 +226,28 @@ export function building(kind, wTiles, hTiles) {
       const ax = W / 2, ay = wallTop - 26;
       ctx.beginPath(); ctx.arc(ax, ay - 12, 5, 0, Math.PI * 2); ctx.moveTo(ax, ay - 7); ctx.lineTo(ax, ay + 12);
       ctx.moveTo(ax - 12, ay + 4); ctx.quadraticCurveTo(ax, ay + 20, ax + 12, ay + 4); ctx.stroke();
+    } else if (kind === "shop") {
+      roof(ctx, -8, roofTop + 22, W + 16, wallTop - roofTop - 22, "tiles", [62, 124, 112]);
+      wallPlaster(ctx, 0, wallTop, W, wallH, "#f3e6c8");
+      windowPane(ctx, 12, wallTop + 30, 30, 28);
+      windowPane(ctx, W - 42, wallTop + 30, 30, 28);
+      door(ctx, 2 * T + 5, base - 60, 38, 60, "#b8742a");
+      // Striped awning with a scalloped edge.
+      const aw = 18, ay = wallTop + 4;
+      for (let x = -4, i = 0; x < W + 4; x += 16, i++) {
+        ctx.fillStyle = i % 2 ? "#f6ead0" : "#e8952a";
+        ctx.beginPath(); ctx.moveTo(x, ay); ctx.lineTo(x + 16, ay); ctx.lineTo(x + 16, ay + aw); ctx.quadraticCurveTo(x + 8, ay + aw + 7, x, ay + aw); ctx.closePath(); ctx.fill();
+      }
+      ctx.strokeStyle = "rgba(90,50,20,0.55)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(-4, ay); ctx.lineTo(W + 4, ay); ctx.stroke();
+      // Hanging sign with a glowing amber gem.
+      const sx = W / 2 - 28, sy = roofTop + 26;
+      ctx.fillStyle = "#6b4526"; ctx.fillRect(sx, sy, 56, 24);
+      ctx.strokeStyle = "#3a2412"; ctx.lineWidth = 2; ctx.strokeRect(sx, sy, 56, 24);
+      const g = ctx.createRadialGradient(W / 2, sy + 12, 1, W / 2, sy + 12, 10);
+      g.addColorStop(0, "#fff0b0"); g.addColorStop(0.5, "#f5a623"); g.addColorStop(1, "#b8650a");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.moveTo(W / 2, sy + 3); ctx.lineTo(W / 2 + 8, sy + 12); ctx.lineTo(W / 2, sy + 21); ctx.lineTo(W / 2 - 8, sy + 12); ctx.closePath(); ctx.fill();
     } else {
       // Fisher's hut.
       roof(ctx, -8, roofTop + 30, W + 16, wallTop - roofTop - 30, "thatch", [196, 160, 90]);

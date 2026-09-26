@@ -33,6 +33,30 @@ export const cabinet = {
   ],
 };
 
+export const boutique = {
+  id: "boutique",
+  name: "Boutique de Port-Ambre",
+  interior: true,
+  music: "maison",
+  rows: [
+    "wwwwwwwww",
+    "wwwwwwwww",
+    "fffffffff",
+    "fffffffff",
+    "ffcccccff",
+    "fffffffff",
+    "wwwwfwwww",
+  ],
+  entities: [
+    { type: "warp", x: 4, y: 6, to: { map: "ambreluneSud", x: 13, y: 60, dir: "down" } },
+    { type: "decor", kind: "table", x: 2, y: 3, w: 5, h: 1, solid: true, script: "boutique" },
+    { type: "decor", kind: "shelf", x: 0, y: 0, w: 2, h: 2, solid: true, text: "Des Colliers d'ambre tressés à la main, rangés par taille." },
+    { type: "decor", kind: "shelf", x: 7, y: 0, w: 2, h: 2, solid: true, text: "Des bottes de fougères qui sèchent, et des bocaux de baies." },
+    { type: "decor", kind: "plant", x: 8, y: 5, w: 1, h: 1, solid: true },
+    { type: "npc", id: "marchande", look: "merchant", x: 4, y: 2, dir: "down", script: "boutique" },
+  ],
+};
+
 export const maison = {
   id: "maison",
   name: "Maison d'Hélène",

@@ -6,6 +6,7 @@ import { openMainMenu } from "./mainMenu.js";
 import { openParty } from "./partyScreen.js";
 import { openBag } from "./bagScreen.js";
 import { openDex } from "./dexScreen.js";
+import { openShop } from "./shopScreen.js";
 import { showLetter } from "./letter.js";
 import { artImg } from "./art.js";
 
@@ -248,6 +249,7 @@ class Hud {
   openParty() { return openParty(this); }
   openBag() { return openBag(this); }
   openDex() { return openDex(this); }
+  openShop(id) { return openShop(this, id); }
   letter(paragraphs, sign) { return showLetter(this, paragraphs, sign); }
 }
 

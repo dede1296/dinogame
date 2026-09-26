@@ -61,6 +61,7 @@ function start(newGame) {
     state.bag = { fougere: 3, baie: 2, collier: 5 };
     setFlag("starter"); setFlag("maia_met");
   }
+  if (q.has("pieces")) state.money = +q.get("pieces");
   window.__game = game; // debug handle for the automated tests
   game.scene.add("World", WorldScene, true, { newGame: newGame && !spawn, map: q.get("carte") || undefined, spawn });
   game.scene.add("Battle", BattleScene, false);

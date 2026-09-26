@@ -88,7 +88,7 @@ export const SCREEN_CSS = `
 .item .qty { font-weight: 700; font-size: 13px; color: var(--s-mute); font-variant-numeric: tabular-nums; }
 .item-desc { padding: 12px 14px; border-radius: 16px; background: rgba(0,0,0,0.28); border: 1px solid var(--s-line); font-size: 13.5px; line-height: 1.5; color: var(--s-mute); }
 .item-desc b { color: var(--s-text); }
-.btn-main { margin-top: 10px; width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-size: 14.5px; color: #1b1406;
+.scr .btn-main { margin-top: 10px; width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-size: 14.5px; color: #1b1406;
   background: linear-gradient(135deg, #ffd27a, var(--s-accent) 45%, var(--s-accent-2)); box-shadow: 0 6px 18px rgba(245,160,60,0.3); }
 .money { display: flex; align-items: center; justify-content: flex-end; gap: 6px; font-weight: 700; font-size: 13px; color: var(--s-accent); padding: 2px 4px; }
 .money img { width: 26px; height: 26px; }
@@ -164,4 +164,12 @@ img.caught { filter: drop-shadow(0 3px 4px rgba(0,0,0,0.45)); }
 .hab-bar i.seen { background: rgba(245,185,66,0.35); }
 .hab-bar i.caught { background: linear-gradient(90deg, var(--s-accent-2), var(--s-accent)); }
 .hab-sub { font-size: 11.5px; color: var(--s-mute); }
+
+/* Shop */
+.shop-own { font-size: 11.5px; color: var(--s-mute); font-weight: 500; }
+.qty-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.qty-row .chip { width: 34px; height: 34px; padding: 0; font-size: 18px; }
+.qty-row b { min-width: 22px; text-align: center; color: var(--s-text); font-size: 16px; }
+.shop-total { margin-left: auto; font-weight: 700; color: var(--s-accent); }
+.scr .btn-main:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
 `;

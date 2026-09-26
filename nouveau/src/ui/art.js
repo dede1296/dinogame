@@ -1,6 +1,6 @@
 // Illustrated UI assets (made with nano-banana, processed by scripts/process-art.mjs).
 
-const ART = new Set(["fougere", "baie", "collier", "ambre", "fossile", "journal", "piece", "sceau_plaines", "sac", "equipe", "papier", "dex", "oeuf"]);
+const ART = new Set(["fougere", "baie", "collier", "ambre", "fossile", "journal", "piece", "sceau_plaines", "sac", "equipe", "papier", "dex", "oeuf", "boutique"]);
 
 /** URL of an illustration in assets/ui, or null if there is none for this name. */
 export function artUrl(name) {

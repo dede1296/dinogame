@@ -17,6 +17,7 @@ export const LOOKS = {
   kid: { skin: "#f5d0b0", hair: "#e8c060", hairStyle: "short", top: "#d04a4a", stripes: "#f4f1ea", bottom: "#3a5a8a", shoes: "#f4f1ea", scale: 0.78 },
   elder: { skin: "#eac5a5", hair: "#f0ede6", hairStyle: "bun", top: "#7a4a8a", shawl: true, bottom: "#5a4a6a", shoes: "#3a2a1a" },
   grunt: { skin: "#d9b294", hair: "#1c1622", hairStyle: "hood", top: "#2a2230", bottom: "#1c1822", shoes: "#141014", mask: "#5a2a7a", sash: "#8a3fc0" },
+  merchant: { skin: "#e6b48c", hair: "#7a3a1a", hairStyle: "bun", top: "#e8952a", stripes: "#f6ead0", bottom: "#5a4a3a", shoes: "#3a2a1a" },
   hiker: { skin: "#d8a47e", hair: "#3a2a1a", hairStyle: "short", hat: "#4f7a3a", top: "#b8a070", bottom: "#6a5a3a", shoes: "#4a3020", pack: "#4f6a3a", bigPack: true },
 };
 
