@@ -5,6 +5,8 @@ import { play } from "../audio/sounds.js";
 import { SCREEN_CSS } from "./screenStyles.js";
 
 let styled = false;
+// Opening and closing a menu window: a soft cue, well below the game sounds.
+const MENU_SOUND_VOLUME = 0.15;
 
 export const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -29,7 +31,7 @@ export function openScreen(hud, { title, icon = "", className = "", render }) {
     const close = () => {
       if (closed) return;
       closed = true;
-      play("ui_close", { volume: 0.45 });
+      play("ui_close", { volume: MENU_SOUND_VOLUME });
       hud.advance = prevAdvance;
       el.remove();
       if (!hud.root.querySelector(".scr")) hud.root.classList.remove("screen-open");
@@ -43,7 +45,7 @@ export function openScreen(hud, { title, icon = "", className = "", render }) {
     hud.root.appendChild(el);
     hud.root.classList.add("screen-open");
     hud.root.querySelectorAll(".toast").forEach((t) => t.remove());
-    play("ui_open", { volume: 0.45 });
+    play("ui_open", { volume: MENU_SOUND_VOLUME });
     render(body, api);
   });
 }
