@@ -108,6 +108,7 @@ static func alpha(who: Node) -> void:
 		fade.tween_property(who, "modulate", IN_SHADOW, SHADOW_S)
 		await who.walk_to(S.at(DEN.x, DEN.y), 80.0)
 		who.queue_free()
-	await S.say([{"text": "Le gardien retourne dans sa grotte, au fond du crâne. La route de la Forêt Jurassique t'attend… (bientôt !)"}])
+	await S.say([{"text": "Le gardien retourne dans sa grotte, au fond du crâne."},
+		{"text": "Sur une pierre, un mot plié en quatre, signé d'une tête de Protoceratops : « Bravo, championne. Rendez-vous au Havre ! Prends la route côtière, à l'est du port. — M. »"}])
 	Save.save_game()
 	S.lock(false)

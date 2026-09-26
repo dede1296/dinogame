@@ -15,7 +15,6 @@ face_back_sheet = ExtResource("3")
 world_scale = 0.46
 walk_fps = 9.0
 cry_prefix = "pterosaure"
-up_idle_frame = 4
 head_size = 4
 head_bite = 5
 teeth_sharp = 6

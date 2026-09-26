@@ -155,13 +155,13 @@ static func roc() -> bool:
 			{"flag": &"roc_myope"},
 		])
 		said = true
-	var count := Game.pebbles_found()
+	var count := Game.tears()
 	if not Game.flag(&"larmes_expliquees"):
 		if count == 0 and not Game.flag(&"amber_protoceratops"):
 			return said
 		await _tears_explained()
 		said = true
-	return await _milestones(Game.pebbles_found()) or said
+	return await _milestones(Game.tears()) or said
 
 
 static func _glasses_back() -> void:
@@ -217,7 +217,7 @@ static func _milestones(count: int) -> bool:
 		await _sealed_letter()
 		said = true
 	# The count so far, when it has changed since he last said it.
-	var n := Game.pebbles_found()
+	var n := Game.tears()
 	if n != int(Game.flag(&"larmes_annoncees")):
 		Game.set_flag(&"larmes_annoncees", n)
 		said = await _next_goal(n) or said

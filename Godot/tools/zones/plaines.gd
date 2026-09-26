@@ -90,7 +90,7 @@ static func _near_path(terrain: TileMapLayer, x: int, y: int) -> bool:
 ## The story's places and people.
 static func _story(root: Region, entities: Node2D) -> void:
 	# The crossroads: Maïa, the signpost.
-	B.npc(root, "Maia", "Maïa", CHARS % "maia", 62.6, 44.4, {"facing": "left", "event": &"maia"})
+	B.npc(root, "Maia", "Maïa", CHARS % "maia", 62.6, 44.4, {"facing": "left", "event": &"maia", "hide_flag": &"sceau_plaines"})
 	B.sign(entities, B.cell(57.4, 44.8), &"panneau_carrefour")
 	B.sign(entities, B.cell(61.6, 84.6), &"panneau_debarcadere")
 	# Hélène's grove, behind the fallen trunk (Tranche): page 1 and the first amber scale.
@@ -184,6 +184,13 @@ static func _annexes(root: Region, entities: Node2D) -> void:
 	pebble.name = "GaletIlot"
 	pebble.taken_flag = &"galet_plaines_ilot"
 	B.sign(entities, B.cell(81.4, 44.3), &"panneau_etang")
+	# A moulted Parasaurolophus skin on the shore, once Joss has asked for one (Havre-Doré).
+	var skin = B.prop(entities, "cailloux", B.cell(84.4, 50.2), false, load(PICKUP))
+	skin.name = "CuirMue"
+	skin.show_flag = &"selle_demandee"
+	skin.taken_flag = &"cuir_trouve"
+	skin.item_id = "cuir"
+	skin.dialogue_id = &"cuir_trouve"
 	root.pebbles += 3
 	# The sleeper under his tree, south of the crossroads.
 	B.prop(entities, "arbre_rond", B.cell(55.4, 66.4))

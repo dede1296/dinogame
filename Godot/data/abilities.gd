@@ -11,7 +11,7 @@ class_name Abilities
 ##   Vol: only the great pterosaurs (the Dimorphodon is far too small).
 ##   Nage: the spinosaurids, at home in rivers; the sea reptiles too.   Plongée: the sea reptiles.
 
-const ADULT_LEVEL := 15
+const ADULT_LEVEL := 12
 
 const DEFS := {
 	&"tranche": {"name": "Tranche", "icon": "claw", "part": &"front_legs", "families": [&"raptor"],
@@ -22,10 +22,10 @@ const DEFS := {
 		"desc": "Sa crête chante : l'ambre endormi s'éveille et les portes d'ambre s'ouvrent."},
 	&"flair": {"name": "Flair", "icon": "paw", "part": &"head", "species": [&"compsognathus", &"troodon", &"oviraptor"],
 		"desc": "Un nez infaillible : sent ce qui est enfoui et le déterre."},
-	&"monture": {"name": "Monture", "icon": "saddle", "part": &"back_legs", "soon": true, "adult": true,
+	&"monture": {"name": "Monture", "icon": "saddle", "part": &"back_legs", "adult": true,
 		"species": [&"triceratops", &"styracosaurus", &"parasaurolophus", &"corythosaurus", &"edmontosaurus", &"maiasaura",
 			&"iguanodon", &"gallimimus", &"ankylosaurus"],
-		"desc": "Assez grand pour porter Chloé : on voyage bien plus vite."},
+		"desc": "Assez grand pour porter Chloé, avec une selle : on voyage bien plus vite."},
 	&"vol": {"name": "Vol", "icon": "wing", "part": &"back", "soon": true, "adult": true, "species": [&"pteranodon", &"quetzalcoatlus"],
 		"desc": "Emporte Chloé dans les airs : falaises, îlots, et d'une région visitée à l'autre."},
 	&"nage": {"name": "Nage", "icon": "wave", "part": &"tail", "soon": true, "adult": true,

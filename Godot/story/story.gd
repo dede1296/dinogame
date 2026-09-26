@@ -15,6 +15,14 @@ static func on_zone_entered(zone: StringName) -> void:
 				await Prologue.arrival()
 		&"cabinet":
 			await Prologue.cabinet()
+		&"havre_dore":
+			await Havre.arrival()
+
+
+## The time of day changed while in zone `zone` (a scene that only happens at night…).
+static func on_phase_changed(zone: StringName) -> void:
+	if zone == &"havre_dore":
+		await Havre.night()
 
 
 ## A scene started by talking to someone (`who` = the Npc or DinoNpc).
@@ -37,6 +45,24 @@ static func run(event: StringName, who: Node) -> void:
 			await Plaines.grand_crane()
 		&"alpha_plaines":
 			await Plaines.alpha(who)
+		&"shop_herboristerie":
+			await Havre.shop(&"herboristerie", who)
+		&"shop_mercerie":
+			await Havre.shop(&"mercerie", who)
+		&"ferreol":
+			await Havre.ferreol()
+		&"joss":
+			await Havre.joss()
+		&"relais":
+			await Havre.relais()
+		&"dresseur_gaspard":
+			await Havre.trainer(&"gaspard", who)
+		&"dresseur_lilou":
+			await Havre.trainer(&"lilou", who)
+		&"maia_havre":
+			await Dialogue.run(DialogueDB.chatter(&"maia_havre"))
+		&"entrepot":
+			await Dialogue.run(DialogueDB.lines(&"entrepot"))
 		_:
 			push_error("Scène inconnue : %s" % event)
 
@@ -65,6 +91,8 @@ static func at(x: float, y: float) -> Vector2:
 static func lock(on: bool) -> void:
 	var w = world()
 	if w and w.get("player"):
+		if on:
+			w.dismount()   # a scene plays: Chloé on her feet
 		w.player.busy = on
 		w.player.velocity = Vector2.ZERO
 

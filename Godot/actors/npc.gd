@@ -14,6 +14,8 @@ extends StaticBody2D
 ## Only there once this flag is set / no longer there once this one is set.
 @export var show_flag: StringName
 @export var hide_flag: StringName
+## Tints the sheet (a provisional character drawn with another one's sheet).
+@export var tint := Color.WHITE
 
 const WALK_SPEED := 120.0   # px/s
 
@@ -31,6 +33,7 @@ func _ready() -> void:
 	add_to_group(&"npc")
 	Shadow.make(self, 44.0)
 	sprite.sprite_frames = SheetFrames.character(sheet)
+	sprite.self_modulate = tint
 	sprite.play(StringName("idle_" + facing))
 
 

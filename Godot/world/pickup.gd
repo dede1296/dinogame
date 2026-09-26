@@ -11,6 +11,10 @@ const XP_FOUND := 30
 ## Story flag meaning "already picked up".
 @export var taken_flag: StringName
 @export var dialogue_id: StringName
+## Only there once this story flag is set (something a quest sends Chloé to find).
+@export var show_flag: StringName
+## An item it gives (Game.items), besides its lines.
+@export var item_id: String
 
 var _glow: PointLight2D
 
@@ -19,7 +23,7 @@ func _ready() -> void:
 	super()
 	if Engine.is_editor_hint():
 		return
-	if taken_flag != &"" and Game.flag(taken_flag):
+	if (taken_flag != &"" and Game.flag(taken_flag)) or (show_flag != &"" and not Game.flag(show_flag)):
 		queue_free()
 		return
 	add_to_group(&"interactable")
@@ -67,6 +71,8 @@ func interact(player: Player) -> void:
 		await Search.found_pebble(self, taken_flag, global_position)
 		queue_free()
 		return
+	if item_id != "":
+		Game.give_item(item_id)
 	await Dialogue.run(DialogueDB.lines(dialogue_id))
 	if taken_flag != &"":
 		Game.set_flag(taken_flag)

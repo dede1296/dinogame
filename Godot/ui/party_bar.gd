@@ -131,6 +131,10 @@ func _open_menu(index: int) -> void:
 	var berries := Game.item_count("baie")
 	var heal := _menu_button(col, "Soigner (baie ×%d)" % berries if berries > 0 else "Pas de baie", _heal.bind(d))
 	heal.disabled = berries <= 0 or d.hp >= d.max_hp()
+	var ferns := Game.item_count("fougere")
+	if ferns > 0:
+		var fern := _menu_button(col, "Soin complet (fougère ×%d)" % ferns, _heal_fully.bind(d))
+		fern.disabled = d.hp >= d.max_hp()
 	_menu_button(col, "Fiche", _open_card.bind(d))
 	_menu_button(col, "Fermer", func() -> void: pass)
 	_menu.add_child(panel)
@@ -152,6 +156,12 @@ func _menu_button(col: Control, text: String, action: Callable) -> Button:
 func _heal(d: Dino) -> void:
 	if Game.feed_berry(d):
 		_popup(d, "+%d PV" % Game.BERRY_HP, Color(0.5, 0.9, 0.45))
+
+
+func _heal_fully(d: Dino) -> void:
+	var gained := Game.feed_fern(d)
+	if gained > 0:
+		_popup(d, "+%d PV" % gained, Color(0.5, 0.9, 0.45))
 
 
 func _open_card(d: Dino) -> void:

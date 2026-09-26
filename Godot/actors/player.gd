@@ -1,13 +1,17 @@
 class_name Player
 extends CharacterBody2D
 ## Chloé: analog top-down movement (keyboard, gamepad or touch joystick), walk animation,
-## footsteps by ground type, interaction with what is in front of her.
+## footsteps by ground type, interaction with what is in front of her. She can ride a big
+## dino (Monture, with Joss's saddle): faster, sitting on its back (the companion carries her).
 
 signal stepped(surface: StringName)
 
 const SPEED := 165.0
 const ACCEL := 1500.0
 const STEP_DISTANCE := 38.0
+const RIDE_SPEED := 1.8        # × on a mount
+const RIDE_STEP := 1.7         # its steps are longer than hers
+const BOOTS_SPEED := 1.2       # × with Rosalie's walking boots
 const INTERACT_REACH := 62.0
 const TRAIL_SPACING := 6.0
 const TRAIL_LENGTH := 48
@@ -24,6 +28,8 @@ var surface_at: Callable
 var trail: PackedVector2Array = []
 var facing := Vector2.DOWN
 var busy := false   # during an interaction
+## The dino Chloé rides (null: on foot). Set by the world (World.mount / dismount).
+var mount: Dino = null
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
@@ -46,13 +52,19 @@ func _physics_process(delta: float) -> void:
 	var input := Vector2.ZERO
 	if can_move():
 		input = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
-	velocity = velocity.move_toward(input * SPEED, ACCEL * delta)
+	velocity = velocity.move_toward(input * top_speed(), ACCEL * delta)
 	var before := global_position
 	move_and_slide()
 	var moved := global_position.distance_to(before)
 	_animate(input)
 	_track(moved)
 	RenderingServer.global_shader_parameter_set(&"player_position", global_position)
+
+
+func top_speed() -> float:
+	if mount:
+		return SPEED * RIDE_SPEED
+	return SPEED * (BOOTS_SPEED if Game.item_count("bottes") > 0 else 1.0)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -65,10 +77,12 @@ func _animate(input: Vector2) -> void:
 	var speed := velocity.length()
 	if input.length() > 0.1:
 		facing = input
+	if mount:   # in the saddle: her pose is the mount's (Saddle)
+		return
 	var dir := SheetFrames.direction_name(facing)
 	if speed > 12.0:
 		sprite.play(StringName("walk_" + dir))
-		sprite.speed_scale = clampf(speed / SPEED, 0.5, 1.2)
+		sprite.speed_scale = clampf(speed / top_speed(), 0.5, 1.2)
 	else:
 		sprite.play(StringName("idle_" + dir))
 
@@ -81,12 +95,12 @@ func _track(moved: float) -> void:
 		if trail.size() > TRAIL_LENGTH:
 			trail.remove_at(0)
 	_step_travel += moved
-	if _step_travel >= STEP_DISTANCE:
+	if _step_travel >= STEP_DISTANCE * (RIDE_STEP if mount else 1.0):
 		_step_travel = 0.0
 		var surface: StringName = surface_at.call(global_position) if surface_at.is_valid() else &"grass"
 		# Softer, lower steps on grass; crisper on the dirt path.
 		var on_path := surface == &"path"
-		Audio.play_sfx(FOOTSTEPS.pick_random(), -8.0 if on_path else -13.0, 0.08)
+		Audio.play_sfx(FOOTSTEPS.pick_random(), (-8.0 if on_path else -13.0) + (4.0 if mount else 0.0), 0.08)
 		stepped.emit(surface)
 
 

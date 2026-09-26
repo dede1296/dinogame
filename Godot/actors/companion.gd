@@ -5,6 +5,7 @@ extends Node2D
 ## It senses what is hidden nearby (group "secret": a tree or a stone hiding an amber pebble,
 ## buried earth): a "!" over its head, a little cry when it first notices. Glad when found.
 ## It also reacts to the places it comes to (see REACTIONS): the water, a fire, a cave.
+## When Chloé rides (Player.mount), it is her mount instead: under her, carrying her (Saddle).
 
 const FOLLOW_GAP := 8        # trail points behind Chloé (~48 px)
 const CATCH_UP := 7.0        # how fast it closes the gap
@@ -30,6 +31,7 @@ var _shadow: Sprite2D
 var hint := false
 var _hint_timer := 0.0
 var _last_reaction := {}   # kind -> time (s) of its last reaction
+var _saddle: Saddle   # while Chloé rides
 
 
 func _ready() -> void:
@@ -40,16 +42,20 @@ func _ready() -> void:
 
 
 func refresh() -> void:
-	dino = Game.lead_dino()
+	if carrying() and not Game.party.has(player.mount):   # sent to the Cabinet meanwhile
+		player.mount = null
+	dino = player.mount if carrying() else Game.lead_dino()
 	visible = dino != null
 	if dino == null:
 		return
 	var species := dino.species()
+	_seat_rider(species)
+	var size := species.world_scale * (Saddle.SCALE if carrying() else 1.0)
 	sprite.sprite_frames = SheetFrames.dino(species)
-	sprite.scale = Vector2.ONE * species.world_scale
+	sprite.scale = Vector2.ONE * size
 	var h := species.sheet.get_height() / float(species.sheet_rows)
 	sprite.offset = Vector2(0, -h * 0.46)
-	Shadow.fit(_shadow, species.sheet.get_width() / float(species.sheet_columns) * species.world_scale * 0.55)
+	Shadow.fit(_shadow, species.sheet.get_width() / float(species.sheet_columns) * size * 0.55)
 	sprite.play(&"idle")
 
 
@@ -60,6 +66,9 @@ func _physics_process(delta: float) -> void:
 	if _hint_timer <= 0.0:
 		_hint_timer = HINT_CHECK_S
 		_sense()
+	if carrying():
+		_carry(delta)
+		return
 	var trail := player.trail
 	var target := trail[maxi(0, trail.size() - 1 - FOLLOW_GAP)]
 	var before := global_position
@@ -87,6 +96,47 @@ func _process(_delta: float) -> void:
 	var view := get_tree().get_first_node_in_group(&"world_view") as WorldView
 	if view:
 		view.show_hint(self, hint and visible)
+
+
+func carrying() -> bool:
+	return player != null and player.mount != null
+
+
+## Chloé in the saddle on it, or back on her feet.
+func _seat_rider(species: DinoSpecies) -> void:
+	if player == null or not player.is_node_ready():
+		return
+	var was_riding := _saddle != null
+	_saddle = Saddle.new(species, player.sprite) if carrying() else null
+	# Both cut out (WorldView._sync): sorted by depth, never blended with what stands behind.
+	set_meta(&"cut_out", carrying())
+	player.set_meta(&"cut_out", carrying())
+	var shadow := player.get_node_or_null("Shadow") as CanvasItem
+	if shadow:
+		shadow.visible = not carrying()
+	if was_riding and not carrying():
+		player.sprite.position = Vector2.ZERO
+		player.face_towards(player.global_position + player.facing)
+
+
+## Under Chloé, going where she goes; she sits as it is seen (Saddle.place).
+func _carry(_delta: float) -> void:
+	var v := player.velocity
+	if absf(v.x) > 8.0:
+		sprite.flip_h = v.x < 0.0
+	if v.length() > 12.0:
+		var anims: Array = SheetFrames.dino_anims(sprite.sprite_frames, v)
+		_idle_anim = anims[1]
+		sprite.play(anims[0])
+		sprite.speed_scale = clampf(v.length() / 180.0, 0.8, 1.6)
+	else:
+		sprite.play(_idle_anim)
+		sprite.speed_scale = 1.0
+	# Also when it turns to look at something.
+	var seat := _saddle.place(sprite.animation, sprite.flip_h)
+	global_position = player.global_position + Vector2(0, seat["depth"])
+	player.sprite.position = seat["at"]
+	player.sprite.play(seat["pose"])
 
 
 ## Is something hidden within reach? Noticing it: a little cry, a look towards it.
@@ -172,6 +222,10 @@ func perform_at(point: Vector2) -> void:
 	sprite.flip_h = point.x < global_position.x
 	sprite.play(&"attack")
 	cry(&"attaque")
+	if carrying():   # Chloé on its back: it rears where it stands
+		await get_tree().create_timer(0.45).timeout
+		sprite.play(&"idle")
+		return
 	var home := global_position
 	var t := create_tween()
 	t.tween_property(self, "global_position", home.lerp(point, 0.6), 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)

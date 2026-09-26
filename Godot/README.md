@@ -16,7 +16,9 @@ petit), puis les **Plaines des Fougères** en **une seule grande carte ouverte**
 route du port, carrefour, étang, anse et sa plage, bosquet d'Hélène derrière le tronc à trancher
 (**Tranche**), Grotte des Échos dans sa colline derrière le rocher (**Charge**), falaises derrière
 la porte d'ambre (**Résonance**) avec le poste d'observation d'Hélène, Grand Crâne et l'antre de son Alpha),
-bordée de montagnes, de forêt et de mer ; la carte du monde qui se dévoile en explorant ; jour et
+bordée de montagnes, de forêt et de mer ; **Havre-Doré**, la ville marchande au bout de la route
+côtière (boutiques et pièces, Comptoir de Ferréol, Relais des Dresseurs, la selle de Joss et la
+**Monture** : Chloé chevauche un grand dino adulte) ; la carte du monde qui se dévoile en explorant ; jour et
 nuit, météo, habitats par lieu et par heure, la barre d'équipe, les pages du journal d'Hélène,
 la sauvegarde locale, les contrôles tactiles, la musique et l'ambiance sonore.
 

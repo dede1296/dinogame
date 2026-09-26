@@ -60,12 +60,14 @@ const KINDS := {
 	"stalagmite": {"scale": 0.32, "foot": 0.04, "solid": 16.0, "sway": 0.0, "shadow": 50.0},
 	"cristaux": {"scale": 0.18, "foot": 0.08, "solid": 16.0, "sway": 0.0, "shadow": 50.0, "light": true},
 	"rocher_grotte": {"scale": 0.24, "foot": 0.08, "solid": 34.0, "sway": 0.0, "shadow": 80.0},
-	"grand_crane": {"scale": 0.66, "foot": 0.01, "solid": Vector2(192, 30), "sway": 0.0, "shadow": 0.0},
+	"grand_crane": {"scale": 0.48, "foot": 0.02, "solid": Vector2(192, 30), "sway": 0.0, "shadow": 0.0},
 	"socle": {"scale": 0.32, "foot": 0.06, "solid": 24.0, "sway": 0.0, "shadow": 64.0},
 	"mur_cabinet": {"scale": 0.5, "foot": 0.0, "solid": Vector2(171, 60), "sway": 0.0, "shadow": 0.0},
 	# Searching the island (provisional pictures: tools/draw-placeholders.mjs).
-	"galet": {"scale": 0.06, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 16.0},
-	"monticule": {"scale": 0.14, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"galet": {"scale": 0.11, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 16.0},
+	"monticule": {"scale": 0.26, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"etal_fruits": {"scale": 0.5, "foot": 0.03, "solid": Vector2(120, 30), "sway": 0.0, "shadow": 120.0},
+	"etal_poisson": {"scale": 0.5, "foot": 0.03, "solid": Vector2(120, 30), "sway": 0.0, "shadow": 120.0},
 	"feu_camp": {"scale": 0.25, "foot": 0.07, "solid": 24.0, "sway": 0.0, "shadow": 60.0},
 }
 
@@ -75,7 +77,7 @@ const KINDS := {
 	"lanterne", "casiers", "cordage", "banc", "sechoir", "ancre", "bac_fleurs",
 	"bureau", "bibliotheque", "couveuse", "fougere_pot", "lampe", "fauteuil", "etabli", "mur_cabinet", "socle",
 	"porte_ambre", "ecaille", "serrure", "stalagmite", "cristaux", "rocher_grotte", "grand_crane",
-	"galet", "monticule", "feu_camp")
+	"galet", "monticule", "feu_camp", "etal_fruits", "etal_poisson")
 var kind := "arbre_rond":
 	set(value):
 		kind = value

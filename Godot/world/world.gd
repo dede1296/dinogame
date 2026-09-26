@@ -10,6 +10,7 @@ const ZONES := {
 	&"plaines": "res://regions/plaines/plaines.tscn",
 	&"grotte_echos": "res://regions/plaines/grotte_echos.tscn",
 	&"antre_crane": "res://regions/plaines/antre_crane.tscn",
+	&"havre_dore": "res://regions/havre/havre_dore.tscn",
 }
 const PLAYER := preload("res://actors/player.tscn")
 const COMPANION := preload("res://actors/companion.tscn")
@@ -26,6 +27,7 @@ const OUTLEVELED_RATE := 0.25
 ## Experience for the whole party when a species is met for the first time.
 const XP_NEW_SPECIES := 10
 const COMPANION_OFFSET := Vector2(-34, 8)
+const MOUNT_SFX := preload("res://assets/audio/sfx/latch.wav")   # the saddle buckled
 const ZONE_FADE := 0.3
 const RAIN_SOUND := preload("res://assets/audio/ambience/pluie.mp3")
 const RAIN_DB := -7.0   # a light rain, under the zone's ambience
@@ -48,6 +50,7 @@ var _changing_zone := false
 var _view: WorldView
 var _banner: ZoneBanner
 var _map_button: Button
+var _ride_button: RideButton
 var _tracker: QuestTracker
 var _explore_timer := 0.0
 
@@ -79,6 +82,7 @@ func _ready() -> void:
 	_weather_sound()
 	SettingsMenu.add_open_button(hud)
 	_map_button = MapScreen.add_open_button(hud, _open_map)
+	_ride_button = RideButton.add(hud, toggle_ride)
 	hud.add_child(PartyBar.new())
 	hud.add_child(ClockBadge.new())
 	_tracker = QuestTracker.new()
@@ -114,6 +118,8 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF) -> void:
 	Game.zone_level = roundi((region.levels.x + region.levels.y) / 2.0)
 	Game.climate = {"rain": region.rain_chance, "mist": region.mist_chance, "storm": region.storm_chance}
 
+	if region.indoor:   # no riding under a roof
+		dismount()
 	if pos == Vector2.INF:
 		pos = region.spawn_point(spawn)
 	region.entities.add_child(player)
@@ -212,6 +218,7 @@ func _store_position() -> void:
 # ------------------------------------------------------------------ ambience
 
 func _process(delta: float) -> void:
+	_ride_button.show_state(Game.flag(&"selle") and region != null and not region.indoor, player.mount != null)
 	_explore_timer -= delta
 	if _explore_timer <= 0.0:
 		_explore_timer = EXPLORE_EVERY
@@ -299,6 +306,46 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"map"):
 		get_viewport().set_input_as_handled()
 		_open_map()
+	elif event.is_action_pressed(&"ride"):
+		get_viewport().set_input_as_handled()
+		toggle_ride()
+
+
+# ------------------------------------------------------------------ riding
+
+## Chloé climbs on the dino of her party able to carry her (Monture), or gets down.
+func toggle_ride() -> void:
+	if player.busy or _changing_zone or get_tree().paused or not Game.flag(&"selle") or region.indoor:
+		return
+	if player.mount:
+		dismount()
+		return
+	var steed := Game.ability_user(&"monture")
+	if steed == null:
+		Toast.say(get_tree(), _no_mount_reason())
+		return
+	player.mount = steed
+	companion.refresh()
+	companion.cry(&"neutre")
+	Audio.play_sfx(MOUNT_SFX, -4.0, 0.05)
+
+
+## Chloé gets down; her dino walks behind her again.
+func dismount() -> void:
+	if player == null or player.mount == null:
+		return
+	player.mount = null
+	companion.refresh()
+	companion.teleport(player.global_position + COMPANION_OFFSET)
+	player.trail = [player.global_position]
+
+
+## Why nobody can carry her: too young, or no dino of the kind.
+func _no_mount_reason() -> String:
+	for d in Game.party:
+		if Abilities.has(d, &"monture"):
+			return "%s est encore trop jeune pour te porter : il faut qu'il soit adulte (niv. %d)." % [d.nickname, Abilities.ADULT_LEVEL]
+	return "Aucun dino de ton équipe n'est assez grand pour te porter. Un Parasaurolophus ou un Ankylosaurus adulte, peut-être ?"
 
 
 func _open_map() -> void:
@@ -342,6 +389,7 @@ func _carry_egg() -> void:
 ## New dinos for the new part of the day; the full moon is announced when it rises.
 func _on_phase_changed(phase: StringName) -> void:
 	_spawn_roamers()
+	Story.on_phase_changed.call_deferred(region.region_id if region else &"")
 	if phase == &"night" and Game.is_full_moon() and region and not region.indoor:
 		Toast.say(get_tree(), "La lune est pleine ce soir. L'ambre de l'île s'éveille…")
 
@@ -353,7 +401,8 @@ func _on_player_stepped(surface: StringName) -> void:
 	# Resting while walking: the party slowly gets its strength back.
 	for d in Game.party:
 		d.hp = mini(d.max_hp(), d.hp + 1)
-	if surface != &"tall_grass" or _steps_since_battle < CALM_STEPS or player.busy or _changing_zone:
+	# In the saddle, the little dinos hidden in the tall grass flee from the big one's steps.
+	if surface != &"tall_grass" or _steps_since_battle < CALM_STEPS or player.busy or _changing_zone or player.mount:
 		return
 	var habitat := region.habitat_at(player.global_position)
 	if habitat == null:
@@ -372,6 +421,7 @@ func _on_player_stepped(surface: StringName) -> void:
 ## Plays a wild battle over the paused world, then applies its outcome.
 ## `rules`: see BattleScene.run (an Alpha: no collar, no running away).
 func _battle(wild: Dino, rules := {}) -> String:
+	dismount()
 	player.busy = true
 	player.velocity = Vector2.ZERO
 	var first_sighting := not Game.dex_seen.has(String(wild.species().id))

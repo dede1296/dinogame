@@ -126,7 +126,7 @@ au loin avant d'y entrer.
 |---|---|---|---|
 | sud (côte) | **Port-Ambre** ✅ | village de pêcheurs | — |
 | sud | **Plaines des Fougères** ✅ | prairie tempérée, étang, bosquets, falaises au nord | la route du port monte dans les prés |
-| sud-est (baie) | **Havre-Doré** | ville marchande, port, marché | la route côtière depuis Port-Ambre, entre mer et collines |
+| sud-est (baie) | **Havre-Doré** ✅ | ville marchande, port, marché | la route côtière depuis Port-Ambre, entre mer et collines |
 | sud-ouest | **Forêt Jurassique** | forêt géante, sous-bois, canopée | le bois qui borde les Plaines à l'ouest s'épaissit |
 | ouest (côte) | **Marais Brumeux** | mangrove, roselières, brume | la forêt s'enfonce dans l'eau |
 | nord-ouest | **Désert Aride** | canyons, dunes, oasis | le marais s'assèche : boue craquelée, lac salé |
@@ -136,7 +136,7 @@ au loin avant d'y entrer.
 | centre | **Plaine Volcanique** | cendres, lave, forges | tout autour du volcan |
 | cratère | **Terre des Apex** | le Souverain | — |
 
-## Interlude — Havre-Doré
+## Interlude — Havre-Doré ✅
 
 Après le Sceau des Plaines, la **route côtière** s'ouvre à l'est de Port-Ambre (Isaure : « Le
 Havre ? Là-bas, ils ont de l'argent. Et ils ne se demandent jamais d'où il vient. »).

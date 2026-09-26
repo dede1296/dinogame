@@ -1,6 +1,7 @@
 extends RefCounted
 ## Port-Ambre: the fishing village where Chloé lands. A pier on the sea (south), the quay,
-## the main street with the houses and Hélène's Cabinet (east), the path north to the Plaines.
+## the main street with the houses and Hélène's Cabinet, the path north to the Plaines, and
+## east the coast road to Havre-Doré (its guard lets through only the trainers with a Sceau).
 
 const PATH := "res://regions/port/port_ambre.tscn"
 const B := preload("res://tools/zone_builder.gd")
@@ -15,9 +16,9 @@ const PLAN := [
 	"................==......................",
 	"................==......................",
 	"................==......................",
-	"..====================================..",
-	"..====================================..",
-	"..====================================..",
+	"..======================================",
+	"..======================================",
+	"..======================================",
 	".................===....................",
 	".................===....................",
 	".................===....................",
@@ -70,10 +71,15 @@ static func build() -> Region:
 	B.npc(root, "IsaureQuai", "Isaure", CHARS % "isaure", 20.3, 21.4, {"facing": "left", "hide_flag": &"prologue_arrived"})
 	B.npc(root, "MaiaQuai", "Maïa", CHARS % "maia", 19.8, 15.8, {"facing": "down", "hide_flag": &"prologue_arrived"})
 	B.npc(root, "Isaure", "Isaure", CHARS % "isaure", 22.6, 15.7, {"facing": "down", "dialogue": &"isaure", "show_flag": &"prologue_done"})
+	# The guard of the coast road (east), at his post.
+	B.npc(root, "Garde", "Le garde du Havre", CHARS % "garde", 37.6, 8.6, {"facing": "down", "dialogue": &"garde_route"})
+	B.sign(entities, B.cell(36.2, 8.7), &"panneau_route_cotiere")
 
 	B.spawn(root, "Depart", 19.0, 21.2)
 	B.spawn(root, "DepuisPlaines", 17.0, 1.5)
 	B.spawn(root, "DepuisCabinet", 31.5, 9.7)
+	B.spawn(root, "DepuisHavre", 37.8, 10.5)
+	B.exit(root, Rect2(39.45, 9.0, 0.55, 3.0), &"havre_dore", &"DepuisPort", &"sceau_plaines", &"route_cotiere")
 	B.exit(root, Rect2(15.0, 0.0, 4.0, 0.55), &"plaines", &"DepuisPort", &"prologue_done", &"port_bloque")
 	B.exit(root, Rect2(30.9, 8.35, 1.2, 0.5), &"cabinet", &"Depart")
 	return root

@@ -166,3 +166,10 @@ Zones : Champs de cendres · Coulées de lave · Forges de l'Ombre Noire · Sanc
 post-game, soit environ 60. Chaque espèce demande une planche de profil et une planche face/dos
 (voir [direction-artistique.md](direction-artistique.md)) : à produire **par lots, région par
 région**, juste avant de construire la région.
+
+**Visuels faits** (planche de profil + planche face/dos, `assets/art/dinos/`, via `tools/process-art.mjs`) :
+les 9 espèces des Plaines, et le lot Grotte des Échos + Forêt Jurassique : Anurognathus,
+Dilophosaurus, Stegosaurus, Deinonychus, Pachycephalosaurus, Microraptor, Brachiosaurus (juvénile),
+Allosaurus, Utahraptor (Alpha) et Griffe-Grise (l'Ancien). Ces derniers n'ont pas encore leur fiche
+d'espèce (`data/species/`) : elle viendra avec la région. Prochains lots : Marais, Désert, Côte,
+Monts, Cieux, Volcan, puis les légendaires.

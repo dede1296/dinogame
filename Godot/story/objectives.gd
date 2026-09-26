@@ -15,6 +15,11 @@ const BOULDER := Vector2(58.0, 25.0)
 const AMBER_DOOR := Vector2(93.0, 38.4)
 const SKULL := Vector2(104.0, 62.6)
 const ALPHA := Vector2(107.2, 63.8)
+const COAST_ROAD := Vector2(38.6, 10.5)   # Port-Ambre, the guard of the coast road
+const JOSS := Vector2(42.0, 10.2)          # Havre-Doré
+const COMPTOIR := Vector2(33.0, 10.2)
+const RELAIS := Vector2(22.5, 9.0)
+const SKIN := Vector2(84.4, 50.2)          # the Plaines, by the pond
 ## Tears Roc needs for each of his gifts (PlainesAnnexes).
 ## The short name of each objective (what the quest tracker and the map's list show).
 const TITLES := {
@@ -22,6 +27,7 @@ const TITLES := {
 	"bosquet": "Le bosquet d'Hélène", "grotte": "La Grotte des Échos", "falaises": "La porte des falaises",
 	"voleuse": "La voleuse de boussole", "boussole": "Rendre la boussole", "lunettes": "Les lunettes de Roc",
 	"etang": "L'étang qui chante", "larmes_roc": "Les larmes pour Roc", "larmes": "Les larmes de l'île", "oeuf": "L'œuf de Pépite",
+	"havre": "La route du Havre", "selle": "Une selle pour voyager", "relais": "Le Relais des Dresseurs",
 }
 const TEAR_GOALS := [[10, &"lanterne", "la lanterne d'ambre"], [20, &"pepite_oeuf", "réveiller le fragment"], [30, &"lettre_scellee", "une surprise"]]
 
@@ -69,8 +75,14 @@ static func followed(zone: StringName, chloe_tile: Vector2) -> Dictionary:
 
 
 static func _main(out: Array[Dictionary]) -> void:
+	if Game.flag(&"selle"):
+		_add(out, "fin_plaines", "La Forêt Jurassique t'attend, à l'ouest des Plaines. (Bientôt !)", &"plaines", Vector2.INF, true)
+		return
+	if Game.flag(&"havre_arrive"):
+		_saddle(out)
+		return
 	if Game.flag(&"sceau_plaines"):
-		_add(out, "fin_plaines", "Les Plaines sont à toi. La route de la Forêt Jurassique ouvrira bientôt.", &"plaines", Vector2.INF, true)
+		_add(out, "havre", "Havre-Doré, par la route côtière à l'est de Port-Ambre. Le garde laisse passer ceux qui portent un Sceau.", &"port_ambre", COAST_ROAD, true)
 		return
 	if Game.flag(&"crane_ouvert"):
 		_add(out, "alpha", "Relever le défi du Tricératops Alpha, devant le Grand Crâne.", &"plaines", ALPHA, true)
@@ -89,7 +101,21 @@ static func _main(out: Array[Dictionary]) -> void:
 		_add(out, "falaises", "Les falaises, au nord-est : une porte d'ambre éteinte." + how, &"plaines", AMBER_DOOR, true)
 
 
+## The saddle: ask Joss, bring him the moulted skin and an amber buckle.
+static func _saddle(out: Array[Dictionary]) -> void:
+	if not Game.flag(&"selle_demandee"):
+		_add(out, "selle", "Joss, le sellier de Havre-Doré, peut te fabriquer une selle.", &"havre_dore", JOSS, true)
+	elif Game.item_count("cuir") == 0:
+		_add(out, "selle", "Trouver du cuir mué de Parasaurolophus, au bord de l'étang des Plaines, pour Joss.", &"plaines", SKIN, true)
+	elif Game.item_count("boucle") == 0:
+		_add(out, "selle", "Acheter une boucle d'ambre au Comptoir de Ferréol, pour Joss.", &"havre_dore", COMPTOIR, true)
+	else:
+		_add(out, "selle", "Rapporter le cuir et la boucle à Joss.", &"havre_dore", JOSS, true)
+
+
 static func _side(out: Array[Dictionary]) -> void:
+	if Game.flag(&"havre_arrive") and not (Game.flag(&"gaspard_battu") and Game.flag(&"lilou_battu")):
+		_add(out, "relais", "Affronter les dresseurs du Relais : Gaspard (rang Bronze), puis Lilou (rang Argent).", &"havre_dore", RELAIS)
 	if Game.flag(&"boussole_volee") and not Game.flag(&"boussole_trouvee"):
 		_add(out, "voleuse", "Rattraper la voleuse de boussole : elle file vers le petit bois, au nord-ouest du carrefour.", &"plaines", NEST)
 	if Game.flag(&"boussole_trouvee") and not Game.flag(&"boussole_rendue"):
@@ -100,7 +126,7 @@ static func _side(out: Array[Dictionary]) -> void:
 		var when := "ce soir" if Game.is_full_moon() or Game.nights_to_full_moon() == 0 else "dans %d nuits" % Game.nights_to_full_moon()
 		_add(out, "etang", "L'étang chanterait les soirs de pleine lune (%s)." % when, &"plaines", POND)
 	if Game.flag(&"larmes_expliquees"):
-		var n := Game.pebbles_found()
+		var n := Game.tears()
 		for goal: Array in TEAR_GOALS:
 			if Game.flag(goal[1]):
 				continue

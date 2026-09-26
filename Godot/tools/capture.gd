@@ -172,6 +172,52 @@ const SCENARIOS := {
 		[3.4, "give", "triceratops"], [3.6, "card", 1], [4.3, "shot", "u2_trice_jeune"], [4.4, "close", null],
 		[4.6, "map", null], [5.4, "shot", "u3_liste"], [5.5, "map_goal", 1], [6.2, "shot", "u4_liste_choisi"], [6.3, "map_island", null], [7.1, "shot", "u5_ile_position"],
 	],
+	"havre": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1"]], [0.85, "calm", 600.0],
+		[0.9, "zone", &"port_ambre"], [2.3, "tp", Vector2(36.5, 10.3)], [3.6, "shot", "h0_route_port"],
+		[3.7, "hold", "move_right"], [5.2, "hold", ""], [5.3, "talk", true], [8.0, "shot", "h1_arrivee"],
+		[16.0, "state", null], [16.1, "shot", "h2_apres_maia"],
+		[16.3, "tp", Vector2(33.0, 10.7)], [16.5, "hold", "move_up"], [16.6, "hold", ""], [16.9, "press", "interact"],
+		[22.0, "shot", "h3_comptoir"], [22.1, "shop_buy", "boucle"], [22.6, "shot", "h4_boutique_achat"], [22.7, "shop_tab", true], [23.3, "shot", "h5_boutique_vente"],
+		[23.4, "press", "cancel"], [24.0, "tp", Vector2(42.0, 10.7)], [24.2, "hold", "move_up"], [24.3, "hold", ""], [24.6, "press", "interact"],
+		[30.0, "shot", "h6_joss"], [30.5, "tp", Vector2(26.0, 19.0)], [32.0, "shot", "h7_marche"], [32.1, "tp", Vector2(20.0, 21.2)], [33.6, "shot", "h8_quai"],
+		[33.7, "map", null], [34.5, "shot", "h9_carte"], [34.6, "press", "cancel"], [35.0, "state", null], [35.1, "coins", null],
+	],
+	"havre2": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive", "ferreol_rencontre", "selle_demandee"]], [0.85, "calm", 600.0],
+		[0.86, "item", ["cuir", 1]], [0.87, "item", ["boucle", 1]], [0.88, "level", 12],
+		[0.9, "zone", &"havre_dore"], [2.3, "tp", Vector2(42.0, 10.7)], [2.5, "hold", "move_up"], [2.6, "hold", ""], [2.8, "talk", true], [2.9, "press", "interact"],
+		[4.0, "shot", "j0_joss_selle"], [12.0, "state", null], [12.1, "coins", null], [12.2, "shot", "j1_apres_selle"],
+		[12.3, "tp", Vector2(20.8, 11.2)], [12.5, "hold", "move_left"], [12.55, "hold", ""], [12.8, "press", "interact"],
+		[15.0, "shot", "j2_gaspard"], [15.2, "press", "ui_accept"], [21.0, "shot", "j3_combat"],
+	],
+	"havre_nuit": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive"]], [0.85, "calm", 600.0], [0.86, "clock", 21.9],
+		[0.9, "zone", &"havre_dore"], [2.3, "tp", Vector2(40.0, 19.5)], [2.4, "talk", true], [6.5, "shot", "n0_nuit_debut"],
+		[9.0, "shot", "n1_nuit_entrepot"], [16.0, "shot", "n2_nuit_fin"], [24.0, "state", null],
+	],
+	"ride": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive", "selle"]], [0.85, "calm", 600.0],
+		[0.9, "zone", &"havre_dore"], [2.3, "tp", Vector2(17.0, 19.0)], [2.5, "press", "ride"], [3.4, "shot", "r0_pas_de_monture"],
+		[3.5, "give", "parasaurolophus"], [3.6, "level", 14], [3.8, "press", "ride"], [5.0, "shot", "r1_en_selle"],
+		[5.1, "hold", "move_right"], [6.3, "shot", "r2_galop_droite"], [6.4, "hold", "move_left"], [7.4, "shot", "r3_galop_gauche"],
+		[7.5, "hold", "move_down"], [8.1, "shot", "r4_vers_camera"], [8.4, "hold", "move_up"], [8.9, "shot", "r4b_dos"], [9.0, "hold", ""], [9.6, "shot", "r5_arret_dos"],
+		[9.7, "state", null], [9.8, "press", "ride"], [10.8, "shot", "r6_pied_a_terre"],
+	],
+	"ride2": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive", "selle"]], [0.85, "calm", 600.0],
+		[0.86, "give", "parasaurolophus"], [0.87, "level", 14],
+		[0.9, "zone", &"plaines"], [2.3, "press", "ride"], [2.6, "riding", null],
+		[2.7, "zone", &"antre_crane"], [4.2, "riding", null], [4.3, "shot", "s0_interieur"],
+		[4.4, "zone", &"plaines"], [5.8, "press", "ride"], [6.0, "riding", null], [6.1, "fight", "protoceratops"], [8.5, "riding", null], [8.6, "shot", "s1_combat"],
+	],
+	"ride_trice": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive", "selle"]], [0.85, "calm", 600.0],
+		[0.86, "give", "triceratops"], [0.87, "level", 14],
+		[0.9, "zone", &"havre_dore"], [2.3, "tp", Vector2(17.0, 19.0)], [2.6, "press", "ride"], [3.6, "shot", "t1_en_selle"],
+		[3.7, "hold", "move_right"], [4.6, "shot", "t2_droite"], [4.7, "hold", "move_left"], [5.6, "shot", "t3_gauche"],
+		[5.7, "hold", "move_down"], [6.3, "shot", "t4_face"], [6.4, "hold", "move_up"], [7.2, "shot", "t5_dos"], [7.3, "hold", ""], [7.9, "shot", "t6_arret_dos"],
+	],
 	"prologue": [
 		[1.6, "shot", "90_arrivee"], [1.7, "auto", true], [9.0, "shot", "91_maia_ponton"], [16.0, "auto", false],
 		[16.5, "state", null], [16.6, "shot", "92_port"],
@@ -197,6 +243,27 @@ const SCENARIOS := {
 		[32.5, "weather", &"mist"], [32.6, "state", null], [32.7, "battle", [&"velociraptor", 3]], [36.0, "shot", "72_combat_brume"],
 		[36.1, "auto", true], [48.0, "auto", false],
 		[48.5, "weather", &"rain"], [54.0, "shot", "73_exploration_pluie"],
+	],
+	"images": [
+		[0.85, "calm", 600.0], [0.9, "tp", Vector2(104.0, 65.0)], [2.3, "shot", "i0_crane"],
+		[2.4, "tp_prop", ["galet", Vector2(0, 50), 0]], [3.8, "shot", "i1_galet"],
+		[3.9, "flags", ["sceau_plaines", "havre_arrive"]], [4.0, "zone", &"havre_dore"], [5.4, "tp", Vector2(28.0, 17.5)], [6.8, "shot", "i2_marche"],
+		[6.9, "tp", Vector2(10.0, 11.2)], [8.3, "shot", "i3_boutiques"], [8.4, "tp", Vector2(37.0, 11.2)], [9.8, "shot", "i4_ferreol_joss"],
+		[9.9, "tp", Vector2(12.0, 22.0)], [11.3, "shot", "i5_pecheur"],
+	],
+	"ride_alpha": [
+		[0.8, "flags", ["sceau_plaines", "havre_arrive", "selle"]], [0.85, "calm", 600.0], [0.86, "give", "triceratops"], [0.87, "level", 14],
+		[0.9, "zone", &"havre_dore"], [2.3, "tp", Vector2(17.0, 19.0)], [2.6, "press", "ride"], [3.5, "shot", "a0_arret"], [3.6, "poses", null],
+		[3.7, "hold", "move_right"], [4.3, "shot", "a1_marche"], [4.35, "vis", null], [4.6, "hold", ""], [5.4, "shot", "a2_arret"], [5.45, "vis", null],
+	],
+	"dino_vues": [
+		[0.85, "calm", 600.0], [0.86, "give", "parasaurolophus"], [0.87, "call", ["goto_zone", [&"havre_dore"]]],
+		[1.0, "lead", 1], [2.4, "tp", Vector2(17.0, 12.0)], [2.6, "hold", "move_down"], [4.2, "shot", "v1_para_descend"], [4.3, "hold", ""], [5.0, "shot", "v2_para_arret_face"],
+		[5.1, "hold", "move_up"], [6.6, "shot", "v3_para_monte"], [6.7, "hold", ""], [7.4, "shot", "v4_para_arret_dos"],
+	],
+	"debug_niv": [
+		[1.5, "debug", null], [1.7, "debug_call", ["_party_level", [5]]], [1.8, "debug_call", ["_party_level", [1]]], [1.9, "debug_call", ["_party_level", [-1]]],
+		[2.0, "party", null], [2.3, "shot", "dn_debug_niveau"],
 	],
 	"debug": [
 		[1.5, "debug", null], [1.7, "debug_call", ["_cycle_species", [1]]], [1.8, "debug_call", ["_lead_dino", []]],
@@ -361,6 +428,26 @@ func _run(command: String, arg: Variant) -> void:
 			for n in current_scene.get_children():
 				if n.has_signal("_action_chosen"):
 					n.emit_signal("_action_chosen", arg)
+		"vis":
+			for p: Dictionary in current_scene.get("_view").get("_proxies"):
+				if p["src"] == current_scene.get("player") or p["src"] == current_scene.get("companion"):
+					var v: SpriteBase3D = p["vis"]
+					print(p["src"].name, " mod=", v.modulate, " cut=", v.alpha_cut, " transp=", v.transparency, " anim=", (v as AnimatedSprite3D).animation, " pos=", v.global_position, " sort=", v.sorting_offset)
+		"poses":
+			var fr: SpriteFrames = current_scene.get("player").get("sprite").sprite_frames
+			for a in [&"ride_right", &"ride_down", &"walk_right"]:
+				var img: Image = fr.get_frame_texture(a, 0).get_image()
+				var sum := 0.0
+				var n := 0
+				for y in range(0, img.get_height(), 4):
+					for x in range(0, img.get_width(), 4):
+						var al := img.get_pixel(x, y).a
+						if al > 0.05:
+							sum += al
+							n += 1
+				print(a, " ", img.get_size(), " fmt=", img.get_format(), " alpha moyen=%.2f" % (sum / maxf(n, 1)), " tex=", fr.get_frame_texture(a, 0))
+		"lead":
+			root.get_node("Game").call("set_lead", arg)
 		"party":
 			var game := root.get_node("Game")
 			for d in game.get("party"):
@@ -483,6 +570,33 @@ func _run(command: String, arg: Variant) -> void:
 			ev.pressed = true
 			ev.button_index = MOUSE_BUTTON_LEFT
 			tr.call("_gui_input", ev)
+		"proxies":
+			var view: Node = current_scene.get("_view")
+			for p: Dictionary in view.get("_proxies"):
+				var src: Node = p["src"]
+				if not is_instance_valid(src):
+					continue
+				if src.name in arg or (src.get("kind") != null and String(src.get("kind")).begins_with("maison")):
+					var v: SpriteBase3D = p["vis"]
+					print(src.name, " 2d=", src.global_position / TILE, " 3d=", v.global_position, " aabb=", v.get_aabb(), " offset=", v.offset, " px=", v.pixel_size, " alpha=", v.alpha_cut, " mod=", v.modulate, " vis=", v.visible)
+		"shop_buy":
+			for n in root.get_children():
+				if n.has_method("_sell_tear"):
+					n.call("_buy", arg)
+		"shop_tab":
+			for n in root.get_children():
+				if n.has_method("_sell_tear"):
+					var tabs: Array = n.get("_tabs")
+					tabs[1 if arg else 0].emit_signal("pressed")
+		"riding":
+			var p: Node = current_scene.get("player")
+			print("en selle : ", p.get("mount") != null, "  zone : ", root.get_node("Game").get("region_id"))
+		"fight":
+			current_scene.call("_battle", load("res://game/dino.gd").create(StringName(arg), 5))
+		"item":
+			root.get_node("Game").call("give_item", arg[0], arg[1])
+		"coins":
+			print("pièces : ", root.get_node("Game").call("coins"), "  objets : ", root.get_node("Game").get("items"))
 		"gset":   # [property, value] on Game
 			root.get_node("Game").set(arg[0], arg[1])
 		"pebbles":   # the first `arg` amber pebbles of the Plaines found (test flags)

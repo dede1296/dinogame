@@ -18,13 +18,15 @@ extends Resource
 @export var walk_frames: PackedInt32Array = [0, 1, 2]
 @export var idle_frames: PackedInt32Array = [3, 4]
 @export var attack_frame := 5
-## Front and back views, same frame size as `sheet`: row 1 toward the camera, row 2 away.
+## Front and back views, same frame size as `sheet`: row 1 seen from the front walking
+## toward the camera, row 2 from behind walking away (4 steps: one foot, together, the other,
+## together; still = feet together).
 @export var face_back_sheet: Texture2D
 @export var face_back_columns := 4
-@export var down_walk_frames: PackedInt32Array = [0, 1, 2]
-@export var down_idle_frame := 3
-@export var up_walk_frames: PackedInt32Array = [4, 5, 6]
-@export var up_idle_frame := 7
+@export var down_walk_frames: PackedInt32Array = [0, 1, 2, 3]
+@export var down_idle_frame := 1
+@export var up_walk_frames: PackedInt32Array = [4, 5, 6, 7]
+@export var up_idle_frame := 5
 ## Scale of the sprite in the world (sheets are drawn at 2x the base resolution).
 @export var world_scale := 0.5
 @export var walk_fps := 8.0

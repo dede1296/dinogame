@@ -123,6 +123,23 @@ func nights_to_full_moon() -> int:
 	return posmod(FULL_MOON_FIRST - tonight, FULL_MOON_EVERY)
 
 
+## The amber tears Chloé still has: found, minus those sold at the Comptoir (Roc counts these).
+func tears() -> int:
+	return pebbles_found() - item_count("larmes_vendues")
+
+
+func coins() -> int:
+	return item_count("piece")
+
+
+## Pays `amount` pièces if Chloé has them.
+func pay(amount: int) -> bool:
+	if coins() < amount:
+		return false
+	items["piece"] = coins() - amount
+	return true
+
+
 ## Amber pebbles found in zone `zone` (flags "galet_<zone>_<n>"), or in the whole island.
 func pebbles_found(zone := "") -> int:
 	var prefix := "galet_%s_" % zone if zone != "" else "galet_"
@@ -207,6 +224,16 @@ func feed_berry(d: Dino) -> bool:
 	d.hp = mini(d.max_hp(), d.hp + BERRY_HP)
 	party_changed.emit()
 	return true
+
+
+## Mémé Pervenche's fern: a dino fully healed. Returns the PV it got back (0: nothing done).
+func feed_fern(d: Dino) -> int:
+	var missing := d.max_hp() - d.hp
+	if missing <= 0 or not use_item("fougere"):
+		return 0
+	d.hp = d.max_hp()
+	party_changed.emit()
+	return missing
 
 
 func new_game() -> void:

@@ -108,6 +108,11 @@ func _build() -> void:
 		Game.heal_party()
 		Game.party_changed.emit()
 		_say("Équipe soignée.")))
+	# The level above is the one of a new dino; these change the party's own dinos.
+	var team := _row(col)
+	team.add_child(_label("Mon équipe :", 22, CREAM))
+	for step: int in [-1, 1, 5]:
+		team.add_child(_button("Niv. %+d" % step, _party_level.bind(step)))
 	act.add_child(_button("+100 xp", func() -> void:
 		for d in Game.party:
 			Game.award_xp(d, 100)
@@ -134,7 +139,7 @@ func _build() -> void:
 func _refresh() -> void:
 	var species := SpeciesDB.get_species(_species_ids[_species_index])
 	_species_label.text = species.display_name
-	_level_label.text = str(_level)
+	_level_label.text = "nouveau : niv. %d" % _level
 	var minutes := int(Game.clock)
 	_status.text = (_message + "   " if _message != "" else "") + "%02d:%02d · %s · temps ×%d · zone %s · équipe : %s" % [
 		floori(minutes / 60.0), minutes % 60, WEATHER_NAMES.get(Game.weather, "?"), Game.time_scale,
@@ -159,6 +164,20 @@ func _cycle_species(step: int) -> void:
 func _change_level(step: int) -> void:
 	_level = clampi(_level + step * (5 if _level >= 10 else 1), 1, Dino.MAX_LEVEL)
 	_refresh()
+
+
+## Every dino of the party goes up (learning its moves on the way) or down `step` levels.
+func _party_level(step: int) -> void:
+	for d: Dino in Game.party:
+		for i in absi(step):
+			if step > 0 and d.level < Dino.MAX_LEVEL:
+				d.gain_xp(Dino.xp_to_next(d.level) - d.xp)
+			elif step < 0 and d.level > 1:
+				d.level -= 1
+				d.xp = 0
+				d.hp = mini(d.hp, d.max_hp())
+	Game.party_changed.emit()
+	_say("Équipe : " + ", ".join(Game.party.map(func(d: Dino) -> String: return "%s niv.%d" % [d.nickname, d.level])))
 
 
 ## The chosen dino joins at the head of the party (the last one goes to the box if full).

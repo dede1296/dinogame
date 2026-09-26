@@ -25,7 +25,7 @@ const PULSE_S := 1.4
 const ZONE_NAMES := {
 	&"port_ambre": "Port-Ambre", &"cabinet": "Cabinet du Pr Roc",
 	&"plaines": "Plaines des Fougères", &"grotte_echos": "Grotte des Échos",
-	&"antre_crane": "Antre du gardien",
+	&"antre_crane": "Antre du gardien", &"havre_dore": "Havre-Doré",
 }
 
 var region: Region
@@ -217,7 +217,12 @@ func _draw_marks() -> void:
 			var tip := to_screen(at) - dir * 4.0
 			var side := dir.orthogonal() * 7.0
 			_marks.draw_colored_polygon(PackedVector2Array([tip, tip - dir * 11.0 + side, tip - dir * 11.0 - side]), CHLOE)
-			_text(font, tip - dir * 26.0, where, 15, Color(SettingsMenu.CREAM), Color(0.1, 0.07, 0.04, 0.9))
+			# Beside the arrow, whole inside the map (under it on a side edge, clear of whoever stands there).
+			var w := font.get_string_size(where, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+			var label_at := tip - dir * 26.0
+			if absf(dir.x) > 0.5:
+				label_at = tip - dir * (w / 2.0 + 6.0) + Vector2(0, 22)
+			_text(font, label_at, where, 15, Color(SettingsMenu.CREAM), Color(0.1, 0.07, 0.04, 0.9))
 		elif where != "":   # a door or a cave inside the zone: its name over it
 			_text(font, to_screen(at) + Vector2(0, -18), where, 15, Color(SettingsMenu.CREAM), Color(0.1, 0.07, 0.04, 0.9))
 	# People.

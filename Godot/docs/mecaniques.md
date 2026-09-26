@@ -188,13 +188,21 @@ sous-marines) et changent la façon de voyager :
 
 | Capacité | Qui | Équipement | Ce que ça ouvre |
 |---|---|---|---|
-| **Monture** | les grands marcheurs au dos praticable : cératopsiens (derrière la collerette), becs de canard, Iguanodon, Gallimimus, Ankylosaurus. Pas les raptors (trop petits), ni le Stégosaure (plaques), ni les sauropodes (hors de portée) | selle (Interlude) | voyager deux fois plus vite, traverser les herbes hautes sans rencontre, courses |
+| **Monture** ✅ | les grands marcheurs au dos praticable : cératopsiens (derrière la collerette), becs de canard, Iguanodon, Gallimimus, Ankylosaurus. Pas les raptors (trop petits), ni le Stégosaure (plaques), ni les sauropodes (hors de portée) | selle (Interlude) | voyager presque deux fois plus vite, traverser les herbes hautes sans rencontre cachée, courses |
 | **Nage** | spinosauridés (Baryonyx, Suchomimus, Spinosaurus) et reptiles marins | gilet de nage (ch. 3) | rivières, eau profonde, îlots proches |
 | **Plongée** | reptiles marins | masque de plongée (ch. 5) | grottes marines, épaves, récifs |
 | **Vol** | grands ptérosaures seulement (Pteranodon, Quetzalcoatlus ; le Dimorphodon est bien trop petit) | harnais de vol (ch. 7) | sommets, îlots lointains, et d'une région visitée à l'autre |
 
-Un **bébé ne porte personne** : Monture, Vol, Nage et Plongée demandent un dino **adulte (niveau 15)**.
-La fiche d'un dino montre toutes ses capacités, avec leur image ; « adulte au niv. 15 » quand il est
+**En selle** : bouton selle sous celui de la carte (touche R), une fois la selle de Joss obtenue ;
+c'est le premier dino de l'équipe capable de porter Chloé qui la porte (à sa taille habituelle).
+Chloé a sa propre pose assise à califourchon (chloe_selle.png : face, profils, dos) : de profil, sa
+jambe pend sur le flanc ; de face et de dos, une jambe de chaque côté ; la monture garde ses vues de
+face et de dos quand elle monte ou descend. Chloé descend d'elle-même sous un
+toit, avant un combat et quand une scène commence. Les dinos cachés dans les herbes hautes
+s'écartent ; ceux qu'on voit errer peuvent toujours la charger.
+
+Un **bébé ne porte personne** : Monture, Vol, Nage et Plongée demandent un dino **adulte (niveau 12)**.
+La fiche d'un dino montre toutes ses capacités, avec leur image ; « adulte au niv. 12 » quand il est
 encore trop jeune, « bientôt » tant que la capacité n'est pas jouable.
 
 Côté données, chaque espèce liste ses capacités (plutôt que de les déduire de sa famille), ce qui
@@ -299,7 +307,13 @@ chapitre.
   récompense au Cabinet.
 - **Fossiles** et **pages du journal** comptent aussi dans la complétion.
 
-## Havre-Doré : acheter, s'équiper
+## Havre-Doré : acheter, s'équiper ✅
+
+Fait : les **pièces** (Maître Ferréol en offre 200 à l'arrivée ; 150 et 250 pour les dresseurs du
+Relais), trois boutiques (écran d'achat et de vente, onglets, le marchand répond) : Herboristerie
+(baies ; **fougère curative** qui soigne complètement, depuis le menu du dino), Mercerie (colliers ;
+**bottes de marche** : +20 % à pied), Comptoir (boucle d'ambre ; il rachète les larmes 40 pièces).
+Le reste ci-dessous (tenues, friandises, pension…) viendra avec les chapitres.
 
 - **Monnaie** : les **pièces**. On en gagne en battant des dresseurs, au Relais, en finissant des
   petites quêtes, en revendant des trouvailles au Comptoir (fossiles en double, écailles, larmes :

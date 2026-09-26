@@ -902,6 +902,8 @@ func _track(node: Node) -> void:
 	var vis: SpriteBase3D = AnimatedSprite3D.new() if sprite is AnimatedSprite2D else Sprite3D.new()
 	vis.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 	vis.shaded = true
+	# Props stand still: cut out like the scenery (see _sync), so they write depth and a
+	# character in front of a big facade is never drawn behind it (the rest is only sorted).
 	vis.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
 	vis.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	vis.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
@@ -974,6 +976,10 @@ func _sync(p: Dictionary) -> void:
 		vis.scale = Vector3(1.0, STRETCH * absf(gs.y / gs.x), 1.0)
 	vis.offset = Vector2(sprite.offset.x, -sprite.offset.y)
 	vis.flip_h = sprite.flip_h
+	# Cut out (writes depth, like the scenery): props, and a mount, whose body hides Chloé's legs.
+	var cut := SpriteBase3D.ALPHA_CUT_DISCARD if src is Prop or src.get_meta(&"cut_out", false) else SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
+	if vis.alpha_cut != cut:
+		vis.alpha_cut = cut
 	vis.modulate = src.modulate * sprite.modulate * sprite.self_modulate
 	if sprite is AnimatedSprite2D:
 		var anim := vis as AnimatedSprite3D

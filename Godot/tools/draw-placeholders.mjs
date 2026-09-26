@@ -1,8 +1,5 @@
 // Prop pictures drawn as vectors: the campfire and its flame as the web version drew them
-// (no ground shadow: the game casts it); the pebble and the mound provisional (dark brown
-// outline, soft shading, light from the top left) while nano-banana has no credits.
-//   galet.png     a small polished amber pebble (hidden all over the island)
-//   monticule.png freshly turned earth, where a dino with Flair can dig
+// (no ground shadow: the game casts it).
 //   feu_camp.png  the web version's campfire: a ring of stones around crossed logs, embers
 //   flamme.png    its flame, apart (it flickers in the game)
 //   papillon.png  a butterfly (web version), white wings tinted in the game
@@ -13,23 +10,6 @@ const OUT = "Godot/assets/art/props";
 const INK = "#2a180c";
 
 const pictures = {
-  galet: [160, 120, `
-    <defs>
-      <radialGradient id="a" cx="38%" cy="32%" r="75%">
-        <stop offset="0" stop-color="#ffe7a3"/><stop offset="0.35" stop-color="#f6b43c"/>
-        <stop offset="0.8" stop-color="#c9731a"/><stop offset="1" stop-color="#8f4a10"/>
-      </radialGradient>
-    </defs>
-    <ellipse cx="80" cy="66" rx="58" ry="44" fill="url(#a)" stroke="${INK}" stroke-width="7"/>
-    <ellipse cx="60" cy="48" rx="16" ry="9" fill="#fff6d6" opacity="0.85" transform="rotate(-20 60 48)"/>
-    <circle cx="96" cy="78" r="5" fill="#7a3a0c" opacity="0.5"/>`],
-  monticule: [220, 130, `
-    <path d="M14 104 C 30 58, 70 30, 110 30 C 152 30, 190 60, 206 104 Z" fill="#7a5230" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>
-    <path d="M40 84 C 60 60, 90 48, 118 48" stroke="#a37346" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.8"/>
-    <ellipse cx="70" cy="92" rx="12" ry="8" fill="#9a9690" stroke="${INK}" stroke-width="4"/>
-    <ellipse cx="150" cy="86" rx="9" ry="6" fill="#b1ada5" stroke="${INK}" stroke-width="4"/>
-    <ellipse cx="118" cy="98" rx="7" ry="5" fill="#8c8780" stroke="${INK}" stroke-width="3"/>
-    <circle cx="96" cy="64" r="4" fill="#4d3219"/><circle cx="132" cy="58" r="3" fill="#4d3219"/>`],
   feu_camp: [64, 56, `
     <ellipse cx="32" cy="42" rx="18" ry="7" fill="#2a1c10"/>
     <line x1="16" y1="46" x2="46" y2="36" stroke="#3b2414" stroke-width="9" stroke-linecap="round"/><line x1="16" y1="46" x2="46" y2="36" stroke="#7a5230" stroke-width="5" stroke-linecap="round"/>

@@ -32,6 +32,41 @@ static func lines(id: StringName) -> Array:
 				return [{"who": MAIA, "text": "Un fragment d'ambre et une page du journal ?! Montre ça au Professeur Roc. Et la prochaine fois, c'est toi contre moi !"},
 					{"flag": &"maia_page1"}]
 			return chatter(&"maia")
+		&"route_cotiere":
+			return [{"who": "Le garde du Havre", "text": "Halte ! La route côtière, c'est pour les dresseurs reconnus. Reviens quand un Alpha t'aura remis son Sceau, petite."}]
+		&"garde_route":
+			if Game.flag(&"sceau_plaines"):
+				return [{"who": "Le garde du Havre", "text": "Un Sceau d'Alpha ! Passe, dresseuse. Havre-Doré est au bout de la route, à l'est. Tu verras : là-bas, même les lanternes ont l'air riches."}]
+			return [{"who": "Le garde du Havre", "text": "La route côtière est réservée aux dresseurs qui portent un Sceau d'Alpha. Ordre du Comptoir. Moi, j'obéis, et on me paie pour."}]
+		&"panneau_route_cotiere":
+			return [{"text": "Est : route côtière vers Havre-Doré. Péage : un Sceau d'Alpha. (Les dinos sauvages, eux, passent gratuitement.)"}]
+		&"enseigne_herboristerie":
+			return [{"text": "« Herboristerie Pervenche — Baies, fougères, remèdes. On ne rend pas la monnaie aux impolis. »"}]
+		&"enseigne_mercerie":
+			return [{"text": "« Au Fil d'Ambre — Colliers, bottes, tout pour l'aventure. Rosalie, prop. »"}]
+		&"enseigne_relais":
+			return [{"text": "« Relais des Dresseurs — Combats amicaux tous les jours. Les perdants paient la limonade. »"}]
+		&"enseigne_comptoir":
+			return [{"text": "« Comptoir d'Ambre — Achat, vente, estimation. Maître Ferréol, négociant agréé. »"},
+				{"text": "Sous l'enseigne, une petite plaque plus ancienne a été dévissée. On voit encore les trous des vis."}]
+		&"enseigne_sellerie":
+			return [{"text": "« Sellerie Bastide, père et fils — Selles, harnais, sur mesure. » Le mot « père » a été repeint plusieurs fois."}]
+		&"enseigne_entrepot":
+			return [{"text": "« Entrepôt du Comptoir — Accès interdit. » Le cadenas est neuf. Très neuf."}]
+		&"entrepot":
+			if Game.flag(&"barque_vue"):
+				return [{"text": "L'entrepôt du Comptoir. Le cadenas est fermé. Par une fente, une odeur de fumée froide et de mer… et de cendre."}]
+			return [{"text": "L'entrepôt du Comptoir. Fermé à double tour. On entend quelque chose remuer à l'intérieur, puis plus rien."}]
+		&"marchande":
+			return [{"who": "La marchande", "text": ["Des fruits du Havre ! Enfin, du continent. Enfin, d'un bateau. Bref, des fruits !",
+				"Les dinos du Relais mangent mieux que moi. Mais bon, ils gagnent plus que moi aussi.",
+				"Ferréol ? Un homme généreux. Il a payé la nouvelle fontaine. Enfin, la fontaine qu'on aura un jour."].pick_random()}]
+		&"pecheur_havre":
+			return [{"who": "Un pêcheur", "text": ["Ici, on ne pêche plus beaucoup. Pourquoi pêcher, quand on peut ramasser de l'ambre ?",
+				"La nuit, des barques accostent à l'entrepôt sans allumer leurs lanternes. Je dis rien. Je répare mes filets.",
+				"Port-Ambre ? Ils sont fiers, là-bas. Fiers et pauvres. Ça va souvent ensemble."].pick_random()}]
+		&"cuir_trouve":
+			return [{"text": "Sur la rive, à moitié dans les fougères, une grande peau fine et souple : un Parasaurolophus a mué ici. Parfait pour Joss."}]
 		&"panneau_carrefour":
 			return [{"text": "Nord : Grotte des Échos.  Nord-est : les Falaises.  Est : l'étang, puis le Grand Crâne.  Ouest : le vieux bosquet.  Sud : Port-Ambre."},
 				{"text": "Tout en bas, quelqu'un a ajouté au couteau : « Paris : 9 874 km. À la nage, compter large. »"}]
@@ -150,6 +185,8 @@ static func chatter(who: StringName) -> Array:
 				"Tu vois cette jetée ? Quand j'avais ton âge, on ne voyait pas le bois, tellement il y avait de barques.",
 				"Maïa t'attend aux Plaines, je parie. Elle ne tient pas en place. Comme moi, à son âge.",
 			]
+			if Game.flag(&"sceau_plaines"):
+				pool.insert(0, "Le Havre ? Là-bas, ils ont de l'argent. Et ils ne se demandent jamais d'où il vient. Toi, demande-toi toujours.")
 			if Game.flag(&"boussole_rendue"):
 				pool.append("Maïa m'a rapporté ma boussole. Merci de l'avoir rattrapée. J'y tiens… plus que je ne devrais.")
 			if night:
@@ -172,6 +209,14 @@ static func chatter(who: StringName) -> Array:
 				pool.append("Tu as eu le sceau ?! … Bon. Bravo. Mais la prochaine fois, c'est moi. Et ça fait mal de le dire.")
 			if night:
 				pool.append("Il fait nuit ! Les Velociraptor sortent aux lisières. Moi, je rentre avant que maman s'inquiète… enfin, avant qu'elle rentre.")
+		&"maia_havre":
+			pool = [
+				"Le Relais, c'est simple : tu bats Gaspard, tu bats Lilou, et après… tu me bats moi. Enfin, tu essaies.",
+				"Joss a fait ma selle quand on avait dix ans. Pour Caillou. Caillou l'a mangée.",
+				"Maman passe au Comptoir le soir, des fois. Elle dit que c'est « pour le port ». Elle dit toujours ça.",
+			]
+			if hint != "":
+				pool.insert(0, "Conseil de championne : " + hint)
 		&"roc":
 			pool = [
 				"Hélène disait qu'un dino ne se dresse pas : il se rencontre. Je n'ai jamais bien compris la différence. Elle, si.",
@@ -186,7 +231,7 @@ static func chatter(who: StringName) -> Array:
 		return []
 	var n := int(Game.flag(StringName("bavard_%s" % who)))
 	Game.set_flag(StringName("bavard_%s" % who), n + 1)
-	var speaker: String = {&"isaure": "Isaure", &"maia": MAIA, &"roc": "Prof. Roc"}[who]
+	var speaker: String = {&"isaure": "Isaure", &"maia": MAIA, &"roc": "Prof. Roc", &"maia_havre": MAIA}[who]
 	return [{"who": speaker, "text": pool[n % pool.size()]}]
 
 

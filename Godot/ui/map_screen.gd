@@ -14,7 +14,7 @@ const GOLD := Color(1, 0.86, 0.5)
 const CREAM := Color(1, 0.97, 0.9)
 const SIDE_WIDTH := 300.0
 ## The zones with a detailed map (outdoors).
-const DETAILED := [&"plaines", &"port_ambre"]
+const DETAILED := [&"plaines", &"port_ambre", &"havre_dore"]
 
 var _zones := {}            # zone id -> scene path (world.gd ZONES)
 var _here: Region           # Chloé's zone (the one being played)

@@ -266,18 +266,27 @@ async function props({ id, scale, names, outDir, gap = 6, boxes = null }) {
   return `${outDir}: ${done.join(", ")}`;
 }
 
-/** Icon sheet → one PNG per grid cell (names in reading order), each trimmed and fitted in size x size. */
-async function icons({ id, cols, rows, names, size, outDir }) {
+/**
+ * Icon sheet → one PNG per grid cell (names in reading order), each trimmed and fitted in size x size.
+ * `boxes`: [x, y, w, h] per name instead of the grid, when an icon spills over its cell.
+ */
+async function icons({ id, cols, rows, names, size, outDir, boxes = null }) {
   const img = await loadKeyed(find(id));
   const base = rawImage(img);
   const cw = img.w / cols, ch = img.h / rows;
   const done = [];
   for (let i = 0; i < names.length; i++) {
     const c = i % cols, r = Math.floor(i / cols);
-    const b = alphaBox(img, Math.round(c * cw + INSET), Math.round(r * ch + INSET), Math.round((c + 1) * cw - INSET), Math.round((r + 1) * ch - INSET));
+    const [x0, y0, x1, y1] = boxes
+      ? [boxes[i][0], boxes[i][1], boxes[i][0] + boxes[i][2], boxes[i][1] + boxes[i][3]]
+      : [Math.round(c * cw + INSET), Math.round(r * ch + INSET), Math.round((c + 1) * cw - INSET), Math.round((r + 1) * ch - INSET)];
+    const b = alphaBox(img, x0, y0, Math.min(img.w, x1), Math.min(img.h, y1));
     if (!b) continue;
     const out = path.join(outDir, names[i] + ".png");
-    await base.clone().extract({ left: b.minX, top: b.minY, width: b.maxX - b.minX + 1, height: b.maxY - b.minY + 1 })
+    const width = b.maxX - b.minX + 1, height = b.maxY - b.minY + 1;
+    const raw = await base.clone().extract({ left: b.minX, top: b.minY, width, height }).raw().toBuffer();
+    if (GLOWING.includes(names[i])) removePinkHalo(raw);
+    await sharp(raw, { raw: { width, height, channels: 4 } })
       .resize(size, size, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png({ compressionLevel: 9 }).toFile(out);
     done.push(names[i]);
   }
@@ -314,18 +323,39 @@ const JOBS = [
   [`${OUT}/dinos/protoceratops.png`, (out) => sheet({ id: "n6zd1g", rows: 2, cols: 3, frameHeight: 150, out })],
   [`${OUT}/dinos/parasaurolophus.png`, (out) => sheet({ id: "a9ze6l", rows: 2, cols: 3, frameHeight: 170, out })],
   // Front (row 1) and back (row 2) views, in cells the size of the side-view frames.
-  [`${OUT}/dinos/velociraptor_face_dos.png`, (out) => sheet({ id: "xljkyo", rows: 2, cols: 4, frameHeight: 196, cell: [254, 208], out })],
-  [`${OUT}/dinos/protoceratops_face_dos.png`, (out) => sheet({ id: "mmzqed", rows: 2, cols: 4, frameHeight: 148, cell: [237, 158], out })],
-  [`${OUT}/dinos/parasaurolophus_face_dos.png`, (out) => sheet({ id: "5rxgy6", rows: 2, cols: 4, frameHeight: 168, cell: [251, 178], out })],
+  [`${OUT}/dinos/velociraptor_face_dos.png`, (out) => sheet({ id: "zz8efh", rows: 2, cols: 4, frameHeight: 196, cell: [254, 208], out })],
+  [`${OUT}/dinos/protoceratops_face_dos.png`, (out) => sheet({ id: "3shwit", rows: 2, cols: 4, frameHeight: 148, cell: [237, 158], out })],
+  [`${OUT}/dinos/parasaurolophus_face_dos.png`, (out) => sheet({ id: "us6mkv", rows: 2, cols: 4, frameHeight: 168, cell: [251, 178], out })],
   [`${OUT}/props`, (outDir) => props({
     id: "to7ui1", scale: 0.6, outDir,
     names: ["arbre_rond", "fougere_arbre", "araucaria", "buisson", "rocher", "cailloux", "tronc", "ronces",
       "hautes_herbes", "fougeres", "fleurs_roses", "fleurs_violettes", "panneau", "cloture", "ambre", "souche"],
   })],
+  // Chloé in the saddle (Saddle): front, facing left, facing right, back; same scale as chloe.png.
+  [`${OUT}/characters/chloe_selle.png`, (out) => sheet({ id: "jeyusd", rows: 1, cols: 4, frameHeight: 220, cell: [150, 228], out })],
+  // Havre-Doré.
+  ...[["ferreol", "rvfep6"], ["joss", "qhacr4"], ["pervenche", "6r0ovw"], ["rosalie", "x4wade"], ["lilou", "jq0vxj"],
+    ["gaspard", "itvhg0"], ["marchande", "c8s4z6"], ["garde", "yddx5i"], ["pecheur", "3s9xxz"]].map(([name, id]) =>
+    [`${OUT}/characters/${name}.png`, (out) => sheet({ id, rows: 4, cols: 4, frameHeight: 176, out })]),
+  [`${OUT}/havre/objets`, () => props({ id: "nvwjlo", scale: 0.5, boxes: [[120, 50, 345, 225], [660, 50, 470, 235], [35, 315, 545, 540], [630, 315, 530, 540]], outDir: `${OUT}/props`, names: ["galet", "monticule", "etal_fruits", "etal_poisson"] })],
+  [`${OUT}/plaines/crane`, () => props({ id: "4y78ve", scale: 0.5, gap: 40, outDir: `${OUT}/props`, names: ["grand_crane"] })],
+  [`${OUT}/ui/objets`, () => icons({ id: "pfo4v8", cols: 3, rows: 1, size: 160, boxes: [[15, 110, 505, 540], [530, 130, 410, 500], [940, 200, 420, 370]], outDir: `${OUT}/ui`, names: ["bottes", "cuir", "boucle"] })],
+  [`${OUT}/ground/grotte_sol.png`, (out) => seamless({ id: "zm7vp5", size: 512, out })],
+  // Forêt Jurassique and Grotte des Échos (bestiary), with Griffe-Grise, the Ancien of the forest.
+  ...[["stegosaurus", "3snkyi", 180], ["brachiosaurus", "4frcgp", 220], ["dilophosaurus", "yr1f2h", 180], ["pachycephalosaurus", "1sw9u7", 170],
+    ["allosaurus", "bp96w5", 210], ["deinonychus", "7dnkzz", 190], ["microraptor", "qbu8uu", 140], ["utahraptor", "djmzdq", 230],
+    ["griffe_grise", "mvpqcb", 210], ["anurognathus", "914bc7", 120]].map(([name, id, frameHeight]) =>
+    [`${OUT}/dinos/${name}.png`, (out) => sheet({ id, rows: 2, cols: 3, frameHeight, out })]),
+  // Their front and back views, in cells the size of their side-view frames.
+  ...[["stegosaurus", "kr51lr", 178, [261, 188]], ["brachiosaurus", "jt1ujf", 218, [226, 228]], ["dilophosaurus", "wcxq3w", 178, [208, 188]],
+    ["pachycephalosaurus", "w2wdyv", 168, [207, 178]], ["allosaurus", "c44irg", 208, [262, 218]], ["deinonychus", "rtix92", 188, [216, 198]],
+    ["microraptor", "aw17f4", 138, [157, 148]], ["utahraptor", "8g9dhj", 228, [282, 238]], ["griffe_grise", "dlm1oz", 208, [258, 218]],
+    ["anurognathus", "fnyct3", 118, [140, 128]]].map(([name, id, frameHeight, cell]) =>
+    [`${OUT}/dinos/${name}_face_dos.png`, (out) => sheet({ id, rows: 2, cols: 4, frameHeight, cell, out })]),
   [`${OUT}/characters/roc.png`, (out) => sheet({ id: "b0tan1", rows: 4, cols: 4, frameHeight: 176, out })],
   [`${OUT}/characters/isaure.png`, (out) => sheet({ id: "zp5pby", rows: 4, cols: 4, frameHeight: 176, out })],
   [`${OUT}/dinos/ankylosaurus.png`, (out) => sheet({ id: "96xapm", rows: 2, cols: 3, frameHeight: 140, out })],
-  [`${OUT}/dinos/ankylosaurus_face_dos.png`, (out) => sheet({ id: "zuksn4", rows: 2, cols: 4, frameHeight: 138, cell: ANKY_CELL, out })],
+  [`${OUT}/dinos/ankylosaurus_face_dos.png`, (out) => sheet({ id: "gqdf4n", rows: 2, cols: 4, frameHeight: 138, cell: ANKY_CELL, out })],
   [`${OUT}/port/batiments`, () => props({ id: "2bcnde", scale: 0.5, outDir: `${OUT}/props`, names: ["maison_blanche", "maison_jaune", "maison_port", "cabinet"] })],
   [`${OUT}/port/objets`, () => props({ id: "axfrx2", scale: 0.45,
     boxes: [[96, 92, 700, 392], [856, 76, 504, 412], [1464, 80, 316, 412], [0, 0, 1, 1], [96, 516, 640, 460], [928, 580, 324, 368],
@@ -338,11 +368,11 @@ const JOBS = [
   [`${OUT}/dinos/dimorphodon.png`, (out) => sheet({ id: "xv3qwx", rows: 2, cols: 3, frameHeight: 150, out })],
   [`${OUT}/dinos/psittacosaurus.png`, (out) => sheet({ id: "7uecxo", rows: 2, cols: 3, frameHeight: 135, out })],
   [`${OUT}/dinos/troodon.png`, (out) => sheet({ id: "dxw3iu", rows: 2, cols: 3, frameHeight: 170, out })],
-  [`${OUT}/dinos/triceratops_face_dos.png`, (out) => sheet({ id: "3yx8z0", rows: 2, cols: 4, frameHeight: 198, cell: [305, 208], out })],
-  [`${OUT}/dinos/compsognathus_face_dos.png`, (out) => sheet({ id: "58xw1u", rows: 2, cols: 4, frameHeight: 118, cell: [172, 128], out })],
-  [`${OUT}/dinos/dimorphodon_face_dos.png`, (out) => sheet({ id: "dmfd01", rows: 2, cols: 4, frameHeight: 148, cell: [177, 158], out })],
-  [`${OUT}/dinos/psittacosaurus_face_dos.png`, (out) => sheet({ id: "ubfx9o", rows: 2, cols: 4, frameHeight: 133, cell: [205, 143], out })],
-  [`${OUT}/dinos/troodon_face_dos.png`, (out) => sheet({ id: "hm8dx6", rows: 2, cols: 4, frameHeight: 168, cell: [214, 178], out })],
+  [`${OUT}/dinos/triceratops_face_dos.png`, (out) => sheet({ id: "ehki7a", rows: 2, cols: 4, frameHeight: 198, cell: [305, 208], out })],
+  [`${OUT}/dinos/compsognathus_face_dos.png`, (out) => sheet({ id: "0s7pno", rows: 2, cols: 4, frameHeight: 118, cell: [172, 128], out })],
+  [`${OUT}/dinos/dimorphodon_face_dos.png`, (out) => sheet({ id: "gj7d8u", rows: 2, cols: 4, frameHeight: 148, cell: [177, 158], out })],
+  [`${OUT}/dinos/psittacosaurus_face_dos.png`, (out) => sheet({ id: "uset4o", rows: 2, cols: 4, frameHeight: 133, cell: [205, 143], out })],
+  [`${OUT}/dinos/troodon_face_dos.png`, (out) => sheet({ id: "wc8k22", rows: 2, cols: 4, frameHeight: 168, cell: [214, 178], out })],
   [`${OUT}/plaines/objets`, () => props({ id: "f424k7", scale: 0.5, outDir: `${OUT}/props`, names: ["porte_ambre", "ecaille", "serrure", "stalagmite", "cristaux", "rocher_grotte"] })],
   [`${OUT}/ground/paves.png`, (out) => seamless({ id: "rfr8xj", size: 512, out })],
   [`${OUT}/ground/plancher.png`, (out) => seamless({ id: "wyzdq7", size: 512, out })],

@@ -7,7 +7,7 @@ extends RefCounted
 
 const TILE := 48
 const TILESET := preload("res://regions/terrain_tileset.tres")
-const TERRAIN_CHARS := ".=w~"
+const TERRAIN_CHARS := ".=w~Fs"   # grass, path, tall grass, water, forest, sand
 const TREES := ["arbre_rond", "araucaria", "arbre_rond", "fougere_arbre"]
 const SMALL := ["fleurs_roses", "fleurs_violettes", "fougeres", "fleurs_roses", "fougeres"]
 const WHEN := {"toujours": 0, "jour": 1, "nuit": 2, "aube et crépuscule": 3, "jour et crépuscule": 4}
@@ -209,6 +209,7 @@ static func npc(root: Region, node_name: String, display_name: String, sheet: St
 	n.facing = opts.get("facing", "down")
 	n.show_flag = opts.get("show_flag", &"")
 	n.hide_flag = opts.get("hide_flag", &"")
+	n.tint = opts.get("tint", Color.WHITE)
 	n.position = cell(x, y)
 	root.get_node("Entities").add_child(n)
 	return n
