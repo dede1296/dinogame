@@ -17,6 +17,9 @@ extends StaticBody2D
 
 const WALK_SPEED := 120.0   # px/s
 
+## Already greeted this session (the first time Chloé comes to talk: a « ! »).
+var _greeted := false
+
 @onready var sprite: AnimatedSprite2D = $Sprite
 
 
@@ -39,10 +42,17 @@ func present() -> bool:
 func interact(player: Player) -> void:
 	face(player.global_position)
 	player.face_towards(global_position)
+	if not _greeted:
+		_greeted = true
+		var view := get_tree().get_first_node_in_group(&"world_view") as WorldView
+		if view:
+			view.emote(self, "!")
 	if event != &"":
 		await preload("res://story/story.gd").run(event, self)
-	else:
+	elif dialogue_id != &"":
 		await Dialogue.run(DialogueDB.lines(dialogue_id))
+	else:
+		await Dialogue.run([{"who": display_name, "text": "Oh, bonjour Chloé !"}])
 	sprite.play(StringName("idle_" + facing))
 
 

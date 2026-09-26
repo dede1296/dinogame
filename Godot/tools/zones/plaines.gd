@@ -23,7 +23,13 @@ const SCATTER := [
 const KEEP_CLEAR := [
 	Rect2(55, 41, 10, 8), Rect2(54, 22, 8, 7), Rect2(88, 34, 10, 6), Rect2(98, 52, 12, 16),
 	Rect2(12, 24, 8, 8), Rect2(90, 9, 12, 5), Rect2(55, 84, 10, 6),
+	# Off the beaten track: Chipie's nest, the pond's shore and islet, the sleeper, the egg rock, the cove sign.
+	Rect2(38.5, 33, 5, 3), Rect2(76, 43.5, 6, 6), Rect2(54, 65, 4, 4), Rect2(63.5, 38.5, 3, 3), Rect2(24, 65.5, 3, 2),
 ]
+## Chipie's run from the crossroads to her nest (tiles; see FleeingDino).
+const CHIPIE_PATH := [Vector2(57.5, 42.5), Vector2(52.5, 40.5), Vector2(48.5, 37.5), Vector2(44.5, 35.6), Vector2(41.6, 34.8)]
+const FLEEING_DINO := "res://world/fleeing_dino.gd"
+const SLEEPER := "res://world/sleeper.gd"
 
 
 static func build() -> Region:
@@ -34,12 +40,14 @@ static func build() -> Region:
 	var entities: Node2D = root.get_node("Entities")
 	_scatter(root, entities)
 	_story(root, entities)
-	_rest_spots(entities)
-	# 30 amber pebbles: 8 in trees, 8 under stones, 8 buried (Flair), 6 in nooks worth the climb.
+	_rest_spots(root, entities)
+	# 30 amber pebbles: 8 in trees, 8 under stones, 8 buried (Flair), 3 in nooks worth the climb,
+	# 2 in Chipie's nest and 1 on the pond's islet (full moon): see _annexes.
 	B.hide_pebbles(root, entities, Vector2i(60, 86), 3007, 8, 8,
 		[Vector2(45, 64), Vector2(70, 72), Vector2(30, 52), Vector2(52, 36), Vector2(88, 58),
 			Vector2(100, 24), Vector2(15, 33), Vector2(110, 75)],
-		[Vector2(70, 15), Vector2(102, 10), Vector2(85, 50), Vector2(24, 71), Vector2(12, 32), Vector2(46, 34)])
+		[Vector2(70, 15), Vector2(102, 10), Vector2(24, 71)])
+	_annexes(root, entities)
 	_places(root)
 	_habitats(root)
 	return root
@@ -82,7 +90,7 @@ static func _near_path(terrain: TileMapLayer, x: int, y: int) -> bool:
 ## The story's places and people.
 static func _story(root: Region, entities: Node2D) -> void:
 	# The crossroads: Maïa, the signpost.
-	B.npc(root, "Maia", "Maïa", CHARS % "maia", 62.6, 44.4, {"facing": "left", "dialogue": &"maia"})
+	B.npc(root, "Maia", "Maïa", CHARS % "maia", 62.6, 44.4, {"facing": "left", "event": &"maia"})
 	B.sign(entities, B.cell(57.4, 44.8), &"panneau_carrefour")
 	B.sign(entities, B.cell(61.6, 84.6), &"panneau_debarcadere")
 	# Hélène's grove, behind the fallen trunk (Tranche): page 1 and the first amber scale.
@@ -143,11 +151,61 @@ static func _story(root: Region, entities: Node2D) -> void:
 		"show_flag": &"crane_ouvert", "hide_flag": &"sceau_plaines"})
 
 
+## Off the beaten track (story/plaines_annexes.gd, docs/histoire.md « Hors des sentiers »):
+## Chipie and her nest, the pond's full-moon ford and islet (page 2), the sleeper, signs.
+static func _annexes(root: Region, entities: Node2D) -> void:
+	var chipie = load(FLEEING_DINO).new()
+	chipie.name = "Chipie"
+	chipie.species_id = &"compsognathus"
+	chipie.flip = true
+	chipie.waypoints = PackedVector2Array(CHIPIE_PATH)
+	chipie.stage_flag = &"chipie_etape"
+	chipie.arrived_flag = &"chipie_au_nid"
+	chipie.appear_flag = &"boussole_volee"
+	chipie.hide_flag = &"chipie_au_nid"
+	chipie.position = B.cell(CHIPIE_PATH[0].x, CHIPIE_PATH[0].y)
+	entities.add_child(chipie)
+	var nest = B.prop(entities, "buisson", B.cell(40.6, 34.1), false, load(STORY_PROP))
+	nest.name = "NidChipie"
+	nest.event = &"nid_chipie"
+	# The pond: the ford lights up at full moon, the singers gather; page 2 on the islet.
+	var ford := MoonFord.new()
+	ford.name = "GueDeLune"
+	ford.position = B.cell(78, 45)
+	ford.size = Vector2(2, 2)
+	ford.islet = Rect2(78, 47, 2, 2)
+	ford.singer_spots = PackedVector2Array([Vector2(73.4, 47.5), Vector2(85.5, 47.6), Vector2(74.2, 50.5), Vector2(80.5, 51.4)])
+	root.add_child(ford)
+	var page = B.prop(entities, "ambre", B.cell(78.5, 47.7), false, load(PICKUP))
+	page.name = "Page2"
+	page.taken_flag = &"found_journal_2"
+	page.dialogue_id = &"page_2"
+	var pebble = B.prop(entities, "galet", B.cell(79.5, 48.4), false, load(PICKUP))
+	pebble.name = "GaletIlot"
+	pebble.taken_flag = &"galet_plaines_ilot"
+	B.sign(entities, B.cell(81.4, 44.3), &"panneau_etang")
+	root.pebbles += 3
+	# The sleeper under his tree, south of the crossroads.
+	B.prop(entities, "arbre_rond", B.cell(55.4, 66.4))
+	var sleeper = load(SLEEPER).new()
+	sleeper.name = "Dormeur"
+	sleeper.species_id = &"protoceratops"
+	sleeper.event = &"dormeur"
+	sleeper.size_scale = 0.9
+	sleeper.position = B.cell(56.4, 67.4)
+	entities.add_child(sleeper)
+	# A smile or two.
+	B.sign(entities, B.cell(25.5, 66.5), &"panneau_anse")
+	B.prop(entities, "rocher", B.cell(65.0, 39.6))
+	B.sign(entities, B.cell(64.0, 40.3), &"panneau_oeuf")
+
+
 ## Campfires and benches to rest by (see Rest), the ground around them cleared.
-static func _rest_spots(entities: Node2D) -> void:
-	for p: Array in [["feu_camp", 56.0, 51.0], ["feu_camp", 29.5, 70.5], ["feu_camp", 92.0, 11.2],
-			["banc", 78.0, 44.4], ["banc", 62.8, 66.0]]:
-		var at := B.cell(p[1], p[2])
+static func _rest_spots(root: Region, entities: Node2D) -> void:
+	for p: Array in [["feu_camp", 56.0, 51.0], ["feu_camp", 31.5, 64.0], ["feu_camp", 96.0, 10.4],
+			["banc", 75.4, 44.4], ["banc", 62.8, 66.0]]:
+		# On flat ground, two tiles round (not in the water, not on a cliff's edge).
+		var at := B.flat_spot(root, Vector2(p[1], p[2]), 2)
 		for c in entities.get_children():
 			if c.get_script() == Prop and c.position.distance_to(at) < 2.6 * B.TILE:
 				c.free()

@@ -104,12 +104,19 @@ func _ready() -> void:
 			add_to_group(&"interactable")
 			if hidden_pebble != &"" and not Game.flag(hidden_pebble):
 				add_to_group(&"secret")
+		# Plain scenery with something to say about it (a closed house, a barrel…).
+		elif get_script() == Prop and Examine.has(kind):
+			add_to_group(&"interactable")
+			set_meta(&"reach_bonus", Examine.REACH.get(kind, 10.0))
 	_build()
 
 
-## Searching this piece of scenery (only the kinds of Search.KINDS are interactable).
+## Searching this piece of scenery, or looking at it (Search, Examine).
 func interact(player: Player) -> void:
-	await Search.search(self, player)
+	if Search.can_search(self):
+		await Search.search(self, player)
+	else:
+		await Examine.look(self, player)
 
 
 ## Still hides an amber pebble (the companion senses it).

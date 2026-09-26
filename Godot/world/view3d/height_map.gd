@@ -18,6 +18,8 @@ const RES := 2                   # height samples per metre
 ## into a cliff (smooth hills below it).
 const CLIFF_FROM := 0.45
 const DOCK_TOP := 0.08
+## A ford of stones (MoonFord): their tops just out of the water.
+const FORD_TOP := WATER_LEVEL + 0.1
 ## Farther than this from its tile's level (m), a point is on a cliff face (see to_3d).
 const STAND_SNAP := 0.35
 
@@ -29,6 +31,7 @@ var has_water := false
 var margin := MARGIN
 ## Piers (tiles): walking there, you stand on the planks, not on the dug ground below.
 var docks: Array[Rect2] = []
+var _fords: Array[Rect2] = []
 
 var _tiles := PackedFloat32Array()   # per tile: its height (m)
 var _water := PackedFloat32Array()   # per tile: 1 = water, 0 = land
@@ -43,6 +46,8 @@ func _init(region: Region, grid_step := 4) -> void:
 	margin = 0 if region.indoor else MARGIN
 	for dock in region.docks():
 		docks.append(Rect2(dock.area().position / PX, dock.area().size / PX))
+		if dock is MoonFord:
+			_fords.append(docks[-1])
 	size = region.map_size()
 	_tiles.resize(size.x * size.y)
 	_water.resize(size.x * size.y)
@@ -71,7 +76,7 @@ func to_3d(p: Vector2) -> Vector3:
 	var t := p / PX
 	for d in docks:
 		if d.has_point(t):
-			return Vector3(t.x, DOCK_TOP, t.y)
+			return Vector3(t.x, FORD_TOP if d in _fords else DOCK_TOP, t.y)
 	# By a cliff, the smooth ground there is the rock face: stand on the tile's own level.
 	var h := height(t)
 	var cell := Vector2i(clampi(floori(t.x), 0, size.x - 1), clampi(floori(t.y), 0, size.y - 1))

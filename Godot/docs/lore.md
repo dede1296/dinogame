@@ -20,6 +20,7 @@ L'île est ronde, découpée en régions qui montent en spirale vers le volcan c
 | Région | Ce qu'on y trouve |
 |---|---|
 | **Port-Ambre** | Village de pêcheurs en déclin, le Cabinet d'Hélène |
+| **Havre-Doré** | Ville marchande de la baie du sud-est, riche du commerce de l'ambre |
 | **Plaines des Fougères** | Prairies, étang, bosquet d'Hélène, le Grand Crâne |
 | **Grotte des Échos** | Première grotte, sous les Plaines |
 | **Forêt Jurassique** | Arbres géants, sous-bois, clairières rocheuses |
@@ -84,6 +85,27 @@ Ses figures :
   douter. Adversaire du Marais et des Monts Gelés.
 - **Les sbires** : des masques d'os anonymes, souvent des pêcheurs du port payés pour se taire.
 
+## Havre-Doré, la ville qui brille
+
+De l'autre côté des collines, au fond de la baie du sud-est, **Havre-Doré** est tout ce que Port-Ambre
+n'est plus : des toits neufs, un marché qui déborde, des lanternes à chaque coin de rue. Sa richesse
+vient de l'**ambre** : depuis vingt ans, le **Comptoir d'Ambre** de **Maître Ferréol** achète tout
+ce que les habitants ramassent (larmes de l'île, éclats, fossiles) « pour les bijoutiers du
+continent », et paie bien. Personne ne demande où partent les caisses.
+
+C'est aussi la ville des **dresseurs** : on y vient d'un peu partout sur l'île pour faire soigner,
+équiper et nourrir ses dinos, et pour se mesurer aux autres au **Relais des Dresseurs**.
+
+- **Maître Ferréol**, négociant affable, généreux avec la ville. En réalité le **banquier de l'Ombre
+  Noire** : son Comptoir blanchit l'ambre volé, et son entrepôt du port est la cache du chapitre 5.
+- **Joss Bastide**, 15 ans, sellier, ami d'enfance de Maïa. Fabrique les **selles, harnais et
+  gilets** qui permettent de monter, voler, nager avec ses dinos. Rêve de voir le continent.
+- **Mémé Pervenche**, herboriste. Connaît chaque baie de l'île et a soigné les dinos d'Hélène.
+  Sait beaucoup de choses, en dit peu, sauf si on lui achète des friandises.
+
+Havre-Doré pose la question du jeu en plus grand : la ville vit bien **en vendant l'île morceau par
+morceau**. Isaure voulait ça pour Port-Ambre ; Hélène a refusé. Chloé verra les deux côtés.
+
 ## Les personnages
 
 **Chloé**, 12 ans, petite-fille d'Hélène. Débarque sur Ambrelune avec la lettre que sa grand-mère
@@ -147,7 +169,7 @@ mauvais : c'est une force de la nature, qui a peur quand on le réveille de forc
 | −30 ans | Premier réveil au Cabinet : un petit Protoceratops (page 1 du journal). |
 | −30 à −25 ans | Hélène réveille des dizaines d'espèces et les rend chacune à leur habitat. |
 | −25 ans | Découverte du Souverain. Tentative de réveil, éruption. Hélène l'apaise, scelle le cratère, brise la clé en cinq Cœurs et les confie aux Alphas. |
-| −20 ans | Le port décline (la pêche s'effondre). Isaure demande à Hélène de vendre de l'ambre. Refus. Rupture. |
+| −20 ans | Le port décline (la pêche s'effondre). Isaure demande à Hélène de vendre de l'ambre. Refus. Rupture. Ferréol ouvre le Comptoir d'Ambre à Havre-Doré, qui prospère. |
 | −12 ans | Isaure vole des notes d'Hélène sur « l'ambre forcé ». Naissance secrète de l'Ombre Noire. |
 | −1 an | L'Ombre Noire attaque le sceau à l'ambre noir. Le Souverain s'agite, le volcan gronde. Hélène écrit la lettre à Chloé, **laisse au Cabinet trois œufs** issus des Anciens, puis descend dans le cratère et se scelle dans l'ambre avec le Souverain pour le calmer de l'intérieur. |
 | Aujourd'hui | Chloé débarque à Port-Ambre. |

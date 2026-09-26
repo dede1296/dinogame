@@ -264,12 +264,16 @@ static func _morning() -> void:
 
 
 ## Talking to Roc outside of the scenes: a reminder, or a rest for the team.
-static func talk_roc() -> void:
+## Returns whether Roc said something (he looks after a hurt party, or points at the eggs).
+static func talk_roc() -> bool:
 	if not Game.flag(&"met_roc"):
-		return
+		return false
 	if not Game.flag(&"starter"):
 		await S.say([{"who": ROC, "text": "Les petits sont sur les socles, à droite. Approche-toi et choisis celui qui te ressemble."}])
-		return
+		return true
+	if Game.party.all(func(d: Dino) -> bool: return d.hp >= d.max_hp()):
+		return false
 	Game.heal_party()
 	Game.party_changed.emit()
 	await S.say([{"who": ROC, "text": "Fais-moi voir ton équipe… Là. Tout le monde est en pleine forme !"}])
+	return true

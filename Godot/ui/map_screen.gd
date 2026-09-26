@@ -1,45 +1,45 @@
 class_name MapScreen
 extends CanvasLayer
-## The map of the current zone, drawn from its ground and relief; the parts Chloé has not
-## seen yet stay blank paper. Shows where she is, the places she has found (the habitats'
-## names) and the ways out to other zones. Opened from the map button or M; the game is
-## paused meanwhile.
+## The map, opened from the map button or M (the game is paused meanwhile). Two levels:
+##   the island (IslandMap): every region, the visited ones coloured; a tap opens one;
+##   a zone (ZoneMap): its detailed map, to move around and zoom (zoom out past it: the
+##   island again), with Chloé, the objectives, the places found, the people, the fires.
+## Beside the map, the objectives (Objectives): a tap on one shows where it is.
 
 signal closed
 
 const LAYER := 80
-const SHADER := preload("res://ui/map.gdshader")
 const TILE := 48.0
 const GOLD := Color(1, 0.86, 0.5)
-const INK_TEXT := Color(0.2, 0.13, 0.07)
-const CHLOE := Color(0.86, 0.33, 0.16)
-## What the ways out are called on the map.
-const ZONE_NAMES := {
-	&"port_ambre": "Port-Ambre", &"cabinet": "Cabinet du Pr Roc",
-	&"plaines": "Plaines des Fougères", &"grotte_echos": "Grotte des Échos",
-	&"antre_crane": "Antre du gardien",
-}
-## A name shows once this much of the ground under it has been seen.
-const NAME_SEEN := 0.5
-const PULSE_S := 1.4
+const CREAM := Color(1, 0.97, 0.9)
+const SIDE_WIDTH := 300.0
+## The zones with a detailed map (outdoors).
+const DETAILED := [&"plaines", &"port_ambre"]
 
-var _region: Region
-var _layers: Dictionary
-var _chloe := Vector2.ZERO   # tiles
-var _seen: PackedByteArray
-var _cells := Vector2i.ONE
-var _marks: Control
+var _zones := {}            # zone id -> scene path (world.gd ZONES)
+var _here: Region           # Chloé's zone (the one being played)
+var _here_layers := {}
+var _chloe := Vector2.INF   # tiles, in _here
+var _shown: StringName      # the zone on screen (&"" = the island)
+var _preview: Region        # another zone, loaded to be drawn
 var _was_paused := false
-var _time := 0.0
+var _title: Label
+var _stats: HBoxContainer
+var _island_button: Button
+var _body: Control
+var _map: Control
+var _list: VBoxContainer
+var _zoom_buttons: VBoxContainer
 
 
-## Opens the map of `region` (drawn from `layers`, see WorldView.map_layers), Chloé at
-## `chloe_tile`, over `parent`'s scene.
-static func open(parent: Node, region: Region, layers: Dictionary, chloe_tile: Vector2) -> MapScreen:
+## Opens the map over `parent`'s scene: the detailed map of `region` (Chloé at `chloe_tile`,
+## drawn from `layers`: WorldView.map_layers), or the island when it has none (indoors).
+static func open(parent: Node, region: Region, layers: Dictionary, chloe_tile: Vector2, zones: Dictionary) -> MapScreen:
 	var map := MapScreen.new()
-	map._region = region
-	map._layers = layers
+	map._here = region
+	map._here_layers = layers
 	map._chloe = chloe_tile
+	map._zones = zones
 	parent.get_tree().root.add_child(map)
 	return map
 
@@ -77,7 +77,7 @@ static func _draw_icon(icon: Control) -> void:
 		var down := 28.0 - (i % 2) * 4.0
 		icon.draw_colored_polygon(PackedVector2Array([Vector2(x, up), Vector2(x + 12.0, down),
 			Vector2(x + 12.0, down + 26.0), Vector2(x, up + 26.0)]), Color(SettingsMenu.CREAM, 1.0 if i % 2 == 0 else 0.72))
-	icon.draw_circle(Vector2(40, 36), 4.5, CHLOE)
+	icon.draw_circle(Vector2(40, 36), 4.5, ZoneMap.CHLOE)
 
 
 func _ready() -> void:
@@ -85,18 +85,25 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_was_paused = get_tree().paused
 	get_tree().paused = true
-	var size := _region.map_size()
-	_cells = Game.explore_cells(size)
-	_seen = Game.explored_mask(Game.region_id, size)
 	_build()
+	if _here and _here.region_id in DETAILED:
+		_show_zone(_here.region_id)
+	else:
+		_show_island()
 
+
+func _exit_tree() -> void:
+	if _preview and is_instance_valid(_preview):
+		_preview.free()
+
+
+# ------------------------------------------------------------------ layout
 
 func _build() -> void:
 	var dim := ColorRect.new()
 	dim.color = Color(0.03, 0.02, 0.01, 0.7)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(dim)   # also stops touches from reaching the game
-
 	var inset := SafeArea.insets(get_viewport())
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -104,130 +111,208 @@ func _build() -> void:
 	panel.offset_right = -inset.x - 8.0
 	panel.offset_top = inset.y
 	panel.offset_bottom = -inset.y
-	panel.add_theme_stylebox_override("panel", SettingsMenu._box(SettingsMenu.INK, 22, 3, 14))
+	panel.add_theme_stylebox_override("panel", SettingsMenu._box(SettingsMenu.INK, 22, 3, 12))
 	add_child(panel)
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 8)
 	panel.add_child(col)
 
 	var head := HBoxContainer.new()
-	head.add_theme_constant_override("separation", 16)
+	head.add_theme_constant_override("separation", 14)
 	col.add_child(head)
-	var title := _label(_region.display_name, 30, GOLD)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(title)
-	if _region.pebbles > 0:
-		head.add_child(_label("Galets d'ambre : %d / %d" % [Game.pebbles_found(String(Game.region_id)), _region.pebbles], 20, GOLD))
-	head.add_child(_label("Exploré : %d %%" % floori(_explored_share() * 100.0), 20, Color(SettingsMenu.CREAM, 0.8)))
-	var close := Button.new()
-	close.text = "✕"
-	close.custom_minimum_size = Vector2(56, 56)
-	close.focus_mode = Control.FOCUS_NONE
-	close.add_theme_font_size_override("font_size", 26)
-	close.add_theme_color_override("font_color", SettingsMenu.CREAM)
-	for state in ["normal", "hover", "pressed"]:
-		close.add_theme_stylebox_override(state, SettingsMenu._box(Color(0.16, 0.18, 0.22, 1.0 if state == "normal" else 0.8), 28, 2))
+	_island_button = _round_button("◂ Île", 20)
+	_island_button.custom_minimum_size = Vector2(96, 52)
+	_island_button.pressed.connect(_show_island)
+	head.add_child(_island_button)
+	_title = _label("", 28, GOLD)
+	_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(_title)
+	_stats = HBoxContainer.new()
+	_stats.add_theme_constant_override("separation", 14)
+	head.add_child(_stats)
+	var close := _round_button("✕", 26)
 	close.pressed.connect(_close)
 	head.add_child(close)
 
-	var frame := AspectRatioContainer.new()
-	var size := Vector2(_region.map_size())
-	frame.ratio = size.x / size.y
-	frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	col.add_child(frame)
-	var map := ColorRect.new()
-	map.material = _material(size)
-	frame.add_child(map)
-	_marks = Control.new()
-	_marks.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_marks.draw.connect(_draw_marks)
-	frame.add_child(_marks)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	col.add_child(row)
+	_body = Control.new()
+	_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_body.clip_contents = true
+	row.add_child(_body)
+	row.add_child(_side_panel())
 
 
-func _material(size: Vector2) -> ShaderMaterial:
-	var mat := ShaderMaterial.new()
-	mat.shader = SHADER
-	for key: String in _layers:
-		mat.set_shader_parameter(key, _layers[key])
-	mat.set_shader_parameter("noise_tex", WorldNoise.texture())
-	var fog := Image.create_from_data(_cells.x, _cells.y, false, Image.FORMAT_L8, _seen)
-	mat.set_shader_parameter("fog", ImageTexture.create_from_image(fog))
-	mat.set_shader_parameter("fog_scale", size / Vector2(_cells * Game.EXPLORE_CELL))
-	return mat
+## Right: the objectives, and what the marks mean.
+func _side_panel() -> Control:
+	var side := VBoxContainer.new()
+	side.custom_minimum_size = Vector2(SIDE_WIDTH, 0)
+	side.add_theme_constant_override("separation", 6)
+	side.add_child(_label("Objectifs", 22, GOLD))
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	side.add_child(scroll)
+	_list = VBoxContainer.new()
+	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_list.add_theme_constant_override("separation", 6)
+	scroll.add_child(_list)
+	var legend := Control.new()
+	legend.custom_minimum_size = Vector2(SIDE_WIDTH, 92)
+	legend.draw.connect(_draw_legend.bind(legend))
+	side.add_child(legend)
+	return side
 
 
-func _process(delta: float) -> void:
-	_time += delta
-	_marks.queue_redraw()
+func _draw_legend(c: Control) -> void:
+	var font := c.get_theme_default_font()
+	var items := [[ZoneMap.CHLOE, "Toi"], [ZoneMap.GOAL, "Objectif"], [Color(0.35, 0.72, 0.95), "Quête annexe"],
+		[ZoneMap.PEOPLE, "Personnage"], [ZoneMap.REST, "Feu, banc : repos"]]
+	for i in items.size():
+		var p := Vector2(12 + (i % 2) * 150, 14 + floori(i / 2.0) * 26)
+		c.draw_circle(p, 7.0, items[i][0])
+		c.draw_string(font, p + Vector2(14, 6), items[i][1], HORIZONTAL_ALIGNMENT_LEFT, 132, 13, Color(CREAM, 0.85))
 
 
-# ------------------------------------------------------------------ marks
-
-func _draw_marks() -> void:
-	var k := _marks.size / Vector2(_region.map_size())   # pixels per tile
-	var font := _marks.get_theme_default_font()
-	# The places found, by name.
-	for h in _region.habitats():
-		var centre := h.area().get_center() / TILE
-		if h.label != "" and _seen_at(centre) >= NAME_SEEN:
-			_text(font, centre * k, h.label, 17, INK_TEXT, Color(1, 0.95, 0.82, 0.85))
-	# The ways out, once seen: an arrow to the edge, or a dark arch for a cave.
-	for e in _region.exits():
-		var r := _region.exit_rect(e)
-		var at := r.get_center() / TILE
-		if _seen_at(at) < NAME_SEEN:
-			continue
-		var where: String = ZONE_NAMES.get(e.target_zone, "")
-		if _region.exit_on_edge(e):
-			var dir := _region.exit_edge(e)
-			var tip := (at * k).clamp(Vector2.ZERO, _marks.size) - dir * 4.0
-			var side := dir.orthogonal() * 7.0
-			_marks.draw_colored_polygon(PackedVector2Array([tip, tip - dir * 11.0 + side, tip - dir * 11.0 - side]), CHLOE)
-			_text(font, tip - dir * 26.0, where, 15, Color(SettingsMenu.CREAM), Color(0.1, 0.07, 0.04, 0.9))
-		else:
-			var p := at * k
-			_marks.draw_circle(p, 7.0, Color(0.08, 0.06, 0.05))
-			_marks.draw_rect(Rect2(p + Vector2(-7, 0), Vector2(14, 6)), Color(0.08, 0.06, 0.05))
-			_text(font, p + Vector2(0, -16), where, 15, Color(SettingsMenu.CREAM), Color(0.1, 0.07, 0.04, 0.9))
-	# Chloé: a dot, and a ring spreading from it.
-	var me := _chloe * k
-	var pulse := fmod(_time, PULSE_S) / PULSE_S
-	_marks.draw_arc(me, 8.0 + pulse * 16.0, 0.0, TAU, 32, Color(CHLOE, 1.0 - pulse), 3.0)
-	_marks.draw_circle(me, 9.0, Color.WHITE)
-	_marks.draw_circle(me, 6.5, CHLOE)
-	# North, and the frame.
-	var n := Vector2(_marks.size.x - 26.0, 30.0)
-	_marks.draw_colored_polygon(PackedVector2Array([n + Vector2(0, -14), n + Vector2(7, 6), n + Vector2(-7, 6)]), INK_TEXT)
-	_text(font, n + Vector2(0, 22), "N", 16, INK_TEXT, Color(1, 0.95, 0.82, 0.85))
-	_marks.draw_rect(Rect2(Vector2.ZERO, _marks.size), Color(SettingsMenu.AMBER, 0.9), false, 2.0)
+func _fill_objectives() -> void:
+	for c in _list.get_children():
+		c.queue_free()
+	var goals := Objectives.current()
+	if goals.is_empty():
+		_list.add_child(_wrapped("Rien de pressé. Explore, secoue les arbres, écoute l'île.", 16, Color(CREAM, 0.7)))
+	var i := 0
+	for o in goals:
+		i += 1
+		var b := Button.new()
+		var followed: bool = o["id"] == String(Game.flag(&"suivi")) if Game.flag(&"suivi") else false
+		# The title; the details only for the one picked (followed on screen).
+		var head := "%d. %s" % [i, o["title"]] if o["tile"] != Vector2.INF else "• %s" % o["title"]
+		b.text = ("▶ " + head + "
+" + String(o["text"])) if followed else head
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.focus_mode = Control.FOCUS_NONE
+		b.add_theme_font_size_override("font_size", 16)
+		b.add_theme_color_override("font_color", GOLD if o["main"] else CREAM)
+		for state in ["normal", "hover", "pressed"]:
+			b.add_theme_stylebox_override(state, SettingsMenu._box(Color(0.16, 0.18, 0.22, 1.0 if state == "normal" else 0.75), 10, 1, 8,
+				Color(ZoneMap.GOAL if o["main"] else Color(0.35, 0.72, 0.95), 0.8)))
+		# Picked: followed on screen (QuestTracker), and shown on its map.
+		b.pressed.connect(func() -> void:
+			Game.set_flag(&"suivi", o["id"])
+			_fill_objectives()
+			_go_to(o))
+		_list.add_child(b)
 
 
-## Text centred on `at`, with an outline so it reads on any ground.
-func _text(font: Font, at: Vector2, text: String, font_size: int, colour: Color, outline: Color) -> void:
-	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
-	var pos := at + Vector2(-w / 2.0, font_size * 0.35)
-	_marks.draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 5, outline)
-	_marks.draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, colour)
+## An objective picked in the list: its zone's map, centred on it.
+func _go_to(o: Dictionary) -> void:
+	var zone: StringName = o["zone"]
+	if not zone in DETAILED:
+		return
+	if _shown != zone:
+		_show_zone(zone)
+	if o["tile"] != Vector2.INF and _map is ZoneMap:
+		(_map as ZoneMap).focus(o["tile"])
 
 
-## How much of the ground at `tile` has been seen (0–1).
-func _seen_at(tile: Vector2) -> float:
-	var c := Vector2i(tile / Game.EXPLORE_CELL).clamp(Vector2i.ZERO, _cells - Vector2i.ONE)
-	return _seen[c.y * _cells.x + c.x] / 255.0
+# ------------------------------------------------------------------ the two levels
+
+func _show_island() -> void:
+	_clear_map()
+	_shown = &""
+	_title.text = "Ambrelune"
+	_island_button.visible = false
+	_set_stats([])
+	var island := IslandMap.new()
+	island.here = Game.region_id
+	if _here:
+		island.chloe_tile = _chloe
+		island.zone_size = Vector2(_here.map_size())
+	island.goals = Objectives.current()
+	island.set_anchors_preset(Control.PRESET_FULL_RECT)
+	island.zone_picked.connect(_show_zone)
+	_body.add_child(island)
+	_map = island
+	_fill_objectives()
 
 
-## Share of the walkable ground seen (woods and water do not count).
-func _explored_share() -> float:
-	var total := 0
-	var seen := 0.0
-	for y in _cells.y:
-		for x in _cells.x:
-			var s := _region.surface_at((Vector2(x, y) * Game.EXPLORE_CELL + Vector2.ONE) * TILE)
-			if s == &"forest" or s == &"water" or s == &"":
-				continue
-			total += 1
-			seen += _seen[y * _cells.x + x] / 255.0
-	return seen / maxf(total, 1.0)
+func _show_zone(zone: StringName) -> void:
+	var region := _here if _here and zone == _here.region_id else _load(zone)
+	if region == null:
+		return
+	_clear_map()
+	_shown = zone
+	_island_button.visible = true
+	var here := _here and zone == _here.region_id
+	var layers := _here_layers if here else WorldView.map_layers_for(region)
+	var goals: Array[Dictionary] = []
+	for o in Objectives.current():
+		if o["zone"] == zone:
+			goals.append(o)
+	var m := ZoneMap.new()
+	m.set_anchors_preset(Control.PRESET_FULL_RECT)
+	m.setup(region, zone, layers, goals, _chloe if here else Vector2.INF)
+	m.zoomed_out.connect(_show_island)
+	_body.add_child(m)
+	_map = m
+	_zoom_controls(m)
+	_title.text = region.display_name
+	var stats := []
+	if region.pebbles > 0:
+		stats.append(["Larmes : %d / %d" % [Game.pebbles_found(String(zone)), region.pebbles], GOLD])
+	stats.append([_moon_text(), Color(0.8, 0.86, 1.0)])
+	stats.append(["Exploré : %d %%" % floori(m.explored_share() * 100.0), Color(CREAM, 0.8)])
+	_set_stats(stats)
+	_fill_objectives()
+
+
+## +, − and « me » over the zone map (for a phone: no wheel; pinching works too).
+func _zoom_controls(m: ZoneMap) -> void:
+	_zoom_buttons = VBoxContainer.new()
+	_zoom_buttons.add_theme_constant_override("separation", 6)
+	_zoom_buttons.position = Vector2(10, 10)
+	for b: Array in [["+", func() -> void: m.zoom_by(1.5)], ["−", func() -> void: m.zoom_by(1.0 / 1.5)],
+			["◎", func() -> void: m.focus(_chloe if m.chloe != Vector2.INF else m.centre)]]:
+		var button := _round_button(b[0], 24)
+		button.custom_minimum_size = Vector2(52, 52)
+		button.pressed.connect(b[1])
+		_zoom_buttons.add_child(button)
+	_body.add_child(_zoom_buttons)
+
+
+func _clear_map() -> void:
+	for c in _body.get_children():
+		c.queue_free()
+	_map = null
+
+
+## Another zone than Chloé's, loaded only to draw its map.
+func _load(zone: StringName) -> Region:
+	if not _zones.has(zone):
+		return null
+	if _preview and is_instance_valid(_preview):
+		if _preview.region_id == zone:
+			return _preview
+		_preview.free()
+	_preview = Region.open_for_preview(_zones[zone])
+	return _preview
+
+
+func _set_stats(items: Array) -> void:
+	for c in _stats.get_children():
+		c.queue_free()
+	for s: Array in items:
+		_stats.add_child(_label(s[0], 18, s[1]))
+
+
+static func _moon_text() -> String:
+	if Game.is_full_moon():
+		return "Pleine lune !"
+	var n := Game.nights_to_full_moon()
+	return "Pleine lune : cette nuit" if n == 0 else "Pleine lune : dans %d nuit%s" % [n, "s" if n > 1 else ""]
 
 
 # ------------------------------------------------------------------ closing
@@ -259,3 +344,21 @@ func _label(text: String, font_size: int, colour: Color) -> Label:
 	l.add_theme_font_size_override("font_size", font_size)
 	l.add_theme_color_override("font_color", colour)
 	return l
+
+
+func _wrapped(text: String, font_size: int, colour: Color) -> Label:
+	var l := _label(text, font_size, colour)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	return l
+
+
+func _round_button(text: String, font_size: int) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.custom_minimum_size = Vector2(56, 56)
+	b.focus_mode = Control.FOCUS_NONE
+	b.add_theme_font_size_override("font_size", font_size)
+	b.add_theme_color_override("font_color", CREAM)
+	for state in ["normal", "hover", "pressed"]:
+		b.add_theme_stylebox_override(state, SettingsMenu._box(Color(0.16, 0.18, 0.22, 1.0 if state == "normal" else 0.8), 28, 2))
+	return b

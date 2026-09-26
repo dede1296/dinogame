@@ -114,6 +114,15 @@ docs/       bible du jeu (lore, histoire, mécaniques, bestiaire), direction art
   reposer (`world/rest.gd`). Les galets d'ambre d'une zone se cachent dans son plan avec
   `ZoneBuilder.hide_pebbles` (arbres, pierres, terre à creuser au Flair, recoins ; seulement là où
   Chloé peut aller) ; leur nombre est `Region.pebbles`.
+- **Ce que dit un objet ou un personnage hors quête** : `world/examine.gd` (lignes par sorte de décor :
+  maisons, caisses, meubles…) et `DialogueDB.chatter` (répliques tournantes par personnage).
+- **Les objectifs** (carte, conseils des personnages) : `story/objectives.gd`, calculés d'après les drapeaux.
+- **La carte** : `ui/map_screen.gd` (l'écran), `ui/zone_map.gd` (carte d'une zone, zoom et déplacement),
+  `ui/island_map.gd` (l'île et ses régions : `REGIONS`, à compléter à chaque nouvelle région).
+- **Des quêtes annexes** : leurs scènes dans `story/` (ex. `plaines_annexes.gd`), lancées par un
+  PNJ (`event`) ou un décor (`StoryProp`). Outils de mise en scène : `FleeingDino` (un dino qui fuit
+  de point en point, reprise après chargement), `Sleeper` (un dino qui dort), `MoonFord` (un gué qui
+  n'existe qu'à la pleine lune, `Game.is_full_moon()`), `Game.egg` (un œuf qui éclot en marchant).
 - **Un dialogue** : `data/dialogue_db.gd` (les répliques dépendent des drapeaux d'histoire).
 
 ## Qualité graphique (Basse / Moyenne / Haute)
@@ -143,6 +152,7 @@ décor, densité des herbes, ombres de nuages, lumières, détail de l'eau, imag
 | `godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario=monde\|story\|plaines2\|raccords\|perf\|battle\|fight\|quality\|zones\|meteo\|debug\|ui_combat\|combat_meteo\|prologue\|title` | Test automatique avec captures d'écran et vérification sauvegarde/chargement |
 | `node Godot/tools/render-phaser-music.mjs plaines 6` | Enregistre un thème de la musique Phaser en boucle Ogg sans couture (voir l'en-tête) |
 | `godot --headless --path Godot --script res://tools/build_zone.gd -- <id>` | Génère une zone depuis son plan `tools/zones/<id>.gd` (refuse d'écraser sans `--force`) |
+| `node Godot/tools/maps/gen-atlas.mjs` | L'atlas de l'île : l'image de la carte, les régions (pour les clics et la brume) et `data/atlas_db.gd` (noms, zones, niveaux) |
 | `node Godot/tools/maps/gen-plaines.mjs` | Redessine les images de sol et de relief des Plaines (`tools/maps/`), à regénérer ensuite avec `build_zone.gd` |
 
 ## Builds (Android, Web)

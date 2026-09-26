@@ -300,16 +300,50 @@ static func _spread(nodes: Array, count: int, rng: RandomNumberGenerator) -> Arr
 	return picked
 
 
-## The middle of the nearest reachable open ground tile (grass, tall grass, sand) to tile `t`.
+## The middle of the nearest reachable open ground tile (grass, tall grass, sand) to tile `t`,
+## on flat ground: its neighbours all walkable and at its height (not on a cliff's edge).
 static func _open_ground(terrain: TileMapLayer, reach: Dictionary, t: Vector2) -> Vector2:
-	for r in 8:
+	var root := terrain.get_parent() as Region
+	for r in 10:
 		for dy in range(-r, r + 1):
 			for dx in range(-r, r + 1):
 				var c := Vector2i(t) + Vector2i(dx, dy)
 				var data := terrain.get_cell_tile_data(c)
-				if reach.has(c) and data and String(data.get_custom_data("terrain")) in ["grass", "tall_grass", "sand"]:
+				if reach.has(c) and data and String(data.get_custom_data("terrain")) in ["grass", "tall_grass", "sand"] \
+						and is_flat(root, c, 1):
 					return cell(c.x + 0.5, c.y + 0.6)
 	push_warning("Pas de sol accessible près de %s" % t)
+	return cell(t.x, t.y)
+
+
+## Tile `c` and every tile within `radius` of it: walkable open ground (no water, no wood)
+## at the same height (so a thing standing there is neither in the water nor over a drop).
+static func is_flat(root: Region, c: Vector2i, radius: int) -> bool:
+	var terrain: TileMapLayer = root.get_node("Terrain")
+	var h := root.tile_height(c)
+	for dy in range(-radius, radius + 1):
+		for dx in range(-radius, radius + 1):
+			var n := c + Vector2i(dx, dy)
+			var data := terrain.get_cell_tile_data(n)
+			if data == null or not String(data.get_custom_data("terrain")) in ["grass", "path", "tall_grass", "sand"]:
+				return false
+			if absf(root.tile_height(n) - h) > 0.2:
+				return false
+	return true
+
+
+## The nearest place to tile `t` (tiles) where something `radius` tiles wide can stand
+## flat: the middle of that tile, in world pixels.
+static func flat_spot(root: Region, t: Vector2, radius := 1) -> Vector2:
+	for r in 12:
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				if maxi(absi(dx), absi(dy)) != r:
+					continue
+				var c := Vector2i(t.floor()) + Vector2i(dx, dy)
+				if is_flat(root, c, radius):
+					return cell(c.x + 0.5, c.y + 0.5) if r > 0 else cell(t.x, t.y)
+	push_warning("Pas de sol plat près de %s" % t)
 	return cell(t.x, t.y)
 
 

@@ -7,7 +7,7 @@ extends Control
 const GOLD := Color(0.95, 0.76, 0.31)
 const BAND := Color(0.08, 0.07, 0.05)
 const SHOW_S := 3.2
-const TOP := 112.0   # below the party bar
+const TOP := 184.0   # below the party bar and the quest tracker
 const SLIDE := 20.0
 
 var _title: Label

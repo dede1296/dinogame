@@ -23,7 +23,16 @@ static func run(event: StringName, who: Node) -> void:
 		&"choose_starter":
 			await Prologue.choose_starter(who)
 		&"roc":
-			await Prologue.talk_roc()
+			var healed: bool = await Prologue.talk_roc()
+			var said: bool = await PlainesAnnexes.roc()
+			if not said and not healed and Game.flag(&"prologue_done"):
+				await Dialogue.run(DialogueDB.chatter(&"roc"))
+		&"maia":
+			await PlainesAnnexes.maia(who)
+		&"nid_chipie":
+			await PlainesAnnexes.nest(who)
+		&"dormeur":
+			await PlainesAnnexes.sleeper()
 		&"grand_crane":
 			await Plaines.grand_crane()
 		&"alpha_plaines":

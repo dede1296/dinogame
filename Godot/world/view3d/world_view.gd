@@ -34,6 +34,8 @@ const GRASS_RANGE := 46.0
 ## A campfire's flame (tools/draw-placeholders.mjs, as the web version drew it), metres wide.
 const FLAME := preload("res://assets/art/props/flamme.png")
 const FLAME_WIDTH := 0.7
+## The colour of a little sign over a dino (emote): a heart is red, the rest dark brown.
+const EMOTE_COLOURS := {"♥": Color(0.86, 0.22, 0.35), "♪": Color(0.3, 0.2, 0.55)}
 ## How far a neighbouring zone is shown beyond an exit (tiles).
 const PREVIEW_DEPTH := 26.0
 ## Trees filling the "forest" tiles (weights by repetition).
@@ -77,6 +79,7 @@ var _sun: DirectionalLight3D
 var _env: Environment
 var _pollen: CPUParticles3D
 var _wildlife: Wildlife
+var _magic: NightMagic
 ## Scenery props drawn in a MultiMesh -> [MultiMesh, index] (to shake or lift one of them).
 var _instances := {}
 ## The "!" over Chloé's dino when it senses something hidden nearby.
@@ -122,6 +125,8 @@ func _ready() -> void:
 	add_child(_pollen)
 	_wildlife = Wildlife.new()
 	add_child(_wildlife)
+	_magic = NightMagic.new()
+	add_child(_magic)
 	_rain = _make_rain()
 	add_child(_rain)
 	_rain_amount = 1.0 if Game.is_raining() else 0.0
@@ -183,11 +188,13 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	_build_forest(region, heights)
 	_build_tall_grass()
 	for dock in region.docks():
-		_build_dock(dock)
+		if not dock is MoonFord:   # (its stones: NightMagic)
+			_build_dock(dock)
 	for mouth in region.find_children("*", "CaveMouth", true, false):
 		_build_cave_mouth(mouth)
 	if not region.indoor:
 		_build_outer_forest()
+	_magic.build(self, region, _zone)
 	(camera.attributes as CameraAttributesPractical).dof_blur_far_enabled = Quality.setting(&"dof") and not region.indoor
 	for n in region.entities.get_children():
 		_track(n)
@@ -259,6 +266,15 @@ func _build_ground(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 static var _grids: Dictionary = {}
 
 
+## What a map of zone `r` is drawn from, when it is not the one shown (MapScreen).
+static func map_layers_for(r: Region) -> Dictionary:
+	var hm := HeightMap.new(r, 2)
+	var masks := _terrain_masks(r, hm)
+	var tex := hm.height_texture()
+	return {"terrain_mask": masks[0], "terrain_mask2": masks[1], "map_tiles": Vector2(hm.size),
+		"height_tex": tex["texture"], "height_origin": tex["origin"], "height_res": tex["res"], "height_texels": tex["texels"]}
+
+
 ## What the map screen draws the current zone from: its ground masks and its relief.
 func map_layers() -> Dictionary:
 	var layers := {}
@@ -279,7 +295,7 @@ static func _chunk_mesh(step: int) -> PlaneMesh:
 
 
 ## Two textures, one pixel per tile: [R path, G tall grass, B water] and [R sand, G forest].
-func _terrain_masks(r: Region, hm: HeightMap) -> Array[ImageTexture]:
+static func _terrain_masks(r: Region, hm: HeightMap) -> Array[ImageTexture]:
 	var a := Image.create(hm.size.x, hm.size.y, false, Image.FORMAT_RGB8)
 	var b := Image.create(hm.size.x, hm.size.y, false, Image.FORMAT_RGB8)
 	for y in hm.size.y:
@@ -503,9 +519,9 @@ func pop_up(p: Vector2, picture: Texture2D, height := 0.3) -> void:
 func emote(who: Node2D, text: String) -> void:
 	var label := Label3D.new()
 	label.text = text
-	label.font_size = 110
-	label.outline_size = 30
-	label.modulate = Color(0.26, 0.14, 0.05)
+	label.font_size = 84
+	label.outline_size = 26
+	label.modulate = EMOTE_COLOURS.get(text, Color(0.26, 0.14, 0.05))
 	label.outline_modulate = Color(1.0, 0.95, 0.85)
 	label.pixel_size = 0.012
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -940,6 +956,7 @@ func _process(delta: float) -> void:
 	_lightning(delta)
 	_mist_amount = lerpf(_mist_amount, 1.0 if Game.weather == &"mist" else 0.0, blend)
 	_update_sky(Game.clock / 60.0)
+	_magic.update(delta, _region, player, _sun, _env)
 	(camera.attributes as CameraAttributesPractical).dof_blur_far_distance = camera.distance() + 13.0
 
 

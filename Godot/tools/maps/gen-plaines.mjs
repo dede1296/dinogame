@@ -87,8 +87,11 @@ each((x, y) => {
   }
 });
 
-// 4. The pond, east of the crossroads, south of the path.
+// 4. The pond, east of the crossroads, south of the path; an islet in its middle (Hélène's
+//    page 2), reached at full moon by an amber ford from the north shore (tiles 78-79, 45-46).
 each((x, y) => { if (inEllipse(x, y, 79, 48, 5.5, 3.2, 0.3)) sol[y][x] = "water"; });
+each((x, y) => { if (x >= 78 && x <= 79 && y >= 47 && y <= 48) sol[y][x] = "grass"; });
+for (const y of [45, 46]) for (const x of [78, 79]) sol[y][x] = "water";
 
 // 5. Woods: Hélène's grove enclosed by forest (a 2-tile opening on its south side, where the
 //    trunk lies), and a few groves in the meadows.

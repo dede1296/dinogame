@@ -31,6 +31,7 @@ var _step_travel := 0.0
 
 
 func _ready() -> void:
+	add_to_group(&"player")
 	Shadow.make(self, 44.0)
 	sprite.sprite_frames = SheetFrames.character(SHEET, 9.0)
 	sprite.play(&"idle_down")

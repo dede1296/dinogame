@@ -72,6 +72,94 @@ herbes hautes, Parasaurolophus à l'étang, Velociraptor sauvage aux lisières, 
    volcan. *(Fausse piste.)* Page 6, « Pour Chloé », dans la couveuse vide (sa version dépend de
    l'œuf choisi). La route de la Forêt est ouverte.
 
+### Chapitre 1 — Hors des sentiers (quêtes annexes des Plaines)
+
+Trois fils facultatifs qui se nourrissent entre eux, chacun finissant sur une question. Aucun ne
+révèle le Masque ; ils préparent le chapitre 2.
+
+1. **La chapardeuse.** Fin de la première conversation avec Maïa : un Compsognathus surgit, arrache
+   la **boussole** de sa ceinture et détale. Maïa court au Crâne (« j'ai une course à gagner ! ») et
+   laisse Chloé la poursuivre. La voleuse, **Chipie**, s'arrête toujours un peu plus loin et
+   ricane, jusqu'à son nid, au bord du petit bois au nord-ouest du carrefour : une cuillère, trois
+   boutons, un bouchon, deux galets d'ambre, la boussole… et des lunettes rondes rafistolées au
+   ruban adhésif. Chloé lui laisse un bouton brillant en échange : Chipie l'adopte, **et Chloé avec**.
+   Elle rejoint l'équipe, et avec elle le **Flair** (la terre remuée devient visible).
+   Rendue à Maïa, la boussole s'ouvre : une **fougère** est gravée dans le couvercle, la même que sur
+   la porte d'ambre. « Maman ne s'en sépare jamais. Elle dit qu'on la lui a offerte quand elle savait
+   encore où elle allait. » Maïa balaie la remarque de Chloé : « Plein de gens gravent des
+   fougères. » *(Indice discret vers Isaure : elle et Hélène étaient proches.)*
+2. **Les lunettes de Roc.** Sans ses lunettes, Roc parle à la fougère en pot du Cabinet en la
+   prenant pour Chloé. Les lui rendre : « Trois semaines ! J'ai rangé le sel dans la couveuse. »
+   Il explique alors les **galets d'ambre**, qu'Hélène appelait **les larmes de l'île** : de
+   l'Ambre-Mère que l'île recrache, sans dino dedans, mais pleine de lumière, et la couveuse s'en
+   nourrit. Même sans les lunettes, Roc en parle dès que Chloé a trouvé un galet ou le fragment.
+   - **10 larmes : la lanterne d'ambre.** La nuit, une lumière chaude autour de Chloé ; dans son
+     halo, les larmes encore cachées scintillent.
+   - **20 larmes : Pépite.** La couveuse réveille le fragment du bosquet : un **œuf**, qui éclot
+     après quelques centaines de pas. Un Protoceratops, « Pépite », le premier dino réveillé par
+     Chloé elle-même.
+   - **30 larmes : la lettre scellée.** Hélène l'avait laissée à Roc « pour qui rapportera toutes
+     les larmes des Plaines » (elle savait). Elle y parle de l'œuf qu'elle a gardé pour Chloé : son
+     parent est encore vivant, quelque part sur l'île (Griffe-Grise, le Vieux Rempart ou la Voix du
+     Marais), et il reconnaîtra l'odeur de son petit. *(Accroche du chapitre 2.)*
+3. **La nuit où l'étang chante.** Les nuits de **pleine lune** (tous les quatre jours), l'ambre de
+   l'île s'éveille : les larmes cachées scintillent de loin, et les Parasaurolophus se rassemblent
+   autour de l'étang pour chanter. Leur chant allume un **gué de pierres d'ambre** jusqu'à l'îlot
+   du milieu, où Hélène a laissé la **page 2** (« Chacun chez soi ») et une larme. À l'aube, le gué
+   s'éteint. Maïa en parle (« Maman dit que l'étang chante, les soirs de pleine lune »), un panneau
+   aussi ; la carte indique la prochaine pleine lune.
+
+**Clins d'œil** : le panneau du carrefour (« Paris : 9 874 km. À la nage, compter large. »), celui
+de l'anse (« Baignade déconseillée. — La direction »), signé d'une dent de Mosasaure (le gardien
+de la Côte), un rocher qui « n'est pas un œuf », un Protoceratops qui ronfle sous un arbre et
+répond différemment chaque fois qu'on le dérange.
+
+## Géographie de l'île
+
+L'atlas (`tools/maps/gen-atlas.mjs`, carte de l'île en jeu) fixe où est chaque région : elles
+tournent autour du volcan, dans l'ordre de l'histoire, et se fondent l'une dans l'autre à leurs
+frontières. Chaque région est une grande carte d'un seul tenant ; on passe de l'une à la suivante
+par un passage naturel là où elles se touchent (col, gué, pont, sentier), et on voit la suivante
+au loin avant d'y entrer.
+
+| Où | Région | Biome | Transition avec la précédente |
+|---|---|---|---|
+| sud (côte) | **Port-Ambre** ✅ | village de pêcheurs | — |
+| sud | **Plaines des Fougères** ✅ | prairie tempérée, étang, bosquets, falaises au nord | la route du port monte dans les prés |
+| sud-est (baie) | **Havre-Doré** | ville marchande, port, marché | la route côtière depuis Port-Ambre, entre mer et collines |
+| sud-ouest | **Forêt Jurassique** | forêt géante, sous-bois, canopée | le bois qui borde les Plaines à l'ouest s'épaissit |
+| ouest (côte) | **Marais Brumeux** | mangrove, roselières, brume | la forêt s'enfonce dans l'eau |
+| nord-ouest | **Désert Aride** | canyons, dunes, oasis | le marais s'assèche : boue craquelée, lac salé |
+| nord (côte) | **Côte Préhistorique** | plages, lagon, falaises marines | les dunes finissent en plages |
+| nord-est → est | **Monts Gelés** | toundra, glaciers | les falaises marines montent vers la neige ; au sud, ce sont les montagnes à l'est des Plaines |
+| centre, au-dessus des Monts | **Cieux Éternels** | pitons dans les nuages | par les sommets des Monts (Vol) |
+| centre | **Plaine Volcanique** | cendres, lave, forges | tout autour du volcan |
+| cratère | **Terre des Apex** | le Souverain | — |
+
+## Interlude — Havre-Doré
+
+Après le Sceau des Plaines, la **route côtière** s'ouvre à l'est de Port-Ambre (Isaure : « Le
+Havre ? Là-bas, ils ont de l'argent. Et ils ne se demandent jamais d'où il vient. »).
+
+1. **L'arrivée.** Le contraste avec le port : la foule, le marché, les dinos harnachés. Maïa y est
+   déjà, au Relais des Dresseurs, et présente **Joss**, le sellier.
+2. **Maître Ferréol** accueille Chloé en personne : il connaissait Hélène, « une grande dame ». Il
+   rachète volontiers les larmes de l'île, très cher. *(Choix pour le joueur : les vendre pour
+   s'équiper, ou les garder pour Roc et ses récompenses.)*
+3. **La première selle.** Joss peut fabriquer une selle si Chloé rapporte du cuir de Parasaurolophus
+   mué (au bord de l'étang des Plaines) et une boucle d'ambre (Comptoir). La **Monture** s'ouvre :
+   les grands dinos portent Chloé, et la Forêt, immense, devient praticable.
+4. **Le Relais des Dresseurs** : premiers combats contre d'autres dresseurs (pièces, rangs, un
+   tableau de petites quêtes qui se renouvelle).
+5. **La nuit.** Depuis le quai, Chloé voit la **barque d'Isaure** accostée à l'entrepôt du Comptoir,
+   et Ferréol qui l'attend. Ils parlent bas ; une caisse change de bord. *(Indice vers le Masque,
+   sans preuve : Isaure « fait des livraisons ».)*
+
+Havre-Doré reste la **ville des achats** de tout le jeu : à chaque chapitre, ses boutiques ont de
+nouveaux articles, Joss de nouveaux équipements (harnais de vol, gilet de nage, masque de plongée),
+le Relais de nouveaux rangs. Au chapitre 5, l'entrepôt du Comptoir se révèle être la cache de
+l'Ombre Noire.
+
 ## Chapitre 2 — La Forêt Jurassique
 
 1. Lisière, sous-bois sous la pluie, passerelles de la canopée. Rencontres : Dilophosaurus,
@@ -246,7 +334,7 @@ précise, chaleureuse, parfois drôle, de plus en plus inquiète.
 | # | Où | Date | Titre | Ce qu'elle révèle |
 |---|---|---|---|---|
 | 1 ✅ | Plaines · bosquet | −30 ans | Le premier réveil | Le Protoceratops, Anselme qui pleure, le secret à garder |
-| 2 | Plaines · étang | −29 ans | Chacun chez soi | Elle rend chaque espèce à son habitat |
+| 2 | Plaines · îlot de l'étang (pleine lune) | −29 ans | Chacun chez soi | Elle rend chaque espèce à son habitat |
 | 3 | Plaines · falaises | −31 ans | La barque | « I. », l'amie marin sans qui elle ne serait jamais venue |
 | 4 | Grotte des Échos | −28 ans | Ce qui ne dort pas | Son essai d'« ambre forcé », abandonné avec horreur |
 | 5 | Grand Crâne | −27 ans | Le premier Alpha | Le Tricératops ; la découverte du Lien |

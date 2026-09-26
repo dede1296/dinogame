@@ -107,6 +107,71 @@ const SCENARIOS := {
 		[17.1, "auto", true], [30.0, "auto", false],
 		[30.5, "give", "compsognathus"], [30.6, "card", 1], [31.3, "shot", "o4_fiche_compso"], [31.4, "close", null], [31.5, "card", 0], [32.2, "shot", "o5_fiche_vif"],
 	],
+	"chapardeuse": [
+		[0.9, "calm", 600.0], [0.95, "talk", true], [1.0, "tp", Vector2(61.6, 44.5)], [1.2, "hold", "move_right"], [1.3, "hold", ""],
+		[1.6, "press", "interact"], [5.2, "shot", "g0_vol"], [12.0, "shot", "g1_apres_vol"], [12.1, "state", null],
+		[12.3, "tp", Vector2(57.5, 44.2)], [13.2, "chipie", null], [14.0, "shot", "g2_fuite"],
+		[14.4, "tp", Vector2(52.5, 42.0)], [16.2, "tp", Vector2(48.5, 39.0)], [18.0, "tp", Vector2(44.5, 37.2)],
+		[19.6, "shot", "g3_presque"], [19.8, "tp", Vector2(41.6, 36.3)], [21.4, "chipie", null],
+		[21.6, "tp", Vector2(40.6, 35.3)], [21.8, "hold", "move_up"], [21.9, "hold", ""], [22.2, "press", "interact"],
+		[24.6, "shot", "g4_nid"], [30.0, "pick", 0], [31.0, "shot", "g5_chipie"], [36.0, "party", null],
+		[36.5, "tp", Vector2(61.6, 44.5)], [36.7, "hold", "move_right"], [36.8, "hold", ""], [37.2, "press", "interact"],
+		[39.8, "shot", "g6_fougere"], [48.0, "check", null],
+	],
+	"larmes": [
+		[0.9, "talk", true], [1.0, "zone", &"cabinet"], [2.4, "tp", Vector2(6.5, 5.7)], [2.6, "hold", "move_up"], [2.7, "hold", ""],
+		[2.9, "flags", ["lunettes_trouvees", "amber_protoceratops", "galet_plaines_01", "galet_plaines_02", "galet_plaines_03"]],
+		[3.0, "press", "interact"], [5.2, "shot", "l0_fougere"], [9.0, "shot", "l1_larmes"],
+		[18.0, "pebbles", 30], [18.2, "press", "interact"], [21.0, "shot", "l2_lanterne"], [29.0, "shot", "l3_lettre"],
+		[40.0, "state", null], [40.1, "egg", null],
+		[40.2, "egg_steps", 2], [40.4, "hold", "move_down"], [41.0, "hold", "move_left"], [41.6, "hold", ""],
+		[42.4, "shot", "l4_eclosion"], [46.0, "party", null], [46.2, "check", null],
+	],
+	"lune": [
+		[0.9, "calm", 600.0], [0.95, "talk", true], [1.0, "gset", ["day", 2]], [1.1, "clock", 22.0], [1.2, "weather", &"clear"],
+		[1.3, "tp", Vector2(79.0, 43.8)], [4.0, "shot", "m0_etang_lune"], [4.1, "state", null],
+		[4.3, "hold", "move_down"], [5.8, "hold", ""], [7.4, "shot", "m1_sur_le_gue"], [7.5, "state", null],
+		[7.7, "tp", Vector2(78.6, 48.6)], [7.9, "hold", "move_up"], [8.0, "hold", ""], [8.3, "press", "interact"],
+		[10.0, "shot", "m2_page2"], [16.0, "clock", 6.0], [17.0, "state", null], [17.2, "shot", "m3_aube_ilot"],
+		[17.4, "hold", "move_up"], [20.0, "hold", ""], [21.0, "state", null], [22.5, "state", null], [22.6, "shot", "m4_gue_eteint"],
+		[22.7, "map", null], [23.4, "shot", "m5_carte"], [23.5, "press", "cancel"],
+	],
+	"reactions": [
+		[0.9, "calm", 600.0], [0.95, "talk", true], [1.0, "zone", &"port_ambre"], [2.4, "tp", Vector2(22.6, 16.7)], [2.6, "hold", "move_up"], [2.7, "hold", ""],
+		[3.0, "press", "interact"], [3.5, "shot", "r0_isaure"], [5.0, "press", "interact"], [5.5, "shot", "r1_isaure_2"],
+		[7.0, "tp", Vector2(24.0, 9.4)], [7.6, "hold", "move_up"], [7.7, "hold", ""], [8.0, "press", "interact"], [8.5, "shot", "r2_maison_kerval"],
+		[10.0, "press", "interact"], [10.5, "shot", "r3_maison_kerval_2"],
+		[12.0, "tp", Vector2(26.4, 9.7)], [12.2, "hold", "move_up"], [12.3, "hold", ""], [12.6, "press", "interact"], [13.1, "shot", "r4_caisses"],
+		[15.0, "map", null], [16.0, "shot", "r5_carte_port"], [16.2, "map_island", null], [17.0, "shot", "r6_ile"],
+		[17.2, "map_zone", &"plaines"], [18.6, "shot", "r7_carte_plaines"], [18.8, "map_zoom", 2.5], [19.4, "shot", "r8_zoom"],
+		[19.6, "map_goal", 0], [20.2, "shot", "r9_objectif"], [20.4, "press", "cancel"],
+	],
+	"reactions2": [
+		[0.9, "calm", 600.0], [0.95, "talk", true], [1.0, "flags", ["met_maia", "boussole_volee", "boussole_trouvee", "boussole_rendue", "found_journal_2", "maia_page1"]],
+		[1.1, "tp", Vector2(61.6, 44.5)], [1.2, "hold", "move_right"], [1.3, "hold", ""], [1.6, "press", "interact"], [2.1, "shot", "q0_maia_1"],
+		[3.6, "press", "interact"], [4.1, "shot", "q1_maia_2"], [5.6, "tp_prop", ["feu_camp", Vector2(0, 0)]], [7.0, "shot", "q2_feu_plat"],
+		[7.2, "tp_prop", ["feu_camp", Vector2(0, 90), 1]], [8.8, "shot", "q3_feu_anse"], [9.0, "tp", Vector2(95.5, 13.0)], [10.6, "shot", "q4_feu_falaises"],
+		[10.8, "map", null], [11.8, "shot", "q5_carte"], [12.0, "map_island", null], [12.8, "shot", "q6_ile"],
+	],
+	"feux": [
+		[0.9, "calm", 600.0], [1.0, "clock", 22.0], [1.1, "tp_prop", ["feu_camp", Vector2(60, 40), 0]], [2.8, "shot", "x0"],
+		[2.9, "tp_prop", ["feu_camp", Vector2(60, 40), 1]], [4.6, "shot", "x1"], [4.7, "tp_prop", ["feu_camp", Vector2(60, 40), 2]], [6.4, "shot", "x2"],
+	],
+	"cabinet_carte": [
+		[0.9, "talk", true], [1.0, "zone", &"cabinet"], [2.4, "tp", Vector2(5.2, 4.3)], [2.6, "hold", "move_up"], [2.7, "hold", ""], [3.0, "press", "interact"], [3.5, "shot", "k0_bureau"],
+		[5.0, "press", "interact"], [5.5, "shot", "k1_bureau_2"], [7.0, "map", null], [8.0, "shot", "k2_ile_depuis_cabinet"],
+	],
+	"suivi": [
+		[0.9, "calm", 600.0], [1.0, "tp", Vector2(58.0, 50.0)], [2.6, "shot", "t0_suivi"], [2.7, "tp", Vector2(30.0, 45.0)], [4.2, "shot", "t1_suivi_ouest"],
+		[4.3, "give", "triceratops"], [4.4, "give", "compsognathus"], [4.6, "card", 0], [5.3, "shot", "t2_fiche_vif"], [5.4, "close", null],
+		[5.6, "card", 1], [6.3, "shot", "t3_fiche_trice"], [6.4, "close", null], [6.6, "card", 2], [7.3, "shot", "t4_fiche_compso"], [7.4, "close", null],
+		[7.6, "map", null], [8.4, "map_island", null], [9.2, "shot", "t5_ile"],
+	],
+	"suivi2": [
+		[0.9, "calm", 600.0], [1.0, "tp", Vector2(60.0, 47.0)], [2.6, "shot", "u0_titre"], [2.7, "tap_tracker", null], [3.2, "shot", "u1_detail"],
+		[3.4, "give", "triceratops"], [3.6, "card", 1], [4.3, "shot", "u2_trice_jeune"], [4.4, "close", null],
+		[4.6, "map", null], [5.4, "shot", "u3_liste"], [5.5, "map_goal", 1], [6.2, "shot", "u4_liste_choisi"], [6.3, "map_island", null], [7.1, "shot", "u5_ile_position"],
+	],
 	"prologue": [
 		[1.6, "shot", "90_arrivee"], [1.7, "auto", true], [9.0, "shot", "91_maia_ponton"], [16.0, "auto", false],
 		[16.5, "state", null], [16.6, "shot", "92_port"],
@@ -197,6 +262,8 @@ var _time := 0.0
 var _step := 0
 var _held := ""
 var _auto := false
+var _talk := false
+var _talk_timer := 0.0
 var _auto_timer := 0.0
 var _quality_before := -1
 var _pick := -1
@@ -235,6 +302,11 @@ func _process(delta: float) -> bool:
 		if buttons.size() > _pick:
 			(buttons[_pick] as Button).pressed.emit()
 			_pick = -1
+	if _talk and root.get_node("Dialogue").get("active"):
+		_talk_timer += delta
+		if _talk_timer > 0.3:
+			_talk_timer = 0.0
+			_run("press", "interact")
 	if _auto:
 		_auto_timer += delta
 		if _auto_timer > 0.35:
@@ -362,8 +434,11 @@ func _run(command: String, arg: Variant) -> void:
 				current_scene.get("player").call("teleport", pos)
 				current_scene.get("companion").call("teleport", pos + Vector2(-34, 8))
 		"tp_prop":   # [kind, offset (px)]: next to the first prop of that kind
+			var skip: int = arg[2] if arg.size() > 2 else 0
 			for n in current_scene.get("region").get_node("Entities").get_children():
-				if n.get("kind") == arg[0]:
+				if n.get("kind") == arg[0] and skip > 0:
+					skip -= 1
+				elif n.get("kind") == arg[0]:
 					print("tp_prop ", arg[0], " : ", (n.global_position / TILE).snapped(Vector2(0.1, 0.1)))
 					var pos: Vector2 = n.global_position + arg[1]
 					current_scene.get("player").call("teleport", pos)
@@ -374,6 +449,49 @@ func _run(command: String, arg: Variant) -> void:
 		"card":   # the sheet of party dino #arg
 			var bar: Node = current_scene.find_children("*", "PartyBar", true, false)[0]
 			bar.call("_open_card", root.get_node("Game").get("party")[arg])
+		"near":   # what Chloé could interact with around her
+			var me: Node2D = current_scene.get("player")
+			for n in get_nodes_in_group(&"interactable"):
+				var d: float = (n as Node2D).global_position.distance_to(me.global_position)
+				if d < 120.0:
+					print("proche : ", n.name, " à %d px, visible=%s" % [d, (n as Node2D).visible])
+			print("joueur occupé=", me.get("busy"), " dialogue=", root.get_node("Dialogue").get("active"), " router=", root.get_node("Router").call("is_busy"))
+		"chipie":
+			var ch: Node = current_scene.get("region").get_node("Entities").get_node_or_null("Chipie")
+			if ch == null:
+				print("Chipie : absente")
+			else:
+				print("Chipie : ", (ch.global_position / TILE).snapped(Vector2(0.1, 0.1)), " joueur occupé=", current_scene.get("player").get("busy"), " dialogue=", root.get_node("Dialogue").get("active"), " visible=", ch.visible, " physique=", ch.is_physics_processing(), " course=", ch.get("_running"), " points=", ch.get("waypoints").size())
+		"talk":
+			_talk = arg
+		"map_island":
+			_map_screen().call("_show_island")
+		"map_zone":
+			_map_screen().call("_show_zone", arg)
+		"map_zoom":
+			_map_screen().get("_map").call("zoom_by", arg)
+		"map_goal":
+			var goals: Array = load("res://story/objectives.gd").call("current")
+			print("objectifs : ", goals.map(func(o: Dictionary) -> String: return o["text"]))
+			if goals.size() > arg:
+				root.get_node("Game").call("set_flag", &"suivi", goals[arg]["id"])
+				_map_screen().call("_fill_objectives")
+				_map_screen().call("_go_to", goals[arg])
+		"tap_tracker":
+			var tr: Control = current_scene.find_children("*", "QuestTracker", true, false)[0]
+			var ev := InputEventMouseButton.new()
+			ev.pressed = true
+			ev.button_index = MOUSE_BUTTON_LEFT
+			tr.call("_gui_input", ev)
+		"gset":   # [property, value] on Game
+			root.get_node("Game").set(arg[0], arg[1])
+		"pebbles":   # the first `arg` amber pebbles of the Plaines found (test flags)
+			for i in arg:
+				root.get_node("Game").call("set_flag", StringName("galet_plaines_t%02d" % i))
+		"egg":
+			print("œuf : ", root.get_node("Game").get("egg"))
+		"egg_steps":
+			root.get_node("Game").get("egg")["steps"] = arg
 		"give":
 			root.get_node("Game").call("add_caught", load("res://game/dino.gd").create(StringName(arg), 6))
 		"map":
@@ -404,6 +522,13 @@ func _run(command: String, arg: Variant) -> void:
 			for id: String in explored:
 				var seen: PackedByteArray = explored[id]
 				print("carte %s après chargement : %d cases, %d vues" % [id, seen.size(), Array(seen).filter(func(v: int) -> bool: return v > 0).size()])
+
+
+func _map_screen() -> Node:
+	for n in root.get_children():
+		if n.get_script() == load("res://ui/map_screen.gd"):
+			return n
+	return null
 
 
 ## Plays a battle by itself: first move when the menu is shown, otherwise taps.

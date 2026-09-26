@@ -48,6 +48,12 @@ var clock := START_CLOCK
 var day := 1
 ## Things searched in the world (a tree shaken, a stone lifted): their id -> the day it was.
 var searched: Dictionary = {}
+## The moon is full every FULL_MOON_EVERY nights, the first one on the night of day
+## FULL_MOON_FIRST: the amber of the island wakes up (see is_full_moon).
+const FULL_MOON_EVERY := 4
+const FULL_MOON_FIRST := 2
+## An egg being carried until it hatches: {species, name, steps (left before hatching)}.
+var egg: Dictionary = {}
 ## Typical level of the current zone (set by the world): behind it, dinos learn faster.
 var zone_level := 0
 ## Old zone ids of the Plaines (before it became one open map) -> arrival point in it.
@@ -93,6 +99,28 @@ func pass_time_until(hour: float) -> void:
 	if target <= clock:
 		day += 1
 	clock = target
+
+
+## The day the current night began on (-1 in the daytime): a night belongs to its evening.
+func night_of() -> int:
+	var h := clock / 60.0
+	if h >= 20.5:
+		return day
+	if h < 5.0:
+		return day - 1
+	return -1
+
+
+func is_full_moon() -> bool:
+	var n := night_of()
+	return n >= 0 and posmod(n - FULL_MOON_FIRST, FULL_MOON_EVERY) == 0
+
+
+## Nights before the next full moon: 0 tonight (or now), 1 tomorrow night…
+func nights_to_full_moon() -> int:
+	var n := night_of()
+	var tonight := n if n >= 0 else day
+	return posmod(FULL_MOON_FIRST - tonight, FULL_MOON_EVERY)
 
 
 ## Amber pebbles found in zone `zone` (flags "galet_<zone>_<n>"), or in the whole island.
@@ -190,6 +218,7 @@ func new_game() -> void:
 	dex_caught = {}
 	explored = {}
 	searched = {}
+	egg = {}
 	day = 1
 	play_time = 0.0
 	clock = START_CLOCK
@@ -281,7 +310,7 @@ func lead_dino() -> Dino:
 ## First dino of the party able to use the exploration ability, or null.
 func ability_user(ability: StringName) -> Dino:
 	for d in party:
-		if Abilities.has(d, ability):
+		if Abilities.usable(d, ability):
 			return d
 	return null
 
@@ -336,6 +365,7 @@ func to_dict() -> Dictionary:
 		"clock": clock,
 		"day": day,
 		"searched": searched,
+		"egg": egg,
 		"weather": String(weather),
 	}
 
@@ -375,6 +405,7 @@ func from_dict(data: Dictionary) -> void:
 	clock = fmod(float(data.get("clock", START_CLOCK)), 1440.0)
 	day = int(data.get("day", 1))
 	searched = data.get("searched", {})
+	egg = data.get("egg", {})
 	weather = StringName(data.get("weather", "clear"))
 	if not weather in WEATHERS:
 		weather = &"clear"

@@ -21,16 +21,39 @@ static func lines(id: StringName) -> Array:
 					{"who": CHLOE, "text": "Ma grand-mère venait souvent ici ?"},
 					{"who": MAIA, "text": "Tout le temps ! Avant de partir vers le volcan, elle allait au vieux bosquet, à l'ouest."},
 					{"who": MAIA, "text": "Mais un gros tronc est tombé en travers du sentier. Il faudrait des griffes bien affûtées pour le trancher…"},
-					{"who": MAIA, "text": "Ton Velociraptor a l'air d'en avoir, des griffes. Et méfie-toi des hautes herbes : les dinos sauvages adorent s'y cacher !"},
+					{"who": MAIA, "text_fn": claws_text},
 					{"flag": &"met_maia"},
 				]
-			if Game.flag(&"found_journal_1"):
-				return [{"who": MAIA, "text": "Un fragment d'ambre et une page du journal ?! Montre ça au Professeur Roc. Et la prochaine fois, c'est toi contre moi !"}]
-			return [{"who": MAIA, "text": "Le vieux bosquet est à l'ouest, derrière le tronc. Ton raptor devrait pouvoir s'en charger !"}]
+			if Game.flag(&"boussole_volee") and not Game.flag(&"boussole_trouvee"):
+				return [{"who": MAIA, "text": "Elle a filé vers le petit bois, au nord-ouest ! Les compsos cachent tout dans un nid, au ras du sol."}]
+			if Game.flag(&"boussole_rendue") and not Game.flag(&"found_journal_2"):
+				return [{"who": MAIA, "text": "Alors, l'étang ? Il chante vraiment, les soirs de pleine lune ? Maman ne ment jamais… enfin, presque jamais."}]
+			if Game.flag(&"found_journal_1") and not Game.flag(&"maia_page1"):
+				return [{"who": MAIA, "text": "Un fragment d'ambre et une page du journal ?! Montre ça au Professeur Roc. Et la prochaine fois, c'est toi contre moi !"},
+					{"flag": &"maia_page1"}]
+			return chatter(&"maia")
 		&"panneau_carrefour":
-			return [{"text": "Nord : Grotte des Échos.  Nord-est : les Falaises.  Est : l'étang, puis le Grand Crâne.  Ouest : le vieux bosquet.  Sud : Port-Ambre."}]
+			return [{"text": "Nord : Grotte des Échos.  Nord-est : les Falaises.  Est : l'étang, puis le Grand Crâne.  Ouest : le vieux bosquet.  Sud : Port-Ambre."},
+				{"text": "Tout en bas, quelqu'un a ajouté au couteau : « Paris : 9 874 km. À la nage, compter large. »"}]
+		&"panneau_anse":
+			return [{"text": "« Baignade déconseillée. — La direction. »"},
+				{"text": "En guise de signature, une trace de dent. Grande comme ta main."}]
+		&"panneau_oeuf":
+			return [{"text": "« Ceci n'est pas un œuf. »"}, {"text": "C'est un rocher. Mais il y croit très fort."}]
+		&"panneau_etang":
+			return [{"text": "Étang des Chanteurs. On dit que les soirs de pleine lune, l'étang chante."}, {"text_fn": moon_text}]
+		&"page_2":
+			return [
+				{"text": "Au milieu de l'îlot, sous une pierre plate, une page du journal. Sèche, malgré l'eau tout autour."},
+				{"letter": ["Chacun chez soi",
+					"Je les ramène un par un là où leur monde leur ressemble. Les cornus aux prairies, les crêtes à l'étang. Les Parasaurolophus ont choisi cette eau-là tout seuls : je n'ai eu qu'à ouvrir la caisse.",
+					"Anselme dit que je leur parle trop. Il a raison. Mais ils répondent.",
+					"Ce soir, ils chantent pour la lune. Je crois qu'ils se souviennent de quelque chose que je ne connais pas encore."],
+					"sign": "— H."},
+				{"flag": &"found_journal_2"},
+			]
 		&"isaure":
-			return [{"who": "Isaure", "text": "La pêche est maigre, ces temps-ci… Mais toi, va ! L'île t'attend. Et garde un œil sur ma fille, d'accord ?"}]
+			return chatter(&"isaure")
 		&"port_bloque":
 			return [{"text": "Le Professeur Roc t'attend au Cabinet, la grande maison couverte de lierre à l'est du village."}]
 		&"cabinet_bloque":
@@ -110,6 +133,76 @@ static func lines(id: StringName) -> Array:
 			return [{"text": "Quelqu'un a gravé une flèche dans la roche, vers le nord. Et, dessous : « H. »"}]
 	push_error("Dialogue inconnu : %s" % id)
 	return []
+
+
+## What people say when there is nothing special to say: a line from their pool, the next one
+## each time (flag "bavard_<who>"), the pool depending on the time, the weather, the story.
+## Maïa and Roc also slip in the main objective as a hint (Objectives.main_hint).
+static func chatter(who: StringName) -> Array:
+	var pool := []
+	var night := Game.phase() == &"night"
+	var hint := Objectives.main_hint()
+	match who:
+		&"isaure":
+			pool = [
+				"La pêche est maigre, ces temps-ci… Mais toi, va ! L'île t'attend. Et garde un œil sur ma fille, d'accord ?",
+				"Hélène ? On a été amies, oui. Il y a longtemps. Les gens changent… ou ils restent pareils trop longtemps. Ça revient au même.",
+				"Tu vois cette jetée ? Quand j'avais ton âge, on ne voyait pas le bois, tellement il y avait de barques.",
+				"Maïa t'attend aux Plaines, je parie. Elle ne tient pas en place. Comme moi, à son âge.",
+			]
+			if Game.flag(&"boussole_rendue"):
+				pool.append("Maïa m'a rapporté ma boussole. Merci de l'avoir rattrapée. J'y tiens… plus que je ne devrais.")
+			if night:
+				pool.append("Tu devrais dormir, moussaillon. La nuit, sur cette île, il se passe des choses qu'on ne voit pas de jour.")
+			if Game.is_full_moon():
+				pool.append("Pleine lune… L'ambre brille dans les falaises. Hélène adorait ces nuits-là. Moi aussi, avant.")
+			if Game.is_raining():
+				pool.append("Rentre donc t'abriter. La pluie d'Ambrelune ne mouille pas moins que celle du continent.")
+		&"maia":
+			pool = [
+				"Caillou a encore mangé mes lacets. Il croit que ce sont des vers de terre. Il n'a jamais vu de vers de terre.",
+				"Un jour, je ferai le tour de l'île en une journée. Maman dit que c'est impossible. Maman dit ça de tout.",
+				"Tu sais pourquoi on les appelle les Plaines des Fougères ? Moi non plus. Il y a plus de dinos que de fougères.",
+			]
+			if hint != "":
+				pool.insert(1, "Un conseil de championne ? " + hint)
+			if not Game.flag(&"sceau_plaines"):
+				pool.append("Le Grand Crâne, au sud-est : c'est là que je vais t'écraser. Prépare-toi.")
+			else:
+				pool.append("Tu as eu le sceau ?! … Bon. Bravo. Mais la prochaine fois, c'est moi. Et ça fait mal de le dire.")
+			if night:
+				pool.append("Il fait nuit ! Les Velociraptor sortent aux lisières. Moi, je rentre avant que maman s'inquiète… enfin, avant qu'elle rentre.")
+		&"roc":
+			pool = [
+				"Hélène disait qu'un dino ne se dresse pas : il se rencontre. Je n'ai jamais bien compris la différence. Elle, si.",
+				"Trente ans que je vis ici, et les Parasaurolophus me font encore sursauter quand ils chantent.",
+				"Ne touche pas au tiroir de gauche. Il est… cassé. Voilà. Cassé.",
+			]
+			if hint != "":
+				pool.insert(0, "Où en es-tu ? … Hmm. " + hint)
+			if night:
+				pool.append("Tu es encore debout ? Moi aussi. Je… vérifie des choses. Va dormir, va.")
+	if pool.is_empty():
+		return []
+	var n := int(Game.flag(StringName("bavard_%s" % who)))
+	Game.set_flag(StringName("bavard_%s" % who), n + 1)
+	var speaker: String = {&"isaure": "Isaure", &"maia": MAIA, &"roc": "Prof. Roc"}[who]
+	return [{"who": speaker, "text": pool[n % pool.size()]}]
+
+
+## Maïa, about the trunk: Chloé's own dino, or where to find one with claws.
+static func claws_text() -> String:
+	if Game.flag(&"starter") == "velociraptor":
+		return "Ton Velociraptor a l'air d'en avoir, des griffes. Et méfie-toi des hautes herbes : les dinos sauvages adorent s'y cacher !"
+	return "Il te faudrait un raptor : les Velociraptor sauvages rôdent aux lisières, au crépuscule. Et méfie-toi des hautes herbes : les dinos adorent s'y cacher !"
+
+
+## When the next full moon is (the pond's sign).
+static func moon_text() -> String:
+	if Game.is_full_moon():
+		return "Ce soir, justement, la lune est pleine. Écoute…"
+	var n := Game.nights_to_full_moon()
+	return "Prochaine pleine lune : cette nuit." if n == 0 else "Prochaine pleine lune : dans %d nuit%s." % [n, "s" if n > 1 else ""]
 
 
 ## How many of the three amber scales Chloé has, said after finding one.

@@ -48,6 +48,7 @@ var _changing_zone := false
 var _view: WorldView
 var _banner: ZoneBanner
 var _map_button: Button
+var _tracker: QuestTracker
 var _explore_timer := 0.0
 
 
@@ -73,14 +74,17 @@ func _ready() -> void:
 	_enter_zone(id, Game.arrival if Game.arrival != &"" else &"Depart", pos)
 	Game.arrival = &""
 	_view.camera.touch_controls = $TouchControls
-	Game.phase_changed.connect(func(_phase: StringName) -> void: _spawn_roamers())
+	Game.phase_changed.connect(_on_phase_changed)
 	Game.weather_changed.connect(func(_w: StringName) -> void: _weather_sound())
 	_weather_sound()
 	SettingsMenu.add_open_button(hud)
 	_map_button = MapScreen.add_open_button(hud, _open_map)
-	_map_button.visible = not region.indoor
 	hud.add_child(PartyBar.new())
 	hud.add_child(ClockBadge.new())
+	_tracker = QuestTracker.new()
+	_tracker.player = player
+	_tracker.zone = region.region_id
+	hud.add_child(_tracker)
 	Save.enabled = true
 	Save.before_save = _store_position
 
@@ -127,9 +131,9 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF) -> void:
 		exit.taken.connect(_on_exit_taken)
 	_spawn_roamers()
 	_view.show_zone(region, player, ZONES)
+	if _tracker:
+		_tracker.zone = id
 	_explore()
-	if _map_button:
-		_map_button.visible = not region.indoor
 	# The story may have something to play here (the prologue…).
 	Story.on_zone_entered.call_deferred(id)
 
@@ -298,9 +302,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _open_map() -> void:
-	if player.busy or _changing_zone or get_tree().paused or region.indoor:
+	if player.busy or _changing_zone or get_tree().paused:
 		return
-	MapScreen.open(self, region, _view.map_layers(), player.global_position / region.tile_size())
+	# Indoors (a cave, the Cabinet): no detailed map, the island opens.
+	var layers := {} if region.indoor else _view.map_layers()
+	MapScreen.open(self, region, layers, player.global_position / region.tile_size(), ZONES)
 
 
 func _show_banner(title: String, subtitle := "") -> void:
@@ -322,9 +328,28 @@ func _on_encountered(wild: WildDino) -> void:
 		wild.calm_down(5.0)
 
 
+## An egg carried along hatches after its last step (PlainesAnnexes.hatch).
+func _carry_egg() -> void:
+	if Game.egg.is_empty() or player.busy or _changing_zone:
+		return
+	Game.egg["steps"] = int(Game.egg.get("steps", 0)) - 1
+	if Game.egg["steps"] == PlainesAnnexes.EGG_STIRS:
+		Toast.say(get_tree(), "L'œuf de %s remue contre toi…" % Game.egg.get("name", "?"))
+	elif Game.egg["steps"] <= 0:
+		PlainesAnnexes.hatch()
+
+
+## New dinos for the new part of the day; the full moon is announced when it rises.
+func _on_phase_changed(phase: StringName) -> void:
+	_spawn_roamers()
+	if phase == &"night" and Game.is_full_moon() and region and not region.indoor:
+		Toast.say(get_tree(), "La lune est pleine ce soir. L'ambre de l'île s'éveille…")
+
+
 ## A step in the tall grass may start a battle with a dino of the habitat there.
 func _on_player_stepped(surface: StringName) -> void:
 	_steps_since_battle += 1
+	_carry_egg()
 	# Resting while walking: the party slowly gets its strength back.
 	for d in Game.party:
 		d.hp = mini(d.max_hp(), d.hp + 1)

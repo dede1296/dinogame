@@ -97,13 +97,29 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
 
 ### La carte ✅
 
-- Bouton carte (sous ☰) ou touche M : la carte de la région, dessinée comme une carte
-  d'exploratrice (sol, relief ombré, courbes de niveau, bois, eau). Ce que Chloé n'a pas encore vu
-  reste **papier blanc** ; tout ce qu'elle voit en marchant (environ 11 cases autour d'elle) se
-  dessine et reste acquis (enregistré dans la sauvegarde).
-- On y voit Chloé, les **lieux découverts** par leur nom (les habitats), les **sorties** vers les
-  autres zones, et le **pourcentage exploré** (le sol praticable ; bois et eau ne comptent pas).
-- Le jeu est en pause pendant la lecture de la carte.
+- Bouton carte (sous ☰) ou touche M, partout (même dans une grotte ou au Cabinet). Le jeu est en
+  pause pendant la lecture.
+- **La carte de la zone** : dessinée comme une carte d'exploratrice (sol, relief ombré, courbes de
+  niveau, bois, eau) ; ce que Chloé n'a pas encore vu reste **papier blanc**, tout ce qu'elle voit
+  en marchant se dessine et reste acquis (sauvegardé). On la **déplace** (glisser) et on **zoome**
+  (pincer, molette, boutons + / −, ◎ pour revenir sur Chloé).
+- On y voit Chloé, les **objectifs** (numérotés : or pour l'histoire, bleu pour les quêtes annexes,
+  même dans les parties pas encore explorées), les lieux découverts par leur nom, les sorties,
+  les entrées de grotte, les **personnages**, les **feux et bancs** où se reposer, le compteur de
+  larmes, la prochaine pleine lune et le pourcentage exploré.
+- À côté, la **liste des objectifs** : un toucher sur l'un d'eux ouvre la bonne carte, centrée dessus.
+- **Dézoomer** au-delà de la zone (ou « ◂ Île ») montre **l'île entière** : les régions en spirale
+  vers le volcan, celles déjà visitées en couleur et nommées (un toucher ouvre leur carte), les
+  autres dans la brume (« ??? »), Chloé et les régions où il y a quelque chose à faire.
+
+### Parler, regarder ✅
+
+- Chaque personnage réagit quand on lui parle, même hors quête : il se tourne vers Chloé (un « ! »
+  la première fois) et dit une phrase qui change à chaque fois, selon l'heure, la météo et
+  l'avancée de l'histoire. Maïa et Roc glissent l'objectif du moment comme conseil.
+- Les **maisons fermées**, les objets du port, les meubles du Cabinet, les gros rochers… ont chacun
+  quelques lignes (drôles, parfois des indices : un tiroir fermé à clé, des bottes pleines de
+  cendre), la suivante à chaque fois.
 
 ### Fouiller l'île ✅
 
@@ -112,7 +128,13 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
 - **Galets d'ambre** : 30 dans les Plaines (~100 sur l'île) : dans des arbres, sous des pierres,
   **enterrés** (seul un dino avec **Flair** voit la terre remuée et creuse) ou posés dans des
   recoins qui valent l'escalade. Chacun donne de l'expérience à l'équipe ; le compteur est sur la
-  carte. (Ce qu'ils permettront d'obtenir : à décider, étape 3.)
+  carte. Hélène les appelait **les larmes de l'île** ; rapportées à Roc, elles nourrissent la
+  couveuse : 10 → la **lanterne d'ambre** (lumière la nuit et sous terre, les larmes proches
+  scintillent), 20 → **l'œuf de Pépite** (le fragment du bosquet, qui éclot en marchant), 30 → la
+  **lettre scellée** d'Hélène (voir [histoire.md](histoire.md), « Hors des sentiers »).
+- **Pleine lune** ✅ : une nuit sur quatre. Nuit plus claire et argentée, les larmes cachées
+  scintillent de loin, et à l'étang les Parasaurolophus chantent : un gué de pierres d'ambre
+  mène à l'îlot jusqu'à l'aube. L'horloge montre une pleine lune ; la carte annonce la prochaine.
 - **Le dino de tête sent les cachettes** : un « ! » au-dessus de lui et un petit cri quand un galet
   caché est tout près ; il saute de joie quand on le trouve. Il **réagit aux lieux** : l'eau (~),
   un feu (♥), une grotte (?).
@@ -158,6 +180,22 @@ introduit l'espèce qui ouvre la suite, ce qui rend la collection utile.
 | **Nage** | Eau profonde, rivières | Spinosauridés (Baryonyx…) | Marais |
 | **Plongée** | Grottes sous-marines | Reptiles marins (Plesiosaurus…) | Côte |
 | **Vol** | Falaises, îlots, déplacement rapide entre les régions visitées | Grands ptérosaures | Cieux |
+
+**Monter, voler, nager** : Monture, Vol, Nage et Plongée demandent aussi un **équipement** fabriqué par
+Joss, le sellier de Havre-Doré (selle, harnais de vol, gilet de nage, masque de plongée), obtenu au fil
+de l'histoire. Ils sont **nécessaires pour certaines quêtes** (courses, îlots, rivières, grottes
+sous-marines) et changent la façon de voyager :
+
+| Capacité | Qui | Équipement | Ce que ça ouvre |
+|---|---|---|---|
+| **Monture** | les grands marcheurs au dos praticable : cératopsiens (derrière la collerette), becs de canard, Iguanodon, Gallimimus, Ankylosaurus. Pas les raptors (trop petits), ni le Stégosaure (plaques), ni les sauropodes (hors de portée) | selle (Interlude) | voyager deux fois plus vite, traverser les herbes hautes sans rencontre, courses |
+| **Nage** | spinosauridés (Baryonyx, Suchomimus, Spinosaurus) et reptiles marins | gilet de nage (ch. 3) | rivières, eau profonde, îlots proches |
+| **Plongée** | reptiles marins | masque de plongée (ch. 5) | grottes marines, épaves, récifs |
+| **Vol** | grands ptérosaures seulement (Pteranodon, Quetzalcoatlus ; le Dimorphodon est bien trop petit) | harnais de vol (ch. 7) | sommets, îlots lointains, et d'une région visitée à l'autre |
+
+Un **bébé ne porte personne** : Monture, Vol, Nage et Plongée demandent un dino **adulte (niveau 15)**.
+La fiche d'un dino montre toutes ses capacités, avec leur image ; « adulte au niv. 15 » quand il est
+encore trop jeune, « bientôt » tant que la capacité n'est pas jouable.
 
 Côté données, chaque espèce liste ses capacités (plutôt que de les déduire de sa famille), ce qui
 permet des exceptions.
@@ -260,6 +298,25 @@ chapitre.
   taille, sa description, et le nombre d'individus capturés. Compléter une région donne une
   récompense au Cabinet.
 - **Fossiles** et **pages du journal** comptent aussi dans la complétion.
+
+## Havre-Doré : acheter, s'équiper
+
+- **Monnaie** : les **pièces**. On en gagne en battant des dresseurs, au Relais, en finissant des
+  petites quêtes, en revendant des trouvailles au Comptoir (fossiles en double, écailles, larmes :
+  la vente des larmes est un choix, Roc les attend aussi).
+- **Pour Chloé** (Mercerie « Au Fil d'Ambre ») : un sac plus grand, des bottes de marche (plus
+  rapide à pied), des tenues (apparence), le carnet de croquis (notes du Dinodex).
+- **Pour les dinos** (Herboristerie de Mémé Pervenche, Sellerie Bastide) : soins et antidotes,
+  **friandises** par régime (le Lien monte), selles et harnais, pension (dinos hors équipe).
+- **Le Relais des Dresseurs** : combats contre d'autres dresseurs, des rangs, un tableau de petites
+  quêtes renouvelé.
+
+## Aide de quête ✅
+
+Sous la barre d'équipe, un encart montre l'objectif suivi : ce qu'il faut faire, une **flèche** qui
+pointe vers le lieu et la distance, ou la zone où aller quand c'est ailleurs. Par défaut, l'objectif
+le plus proche ; on en choisit un autre dans la liste de la carte (« ▶ » = suivi). Un toucher sur
+l'encart ouvre la carte.
 
 ## Objets
 

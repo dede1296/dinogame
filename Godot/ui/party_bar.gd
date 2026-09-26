@@ -14,11 +14,13 @@ const INK := Color(0.106, 0.122, 0.157, 0.92)
 const CREAM := Color(1, 0.97, 0.9)
 const AMBER := Color(0.98, 0.76, 0.35)
 const XP_BLUE := Color(0.45, 0.75, 1.0)
+const MENU_LAYER := 50   # over the HUD (quest tracker, buttons), under the settings
 
 var _slots: Array[Control] = []
 var _pending: Array = []   # [dino, text, colour] shown once the game runs again
 var _redraw := 0.0
 var _menu: Control
+var _menu_layer: CanvasLayer
 
 
 func _ready() -> void:
@@ -154,45 +156,30 @@ func _heal(d: Dino) -> void:
 
 func _open_card(d: Dino) -> void:
 	_menu = _overlay()
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 6)
-	var panel := _panel(col)
-	panel.custom_minimum_size = Vector2(520, 0)
-	var s := d.stats()
-	col.add_child(_title(d.nickname, "%s · type %s" % [d.species_name(), d.type()]))
-	for line in [
-		"Niveau %d · expérience %d / %d" % [d.level, d.xp, Dino.xp_to_next(d.level)],
-		"PV %d / %d" % [d.hp, d.max_hp()],
-		"Attaque %d · Défense %d · Vitesse %d" % [s["atk"], s["def"], s["spd"]],
-		"Attaques : " + ", ".join(d.moves.map(func(m: Dictionary) -> String: return MovesDB.move(m["id"])["name"])),
-		d.species().description,
-	] + Abilities.describe(d):
-		var l := Label.new()
-		l.text = line
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.add_theme_font_size_override("font_size", 20)
-		l.add_theme_color_override("font_color", CREAM)
-		col.add_child(l)
-	var close := _button("Fermer")
-	close.pressed.connect(_close_menu)
-	col.add_child(close)
+	var card := DinoCard.make(d)
+	card.closed.connect(_close_menu)
 	var center := CenterContainer.new()
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	center.add_child(panel)
+	center.add_child(card)
 	_menu.add_child(center)
 
 
-## A full-screen layer that pauses the game; a tap outside the panel closes it.
+## A full-screen layer over the whole HUD that pauses the game; a tap outside the panel
+## closes it.
 func _overlay() -> Control:
 	get_tree().paused = true
+	_menu_layer = CanvasLayer.new()
+	_menu_layer.layer = MENU_LAYER
+	_menu_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(_menu_layer)
 	var layer := ColorRect.new()
 	layer.color = Color(0, 0, 0, 0.3)
-	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	layer.gui_input.connect(func(event: InputEvent) -> void:
 		if event is InputEventMouseButton and event.pressed:
 			_close_menu())
-	add_child(layer)
+	_menu_layer.add_child(layer)
 	return layer
 
 
@@ -200,6 +187,9 @@ func _close_menu() -> void:
 	if _menu:
 		_menu.queue_free()
 		_menu = null
+	if _menu_layer:
+		_menu_layer.queue_free()
+		_menu_layer = null
 	get_tree().paused = false
 
 

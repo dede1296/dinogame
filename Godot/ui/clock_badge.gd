@@ -6,6 +6,7 @@ extends PanelContainer
 const ICONS := {
 	&"sun": preload("res://assets/art/ui/meteo_soleil.png"),
 	&"moon": preload("res://assets/art/ui/meteo_lune.png"),
+	&"full_moon": preload("res://assets/art/ui/meteo_pleine_lune.png"),
 	&"rain": preload("res://assets/art/ui/meteo_pluie.png"),
 	&"mist": preload("res://assets/art/ui/meteo_brume.png"),
 	&"storm": preload("res://assets/art/ui/meteo_orage.png"),
@@ -79,7 +80,7 @@ func _refresh() -> void:
 	elif Game.weather == &"mist":
 		key = &"mist"
 	elif Game.phase() == &"night":
-		key = &"moon"
+		key = &"full_moon" if Game.is_full_moon() else &"moon"
 	_icon.texture = ICONS[key]
 
 
