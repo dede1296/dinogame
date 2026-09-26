@@ -4,6 +4,8 @@ import { SLOTS, slotInfo, deleteSlot, hasSave } from "../state/game.js";
 import { getVolume, setVolume, play } from "../audio/sounds.js";
 import { getCryVolume, setCryVolume, playCry } from "../audio/cries.js";
 import { getVoiceVolume, setVoiceVolume, blip } from "../audio/voices.js";
+import { getMusicVolume, setMusicVolume, music } from "../audio/music.js";
+import { getAmbienceVolume, setAmbienceVolume } from "../audio/ambience.js";
 import { speciesIndex } from "../story/scripts.js";
 import { debugEnabled, watchTitleTaps, CHECKPOINTS, jumpTo } from "../debug/debug.js";
 import { VERSION, VERSION_LABEL } from "../version.js";
@@ -65,6 +67,10 @@ const SCREENS = {
   },
   settings() {
     return `<h2>Réglages</h2>
+      <div class="setting"><label for="musicvol">🎵 Musique <output id="musicvol-out">${Math.round(getMusicVolume() * 100)} %</output></label>
+        <input id="musicvol" type="range" min="0" max="100" step="5" value="${Math.round(getMusicVolume() * 100)}"></div>
+      <div class="setting"><label for="ambvol">🌊 Ambiance (mer, vent, oiseaux) <output id="ambvol-out">${Math.round(getAmbienceVolume() * 100)} %</output></label>
+        <input id="ambvol" type="range" min="0" max="100" step="5" value="${Math.round(getAmbienceVolume() * 100)}"></div>
       <div class="setting"><label for="vol">🔊 Effets sonores <output id="vol-out">${Math.round(getVolume() * 100)} %</output></label>
         <input id="vol" type="range" min="0" max="100" step="5" value="${Math.round(getVolume() * 100)}"></div>
       <div class="setting"><label for="cryvol">🦖 Cris des dinos <output id="cryvol-out">${Math.round(getCryVolume() * 100)} %</output></label>
@@ -117,6 +123,8 @@ export function setupTitle(title, onPick) {
     if (e.target.id === "vol") setVolume(e.target.value / 100);
     else if (e.target.id === "cryvol") setCryVolume(e.target.value / 100);
     else if (e.target.id === "voicevol") setVoiceVolume(e.target.value / 100);
+    else if (e.target.id === "musicvol") setMusicVolume(e.target.value / 100);
+    else if (e.target.id === "ambvol") setAmbienceVolume(e.target.value / 100);
     else return;
     menu.querySelector(`#${e.target.id}-out`).textContent = `${e.target.value} %`;
   });
@@ -133,4 +141,6 @@ export function setupTitle(title, onPick) {
     alert(on ? "Mode débug activé" : "Mode débug désactivé");
   });
   show("main");
+  // The title theme starts with the first touch (browsers keep audio locked until then).
+  music("titre");
 }

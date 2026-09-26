@@ -5,6 +5,7 @@ export const cabinet = {
   name: "Le Cabinet",
   interior: true,
   music: "cabinet",
+  ambience: "cabinet",
   rows: [
     "wwwwwwwwwwwww",
     "wwwwwwwwwwwww",
@@ -37,7 +38,8 @@ export const boutique = {
   id: "boutique",
   name: "Boutique de Port-Ambre",
   interior: true,
-  music: "maison",
+  music: "boutique",
+  ambience: "boutique",
   rows: [
     "wwwwwwwww",
     "wwwwwwwww",
@@ -62,6 +64,7 @@ export const maison = {
   name: "Maison d'Hélène",
   interior: true,
   music: "maison",
+  ambience: "maison",
   rows: [
     "wwwwwwwww",
     "wwwwwwwww",

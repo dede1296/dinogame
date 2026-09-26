@@ -68,8 +68,11 @@ export const ambreluneSud = {
   name: "Port-Ambre",
   rows: build(),
   music: "village",
+  ambience: "port",
+  // The sea along the south: its waves get louder as Chloé walks down to the beach.
+  sea: { y: 64, range: 24 },
   zones: [
-    { name: "Plaines des Fougères", y0: 0, y1: 41, music: "plaines", encounters: "plaines" },
+    { name: "Plaines des Fougères", y0: 0, y1: 41, music: "plaines", ambience: "plaines", encounters: "plaines" },
     { name: "Port-Ambre", y0: 41, y1: 74, music: "village" },
   ],
   // Wild dinos you can see along the paths and meadows of the Plains.

@@ -16,6 +16,8 @@ import { createDino, heal } from "../battle/dino.js";
 import { play } from "../audio/sounds.js";
 import { rollWild } from "../battle/wild.js";
 import { playCry, preloadCry } from "../audio/cries.js";
+import { music, jingle, setIntensity } from "../audio/music.js";
+import { setAmbience, setAmbienceMix, pauseAmbience } from "../audio/ambience.js";
 import { DINOS } from "../../../src/data/dinos.js";
 import { riding } from "./riding.js";
 import { setDexPlace, markSeen, markCaught, dexSpeciesOf, syncDexWithTeam } from "../data/dex.js";
@@ -31,6 +33,7 @@ const DEX_CHECK_MS = 500;
 // Wild dino cries: heard within this many tiles, about this often (ms, randomised ×1–2).
 const CRY_HEAR_TILES = 8;
 const CRY_EVERY_MS = 7000;
+const FIRE_HEAR_TILES = 7;
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const OPPOSITE = { up: "down", down: "up", left: "right", right: "left" };
 
@@ -501,6 +504,7 @@ export class WorldScene extends Phaser.Scene {
     // In caves, footsteps echo off the rock walls.
     play(kind, { volume: inGrass ? 0.5 : 0.28, jitter: 0.08, echo: this.map.cave ? 0.55 : 0 });
     if (inGrass) play("cloth", { volume: 0.12, jitter: 0.2 });
+    this.updateSoundMix();
   }
 
   rustle(sprite) {
@@ -535,7 +539,25 @@ export class WorldScene extends Phaser.Scene {
       this.currentZone = z.name;
       setDexPlace(z.name);
       hud.banner(z.name, this.map.interior ? "" : "Ambrelune");
+      this.placeAudio(z);
     }
+  }
+
+  // Music and ambience of the zone (a zone may override its map's).
+  placeAudio(z = this.zoneAt(this.py)) {
+    setIntensity(this.riding ? 1 : 0);
+    music(z.music || this.map.music || null);
+    setAmbience(z.ambience || this.map.ambience || null);
+    this.updateSoundMix();
+  }
+
+  // Beds that follow Chloé: the sea louder near the beach, a campfire when close to it.
+  updateSoundMix() {
+    const near = (d, range) => Math.max(0, 1 - d / range) ** 2;
+    const sea = this.map.sea ? near(Math.max(0, this.map.sea.y - this.py), this.map.sea.range) : 0;
+    const fires = this.map.entities.filter((e) => e.kind === "campfire");
+    const fire = Math.max(0, ...fires.map((e) => near(Math.hypot(e.x - this.px, e.y - this.py), FIRE_HEAR_TILES)));
+    setAmbienceMix({ sea, fire });
   }
 
   async warp(to) {
@@ -660,7 +682,8 @@ export class WorldScene extends Phaser.Scene {
       flag,
       setFlag,
       save: () => save(),
-      heal: () => { state.party.forEach(heal); },
+      heal: () => { state.party.forEach(heal); jingle("repos", { resume: true }); },
+      music: (id) => music(id),
       // Rest point: after a defeat, Chloé wakes up here (see resumeFromBattle).
       setRespawn: (point) => { state.respawn = { map: this.mapId, ...point }; },
       battle: (opts) => this.startBattle(opts),
@@ -930,6 +953,8 @@ export class WorldScene extends Phaser.Scene {
 
   resumeFromBattle(result) {
     this.refreshRideButton(); // a capture may have brought a dino that can be ridden
+    this.placeAudio();
+    pauseAmbience(false);
     const scripted = this.battleResolve;
     this.battleResolve = null;
     // A visible wild dino that was fought (beaten, caught or fled from) leaves the map.

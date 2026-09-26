@@ -10,6 +10,7 @@ import { anchors } from "../engine/textures.js";
 import { FRAME_W } from "../art/characterArt.js";
 import { playCry } from "../audio/cries.js";
 import { play } from "../audio/sounds.js";
+import { setIntensity } from "../audio/music.js";
 import { hud } from "../ui/hud.js";
 
 const TILE = 48;
@@ -64,6 +65,7 @@ export const riding = {
     await new Promise((r) => this.tweens.add({ targets: f, scaleX: MOUNT_SCALE, scaleY: MOUNT_SCALE, duration: 200, ease: "Back.easeOut", onComplete: r }));
     // Chloé hops on.
     this.riding = true;
+    setIntensity(1);
     this.player.setFrame(`${this.dir}-0`).setCrop(0, 0, FRAME_W, HIPS_Y);
     this.placeRider();
     const y = this.player.y;
@@ -80,6 +82,7 @@ export const riding = {
   dismount(instant = false) {
     if (!this.riding) return;
     this.riding = false;
+    setIntensity(0);
     this.player.setCrop();
     this.follower?.setScale(1);
     this.followerBreath?.resume();

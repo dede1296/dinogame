@@ -83,6 +83,12 @@ export function unlockAudio() {
   };
   window.addEventListener("pointerdown", once);
   window.addEventListener("keydown", once);
+  // Silence when the game is hidden (phone locked, other app), back when it returns.
+  document.addEventListener("visibilitychange", () => {
+    if (!ctx) return;
+    if (document.hidden) ctx.suspend();
+    else ctx.resume();
+  });
 }
 
 /**

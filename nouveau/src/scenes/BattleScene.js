@@ -12,6 +12,8 @@ import { paintArena, paintPlatform, paintSpark } from "../art/battleArt.js";
 import { playCry } from "../audio/cries.js";
 import { playSfx } from "../../../src/audio/sfx.js";
 import { play } from "../audio/sounds.js";
+import { music, jingle } from "../audio/music.js";
+import { pauseAmbience } from "../audio/ambience.js";
 import { markSeen, markCaught, dexSpeciesOf, dexCounts } from "../data/dex.js";
 
 const hex = (c) => parseInt(c.replace("#", ""), 16);
@@ -27,6 +29,13 @@ function flashWhite(sprite, on) {
   else sprite.clearTint().setTintMode(Phaser.TintModes.MULTIPLY);
 }
 
+// The music of a battle: a wild dino, an Alpha or boss, Maïa, or the Ombre Noire's grunts.
+function battleTheme(trainer) {
+  if (!trainer) return "sauvage";
+  if (trainer.boss) return "alpha";
+  return trainer.name === "Maïa" ? "rivale" : "ombre";
+}
+
 export class BattleScene extends Phaser.Scene {
   constructor() {
     super("Battle");
@@ -40,6 +49,8 @@ export class BattleScene extends Phaser.Scene {
     const W = this.scale.width, H = this.scale.height;
     this.W = W; this.H = H;
     hud.root.classList.add("in-battle");
+    music(this.opts.music || battleTheme(this.opts.trainer), { fade: 0.3 });
+    pauseAmbience(true);
 
     // Backdrop, platforms and particle texture.
     const zone = this.opts.zone || "plaines";
@@ -175,7 +186,7 @@ export class BattleScene extends Phaser.Scene {
 
   async finishBattle(result) {
     if (result === "win") {
-      playSfx("victory");
+      jingle("victoire");
       const t = this.battle.trainer;
       await this.ui.message(!t ? "Victoire !" : t.boss ? `Tu as vaincu ${this.battle.active("foe").nickname} !` : `Tu as battu ${t.name} !`);
       if (t?.reward) {
@@ -184,7 +195,7 @@ export class BattleScene extends Phaser.Scene {
         await this.ui.message(`Tu gagnes ${t.reward} pièces.`);
       }
     } else if (result === "catch") {
-      playSfx("victory");
+      jingle("capture");
       const d = this.battle.active("foe");
       d.nickname = d.speciesName;
       d.hp = Math.max(1, d.hp);
@@ -201,7 +212,7 @@ export class BattleScene extends Phaser.Scene {
       if (newInDex) await this.ui.message(`Les données de ${d.dexSpecies} sont ajoutées au Dinodex !`);
       if (newInDex && dexCounts().caught % ROC_MILESTONE === 0) await this.ui.message(`${dexCounts().caught} espèces possédées ! Le Professeur Roc voudra sûrement voir ton Dinodex.`);
     } else if (result === "lose") {
-      playSfx("defeat");
+      jingle("defaite");
       await this.ui.message("Tous tes dinos sont K.O. … Tu cours te mettre à l'abri.");
     }
     save();

@@ -2,6 +2,7 @@
 
 import { state, save, currentSlot } from "../state/game.js";
 import { JOURNAL } from "../data/items.js";
+import { HELENE_LETTER, journalVoiceId } from "../data/voiceLines.js";
 import { debugEnabled, debugTabHtml, runDebugAction } from "../debug/debug.js";
 import { openScreen, esc } from "./screen.js";
 import { openParty } from "./partyScreen.js";
@@ -46,17 +47,21 @@ function openJournal(hud) {
   return openScreen(hud, {
     title: "Journal d'Hélène", icon: artImg("journal", "📜"),
     render(body) {
-      if (!state.journal.length) {
+      const hasLetter = !!state.flags.letter_read;
+      if (!state.journal.length && !hasLetter) {
         body.innerHTML = `<div class="scr-empty">Aucune page trouvée. Les pages du journal d'Hélène sont cachées partout sur l'île.</div>`;
         return;
       }
-      // One row per page found; tapping it unfolds the page on old paper.
-      body.innerHTML = [...state.journal].sort((a, b) => a - b)
-        .map((n) => `<button class="item" data-page="${n}"><div class="ic">${artImg("journal", "📜")}</div><div>Page ${n} — ${esc(JOURNAL[n].title)}</div><div class="qty">Lire</div></button>`).join("") +
+      // Hélène's letter first, then one row per page found; tapping one unfolds it on
+      // old paper, read aloud by Hélène.
+      const row = (attr, label) => `<button class="item" ${attr}><div class="ic">${artImg("journal", "📜")}</div><div>${label}</div><div class="qty">Lire</div></button>`;
+      body.innerHTML = (hasLetter ? row(`data-letter="1"`, "La lettre d'Hélène") : "") +
+        [...state.journal].sort((a, b) => a - b).map((n) => row(`data-page="${n}"`, `Page ${n} — ${esc(JOURNAL[n].title)}`)).join("") +
         `<div class="scr-hint">${state.journal.length} page(s) sur 40</div>`;
       body.onclick = (e) => {
+        if (e.target.closest("[data-letter]")) return showLetter(hud, HELENE_LETTER, "— H.", "helene-lettre");
         const n = e.target.closest("[data-page]")?.dataset.page;
-        if (n) showLetter(hud, [JOURNAL[n].title, JOURNAL[n].text], "— H.");
+        if (n) showLetter(hud, [JOURNAL[n].title, JOURNAL[n].text], "— H.", journalVoiceId(n));
       };
     },
   });

@@ -27,12 +27,17 @@ async function ensureVoices() {
   }
 }
 
+const tts = (voiceId, text) => fetch(`${API}/text-to-speech/${voiceId}?output_format=mp3_44100_64`, {
+  method: "POST", headers,
+  body: JSON.stringify({ text, model_id: MODEL, language_code: "fr", voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.3 } }),
+});
+
 async function speak(line) {
   const actor = VOICE_ACTORS[line.speaker];
-  const res = await fetch(`${API}/text-to-speech/${actor.id}?output_format=mp3_44100_64`, {
-    method: "POST", headers,
-    body: JSON.stringify({ text: line.text, model_id: MODEL, language_code: "fr", voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.3 } }),
-  });
+  // The preferred library voice needs a paid plan: HTTP 402 otherwise, then the free voice.
+  let res = actor.preferred ? await tts(actor.preferred.id, line.text) : null;
+  if (res && res.status !== 402) console.log(`  voix ${actor.preferred.name}`);
+  if (!res || res.status === 402) res = await tts(actor.id, line.text);
   if (!res.ok) throw new Error(`${line.id} : HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
   const file = `${OUT}/${line.id}.mp3`;
   fs.writeFileSync(file, Buffer.from(await res.arrayBuffer()));

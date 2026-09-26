@@ -58,6 +58,7 @@ export const grotte1 = {
   name: "Grotte des Échos",
   cave: true,
   music: "grotte",
+  ambience: "grotte",
   rows: level1(),
   zones: [{ name: "Grotte des Échos", y0: 0, y1: 28, encounters: "grotte", rate: 0.015 }],
   // Visible wild dinos (their glowing eyes show in the dark).
@@ -83,6 +84,7 @@ export const grotte2 = {
   name: "Grotte des Échos — Profondeurs",
   cave: true,
   music: "grotte",
+  ambience: "grotte",
   rows: level2(),
   zones: [{ name: "Profondeurs des Échos", y0: 0, y1: 26, encounters: "grotte", rate: 0.015 }],
   roamers: [{ table: "grotte", count: 4, area: [2, 2, 30, 16], wander: 2 }],

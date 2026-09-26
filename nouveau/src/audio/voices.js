@@ -6,6 +6,8 @@
 
 import { audioContext, masterOut } from "./sounds.js";
 import { VOICE_LINES, voiceLineFor } from "../data/voiceLines.js";
+import { duckMusic } from "./music.js";
+import { duckAmbience } from "./ambience.js";
 
 const VOICE_VOLUME_KEY = "dino-voice-volume";
 const DEFAULT_VOICE_VOLUME = 0.7;
@@ -147,6 +149,9 @@ export async function speakLine(idOrText) {
   const src = ctx.createBufferSource();
   src.buffer = buf;
   src.connect(bus(ctx));
+  // Music and ambience step back while someone speaks.
+  duckMusic(true); duckAmbience(true);
+  src.onended = () => { duckMusic(false); duckAmbience(false); };
   src.start();
   return () => { try { src.stop(); } catch { /* already ended */ } };
 }

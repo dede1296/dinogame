@@ -6,10 +6,13 @@ import { hud } from "./ui/hud.js";
 import { resetState, state, setFlag, useSlot, autosave } from "./state/game.js";
 import { setupTitle } from "./ui/title.js";
 import { unlockAudio } from "./audio/sounds.js";
+import { music, currentMusic, validateThemes } from "./audio/music.js";
+import { setAmbience, currentAmbience } from "./audio/ambience.js";
 import { consumeJump } from "./debug/debug.js";
 import { setupServiceWorker, requestPersistentStorage, autosaveOnHide } from "./pwa.js";
 
 unlockAudio();
+window.__audio = { music, currentMusic, setAmbience, currentAmbience, validateThemes }; // for the automated tests
 import { speciesIndex } from "./story/scripts.js";
 
 // Render at device resolution (capped) so the vector-style art stays sharp.

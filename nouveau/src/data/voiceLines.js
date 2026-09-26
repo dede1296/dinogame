@@ -4,12 +4,16 @@
 // A dialogue line is voiced when its text is exactly one of these: keep them in sync
 // with the story scripts.
 
+import { JOURNAL } from "./items.js";
+
 // Who speaks with which ElevenLabs voice. The free plan only allows ElevenLabs' own
 // voices through the API (French with a slight accent); native French library voices
 // need a paid plan: Grandma Clo (EMuO6fFLrXKOryHzij6K) for Hélène, HenryD
 // (59dhv4BKONM60oDSKECM) for Roc, Adina (FvmvwvObRqIHojkEGh5N) for Maïa.
+// `preferred`: the library voice scripts/gen-voices.mjs tries first (paid plan), falling
+// back to `id` when the account cannot use it.
 export const VOICE_ACTORS = {
-  "Hélène": { id: "XrExE9yKIg1WjnnlVkGX", name: "Matilda" },
+  "Hélène": { id: "XrExE9yKIg1WjnnlVkGX", name: "Matilda", preferred: { id: "EMuO6fFLrXKOryHzij6K", name: "Grandma Clo" } },
   "Prof. Roc": { id: "pqHfZKP75CvOlQylNhV4", name: "Bill" },
   "Maïa": { id: "cgSgspJ2msm6clMCkdW9", name: "Jessica" },
 };
@@ -22,8 +26,13 @@ export const HELENE_LETTER = [
   "J'ai caché les pages de mon journal sur toute l'île, pour qu'ils ne les trouvent pas. Toi, tu sauras les lire. Commence par l'endroit où tout a commencé.",
 ];
 
+/** Id of the recording of journal page `n` (read aloud in Menu › Journal). */
+export const journalVoiceId = (n) => `journal-${n}`;
+
 export const VOICE_LINES = [
   { id: "helene-lettre", speaker: "Hélène", text: HELENE_LETTER.join(" ") },
+  // The pages of Hélène's journal: title, then the page.
+  ...Object.entries(JOURNAL).map(([n, p]) => ({ id: journalVoiceId(n), speaker: "Hélène", text: `${p.title}. ${p.text.replace(/\n+/g, " ")}` })),
   // Professor Roc, first meeting at the Cabinet.
   { id: "roc-1", speaker: "Prof. Roc", text: "Chloé ! Enfin… Tu as bien grandi depuis la photo qu'Hélène gardait sur son bureau." },
   { id: "roc-2", speaker: "Prof. Roc", text: "Je suis Anselme Roc. J'ai travaillé trente ans aux côtés de ta grand-mère." },
