@@ -12,6 +12,36 @@ const RENDER_SECONDS = 4;
 const SILENCE = 0.003;
 const cache = new Map(); // file or synth key -> Promise<AudioBuffer | null>
 
+// Cries have their own volume (Réglages › Cris des dinos), on top of the effects volume.
+const CRY_VOLUME_KEY = "dino-cry-volume";
+const DEFAULT_CRY_VOLUME = 0.5;
+let cryVolume = readCryVolume();
+let cryBus = null;
+
+function readCryVolume() {
+  try {
+    const v = parseFloat(localStorage.getItem(CRY_VOLUME_KEY));
+    return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : DEFAULT_CRY_VOLUME;
+  } catch { return DEFAULT_CRY_VOLUME; }
+}
+
+export const getCryVolume = () => cryVolume;
+
+export function setCryVolume(v) {
+  cryVolume = Math.min(1, Math.max(0, v));
+  try { localStorage.setItem(CRY_VOLUME_KEY, String(cryVolume)); } catch { /* storage unavailable */ }
+  if (cryBus) cryBus.gain.value = cryVolume;
+}
+
+function bus(ctx) {
+  if (!cryBus) {
+    cryBus = ctx.createGain();
+    cryBus.gain.value = cryVolume;
+    cryBus.connect(masterOut());
+  }
+  return cryBus;
+}
+
 const FAMILY_VOICE = {
   tyrant: "tyran", raptor: "raptor", ceratopsian: "ceratopsien", sauropod: "sauropode", armored: "cuirasse",
   spino: "spino", hadrosaur: "hadrosaure", flyer: "pterosaure", marine: "marin",
@@ -72,7 +102,7 @@ async function renderOffline(build) {
 }
 
 // Voices differ a lot in loudness: bring every cry to the same peak level.
-const TARGET_PEAK = 0.8;
+const TARGET_PEAK = 0.6;
 const MAX_BOOST = 12;
 function normalize(buf) {
   let peak = 0;
@@ -142,11 +172,12 @@ export async function playCry(d, { mood = "normal", volume = 1, pan = 0, distanc
 
   let out = src.connect(tone).connect(gain);
   if (panner) out = out.connect(panner);
-  out.connect(masterOut());
+  out.connect(bus(ctx));
   if (echo > 0) {
     const send = ctx.createGain();
     send.gain.value = echo;
     out.connect(send).connect(echoInput());
+    send.gain.value = echo * cryVolume;
   }
   src.start(t);
   src.stop(t + length + 0.05);
