@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://actors/npc.gd" id="1_npc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_feet"]
+radius = 13.0
+
+[node name="Npc" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_npc")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.52, 0.52)
+offset = Vector2(0, -89)
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_feet")

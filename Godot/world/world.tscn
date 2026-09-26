@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://world/world.gd" id="1_world"]
+[ext_resource type="Shader" path="res://world/shaders/cloud_shadows.gdshader" id="2_clouds"]
+[ext_resource type="Script" path="res://ui/touch_controls.gd" id="3_touch"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_clouds"]
+shader = ExtResource("2_clouds")
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="Light" type="CanvasModulate" parent="."]
+color = Color(1, 0.975, 0.93, 1)
+
+[node name="RegionHolder" type="Node2D" parent="."]
+
+[node name="CloudShadows" type="ColorRect" parent="."]
+z_index = 100
+material = SubResource("ShaderMaterial_clouds")
+mouse_filter = 2
+
+[node name="TouchControls" type="CanvasLayer" parent="."]
+script = ExtResource("3_touch")
+
+[node name="Hud" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Banner" type="Label" parent="Hud"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 34.0
+offset_bottom = 90.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.86, 1)
+theme_override_colors/font_outline_color = Color(0.2, 0.12, 0.05, 0.9)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 38
+horizontal_alignment = 1
+vertical_alignment = 1

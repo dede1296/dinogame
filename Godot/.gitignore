@@ -1,0 +1,10 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Build outputs (APK, Web) are artifacts, never sources: see .github/workflows/godot-build.yml
+/build/*
+!/build/.gdignore
+*.apk
+*.aab
+*.keystore

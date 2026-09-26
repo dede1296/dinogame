@@ -1,0 +1,12 @@
+{
+  // Ouvrir ce fichier dans VS Code (Fichier › Ouvrir l'espace de travail à partir d'un fichier).
+  // L'extension godot-tools ne s'active que si project.godot est à la racine d'un dossier
+  // de l'espace de travail : Godot/ est donc un dossier à part entière ici.
+  "folders": [
+    { "name": "Ambrelune (Godot)", "path": "." },
+    { "name": "Dinogame (Phaser, lecture)", "path": ".." }
+  ],
+  "settings": {
+    "godotTools.editorPath.godot4": "C:\\Program Files\\Godot\\Godot_v4.7.2-stable_win64.exe"
+  }
+}
