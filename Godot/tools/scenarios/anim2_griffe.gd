@@ -1,0 +1,31 @@
+extends RefCounted
+## ANIM-2's test scenario (tools/capture.gd scenario_file=…): griffe.
+
+const STEPS := [
+	[0.80, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","barque_vue","foret_arrivee","lettre_scellee"]],
+	[0.85, "calm", 900.0],
+	[0.90, "give", "pachycephalosaurus"],
+	[0.95, "level", 18],
+	[1.00, "dlog", true],
+	[1.02, "demo", true],
+	[1.03, "talk", true],
+	[1.07, "auto", true],
+	[1.10, "fast_battles", true],
+	[1.40, "zone", &"foret"],
+	[3.40, "tp", Vector2(23.4, 81)],
+	[3.60, "hold", "move_left"],
+	[3.72, "hold", ""],
+	[4.50, "interact_now", null],
+	[5.00, "wait_idle", [2.0, 90]],
+	[5.50, "near", null],
+	[5.60, "shot", "z_fin"],
+	[5.70, "starter", "ankylosaurus"],
+	[5.80, "zone", &"foret"],
+	[8.00, "tp", Vector2(23.4, 81)],
+	[8.20, "hold", "move_left"],
+	[8.32, "hold", ""],
+	[9.00, "interact_now", null],
+	[9.50, "wait_idle", [2.0, 90]],
+	[10.00, "near", null],
+	[10.10, "shot", "z_fin2"],
+]

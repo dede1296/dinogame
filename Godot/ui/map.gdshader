@@ -4,7 +4,7 @@ shader_type canvas_item;
 // It reads the same masks and height texture as the 3D ground.
 
 uniform sampler2D terrain_mask : filter_linear, repeat_disable;    // R path, G tall grass, B water
-uniform sampler2D terrain_mask2 : filter_linear, repeat_disable;   // R sand, G forest
+uniform sampler2D terrain_mask2 : filter_linear, repeat_disable;   // R sand, G forest, B mud, A rock
 uniform sampler2D height_tex : filter_linear, repeat_disable;
 uniform vec2 height_origin = vec2(-10.0);
 uniform float height_res = 2.0;
@@ -19,6 +19,8 @@ const vec3 TALL = vec3(0.50, 0.64, 0.33);
 const vec3 PATH = vec3(0.87, 0.74, 0.52);
 const vec3 SAND = vec3(0.93, 0.86, 0.65);
 const vec3 FOREST = vec3(0.36, 0.53, 0.32);
+const vec3 MUD = vec3(0.55, 0.52, 0.36);
+const vec3 CANYON = vec3(0.80, 0.58, 0.42);
 const vec3 WATER = vec3(0.45, 0.66, 0.80);
 const vec3 SHORE = vec3(0.22, 0.36, 0.48);
 const vec3 ROCK = vec3(0.68, 0.59, 0.47);
@@ -48,6 +50,8 @@ void fragment() {
 	vec3 col = mix(GRASS, TALL, m.g);
 	col = mix(col, SAND, m2.r);
 	col = mix(col, FOREST, m2.g);
+	col = mix(col, MUD, m2.b);
+	col = mix(col, CANYON, m2.a);
 	col = mix(col, PATH, smoothstep(0.3, 0.6, m.r));
 	// Higher ground a little paler; cliffs and steep slopes in bare rock.
 	col += vec3(0.06, 0.05, 0.02) * clamp(h / 8.0, 0.0, 1.0);

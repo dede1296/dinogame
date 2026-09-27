@@ -22,5 +22,10 @@ static func de(words: String) -> String:
 	return ("d'" if _vowel(words) else "de ") + words
 
 
+## « que » before a name: « qu'Écho », « que Bastion ».
+static func que(words: String) -> String:
+	return ("qu'" if _vowel(words) else "que ") + words
+
+
 static func _vowel(word: String) -> bool:
 	return word != "" and VOWELS.contains(word.substr(0, 1).to_lower())

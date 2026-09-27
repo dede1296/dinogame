@@ -143,9 +143,13 @@ static func _sharpen(f: float, diff: float) -> float:
 
 
 func _exact(x: float, z: float) -> float:
-	# Tiles are read at their centres, with a slight wobble so cliff lines are not straight.
-	var sx := x - 0.5 + 0.12 * sin(z * 2.3 + 0.7)
-	var sz := z - 0.5 + 0.12 * sin(x * 1.9 + 0.2)
+	# Tiles are read at their centres, with a slight wobble so cliff lines are not straight;
+	# none by the zone's edges: a cliff running on into the neighbour shown beyond an edge
+	# meets its own there exactly (no crack between the two rock faces).
+	var edge := minf(minf(x, z), minf(size.x - x, size.y - z))
+	var wobble := 0.12 * smoothstep(0.0, 2.0, edge)
+	var sx := x - 0.5 + wobble * sin(z * 2.3 + 0.7)
+	var sz := z - 0.5 + wobble * sin(x * 1.9 + 0.2)
 	var cx := floori(sx)
 	var cz := floori(sz)
 	var fx := sx - cx

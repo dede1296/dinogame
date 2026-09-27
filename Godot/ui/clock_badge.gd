@@ -1,7 +1,7 @@
 class_name ClockBadge
 extends PanelContainer
 ## The time of day at a glance, top-right next to the menu button: an icon (sun, moon, rain,
-## mist) and the hour. Holding it down (or F2 on a computer) opens the debug panel.
+## mist, sandstorm) and the hour. Holding it down (or F2 on a computer) opens the debug panel.
 
 const ICONS := {
 	&"sun": preload("res://assets/art/ui/meteo_soleil.png"),
@@ -11,6 +11,9 @@ const ICONS := {
 	&"mist": preload("res://assets/art/ui/meteo_brume.png"),
 	&"storm": preload("res://assets/art/ui/meteo_orage.png"),
 }
+## The sandstorm's own icon when there is one; else the mist's, tinted ochre (SAND_TINT).
+const SANDSTORM_ICON := "res://assets/art/ui/meteo_sable.png"
+const SAND_TINT := Color(1.0, 0.72, 0.38)
 const HOLD_S := 1.0          # long press for the debug panel
 const RIGHT_OF_MENU := 96.0  # room left for the menu button (76 px + gap)
 
@@ -72,6 +75,9 @@ func _process(delta: float) -> void:
 func _refresh() -> void:
 	var minutes := int(Game.clock)
 	_label.text = "%02d:%02d" % [floori(minutes / 60.0), minutes % 60]
+	if Game.weather == &"sandstorm":
+		_show_sandstorm()
+		return
 	var key := &"sun"
 	if Game.weather == &"storm":
 		key = &"storm"
@@ -82,6 +88,17 @@ func _refresh() -> void:
 	elif Game.phase() == &"night":
 		key = &"full_moon" if Game.is_full_moon() else &"moon"
 	_icon.texture = ICONS[key]
+	_icon.modulate = Color.WHITE
+
+
+static var _sand_icon: Texture2D
+
+
+func _show_sandstorm() -> void:
+	if _sand_icon == null:
+		_sand_icon = load(SANDSTORM_ICON) if ResourceLoader.exists(SANDSTORM_ICON) else ICONS[&"mist"]
+	_icon.texture = _sand_icon
+	_icon.modulate = Color.WHITE if _sand_icon != ICONS[&"mist"] else SAND_TINT
 
 
 func _gui_input(event: InputEvent) -> void:

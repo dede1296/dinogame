@@ -7,6 +7,13 @@ extends RefCounted
 const PARTS: Array[StringName] = [&"head", &"teeth", &"front_legs", &"back_legs", &"back", &"tail"]
 const MAX_LEVEL := 50
 const MAX_MOVES := 4
+## The Lien (see `bond`): hearts from 0 to MAX_BOND.
+const MAX_BOND := 5
+## Bond points for the first heart; each heart after it asks BOND_STEP_MORE more (the Lien
+## deepens slowly: 600, 900, 1200… points, a point being one step walked in the lead, about
+## 4 a second: the first heart in some 2 minutes of walking, the fifth in 7).
+const BOND_FIRST := 600
+const BOND_STEP_MORE := 300
 const FAMILY_INTELLIGENCE := {
 	&"raptor": 9, &"tyrant": 7, &"spino": 6, &"marine": 6, &"ceratopsian": 5,
 	&"hadrosaur": 5, &"flyer": 5, &"armored": 3, &"sauropod": 2,
@@ -23,6 +30,11 @@ var status_turns := 0
 ## Maddened by black amber (veins of violet): cannot be caught, only calmed (Apaiser).
 ## Only for the battle against it, never saved.
 var corrupted := false
+## The Lien: how close it is to Chloé, 0 to MAX_BOND hearts. It grows with bond points
+## (walking as the lead, battles won together, care) and with story moments (whole hearts).
+var bond := 0
+## Bond points gathered towards the next heart (see bond_to_next).
+var bond_points := 0
 
 
 static func create(species_id: StringName, lvl: int, name := "") -> Dino:
@@ -56,6 +68,9 @@ static func from_dict(data: Dictionary) -> Dino:
 	if d.moves.is_empty():
 		d.moves = d._moves_at_level()
 	d.hp = clampi(int(data.get("hp", 1)), 0, d.stats()["hp"])
+	# Saves from before the Lien: no heart yet.
+	d.bond = clampi(int(data.get("bond", 0)), 0, MAX_BOND)
+	d.bond_points = maxi(0, int(data.get("bond_points", 0))) if d.bond < MAX_BOND else 0
 	return d
 
 
@@ -64,7 +79,39 @@ func to_dict() -> Dictionary:
 	for part in PARTS:
 		b[String(part)] = String(build[part])
 	var m := moves.map(func(x: Dictionary) -> Dictionary: return {"id": String(x["id"]), "pp": x["pp"]})
-	return {"build": b, "nickname": nickname, "level": level, "xp": xp, "hp": hp, "moves": m}
+	return {"build": b, "nickname": nickname, "level": level, "xp": xp, "hp": hp, "moves": m,
+		"bond": bond, "bond_points": bond_points}
+
+
+## Bond points still needed for its next heart (0 at MAX_BOND).
+func bond_to_next() -> int:
+	if bond >= MAX_BOND:
+		return 0
+	return BOND_FIRST + bond * BOND_STEP_MORE - bond_points
+
+
+## Adds bond points (steps together, a battle won, a berry…). Returns the hearts gained.
+func gain_bond_points(points: int) -> int:
+	if points <= 0 or bond >= MAX_BOND:
+		return 0
+	var before := bond
+	bond_points += points
+	while bond < MAX_BOND and bond_points >= BOND_FIRST + bond * BOND_STEP_MORE:
+		bond_points -= BOND_FIRST + bond * BOND_STEP_MORE
+		bond += 1
+	if bond >= MAX_BOND:
+		bond_points = 0
+	return bond - before
+
+
+## Adds whole hearts (a story moment); the points towards the next one are kept. Returns
+## the hearts gained (fewer at the top).
+func add_hearts(hearts: int) -> int:
+	var before := bond
+	bond = clampi(bond + hearts, 0, MAX_BOND)
+	if bond >= MAX_BOND:
+		bond_points = 0
+	return bond - before
 
 
 	## The species the dino looks like (its head decides, as in the Phaser version).

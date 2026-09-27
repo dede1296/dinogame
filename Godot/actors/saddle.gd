@@ -1,6 +1,7 @@
 class_name Saddle
 extends RefCounted
-## Chloé on her mount (Player.mount, carried by the Companion): where she sits for each way
+## Chloé on her mount (Player.mount), or on her swimmer's back in deep water (Player.swimmer),
+## carried by the Companion: where she sits for each way
 ## it is seen, and her pictures in the saddle (chloe_selle.png: sitting astride, from the
 ## front, facing left, facing right, from behind). From the side, the mount stands behind
 ## her: her near leg hangs on its flank. From behind too (her legs on each side of its body).
@@ -21,6 +22,11 @@ const SEATS := {
 	&"parasaurolophus": {"side": Vector2(-0.09, 0.68), "front": 0.84, "back": 0.64},
 	&"triceratops": {"side": Vector2(-0.12, 0.66), "front": 0.86, "back": 0.64},
 	&"ankylosaurus": {"side": Vector2(0.0, 0.72), "front": 0.6, "back": 0.6},
+	# The swimmers (Swim): on the back just behind the shoulders; the Spinosaurus's sail
+	# stands behind her, so she sits in front of it, at the foot of its neck.
+	&"baryonyx": {"side": Vector2(0.03, 0.64), "front": 0.8, "back": 0.62},
+	&"suchomimus": {"side": Vector2(0.03, 0.62), "front": 0.8, "back": 0.62},
+	&"spinosaurus": {"side": Vector2(0.13, 0.58), "front": 0.8, "back": 0.6},
 }
 const SEAT_DEFAULT := {"side": Vector2(0.0, 0.68), "front": 0.62, "back": 0.64}
 const DEPTH := 2.0   # px the mount stands nearer the camera (+) or farther (-) than her

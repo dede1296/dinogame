@@ -14,7 +14,8 @@ const GOLD := Color(1, 0.86, 0.5)
 const CREAM := Color(1, 0.97, 0.9)
 const SIDE_WIDTH := 300.0
 ## The zones with a detailed map (outdoors).
-const DETAILED := [&"plaines", &"port_ambre", &"havre_dore", &"foret"]
+const DETAILED := [&"plaines", &"port_ambre", &"havre_dore", &"foret", &"camp_ombre", &"marais", &"desert",
+	&"sanctuaire_vents"]
 
 var _zones := {}            # zone id -> scene path (world.gd ZONES)
 var _here: Region           # Chloé's zone (the one being played)
@@ -259,7 +260,8 @@ func _show_zone(zone: StringName) -> void:
 	_body.add_child(m)
 	_map = m
 	_zoom_controls(m)
-	_title.text = region.display_name
+	# (A zone inside a region, like the camp in the Forêt: its own name.)
+	_title.text = region.zone_name if region.zone_name != "" else region.display_name
 	var stats := []
 	if region.pebbles > 0:
 		stats.append(["Larmes : %d / %d" % [Game.pebbles_found(String(zone)), region.pebbles], GOLD])

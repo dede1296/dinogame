@@ -10,7 +10,7 @@ const AMBER := Color(0.98, 0.76, 0.35)
 const INK := Color(0.106, 0.122, 0.157, 0.97)
 const HOURS := [["Aube", 6.0], ["Midi", 12.0], ["Crépuscule", 19.0], ["Nuit", 23.0]]
 const SPEEDS := [1.0, 10.0, 60.0]
-const WEATHER_NAMES := {&"clear": "Beau temps", &"rain": "Pluie", &"mist": "Brume", &"storm": "Orage"}
+const WEATHER_NAMES := {&"clear": "Beau temps", &"rain": "Pluie", &"mist": "Brume", &"storm": "Orage", &"sandstorm": "Sable"}
 
 var _was_paused := false
 var _species_ids: Array = []
@@ -122,6 +122,9 @@ func _build() -> void:
 	var items := _row(col)
 	items.add_child(_button("+5 colliers", _give.bind("collier")))
 	items.add_child(_button("+5 baies", _give.bind("baie")))
+	items.add_child(_button("Gilet de nage", func() -> void:
+		Game.give_item("gilet_nage")
+		_say("Gilet de nage reçu : avec un dino nageur (Baryonyx…), Chloé peut nager.")))
 
 	var world := _world()
 	if world:

@@ -39,6 +39,8 @@ extends Node2D
 @export_range(0.0, 1.0) var rain_chance := 0.08
 @export_range(0.0, 1.0) var mist_chance := 0.1
 @export_range(0.0, 1.0) var storm_chance := 0.03
+## Chance per game hour of a sandstorm (the Désert). 0: never here (and one blowing stops).
+@export_range(0.0, 1.0) var sandstorm_chance := 0.0
 ## Relief, one text row per tile row: 0–9 = level (1.2 m each), r = ramp between levels,
 ## anything else = 0 (small zones and interiors). Empty = flat zone, or height_data.
 @export var relief: PackedStringArray = []
@@ -49,6 +51,11 @@ extends Node2D
 
 ## Height difference (m) between two neighbouring tiles from which one can't walk between them.
 const CLIFF_STEP := 0.75
+## A basin sunk into the floor (relief "b": a flooded passage of the temple): this deep, less
+## than CLIFF_STEP so that it can be walked through once dry, and above the zone's water sheet
+## (HeightMap.WATER_LEVEL), which would fill it for good; dry, its floor looks wet.
+const BASIN_DEPTH := 0.35
+const _BASIN := -2
 ## Half the thickness of a cliff wall (px): as deep as the rock face is drawn, so nobody
 ## stands on its foot or its lip.
 const WALL_HALF := 12.0
@@ -95,6 +102,8 @@ func tile_height(cell: Vector2i) -> float:
 	var lvl := relief_at(cell)
 	if lvl >= 0:
 		return lvl * 1.2
+	if lvl == _BASIN:
+		return -BASIN_DEPTH
 	var best := [0, 0]
 	var best_d := -1
 	for axis: Array in [[Vector2i.LEFT, Vector2i.RIGHT], [Vector2i.UP, Vector2i.DOWN]]:
@@ -106,7 +115,8 @@ func tile_height(cell: Vector2i) -> float:
 	return (best[0] + best[1]) * 0.6
 
 
-## Ground type at a world position: &"grass", &"path", &"tall_grass", &"water", &"forest" or &"sand".
+## Ground type at a world position: &"grass", &"path", &"tall_grass", &"water", &"forest", &"sand",
+## &"mud" or &"rock".
 func surface_at(world_pos: Vector2) -> StringName:
 	# (A zone opened only for a preview is not in the tree: it sits at the origin.)
 	var local := terrain.to_local(world_pos) if terrain.is_inside_tree() else world_pos
@@ -161,6 +171,8 @@ func relief_at(cell: Vector2i) -> int:
 	var c := row[cell.x]
 	if c == "r":
 		return -1
+	if c == "b":
+		return _BASIN
 	return int(c) if c.is_valid_int() else 0
 
 
@@ -273,6 +285,8 @@ func _clear_exit_corridors() -> void:
 		func(c: Rect2) -> bool: return c.has_area())
 	for n in entities.get_children():
 		if n is Prop and n.get_script() == preload("res://world/prop.gd"):
+			if Prop.KINDS.get((n as Prop).kind, {}).get("solid", 0.0) is Vector2:
+				continue   # a building, a stall: placed on purpose (the Cabinet by its own door)
 			for c: Rect2 in corridors:
 				if c.has_point(n.position):
 					entities.remove_child(n)

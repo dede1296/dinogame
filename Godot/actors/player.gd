@@ -3,8 +3,12 @@ extends CharacterBody2D
 ## Chloé: analog top-down movement (keyboard, gamepad or touch joystick), walk animation,
 ## footsteps by ground type, interaction with what is in front of her. She can ride a big
 ## dino (Monture, with Joss's saddle): faster, sitting on its back (the companion carries her).
+## With the swimming vest and a grown swimmer, she swims across deep water on its back (Swim):
+## it starts by itself as she walks into the water, and ends on the shore.
 
 signal stepped(surface: StringName)
+## Chloé starts (true) or stops swimming, or another dino carries her in the water.
+signal swim_changed(swimming: bool)
 
 const SPEED := 165.0
 const ACCEL := 1500.0
@@ -15,6 +19,10 @@ const BOOTS_SPEED := 1.2       # × with Rosalie's walking boots
 const INTERACT_REACH := 62.0
 const TRAIL_SPACING := 6.0
 const TRAIL_LENGTH := 48
+## Walking against deep water she cannot swim in, this long (s): told why (once per zone).
+const WATER_TELL_S := 0.7
+const WATER_PROBE := 22.0      # px ahead of her feet where the water is looked for
+const SWIM := preload("res://world/swim.gd")
 const SHEET := preload("res://assets/art/characters/chloe.png")
 const FOOTSTEPS: Array[AudioStream] = [
 	preload("res://assets/audio/footsteps/footstep00.ogg"), preload("res://assets/audio/footsteps/footstep01.ogg"),
@@ -30,10 +38,14 @@ var facing := Vector2.DOWN
 var busy := false   # during an interaction
 ## The dino Chloé rides (null: on foot). Set by the world (World.mount / dismount).
 var mount: Dino = null
+## The dino carrying her in deep water (null: not swimming). Set here, as she walks in or out.
+var swimmer: Dino = null
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
 var _step_travel := 0.0
+var _push_time := 0.0      # walking against water she cannot swim in (s)
+var _water_told := false   # …and told why, in this zone
 
 
 func _ready() -> void:
@@ -42,6 +54,7 @@ func _ready() -> void:
 	sprite.sprite_frames = SheetFrames.character(SHEET, 15.0)
 	sprite.play(&"idle_down")
 	trail.append(global_position)
+	collision_mask = SWIM.SOLID_LAYER | SWIM.WATER_LAYER
 
 
 func can_move() -> bool:
@@ -52,10 +65,13 @@ func _physics_process(delta: float) -> void:
 	var input := Vector2.ZERO
 	if can_move():
 		input = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
+	_update_water_mask()
 	velocity = velocity.move_toward(input * top_speed(), ACCEL * delta)
 	var before := global_position
 	move_and_slide()
 	var moved := global_position.distance_to(before)
+	_update_swim()
+	_watch_water(input, moved, delta)
 	_animate(input)
 	_track(moved)
 	RenderingServer.global_shader_parameter_set(&"player_position", global_position)
@@ -64,7 +80,71 @@ func _physics_process(delta: float) -> void:
 func top_speed() -> float:
 	if mount:
 		return SPEED * RIDE_SPEED
+	if swimmer:
+		return SPEED * SWIM.SPEED
 	return SPEED * (BOOTS_SPEED if Game.item_count("bottes") > 0 else 1.0)
+
+
+## The dino carrying Chloé (her mount, or her swimmer in the water), or null: on her feet.
+func carried_by() -> Dino:
+	return mount if mount else swimmer
+
+
+func is_swimming() -> bool:
+	return swimmer != null
+
+
+## Deep water stops her, unless she can swim, or already stands in it (never stuck there).
+func _update_water_mask() -> void:
+	var free := swimmer != null or on_water() or SWIM.can_swim()
+	var mask := SWIM.SOLID_LAYER | (0 if free else SWIM.WATER_LAYER)
+	if collision_mask != mask:
+		collision_mask = mask
+
+
+## Is Chloé standing in deep water (a "water" tile; a pier or a ford's stones are not)?
+func on_water() -> bool:
+	return surface_at.is_valid() and surface_at.call(global_position) == &"water"
+
+
+## In the water, on the back of a swimmer of her party; out of it, on her feet again.
+func _update_swim() -> void:
+	if not on_water():
+		if swimmer:
+			_set_swimmer(null)
+		return
+	var s: Dino = swimmer if swimmer and Game.party.has(swimmer) else SWIM.swimmer()
+	if s != swimmer or (s and mount):
+		_set_swimmer(s)
+
+
+func _set_swimmer(s: Dino) -> void:
+	var was := swimmer != null
+	if s and mount:
+		mount = null   # her mount does not swim: the swimmer takes her on its back
+	swimmer = s
+	if was and s == null:
+		trail = [global_position]   # her dino walks behind her again, from the shore
+	if was != (s != null):
+		var view := get_tree().get_first_node_in_group(&"world_view") as WorldView
+		if view:
+			view.splash(global_position)
+	swim_changed.emit(s != null)
+
+
+## Walking against deep water she cannot go into: a word about why, once in the zone.
+func _watch_water(input: Vector2, moved: float, delta: float) -> void:
+	if _water_told or input.length() < 0.5 or collision_mask & SWIM.WATER_LAYER == 0 or not surface_at.is_valid():
+		_push_time = 0.0
+		return
+	var ahead := global_position + input.normalized() * WATER_PROBE
+	if moved < top_speed() * delta * 0.3 and surface_at.call(ahead) == &"water":
+		_push_time += delta
+		if _push_time >= WATER_TELL_S:
+			_water_told = true
+			Toast.say(get_tree(), SWIM.blocked_reason())
+	else:
+		_push_time = 0.0
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -77,7 +157,7 @@ func _animate(input: Vector2) -> void:
 	var speed := velocity.length()
 	if input.length() > 0.1:
 		facing = input
-	if mount:   # in the saddle: her pose is the mount's (Saddle)
+	if carried_by():   # in the saddle, or swimming on a dino's back: her pose is its (Saddle)
 		return
 	var dir := SheetFrames.direction_name(facing)
 	if speed > 12.0:
@@ -95,12 +175,13 @@ func _track(moved: float) -> void:
 		if trail.size() > TRAIL_LENGTH:
 			trail.remove_at(0)
 	_step_travel += moved
-	if _step_travel >= STEP_DISTANCE * (RIDE_STEP if mount else 1.0):
+	if _step_travel >= STEP_DISTANCE * (RIDE_STEP if mount else SWIM.STROKE if swimmer else 1.0):
 		_step_travel = 0.0
 		var surface: StringName = surface_at.call(global_position) if surface_at.is_valid() else &"grass"
-		# Softer, lower steps on grass; crisper on the dirt path.
+		# Softer, lower steps on grass; crisper on the dirt path; none while swimming.
 		var on_path := surface == &"path"
-		Audio.play_sfx(FOOTSTEPS.pick_random(), (-8.0 if on_path else -13.0) + (4.0 if mount else 0.0), 0.08)
+		if not swimmer:
+			Audio.play_sfx(FOOTSTEPS.pick_random(), (-8.0 if on_path else -13.0) + (4.0 if mount else 0.0), 0.08)
 		stepped.emit(surface)
 
 
@@ -141,3 +222,4 @@ func teleport(pos: Vector2) -> void:
 	global_position = pos
 	reset_physics_interpolation()
 	trail = [pos]
+	_water_told = false

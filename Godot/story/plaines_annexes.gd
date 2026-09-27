@@ -21,6 +21,25 @@ const EGG_STEPS := 300
 const EGG_STIRS := 60   # steps left when it starts moving
 const XP_QUEST := 40
 const GLASS := preload("res://assets/audio/sfx/glass.wav")
+const RUSTLE := preload("res://assets/audio/sfx/feuillage.mp3")
+const CHIME := preload("res://assets/audio/sfx/galet.mp3")
+const LATCH := preload("res://assets/audio/sfx/latch.wav")
+## An amber glow as the 3D view can show it: the picture tinted amber (colours above white do
+## not show there) and a warm light on it.
+const AMBER_TINT := Color(1.0, 0.8, 0.45)
+const AMBER_LIGHT := Color(1.0, 0.72, 0.3)
+const AMBER_FLASH := Color(1.0, 0.8, 0.4, 0.4)
+## Where Chipie hides in the tall grass before her theft (tiles).
+const CHIPIE_HIDE := Vector2(59.2, 47.2)
+## In the Cabinet (tiles): the potted fern in the corner Roc talks to, the incubator, the
+## drawer of his desk.
+const FERN := Vector2(0.9, 9.6)
+const INCUBATOR := Vector2(13.8, 3.6)
+const DRAWER := Vector2(4.6, 4.1)
+## In front of Roc's workbench (tiles), where he makes the lantern.
+const WORKBENCH := Vector2(10.9, 3.0)
+## Chloé's shoulder, above her feet (px), for Chipie climbing up there.
+const SHOULDER := Vector2(10, -46)
 ## The parent of each starter's egg (one of Hélène's Anciens): who, and where.
 const PARENTS := {
 	&"velociraptor": "Griffe-Grise, un grand raptor au museau gris, qui règne sur les sous-bois de la Forêt Jurassique",
@@ -48,21 +67,32 @@ static func maia(who: Node) -> void:
 ## A Compsognathus darts out of the grass and snatches the compass off Maïa's belt.
 static func _theft(maia_npc: Node) -> void:
 	S.lock(true)
-	await S.say([{"text": "Un froissement dans les herbes hautes… puis un petit cri moqueur."}])
+	var chipie = S.actor("Chipie")
+	# The grass stirs where she hides, then her mocking little cry.
+	await S.say([_cue({"text": "Un froissement dans les herbes hautes… puis un petit cri moqueur."},
+		func() -> void: _rustle(chipie))])
 	Game.set_flag(&"chipie_etape", 0)
 	Game.set_flag(&"boussole_volee")   # Chipie appears (FleeingDino)
-	var chipie = S.actor("Chipie")
 	if chipie and maia_npc:
 		var start: Vector2 = chipie.global_position
-		chipie.global_position = S.at(59.2, 47.2)
+		chipie.global_position = S.at(CHIPIE_HIDE.x, CHIPIE_HIDE.y)
 		await chipie.walk_to(maia_npc.global_position + Vector2(-26, 14), 260.0)
 		chipie.cry(&"attaque")
+		# Snatched! Maïa jumps.
+		Stage.emote(maia_npc as Node2D, "!")
+		Stage.hop(maia_npc, 1, 10.0)
 		await S.wait(0.2)
 		await chipie.walk_to(start, 260.0)
 		chipie.sprite.flip_h = false
 	await S.say([
-		{"who": MAIA, "text": "Hé ! HÉ ! Ma boussole ! Enfin… la boussole de maman. Elle va me tuer."},
-		{"who": MAIA, "text": "C'est une compso : ça chaparde tout ce qui brille, et ça cache tout dans un nid."},
+		_cue({"who": MAIA, "text": "Hé ! HÉ ! Ma boussole ! Enfin… la boussole de maman. Elle va me tuer."},
+			func() -> void: _face(maia_npc, chipie)),
+		# The thief, over there, very pleased with herself.
+		_cue({"who": MAIA, "text": "C'est une compso : ça chaparde tout ce qui brille, et ça cache tout dans un nid."},
+			func() -> void:
+				Stage.cry(chipie, &"neutre")
+				Stage.emote(chipie, "♪")
+				Stage.hop(chipie, 2, 6.0)),
 		{"who": MAIA, "text": "Tu veux bien la rattraper ? Moi, dès que je cours, Caillou croit que c'est un jeu et il me fonce dedans."},
 		{"who": CHLOE, "text": "Je m'en occupe."},
 		{"who": MAIA, "text": "T'es la meilleure. Enfin, la deuxième meilleure. Après moi."},
@@ -84,24 +114,33 @@ static func nest(bush: Node) -> void:
 		return
 	S.lock(true)
 	await S.say([
-		{"text": "Chloé écarte les branches. Au fond du nid, un vrai trésor de pirate :"},
+		_cue({"text": "Chloé écarte les branches. Au fond du nid, un vrai trésor de pirate :"},
+			func() -> void:
+				Audio.play_sfx(RUSTLE, -4.0)
+				Stage.bow(Stage.chloe(), 0.8)
+				Stage.tremble(bush, 0.7, 2.5)),
 		{"text": "une cuillère, trois boutons, un bouchon de bouteille, un bout de ruban bleu, deux galets d'ambre…"},
 		{"text": "…des lunettes rondes rafistolées au ruban adhésif (le Professeur Roc a exactement les mêmes ; enfin, avait)…"},
-		{"text": "…et la boussole de Maïa !"},
+		_cue({"text": "…et la boussole de Maïa !"}, func() -> void: _sparkles(bush.global_position, 10)),
 	])
+	# She springs out of the bush, then looks at the compass, at Chloé, at the compass.
 	var chipie := DinoNpc.new()
 	chipie.species_id = &"compsognathus"
 	chipie.size_scale = 0.8
-	chipie.position = bush.position + Vector2(40, 30)
+	chipie.position = bush.position + Vector2(8, 4)
+	chipie.modulate.a = 0.0
 	bush.get_parent().add_child(chipie)
-	chipie.cry(&"attaque")
-	await S.say([{"text": "La propriétaire des lieux jaillit du buisson. Elle fixe la boussole. Puis Chloé. Puis la boussole."}])
+	await S.say([_cue({"text": "La propriétaire des lieux jaillit du buisson. Elle fixe la boussole. Puis Chloé. Puis la boussole."},
+		func() -> void: _springs_out(chipie, bush))])
 	var pick := await Dialogue.choose("", "Que fait Chloé ?", ["Lui offrir un bouton brillant", "Reprendre la boussole sans rien dire"])
+	var acted := {"done": false}
 	if pick == 0:
-		await S.say([{"text": "Chloé pose le plus brillant des boutons devant elle. La compso le renifle, le fait tourner, le range dans le nid… puis grimpe sur son épaule."}])
+		await S.say([_cue({"text": "Chloé pose le plus brillant des boutons devant elle. La compso le renifle, le fait tourner, le range dans le nid… puis grimpe sur son épaule."},
+			func() -> void: _run(func() -> void: await _takes_the_button(chipie, bush), acted))])
 	else:
-		await S.say([{"text": "Chloé reprend la boussole. La compso pousse un cri outré… puis la suit quand même, à trois pas, en boudant. Tu es visiblement son nouveau trésor."}])
-	chipie.queue_free()
+		await S.say([_cue({"text": "Chloé reprend la boussole. La compso pousse un cri outré… puis la suit quand même, à trois pas, en boudant. Tu es visiblement son nouveau trésor."},
+			func() -> void: _run(func() -> void: await _sulks(chipie), acted))])
+	await _finish(acted)
 	for f in NEST_PEBBLES:
 		Game.set_flag(f)
 	Game.set_flag(&"boussole_trouvee")
@@ -111,6 +150,7 @@ static func nest(bush: Node) -> void:
 		{"text": "Chipie rejoint l'équipe !" if in_party else "Chipie rejoint le Cabinet, où elle attend avec impatience."},
 		{"text": "Elle a du Flair : elle sent ce qui est enfoui. La terre remuée des Plaines ne lui échappera pas."},
 	])
+	await Stage.fade_out(chipie, 0.4, true)
 	Toast.say(S.world().get_tree(), "Galets d'ambre : +2 (%d / 30)" % Game.pebbles_found("plaines"))
 	Game.award_team_xp(XP_QUEST)
 	Save.save_game()
@@ -119,9 +159,13 @@ static func nest(bush: Node) -> void:
 
 static func _compass_back() -> void:
 	S.lock(true)
+	var maia_npc = S.actor("Maia")
 	await S.say([
-		{"who": MAIA, "text": "Tu l'as ?! Tu l'as ! Je t'aurais bien fait un câlin, mais j'ai une réputation."},
-		{"text": "Maïa ouvre la boussole pour vérifier qu'elle marche. À l'intérieur du couvercle, une petite fougère est gravée."},
+		_cue({"who": MAIA, "text": "Tu l'as ?! Tu l'as ! Je t'aurais bien fait un câlin, mais j'ai une réputation."},
+			func() -> void: Stage.hop(maia_npc, 2, 10.0)),
+		# She bends over the compass in her hands.
+		_cue({"text": "Maïa ouvre la boussole pour vérifier qu'elle marche. À l'intérieur du couvercle, une petite fougère est gravée."},
+			func() -> void: Stage.bow(maia_npc, 1.6)),
 		{"who": CHLOE, "text": "Cette fougère… C'est le signe de ma grand-mère. Il est sur la porte d'ambre des falaises."},
 		{"who": MAIA, "text": "Hein ? Plein de gens gravent des fougères. On est dans les Plaines des Fougères, je te rappelle."},
 		{"who": MAIA, "text": "Maman ne s'en sépare jamais. Elle dit qu'on la lui a offerte « quand elle savait encore où elle allait »."},
@@ -165,11 +209,20 @@ static func roc() -> bool:
 
 
 static func _glasses_back() -> void:
+	var prof = S.actor("Roc")
+	var fern := S.at(FERN.x, FERN.y)
 	await S.say([
-		{"text": "Roc est en grande conversation avec la fougère en pot, dans le coin de la pièce."},
-		{"who": ROC, "text": "… et donc, Chloé, je disais que… Tu as drôlement verdi, dis-moi."},
-		{"who": CHLOE, "text": "Professeur ? Je suis là. Et j'ai vos lunettes."},
-		{"text": "Roc chausse les lunettes. Il regarde Chloé. Il regarde la fougère. Il ne dit rien pendant un long moment."},
+		# He turns away from Chloé, to the fern in the corner (the camera shows it).
+		_cue({"text": "Roc est en grande conversation avec la fougère en pot, dans le coin de la pièce."},
+			func() -> void:
+				Stage.turn_to(prof, fern)
+				_look_between(prof, fern)),
+		# (Still to the fern: the dialogue box would turn him to Chloé.)
+		_cue({"who": ROC, "text": "… et donc, Chloé, je disais que… Tu as drôlement verdi, dis-moi."},
+			func() -> void: Stage.turn_to(prof, fern)),
+		_cue({"who": CHLOE, "text": "Professeur ? Je suis là. Et j'ai vos lunettes."}, func() -> void: Stage.look_back()),
+		_cue({"text": "Roc chausse les lunettes. Il regarde Chloé. Il regarde la fougère. Il ne dit rien pendant un long moment."},
+			func() -> void: _glasses_on(prof, fern)),
 		{"who": ROC, "text": "Trois semaines. J'ai rangé le sel dans la couveuse et salé mon café. Où étaient-elles ?"},
 		{"who": CHLOE, "text": "Dans un nid de compsognathus."},
 		{"who": ROC, "text": "… Évidemment. Tiens, des baies, pour la peine. Je les avais rangées dans le tiroir à chaussettes."},
@@ -198,9 +251,16 @@ static func _tears_explained() -> void:
 static func _milestones(count: int) -> bool:
 	var said := false
 	if count >= LANTERN_AT and not Game.flag(&"lanterne"):
+		var prof = S.actor("Roc")
+		var made := {"done": false}
 		await S.say([
 			{"who": ROC, "text": "Dix larmes ! Donne… Voyons voir."},
-			{"text": "Roc visse les galets un à un dans une vieille lanterne de marin. Ils s'allument, doux comme des braises."},
+			# Bent over his workbench: the pebbles light up one after the other in his hands.
+			_cue({"text": "Roc visse les galets un à un dans une vieille lanterne de marin. Ils s'allument, doux comme des braises."},
+				func() -> void: _run(func() -> void: await _lantern_lit(prof), made)),
+		])
+		await _finish(made)
+		await S.say([
 			{"who": ROC, "text": "La lanterne d'ambre. La nuit, et sous la terre, elle t'éclaire… et les larmes encore cachées scintillent autour de toi."},
 			{"flag": &"lanterne"},
 		])
@@ -231,8 +291,13 @@ static func _wake_pepite() -> void:
 		Audio.play_sfx(GLASS, -2.0)
 		await S.wait(1.0))
 	await S.say([
-		{"text": "La couveuse s'illumine. Le fragment fond lentement, comme du miel au soleil… Il n'en reste qu'un œuf, tiède, qui bouge à peine."},
-		{"who": ROC, "text": "C'est… la première fois que j'y arrive sans elle."},
+		# The camera shows the incubator lighting up.
+		_cue({"text": "La couveuse s'illumine. Le fragment fond lentement, comme du miel au soleil… Il n'en reste qu'un œuf, tiède, qui bouge à peine."},
+			func() -> void:
+				Stage.look_at(S.at(INCUBATOR.x, INCUBATOR.y))
+				Stage.flash(AMBER_FLASH, 1.2)
+				_sparkles(S.at(INCUBATOR.x, INCUBATOR.y), 18)),
+		_cue({"who": ROC, "text": "C'est… la première fois que j'y arrive sans elle."}, func() -> void: Stage.look_back()),
 		{"who": ROC, "text": "Garde-le contre toi. Il éclora quand il sera prêt. Marche, parle-lui : il t'entend déjà."},
 		{"flag": &"pepite_oeuf"},
 	])
@@ -245,9 +310,16 @@ static func _wake_pepite() -> void:
 static func _sealed_letter() -> void:
 	S.lock(true)
 	var parent: String = PARENTS.get(StringName(Game.flag(&"starter")), PARENTS[&"velociraptor"])
+	var prof = S.actor("Roc")
+	var fetched := {"done": false}
 	await S.say([
 		{"who": ROC, "text": "Trente ?! Toutes les larmes des Plaines…"},
-		{"text": "Roc ouvre un tiroir fermé à clé et en sort une enveloppe cachetée de cire ambrée."},
+		# He goes to the drawer of his desk, unlocks it, and comes back with the envelope.
+		_cue({"text": "Roc ouvre un tiroir fermé à clé et en sort une enveloppe cachetée de cire ambrée."},
+			func() -> void: _run(func() -> void: await _fetch_letter(prof), fetched)),
+	])
+	await _finish(fetched)
+	await S.say([
 		{"who": ROC, "text": "Hélène me l'a confiée il y a un an. « Pour qui rapportera toutes les larmes des Plaines. » J'ai toujours su que ce serait toi."},
 		{"letter": ["Pour toi, qui as tout ramassé",
 			"Si tu lis ceci, tu as secoué chaque arbre, soulevé chaque pierre et attendu la lune au bord de l'étang. Tu es bien ma petite-fille.",
@@ -275,12 +347,20 @@ static func hatch() -> void:
 	var egg := Game.egg
 	Game.egg = {}
 	S.lock(true)
+	var chloe := Stage.chloe()
+	var baby := _hatchling(StringName(egg.get("species", "protoceratops")))
 	await S.say([
-		{"text": "Crac ! L'œuf se fend contre Chloé…"},
-		{"text": "Un minuscule Protoceratops s'extirpe de la coquille, éternue, et te regarde comme si tu étais sa mère."},
-		{"who": CHLOE, "text": "Bonjour, %s." % egg.get("name", "Pépite")},
+		_cue({"text": "Crac ! L'œuf se fend contre Chloé…"},
+			func() -> void:
+				Stage.shake(2.0, 0.25)
+				Stage.tremble(chloe, 0.35, 2.0)),
+		# The little one at her feet: out of the shell, a sneeze, a loving look.
+		_cue({"text": "Un minuscule Protoceratops s'extirpe de la coquille, éternue, et te regarde comme si tu étais sa mère."},
+			func() -> void: _hatches(baby)),
+		_cue({"who": CHLOE, "text": "Bonjour, %s." % egg.get("name", "Pépite")}, func() -> void: _face(chloe, baby)),
 		{"flag": &"pepite_nee"},
 	])
+	await Stage.fade_out(baby, 0.4, true)
 	var d := Dino.create(StringName(egg.get("species", "protoceratops")), 3, egg.get("name", "Pépite"))
 	var in_party := Game.add_caught(d)
 	Toast.say(S.world().get_tree(), "%s rejoint l'équipe !" % d.nickname if in_party else "%s rejoint le Cabinet." % d.nickname)
@@ -305,5 +385,289 @@ static func sleeper() -> void:
 		await S.say([{"text": "Même la pleine lune ne le réveille pas. Il ronfle en rythme avec le chant de l'étang."}])
 		return
 	var n := int(Game.flag(&"dormeur_n"))
-	await S.say([{"text": SLEEPER[mini(n, SLEEPER.size() - 1)]}])
+	var sleeper_npc = S.actor("Dormeur")
+	await S.say([_cue({"text": SLEEPER[mini(n, SLEEPER.size() - 1)]}, func() -> void: _sleeper_stirs(sleeper_npc, n))])
 	Game.set_flag(&"dormeur_n", n + 1)
+
+
+## What the sleeper does as its line says it (see SLEEPER): snores, opens an eye at Chloé,
+## gets a fern on its head, mumbles.
+static func _sleeper_stirs(dino, line: int) -> void:
+	if dino == null or not is_instance_valid(dino):
+		return
+	match line:
+		0:
+			Stage.emote(dino, "z")
+		1:   # an eye opened at Chloé… and closed again
+			var was: bool = dino.sprite.flip_h
+			Stage.turn_to(dino, Stage.chloe().global_position)
+			Stage.emote(dino, "…")
+			await S.wait(1.6)
+			if is_instance_valid(dino):
+				dino.sprite.flip_h = was
+		2:
+			Stage.bow(Stage.chloe(), 0.9)
+			await S.wait(0.5)
+			Stage.bow(dino, 0.6)
+		3:
+			Stage.bow(dino, 0.8)
+			Stage.emote(dino, "…")
+
+
+# ------------------------------------------------------------------ what the lines show
+
+## The tall grass stirs where Chipie hides (leaves flying, a rustle), then her mocking cry.
+static func _rustle(chipie) -> void:
+	var at := S.at(CHIPIE_HIDE.x, CHIPIE_HIDE.y)
+	Audio.play_sfx(RUSTLE, -3.0)
+	var view := _view()
+	if view:
+		view.burst(at, Search.LEAVES, 10, 0.3, 0.5)
+	await S.wait(0.8)
+	if view:
+		view.burst(at + Vector2(20, -6), Search.LEAVES, 6, 0.3, 0.4)
+	await S.wait(0.5)
+	Stage.cry(chipie, &"neutre")
+
+
+## Chipie springs out of her bush, then stares at the compass (down into the nest), at Chloé,
+## at the compass again.
+static func _springs_out(chipie: DinoNpc, bush: Node2D) -> void:
+	Audio.play_sfx(RUSTLE, -4.0)
+	Stage.tremble(bush, 0.5, 3.0)
+	chipie.cry(&"attaque")
+	chipie.create_tween().tween_property(chipie, "modulate:a", 1.0, 0.15)
+	await chipie.walk_to(bush.position + Vector2(66, 40), 300.0)   # (out in the open, beside Chloé)
+	if not is_instance_valid(chipie):
+		return
+	await Stage.hop(chipie, 1, 12.0)
+	Stage.turn_to(chipie, bush.global_position)
+	await Stage.bow(chipie, 0.7)
+	if not is_instance_valid(chipie):
+		return
+	Stage.emote(chipie, "!")
+	await Stage.rear(chipie, 0.7)
+	if is_instance_valid(chipie):
+		await Stage.bow(chipie, 0.7)
+
+
+## The button: a sniff, a turn, into the nest… then up onto Chloé's shoulder.
+static func _takes_the_button(chipie: DinoNpc, bush: Node2D) -> void:
+	var chloe := Stage.chloe()
+	if not is_instance_valid(chipie) or chloe == null:
+		return
+	await Stage.bow(chloe, 0.7)
+	for i in 2:   # it sniffs the button
+		if is_instance_valid(chipie):
+			await Stage.bow(chipie, 0.45)
+	if not is_instance_valid(chipie):
+		return
+	await chipie.walk_to(bush.position + Vector2(10, 10), 160.0)   # into the nest
+	await S.wait(0.3)
+	if not is_instance_valid(chipie):
+		return
+	await chipie.walk_to(chloe.global_position + Vector2(SHOULDER.x, 3), 180.0)
+	if not is_instance_valid(chipie):
+		return
+	chipie.collision_layer = 0   # (on her shoulder: not in her way)
+	chipie.sprite.flip_h = false
+	var sprite := chipie.sprite
+	var up := sprite.create_tween()
+	up.tween_property(sprite, "position:y", SHOULDER.y - 14.0, 0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	up.tween_property(sprite, "position:y", SHOULDER.y, 0.15).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	await up.finished
+	chipie.cry(&"neutre")
+	Stage.emote(chipie, "♥")
+
+
+## The compass taken back: an outraged cry… then it follows her all the same, three steps away, sulking,
+## its back turned.
+static func _sulks(chipie: DinoNpc) -> void:
+	var chloe := Stage.chloe()
+	if not is_instance_valid(chipie) or chloe == null:
+		return
+	await Stage.bow(chloe, 0.7)
+	if not is_instance_valid(chipie):
+		return
+	chipie.cry(&"attaque")
+	Stage.emote(chipie, "!")
+	await Stage.rear(chipie, 0.6)
+	await S.wait(0.6)
+	if not is_instance_valid(chipie):
+		return
+	# Three steps from her, at her side (not behind her in the tall grass, where she would vanish).
+	var side := -1.0 if chipie.global_position.x < chloe.global_position.x else 1.0
+	await chipie.walk_to(chloe.global_position + Vector2(side * 64.0, 4.0), 120.0)
+	if not is_instance_valid(chipie):
+		return
+	chipie.sprite.flip_h = chloe.global_position.x > chipie.global_position.x   # back to her
+	Stage.emote(chipie, "…")
+
+
+## Roc puts his glasses on (a nod), looks at Chloé, at the fern, at Chloé: a long silence.
+static func _glasses_on(roc_npc, fern: Vector2) -> void:
+	if roc_npc == null or not is_instance_valid(roc_npc):
+		return
+	await Stage.bow(roc_npc, 0.6)
+	var chloe := Stage.chloe()
+	for look: Vector2 in [chloe.global_position, fern, chloe.global_position]:
+		if not is_instance_valid(roc_npc):
+			return
+		Stage.turn_to(roc_npc, look)
+		await S.wait(0.9)
+	Stage.emote(roc_npc, "…")
+
+
+## Bent over the lantern: the pebbles light up one after the other in Roc's hands.
+## (At his workbench, out of Chloé's way, so it is seen; then he comes back to her.)
+static func _lantern_lit(roc_npc) -> void:
+	if roc_npc == null or not is_instance_valid(roc_npc):
+		return
+	var home: Vector2 = roc_npc.global_position
+	await roc_npc.walk_to(S.at(WORKBENCH.x, WORKBENCH.y), "up", 130.0)
+	if not is_instance_valid(roc_npc):
+		return
+	Stage.bow(roc_npc, 1.2)
+	await S.wait(0.5)
+	for i in 3:
+		if not is_instance_valid(roc_npc):
+			return
+		Audio.play_sfx(CHIME, -8.0, 0.1)
+		await _amber(roc_npc, 1, 0.6, 2.5)
+	if not is_instance_valid(roc_npc):
+		return
+	await roc_npc.walk_to(home, "", 130.0)
+	if is_instance_valid(roc_npc) and Stage.chloe():
+		roc_npc.face(Stage.chloe().global_position)
+
+
+## Roc goes to his desk's drawer, unlocks it, takes out the envelope, and comes back.
+static func _fetch_letter(roc_npc) -> void:
+	if roc_npc == null or not is_instance_valid(roc_npc):
+		return
+	var home: Vector2 = roc_npc.global_position
+	await roc_npc.walk_to(S.at(DRAWER.x, DRAWER.y), "up", 120.0)
+	if not is_instance_valid(roc_npc):
+		return
+	Audio.play_sfx(LATCH, -4.0)
+	await Stage.bow(roc_npc, 0.8)
+	if not is_instance_valid(roc_npc):
+		return
+	await roc_npc.walk_to(home, "", 120.0)
+	if is_instance_valid(roc_npc) and Stage.chloe():
+		roc_npc.face(Stage.chloe().global_position)
+
+
+## The little one hatching at Chloé's feet (hidden until its line; a scene actor, gone when the
+## scene ends). None in the water.
+static func _hatchling(species: StringName) -> DinoNpc:
+	var chloe := Stage.chloe()
+	var w = S.world()
+	if chloe == null or w == null or w.get("region") == null or chloe.is_swimming():
+		return null
+	var baby := DinoNpc.new()
+	baby.species_id = species
+	baby.size_scale = 0.5
+	baby.position = S.ground_near(chloe.global_position + Vector2(30, 14), 1)
+	baby.modulate.a = 0.0
+	w.region.entities.add_child(baby)
+	return baby
+
+
+## Out of the shell: it appears, sneezes (a jolt and a little cry), and looks up at Chloé with love.
+static func _hatches(baby) -> void:
+	if baby == null or not is_instance_valid(baby):
+		return
+	Stage.turn_to(baby, Stage.chloe().global_position)
+	await Stage.fade_in(baby, 0.5)
+	await S.wait(0.7)
+	if not is_instance_valid(baby):
+		return
+	baby.cry(&"neutre")
+	await Stage.hop(baby, 1, 5.0)
+	await S.wait(0.5)
+	Stage.emote(baby, "♥")
+
+
+# ------------------------------------------------------------------ staging (see Stage)
+
+## A line whose staging starts the moment it shows: `act` is called then (not awaited), so
+## the move goes with its bubble, without cutting the dialogue in two.
+static func _cue(line: Dictionary, act: Callable) -> Dictionary:
+	var cued := line.duplicate()
+	var text: String = cued["text"]
+	cued.erase("text")
+	cued["text_fn"] = func() -> String:
+		act.call()
+		return text
+	return cued
+
+
+## Plays `move` (a coroutine) and marks `token` done at its end (see _finish): a move that
+## goes on under the lines, and that the scene waits for before going further.
+static func _run(move: Callable, token: Dictionary) -> void:
+	await move.call()
+	token["done"] = true
+
+
+## Waits for a move started with _run (at most `max_s` seconds, whatever happens).
+static func _finish(token: Dictionary, max_s := 12.0) -> void:
+	var waited := 0.0
+	while not token.get("done", false) and waited < max_s:
+		await S.wait(0.05)
+		waited += 0.05
+
+
+## `who` turns to look at `target` (both actors; nothing when one is missing).
+static func _face(who, target) -> void:
+	if who and target and is_instance_valid(who) and is_instance_valid(target):
+		Stage.turn_to(who, (target as Node2D).global_position)
+
+
+## The camera shows an actor and a point at once (the middle of them).
+static func _look_between(who, px: Vector2) -> void:
+	if who and is_instance_valid(who):
+		Stage.look_at(((who as Node2D).global_position + px) / 2.0)
+
+
+## A burst of amber sparkles at `px` (world pixels).
+static func _sparkles(px: Vector2, amount := 14) -> void:
+	var view := _view()
+	if view:
+		view.burst(px, Search.AMBER, amount, 0.6, 0.5)
+
+
+static func _view() -> WorldView:
+	return (Engine.get_main_loop() as SceneTree).get_first_node_in_group(&"world_view") as WorldView
+
+## An amber glow on `actor` (a scale, a seal, a page…), `times` pulses: its picture tinted
+## amber and a warm light shining on it (see _light_at). Awaitable.
+static func _amber(actor, times := 1, secs := 0.8, energy := 3.0) -> void:
+	if actor == null or not is_instance_valid(actor):
+		return
+	Stage.glow(actor, AMBER_TINT, times, secs)
+	var light := _light_at((actor as Node2D).global_position, AMBER_LIGHT)
+	if light == null:
+		return
+	var t := light.create_tween()
+	for i in times:
+		t.tween_property(light, "light_energy", energy, secs * 0.5).set_trans(Tween.TRANS_SINE)
+		t.tween_property(light, "light_energy", 0.0, secs * 0.5).set_trans(Tween.TRANS_SINE)
+	t.tween_callback(light.queue_free)
+	await t.finished
+
+
+## A light of the 3D view at `px` (world pixels), a little above the ground, off (energy 0):
+## the caller brightens it, then frees it. Null without the view.
+static func _light_at(px: Vector2, colour: Color, reach := 3.2) -> OmniLight3D:
+	var view := (Engine.get_main_loop() as SceneTree).get_first_node_in_group(&"world_view") as WorldView
+	if view == null or view.heights == null:
+		return null
+	var light := OmniLight3D.new()
+	light.light_color = colour
+	light.light_energy = 0.0
+	light.omni_range = reach
+	light.shadow_enabled = false
+	view.add_child(light)
+	light.position = view.heights.to_3d(px) + Vector3(0, 1.1, 0.5)
+	return light

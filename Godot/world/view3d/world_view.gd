@@ -6,7 +6,10 @@ extends Node3D
 ## around Chloé, and everything that moves or changes in 2D (Chloé, dinos, people,
 ## obstacles, pickups, their particles and glows) is mirrored every frame.
 ## Sun, moon and sky follow the game clock; rain and mist dim them, close the horizon, and
-## rain falls around Chloé. Quality: shadows, render scale, glow, far blur, rain density.
+## rain falls around Chloé; a sandstorm veils everything in ochre, sand streaking past.
+## Quality: shadows, render scale, glow, far blur, rain density.
+## Swimming (Swim), Chloé's dino and Chloé on its back sit half under the water sheet, bobbing,
+## a wake behind them. Flood water (Flood) stands as a block of water that drains away.
 
 const PX := HeightMap.PX
 const STRETCH := 1.15                       # same as the billboard shader
@@ -40,6 +43,51 @@ const EMOTE_COLOURS := {"♥": Color(0.86, 0.22, 0.35), "♪": Color(0.3, 0.2, 0
 const PREVIEW_DEPTH := 26.0
 ## Trees filling the "forest" tiles (weights by repetition).
 const FOREST_TREES := ["arbre_rond", "araucaria", "arbre_rond", "fougere_arbre", "araucaria", "arbre_rond"]
+## Zones whose woods are not the Forêt's (weights by repetition): what fills their "forest"
+## tiles, what stands beyond their edges, and the low plants by the paths and on the near side
+## (towards the camera: tall ones there would hide the zone).
+const ZONE_TREES := {
+	&"marais": {
+		"forest": ["arbre_noye", "roseaux", "arbre_noye", "fougere_arbre", "roseaux", "arbre_noye"],
+		"outer": ["arbre_noye", "arbre_noye", "fougere_arbre", "roseaux"],
+		"low": ["hautes_herbes", "fougeres", "hautes_herbes", "fougeres"],
+	},
+	# The Désert: palms by the water, rocks and dry scrub beyond its edges.
+	&"desert": {
+		"forest": ["palmier_oasis", "buisson_sec", "palmier_oasis", "fougere_arbre"],
+		"outer": ["rocher_canyon", "buisson_sec", "rocher_canyon", "cailloux"],
+		"low": ["buisson_sec", "cailloux", "buisson_sec", "cailloux"],
+	},
+	&"sanctuaire_vents": {
+		"forest": ["rocher_canyon", "buisson_sec"],
+		"outer": ["rocher_canyon", "buisson_sec"],
+		"low": ["cailloux", "buisson_sec"],
+	},
+}
+## How far from a zone's south edge (tiles) its woods stay low (ZONE_TREES "low").
+const LOW_SOUTH := 7
+## A zone's cliffs and walls in another picture than the earth wall (the temple's masonry).
+const CLIFF_TEX := {&"temple_englouti": "res://assets/art/ground/dalles_temple.png"}
+## Zones whose walls are paved like their floor (the temple): the tops of the walls darker, so
+## the rooms and passages read at a glance (0: as lit as the floor).
+const WALL_SHADE := {&"temple_englouti": 0.8}
+## Flood water of a zone in its own shades: [shallow, deep] (the temple: murky, greenish).
+const FLOOD_TINT := {&"temple_englouti": [Color(0.3, 0.52, 0.48), Color(0.05, 0.17, 0.2)]}
+## The Marais' ground ("mud" tiles).
+const MUD_TEX := "res://assets/art/ground/vase.png"
+## The Désert's canyon rock ("rock" tiles).
+const ROCK_TEX := "res://assets/art/ground/roche_canyon.png"
+## Zones whose sand ("sand" tiles) is a picture of its own (the dunes); elsewhere the beaches
+## are the path's dirt, lightened.
+const SAND_TEX := {
+	&"desert": "res://assets/art/ground/sable.png", &"sanctuaire_vents": "res://assets/art/ground/sable.png",
+}
+## Zones whose grass is tinted (the Marais: olive, less bright next to its mud).
+const GRASS_TINT := {&"marais": Color(0.86, 0.92, 0.74)}
+## Zones whose cliffs are tinted (the Désert: warm canyon rock; 1 = the grey-brown rock).
+const CLIFF_TINT := {&"desert": Color(1.22, 0.98, 0.8), &"sanctuaire_vents": Color(1.22, 0.98, 0.8)}
+## Zones whose water is not the clear blue of the coast: [shallow, deep] (a marsh: greener, murkier).
+const WATER_TINT := {&"marais": [Color(0.4, 0.56, 0.42), Color(0.1, 0.2, 0.17)]}
 const CAVE := preload("res://world/view3d/cave_mouth.gdshader")
 const OCCLUDER_HEIGHT := 2.2               # metres: taller scenery may hide Chloé
 const POLLEN_MOTES := 60
@@ -49,8 +97,21 @@ const STORM_RAIN := 1.8
 const LIGHTNING_EVERY := Vector2(6.0, 16.0)
 const THUNDER: Array[AudioStream] = [preload("res://assets/audio/ambience/tonnerre-1.mp3"), preload("res://assets/audio/ambience/tonnerre-2.mp3")]
 const WEATHER_BLEND := 0.6                  # how fast rain and mist come and go
+## A sandstorm: grains streaking past on the wind, clouds of dust drifting, an ochre sky.
+const SAND_GRAINS := 260
+const DUST_CLOUDS := 36
+const SAND_SKY := Color(0.86, 0.66, 0.42)
+const SAND := Color(0.93, 0.76, 0.5)
 ## A 2D move longer than this in one physics step is a teleport, not blended (px).
 const TELEPORT := 96.0
+const SWIM := preload("res://world/swim.gd")
+## Swimming: a slow bob (m, s); the wake behind the swimmer; droplets going in and out.
+const SWIM_BOB := 0.04
+const SWIM_BOB_S := 2.2
+const WAKE_DOTS := 26
+const SPLASH: Array[Color] = [Color(0.92, 0.97, 1.0), Color(0.72, 0.87, 0.95), Color(0.56, 0.78, 0.86)]
+const FLOOD := preload("res://world/view3d/flood.gdshader")
+const FLOOD_SHEET := 0.04   # metres: the flood water's sheet, just above the floor
 ## Light over the day: [hour, sun elevation°, sun azimuth°, colour, energy, ambient, ambient energy, sky].
 const DAYLIGHT := [
 	[0.0, 48.0, 30.0, Color(0.55, 0.65, 1.0), 0.35, Color(0.24, 0.28, 0.44), 0.6, Color(0.08, 0.1, 0.2)],
@@ -96,6 +157,17 @@ var _storm_amount := 0.0
 var _flash := 0.0                           # lightning: 1 at the flash, fading
 var _next_lightning := 8.0
 var _mist_amount := 0.0
+var _sand_amount := 0.0
+var _sand: CPUParticles3D
+var _dust: CPUParticles3D
+var _wake: CPUParticles3D
+## Flood water of the zone: [Flood (2D), its block of water, floor height (m)].
+var _floods: Array[Array] = []
+## A scene shows something away from Chloé (Stage.look_at): the camera glides there (world
+## pixels), then back to her when it is INF again.
+var focus_px := Vector2.INF
+## The zone whose water sheet is being built (its tint: WATER_TINT).
+var _water_zone: StringName
 
 
 func _ready() -> void:
@@ -130,9 +202,16 @@ func _ready() -> void:
 	add_child(_magic)
 	_rain = _make_rain()
 	add_child(_rain)
+	_sand = _make_sand()
+	add_child(_sand)
+	_dust = _make_dust()
+	add_child(_dust)
+	_wake = _make_wake()
+	add_child(_wake)
 	_rain_amount = 1.0 if Game.is_raining() else 0.0
 	_storm_amount = 1.0 if Game.weather == &"storm" else 0.0
 	_mist_amount = 1.0 if Game.weather == &"mist" else 0.0
+	_sand_amount = 1.0 if Game.weather == &"sandstorm" else 0.0
 	Quality.changed.connect(_apply_quality)
 	_apply_quality()
 	get_tree().node_added.connect(_on_node_added)
@@ -151,6 +230,9 @@ func _apply_quality() -> void:
 	get_viewport().scaling_3d_scale = Quality.setting(&"render_scale")
 	_pollen.amount = Quality.scaled(POLLEN_MOTES)
 	_rain.amount = Quality.scaled(RAIN_DROPS)
+	_sand.amount = Quality.scaled(SAND_GRAINS)
+	_dust.amount = Quality.scaled(DUST_CLOUDS)
+	_wake.amount = Quality.scaled(WAKE_DOTS)
 	# Relief detail, grass density, swaying: rebuilt with the zone.
 	if _region and is_instance_valid(_region) and player:
 		show_zone(_region, player)
@@ -161,6 +243,7 @@ func _apply_quality() -> void:
 ## Builds the 3D view of `region` (replacing the previous zone's), following `chloe`.
 ## `zones`: every zone id -> scene path, to show the neighbours beyond the exits.
 func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
+	focus_px = Vector2.INF
 	for p in _proxies:
 		_free_proxy(p)
 	_proxies.clear()
@@ -182,6 +265,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	_ground_mat = _build_ground(region, heights)
 	_set_holes(_ground_mat)
 	if heights.has_water:
+		_water_zone = region.region_id
 		_set_holes(_build_water(heights))
 	for n: Dictionary in neighbours:
 		_build_neighbour(n)
@@ -191,6 +275,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	for dock in region.docks():
 		if not dock is MoonFord:   # (its stones: NightMagic)
 			_build_dock(dock)
+	_build_floods()
 	for mouth in region.find_children("*", "CaveMouth", true, false):
 		_build_cave_mouth(mouth)
 	if not region.indoor:
@@ -224,7 +309,15 @@ func _build_ground(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 	else:
 		mat.set_shader_parameter("dirt_tex", r.path_tex if r.path_tex else dirt)
 	mat.set_shader_parameter("plain", r.indoor)
-	mat.set_shader_parameter("cliff_tex", load("res://assets/art/ground/falaise.png"))
+	mat.set_shader_parameter("cliff_tex", load(CLIFF_TEX.get(r.region_id, "res://assets/art/ground/falaise.png")))
+	mat.set_shader_parameter("mud_tex", load(MUD_TEX))
+	mat.set_shader_parameter("rock_tex", load(ROCK_TEX))
+	if SAND_TEX.has(r.region_id):
+		mat.set_shader_parameter("sand_tex", load(SAND_TEX[r.region_id]))
+		mat.set_shader_parameter("sand_picture", true)
+	mat.set_shader_parameter("grass_tint", GRASS_TINT.get(r.region_id, Color.WHITE))
+	mat.set_shader_parameter("cliff_tint", CLIFF_TINT.get(r.region_id, Color.WHITE))
+	mat.set_shader_parameter("top_shade", WALL_SHADE.get(r.region_id, 0.0))
 	mat.set_shader_parameter("noise_tex", WorldNoise.texture())
 	mat.set_shader_parameter("water_level", HeightMap.WATER_LEVEL if hm.has_water else -100.0)
 	var masks := _terrain_masks(r, hm)
@@ -295,15 +388,18 @@ static func _chunk_mesh(step: int) -> PlaneMesh:
 	return _grids[step]
 
 
-## Two textures, one pixel per tile: [R path, G tall grass, B water] and [R sand, G forest].
+## Two textures, one pixel per tile: [R path, G tall grass, B water] and
+## [R sand, G forest, B mud, A rock]. In a sandy zone (SAND_TEX) the trails lie on sand.
 static func _terrain_masks(r: Region, hm: HeightMap) -> Array[ImageTexture]:
 	var a := Image.create(hm.size.x, hm.size.y, false, Image.FORMAT_RGB8)
-	var b := Image.create(hm.size.x, hm.size.y, false, Image.FORMAT_RGB8)
+	var b := Image.create(hm.size.x, hm.size.y, false, Image.FORMAT_RGBA8)
+	var sandy := SAND_TEX.has(r.region_id)
 	for y in hm.size.y:
 		for x in hm.size.x:
 			var s := r.surface_at(Vector2((x + 0.5) * PX, (y + 0.5) * PX))
 			a.set_pixel(x, y, Color(1, 0, 0) if s == &"path" else Color(0, 1, 0) if s == &"tall_grass" else Color(0, 0, 1) if s == &"water" else Color.BLACK)
-			b.set_pixel(x, y, Color(1, 0, 0) if s == &"sand" else Color(0, 1, 0) if s == &"forest" else Color.BLACK)
+			b.set_pixel(x, y, Color(1, 0, 0, 0) if s == &"sand" or (sandy and s == &"path") else Color(0, 1, 0, 0) if s == &"forest" else Color(0, 0, 1, 0) if s == &"mud"
+				else Color(0, 0, 0, 1) if s == &"rock" else Color(0, 0, 0, 0))
 	return [ImageTexture.create_from_image(a), ImageTexture.create_from_image(b)]
 
 
@@ -316,6 +412,9 @@ func _build_water(hm: HeightMap, shift := Vector2.ZERO, keep := Rect2()) -> Shad
 	var mat := ShaderMaterial.new()
 	mat.shader = WATER
 	mat.set_shader_parameter("noise_tex", WorldNoise.texture())
+	if WATER_TINT.has(_water_zone):
+		mat.set_shader_parameter("shallow", WATER_TINT[_water_zone][0])
+		mat.set_shader_parameter("deep", WATER_TINT[_water_zone][1])
 	mat.set_shader_parameter("water_level", HeightMap.WATER_LEVEL)
 	var ground := hm.height_texture()
 	mat.set_shader_parameter("ground_height", ground["texture"])
@@ -340,6 +439,8 @@ func _neighbours(zones: Dictionary) -> Array:
 	var here := _region.bounds()
 	for exit in _region.exits():
 		if not zones.has(exit.target_zone) or exit.target_zone == _region.region_id:
+			continue
+		if not ResourceLoader.exists(zones[exit.target_zone]):   # a zone still to be built
 			continue
 		var other := Region.open_for_preview(zones[exit.target_zone])
 		var back: ZoneExit = null
@@ -405,6 +506,7 @@ func _build_neighbour(n: Dictionary) -> void:
 	# Heights meet exactly at the edge (no rolling near edges): the two grounds just touch.
 	_build_ground(r, hm, shift, band)
 	if hm.has_water:
+		_water_zone = r.region_id
 		_build_water(hm, shift, band)
 	var corridors := r.exits().map(func(e: ZoneExit) -> Rect2: return r.exit_corridor(e, Region.CORRIDOR_DEPTH))
 	var groups := {}
@@ -468,8 +570,14 @@ func burst(p: Vector2, colours: Array[Color], amount := 18, height := 1.0, sprea
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	mat.vertex_color_use_as_albedo = true
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_texture = _soft_dot()   # round and soft, not little squares
 	quad.material = mat
 	bits.mesh = quad
+	var fade := Gradient.new()   # they fade out at the end of their flight
+	fade.set_color(0, Color(1, 1, 1, 1))
+	fade.set_color(1, Color(1, 1, 1, 0))
+	bits.color_ramp = fade
 	bits.amount = Quality.scaled(amount)
 	bits.one_shot = true
 	bits.explosiveness = 0.9
@@ -686,6 +794,66 @@ func _build_dock(dock: Dock) -> void:
 		z += 2.0
 
 
+## Flood water (world/flood.gd) of the zone: a block of water on the floor of its area,
+## `depth` metres high when full; it lowers as it drains (see _update_floods).
+func _build_floods() -> void:
+	_floods.clear()
+	for f in get_tree().get_nodes_in_group(&"flood"):
+		var flood := f as Node2D
+		if flood == null or not _region.is_ancestor_of(flood):
+			continue
+		var area: Rect2 = flood.call(&"area")
+		var t := Rect2(area.position / PX, area.size / PX)
+		var floor_h := heights.range_in(t).x - 0.05
+		# The brim: a flooded basin's edge (Region.BASIN_DEPTH above its floor), or a stair's top.
+		var rim := minf(heights.range_in(t.grow(-0.3)).y, floor_h + 0.05 + Region.BASIN_DEPTH)
+		var box := BoxMesh.new()
+		box.size = Vector3(t.size.x, 1.0, t.size.y)
+		var mat := ShaderMaterial.new()
+		mat.shader = FLOOD
+		mat.set_shader_parameter("noise_tex", WorldNoise.texture())
+		mat.set_shader_parameter("half_size", Vector2(t.size.x, t.size.y) / 2.0)
+		if FLOOD_TINT.has(_region.region_id):
+			mat.set_shader_parameter("shallow", FLOOD_TINT[_region.region_id][0])
+			mat.set_shader_parameter("deep", FLOOD_TINT[_region.region_id][1])
+		box.material = mat
+		var water := MeshInstance3D.new()
+		water.mesh = box
+		water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		water.position = Vector3(t.get_center().x, floor_h, t.get_center().y)
+		_zone.add_child(water)
+		_floods.append([flood, water, floor_h, rim])
+		_update_flood(_floods[-1])
+
+
+## Each flood's block of water at its level now (Flood.fill: 1 full, 0 drained).
+func _update_floods() -> void:
+	for f in _floods:
+		_update_flood(f)
+
+
+func _update_flood(f: Array) -> void:
+	var water: MeshInstance3D = f[1]
+	if not is_instance_valid(f[0]):
+		water.visible = false
+		return
+	var depth: float = (f[0] as Node2D).get(&"depth")
+	var fill := clampf(float((f[0] as Node2D).get(&"fill")), 0.0, 1.0)
+	water.visible = fill > 0.005
+	if not water.visible:
+		return
+	# A sheet of deep water up to the rim of the passage (a block standing on its floor looked
+	# like glass): dark and opaque when full; as it drains it sinks down a flooded stair, step
+	# by step, and clears up until the floor shows through.
+	var h := maxf(depth * fill, 0.02)
+	var bottom := float(f[2]) + 0.05
+	var level := bottom + (maxf(float(f[3]), bottom) + 0.06 - bottom) * fill
+	water.scale = Vector3(1.0, FLOOD_SHEET, 1.0)
+	water.position.y = level - FLOOD_SHEET / 2.0
+	var mat := (water.mesh as BoxMesh).material as ShaderMaterial
+	mat.set_shader_parameter("height", h)
+
+
 ## Pictures of one prop kind standing at `items` ([position, flipped, scale]).
 func _add_billboards(kind: String, items: Array, shadows := true) -> void:
 	var def: Dictionary = Prop.KINDS[kind]
@@ -754,6 +922,9 @@ func _add_multimesh(quad: QuadMesh, items: Array, shadows: bool, range_end := VI
 ## Trees filling the "forest" tiles of zone `r` (inside `keep`, world tiles, when given).
 func _build_forest(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect2()) -> void:
 	var density: float = Quality.setting(&"forest_density")
+	var own: Dictionary = ZONE_TREES.get(r.region_id, {})
+	var trees: Array = own.get("forest", FOREST_TREES)
+	var low: Array = own.get("low", ["buisson"])
 	var groups := {}
 	for y in hm.size.y:
 		for x in hm.size.x:
@@ -766,10 +937,12 @@ func _build_forest(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 			var count := int(density) + (1 if rng.randf() < fmod(density, 1.0) else 0)
 			for i in count:
 				var t := Vector2(x + rng.randf_range(0.1, 0.9), y + rng.randf_range(0.2, 0.95))
-				var kind: String = FOREST_TREES[rng.randi() % FOREST_TREES.size()]
+				var kind: String = trees[rng.randi() % trees.size()]
 				# Bushes mostly, along a path: the trees would hide it (and what lies on it).
-				if rng.randf() < (0.7 if _by_path(r, x, y) else 0.18):
-					kind = "buisson"
+				# (A zone with its own woods: low ones by its south edge too.)
+				var near_side := not own.is_empty() and y >= hm.size.y - LOW_SOUTH
+				if near_side or rng.randf() < (0.7 if _by_path(r, x, y) else 0.18):
+					kind = low[rng.randi() % low.size()]
 				if not groups.has(kind):
 					groups[kind] = []
 				groups[kind].append([Vector3(t.x + shift.x, hm.height(t), t.y + shift.y), rng.randf() < 0.5, rng.randf_range(0.9, 1.3)])
@@ -873,7 +1046,8 @@ func _build_outer_forest() -> void:
 		if ways_out.any(func(c: Rect2) -> bool: return c.has_point(p * PX)):   # the path goes on
 			continue
 		var near_side := p.y > h - 0.5
-		var kinds: Array = OUTER_LOW if near_side else OUTER_TREES
+		var own: Dictionary = ZONE_TREES.get(_region.region_id, {})
+		var kinds: Array = own.get("low", OUTER_LOW) if near_side else own.get("outer", OUTER_TREES)
 		var kind: String = kinds[rng.randi() % kinds.size()]
 		if not groups.has(kind):
 			groups[kind] = []
@@ -946,18 +1120,27 @@ func _process(delta: float) -> void:
 			continue
 		_sync(p)
 	if player and heights:
-		var feet := heights.to_3d(_player_prev.lerp(_player_cur, Engine.get_physics_interpolation_fraction()))
-		camera.target = feet
+		var at := _player_prev.lerp(_player_cur, Engine.get_physics_interpolation_fraction())
+		var feet := heights.to_3d(at)
+		if _swimmer_of(player):   # the camera follows her on the water, not the bottom
+			feet.y = maxf(feet.y, HeightMap.WATER_LEVEL)
+		camera.target = feet if focus_px == Vector2.INF else heights.to_3d(focus_px)
 		RenderingServer.global_shader_parameter_set(&"player_world", feet)
 		_pollen.position = camera.target + Vector3(0, 1.5, 0)
 		_wildlife.heights = heights
-		_wildlife.update(delta, camera.target, Game.clock / 60.0, _rain_amount, not _region.indoor)
+		_wildlife.update(delta, camera.target, Game.clock / 60.0, maxf(_rain_amount, _sand_amount), not _region.indoor)
 		_rain.position = camera.target + Vector3(0, 9.0, 2.0)
+		# The wind blows from the west: the grains start upwind and cross the view.
+		_sand.position = camera.target + Vector3(-15.0, 1.2, 1.0)
+		_dust.position = camera.target + Vector3(0.0, 1.4, 1.0)
+		_update_wake(at)
+	_update_floods()
 	var blend := 1.0 - exp(-WEATHER_BLEND * delta)
 	_rain_amount = lerpf(_rain_amount, 1.0 if Game.is_raining() else 0.0, blend)
 	_storm_amount = lerpf(_storm_amount, 1.0 if Game.weather == &"storm" else 0.0, blend)
 	_lightning(delta)
 	_mist_amount = lerpf(_mist_amount, 1.0 if Game.weather == &"mist" else 0.0, blend)
+	_sand_amount = lerpf(_sand_amount, 1.0 if Game.weather == &"sandstorm" else 0.0, blend)
 	_update_sky(Game.clock / 60.0)
 	_magic.update(delta, _region, player, _sun, _env)
 	(camera.attributes as CameraAttributesPractical).dof_blur_far_distance = camera.distance() + 13.0
@@ -971,6 +1154,9 @@ func _sync(p: Dictionary) -> void:
 	var local := sprite.position
 	var at: Vector2 = (p["prev"] as Vector2).lerp(p["cur"], Engine.get_physics_interpolation_fraction())
 	vis.position = heights.to_3d(at) + Vector3(local.x / PX, -local.y / PX * STRETCH, 0)
+	var swimmer := _swimmer_of(src)
+	if swimmer:
+		vis.position.y += _swim_drop(at, swimmer)
 	var gs := sprite.global_scale
 	if absf(gs.x) > 0.0001:
 		vis.pixel_size = absf(gs.x) / PX
@@ -989,18 +1175,19 @@ func _sync(p: Dictionary) -> void:
 		if anim.animation != sprite.animation:
 			anim.animation = sprite.animation
 		anim.frame = sprite.frame
-		if not src is Prop:   # characters and dinos: a hop at each step, breathing
-			var hop := SpriteMotion.apply(p, sprite, vis, get_process_delta_time())
+		if not src is Prop:   # characters and dinos: a hop at each step, breathing (swimming: the bob)
+			var hop := 0.0 if swimmer else SpriteMotion.apply(p, sprite, vis, get_process_delta_time())
 			if src is Companion and (src as Companion).carrying():
 				_mount_hop = hop
-			elif src is Player and (src as Player).mount:
+			elif src is Player and (src as Player).carried_by():
 				vis.position.y += _mount_hop   # in the saddle: she follows her mount's steps
 	else:
 		(vis as Sprite3D).texture = (sprite as Sprite2D).texture
 	if p["foot"]:
 		var foot: MeshInstance3D = p["foot"]
 		var shadow_2d: Sprite2D = p["foot_2d"]
-		foot.visible = vis.visible and is_instance_valid(shadow_2d) and shadow_2d.visible
+		# (No foot shadow in the water: it would show on the bottom, through the water sheet.)
+		foot.visible = vis.visible and is_instance_valid(shadow_2d) and shadow_2d.visible and swimmer == null
 		if foot.visible:
 			var w := absf(shadow_2d.global_scale.x) * Shadow.BASE_PX / PX * 1.2
 			foot.transform = Transform3D(Basis.from_scale(Vector3(w, 1.0, w * 0.62)), heights.to_3d(at) + Vector3(0, 0.03, 0))
@@ -1012,6 +1199,44 @@ func _sync(p: Dictionary) -> void:
 		if light.visible:
 			light.light_energy = (glow as PointLight2D).energy * 1.4
 			light.position = vis.position + Vector3(0, 0.5, 0.2)
+
+
+## The dino carrying Chloé in the water, when `node` is Chloé or that dino (else null).
+func _swimmer_of(node: Node) -> Dino:
+	var chloe := node as Player
+	if chloe == null and node is Companion:
+		chloe = (node as Companion).player
+	if chloe == null or chloe.mount:
+		return null
+	return chloe.swimmer
+
+
+## How far below its ground point the swimmer, and Chloé on its back, are shown (m): sunk to
+## Swim.SINK of its height under the water sheet, bobbing gently; by the shore only as deep as
+## the water is there, so they glide in and out of it.
+func _swim_drop(at: Vector2, swimmer: Dino) -> float:
+	var ground := heights.to_3d(at).y
+	var wet := clampf((HeightMap.WATER_LEVEL - ground) / (HeightMap.WATER_DEPTH * 0.5), 0.0, 1.0)
+	var bob := sin(Time.get_ticks_msec() / 1000.0 * TAU / SWIM_BOB_S) * SWIM_BOB
+	var afloat := HeightMap.WATER_LEVEL - SWIM.sink(swimmer.species()) + bob
+	return (afloat - ground) * wet
+
+
+## Ripples spreading behind the swimmer while it moves (Chloé at `at`, 2D).
+func _update_wake(at: Vector2) -> void:
+	var swimming := _swimmer_of(player) != null and not _region.indoor
+	var speed := _player_cur.distance_to(_player_prev) * Engine.physics_ticks_per_second
+	_wake.emitting = swimming and speed > 30.0
+	if swimming:
+		_wake.position = Vector3(at.x / PX, HeightMap.WATER_LEVEL + 0.03, at.y / PX)
+
+
+## Droplets thrown up where Chloé goes into the water or comes out of it (`p`, 2D).
+func splash(p: Vector2) -> void:
+	if heights == null:
+		return
+	var ground := heights.to_3d(p).y
+	burst(p, SPLASH, 16, maxf(0.0, HeightMap.WATER_LEVEL + 0.1 - ground), 0.45)
 
 
 func _physics_process(_delta: float) -> void:
@@ -1159,6 +1384,86 @@ func _make_rain() -> CPUParticles3D:
 	return p
 
 
+## A sandstorm's grains: thin ochre streaks flying past on the wind (west to east).
+func _make_sand() -> CPUParticles3D:
+	var p := CPUParticles3D.new()
+	p.amount = SAND_GRAINS
+	p.lifetime = 1.8
+	p.local_coords = false
+	p.emitting = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(3.0, 2.2, 13.0)
+	p.direction = Vector3(1.0, 0.05, 0.1)
+	p.spread = 5.0
+	p.initial_velocity_min = 13.0
+	p.initial_velocity_max = 18.0
+	p.gravity = Vector3(0, -0.5, 0)
+	var q := QuadMesh.new()
+	q.size = Vector2(0.28, 0.014)
+	var m := StandardMaterial3D.new()
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y
+	m.vertex_color_use_as_albedo = true
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	q.material = m
+	p.mesh = q
+	return p
+
+
+## …and clouds of dust drifting along with it, soft and pale.
+func _make_dust() -> CPUParticles3D:
+	var p := CPUParticles3D.new()
+	p.amount = DUST_CLOUDS
+	p.lifetime = 3.0
+	p.preprocess = 3.0
+	p.local_coords = false
+	p.emitting = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(15.0, 2.0, 12.0)
+	p.direction = Vector3(1.0, 0.05, 0.0)
+	p.spread = 10.0
+	p.initial_velocity_min = 3.5
+	p.initial_velocity_max = 6.0
+	p.gravity = Vector3.ZERO
+	p.scale_amount_min = 1.0
+	p.scale_amount_max = 2.2
+	var fade := Gradient.new()
+	fade.set_color(0, Color(1, 1, 1, 0))
+	fade.add_point(0.3, Color(1, 1, 1, 0.16))
+	fade.add_point(0.7, Color(1, 1, 1, 0.16))
+	fade.set_color(fade.get_point_count() - 1, Color(1, 1, 1, 0))
+	p.color_ramp = fade
+	p.mesh = _speck(1.1)
+	return p
+
+
+## The wake of a swimmer: pale rings on the water, spreading out and fading.
+func _make_wake() -> CPUParticles3D:
+	var p := CPUParticles3D.new()
+	p.amount = WAKE_DOTS
+	p.lifetime = 1.4
+	p.local_coords = false
+	p.emitting = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(0.35, 0.0, 0.25)
+	p.direction = Vector3(1, 0, 0)
+	p.spread = 180.0
+	p.flatness = 1.0   # on the water only
+	p.initial_velocity_min = 0.15
+	p.initial_velocity_max = 0.45
+	p.gravity = Vector3.ZERO
+	var grow := Curve.new()
+	grow.add_point(Vector2(0.0, 0.5))
+	grow.add_point(Vector2(1.0, 1.6))
+	p.scale_amount_curve = grow
+	var fade := Gradient.new()
+	fade.set_color(0, Color(0.95, 0.98, 1.0, 0.55))
+	fade.set_color(1, Color(0.95, 0.98, 1.0, 0.0))
+	p.color_ramp = fade
+	p.mesh = _speck(0.2)
+	return p
+
+
 # ------------------------------------------------------------------ sky
 
 ## In a storm, a flash of lightning now and then, and its thunder a moment later (farther
@@ -1195,6 +1500,8 @@ func _indoor_light(hour: float) -> void:
 	_env.fog_depth_end = 300.0
 	_pollen.visible = false
 	_rain.emitting = false
+	_sand.emitting = false
+	_dust.emitting = false
 	if _ground_mat:
 		_ground_mat.set_shader_parameter("wetness", 0.0)
 	for n in _zone.get_children():
@@ -1220,21 +1527,31 @@ func _update_sky(hour: float) -> void:
 	var t := smoothstep(a[0], b[0], hour) if b[0] > a[0] else 0.0
 	var rain := _rain_amount
 	var mist := _mist_amount
+	var sand := _sand_amount
 	_sun.rotation_degrees = Vector3(-lerpf(a[1], b[1], t), lerpf(a[2], b[2], t), 0.0)
-	_sun.light_color = (a[3] as Color).lerp(b[3], t)
-	_sun.light_energy = lerpf(a[4], b[4], t) * (1.0 - 0.65 * rain) * (1.0 - 0.4 * mist)
+	_sun.light_color = (a[3] as Color).lerp(b[3], t).lerp(Color(1.0, 0.8, 0.55), sand * 0.5)
+	_sun.light_energy = lerpf(a[4], b[4], t) * (1.0 - 0.65 * rain) * (1.0 - 0.4 * mist) * (1.0 - 0.45 * sand)
 	var sky := (a[7] as Color).lerp(b[7], t)
 	var bright := clampf(sky.get_luminance() / 0.75, 0.15, 1.0)
 	sky = sky.lerp(Color(0.55, 0.58, 0.62) * bright, rain * 0.8).lerp(Color(0.82, 0.84, 0.86) * bright, mist * 0.85)
-	_env.ambient_light_color = (a[5] as Color).lerp(b[5], t).lerp(Color(0.62, 0.65, 0.7) * bright, rain * 0.5 + mist * 0.4)
-	_env.ambient_light_energy = lerpf(a[6], b[6], t) * (1.0 + 0.2 * mist)
+	sky = sky.lerp(SAND_SKY * bright, sand * 0.85)
+	_env.ambient_light_color = (a[5] as Color).lerp(b[5], t).lerp(Color(0.62, 0.65, 0.7) * bright, rain * 0.5 + mist * 0.4) \
+		.lerp(Color(0.8, 0.64, 0.45) * bright, sand * 0.5)
+	_env.ambient_light_energy = lerpf(a[6], b[6], t) * (1.0 + 0.2 * mist + 0.15 * sand)
 	_env.background_color = sky
 	_env.fog_light_color = sky
-	# Mist: clear around Chloé (the camera is ~distance away), thick a few metres beyond.
+	# Mist (or blowing sand): clear around Chloé (the camera is ~distance away), thick a few
+	# metres beyond.
 	var near := camera.distance()
-	_env.fog_depth_begin = lerpf(lerpf(near + 8.0, near + 2.0, rain), near - 1.0, mist)
-	_env.fog_depth_end = lerpf(lerpf(near + 46.0, near + 28.0, rain), near + 14.0, mist)
-	_pollen.visible = hour > 6.0 and hour < 20.0 and rain < 0.3
+	var veil := maxf(mist, sand)
+	_env.fog_depth_begin = lerpf(lerpf(near + 8.0, near + 2.0, rain), near - 1.0, veil)
+	_env.fog_depth_end = lerpf(lerpf(near + 46.0, near + 28.0, rain), near + 14.0, veil)
+	_pollen.visible = hour > 6.0 and hour < 20.0 and rain < 0.3 and sand < 0.3
+	# Sand streaking past, dust drifting, as thick as the storm is.
+	_sand.emitting = sand > 0.05
+	_dust.emitting = sand > 0.05
+	_sand.color = Color(SAND, 0.42 * sand)
+	_dust.color = Color(SAND_SKY, sand)
 	# Fine, faint streaks; a storm: more of them, a little more visible.
 	_rain.emitting = rain > 0.05
 	var drops := Quality.scaled(roundi(RAIN_DROPS * (STORM_RAIN if _storm_amount > 0.5 else 1.0)))

@@ -3,11 +3,17 @@ extends RefCounted
 ## Helpers to generate a zone scene from a text plan (tools/zones/<id>.gd, built by
 ## tools/build_zone.gd). The generated .tscn is the source of truth afterwards: it is edited
 ## in the Godot editor (paint the terrain, move props, resize habitats).
-## Plan characters: . grass   = path   w tall grass   ~ water
+## Plan characters: . grass   = path   w tall grass   ~ water   F forest   s sand   v mud   r rock
+## (in a plan only: in a RELIEF, "r" is a ramp)
 
 const TILE := 48
 const TILESET := preload("res://regions/terrain_tileset.tres")
-const TERRAIN_CHARS := ".=w~Fs"   # grass, path, tall grass, water, forest, sand
+## grass, path, tall grass, water, forest, sand, mud (the Marais' "vase"), rock (the Désert's canyons)
+const TERRAIN_CHARS := ".=w~Fsvr"
+## Ground Chloé walks on (the others: water, woods).
+const WALKABLE := ["grass", "path", "tall_grass", "sand", "mud", "rock"]
+## Open ground (not a path): where things are scattered, pebbles hidden, a fire lit.
+const OPEN_GROUND := ["grass", "tall_grass", "sand", "mud", "rock"]
 const TREES := ["arbre_rond", "araucaria", "arbre_rond", "fougere_arbre"]
 const SMALL := ["fleurs_roses", "fleurs_violettes", "fougeres", "fleurs_roses", "fougeres"]
 const WHEN := {"toujours": 0, "jour": 1, "nuit": 2, "aube et crépuscule": 3, "jour et crépuscule": 4}
@@ -71,6 +77,7 @@ static func region(id: StringName, region_name: String, zone_name: String, level
 const SOLS := {
 	"grass": [Color8(90, 158, 58), 0], "path": [Color8(200, 160, 96), 1], "tall_grass": [Color8(47, 107, 31), 2],
 	"water": [Color8(46, 111, 181), 3], "forest": [Color8(31, 64, 32), 4], "sand": [Color8(232, 212, 154), 5],
+	"mud": [Color8(107, 90, 54), 6], "rock": [Color8(176, 96, 60), 7],
 }
 
 
@@ -232,6 +239,53 @@ static func dino_npc(root: Region, node_name: String, species: StringName, x: fl
 	return d
 
 
+## A circle of `radius` tiles around tile (x, y) that starts story scene `event` when Chloé
+## walks into it (world/story_trigger.gd). `opts`: required_flag (only once it is set),
+## once_flag (never again once it is set: the scene sets it), name (node name).
+static func trigger(root: Node, x: float, y: float, radius: float, event: StringName, opts := {}) -> Node2D:
+	var t: Node2D = load("res://world/story_trigger.gd").new()
+	t.name = String(opts.get("name", "Declencheur" + String(event).to_pascal_case()))
+	t.event = event
+	t.radius = radius
+	t.required_flag = StringName(opts.get("required_flag", &""))
+	t.once_flag = StringName(opts.get("once_flag", &""))
+	t.position = cell(x, y)
+	var parent: Node = root.get_node_or_null("Entities")
+	(parent if parent else root).add_child(t, true)
+	return t
+
+
+## Flood water filling `cells` (tiles), in the sunken temple (world/flood.gd): it blocks the
+## way, even swimming, until story flag `dry_flag` is set, then drains before Chloé's eyes.
+## `opts`: flooded_flag (instead: water only while that flag is set; dry_flag may be &""),
+## depth (metres of water, 1.1), blocked_dialogue (what Chloé says looking at it), name.
+static func flood(root: Node, cells: Rect2, dry_flag: StringName, opts := {}) -> Node2D:
+	var f: Node2D = load("res://world/flood.gd").new()
+	f.name = String(opts.get("name", "Crue"))
+	f.position = cell(cells.position.x, cells.position.y)
+	f.size = cells.size
+	f.dry_flag = dry_flag
+	f.flooded_flag = StringName(opts.get("flooded_flag", &""))
+	f.depth = float(opts.get("depth", 1.1))
+	f.blocked_dialogue = StringName(opts.get("blocked_dialogue", &""))
+	root.add_child(f, true)
+	return f
+
+
+## Something buried at tile (x, y) that a dino with Flair digs up (world/dig_spot.gd): an
+## item (`item_id`, e.g. "fossile") instead of an amber pebble. `flag`: set once dug up
+## (unique in the game, e.g. "fossile_desert_01"; not "galet_…", which counts pebbles).
+static func buried_item(root: Node, x: float, y: float, item_id: String, flag: StringName) -> Node2D:
+	var spot := DigSpot.new()
+	spot.name = "Enfoui" + String(flag).to_pascal_case()
+	spot.pebble = flag
+	spot.item_id = item_id
+	spot.position = cell(x, y)
+	var parent: Node = root.get_node_or_null("Entities")
+	(parent if parent else root).add_child(spot, true)
+	return spot
+
+
 ## A wooden pier over the water: its cells must be painted as path (walkable).
 static func dock(root: Region, cells: Rect2) -> Dock:
 	var d := Dock.new()
@@ -247,9 +301,10 @@ static func dock(root: Region, cells: Rect2) -> Dock:
 ##   `in_trees` / `under_stones` of the scenery already placed (spread over the map),
 ##   `buried`: tiles where a dino with Flair digs, `in_sight`: tiles where one simply lies.
 ## Tiles that are not reachable open ground move to the nearest one that is. Sets root.pebbles.
+## `swimming`: the islands reached across deep water count too (the Marais, with the Nage).
 static func hide_pebbles(root: Region, entities: Node, from: Vector2i, seed_value: int, in_trees: int,
-		under_stones: int, buried: Array, in_sight: Array) -> void:
-	var reach := _reachable(root, from)
+		under_stones: int, buried: Array, in_sight: Array, swimming := false) -> void:
+	var reach := _reachable(root, from, swimming)
 	var reachable := func(p: Node2D) -> bool: return reach.has(Vector2i((p.position / TILE).floor()))
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
@@ -302,8 +357,8 @@ static func _spread(nodes: Array, count: int, rng: RandomNumberGenerator) -> Arr
 	return picked
 
 
-## The middle of the nearest reachable open ground tile (grass, tall grass, sand) to tile `t`,
-## on flat ground: its neighbours all walkable and at its height (not on a cliff's edge).
+## The middle of the nearest reachable open ground tile (OPEN_GROUND) to tile `t`, on flat
+## ground: its neighbours all walkable and at its height (not on a cliff's edge).
 static func _open_ground(terrain: TileMapLayer, reach: Dictionary, t: Vector2) -> Vector2:
 	var root := terrain.get_parent() as Region
 	for r in 10:
@@ -311,7 +366,7 @@ static func _open_ground(terrain: TileMapLayer, reach: Dictionary, t: Vector2) -
 			for dx in range(-r, r + 1):
 				var c := Vector2i(t) + Vector2i(dx, dy)
 				var data := terrain.get_cell_tile_data(c)
-				if reach.has(c) and data and String(data.get_custom_data("terrain")) in ["grass", "tall_grass", "sand"] \
+				if reach.has(c) and data and String(data.get_custom_data("terrain")) in OPEN_GROUND \
 						and is_flat(root, c, 1):
 					return cell(c.x + 0.5, c.y + 0.6)
 	push_warning("Pas de sol accessible près de %s" % t)
@@ -327,7 +382,7 @@ static func is_flat(root: Region, c: Vector2i, radius: int) -> bool:
 		for dx in range(-radius, radius + 1):
 			var n := c + Vector2i(dx, dy)
 			var data := terrain.get_cell_tile_data(n)
-			if data == null or not String(data.get_custom_data("terrain")) in ["grass", "path", "tall_grass", "sand"]:
+			if data == null or not String(data.get_custom_data("terrain")) in WALKABLE:
 				return false
 			if absf(root.tile_height(n) - h) > 0.2:
 				return false
@@ -349,8 +404,9 @@ static func flat_spot(root: Region, t: Vector2, radius := 1) -> Vector2:
 	return cell(t.x, t.y)
 
 
-## Tiles Chloé can walk to from `from`: walkable ground, no cliff between two of them.
-static func _reachable(root: Region, from: Vector2i) -> Dictionary:
+## Tiles Chloé can walk to from `from`: walkable ground, no cliff between two of them
+## (`swimming`: deep water too, as with the Nage).
+static func _reachable(root: Region, from: Vector2i, swimming := false) -> Dictionary:
 	var terrain: TileMapLayer = root.get_node("Terrain")
 	var seen := {from: true}
 	var queue: Array[Vector2i] = [from]
@@ -364,7 +420,8 @@ static func _reachable(root: Region, from: Vector2i) -> Dictionary:
 			if seen.has(n):
 				continue
 			var data := terrain.get_cell_tile_data(n)
-			if data == null or not String(data.get_custom_data("terrain")) in ["grass", "path", "tall_grass", "sand"]:
+			var kind := String(data.get_custom_data("terrain")) if data else ""
+			if not (kind in WALKABLE or (swimming and kind == "water")):
 				continue
 			if absf(root.tile_height(n) - h) > Region.CLIFF_STEP:
 				continue

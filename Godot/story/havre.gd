@@ -20,6 +20,15 @@ const SADDLE_PRICE := 350
 const REMATCH_SHARE := 0.35
 const COINS_SFX := preload("res://assets/audio/sfx/coins.wav")
 const DOOR_SFX := preload("res://assets/audio/sfx/door_open.wav")
+## What Maïa points at, arriving (tiles, the street in front of each house): the Relais,
+## Ferréol's Comptoir, Joss's saddlery.
+const RELAIS_FRONT := Vector2(22.5, 10.2)
+const COMPTOIR_FRONT := Vector2(33.0, 10.2)
+const SELLERIE_FRONT := Vector2(42.0, 10.2)
+## One night: the end of the quay, where the boat comes in without a light (tiles); Isaure
+## steps off it there and walks up the pier.
+const PIER_END := Vector2(47.8, 24.0)
+const BOAT_LANDING := Vector2(47.5, 27.2)
 ## The trainers of the Relais: team (species, level), prize, their lines.
 const TRAINERS := {
 	&"gaspard": {"name": "Gaspard", "rank": "Bronze", "flag": &"gaspard_battu", "prize": 150,
@@ -47,14 +56,20 @@ static func arrival() -> void:
 	var w = S.world()
 	if maia and w:
 		await maia.walk_to(w.player.global_position + Vector2(70, 0), "left", 170.0)
+	# She shows the town: the camera goes to each place she names, then comes back.
 	await S.say([
-		{"who": MAIA, "text": "Te voilà ! Bienvenue au Havre. Regarde-moi ça : des toits neufs, des lanternes partout… et personne qui compte ses poissons."},
-		{"who": MAIA, "text": "Ici, tout le monde a des dinos, et tout le monde les équipe. Le Relais, là-haut, c'est là que les dresseurs se mesurent."},
-		{"who": CHLOE, "text": "Tout ça, c'est grâce à quoi ?"},
-		{"who": MAIA, "text": "À l'ambre. Le Comptoir de Maître Ferréol rachète tout ce qu'on trouve. Maman lui livre des caisses, des fois."},
-		{"who": MAIA, "text": "Et je te présente mon meilleur ami : Joss, le sellier, la grande maison à l'est. Il fait des SELLES. Pour DINOS. On peut MONTER dessus, Chloé."},
+		_cue({"who": MAIA, "text": "Te voilà ! Bienvenue au Havre. Regarde-moi ça : des toits neufs, des lanternes partout… et personne qui compte ses poissons."},
+			func() -> void: Stage.hop(maia, 2, 9.0)),
+		_cue({"who": MAIA, "text": "Ici, tout le monde a des dinos, et tout le monde les équipe. Le Relais, là-haut, c'est là que les dresseurs se mesurent."},
+			func() -> void: Stage.look_at(S.at(RELAIS_FRONT.x, RELAIS_FRONT.y))),
+		_cue({"who": CHLOE, "text": "Tout ça, c'est grâce à quoi ?"}, func() -> void: Stage.look_back()),
+		_cue({"who": MAIA, "text": "À l'ambre. Le Comptoir de Maître Ferréol rachète tout ce qu'on trouve. Maman lui livre des caisses, des fois."},
+			func() -> void: Stage.look_at(S.at(COMPTOIR_FRONT.x, COMPTOIR_FRONT.y))),
+		_cue({"who": MAIA, "text": "Et je te présente mon meilleur ami : Joss, le sellier, la grande maison à l'est. Il fait des SELLES. Pour DINOS. On peut MONTER dessus, Chloé."},
+			func() -> void: Stage.look_at(S.at(SELLERIE_FRONT.x, SELLERIE_FRONT.y))),
 		{"flag": &"havre_arrive"},
 	])
+	Stage.look_back()
 	if maia:
 		await maia.walk_to(S.at(24.6, 9.9), "down", 170.0)
 	Save.save_game()
@@ -144,9 +159,12 @@ static func joss() -> void:
 			[&"pieces", &"monter"])
 		return
 	S.lock(true)
+	var chloe := Stage.chloe()
 	await S.say([{"who": JOSS, "text": "Le cuir, la boucle… et les pièces ! Marché conclu. Ne regarde pas, je suis timide quand je couds."}])
 	Game.pay(SADDLE_PRICE)
 	Audio.play_sfx(COINS_SFX)
+	Stage.turn_to(chloe, chloe.global_position + Vector2(0, 100))   # she does not look
+	await S.wait(0.5)
 	await S.fade_through(func() -> void: await S.wait(1.0))
 	Game.use_item("cuir")
 	Game.use_item("boucle")
@@ -211,14 +229,24 @@ static func night() -> void:
 	if w == null or w.region == null or w.region.region_id != &"havre_dore":
 		return
 	S.lock(true)
-	await S.say([{"text": "Au bout du quai, une barque accoste sans lumière, juste devant l'entrepôt du Comptoir."}])
+	# The camera shows the end of the quay: someone steps off the dark boat.
+	var isaure := S.stranger("IsaureNuit", "isaure", S.at(BOAT_LANDING.x, BOAT_LANDING.y), "up")
+	isaure.modulate.a = 0.0
+	var landed := {"done": false}
+	await S.say([_cue({"text": "Au bout du quai, une barque accoste sans lumière, juste devant l'entrepôt du Comptoir."},
+		func() -> void: _run(func() -> void: await _lands(isaure), landed))])
+	await _finish(landed, 4.0)
 	await S.fade_through(func() -> void:
+		Stage.look_back(0.0)
 		w.player.teleport(S.at(44.3, 21.1))   # behind the crates of the quay
 		w.companion.teleport(S.at(43.4, 21.2))
 		w.player.face_towards(S.at(48.5, 20.0))
+		if is_instance_valid(isaure):
+			isaure.global_position = S.at(47.5, 24.6)
+			isaure.modulate.a = 1.0
 		await S.wait(0.3))
-	await S.say([{"text": "Chloé se glisse derrière les caisses, sans un bruit."}])
-	var isaure := S.stranger("IsaureNuit", "isaure", S.at(47.5, 24.6))
+	# She crouches down, out of sight.
+	await S.say([_cue({"text": "Chloé se glisse derrière les caisses, sans un bruit."}, func() -> void: Stage.bow(Stage.chloe(), 1.4))])
 	var ferreol := S.stranger("FerreolNuit", "ferreol", S.at(48.5, 18.3))
 	await isaure.walk_to(S.at(47.5, 21.4), "up", 110.0)
 	await ferreol.walk_to(S.at(48.5, 20.4), "down", 90.0)
@@ -235,3 +263,43 @@ static func night() -> void:
 	await S.say([{"who": CHLOE, "text": "Isaure ? Qu'est-ce qu'elle livre au Comptoir… en pleine nuit ?"}, {"flag": &"barque_vue"}])
 	Save.save_game()
 	S.lock(false)
+
+
+## The camera goes to the end of the quay: Isaure comes out of the dark, off the boat, and
+## walks up the pier.
+static func _lands(isaure: Npc) -> void:
+	Stage.look_at(S.at(PIER_END.x, PIER_END.y + 1.0))
+	await S.wait(0.8)
+	if not is_instance_valid(isaure):
+		return
+	Stage.fade_in(isaure, 0.8)
+	await isaure.walk_to(S.at(PIER_END.x - 0.3, PIER_END.y + 1.0), "up", 70.0)
+
+
+# ------------------------------------------------------------------ staging (see Stage)
+
+## A line whose staging starts the moment it shows: `act` is called then (not awaited), so
+## the move goes with its bubble, without cutting the dialogue in two.
+static func _cue(line: Dictionary, act: Callable) -> Dictionary:
+	var cued := line.duplicate()
+	var text: String = cued["text"]
+	cued.erase("text")
+	cued["text_fn"] = func() -> String:
+		act.call()
+		return text
+	return cued
+
+
+## Plays `move` (a coroutine) and marks `token` done at its end (see _finish): a move that
+## goes on under the lines, and that the scene waits for before going further.
+static func _run(move: Callable, token: Dictionary) -> void:
+	await move.call()
+	token["done"] = true
+
+
+## Waits for a move started with _run (at most `max_s` seconds, whatever happens).
+static func _finish(token: Dictionary, max_s := 12.0) -> void:
+	var waited := 0.0
+	while not token.get("done", false) and waited < max_s:
+		await S.wait(0.05)
+		waited += 0.05

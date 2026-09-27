@@ -41,6 +41,28 @@ const AMBIENCES := {
 	},
 	&"cabinet": {"beds": [["labo", 1.0, ""]], "calls": []},
 	&"maison": {"beds": [["maison", 0.9, ""]], "calls": []},
+	## Marais Brumeux : the web's marais.mp3 is a whistle drone (99.5 % of its energy crammed
+	## into 1-3 kHz around a screaming ~2 kHz peak), unusable, like foret.mp3 above. "eau" (an
+	## ElevenLabs take, the only one of four that came back clean — see prepare-ambience.mjs)
+	## stands in for the calm water. No clean frog take was found in three tries (always a
+	## piercing 1-2 kHz chirp instead of a low croak): the marsh leans on birds and drips
+	## instead of frogs.
+	&"marais": {
+		"beds": [["brise", 0.35, ""], ["eau", 0.55, ""], ["feu", 1.0, "fire"]],
+		"calls": [
+			{"ids": BIRDS, "every": [7.0, 16.0], "vol": 0.35, "day": true},
+			{"ids": ["goutte"], "every": [4.0, 10.0], "vol": 0.3},
+		],
+	},
+	## Désert Aride : desert.mp3 (web) is clean (92.5 % of its energy below 500 Hz, only a
+	## negligible ~0.1 % near 2 kHz), used as-is for the grave hot wind, no filter needed.
+	&"desert": {
+		"beds": [["desert", 0.6, ""], ["feu", 1.0, "fire"]],
+		"calls": [
+			{"ids": ["rafale"], "every": [15.0, 35.0], "vol": 0.45},
+			{"ids": ["oiseau-3"], "every": [30.0, 60.0], "vol": 0.25, "day": true},
+		],
+	},
 }
 
 

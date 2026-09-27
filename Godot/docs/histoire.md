@@ -173,25 +173,25 @@ l'Ombre Noire.
 2. **La meute sans chef.** Les Deinonychus sont nerveux : leur Alpha, l'**Utahraptor Chef de
    Meute**, a été capturé par **Brac**, le braconnier de l'Ombre Noire. ✅ (installée à l'étape 1,
    sans nommer Brac)
-3. **Coup de crâne** : un Pachycephalosaurus des clairières rocheuses (à capturer) enfonce le mur
+3. **Coup de crâne** ✅ : un Pachycephalosaurus des clairières rocheuses (à capturer) enfonce le mur
    fissuré qui cache le **camp de l'Ombre Noire**.
    Dans un ravin caché, au sud-ouest, vit **Griffe-Grise**, le vieux Velociraptor d'Hélène ✅. Si
    l'œuf choisi était celui de Vif, c'est son père : scène, page de l'Ancien ✅, attaque ultime à Lien 5.
-4. **Le camp.** Des cages, de l'ambre noir, des dinos corrompus. Combat contre **Brac**, dont le
+4. **Le camp** ✅. Des cages, de l'ambre noir, des dinos corrompus. Combat contre **Brac**, dont le
    champion est **le troisième œuf**, volé au Cabinet et élevé à l'ambre noir : un jeune dino aux
    veines violettes, qui ne connaît que la peur. **Premier grand apaisement** ; il rejoint Chloé.
    Puis on libère l'Utahraptor, corrompu et enragé : apaisement long, avec l'aide du dino de départ. Il remet le **Sceau
    de la Forêt**. Parmi les papiers de Brac, une page du journal d'Hélène (page 11) : quelqu'un a
    donc eu accès à ses carnets.
-5. **Première apparition du Masque d'Obsidienne**, sur une passerelle, silhouette en cape. Il ne se
+5. **Première apparition du Masque d'Obsidienne** ✅, sur une passerelle, silhouette en cape. Il ne se
    bat pas : « Tu as les yeux de ta grand-mère. Ne fais pas les mêmes erreurs qu'elle. » Et il s'en va.
-6. **Maïa, défi n° 2**, au pont vers le Marais. Elle a vu le Masque aussi, et a trouvé ça « trop
-   stylé ». Au Cabinet, Chloé découvre de l'**ambre noir dans un tiroir de Roc**. *(Fausse piste n° 2.)*
+6. **Maïa, défi n° 2** ✅, au pont vers le Marais. Elle a vu le Masque aussi, et a trouvé ça « trop
+   stylé ». Au Cabinet, Chloé découvre de l'**ambre noir dans un tiroir de Roc** ✅. *(Fausse piste n° 2.)*
 
 ### Chapitre 2 — Étape 1 dans le jeu ✅
 
 La région, ses rencontres, Griffe-Grise et les pages 7 à 10 (`story/foret.gd`). L'étape 2 (Brac, le
-camp, le troisième œuf, l'Utahraptor, le Masque, Maïa, Coup de crâne) reste à faire.
+camp, le troisième œuf, l'Utahraptor, le Masque, Maïa, Coup de crâne) : voir plus bas.
 
 1. **Le chemin.** La sortie ouest des Plaines demande la selle. Sans elle : « la Forêt est immense, à
    pied on s'y perdrait avant le goûter » ; le texte renvoie vers Joss (Havre-Doré), vers la route
@@ -240,32 +240,368 @@ Drapeaux : `foret_arrivee`, `griffe_grise_vu`, `found_journal_ancien`, `clairier
 `found_journal_7` à `_10` (et `griffe_grise_n`, `clairiere_n`, `griffe_apres_clairiere` pour les
 répliques). Événements : `griffe_grise` (DinoNpc du ravin), `clairiere_vide` (StoryProp de la clairière).
 
-## Chapitre 3 — Le Marais Brumeux · 1er Cœur
+### Chapitre 2 — Étape 2 dans le jeu ✅
+
+Le camp (`story/foret_camp.gd`), puis le Masque, Maïa et le Cabinet (`story/foret_fin.gd`). Le
+troisième œuf change à chaque partie : **Écho** si Chloé a Vif, **Vif** si elle a Bastion,
+**Bastion** si elle a Écho (son nom d'œuf, `Game.STARTERS`).
+
+1. **Le mur fissuré** (ouest, au fond d'une anse de la paroi, là où filent les sillons de la
+   clairière). Il sent la cendre ; derrière, des coups de marteau et un raptor qui gronde. Le texte
+   envoie vers les Pachycephalosaurus des clairières rocheuses (nord-est, le jour) : « pour eux, un
+   mur, c'est un bonjour ». Coup de crâne l'enfonce ; un tunnel mène au camp.
+2. **Le camp** (zone `camp_ombre`, première entrée) : palissades, tentes, caisses marquées d'un
+   masque d'os, ambre noir qui luit, dinos aux veines violettes en cage, et dans la plus grande le
+   **chef de la meute**, vivant. De loin, **Brac** : un colosse à la barbe rousse pleine de cendre,
+   le masque d'os relevé sur le front comme une casquette, qui promet au raptor qu'il « mangera
+   dans sa main » dans trois jours. Chloé se cache derrière des caisses.
+3. **Les sbires** : **Firmin**, le cousin de Gustave (qui lui envoie des cartes postales,
+   « Soleil, sardines, bisous »), et le **sbire à la lanterne**, calme et inquiétant, qui parle du
+   Masque après sa défaite : il arrive la nuit, **par la mer**, sans lanterne ; il sait tout, même
+   « qui t'a amenée sur l'île » ; il paie, « au port, plus personne ne paie » ; ses bottes sont
+   pleines de **cendre des forges du volcan**. Chloé pense aux bottes de la mère de Maïa et aux
+   chaussures de Roc… et se reprend.
+4. **Brac** (il envoie d'abord ses sbires) : chasseur d'Alphas, il a eu trois pièges arrachés
+   (dont celui de Griffe-Grise). « Il n'obéira pas. Il aura juste peur de vous. — C'est pareil,
+   gamine. » Tenaille (Deinonychus 16), Mastoc (Allosaurus 17), puis son **champion** : le troisième
+   petit du Cabinet, « un cadeau du Masque », nourri à l'ambre noir depuis sa première nuit
+   (niveau 16, corrompu : il s'apaise, il ne tombe pas). **Premier grand apaisement** : le petit
+   reconnaît l'odeur du Cabinet sur Chloé, et le dino de départ, avec qui il dormait sur les socles.
+   Il rejoint l'équipe (1 cœur de Lien ; si l'équipe est pleine, Chloé choisit qui part au
+   Cabinet). Brac fuit par les rochers en jurant (« Crotte de Stégosaure ! ») vers le Désert, où il
+   « a des amis avec des DENTS » ; il laisse ses clés.
+5. **Le chef de la meute** : Chloé ouvre la cage ; le jeu propose de mettre le dino de départ en
+   tête. Apaisement long (règle `long_calm`, Utahraptor 18 corrompu, musique des Alphas). Apaisé, il
+   souffle sur le museau du dino de départ (+1 cœur de Lien ; avec Vif, il reconnaît l'odeur de
+   Griffe-Grise), puis tend le cou : le **Sceau de la Forêt**, un disque d'ambre gravé de la
+   fougère d'Hélène, pendu à un collier de lianes. La meute revient par-dessus les palissades ; au
+   loin, Griffe-Grise répond. Les autres cages sont ouvertes. En partant, le chef gronde vers la
+   haute futaie : quelqu'un rôde.
+6. **Les papiers de Brac** (après sa défaite) : sa liste (« Le Carnotaurus Rouge, dans le Désert :
+   LE PROCHAIN »), des **notes d'Hélène sur la meute** (c'est ainsi qu'ils ont trouvé le chef), la
+   **page 11** arrachée d'un carnet (quelqu'un a eu accès aux carnets du Cabinet : « comme la nuit
+   du vol, avec une clé »), et un mot de « M. » : il viendra juger l'Alpha « depuis la passerelle
+   des deux arbres géants, sur la haute futaie ».
+7. **Le Masque d'Obsidienne**, sur une passerelle entre deux arbres géants, au bord de la haute
+   futaie (un StoryTrigger sur le sentier, après le Sceau). Cape, masque noir comme du verre, voix
+   étouffée. Il ne se bat pas. Il consulte un petit boîtier rond qui brille (la boussole d'Isaure, pour qui la
+   reconnaît). « Où est ma grand-mère ? — Personne ne le sait. … Pas même moi. » « Tu as les yeux de
+   ta grand-mère. Ne fais pas les mêmes erreurs qu'elle. » « Tu as une barque trop petite et un
+   courage trop grand : ça finit toujours mal » (les mots d'Hélène sur I., page 3 : Chloé se demande
+   où elle les a lus). Il part vers le nord-ouest.
+8. **Maïa, défi n° 2**, au pont du Marais (nord-ouest ; la dernière travée pend dans l'eau, ses
+   cordes tranchées). Elle a vu le Masque sauter l'eau : « TROP STYLÉ » ; il s'est arrêté en la
+   voyant, « comme s'il allait me dire quelque chose ». Elle s'émerveille du troisième petit
+   retrouvé. Caillou (15), Moustique le Dimorphodon (15), son petit (16). Battue, elle répare le
+   pont avec les nœuds de marin de sa mère, parle du Marais et de **la Voix du Marais** (la mère
+   d'Écho, d'après Isaure), et part devant.
+9. **Au Cabinet** : Roc revoit le troisième petit (« J'aurais dû dormir devant » ; avec la page 8,
+   Chloé lui dit que ce n'est pas sa faute : « Tu parles exactement comme elle. C'est très
+   agaçant. »), puis le Sceau. Le dino de tête flaire la cendre dans le **tiroir de Roc** : de
+   l'ambre noir dans un mouchoir. Roc, rouge : « Ce n'est pas ce que tu crois… Fais-moi confiance.
+   Et n'en parle à personne. Surtout pas à… À personne. » *(Fausse piste n° 2, et une ombre de
+   doute de Roc lui-même.)*
+10. **Autour** : la Forêt change de voix (la meute a retrouvé son chef), Griffe-Grise soupire de
+   soulagement, la clairière n'est plus vide. Si le troisième petit est **Vif**, Griffe-Grise le
+   reconnaît (il a couvé cet œuf un mois), se couche à sa hauteur, remet la page de l'Ancien, puis le
+   repousse vers Chloé « comme l'œuf, il y a un an ». Roc, Maïa et Isaure ont de nouvelles
+   répliques (Isaure : « Hélène mettait des fougères partout… sur les boussoles qu'elle offrait »,
+   « Ne crois pas tout ce qu'on te dit, moussaillon. Même moi. » ; Maïa : son masque en carton qui
+   fait pâlir sa mère). On peut poser des questions à Roc et à Maïa (où aller, le mur, apaiser, le
+   Masque), et **Roc échange les dinos de la réserve** du Cabinet.
+11. **Objectifs** : le mur (et un Pachycephalosaurus, s'il n'y a pas de Coup de crâne) → derrière
+   le mur → les sbires → Brac → le chef de la meute et les papiers → la passerelle → le pont →
+   le Marais Brumeux (chapitre 3) ; en parallèle, le tiroir de Roc (principal après le défi) et, si
+   le petit est Vif, Griffe-Grise.
+
+Drapeaux : `mur_vu`, `mur_camp_brise`, `camp_arrive`, `sbire_camp_1_vu` / `_2_vu`,
+`sbire_camp_1_battu` / `_2_battu`, `brac_parle`, `brac_battu`, `oeuf_vole_apaise`, `cage_ouverte`,
+`utah_lecon`, `sceau_foret`, `cages_ouvertes`, `found_journal_11`, `papiers_brac_lus`,
+`masque_en_vue`, `masque_vu`, `maia_pont_vue`, `maia_defi_2`, `roc_oeuf_retrouve`,
+`roc_sceau_foret`, `tiroir_flaire`, `ambre_noir_tiroir`, `meute_revenue`, `griffe_apres_camp`,
+`griffe_apres_sceau`, `griffe_vole_reconnu` (et `papiers_n`, `tiroir_n` pour les répliques).
+Événements : `brac`, `sbire_camp_1`, `sbire_camp_2`, `utahraptor_cage`, `papiers_brac`,
+`masque_passerelle`, `maia_defi_2`, `tiroir_roc` ; dialogues `mur_fissure_bloque`,
+`pont_marais_bloque`, `page_11`, `panneau_camp`, `panneau_pont` (« H. + I. » gravés sur un poteau).
+
+## Chapitre 3 — Le Marais Brumeux · 1er Cœur ✅
 
 1. Roselière, forêt noyée. **Nage** grâce à un Baryonyx : les chenaux s'ouvrent. Au cœur de la
    roselière, derrière une porte d'ambre (Résonance), chante **la Voix du Marais**, la vieille
-   Parasaurolophus d'Hélène : parente d'Écho.
+   Parasaurolophus d'Hélène : parente d'Écho. ✅
 2. **Dame Suie**, la chimiste, cueille des racines pour ses mélanges. Premier combat, première
-   conversation : elle croit sincèrement « améliorer » les dinos. Elle n'aime pas Brac.
+   conversation : elle croit sincèrement « améliorer » les dinos. Elle n'aime pas Brac. ✅
 3. **Le temple englouti.** Énigme de niveaux d'eau, fresques des premiers habitants de l'île : ils
-   portaient déjà des **masques d'os**, pour honorer les dinos. L'Ombre Noire a volé le symbole.
-4. Le **Spinosaure Ancestral** garde le **1er Cœur**. Combat d'honneur, confiance, Sceau, Cœur.
+   portaient déjà des **masques d'os**, pour honorer les dinos. L'Ombre Noire a volé le symbole. ✅
+4. Le **Spinosaure Ancestral** garde le **1er Cœur**. Combat d'honneur, confiance, Sceau, Cœur. ✅
 5. Page 14 : les notes d'Hélène sur l'ambre forcé ont été volées au Cabinet, et **trois personnes
    seulement avaient la clé : elle, Anselme et « I. »**. Chloé confronte Roc : il avoue ses sorties
-   nocturnes, sans dire où il va. Il supplie qu'on lui fasse confiance.
-6. **Maïa, défi n° 3** dans la roselière. Elle défend Roc : « Il est bizarre, pas méchant. »
+   nocturnes, sans dire où il va. Il supplie qu'on lui fasse confiance. ✅
+6. **Maïa, défi n° 3** dans la roselière. Elle défend Roc : « Il est bizarre, pas méchant. » ✅
+
+### Chapitre 3 dans le jeu ✅
+
+Zones `marais` (grande carte, `tools/zones/marais.gd`) et `temple_englouti` (`tools/zones/temple_englouti.gd`).
+Scènes : `story/marais.gd` (l'arrivée, Joss, le Baryonyx au gilet, la Voix), `story/marais_suite.gd` (Dame
+Suie, Roc, Maïa), `story/marais_temple.gd` (le temple). Le pont réparé par Maïa (fin du chapitre 2) mène
+de la Forêt aux pontons de l'est du Marais.
+
+1. **L'arrivée** (première entrée). La brume partout, l'odeur de vase et de menthe sauvage, quelque
+   chose de gros qui plonge. Puis un chant grave, immense, au fond de la brume (la Voix). Si Écho est
+   dans l'équipe (le dino de départ, ou le troisième petit retrouvé dans la Forêt), il répond, sur le
+   même ton ; Chloé se souvient de la page 6. Enfin, un grand « PLOUF » et une voix qui crie « Rends-moi
+   ça, espèce de sac à flotteurs ! » : Joss.
+2. **Joss**, à sa cabane sur pilotis (son « atelier d'été »), trempé, un roseau dans les cheveux, très
+   fier de ses coutures (« Regarde ces coutures. Non, vraiment : regarde-les. »). Un jeune Baryonyx lui a
+   chipé son plus beau gilet de nage (les Baryonyx adorent ce qui flotte : il le fait couler, le regarde
+   remonter, et recommence) et l'a emporté sur un banc de sable de la roselière, **à pied** par les
+   pontons et la vase. Maïa est passée le matin, a voulu traverser un chenal à pied, « ressortie verte ».
+3. **Le Baryonyx au gilet** (niveau 16, sauvage) : combat où l'on peut le **capturer** (le texte le dit
+   la première fois). Capturé, Chloé l'appelle **Bouée** et il devient le premier nageur ; battu, il lâche
+   le gilet et file rejoindre les autres Baryonyx des roseaux. Joss arrive en courant et **donne le gilet**
+   (objet et drapeau `gilet_nage`), explique la **Nage** (un dino nageur adulte, niveau 12, dans
+   l'équipe ; on avance dans l'eau profonde, il nous prend sur son dos, tout seul), parle de la Voix et
+   d'une « dame très polie, en gris, avec une voilette » qui cueille des racines sur l'îlot aux racines
+   (« elle sent la cheminée froide »). Sans nageur, l'objectif dit où en trouver (Baryonyx des roseaux,
+   ou celui qui attend au Cabinet).
+4. **La porte d'ambre** de l'îlot de la Voix (à la nage ; Résonance). Sans dino à crête, le texte et
+   l'objectif disent lesquels chantent : un Corythosaurus de la roselière, un Iguanodon des rives, un
+   Parasaurolophus (ou celui qui attend au Cabinet).
+5. **La Voix du Marais**, très vieille Parasaurolophus (crête de vieux cuivre, écailles couleur de
+   roseaux en hiver), son nom gravé avec une fougère.
+   - **Avec Écho** (le dino de départ, ou le troisième petit quand c'est lui) : il chante une petite note
+     tremblante, elle répond la même, plus grave, et pose sa crête contre la sienne. Si c'est le petit
+     volé, elle lui chante une berceuse jusqu'à ce qu'il arrête de trembler (« Chez Brac, on ne lui a
+     jamais chanté que des ordres »). Elle sort de sous les nénuphars un tube de cuivre bouché à la cire
+     (« Pour Chloé. Elle te la donnera. ») : la **page de l'Ancien**. Elle pousse Écho vers Chloé ; +1 cœur
+     de Lien. Si Écho attend au Cabinet, elle sent son odeur sur les mains de Chloé (et la retrouvaille
+     se fait plus tard, quand Chloé le ramène : objectif secondaire).
+   - **Sans Écho** : elle écoute Chloé « comme une note qu'elle ne connaît pas encore », plonge le
+     museau dans la sacoche aux pages et reconnaît l'odeur d'Hélène. Avec Bastion, Chloé pense à sa
+     mère, le Vieux Rempart, dans le Désert.
+   - **Dans les deux cas**, elle se tourne vers le temple englouti et chante : très loin, la grande
+     porte de pierre glisse (`temple_ouvert`). Ensuite, une réplique à chaque visite ; après le Cœur,
+     une note « ronde, joyeuse », entendue de tout le Marais.
+6. **Dame Suie**, sur l'îlot aux racines (à la nage) : manteau couleur de cendre, gants gris perle,
+   voilette, lunettes fumées, petits ciseaux d'argent, fioles étiquetées. Polie, glaçante : « Ne marchez
+   pas sur les racines de brume, je vous prie. Elles sont timides. » Elle méprise Brac (« il donne l'ambre
+   noir à la pelle »), elle « mesure, dose, note » ; elle croit améliorer les dinos (« Votre grand-mère
+   les réveillait. Moi, je les termine. », « La peur n'est qu'un problème de dosage »). Combat : Mandragore
+   (Therizinosaurus 19), Ciguë (Koolasuchus 19), puis **Belladone**, un Dilophosaurus 20 **corrompu** (« trois
+   gouttes le matin, deux le soir ») qu'on apaise. Stupéfaite (« Ce n'est pas dans mes tables »), elle
+   parle des notes d'Hélène brûlées… « Presque toutes. C'est un mot merveilleux. » Elle laisse Belladone :
+   Chloé l'emmène (elle l'appelle **Braise**) ou le libère. Elle sait que le temple s'est ouvert, et que
+   le Masque « cherche ce qui dort là-dessous depuis des années » ; puis elle part en barque : « Nous
+   nous reverrons. Là où il fait plus froid, peut-être. » (Les Monts Gelés.) La page 13 apparaît alors
+   entre ses racines.
+7. **Le temple englouti** (zone `temple_englouti`) : un hall de colonnes, des masques d'os sculptés
+   au-dessus de l'entrée, les galeries noyées jusqu'au plafond. **Trois vannes**, toujours dans le même
+   ordre (la roue du hall vide la galerie ouest ; celle du bout de la galerie ouest vide la galerie est ;
+   celle du bout de la galerie est vide l'escalier de la grande salle). Des traits gravés relient chaque
+   roue à l'eau qu'elle commande ; Hélène a laissé une flèche et un « H. » près de la première. Le dino de
+   tête aide à tourner chaque roue, à sa façon (le raptor tire sur un rayon, le cuirassé pousse de la tête,
+   le Baryonyx tire avec les dents…), et l'eau baisse sous les yeux de Chloé. En regardant l'eau, le texte
+   dit quelle vanne tourner.
+   **Trois fresques** (une dans le hall, une au bout de chaque galerie) : les veilleurs masqués autour d'un
+   géant endormi dans l'ambre ; le squelette du géant à voile autour duquel on a bâti le temple, un enfant
+   qui le caresse ; le départ en barques quand le volcan a fumé, les masques laissés sur les marches. Les
+   trois vues, Chloé comprend : un masque d'os, c'était une promesse (« nous veillons sur vous ») ;
+   l'Ombre Noire a volé le symbole. La **page 12** est dans la galerie est.
+8. **Le Spinosaure Ancestral**, dans le bassin de la grande salle : une voile couverte d'algues et de
+   cicatrices, une tête « longue comme une barque », des yeux dorés, calmes. Il renifle les Sceaux, écoute
+   Chloé, puis rugit : « une question ». **Combat d'honneur** (niveau 22, ni collier ni fuite ; conseil : le
+   Vent le touche fort ; avant chaque essai, il attend que les dinos aient bu à son bassin : l'équipe est soignée). Gagné, il salue, donne le **Sceau du Marais** (un disque d'ambre vert d'eau, une
+   vague et la fougère d'Hélène, pris dans sa voile) puis pousse du museau le **premier Cœur d'ambre**
+   (« gros comme un poing, tiède, il bat »). Le volcan gronde au loin, le Cœur bat plus vite, puis se calme ;
+   un rayon doré traverse la coupole (Maïa le voit depuis la roselière). Il replonge.
+9. **Roc**, après la page 14 (« trois clés : moi, Anselme… et I. ») : un soir (crépuscule ou nuit) dans le
+   Marais, une lanterne au ras de l'eau ; Chloé la suit. Roc sursaute (« Je cueille des champignons. Des
+   champignons de nuit. Ça existe. »), de la cendre sur ses chaussures. Il avoue ses sorties, ne dit pas où
+   il va (« pas parce que j'ai honte : parce que j'ai promis », « à quelqu'un qui n'est plus là pour me
+   délier de ma promesse »), jure qu'il n'a jamais touché aux carnets ni au petit, **supplie** qu'on lui
+   fasse confiance. Sur « I. » : « Hélène avait beaucoup d'amis, autrefois… Ce n'est pas à moi de le dire.
+   Pas sans preuve. » Repli : si Chloé passe au Cabinet avant un soir au Marais, la même conversation a lieu
+   là-bas. Au Cabinet, après le Sceau, Roc voit le Cœur battre dans la sacoche : « Ne le montre à personne.
+   Pas même à ceux qui te sourient. »
+10. **Maïa, défi n° 3**, dans la roselière du nord, devant la route du Désert (après le Sceau) : elle a vu
+   la lumière du temple, s'émerveille du Cœur (« Il BAT »), **défend Roc** (« Il est bizarre, pas méchant.
+   Il a passé une nuit à recoudre mon doudou. Les méchants, ça ne recoud pas les doudous. ») et ne voit pas
+   qui peut être « I. » (« Irène, la poissonnière ? »). Pouce (Iguanodon 20), Moustique (20), Caillou (21), son
+   petit (22) ; si l'équipe est fatiguée, elle conseille le feu de camp de la roselière. Battue, elle part devant vers le Désert, où Brac est allé chercher le Carnotaurus Rouge
+   (« Caillou aura une surprise pour toi »).
+11. **Autour** : panneaux (`panneau_marais` : « Gilets de nage : voir Joss… (Bientôt approuvés.) » ;
+   `panneau_temple` : « La Voix d'abord. Le Spinosaure ensuite. Et on ne court pas dans les galeries. — H. » ;
+   `panneau_desert` : « BRAC, RENTRE CHEZ TOI. — NON. — B. »). Joss a ses répliques et ses questions (la
+   Nage, la porte d'ambre, la Voix, le temple, la dame en gris, Roc la nuit) ; au Havre, il parle de sa
+   cabane du Marais. Roc, Maïa et Isaure ont de nouvelles répliques (Isaure : « Roc a toujours été distrait
+   avec ses clés. Toujours. » ; « Un Cœur d'ambre ? Il y a des gens qui traverseraient la mer pour ça. »).
+12. **Objectifs** (principal) : le pont du Marais → la cabane de Joss → le gilet volé → un dino nageur (si
+   besoin) → la porte d'ambre de la Voix (et qui sait chanter) → la Voix → la dame en gris et le temple
+   (dans l'ordre qu'on veut) → les trois vannes → le gardien du temple → Maïa → le Désert ; « les clés du
+   Cabinet » (Roc) dès la page 14. En secondaire : les pages du Marais (lieux et pleine lune), les fresques,
+   la Voix qui attend son petit, le tiroir de Roc s'il n'a pas été ouvert. Les marqueurs sont lus dans les
+   zones elles-mêmes (`Objectives.spot`) : ils suivent la carte.
+13. **Équilibre** (simulations headless, `scratchpad/sim_marais.gd`, 400 combats par cas, meilleure attaque
+   à chaque tour ; équipes : le dino de départ 20 + le troisième petit 18 + Bouée 18 + un dino de la Forêt 17) :
+   Baryonyx au gilet : 100 % (équipe de fin de Forêt), capturé 98 % (1,7 collier en moyenne) ; Dame Suie :
+   95–100 % (en seulement apaisant Belladone : ~4 tours, 100 %) ; Maïa : 97–99 % ; Spinosaure 22 : 92–93 %
+   (Vif, Bastion), 58 % pour Écho sans dino du Vent, 90–92 % avec un Therizinosaurus ou un Deinonychus (d'où le
+   conseil « le Vent le touche fort ») ; au niveau 21 du dino de départ : 95–98 % et 81 %.
+
+Drapeaux : `marais_arrivee`, `joss_marais_vu`, `baryonyx_gilet_vu`, `baryonyx_lecon`, `gilet_nage`,
+`baryonyx_gilet_capture`, `porte_voix_ouverte`, `voix_rencontree`, `temple_ouvert`, `voix_echo_reconnu`,
+`found_journal_ancien_voix`, `voix_coeur_chant`, `voix_apres_coeur`, `dame_suie_parle`, `dame_suie_battue`,
+`temple_arrive`, `temple_vanne_1` à `_3`, `fresque_1_vue` à `_3_vue`, `fresques_vues`, `spinosaure_parle`,
+`spinosaure_battu`, `sceau_marais`, `coeur_1`, `found_journal_12` à `_16`, `roc_marais_en_vue`,
+`roc_marais_vu`, `roc_sceau_marais`, `maia_roseliere_vue`, `maia_defi_3` (et `voix_n`, `fresque_n`,
+`joss_havre_n`, `bavard_joss` pour les répliques). Événements : `joss_marais`, `baryonyx_gilet`,
+`voix_du_marais`, `dame_suie`, `roc_marais`, `maia_defi_3`, `vanne_1` à `_3`, `fresque_1` à `_3`,
+`spinosaure_ancestral` ; scènes d'entrée `marais`, `temple_englouti` (et le Cabinet) ; la nuit du Marais
+(`Story.on_phase_changed`). Dialogues : `desert_bloque`, `porte_temple_fermee`, `porte_voix_bloquee`,
+`crue_temple`, `page_12` à `page_16`, `panneau_marais`, `panneau_temple`, `panneau_desert`.
 
 ## Chapitre 4 — Le Désert Aride · 2e Cœur
 
 1. Canyons, dunes, **Cimetière des Géants** : ossements immenses, premiers **fossiles** sérieux
-   (Flair). Oasis. Dans un canyon muré (Charge) dort **le Vieux Rempart**, l'Ankylosaurus d'Hélène :
-   parent de Bastion.
+   (Flair) ✅. Oasis. Dans un canyon muré (Charge) dort **le Vieux Rempart**, l'Ankylosaurus
+   d'Hélène : la mère de Bastion ✅.
 2. **Brac revient** avec une idée terrible : il a **corrompu le Carnotaurus Rouge**, l'Alpha du
-   désert, pour qu'il ouvre le sanctuaire des Vents à sa place.
+   désert, pour qu'il ouvre le sanctuaire des Vents à sa place ✅.
 3. Course-poursuite dans le canyon, tempête de sable. Combat contre Brac, qui fuit. Puis
    **apaisement de l'Alpha corrompu** : le plus dur jusqu'ici. Le Carnotaurus, libéré, remet le
-   Sceau et laisse Chloé prendre le **2e Cœur**.
-4. **Maïa, défi n° 4**, dans l'oasis. Elle est à fond, fière de Caillou devenu Tricératops.
+   Sceau et laisse Chloé prendre le **2e Cœur** ✅.
+4. **Maïa, défi n° 4**, dans l'oasis. Elle est à fond, fière de Caillou devenu Tricératops ✅.
+
+### Chapitre 4 — Dans le jeu ✅
+
+Les zones `desert` et `sanctuaire_vents` ; les scènes dans `story/desert.gd` (arrivée, Tante
+Sirocco, le Vieux Rempart, Maïa, la fin, Roc) et `story/desert_sanctuaire.gd` (Brac, la tempête,
+le Carnotaurus, le sanctuaire) ; les dialogues simples dans `data/dialogue_desert.gd`, les
+objectifs dans `story/desert_objectives.gd`, les questions dans `story/desert_ask.gd`, les lieux
+dans `story/desert_places.gd` (lus dans la scène de la zone quand elle existe).
+
+1. **L'arrivée** (sortie nord du Marais, canyon d'entrée au sud-est). Le Marais s'arrête d'un coup :
+   boue craquelée « comme un vieux carrelage », lac de sel, dunes rouges et dorées, un mirage (« le
+   Désert fait des tours de magie »). Le dino de tête réagit à la chaleur (Vif se cache dans l'ombre
+   de Chloé, Bastion a l'air de « rentrer à la maison », Écho est vexé : pas d'écho). Dans la boue,
+   des sillons de roues cerclées de fer et d'énormes empreintes qui traînent : Brac est passé (sa
+   liste : « LE PROCHAIN »). À côté, les bottes de Maïa… et des empreintes rondes, larges comme des
+   assiettes (« Caillou n'a pas des pattes aussi grosses… »). Avec Bastion : « On y est. »
+2. **Tante Sirocco**, devant sa tente au bord du Cimetière des Géants (un feu de camp à côté) :
+   vieille chasseuse de fossiles, foulard couleur de sable, lunettes de soudeur, pinceau entre les
+   dents (« Pas un pas de plus, ma caille ! Tu marches sur un Majungasaurus. »). Elle reconnaît les
+   yeux d'Hélène : elles ont déterré la moitié du cimetière ensemble, « jamais d'accord, et on riait
+   tout le temps ». Elle reconnaît Bastion au premier coup d'œil (« un petit du Vieux Rempart »). Elle
+   a vu passer Brac « hier soir » avec, dans sa cage, un grand dino rouge aux yeux violets qui
+   **tremblait**, vers le sanctuaire des Vents ; elle prévient : « quand le ciel devient jaune, la
+   tempête arrive ». Elle demande **5 des 6 fossiles** du cimetière (Flair : Compsognathus, Troodon,
+   Oviraptor des canyons). Avec cinq, elle les dessine dans son cahier et les rend (« un os de l'île
+   reste sur l'île ») ; elle donne **300 pièces**, **2 fougères**, son **pinceau de fouille** (si
+   l'objet existe) et un vieux dessin d'elle et d'Hélène sur un crâne géant. Ensuite, une réplique
+   et des questions (où aller, les fossiles avec l'endroit du prochain — « mon gros orteil me
+   dit… » —, les éboulis, les tempêtes, le Carnotaurus, Hélène : ses chapeaux envolés, son amie
+   Isaure qui gagnait toujours la dernière datte, Anselme et son coup de soleil en forme de
+   fougère). La nuit, elle dort, un Oviraptor sur le ventre.
+3. **Le Vieux Rempart**, au fond du canyon muré (ouest), derrière des éboulis (Charge ; le texte
+   envoie vers les Pinacosaurus des dunes, un Tricératops, un Protoceratops, ou le dino qui attend au
+   Cabinet). Chloé veut s'asseoir sur un rocher couvert de lichen… et le rocher respire. « Pardon,
+   madame ! » : le Vieux Rempart est une dame (« Vieux » est venu tout seul).
+   - **Avec Bastion** (son petit, ou le troisième œuf volé quand c'est Bastion) : nez contre nez, le
+     même grondement sur la même note ; le petit volé se cache, elle se couche à sa hauteur et
+     attend. Elle se lève : là où elle était couchée, couvée comme un œuf, une boîte en fer-blanc
+     (« Pour Chloé. Elle te la donnera. ») : la **page de l'Ancien**. +1 cœur de Lien. Si Bastion
+     attend au Cabinet, elle sent son odeur sur les mains de Chloé (et donne la page si c'est son
+     dino de départ) ; la retrouvaille se fait quand il vient.
+   - **Sinon** : Chloé dit bonjour ou attend (les deux marchent) ; elle renifle les pages d'Hélène
+     et l'accepte, et souffle un nuage de sable sur le dino de tête (« sa façon de dire bonjour »).
+   - **Dans les deux cas** : entre ses plaques, un **filet de l'Ombre Noire** coupé, qui sent la
+     cendre ; des marques de massue sur les éboulis : **elle s'est murée toute seule**. Au loin, au
+     nord, un rugissement qui se casse « comme un sanglot » : le Carnotaurus. Ensuite, une réplique
+     à chaque visite. **Page 20** (la carte) dans le canyon.
+4. **Brac au sanctuaire des Vents** (StoryTrigger sur la place, dès l'arrivée dans le Désert) : au
+   bout d'une chaîne, Brac fait rugir le **Carnotaurus Rouge corrompu** devant la porte (« Le Masque
+   a dit que tu l'ouvrirais ! »). Le cri se casse : la porte ne bouge pas. Gravé dessous : « **Au
+   gardien sans peur, la porte s'ouvre.** » Brac voit Chloé (« Tu me suis, ou quoi ? — C'est vous
+   qui êtes partout où il y a un Alpha ! — C'est mon MÉTIER ! C'est écrit sur ma carte de visite !
+   … quand j'aurai des cartes de visite »), rappelle ses « amis avec des DENTS » ; après le Marais,
+   il vante la nouvelle fournée d'ambre noir de Dame Suie, « trop forte ». Le ciel devient jaune :
+   la **tempête de sable** se lève (`Game.set_weather(&"sandstorm")`) et Brac fuit dans le canyon
+   des Vents avec l'Alpha.
+5. **La course-poursuite** (trois StoryTriggers dans le canyon, dans la tempête, jamais
+   bloquants) : **les traces** (suivre les roues : elles tournent trois fois autour du même rocher,
+   gravé « PAR OÙ ?! » ; ou suivre le nez du dino : tout droit ; au loin : « OÙ EST LE NORD ?! ») ;
+   **la roue** (une roue du chariot surgit toute seule et fonce sur Chloé ; le dino de tête l'arrête
+   à sa façon : Bastion la prend sur la carapace, BONG ; Vif bondit et atterrit dessus ; pour Écho,
+   la roue s'en fiche ; au loin : « QUI A VOLÉ MA ROUE ?! ») ; **le sbire perdu** (Firmin, le masque
+   sur l'oreille, du sable « PARTOUT », son Dimorphodon envolé : pas de combat ; il dit que Brac est
+   dans un cul-de-sac, « il ne le sait pas encore », demande où est la mer et rentre pêcher avec
+   Gustave, « avec du sable »).
+6. **Brac, acculé** au bout du canyon (« Qui met un CUL-DE-SAC au bout d'un canyon ?! » ; sa roue
+   « volée, mais neuve ») : « Si je rentre sans le Cœur, le Masque va… » Combat : **Cabosse**
+   (Stygimoloch 24), **Grognon** (Majungasaurus 24), **Mastoc** (Allosaurus 25, « du sable entre
+   les dents »). Battu, il jure (« Par les écailles de ma grand-mère ! »), lâche l'Alpha (« il n'a
+   jamais voulu rugir comme il faut ! ») et s'enfuit par une corde ; « Le Masque va… Oh, crotte. »
+   Les barreaux cèdent : le Carnotaurus est libre, et il a peur de tout.
+7. **L'apaisement du Carnotaurus Rouge** (niveau 27, corrompu, `long_calm`, musique des Alphas ; le
+   jeu propose de soigner l'équipe d'abord, puis de mettre le dino de départ en tête). Apaisé, ses
+   yeux redeviennent « couleur de braise » ; il souffle sur le dino de départ (+1 cœur ; avec
+   Bastion, il reconnaît l'odeur de sa voisine du canyon muré) ; **le vent tombe, et la tempête
+   avec**. Il rentre chez lui ; devant la porte, il **rugit — un vrai rugissement** — et la porte
+   s'ouvre ; il pose aux pieds de Chloé, « aussi doucement qu'une plume », le **Sceau du Désert**
+   (une spirale de vent et la fougère d'Hélène). Chloé lui gratte les cornes : il **ronronne**,
+   comme l'écrivait Hélène sur le panneau. Il se couche près de la porte ouverte.
+8. **Le chariot de Brac** : sa liste (« L'Alpha de la Forêt : RATÉ (la gamine) »), de l'ambre noir
+   dans une caisse tamponnée « …ptoir d'Amb… » (Chloé l'emporte pour Roc), et un mot de « M. »,
+   papier noir, encre argentée : « L'Alpha rugira devant la porte : la peur ouvre tout. S'il refuse,
+   ne force pas. **D'autres ouvriront les portes pour nous.** Rapporte-moi le Cœur avant la grande
+   marée. » Le papier sent le sel, et un peu la cendre.
+9. **Le sanctuaire des Vents** (zone `sanctuaire_vents`) : le vent chante dans la roche ; le premier
+   Cœur, dans la sacoche, bat plus fort. Sur l'autel, dans un tourbillon de sable, le **2e Cœur**,
+   chaud comme le sable à midi : les deux Cœurs s'allument ensemble. Très loin dessous, quelque
+   chose gronde. **Page 18.**
+10. **Maïa, défi n° 4**, à l'oasis (après le Sceau) : **Caillou est devenu un Tricératops** (« il a
+   mangé tous les roseaux, dormi trois jours dans le sable chaud… et PAF. Trois cornes. Maman dit que
+   c'est l'âge. »), un lacet à la bouche. Moustique garde les sacs (« le sable, ça gratte »). Pouce
+   (Iguanodon 24), son petit (24), puis Caillou (Tricératops 24), la surprise. Battue (« QUATRE
+   fois »), elle parle de la Côte, où sa mère va « la nuit, en barque, pour le port », et de la
+   piste du nord que le vent efface chaque nuit. **Page 19** à l'oasis.
+11. **La fin** : au crépuscule (le temps passe s'il fait jour), du haut d'une dune, la mer au loin,
+   et **une barque sans lanterne** qui file vers la Côte (« Il arrive la nuit, par la mer, sans
+   lanterne »). « La suite de l'aventure arrive bientôt ! » La sortie nord reste fermée
+   (`cote_bloquee`).
+12. **Autour** : quatre panneaux (entrée « un deuxième chapeau, le vent vole le premier — S. »,
+   cimetière « les os ne mordent pas, soyez polis quand même », oasis, sanctuaire « il ronronne quand
+   on lui gratte les cornes — H. ») ; **pages 17 à 20** ; au Cabinet, Roc voit le Sceau (Hélène
+   appelait le Carnotaurus « Piment » ; Sirocco lui « doit un chapeau depuis vingt-deux ans » ;
+   après la page 20, il se raidit : sa copie de la carte est « très bien rangée » — *fausse piste*) ;
+   Isaure, Roc et Maïa ont de nouvelles répliques (Isaure : « Deux Cœurs, déjà ? … On ne sait jamais
+   qui regarde », les grottes de la Côte « traîtresses ») ; on peut interroger Roc et Maïa
+   (fossiles, éboulis, tempête, Carnotaurus).
+13. **Objectifs** : le Désert (route du nord du Marais) → la tente du cimetière → le canyon muré (et
+   un dino qui charge) et le sanctuaire des Vents → la tempête du canyon → le Carnotaurus → le 2e
+   Cœur et le défi de l'oasis → « Vers la Côte (bientôt) » ; en parallèle, les fossiles de Sirocco
+   (avec le Flair), les pages du Désert, le chariot, et le petit du Vieux Rempart quand il n'était
+   pas là.
+
+Équilibrage (simulations `scratchpad/sim_desert.gd`, la meilleure attaque à chaque tour) : équipe
+de quatre aux niveaux 24/23/23/22, Brac gagné 91 à 96 % selon le dino de départ, Maïa 83 à 99 % ;
+aux niveaux 25/24/24/23 (réaliste après Brac et le Carnotaurus), Brac 95 à 99 %, Maïa 96 à 100 %
+(avec trois dinos seulement : Brac 76 à 94 %, Maïa 78 à 100 %). Le Carnotaurus, équipe reposée :
+apaisé à chaque fois, en 4 tours environ avec le dino de départ en tête, 7 sinon ; juste après
+Brac sans soigner, 75 à 88 % (d'où le conseil de soigner d'abord ; en cas d'échec, retour devant le
+sanctuaire, équipe soignée).
+
+Drapeaux : `desert_arrivee`, `sirocco_vue`, `fossile_1` à `_6`, `fossiles_rendus`, `rempart_vu`,
+`rempart_ouvert`, `rempart_rencontre`, `found_journal_ancien_rempart`, `rempart_bastion_reconnu`,
+`porte_vents_vue`, `brac_desert_vu`, `poursuite_1_ok` à `_3_ok`, `brac_desert_parle`,
+`brac_desert_battu`, `carno_lecon`, `carnotaurus_apaise`, `sanctuaire_ouvert`, `sceau_desert`,
+`chariot_fouille`, `sanctuaire_entre`, `coeur_2`, `maia_oasis_vue`, `maia_defi_4`, `cote_annonce`,
+`roc_sceau_desert`, `found_journal_17` à `_20` (et `sirocco_n`, `rempart_n`, `chariot_n`,
+`gardien_n`, `sirocco_apres_sceau`, `sirocco_apres_rempart`, `sirocco_fossile_N`,
+`rempart_apres_sceau` pour les répliques). Événements : `sirocco`, `vieux_rempart`, `brac_sanctuaire`, `poursuite_1` à `_3`,
+`brac_desert`, `chariot_brac`, `carnotaurus_rouge`, `porte_vents`, `coeur_vents`, `maia_defi_4` (et
+`carno_gardien`, facultatif : le Carnotaurus près de la porte ouverte) ; dialogues `cote_bloquee`, `porte_vents_fermee`, `rempart_bloque`, `page_17` à `page_20`,
+`panneau_desert_entree`, `panneau_cimetiere`, `panneau_oasis`, `panneau_sanctuaire`.
 
 ## Chapitre 5 — La Côte Préhistorique · 3e Cœur
 
@@ -360,8 +696,9 @@ répliques). Événements : `griffe_grise` (DinoNpc du ravin), `clairiere_vide` 
 |---|---|---|
 | Prologue | L'œuf volé sans effraction : il fallait une clé | Elle demande si Hélène a laissé une lettre ; elle était au Cabinet le soir du vol |
 | 1 | Roc part de nuit vers le volcan | Maïa : « bottes pleines de cendre » ; page 3 : « I. », l'amie de la barque |
-| 2 | Ambre noir dans son tiroir ; le piège de la Forêt sent la cendre (ses chaussures) ; page 8 : « s'il se sent coupable… » | Le piège sent la cendre (ses bottes) ; Griffe-Grise lui « a toujours montré les dents » ; le Masque : « ne fais pas les mêmes erreurs qu'elle » (il l'a connue) ; page 11 : « I. » a demandé de vendre l'ambre |
-| 3 | Page 14 : il avait la clé du Cabinet | Page 14 : « I. » aussi |
+| 2 | Ambre noir dans son tiroir (« n'en parle à personne ») ; le piège de la Forêt sent la cendre (ses chaussures) ; page 8 : « s'il se sent coupable… » ; les carnets d'Hélène pris au Cabinet (il a la clé) | Le piège sent la cendre (ses bottes) ; Griffe-Grise lui « a toujours montré les dents » ; le sbire : le Masque vient « par la mer », sait « qui t'a amenée » ; le Masque : « ne fais pas les mêmes erreurs qu'elle », « pas même moi », son boîtier rond (la boussole), « une barque trop petite et un courage trop grand » (page 3) ; il s'arrête devant Maïa ; page 11 : « I. » a demandé de vendre l'ambre ; « H. + I. » sur le pont ; Isaure : « sur les boussoles qu'elle offrait », « même moi » ; elle pâlit devant le masque en carton de Maïa |
+| 3 | Page 14 : il avait la clé du Cabinet ; il sort la nuit (sa lanterne dans le Marais), ne dit pas où, « j'ai promis », de la cendre sur les chaussures ; il supplie | Page 14 : « I. » aussi ; page 13 : « avec mes yeux » (le Masque : « tu as les yeux de ta grand-mère ») ; Dame Suie : le Masque cherche le Cœur « depuis des années » ; Isaure détourne les soupçons (« Roc a toujours été distrait avec ses clés ») |
+| 4 | Page 20 : « Anselme en garde une copie » (la carte des sanctuaires), et il se raidit quand Chloé en parle ; Sirocco l'a vu passer la nuit, avec sa lanterne, demander si le Carnotaurus allait bien ; le mot de « M. » : « d'autres ouvriront les portes pour nous » | Le mot de « M. » sent le sel (« avant la grande marée ») ; la caisse « …ptoir d'Amb… » (Ferréol) ; Maïa : sa mère va sur la Côte « la nuit, en barque » ; la barque sans lanterne vers la Côte ; Sirocco : Isaure jeune, qui gagnait toujours la dernière datte ; Isaure : « Deux Cœurs, déjà ? … On ne sait jamais qui regarde » |
 | 5 | — | La barque d'Isaure à la cache ; page 21 : le passage du récif ; page 23 : « Isaure » en toutes lettres |
 | 6 | Innocenté (page 28) | Isaure ne nie pas |
 | 7 | — | Le masque tombe |
@@ -374,9 +711,9 @@ tu as Vif), plus Caillou.
 | # | Où | Son équipe | Ce qui se joue |
 |---|---|---|---|
 | 1 | Grand Crâne (ch. 1) | son œuf + Caillou (Protoceratops) | Rivale fanfaronne |
-| 2 | Pont du Marais (ch. 2) | + Dimorphodon | Elle admire le Masque |
-| 3 | Roselière (ch. 3) | + Iguanodon | Elle défend Roc |
-| 4 | Oasis (ch. 4) | Caillou devient Tricératops | Au sommet de sa forme |
+| 2 ✅ | Pont du Marais (ch. 2) | + Dimorphodon (Moustique) | Elle admire le Masque ; il l'a regardée |
+| 3 ✅ | Roselière du nord (ch. 3) | + Iguanodon (Pouce) | Elle défend Roc |
+| 4 ✅ | Oasis (ch. 4) | Pouce (Iguanodon), son œuf, puis Caillou devenu Tricératops (Moustique garde les sacs) | Au sommet de sa forme ; sa mère va sur la Côte « la nuit, en barque » |
 | — | Côte (ch. 5) | — | Refuse le combat, s'enfuit |
 | 5 | Monts Gelés (ch. 6) | équipe de 4 | Se prouver qu'elle peut affronter sa mère |
 | — | Ch. 8 et 9 | — | Alliée |
@@ -402,16 +739,16 @@ précise, chaleureuse, parfois drôle, de plus en plus inquiète.
 | 8 ✅ | Forêt · haute futaie | −24 ans | Anselme | Roc, maladroit et fidèle ; « s'il se sent coupable, dis-lui que non » |
 | 9 ✅ | Forêt · clairière | −11 ans | Les veines violettes | Un dino blessé aux veines violettes : quelqu'un copie ses méthodes |
 | 10 ✅ | Forêt · lisière (pleine lune) | −10 ans | Apaiser | Comment elle calme un dino affolé |
-| 11 | Camp de l'Ombre Noire | −20 ans | Le port se meurt | « I. » lui demande de vendre l'ambre. Elle refuse. « Elle n'a pas claqué la porte. C'est pire. » |
-| 12 | Marais · temple | −23 ans | Les premiers habitants | Les masques d'os des anciens, qui honoraient les dinos |
-| 13 | Marais · îlot | −25 ans | Le premier Cœur | Le Cœur confié au Spinosaure |
-| 14 | Marais · forêt noyée | −12 ans | Les notes volées | Ses carnets d'ambre forcé ont disparu. Trois clés : elle, Anselme, « I. » |
-| 15 | Marais · chenaux | −5 ans | Le souffle du volcan | Le volcan gronde plus souvent : le sceau s'use |
-| 16 | Marais (pleine lune) | −22 ans | Ambrelune | Pourquoi l'ambre luit à la pleine lune |
-| 17 | Désert · cimetière | −21 ans | Les géants | Des fossiles trop anciens pour se réveiller… pour l'instant |
-| 18 | Désert · sanctuaire | −25 ans | Le deuxième Cœur | Le Carnotaurus, farouche, qui l'a acceptée |
-| 19 | Désert · oasis | −24 ans | Orgueil | « J'ai voulu réveiller ce qui devait dormir. » |
-| 20 | Désert · canyon | −25 ans | La carte | Le plan partiel des sanctuaires |
+| 11 ✅ | Camp de l'Ombre Noire · papiers de Brac | −20 ans | Le port se meurt | « I. » lui demande de vendre l'ambre. Elle refuse. « Elle n'a pas claqué la porte. C'est pire. » (Arrachée d'un carnet : quelqu'un a eu accès à ses carnets.) |
+| 12 ✅ | Marais · temple (galerie est) | −23 ans | Les premiers habitants | Les masques d'os des anciens, taillés dans les os des géants pour leur promettre qu'on veillerait sur leur sommeil ; « ce ne sont pas des souvenirs : ce sont des promesses » |
+| 13 ✅ | Marais · îlot aux racines (après Dame Suie) | −25 ans | Le premier Cœur | Le Cœur confié au Spinosaure, « jusqu'à ce que quelqu'un vienne, avec mes yeux et ma confiance » ; ses mains qui lui font mal |
+| 14 ✅ | Marais · forêt noyée | −12 ans | Les notes volées | Ses carnets d'ambre forcé ont disparu. Trois clés : elle, Anselme, « I. » |
+| 15 ✅ | Marais · chenaux (une bouteille, à la nage) | −5 ans | Le souffle du volcan | Le volcan gronde plus souvent : le sceau s'use ; elle apprendra à Anselme le chemin des sanctuaires, « au cas où » |
+| 16 ✅ | Marais · bassin des nénuphars (pleine lune) | −22 ans | Ambrelune | Pourquoi l'ambre luit à la pleine lune : « je ne sais pas » (la savante) ; l'Ambre-Mère reconnaît la lune de sa forêt (la grand-mère « qui s'entraîne ») |
+| 17 ✅ | Désert · cimetière | −21 ans | Les géants | Avec Sirocco, une vertèbre grande comme une baignoire, sans une goutte d'ambre autour : ceux-là dorment pour de bon… « pour l'instant » |
+| 18 ✅ | Désert · sanctuaire | −25 ans | Le deuxième Cœur | Le Carnotaurus l'a chargée quatre fois avant de l'accepter ; la porte ne s'ouvre qu'à son vrai rugissement : « la peur n'ouvre rien, ici » |
+| 19 ✅ | Désert · oasis (sous la margelle du puits) | −24 ans | Orgueil | Un an après la nuit du feu, ses mains lui font mal : « J'ai voulu réveiller ce qui devait dormir. » L'orgueil, « croire que pouvoir, c'est devoir » |
+| 20 ✅ | Désert · canyon muré | −25 ans | La carte | Cinq Cœurs, cinq gardiens : le Marais, le Désert, la Côte « là où le récif… », le reste effacé par le sable (une vague, un flocon, une flamme) ; « Anselme en garde une copie » |
 | 21 | Côte · grotte marine | −30 ans | Le passage | Seule « I. » connaît le chemin dans le récif |
 | 22 | Côte · récif | −25 ans | Le troisième Cœur | Le Mosasaure |
 | 23 | Côte · falaises | −12 ans | Marraine | « Isaure et son bébé, Maïa. Je suis sa marraine. » |
@@ -444,6 +781,6 @@ en Nouvelle partie+.
 
 | Ancien | Où | Date | Titre | Ce qu'elle révèle |
 |---|---|---|---|---|
-| Griffe-Grise ✅ | Forêt · ravin (avec Vif), dans une boîte en fer-blanc | −1 an | Griffe-Grise | Son deuxième réveil, « pas plus gros qu'un chat », qui lui a mordu le pouce ; chez les raptors, le père couve : il a veillé l'œuf de Vif un mois et l'a poussé vers elle, « il savait pour qui » ; « gratte-le sous le menton » |
-| Le Vieux Rempart | Désert · canyon muré | −1 an | — | À écrire (parent de Bastion) |
-| La Voix du Marais | Marais · roselière | −1 an | — | À écrire (parente d'Écho) |
+| Griffe-Grise ✅ | Forêt · ravin (avec Vif, ou avec le troisième œuf quand c'est Vif), dans une boîte en fer-blanc | −1 an | Griffe-Grise | Son deuxième réveil, « pas plus gros qu'un chat », qui lui a mordu le pouce ; chez les raptors, le père couve : il a veillé l'œuf de Vif un mois et l'a poussé vers elle, « il savait pour qui » ; « gratte-le sous le menton » |
+| Le Vieux Rempart ✅ | Désert · canyon muré (avec Bastion, ou avec le troisième œuf quand c'est Bastion), dans une boîte en fer-blanc couvée comme un œuf | −1 an | Le Vieux Rempart | Son troisième réveil, « pas plus grande qu'une brouette », couchée trois jours devant la porte du Cabinet (Anselme passait par la fenêtre) ; chez les Ankylosaurus, c'est la mère qui couve, assise sur l'œuf : elle a donné celui de Bastion « en se levant, comme on ouvre une porte » ; pour la gratter sous le menton, « il faut monter sur une pierre » |
+| La Voix du Marais ✅ | Marais · îlot de la Voix (avec Écho, ou avec le troisième petit quand c'est Écho), dans un tube de cuivre sous les nénuphars | −1 an | La Voix | Son quatrième réveil, une Parasaurolophus « qui a chanté avant même d'ouvrir les yeux » (Anselme en a lâché trois flacons) ; elle a choisi le Marais pour l'écho sous le temple, qu'elle a ouvert pour Hélène il y a vingt-cinq ans ; elle a couvé l'œuf d'Écho en fredonnant une berceuse ; « chante avec elle. Faux, ça ne fait rien » |

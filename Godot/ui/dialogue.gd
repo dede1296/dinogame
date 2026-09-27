@@ -27,6 +27,9 @@ var _typing := false
 var _in_letter := false
 var _choosing := false
 var _cancel_requested := false
+## The last one who spoke (Chloé or a character near her): the next speaker and they face each
+## other (see _face_speakers).
+var _last_speaker: Node2D = null
 
 
 func _ready() -> void:
@@ -107,8 +110,10 @@ func run(steps: Array) -> void:
 		elif step.has("voice"):
 			_play_voice(step["voice"])
 		elif step.has("text"):
+			_face_speakers(step.get("who", ""))
 			await _show_line(step.get("who", ""), step["text"])
 		elif step.has("text_fn"):   # a line worked out when it is shown (a count…)
+			_face_speakers(step.get("who", ""))
 			await _show_line(step.get("who", ""), (step["text_fn"] as Callable).call())
 	if _voice.playing:
 		_voice.stop()
@@ -117,6 +122,46 @@ func run(steps: Array) -> void:
 	_panel.visible = false
 	active = false
 	finished.emit()
+
+
+## People who talk look at each other: the speaker of the line `who` signs turns towards the
+## one it answers (the previous speaker, or Chloé), and that one towards it. Found by name
+## among the characters near Chloé; lines of nobody in sight change nothing.
+func _face_speakers(who: String) -> void:
+	var speaker := _speaker(who)
+	if speaker == null:
+		return
+	if not is_instance_valid(_last_speaker):   # (gone since: a character who walked away)
+		_last_speaker = null
+	var other: Node2D = _last_speaker if _last_speaker != null and _last_speaker != speaker and _near(_last_speaker) else null
+	if other == null and not speaker is Player:
+		other = _chloe()
+	if other:
+		Stage.turn_to(speaker, other.global_position)
+		Stage.turn_to(other, speaker.global_position)
+	_last_speaker = speaker
+
+
+func _speaker(who: String) -> Node2D:
+	if who == "":
+		return null
+	if who == "Chloé":
+		return _chloe()
+	for n in get_tree().get_nodes_in_group(&"npc"):
+		if n is Npc and (n as Npc).display_name == who and _near(n):
+			return n
+	return null
+
+
+func _chloe() -> Node2D:
+	var world := get_tree().current_scene
+	return world.get("player") if world and world.get("player") is Node2D else null
+
+
+## Close enough to Chloé to be part of the conversation (about the screen).
+func _near(n: Node2D) -> bool:
+	var chloe := _chloe()
+	return n != null and is_instance_valid(n) and chloe != null and n.global_position.distance_to(chloe.global_position) < 12.0 * 48.0
 
 
 func _play_voice(path: String) -> void:

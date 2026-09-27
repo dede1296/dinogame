@@ -20,6 +20,23 @@ const ITEMS := {
 		"desc": "Une peau de Parasaurolophus, perdue à la mue. Souple et solide."},
 	"selle": {"name": "Selle de Joss", "icon": "selle", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Faite sur mesure. Un grand dino adulte peut porter Chloé."},
+	# Marais et Désert (chapitres 3 et 4).
+	"gilet_nage": {"name": "Gilet de nage", "icon": "gilet_nage", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Cuir huilé et flotteurs de liège : avec un dino nageur adulte, Chloé traverse l'eau profonde sur son dos."},
+	"fossile": {"name": "Fossile", "icon": "fossile", "kind": "quete", "price": 0, "sell": 0,
+		"desc": "Un os pétrifié, déterré grâce au Flair. Roc saura quoi en faire au Cabinet."},
+	"pinceau_fouille": {"name": "Pinceau de fouille", "icon": "pinceau_fouille", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Le vieux pinceau de Tante Sirocco. Hélène avait le même : on les avait achetés ensemble, au marché du port. Pour dépoussiérer les os sans les abîmer."},
+	"coeur_1": {"name": "Premier Cœur d'ambre", "icon": "coeur_ambre", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Il bat doucement, comme un cœur. Confié par le Spinosaure Ancestral, au fond du temple englouti."},
+	"coeur_2": {"name": "Deuxième Cœur d'ambre", "icon": "coeur_ambre", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Encore chaud du soleil du désert. Remis par le Carnotaurus Rouge, libéré de l'ambre noir."},
+	"sceau_foret": {"name": "Sceau de la Forêt", "icon": "sceau_foret", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Un disque d'ambre gravé de la fougère d'Hélène, remis par le chef de la meute d'Utahraptors. Il ouvre la route du Marais."},
+	"sceau_marais": {"name": "Sceau du Marais", "icon": "sceau_marais", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "La confiance du Spinosaure Ancestral. Il ouvre la route du Désert."},
+	"sceau_desert": {"name": "Sceau du Désert", "icon": "sceau_desert", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "La confiance du Carnotaurus Rouge. Il ouvre la route de la Côte."},
 }
 
 ## shop id -> {name, keeper, stock: [item ids], sells: can Chloé sell here, tears: buys amber tears}
@@ -36,6 +53,10 @@ static func item(id: String) -> Dictionary:
 	return ITEMS.get(id, {"name": id, "icon": "ambre", "kind": "quete", "price": 0, "sell": 0, "desc": ""})
 
 
+## Its picture (png or webp); the amber's while a new one is not imported yet.
 static func icon(id: String) -> Texture2D:
 	var path: String = ICON % item(id)["icon"]
-	return load(path + ".png") if ResourceLoader.exists(path + ".png") else load(path + ".webp")
+	for ext: String in [".png", ".webp"]:
+		if ResourceLoader.exists(path + ext):
+			return load(path + ext)
+	return load(ICON % "ambre" + ".png")

@@ -17,10 +17,18 @@ const SOURCES = ["Godot/tools/sounds", "nouveau/assets/ambience"];
 const OUT = "Godot/assets/audio/ambience";
 // Loops (beds) and short calls used by the game's places (see AmbienceDB).
 const NAMES = ["brise", "rafale", "oiseau-1", "oiseau-2", "oiseau-3", "village", "vagues", "mouettes",
-  "feu", "grotte", "goutte", "labo", "maison"];
+  "feu", "grotte", "goutte", "labo", "maison", "desert", "eau"];
 // Hz. labo: whistles at 5.6 and 16.5 kHz, half its energy above 12 kHz. (The web's
 // foret.mp3 is not used: a cricket drone, 92 % of its energy above 4 kHz, and a whistle
-// sweeping 2-2.9 kHz; filtered, nothing worth keeping is left.)
+// sweeping 2-2.9 kHz; filtered, nothing worth keeping is left. Likewise the web's marais.mp3,
+// 99.5 % of its energy crammed into 1-3 kHz with a screaming peak near 2 kHz, and vent.mp3,
+// 94 % above 4 kHz: both dropped, no filter could save them. desert.mp3 is clean (92.5 % below
+// 500 Hz) bar a faint peak near 2 kHz worth ~0.1 % of its energy — too small to matter, no
+// filter applied. eau: three ElevenLabs takes at a calm marsh/frog ambience came back as a
+// piercing 1-2 kHz chirp (same shape as the failed marais.mp3); a fourth, quieter/muffled take
+// ("no splash, no droplets, deep muffled tone") finally came back clean (97 % below 500 Hz) and
+// is used as-is — the marsh's water bed. No usable frog take was found in three tries; the
+// marsh ambience leans on brise/goutte/birds instead (see ambience_db.gd).
 const NOTCHES = {};
 const LOWPASS = { brise: 2500, labo: 1800 };
 const TARGET_RMS = 0.1;

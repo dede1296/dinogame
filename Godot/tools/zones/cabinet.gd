@@ -35,6 +35,14 @@ static func build() -> Region:
 			["etabli", 11.2, 2.0], ["couveuse", 13.8, 3.2], ["fougere_pot", 0.9, 9.6], ["fougere_pot", 15.1, 9.6]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]))
 	B.npc(root, "Roc", "Prof. Roc", CHARS % "roc", 6.5, 4.6, {"facing": "down", "event": &"roc", "hide_flag": &"roc_dehors"})
+	# The left drawer of Roc's desk (chapter 2: black amber in it; story/foret_camp.gd). Not
+	# drawn: its own spot at the desk's left end, the middle of the desk still shows its notes.
+	var drawer: Node2D = load("res://world/story_prop.gd").new()
+	drawer.kind = ""   # (no picture of its own)
+	drawer.name = "TiroirRoc"
+	drawer.event = &"tiroir_roc"
+	drawer.position = B.cell(4.35, 3.4)
+	entities.add_child(drawer)
 	# End of chapter 1: the night Roc goes out, page 6 waits in the empty incubator.
 	var page = B.prop(entities, "ambre", B.cell(13.8, 3.9), false, load("res://world/pickup.gd"))
 	page.name = "Page6"

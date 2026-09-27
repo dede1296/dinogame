@@ -1,7 +1,7 @@
 class_name DinoCard
 extends PanelContainer
 ## A dino's sheet, clear at a glance: its portrait on its type's colour, name, species, type
-## and level; health and experience bars; its three stats as bars; its attacks as cards in
+## and level; health and experience bars, its Lien (hearts); its three stats as bars; its attacks as cards in
 ## their type's colour; what it can do out in the world (Tranche, Charge, Flair, Monture,
 ## Vol, Nage…), each with its picture; its species' description.
 
@@ -12,6 +12,7 @@ const CREAM := Color(1, 0.97, 0.9)
 const AMBER := Color(0.98, 0.76, 0.35)
 const PANEL_BORDER := Color(0.79, 0.54, 0.16)
 const XP_BLUE := Color(0.45, 0.75, 1.0)
+const BOND_PINK := Color(0.96, 0.45, 0.58)
 const STATS := [["atk", "Attaque", Color(0.92, 0.45, 0.35)], ["def", "Défense", Color(0.55, 0.65, 0.8)], ["spd", "Vitesse", Color(0.45, 0.85, 0.72)]]
 ## A stat bar is full at this value times the level (so bars stay comparable between dinos).
 const STAT_SCALE := 3.2
@@ -111,6 +112,7 @@ func _details() -> Control:
 	var hp_colour := Color(0.45, 0.85, 0.4) if hp_ratio > 0.5 else Color(0.95, 0.8, 0.3) if hp_ratio > 0.2 else Color(0.95, 0.4, 0.3)
 	col.add_child(_bar("PV", hp_ratio, "%d / %d" % [dino.hp, dino.max_hp()], hp_colour))
 	col.add_child(_bar("Exp.", float(dino.xp) / maxf(Dino.xp_to_next(dino.level), 1.0), "%d / %d" % [dino.xp, Dino.xp_to_next(dino.level)], XP_BLUE))
+	col.add_child(_bond_row())
 	var s := dino.stats()
 	for st: Array in STATS:
 		col.add_child(_bar(st[1], s[st[0]] / (STAT_SCALE * dino.level + 10.0), str(s[st[0]]), st[2]))
@@ -148,6 +150,52 @@ func _bar(title: String, ratio: float, value: String, colour: Color) -> Control:
 	v.custom_minimum_size = Vector2(76, 0)
 	row.add_child(v)
 	return row
+
+
+## The Lien: its hearts, and how close the next one is.
+func _bond_row() -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	var title := _label("Lien", 16, Color(CREAM, 0.85))
+	title.custom_minimum_size = Vector2(70, 0)
+	row.add_child(title)
+	var h := hearts(dino.bond, 22.0)
+	h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.tooltip_text = "Le Lien monte en marchant avec lui en tête, en gagnant des combats ensemble, en le soignant."
+	row.add_child(h)
+	var v := _label("%d / %d" % [dino.bond, Dino.MAX_BOND], 16, CREAM, HORIZONTAL_ALIGNMENT_RIGHT)
+	v.custom_minimum_size = Vector2(76, 0)
+	row.add_child(v)
+	return row
+
+
+## A row of Dino.MAX_BOND hearts, the first `bond` of them full (the Lien).
+static func hearts(bond: int, heart_size := 20.0) -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(Dino.MAX_BOND * (heart_size + 4.0), heart_size)
+	c.mouse_filter = Control.MOUSE_FILTER_PASS
+	c.draw.connect(func() -> void:
+		for i in Dino.MAX_BOND:
+			var at := Vector2(heart_size / 2.0 + i * (heart_size + 4.0), c.size.y / 2.0)
+			draw_heart(c, at, heart_size, i < bond))
+	return c
+
+
+## One heart, centred on `at`, `s` px wide: full (pink) or empty (a faint outline).
+static func draw_heart(ci: CanvasItem, at: Vector2, s: float, full: bool) -> void:
+	var pts := PackedVector2Array()
+	for i in 32:
+		var t := i * TAU / 32.0
+		# The classic heart curve, 32 wide and about 30 high around its middle.
+		var p := Vector2(16.0 * pow(sin(t), 3), -(13.0 * cos(t) - 5.0 * cos(2.0 * t) - 2.0 * cos(3.0 * t) - cos(4.0 * t)) - 1.5)
+		pts.append(at + p * (s / 34.0))
+	if full:
+		ci.draw_colored_polygon(pts, BOND_PINK)
+		ci.draw_circle(at + Vector2(-0.22, -0.2) * s, s * 0.08, Color(1, 1, 1, 0.55))   # a little shine
+	else:
+		ci.draw_colored_polygon(pts, Color(1, 1, 1, 0.07))
+		pts.append(pts[0])
+		ci.draw_polyline(pts, Color(BOND_PINK, 0.55), maxf(1.5, s * 0.08), true)
 
 
 ## An attack as a little card in its type's colour: name, type, power.

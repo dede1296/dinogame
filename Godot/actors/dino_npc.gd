@@ -50,6 +50,9 @@ func _ready() -> void:
 	add_child(_cry)
 	if event != &"":
 		add_to_group(&"interactable")
+		# A big dino can be talked to from its head or its flank, not only at its feet.
+		var width := species.sheet.get_width() / float(species.sheet_columns) * species.world_scale * size_scale
+		set_meta(&"reach_bonus", clampf(width * 0.3 - 10.0, 0.0, 60.0))
 	if corrupted:
 		var glow := PointLight2D.new()
 		glow.name = "Glow"

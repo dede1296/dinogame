@@ -25,6 +25,7 @@ const FOE_SCALE := 0.95
 const AMBER := Color(0.98, 0.72, 0.28)
 const VIOLET := Color(0.62, 0.34, 0.95)   # black amber: a corrupted dino, the Apaiser action
 const CALM := Color(0.98, 0.84, 0.45)     # its calm gauge, golden
+const BOND_PINK := Color(0.96, 0.45, 0.58)   # the Lien (hearts)
 const CALM_SFX := preload("res://assets/audio/sfx/item.wav")
 const BREATHE := preload("res://battle/breathe.gdshader")
 const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
@@ -74,17 +75,25 @@ func _ready() -> void:
 ## `rules`: {"catch": false, "run": false} for a battle of honour (an Alpha), "intro": its
 ## first line, "music": its theme, "lesson": lines said after the intro (how to calm it),
 ## "cave": true underground (the cave backdrop, no sky), "backdrop": the picture behind the
-## fighters (a Texture2D: the region's own, Region.battle_backdrop; the default: the meadow).
+## fighters (a Texture2D: the region's own, Region.battle_backdrop; the default: the meadow),
+## "long_calm": true for a deep corruption (a calm gauge twice as long; Chloé's own hatchling
+## helps calm it, see BattleEngine).
 func run(wild: Dino, rules := {}) -> String:
 	_rules = rules
 	if rules.get("backdrop") is Texture2D:
 		_backdrop.texture = rules["backdrop"]
 	if rules.get("cave", false):
 		_go_underground()
-	engine = BattleEngine.new(Game.party, wild)
+	var starter = Game.flag(&"starter")
+	engine = BattleEngine.new(Game.party, wild, {
+		"long_calm": rules.get("long_calm", false),
+		"starter": StringName(starter) if starter is String else &"",
+		"trainer": rules.get("trainer", ""),
+	})
 	Game.mark_seen(wild.species().id)
 	_setup_dino(_foe_sprite, wild, true)
 	_setup_dino(_player_sprite, engine.player(), false)
+	(_foe_panel["calm"] as ProgressBar).max_value = engine.calm_full
 	(_foe_panel["calm"] as ProgressBar).value = 0.0
 	_refresh_panel(_foe_panel, wild)
 	_refresh_panel(_player_panel, engine.player())
@@ -234,6 +243,15 @@ func _play(events: Array) -> void:
 				await _say(e["text"])
 			"calmed":
 				await _calmed_anim()
+				await _say(e["text"])
+			"bond_hold":   # a full Lien: it holds on at 1 PV
+				_refresh_panel(_player_panel, engine.player())
+				_burst(_player_sprite.position + Vector2(0, -60), BOND_PINK, 26, 200.0)
+				_float_number(_player_sprite.position + Vector2(0, -150), "♥", BOND_PINK)
+				await _say(e["text"])
+			"bond":
+				if e["dino"] == engine.player():
+					_burst(_player_sprite.position + Vector2(0, -60), BOND_PINK, 20, 160.0)
 				await _say(e["text"])
 			"xp":
 				if e["dino"] == engine.player():

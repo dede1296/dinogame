@@ -24,11 +24,25 @@ const MOVES := {
 	&"ragePredateur": {"name": "Rage du prédateur", "type": "feu", "power": 0, "accuracy": 1.0, "pp": 10, "effect": {"self": {"atk": 2}}, "fx": "roar"},
 	&"morsureBroyeuse": {"name": "Morsure broyeuse", "type": "feu", "power": 75, "accuracy": 0.9, "pp": 10, "effect": {"status": "saigne", "chance": 0.3}, "fx": "bite"},
 	&"crocsBrulants": {"name": "Crocs brûlants", "type": "feu", "power": 60, "accuracy": 1.0, "pp": 15, "fx": "bite"},
+	## Marais Brumeux / Désert Aride : attaques de type eau des familles spino et marine,
+	## déjà présentes dans LEARN (voir nouveau/src/battle/moves.js) mais absentes de MOVES
+	## jusqu'ici — sans elles, Baryonyx, Suchomimus, Spinosaure, Koolasuchus n'avaient aucune
+	## attaque eau utilisable.
+	&"machoireAquatique": {"name": "Mâchoire aquatique", "type": "eau", "power": 65, "accuracy": 0.95, "pp": 15, "fx": "bite"},
+	&"vagueCaudale": {"name": "Vague caudale", "type": "eau", "power": 55, "accuracy": 1.0, "pp": 15, "fx": "wave"},
+	&"plongeon": {"name": "Plongeon abyssal", "type": "eau", "power": 90, "accuracy": 0.85, "pp": 5, "fx": "charge"},
+	&"voileMenacante": {"name": "Voile menaçante", "type": "eau", "power": 0, "accuracy": 1.0, "pp": 10, "effect": {"status": "peur", "chance": 1.0}, "fx": "roar"},
 	&"coupCrane": {"name": "Coup de crâne", "type": "pierre", "power": 70, "accuracy": 0.9, "pp": 10, "fx": "charge"},
 	&"picsDorsaux": {"name": "Pics dorsaux", "type": "pierre", "power": 50, "accuracy": 1.0, "pp": 15, "effect": {"status": "saigne", "chance": 0.3}, "fx": "spikes"},
 	&"massue": {"name": "Massue", "type": "pierre", "power": 80, "accuracy": 0.85, "pp": 10, "effect": {"status": "etourdi", "chance": 0.3}, "fx": "tail"},
 	&"fouetCaudal": {"name": "Fouet caudal", "type": "terre", "power": 55, "accuracy": 1.0, "pp": 15, "fx": "tail"},
 	&"seisme": {"name": "Séisme", "type": "terre", "power": 95, "accuracy": 0.9, "pp": 5, "fx": "quake"},
+	## Marais Brumeux : attaques de type nature de la famille hadrosaur, même trou que les
+	## attaques eau ci-dessus (déjà dans LEARN, absentes de MOVES) — sans elles, Iguanodon,
+	## Corythosaurus, Ouranosaurus et la Voix du Marais n'avaient que "Charge" (neutre).
+	&"criTrompette": {"name": "Cri trompette", "type": "nature", "power": 0, "accuracy": 1.0, "pp": 15, "effect": {"status": "peur", "chance": 1.0}, "fx": "roar"},
+	&"fougeres": {"name": "Festin de fougères", "type": "nature", "power": 0, "accuracy": 1.0, "pp": 5, "effect": {"heal": 0.5}, "fx": "heal"},
+	&"racines": {"name": "Fouet de lianes", "type": "nature", "power": 55, "accuracy": 1.0, "pp": 15, "fx": "wave"},
 }
 
 const TYPE_NAMES := {"neutre": "Neutre", "feu": "Feu", "eau": "Eau", "terre": "Terre", "vent": "Vent", "pierre": "Pierre", "nature": "Nature"}

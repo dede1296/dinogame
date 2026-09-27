@@ -283,6 +283,39 @@ const SCENARIOS := {
 		[0.9, "zone", &"foret"], [2.5, "tp", Vector2(23.4, 81.0)], [3.8, "hold", "move_left"], [3.9, "hold", ""], [4.1, "press", "interact"], [4.6, "auto", true],
 		[45.0, "auto", false], [45.1, "tracker", null],
 	],
+	"etape2": [
+		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_6", "havre_arrive", "selle", "barque_vue", "foret_arrivee", "griffe_grise_vu", "clairiere_vue", "found_journal_ancien"]], [0.9, "calm", 900.0], [0.9, "give", "pachycephalosaurus"], [1.0, "level", 18], [1.0, "dlog", true], [1.1, "zone", &"foret"], [1.6, "tp", Vector2(12, 42.2)], [1.9, "hold", "move_up"], [2.1, "hold", ""], [2.3, "shot", "e2_mur"], [2.4, "auto", true], [14.4, "auto", false], [14.6, "state", null], [14.7, "tracker", null], [15.0, "hold", "move_up"], [16.2, "hold", ""], [16.3, "auto", true], [38.3, "auto", false], [38.5, "state", null], [38.7, "shot", "e2_camp"], [39.2, "tp", Vector2(15, 18.2)], [39.5, "hold", "move_up"], [39.6, "hold", ""], [39.8, "shot", "e2_sbire1"], [39.9, "auto", true], [84.9, "auto", false], [85.1, "state", null], [85.2, "tracker", null], [85.7, "tp", Vector2(27, 18.2)], [86.0, "hold", "move_up"], [86.2, "hold", ""], [86.4, "shot", "e2_sbire2"], [86.5, "auto", true], [131.4, "auto", false], [131.6, "state", null], [131.7, "tracker", null], [132.2, "tp", Vector2(20, 12.2)], [132.5, "hold", "move_up"], [132.7, "hold", ""], [132.9, "shot", "e2_brac"], [133.0, "auto", true], [243.0, "auto", false], [243.2, "state", null], [243.3, "tracker", null], [243.8, "tp", Vector2(31, 9.2)], [244.1, "hold", "move_up"], [244.2, "hold", ""], [244.4, "shot", "e2_utah"], [244.5, "auto", true], [324.5, "auto", false], [324.7, "state", null], [324.8, "tracker", null], [325.3, "tp", Vector2(11, 9.2)], [325.6, "hold", "move_up"], [325.8, "hold", ""], [326.0, "shot", "e2_papiers"], [326.1, "auto", true], [351.1, "auto", false], [351.3, "state", null], [351.4, "tracker", null], [351.9, "zone", &"foret"], [353.5, "tp", Vector2(56.5, 78.5)], [353.8, "hold", "move_up"], [353.9, "hold", ""], [354.1, "shot", "e2_masque"], [354.3, "auto", true], [384.3, "auto", false], [384.4, "state", null], [384.6, "tracker", null], [385.1, "tp", Vector2(7.2, 12)], [385.4, "hold", "move_left"], [385.5, "hold", ""], [385.7, "shot", "e2_maia"], [385.8, "auto", true], [465.8, "auto", false], [466.0, "state", null], [466.1, "tracker", null], [466.6, "zone", &"cabinet"], [468.2, "tp", Vector2(4.35, 4.4)], [468.5, "hold", "move_up"], [468.7, "hold", ""], [468.9, "shot", "e2_tiroir"], [469.0, "auto", true], [499.0, "auto", false], [499.2, "state", null], [499.3, "tracker", null],
+	],
+	"etape2b": [
+		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_6", "havre_arrive", "selle", "barque_vue", "foret_arrivee", "griffe_grise_vu", "clairiere_vue", "found_journal_ancien", "mur_camp_brise", "camp_arrive", "sbire_camp_1_battu", "sbire_camp_2_battu", "brac_parle", "brac_battu", "oeuf_vole_apaise", "cage_ouverte", "utah_lecon", "sceau_foret", "cages_ouvertes", "found_journal_11", "papiers_brac_lus", "masque_en_vue", "masque_vu"]], [0.9, "calm", 900.0], [0.9, "give", "pachycephalosaurus"], [1.0, "level", 18], [1.0, "dlog", true], [1.1, "zone", &"foret"], [2.6, "tp", Vector2(7.2, 12)], [2.9, "hold", "move_left"], [3.1, "hold", ""], [3.3, "shot", "e2m_maia"], [3.4, "auto", true], [103.3, "auto", false], [103.5, "state", null], [103.6, "tracker", null], [105.1, "tp", Vector2(7.2, 12)], [105.4, "hold", "move_left"], [105.6, "hold", ""], [105.8, "shot", "e2m_maia2"], [105.9, "auto", true], [205.9, "auto", false], [206.1, "state", null], [206.2, "tracker", null], [206.5, "shot", "e2m_maia_apres"],
+	],
+	"marais": [
+		[0.8, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","barque_vue","foret_arrivee","griffe_grise_vu","clairiere_vue","found_journal_ancien","mur_camp_brise","camp_arrive","sbire_camp_1_battu","sbire_camp_2_battu","brac_parle","brac_battu","oeuf_vole_apaise","cage_ouverte","sceau_foret","cages_ouvertes","found_journal_11","papiers_brac_lus","masque_en_vue","masque_vu","maia_pont_vue","maia_defi_2","roc_oeuf_retrouve","roc_sceau_foret","tiroir_flaire","ambre_noir_tiroir","found_journal_3","found_journal_4","found_journal_10"]], [0.8, "give", "parasaurolophus"], [0.8, "give", "pachycephalosaurus"], [0.9, "level", 19], [0.9, "item", ["collier", 10]], [0.9, "clock", 10.0], [0.9, "weather", &"clear"], [0.9, "dlog", true], [1.3, "zone", &"marais"], [2.9, "calm", 900.0], [3.0, "auto", true], [28.0, "auto", false], [28.2, "state", null], [28.3, "tracker", null], [28.7, "tp", Vector2(100, 68.5)], [29.0, "hold", "move_up"], [29.2, "hold", ""], [29.4, "shot", "m3_joss"], [29.5, "auto", true], [59.5, "auto", false], [59.7, "state", null], [59.8, "tracker", null], [60.2, "tp", Vector2(84, 42.4)], [60.5, "hold", "move_up"], [60.6, "hold", ""], [60.8, "shot", "m3_baryonyx"], [60.9, "auto", true], [130.9, "auto", false], [131.1, "state", null], [131.2, "tracker", null], [131.5, "give", "baryonyx"], [131.6, "level", 19], [131.7, "party", null], [132.1, "tp", Vector2(56, 43.35)], [132.4, "hold", "move_up"], [132.5, "hold", ""], [132.7, "shot", "m3_porte_voix"], [132.8, "auto", true], [144.8, "auto", false], [145.0, "state", null], [145.1, "tracker", null], [145.5, "tp", Vector2(56, 39.1)], [145.8, "hold", "move_up"], [146.0, "hold", ""], [146.2, "shot", "m3_voix"], [146.3, "auto", true], [196.3, "auto", false], [196.5, "state", null], [196.6, "tracker", null], [197.0, "tp", Vector2(26, 36.4)], [197.3, "hold", "move_up"], [197.4, "hold", ""], [197.6, "shot", "m3_dame_suie"], [197.7, "auto", true], [347.7, "auto", false], [347.9, "state", null], [348.0, "tracker", null], [348.4, "tp", Vector2(29.3, 35)], [348.7, "hold", "move_up"], [348.9, "hold", ""], [349.1, "shot", "m3_page13"], [349.2, "auto", true], [361.2, "auto", false], [361.4, "state", null], [361.5, "tracker", null], [361.9, "tp", Vector2(26, 75.4)], [362.2, "hold", "move_up"], [362.3, "hold", ""], [362.5, "shot", "m3_page14"], [362.6, "auto", true], [377.6, "auto", false], [377.8, "state", null], [377.9, "tracker", null], [378.3, "tp", Vector2(70, 73.5)], [378.6, "hold", "move_up"], [378.8, "hold", ""], [379.0, "shot", "m3_page15"], [379.1, "auto", true], [391.1, "auto", false], [391.3, "state", null], [391.4, "tracker", null], [391.8, "tp", Vector2(99.5, 23)], [392.0, "clock", 19.2], [392.1, "auto", true], [437.1, "auto", false], [437.3, "shot", "m3_roc_nuit"], [437.4, "state", null], [437.5, "tracker", null], [437.8, "gset", ["day", 2]], [437.9, "clock", 21.5], [438.3, "tp", Vector2(96, 86.6)], [438.6, "hold", "move_up"], [438.7, "hold", ""], [438.9, "shot", "m3_page16"], [439.0, "auto", true], [451.0, "auto", false], [451.2, "state", null], [451.3, "tracker", null], [451.6, "gset", ["day", 3]], [451.7, "clock", 10.0], [452.1, "tp", Vector2(30, 13.8)], [452.3, "shot", "m3_porte_temple"], [452.7, "zone", &"temple_englouti"], [454.3, "calm", 900.0], [454.4, "auto", true], [479.4, "auto", false], [479.6, "state", null], [479.7, "tracker", null], [480.1, "tp", Vector2(23.4, 16.5)], [480.4, "hold", "move_up"], [480.6, "hold", ""], [480.8, "shot", "m3_fresque1"], [480.9, "auto", true], [492.9, "auto", false], [493.1, "state", null], [493.2, "tracker", null], [493.6, "tp", Vector2(14.4, 18.5)], [493.9, "hold", "move_up"], [494.0, "hold", ""], [494.2, "shot", "m3_vanne1"], [494.3, "auto", true], [509.3, "auto", false], [509.5, "state", null], [509.6, "tracker", null], [510.0, "tp", Vector2(7.4, 6.4)], [510.3, "hold", "move_up"], [510.5, "hold", ""], [510.7, "shot", "m3_vanne2"], [510.8, "auto", true], [525.8, "auto", false], [526.0, "state", null], [526.1, "tracker", null], [526.5, "tp", Vector2(5.2, 3.5)], [526.8, "hold", "move_up"], [526.9, "hold", ""], [527.1, "shot", "m3_fresque2"], [527.2, "auto", true], [539.2, "auto", false], [539.4, "state", null], [539.5, "tracker", null], [539.9, "tp", Vector2(31.8, 6.4)], [540.2, "hold", "move_up"], [540.4, "hold", ""], [540.6, "shot", "m3_vanne3"], [540.7, "auto", true], [555.7, "auto", false], [555.9, "state", null], [556.0, "tracker", null], [556.4, "tp", Vector2(34.2, 3.5)], [556.7, "hold", "move_up"], [556.8, "hold", ""], [557.0, "shot", "m3_fresque3"], [557.1, "auto", true], [575.1, "auto", false], [575.3, "state", null], [575.4, "tracker", null], [575.8, "tp", Vector2(34.6, 13.8)], [576.1, "hold", "move_up"], [576.3, "hold", ""], [576.5, "shot", "m3_page12"], [576.6, "auto", true], [588.6, "auto", false], [588.8, "state", null], [588.9, "tracker", null], [589.3, "tp", Vector2(19.5, 7.7)], [589.6, "hold", "move_up"], [589.7, "hold", ""], [589.9, "shot", "m3_spinosaure"], [590.0, "auto", true], [760.0, "auto", false], [760.2, "state", null], [760.3, "tracker", null], [760.4, "party", null], [760.8, "zone", &"marais"], [762.4, "calm", 900.0], [762.5, "auto", true], [777.5, "auto", false], [777.7, "state", null], [777.8, "tracker", null], [778.2, "tp", Vector2(86, 6)], [778.5, "hold", "move_up"], [778.7, "hold", ""], [778.9, "shot", "m3_maia"], [779.0, "auto", true], [949.0, "auto", false], [949.2, "state", null], [949.3, "tracker", null], [949.7, "zone", &"cabinet"], [951.3, "calm", 900.0], [951.4, "auto", true], [971.4, "auto", false], [971.6, "state", null], [971.7, "tracker", null], [972.1, "tp", Vector2(6.5, 5.8)], [972.4, "hold", "move_up"], [972.5, "hold", ""], [972.7, "shot", "m3_roc_cabinet"], [972.8, "auto", true], [997.8, "auto", false], [998.0, "state", null], [998.1, "tracker", null],
+	],
+	"desert": [
+		[0.8, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","barque_vue","foret_arrivee","griffe_grise_vu","clairiere_vue","found_journal_ancien","mur_camp_brise","camp_arrive","sbire_camp_1_vu","sbire_camp_2_vu","sbire_camp_1_battu","sbire_camp_2_battu","brac_parle","brac_battu","cage_ouverte","sceau_foret","found_journal_11","papiers_brac_lus","masque_vu","maia_defi_2","ambre_noir_tiroir","marais_arrivee","joss_marais_vu","gilet_nage","porte_voix_ouverte","voix_rencontree","temple_ouvert","dame_suie_battue","temple_vanne_1","temple_vanne_2","temple_vanne_3","spinosaure_battu","sceau_marais","coeur_1","found_journal_12","found_journal_13","found_journal_14","found_journal_15","found_journal_16","roc_marais_vu","maia_defi_3"]], [0.8, "item", ["coeur_1", 1]], [0.8, "item", ["sceau_marais", 1]], [0.9, "item", ["sceau_foret", 1]], [0.9, "item", ["gilet_nage", 1]], [0.9, "item", ["baie", 10]], [0.9, "item", ["fougere", 4]], [1.0, "calm", 900.0], [1.0, "give", "compsognathus"], [1.1, "give", "protoceratops"], [1.1, "give", "baryonyx"], [1.2, "level", 24], [1.2, "clock", 10.0], [1.3, "weather", &"clear"], [1.3, "dlog", true], [1.4, "zone", &"desert"], [3.0, "shot", "d4_arrivee"], [3.1, "auto", true], [23.1, "auto", false], [23.3, "tracker", null], [23.8, "tp", Vector2(85.60, 68.80)], [24.1, "hold", "move_up"], [24.3, "hold", ""], [24.5, "shot", "d4_sirocco"], [24.6, "press", "interact"], [24.7, "auto", true], [74.7, "auto", false], [74.9, "state", null], [75.0, "tracker", null], [75.4, "tp_secret", "monticule"], [76.8, "hold", "move_up"], [76.9, "hold", ""], [77.1, "press", "interact"], [80.6, "shot", "d4_fossile_1"], [81.0, "tp_secret", "monticule"], [82.4, "hold", "move_up"], [82.5, "hold", ""], [82.7, "press", "interact"], [86.2, "shot", "d4_fossile_2"], [86.6, "tp_secret", "monticule"], [88.0, "hold", "move_up"], [88.1, "hold", ""], [88.3, "press", "interact"], [91.8, "shot", "d4_fossile_3"], [92.2, "tp_secret", "monticule"], [93.6, "hold", "move_up"], [93.7, "hold", ""], [93.9, "press", "interact"], [97.4, "shot", "d4_fossile_4"], [97.8, "tp_secret", "monticule"], [99.2, "hold", "move_up"], [99.3, "hold", ""], [99.5, "press", "interact"], [103.0, "shot", "d4_fossile_5"], [103.2, "flags", ["fossile_1","fossile_2","fossile_3","fossile_4","fossile_5"]], [103.7, "tp", Vector2(85.60, 68.80)], [104.0, "hold", "move_up"], [104.1, "hold", ""], [104.3, "shot", "d4_sirocco_cadeau"], [104.4, "press", "interact"], [104.5, "auto", true], [139.5, "auto", false], [139.7, "state", null], [139.8, "tracker", null], [140.3, "tp", Vector2(28.50, 60.50)], [140.6, "hold", "move_up"], [140.8, "hold", ""], [141.0, "shot", "d4_eboulis"], [141.1, "press", "interact"], [141.2, "auto", true], [153.2, "auto", false], [153.4, "state", null], [153.5, "tracker", null], [154.0, "tp", Vector2(20.50, 33.20)], [154.3, "hold", "move_up"], [154.4, "hold", ""], [154.6, "shot", "d4_vieux_rempart"], [154.7, "press", "interact"], [154.8, "auto", true], [214.8, "auto", false], [215.0, "state", null], [215.1, "tracker", null], [215.6, "tp", Vector2(60.50, 10.00)], [216.8, "shot", "d4_brac_porte"], [216.9, "auto", true], [276.9, "auto", false], [277.1, "state", null], [277.2, "tracker", null], [277.7, "tp", Vector2(45.00, 11.20)], [278.9, "shot", "d4_poursuite_1"], [279.0, "auto", true], [314.0, "auto", false], [314.2, "state", null], [314.3, "tracker", null], [314.8, "tp", Vector2(35.00, 15.00)], [316.0, "shot", "d4_poursuite_2"], [316.1, "auto", true], [351.1, "auto", false], [351.3, "state", null], [351.4, "tracker", null], [351.9, "tp", Vector2(25.50, 12.60)], [353.1, "shot", "d4_poursuite_3"], [353.2, "auto", true], [388.2, "auto", false], [388.4, "state", null], [388.5, "tracker", null], [388.7, "level", 24], [389.2, "tp", Vector2(15.50, 13.60)], [389.5, "hold", "move_up"], [389.7, "hold", ""], [389.9, "shot", "d4_brac"], [390.0, "press", "interact"], [390.1, "auto", true], [630.1, "auto", false], [630.3, "state", null], [630.4, "tracker", null], [630.7, "party", null], [631.2, "call", ["goto_zone", [&"sanctuaire_vents", &"DepuisDesert"]]], [633.0, "tp", Vector2(15.50, 9.20)], [633.3, "hold", "move_up"], [633.4, "hold", ""], [633.6, "shot", "d4_coeur"], [633.7, "press", "interact"], [633.8, "auto", true], [663.8, "auto", false], [664.0, "state", null], [664.1, "tracker", null], [664.6, "call", ["goto_zone", [&"desert", &"DepuisSanctuaire"]]], [666.4, "tp", Vector2(12.60, 9.40)], [666.7, "hold", "move_up"], [666.9, "hold", ""], [667.1, "shot", "d4_chariot"], [667.2, "press", "interact"], [667.3, "auto", true], [702.3, "auto", false], [702.5, "state", null], [702.6, "tracker", null], [702.8, "level", 24], [703.3, "tp", Vector2(93.20, 31.40)], [703.6, "hold", "move_up"], [703.7, "hold", ""], [703.9, "shot", "d4_maia"], [704.0, "press", "interact"], [704.1, "auto", true], [854.1, "auto", false], [854.3, "state", null], [854.4, "tracker", null], [854.6, "shot", "d4_fin"], [854.7, "check", null],
+	],
+	"desert2": [
+		[0.8, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","barque_vue","foret_arrivee","griffe_grise_vu","clairiere_vue","found_journal_ancien","mur_camp_brise","camp_arrive","sbire_camp_1_vu","sbire_camp_2_vu","sbire_camp_1_battu","sbire_camp_2_battu","brac_parle","brac_battu","cage_ouverte","sceau_foret","found_journal_11","papiers_brac_lus","masque_vu","maia_defi_2","ambre_noir_tiroir","marais_arrivee","joss_marais_vu","gilet_nage","porte_voix_ouverte","voix_rencontree","temple_ouvert","dame_suie_battue","temple_vanne_1","temple_vanne_2","temple_vanne_3","spinosaure_battu","sceau_marais","coeur_1","found_journal_12","found_journal_13","found_journal_14","found_journal_15","found_journal_16","roc_marais_vu","maia_defi_3"]], [0.8, "item", ["coeur_1", 1]], [0.8, "item", ["sceau_marais", 1]], [0.9, "item", ["sceau_foret", 1]], [0.9, "item", ["gilet_nage", 1]], [0.9, "item", ["baie", 10]], [0.9, "item", ["fougere", 4]], [1.0, "calm", 900.0], [1.0, "give", "compsognathus"], [1.1, "give", "protoceratops"], [1.1, "give", "baryonyx"], [1.2, "level", 24], [1.2, "clock", 10.0], [1.3, "weather", &"clear"], [1.3, "dlog", true], [1.4, "zone", &"desert"], [3.0, "shot", "d5_arrivee"], [3.1, "auto", true], [23.1, "auto", false], [23.3, "tracker", null], [23.5, "flags", ["sirocco_vue","fossile_1","fossile_2","fossile_3","fossile_4","fossile_5","fossiles_rendus","rempart_ouvert","rempart_rencontre","found_journal_17","found_journal_20"]], [24.0, "tp", Vector2(60.50, 10.00)], [25.2, "shot", "d5_brac_porte"], [25.3, "auto", true], [85.3, "auto", false], [85.5, "state", null], [85.6, "tracker", null], [86.1, "tp", Vector2(45.00, 11.20)], [87.3, "shot", "d5_poursuite_1"], [87.4, "auto", true], [127.4, "auto", false], [127.6, "state", null], [127.7, "tracker", null], [128.2, "tp", Vector2(35.00, 15.00)], [129.4, "shot", "d5_poursuite_2"], [129.5, "auto", true], [169.5, "auto", false], [169.7, "state", null], [169.8, "tracker", null], [170.3, "tp", Vector2(25.50, 12.60)], [171.5, "shot", "d5_poursuite_3"], [171.6, "auto", true], [211.6, "auto", false], [211.8, "state", null], [211.9, "tracker", null], [212.1, "level", 24], [212.6, "tp", Vector2(15.50, 13.60)], [212.9, "hold", "move_up"], [213.1, "hold", ""], [213.3, "shot", "d5_brac"], [213.4, "press", "interact"], [213.5, "auto", true], [413.5, "auto", false], [413.7, "state", null], [413.8, "tracker", null], [414.1, "party", null], [414.6, "tp", Vector2(19.40, 8.40)], [414.9, "hold", "move_left"], [415.0, "hold", ""], [415.2, "shot", "d5_carno"], [415.3, "press", "interact"], [415.4, "auto", true], [615.4, "auto", false], [615.6, "state", null], [615.7, "tracker", null], [616.0, "party", null], [616.5, "call", ["goto_zone", [&"sanctuaire_vents", &"DepuisDesert"]]], [618.3, "tp", Vector2(15.50, 9.20)], [618.6, "hold", "move_up"], [618.8, "hold", ""], [619.0, "shot", "d5_coeur"], [619.1, "press", "interact"], [619.2, "auto", true], [659.2, "auto", false], [659.4, "state", null], [659.5, "tracker", null], [660.0, "call", ["goto_zone", [&"desert", &"DepuisSanctuaire"]]], [661.8, "tp", Vector2(12.60, 9.40)], [662.1, "hold", "move_up"], [662.2, "hold", ""], [662.4, "shot", "d5_chariot"], [662.5, "press", "interact"], [662.6, "auto", true], [692.6, "auto", false], [692.8, "state", null], [692.9, "tracker", null], [693.1, "level", 24], [693.6, "tp", Vector2(93.20, 31.40)], [693.9, "hold", "move_up"], [694.1, "hold", ""], [694.3, "shot", "d5_maia"], [694.4, "press", "interact"], [694.5, "auto", true], [864.5, "auto", false], [864.7, "state", null], [864.8, "tracker", null], [865.1, "clock", 18.9], [865.2, "auto", true], [905.2, "auto", false], [905.4, "shot", "d5_crepuscule"], [905.5, "state", null], [905.6, "tracker", null],
+	],
+	"perf_regions": [
+		[0.5, "flags", ["selle","sceau_plaines","maia_defi_1","havre_arrive"]], [0.6, "calm", 900.0], [0.6, "clock", 11.0], [0.7, "weather", &"clear"], [0.9, "vsync", false], [1.4, "zone", &"plaines"], [3.9, "weather", &"clear"], [4.2, "tp", Vector2(60, 47)], [7.2, "perf", "plaines/carrefour"], [7.4, "tp", Vector2(80, 42)], [10.4, "perf", "plaines/etang"], [10.9, "zone", &"foret"], [13.4, "weather", &"clear"], [13.7, "tp", Vector2(68, 52)], [16.7, "perf", "foret/sous_bois"], [16.9, "tp", Vector2(56.5, 77)], [19.9, "perf", "foret/passerelle"], [20.4, "zone", &"camp_ombre"], [22.9, "weather", &"clear"], [23.2, "tp", Vector2(20, 14)], [26.2, "perf", "camp_ombre/camp"], [26.7, "zone", &"marais"], [29.2, "weather", &"clear"], [29.5, "tp", Vector2(116, 70)], [32.5, "perf", "marais/arrivee"], [32.7, "tp", Vector2(84, 43)], [35.7, "perf", "marais/roseliere_est"], [35.9, "tp", Vector2(26, 76)], [38.9, "perf", "marais/foret_noyee"], [39.1, "tp", Vector2(99.5, 22)], [42.1, "perf", "marais/grand_ponton"], [42.3, "tp", Vector2(30, 15)], [45.3, "perf", "marais/parvis_temple"], [45.8, "zone", &"temple_englouti"], [48.3, "weather", &"clear"], [48.6, "tp", Vector2(19.5, 27)], [51.6, "perf", "temple_englouti/hall"], [51.8, "tp", Vector2(19.5, 9)], [54.8, "perf", "temple_englouti/grande_salle"], [55.3, "zone", &"desert"], [57.8, "weather", &"clear"], [58.1, "tp", Vector2(102, 94)], [61.1, "perf", "desert/entree"], [61.3, "tp", Vector2(74.5, 75)], [64.3, "perf", "desert/cimetiere"], [64.5, "tp", Vector2(60, 40)], [67.5, "perf", "desert/erg"], [67.7, "tp", Vector2(99, 33)], [70.7, "perf", "desert/oasis"], [70.9, "tp", Vector2(35, 15)], [73.9, "perf", "desert/canyon_vents"], [74.1, "tp", Vector2(60.5, 10)], [77.1, "perf", "desert/place_sanctuaire"], [77.6, "zone", &"sanctuaire_vents"], [80.1, "weather", &"clear"], [80.4, "tp", Vector2(15.5, 15)], [83.4, "perf", "sanctuaire_vents/salle"], [83.9, "zone", &"marais"], [86.4, "tp", Vector2(26, 76)], [86.6, "weather", &"rain"], [89.6, "perf", "marais/foret_noyee_pluie"], [89.8, "weather", &"mist"], [92.8, "perf", "marais/foret_noyee_brume"], [93.0, "quality", 0], [93.1, "vsync", false], [96.1, "perf", "marais/foret_noyee_brume_BASSE"], [96.3, "quality", 2], [96.4, "vsync", false], [99.4, "perf", "marais/foret_noyee_brume_HAUTE"], [99.6, "quality", 1], [99.7, "vsync", false], [100.2, "zone", &"desert"], [102.7, "tp", Vector2(74.5, 75)], [102.9, "weather", &"sandstorm"], [105.9, "perf", "desert/cimetiere_tempete"], [106.1, "quality", 0], [106.2, "vsync", false], [109.2, "perf", "desert/cimetiere_tempete_BASSE"], [109.4, "quality", 2], [109.5, "vsync", false], [112.5, "perf", "desert/cimetiere_tempete_HAUTE"], [112.7, "quality", 1], [112.8, "vsync", false],
+	],
+	"marais_echo": [
+		[0.8, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","barque_vue","foret_arrivee","griffe_grise_vu","clairiere_vue","found_journal_ancien","mur_camp_brise","camp_arrive","sbire_camp_1_battu","sbire_camp_2_battu","brac_parle","brac_battu","oeuf_vole_apaise","cage_ouverte","sceau_foret","cages_ouvertes","found_journal_11","papiers_brac_lus","masque_en_vue","masque_vu","maia_pont_vue","maia_defi_2","roc_oeuf_retrouve","roc_sceau_foret","tiroir_flaire","ambre_noir_tiroir","found_journal_3","found_journal_4","found_journal_10"]], [0.8, "starter", "parasaurolophus"], [0.8, "give", "velociraptor"], [0.9, "give", "pachycephalosaurus"], [0.9, "level", 19], [0.9, "item", ["collier", 10]], [0.9, "clock", 10.0], [0.9, "weather", &"clear"], [1.0, "dlog", true], [1.4, "zone", &"marais"], [3.0, "calm", 900.0], [3.1, "auto", true], [28.1, "auto", false], [28.3, "state", null], [28.4, "tracker", null], [28.8, "tp", Vector2(100, 68.5)], [29.1, "hold", "move_up"], [29.2, "hold", ""], [29.4, "shot", "e3_joss"], [29.5, "auto", true], [59.5, "auto", false], [59.7, "state", null], [59.8, "tracker", null], [60.2, "tp", Vector2(84, 42.4)], [60.5, "hold", "move_up"], [60.7, "hold", ""], [60.9, "shot", "e3_baryonyx"], [61.0, "auto", true], [131.0, "auto", false], [131.2, "state", null], [131.3, "tracker", null], [131.6, "give", "baryonyx"], [131.6, "level", 19], [131.7, "party", null], [132.1, "tp", Vector2(56, 43.35)], [132.4, "hold", "move_up"], [132.6, "hold", ""], [132.8, "shot", "e3_porte_voix"], [132.9, "auto", true], [144.9, "auto", false], [145.1, "state", null], [145.2, "tracker", null], [145.6, "tp", Vector2(56, 39.1)], [145.9, "hold", "move_up"], [146.0, "hold", ""], [146.2, "shot", "e3_voix"], [146.3, "auto", true], [196.3, "auto", false], [196.5, "state", null], [196.6, "tracker", null], [197.0, "tp", Vector2(26, 36.4)], [197.3, "hold", "move_up"], [197.5, "hold", ""], [197.7, "shot", "e3_dame_suie"], [197.8, "auto", true], [347.8, "auto", false], [348.0, "state", null], [348.1, "tracker", null], [348.5, "tp", Vector2(29.3, 35)], [348.8, "hold", "move_up"], [348.9, "hold", ""], [349.1, "shot", "e3_page13"], [349.2, "auto", true], [361.2, "auto", false], [361.4, "state", null], [361.5, "tracker", null], [361.9, "tp", Vector2(26, 75.4)], [362.2, "hold", "move_up"], [362.4, "hold", ""], [362.6, "shot", "e3_page14"], [362.7, "auto", true], [377.7, "auto", false], [377.9, "state", null], [378.0, "tracker", null], [378.4, "tp", Vector2(70, 73.5)], [378.7, "hold", "move_up"], [378.8, "hold", ""], [379.0, "shot", "e3_page15"], [379.1, "auto", true], [391.1, "auto", false], [391.3, "state", null], [391.4, "tracker", null], [391.8, "tp", Vector2(99.5, 23)], [392.0, "clock", 19.2], [392.1, "auto", true], [437.1, "auto", false], [437.3, "shot", "e3_roc_nuit"], [437.4, "state", null], [437.5, "tracker", null], [437.8, "gset", ["day", 2]], [437.9, "clock", 21.5], [438.3, "tp", Vector2(96, 86.6)], [438.6, "hold", "move_up"], [438.8, "hold", ""], [439.0, "shot", "e3_page16"], [439.1, "auto", true], [451.1, "auto", false], [451.3, "state", null], [451.4, "tracker", null], [451.7, "gset", ["day", 3]], [451.8, "clock", 10.0], [452.2, "tp", Vector2(30, 13.8)], [452.4, "shot", "e3_porte_temple"], [452.8, "zone", &"temple_englouti"], [454.4, "calm", 900.0], [454.5, "auto", true], [479.5, "auto", false], [479.7, "state", null], [479.8, "tracker", null], [480.2, "tp", Vector2(23.4, 16.5)], [480.5, "hold", "move_up"], [480.6, "hold", ""], [480.8, "shot", "e3_fresque1"], [480.9, "auto", true], [492.9, "auto", false], [493.1, "state", null], [493.2, "tracker", null], [493.6, "tp", Vector2(14.4, 18.5)], [493.9, "hold", "move_up"], [494.1, "hold", ""], [494.3, "shot", "e3_vanne1"], [494.4, "auto", true], [509.4, "auto", false], [509.6, "state", null], [509.7, "tracker", null], [510.1, "tp", Vector2(7.4, 6.4)], [510.4, "hold", "move_up"], [510.5, "hold", ""], [510.7, "shot", "e3_vanne2"], [510.8, "auto", true], [525.8, "auto", false], [526.0, "state", null], [526.1, "tracker", null], [526.5, "tp", Vector2(5.2, 3.5)], [526.8, "hold", "move_up"], [527.0, "hold", ""], [527.2, "shot", "e3_fresque2"], [527.3, "auto", true], [539.3, "auto", false], [539.5, "state", null], [539.6, "tracker", null], [540.0, "tp", Vector2(31.8, 6.4)], [540.3, "hold", "move_up"], [540.4, "hold", ""], [540.6, "shot", "e3_vanne3"], [540.7, "auto", true], [555.7, "auto", false], [555.9, "state", null], [556.0, "tracker", null], [556.4, "tp", Vector2(34.2, 3.5)], [556.7, "hold", "move_up"], [556.9, "hold", ""], [557.1, "shot", "e3_fresque3"], [557.2, "auto", true], [575.2, "auto", false], [575.4, "state", null], [575.5, "tracker", null], [575.9, "tp", Vector2(34.6, 13.8)], [576.2, "hold", "move_up"], [576.3, "hold", ""], [576.5, "shot", "e3_page12"], [576.6, "auto", true], [588.6, "auto", false], [588.8, "state", null], [588.9, "tracker", null], [589.3, "tp", Vector2(19.5, 7.7)], [589.6, "hold", "move_up"], [589.8, "hold", ""], [590.0, "shot", "e3_spinosaure"], [590.1, "auto", true], [760.1, "auto", false], [760.3, "state", null], [760.4, "tracker", null], [760.5, "party", null], [760.9, "zone", &"marais"], [762.5, "calm", 900.0], [762.6, "auto", true], [777.6, "auto", false], [777.8, "state", null], [777.9, "tracker", null], [778.3, "tp", Vector2(86, 6)], [778.6, "hold", "move_up"], [778.7, "hold", ""], [778.9, "shot", "e3_maia"], [779.0, "auto", true], [949.0, "auto", false], [949.2, "state", null], [949.3, "tracker", null], [949.7, "zone", &"cabinet"], [951.3, "calm", 900.0], [951.4, "auto", true], [971.4, "auto", false], [971.6, "state", null], [971.7, "tracker", null], [972.1, "tp", Vector2(6.5, 5.8)], [972.4, "hold", "move_up"], [972.6, "hold", ""], [972.8, "shot", "e3_roc_cabinet"], [972.9, "auto", true], [997.9, "auto", false], [998.1, "state", null], [998.2, "tracker", null],
+	],
+	"desert_bastion": [
+		[0.8, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","barque_vue","foret_arrivee","griffe_grise_vu","clairiere_vue","found_journal_ancien","mur_camp_brise","camp_arrive","sbire_camp_1_vu","sbire_camp_2_vu","sbire_camp_1_battu","sbire_camp_2_battu","brac_parle","brac_battu","cage_ouverte","sceau_foret","found_journal_11","papiers_brac_lus","masque_vu","maia_defi_2","ambre_noir_tiroir","marais_arrivee","joss_marais_vu","gilet_nage","porte_voix_ouverte","voix_rencontree","temple_ouvert","dame_suie_battue","temple_vanne_1","temple_vanne_2","temple_vanne_3","spinosaure_battu","sceau_marais","coeur_1","found_journal_12","found_journal_13","found_journal_14","found_journal_15","found_journal_16","roc_marais_vu","maia_defi_3"]], [0.8, "item", ["coeur_1", 1]], [0.8, "item", ["sceau_marais", 1]], [0.9, "item", ["sceau_foret", 1]], [0.9, "item", ["gilet_nage", 1]], [0.9, "item", ["baie", 10]], [0.9, "item", ["fougere", 4]], [1.0, "calm", 900.0], [1.0, "give", "compsognathus"], [1.1, "give", "protoceratops"], [1.1, "give", "baryonyx"], [1.2, "level", 24], [1.2, "clock", 10.0], [1.3, "weather", &"clear"], [1.3, "dlog", true], [1.4, "zone", &"desert"], [3.0, "shot", "d6_arrivee"], [3.1, "auto", true], [23.1, "auto", false], [23.3, "tracker", null], [23.5, "flags", ["sirocco_vue","fossile_1","fossile_2","fossile_3","fossile_4","fossile_5","fossiles_rendus","found_journal_17"]], [23.6, "starter", "ankylosaurus"], [23.6, "level", 24], [24.1, "tp", Vector2(28.50, 60.50)], [24.4, "hold", "move_up"], [24.6, "hold", ""], [24.8, "shot", "d6_eboulis"], [24.9, "press", "interact"], [25.0, "auto", true], [37.0, "auto", false], [37.2, "state", null], [37.3, "tracker", null], [37.8, "tp", Vector2(20.50, 33.20)], [38.1, "hold", "move_up"], [38.2, "hold", ""], [38.4, "shot", "d6_vieux_rempart"], [38.5, "press", "interact"], [38.6, "auto", true], [108.6, "auto", false], [108.8, "state", null], [108.9, "tracker", null], [109.4, "tp", Vector2(60.50, 10.00)], [110.6, "shot", "d6_brac_porte"], [110.7, "auto", true], [170.7, "auto", false], [170.9, "state", null], [171.0, "tracker", null], [171.5, "tp", Vector2(45.00, 11.20)], [172.7, "shot", "d6_poursuite_1"], [172.8, "auto", true], [212.8, "auto", false], [213.0, "state", null], [213.1, "tracker", null], [213.6, "tp", Vector2(35.00, 15.00)], [214.8, "shot", "d6_poursuite_2"], [214.9, "auto", true], [254.9, "auto", false], [255.1, "state", null], [255.2, "tracker", null], [255.7, "tp", Vector2(25.50, 12.60)], [256.9, "shot", "d6_poursuite_3"], [257.0, "auto", true], [297.0, "auto", false], [297.2, "state", null], [297.3, "tracker", null], [297.5, "level", 24], [298.0, "tp", Vector2(15.50, 13.60)], [298.3, "hold", "move_up"], [298.5, "hold", ""], [298.7, "shot", "d6_brac"], [298.8, "press", "interact"], [298.9, "auto", true], [498.9, "auto", false], [499.1, "state", null], [499.2, "tracker", null], [499.5, "party", null], [500.0, "tp", Vector2(19.40, 8.40)], [500.3, "hold", "move_left"], [500.4, "hold", ""], [500.6, "shot", "d6_carno"], [500.7, "press", "interact"], [500.8, "auto", true], [700.8, "auto", false], [701.0, "state", null], [701.1, "tracker", null], [701.4, "party", null], [701.9, "call", ["goto_zone", [&"sanctuaire_vents", &"DepuisDesert"]]], [703.7, "tp", Vector2(15.50, 9.20)], [704.0, "hold", "move_up"], [704.2, "hold", ""], [704.4, "shot", "d6_coeur"], [704.5, "press", "interact"], [704.6, "auto", true], [744.6, "auto", false], [744.8, "state", null], [744.9, "tracker", null], [745.4, "call", ["goto_zone", [&"desert", &"DepuisSanctuaire"]]], [747.2, "tp", Vector2(12.60, 9.40)], [747.5, "hold", "move_up"], [747.6, "hold", ""], [747.8, "shot", "d6_chariot"], [747.9, "press", "interact"], [748.0, "auto", true], [778.0, "auto", false], [778.2, "state", null], [778.3, "tracker", null], [778.5, "level", 24], [779.0, "tp", Vector2(93.20, 31.40)], [779.3, "hold", "move_up"], [779.5, "hold", ""], [779.7, "shot", "d6_maia"], [779.8, "press", "interact"], [779.9, "auto", true], [949.9, "auto", false], [950.1, "state", null], [950.2, "tracker", null], [950.5, "clock", 18.9], [950.6, "auto", true], [990.6, "auto", false], [990.8, "shot", "d6_crepuscule"], [990.9, "state", null], [991.0, "tracker", null],
+	],
+	"visuels": [
+		[0.8, "flags", ["selle","sceau_plaines","maia_defi_1","havre_arrive","maia_defi_2","marais_arrivee","gilet_nage","temple_arrive"]], [0.9, "calm", 900.0], [0.9, "item", ["gilet_nage", 1]], [1.0, "give", "baryonyx"], [1.0, "level", 16], [1.1, "clock", 11.0], [1.1, "weather", &"clear"], [1.3, "zone", &"marais"], [3.3, "tp", Vector2(70, 60)], [3.7, "hold", "move_left"], [4.9, "shot", "v_nage_left"], [5.0, "hold", ""], [5.4, "hold", "move_down"], [6.6, "shot", "v_nage_down"], [6.7, "hold", ""], [7.1, "hold", "move_right"], [8.3, "shot", "v_nage_right"], [8.4, "hold", ""], [8.8, "hold", "move_up"], [10.0, "shot", "v_nage_up"], [10.1, "hold", ""], [10.4, "state", null], [10.9, "zone", &"temple_englouti"], [12.9, "tp", Vector2(15.5, 20.2)], [13.2, "hold", "move_left"], [13.4, "hold", ""], [14.2, "shot", "v_crue_pleine"], [14.4, "flags", ["temple_vanne_1"]], [15.6, "shot", "v_crue_baisse"], [19.1, "shot", "v_crue_vide"], [19.4, "tp", Vector2(20.5, 16.5)], [20.4, "shot", "v_escalier_noye"], [20.6, "flags", ["temple_vanne_3"]], [21.9, "shot", "v_escalier_baisse"], [25.4, "shot", "v_escalier_sec"],
+	],
+	"demo_nuit": [
+		[0.85, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","barque_vue","foret_arrivee","griffe_grise_vu","clairiere_vue","found_journal_ancien"]], [0.90, "calm", 900.0], [0.95, "give", "pachycephalosaurus"], [1.00, "level", 18], [1.05, "item", ["collier",10]], [1.10, "clock", 10.0], [1.15, "weather", &"clear"], [1.20, "dlog", true], [1.25, "demo", true], [1.30, "auto", true], [1.35, "fast_battles", true], [1.65, "zone", &"foret"], [3.65, "banner", ""], [4.25, "segment", ["Chapitre 2 · La Forêt Jurassique (fin)","Le mur fissuré : Coup de crâne"]], [4.55, "tp", Vector2(12, 42.2)], [4.75, "hold", "move_up"], [4.87, "hold", ""], [5.17, "interact_now", null], [5.27, "wait_idle", [1.5, 240]], [5.87, "segment", ["Chapitre 2 · La Forêt Jurassique (fin)","Derrière le mur : le camp de l'Ombre Noire"]], [6.17, "hold", "move_up"], [7.57, "hold", ""], [7.67, "wait_idle", [2, 90]], [8.27, "segment", ["Chapitre 2 · La Forêt Jurassique (fin)","Brac, et le petit volé au Cabinet : on l'apaise"]], [8.32, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","barque_vue","foret_arrivee","griffe_grise_vu","clairiere_vue","found_journal_ancien","mur_camp_brise","camp_arrive","sbire_camp_1_vu","sbire_camp_2_vu","sbire_camp_1_battu","sbire_camp_2_battu"]], [8.62, "tp", Vector2(20, 12.2)], [8.82, "hold", "move_up"], [8.94, "hold", ""], [9.24, "interact_now", null], [9.34, "wait_idle", [1.5, 240]], [9.94, "segment", ["Chapitre 2 · La Forêt Jurassique (fin)","Le chef de meute : un long apaisement, puis le Sceau de la Forêt"]], [9.99, "flags", ["brac_parle","brac_battu","oeuf_vole_apaise"]], [10.29, "tp", Vector2(31, 9.2)], [10.49, "hold", "move_up"], [10.61, "hold", ""], [10.91, "interact_now", null], [11.01, "wait_idle", [1.5, 240]], [11.61, "segment", ["Chapitre 2 · La Forêt Jurassique (fin)","Sur la passerelle des géants : le Masque d'Obsidienne"]], [11.66, "flags", ["cage_ouverte","utah_lecon","sceau_foret","cages_ouvertes","papiers_brac_lus","found_journal_11"]], [11.96, "zone", &"foret"], [12.06, "wait_idle", [2, 90]], [12.36, "tp", Vector2(56.5, 77.6)], [12.46, "wait_idle", [2, 120]], [13.06, "segment", ["Chapitre 2 · La Forêt Jurassique (fin)","Au pont du Marais : le défi n° 2 de Maïa"]], [13.11, "flags", ["masque_en_vue","masque_vu"]], [13.16, "level", 18], [13.46, "tp", Vector2(7.2, 12)], [13.66, "hold", "move_left"], [13.78, "hold", ""], [14.08, "interact_now", null], [14.18, "wait_idle", [1.5, 240]], [14.78, "segment", ["Chapitre 2 · La Forêt Jurassique (fin)","Au Cabinet : ce que Roc cache dans son tiroir"]], [14.83, "flags", ["maia_pont_vue","maia_defi_2"]], [15.13, "zone", &"cabinet"], [15.23, "wait_idle", [2, 90]], [15.53, "tp", Vector2(4.35, 4.4)], [15.73, "hold", "move_up"], [15.85, "hold", ""], [16.15, "interact_now", null], [16.25, "wait_idle", [1.5, 240]], [16.85, "segment", ["Chapitre 3 · Le Marais Brumeux","L'arrivée dans la brume"]], [16.90, "flags", ["roc_oeuf_retrouve","roc_sceau_foret","tiroir_flaire","ambre_noir_tiroir"]], [16.95, "level", 19], [17.00, "clock", 10.0], [17.30, "zone", &"marais"], [17.40, "wait_idle", [2, 90]], [18.00, "segment", ["Chapitre 3 · Le Marais Brumeux","Joss, sellier et inventeur de gilets de nage"]], [18.30, "tp", Vector2(100, 68.5)], [18.50, "hold", "move_up"], [18.62, "hold", ""], [18.92, "interact_now", null], [19.02, "wait_idle", [1.5, 240]], [19.62, "segment", ["Chapitre 3 · Le Marais Brumeux","Le Baryonyx chapardeur et le gilet de nage"]], [19.92, "tp", Vector2(84, 42.4)], [20.12, "hold", "move_up"], [20.24, "hold", ""], [20.54, "interact_now", null], [20.64, "wait_idle", [1.5, 240]], [21.24, "segment", ["Chapitre 3 · Le Marais Brumeux","La Nage : dans l'eau profonde, sur le dos d'un Baryonyx"]], [21.29, "give", "baryonyx"], [21.34, "level", 19], [21.64, "tp", Vector2(73, 60)], [22.04, "hold", "move_left"], [24.24, "hold", "move_up"], [25.84, "hold", ""], [26.44, "segment", ["Chapitre 3 · Le Marais Brumeux","La porte d'ambre, et la Voix du Marais"]], [26.74, "tp", Vector2(56, 43.3)], [26.94, "hold", "move_up"], [27.06, "hold", ""], [27.36, "interact_now", null], [27.46, "wait_idle", [1.5, 240]], [27.76, "tp", Vector2(56, 39.1)], [27.96, "hold", "move_up"], [28.08, "hold", ""], [28.38, "interact_now", null], [28.48, "wait_idle", [1.5, 240]], [29.08, "segment", ["Chapitre 3 · Le Marais Brumeux","Dame Suie, la chimiste de l'Ombre Noire"]], [29.38, "tp", Vector2(26, 36.4)], [29.58, "hold", "move_up"], [29.70, "hold", ""], [30.00, "interact_now", null], [30.10, "wait_idle", [1.5, 240]], [30.40, "tp", Vector2(29.3, 35)], [30.60, "hold", "move_up"], [30.72, "hold", ""], [31.02, "interact_now", null], [31.12, "wait_idle", [1.5, 240]], [31.72, "segment", ["Chapitre 3 · Le Marais Brumeux","La nuit, une lanterne sur les pontons…"]], [31.77, "flags", ["found_journal_14","found_journal_15"]], [32.07, "tp", Vector2(99.5, 23)], [32.37, "clock", 19.2], [32.47, "wait_idle", [3, 150]], [33.07, "segment", ["Chapitre 3 · Le Marais Brumeux","Le temple englouti : fresques, vannes et crues"]], [33.12, "clock", 10.0], [33.42, "zone", &"temple_englouti"], [33.52, "wait_idle", [2, 90]], [33.82, "tp", Vector2(23.4, 16.5)], [34.02, "hold", "move_up"], [34.14, "hold", ""], [34.44, "interact_now", null], [34.54, "wait_idle", [1.5, 240]], [34.84, "tp", Vector2(14.4, 18.5)], [35.04, "hold", "move_up"], [35.16, "hold", ""], [35.46, "interact_now", null], [35.56, "wait_idle", [1.5, 240]], [36.16, "segment", ["Chapitre 3 · Le Marais Brumeux","Le Spinosaure Ancestral, le Sceau et le premier Cœur"]], [36.21, "flags", ["temple_vanne_2","temple_vanne_3","fresque_2_vue","fresque_3_vue","found_journal_12"]], [36.51, "tp", Vector2(19.5, 7.7)], [36.71, "hold", "move_up"], [36.83, "hold", ""], [37.13, "interact_now", null], [37.23, "wait_idle", [1.5, 240]], [37.83, "segment", ["Chapitre 3 · Le Marais Brumeux","Dans la roselière du nord : le défi n° 3 de Maïa"]], [38.13, "zone", &"marais"], [38.23, "wait_idle", [2, 90]], [38.28, "level", 20], [38.58, "tp", Vector2(86, 6)], [38.78, "hold", "move_up"], [38.90, "hold", ""], [39.20, "interact_now", null], [39.30, "wait_idle", [1.5, 240]], [39.90, "segment", ["Chapitre 4 · Le Désert Aride","L'arrivée, et Tante Sirocco"]], [39.95, "give", "compsognathus"], [40.00, "give", "protoceratops"], [40.05, "level", 24], [40.35, "zone", &"desert"], [40.45, "wait_idle", [2, 90]], [40.75, "tp", Vector2(85.6, 68.8)], [40.95, "hold", "move_up"], [41.07, "hold", ""], [41.37, "interact_now", null], [41.47, "wait_idle", [1.5, 240]], [42.07, "segment", ["Chapitre 4 · Le Désert Aride","Les fossiles du Cimetière des Géants (Flair)"]], [42.37, "tp_secret", "monticule"], [43.77, "hold", "move_up"], [43.87, "hold", ""], [44.07, "interact_now", null], [44.17, "wait_idle", [1, 20]], [44.22, "flags", ["fossile_1","fossile_2","fossile_3","fossile_4","fossile_5"]], [44.52, "tp", Vector2(85.6, 68.8)], [44.72, "hold", "move_up"], [44.84, "hold", ""], [45.14, "interact_now", null], [45.24, "wait_idle", [1.5, 240]], [45.84, "segment", ["Chapitre 4 · Le Désert Aride","L'éboulis (Charge), et le Vieux Rempart"]], [46.14, "tp", Vector2(28.5, 60.5)], [46.34, "hold", "move_up"], [46.46, "hold", ""], [46.76, "interact_now", null], [46.86, "wait_idle", [1.5, 240]], [47.16, "tp", Vector2(20.5, 33.2)], [47.36, "hold", "move_up"], [47.48, "hold", ""], [47.78, "interact_now", null], [47.88, "wait_idle", [1.5, 240]], [48.48, "segment", ["Chapitre 4 · Le Désert Aride","Brac au sanctuaire des Vents, et la tempête de sable"]], [48.78, "tp", Vector2(60.5, 10)], [48.88, "wait_idle", [2, 150]], [49.48, "segment", ["Chapitre 4 · Le Désert Aride","La poursuite dans le canyon des Vents"]], [49.78, "tp", Vector2(45, 11.2)], [49.88, "wait_idle", [1.5, 90]], [50.18, "tp", Vector2(35, 15)], [50.28, "wait_idle", [1.5, 90]], [50.58, "tp", Vector2(25.5, 12.6)], [50.68, "wait_idle", [1.5, 90]], [51.28, "segment", ["Chapitre 4 · Le Désert Aride","Brac acculé, puis le Carnotaurus Rouge apaisé"]], [51.33, "level", 24], [51.63, "tp", Vector2(15.5, 13.6)], [51.83, "hold", "move_up"], [51.95, "hold", ""], [52.25, "interact_now", null], [52.35, "wait_idle", [1.5, 240]], [52.65, "tp", Vector2(19.4, 8.4)], [52.85, "hold", "move_left"], [52.97, "hold", ""], [53.27, "interact_now", null], [53.37, "wait_idle", [1.5, 240]], [53.97, "segment", ["Chapitre 4 · Le Désert Aride","Dans le sanctuaire : le deuxième Cœur"]], [54.27, "call", ["goto_zone",[&"sanctuaire_vents",&"DepuisDesert"]]], [54.37, "wait_idle", [2, 90]], [54.67, "tp", Vector2(15.5, 9.2)], [54.87, "hold", "move_up"], [54.99, "hold", ""], [55.29, "interact_now", null], [55.39, "wait_idle", [1.5, 240]], [55.99, "segment", ["Chapitre 4 · Le Désert Aride","À l'oasis : le défi n° 4 de Maïa, puis le crépuscule"]], [56.29, "call", ["goto_zone",[&"desert",&"DepuisSanctuaire"]]], [56.39, "wait_idle", [2, 60]], [56.44, "level", 25], [56.74, "tp", Vector2(93.2, 31.4)], [56.94, "hold", "move_up"], [57.06, "hold", ""], [57.36, "interact_now", null], [57.46, "wait_idle", [1.5, 240]], [57.76, "clock", 18.9], [57.86, "wait_idle", [3, 90]], [58.46, "segment", ["Fin de la démo","La suite : la Côte Préhistorique"]], [65.46, "banner", ""],
+	],
+	"test_utah": [
+		[0.80, "flags", ["sceau_plaines","maia_defi_1","found_journal_6","havre_arrive","selle","foret_arrivee","griffe_grise_vu","clairiere_vue","found_journal_ancien","mur_camp_brise","camp_arrive","sbire_camp_1_battu","sbire_camp_2_battu","brac_parle","brac_battu","oeuf_vole_apaise"]], [0.85, "calm", 900.0], [0.90, "give", "pachycephalosaurus"], [0.95, "level", 18], [1.00, "dlog", true], [1.05, "demo", true], [1.10, "auto", true], [1.15, "fast_battles", true], [1.45, "zone", &"camp_ombre"], [3.95, "tp", Vector2(31, 9.2)], [4.15, "hold", "move_up"], [4.27, "hold", ""], [4.77, "shot", "u0"], [5.07, "interact_now", null], [5.32, "shot", "u1"], [5.82, "shot", "u2"], [6.92, "shot", "u3"], [8.92, "shot", "u4"], [11.92, "shot", "u5"], [12.02, "wait_idle", [1.5, 200]], [12.52, "shot", "u9"],
+	],
 	"demo_live": [
 		[0.85, "calm", 900.0], [0.9, "motion", true], [0.95, "tp", Vector2(58.4, 60.0)], [2, "banner", "Pas plus rapides, un rebond par pas"], [2.1, "tp", Vector2(58.4, 60.0)], [2.4, "hold", "move_down"], [3.8, "hold", ""], [4.4, "hold", "move_left"], [5.4, "hold", ""], [6, "hold", "move_right"], [7, "hold", ""], [7.6, "hold", "move_up"], [9, "hold", ""], [11, "banner", "Pas plus rapides, un rebond par pas"], [11.1, "tp", Vector2(58.4, 60.0)], [11.4, "hold", "move_down"], [12.8, "hold", ""], [13.4, "hold", "move_left"], [14.4, "hold", ""], [15, "hold", "move_right"], [16, "hold", ""], [16.6, "hold", "move_up"], [18, "hold", ""], [20, "banner", "Pas plus rapides, un rebond par pas"], [20.1, "tp", Vector2(58.4, 60.0)], [20.4, "hold", "move_down"], [21.8, "hold", ""], [22.4, "hold", "move_left"], [23.4, "hold", ""], [24, "hold", "move_right"], [25, "hold", ""], [25.6, "hold", "move_up"], [27, "hold", ""], [29, "banner", "Pas plus rapides, un rebond par pas"], [29.1, "tp", Vector2(58.4, 60.0)], [29.4, "hold", "move_down"], [30.8, "hold", ""], [31.4, "hold", "move_left"], [32.4, "hold", ""], [33, "hold", "move_right"], [34, "hold", ""], [34.6, "hold", "move_up"], [36, "hold", ""], [38, "banner", "Pas plus rapides, un rebond par pas"], [38.1, "tp", Vector2(58.4, 60.0)], [38.4, "hold", "move_down"], [39.8, "hold", ""], [40.4, "hold", "move_left"], [41.4, "hold", ""], [42, "hold", "move_right"], [43, "hold", ""], [43.6, "hold", "move_up"], [45, "hold", ""], [47, "banner", "Pas plus rapides, un rebond par pas"], [47.1, "tp", Vector2(58.4, 60.0)], [47.4, "hold", "move_down"], [48.8, "hold", ""], [49.4, "hold", "move_left"], [50.4, "hold", ""], [51, "hold", "move_right"], [52, "hold", ""], [52.6, "hold", "move_up"], [54, "hold", ""], [56, "banner", ""],
 	],
@@ -465,6 +498,84 @@ const SCENARIOS := {
 		[50.1, "tp", Vector2(24.0, 19.9)], [51.0, "hold", "move_up"], [51.1, "hold", ""], [51.3, "press", "interact"],
 		[52.5, "shot", "g08_clairiere_vide"], [66.0, "state", null], [66.1, "shot", "g09_apres"],
 	],
+	# The Forêt, step 2 (the map): the cracked wall in its notch (closed, then broken), the
+	# Masque on the futaie's footbridge, the bridge to the Marais and Maïa, the map, the scene of
+	# the Masque's circle, Roc's drawer in the Cabinet.
+	"foret_pont": [
+		[0.8, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee", "maia_defi_1"]],
+		[0.82, "level", 16], [0.84, "clock", 11.0], [0.86, "weather", &"clear"], [0.9, "zone", &"foret"],
+		[2.4, "calm", 900.0], [2.45, "weather", &"clear"],
+		[2.5, "tp", Vector2(13.6, 44.6)], [3.9, "shot", "p00_baie_mur"],
+		[4.0, "tp", Vector2(12.0, 42.0)], [4.1, "hold", "move_up"], [4.25, "hold", ""], [4.5, "press", "interact"],
+		[5.6, "shot", "p01_mur_bloque"], [5.7, "near", null], [5.8, "talk", true], [10.9, "talk", false],
+		[11.0, "flags", ["mur_camp_brise"]], [11.1, "zone", &"foret"], [12.6, "calm", 900.0], [12.7, "tp", Vector2(12.6, 43.4)],
+		[14.1, "shot", "p02_tunnel_ouvert"],
+		[14.2, "flags", ["masque_en_vue"]], [14.3, "zone", &"foret"], [15.8, "calm", 900.0], [15.9, "tp", Vector2(56.5, 77.2)],
+		[17.3, "shot", "p03_passerelle_masque"], [17.4, "tp", Vector2(49.0, 76.6)], [18.8, "shot", "p04_passerelle_loin"],
+		[18.9, "vsync", false], [19.0, "quality", 1], [21.5, "perf", "passerelle_moyenne"],
+		[21.6, "flags", ["sceau_foret", "meute_revenue"]], [21.7, "zone", &"foret"], [23.2, "calm", 900.0], [23.3, "tp", Vector2(9.5, 13.2)],
+		[24.8, "shot", "p05_pont_maia"], [27.0, "perf", "pont_moyenne"],
+		[27.1, "tp", Vector2(3.0, 12.0)], [28.5, "shot", "p06_sur_le_pont"], [28.6, "hold", "move_left"], [29.4, "hold", ""],
+		[30.4, "shot", "p07_pont_bloque"], [30.5, "state", null], [30.6, "talk", true], [34.6, "talk", false], [34.7, "near", null],
+		[34.8, "map", null], [35.6, "shot", "p08_carte"], [35.7, "press", "cancel"],
+		[36.0, "dlog", true], [36.1, "tp", Vector2(53.0, 77.0)], [37.5, "hold", "move_right"], [38.3, "hold", ""],
+		[40.0, "shot", "p09_scene_masque"], [40.1, "talk", true], [43.0, "shot", "p10_scene_masque_2"], [55.0, "talk", false], [55.1, "state", null],
+		[55.2, "zone", &"cabinet"], [57.0, "tp", Vector2(4.35, 4.3)], [57.1, "hold", "move_up"], [57.2, "hold", ""], [57.4, "near", null],
+		[57.5, "press", "interact"], [58.6, "shot", "p11_tiroir"], [58.7, "talk", true], [65.0, "talk", false], [65.1, "state", null],
+	],
+	# The camp of the Ombre Noire (camp_ombre): its places, by day and by night, the frame rate at
+	# each quality, its map, the way back to the Forêt.
+	"camp": [
+		[0.8, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee", "maia_defi_1",
+			"mur_camp_brise", "camp_arrive"]],
+		[0.82, "level", 16], [0.84, "clock", 11.0], [0.86, "weather", &"clear"], [0.9, "zone", &"camp_ombre"],
+		[2.5, "weather", &"clear"], [2.6, "shot", "c00_entree"], [2.7, "state", null],
+		[2.8, "tp", Vector2(26.0, 14.5)], [4.2, "shot", "c01_centre"],
+		[4.3, "tp", Vector2(20.0, 13.2)], [5.7, "shot", "c02_brac"],
+		[5.8, "tp", Vector2(31.0, 10.0)], [7.2, "shot", "c03_utahraptor"], [7.3, "near", null],
+		[7.4, "tp", Vector2(11.0, 10.2)], [8.8, "shot", "c04_table"], [8.9, "near", null],
+		[9.0, "tp", Vector2(8.0, 15.0)], [10.4, "shot", "c05_ouest"],
+		[10.5, "tp", Vector2(21.0, 19.5)], [11.9, "shot", "c06_sud"],
+		[12.0, "clock", 22.0], [12.1, "tp", Vector2(22.0, 14.0)], [14.0, "shot", "c07_nuit"],
+		[14.1, "clock", 11.0], [14.2, "vsync", false], [14.3, "quality", 1], [17.0, "perf", "camp_moyenne"],
+		[17.1, "quality", 2], [20.0, "perf", "camp_haute"], [20.1, "quality", 0], [23.0, "perf", "camp_basse"], [23.1, "quality", 1],
+		[23.2, "map", null], [24.0, "shot", "c08_carte"], [24.1, "press", "cancel"],
+		[24.5, "tp", Vector2(37.5, 14.0)], [24.6, "hold", "move_right"], [26.0, "hold", ""], [28.0, "state", null], [28.1, "shot", "c09_retour_foret"],
+	],
+	# The first time in the camp (its arrival scene, story/foret_camp.gd).
+	"camp_arrivee": [
+		[0.8, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee", "maia_defi_1", "mur_camp_brise"]],
+		[0.82, "level", 16], [0.84, "clock", 11.0], [0.86, "weather", &"clear"], [0.87, "dlog", true], [0.9, "zone", &"camp_ombre"],
+		[1.0, "talk", true], [4.0, "shot", "a0_arrivee"], [9.0, "shot", "a1_arrivee"], [16.0, "shot", "a2_arrivee"], [24.0, "state", null], [24.1, "shot", "a3_apres"],
+	],
+	# The Marais Brumeux (CARTE-B): its places on foot, then swimming (vest + Baryonyx), in the mist, at night, its map, a battle.
+	# The Marais Brumeux (CARTE-B): its places on foot, then swimming (vest + Baryonyx), in the mist, at night, its map, a battle.
+	"marais_tour": [
+		[0.80, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee", "maia_defi_1", "sceau_foret", "maia_defi_2", "meute_revenue", "marais_arrivee", "joss_marais_vu"]], [0.82, "level", 16], [0.84, "clock", 11.0], [0.86, "weather", &"clear"], [0.88, "talk", true], [0.93, "zone", &"marais"], [2.53, "weather", &"clear"], [2.63, "tp", Vector2(115, 70.4)], [2.68, "calm", 900.0], [4.18, "shot", "m00_arrivee_ponton"], [4.28, "tp", Vector2(99.5, 69.8)], [4.33, "calm", 900.0], [5.83, "shot", "m01_debarcadere_joss"], [5.93, "tp", Vector2(97.9, 60)], [5.98, "calm", 900.0], [7.48, "shot", "m02_ponton_vers_roselieres"], [7.58, "tp", Vector2(85.5, 44.6)], [7.63, "calm", 900.0], [9.13, "shot", "m03_baryonyx_gilet"], [9.23, "tp", Vector2(100.5, 41.5)], [9.28, "calm", 900.0], [10.78, "shot", "m04_roseliere_est_feu"], [10.88, "tp", Vector2(99.9, 26)], [10.93, "calm", 900.0], [12.43, "shot", "m05_grand_ponton"], [12.53, "tp", Vector2(86, 9.5)], [12.58, "calm", 900.0], [14.08, "shot", "m06_roseliere_nord_sortie"], [14.18, "tp", Vector2(96, 89.4)], [14.23, "calm", 900.0], [15.73, "shot", "m07_bassin_nenuphars"], [15.83, "flags", ["gilet_nage"]], [15.85, "item", ["gilet_nage", 1]], [15.87, "give", "baryonyx"], [15.89, "level", 16], [15.99, "tp", Vector2(80.0, 66.0)], [16.29, "hold", "move_left"], [17.49, "hold", ""], [18.09, "shot", "m08_nage_chenal"], [18.14, "state", null], [18.24, "tp", Vector2(70, 74.8)], [18.29, "calm", 900.0], [19.79, "shot", "m09_page15_banc"], [19.89, "tp", Vector2(56, 46)], [19.94, "calm", 900.0], [21.44, "shot", "m10_voix_porte"], [21.54, "tp", Vector2(26, 40)], [21.59, "calm", 900.0], [23.09, "shot", "m11_ilot_racines"], [23.19, "tp", Vector2(35, 77.2)], [23.24, "calm", 900.0], [24.74, "shot", "m12_foret_noyee"], [24.84, "tp", Vector2(27, 77)], [24.89, "calm", 900.0], [26.39, "shot", "m13_page14"], [26.49, "tp", Vector2(30, 15.6)], [26.54, "calm", 900.0], [28.04, "shot", "m14_temple_parvis"], [28.14, "tp", Vector2(44, 34)], [28.19, "calm", 900.0], [29.69, "shot", "m15_coeur_roseliere"], [29.89, "map", null], [30.89, "shot", "m16_carte"], [30.99, "press", "cancel"], [31.49, "weather", &"mist"], [31.59, "tp", Vector2(100, 70)], [31.64, "calm", 900.0], [37.64, "shot", "m17_brume_debarcadere"], [37.74, "weather", &"rain"], [37.84, "tp", Vector2(56, 46)], [37.89, "calm", 900.0], [42.89, "shot", "m18_pluie_voix"], [42.99, "weather", &"clear"], [43.04, "clock", 22.0], [43.14, "tp", Vector2(99.9, 26)], [43.19, "calm", 900.0], [48.19, "shot", "m19_nuit_grand_ponton"], [48.29, "clock", 11.0], [48.39, "fight", "baryonyx"], [51.59, "shot", "m20_combat"],
+	],
+	# The sunken temple (CARTE-B): the hall and its flooded stairs, the three sluices draining the floods in turn, the galleries, the great hall, a battle.
+	# The sunken temple (CARTE-B): the hall and its flooded stairs, the three sluices draining the floods in turn, the galleries, the great hall, a battle.
+	"temple_tour": [
+		[0.80, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee", "maia_defi_1", "sceau_foret", "maia_defi_2", "meute_revenue", "marais_arrivee", "joss_marais_vu"]], [0.82, "flags", ["gilet_nage", "temple_ouvert", "porte_voix_ouverte", "voix_rencontree"]], [0.84, "give", "baryonyx"], [0.86, "level", 18], [0.88, "clock", 11.0], [0.90, "talk", true], [0.95, "zone", &"temple_englouti"], [2.75, "shot", "t00_entree"], [2.85, "tp", Vector2(16.5, 20.6)], [2.90, "calm", 900.0], [4.40, "shot", "t01_hall_vanne1"], [4.50, "flags", ["temple_vanne_1"]], [5.70, "shot", "t02_crue1_baisse"], [8.20, "shot", "t03_crue1_vide"], [8.30, "tp", Vector2(4.8, 14)], [8.35, "calm", 900.0], [9.85, "shot", "t04_galerie_ouest"], [9.95, "tp", Vector2(5.2, 5.8)], [10.00, "calm", 900.0], [11.50, "shot", "t05_salle_nord_ouest"], [11.60, "flags", ["temple_vanne_2"]], [11.70, "tp", Vector2(25, 20.4)], [11.75, "calm", 900.0], [15.25, "shot", "t06_passage_est_seche"], [15.35, "tp", Vector2(34.6, 15.2)], [15.40, "calm", 900.0], [16.90, "shot", "t07_galerie_est_page12"], [17.00, "tp", Vector2(34.2, 5.8)], [17.05, "calm", 900.0], [18.55, "shot", "t08_salle_nord_est"], [18.65, "tp", Vector2(19.9, 17.2)], [18.75, "calm", 900.0], [19.95, "shot", "t09_escalier_inonde"], [20.05, "flags", ["temple_vanne_3"]], [21.35, "shot", "t10_escalier_baisse"], [23.75, "shot", "t11_escalier_sec"], [23.85, "tp", Vector2(19.9, 10.2)], [23.90, "calm", 900.0], [25.40, "shot", "t12_grande_salle"], [25.50, "fight", "spinosaurus"], [28.70, "shot", "t13_combat"],
+	],
+	# The Marais (CARTE-B): the seam with the Forêt from both sides, page 16 at full moon, Maïa, Roc at night, the Voix behind her opened door, page 13, the temple's door opening.
+	"marais_lieux": [
+		[0.80, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee", "maia_defi_1", "sceau_foret", "maia_defi_2", "meute_revenue", "marais_arrivee", "joss_marais_vu"]], [0.82, "level", 16], [0.84, "clock", 11.0], [0.86, "weather", &"clear"], [0.88, "talk", true], [0.93, "zone", &"foret"], [2.53, "weather", &"clear"], [2.63, "tp", Vector2(5.5, 12.4)], [2.68, "calm", 900.0], [4.18, "shot", "l00_foret_pont_vers_marais"], [4.28, "zone", &"marais"], [5.88, "weather", &"clear"], [5.98, "tp", Vector2(113.5, 70.3)], [6.03, "calm", 900.0], [7.53, "shot", "l01_marais_couture_foret"], [7.63, "flags", ["gilet_nage", "porte_voix_ouverte", "dame_suie_battue", "sceau_marais", "roc_marais_en_vue"]], [7.65, "give", "baryonyx"], [7.67, "level", 16], [7.77, "zone", &"marais"], [9.37, "weather", &"clear"], [9.47, "tp", Vector2(86.4, 8.6)], [9.52, "calm", 900.0], [11.02, "shot", "l02_maia_nord"], [11.12, "tp", Vector2(56.2, 40.6)], [11.17, "calm", 900.0], [12.67, "shot", "l03_voix_rampe"], [12.77, "tp", Vector2(56.6, 38.9)], [12.82, "calm", 900.0], [14.32, "shot", "l04_voix_rocher"], [14.42, "tp", Vector2(29.6, 36.6)], [14.47, "calm", 900.0], [15.97, "shot", "l05_page13_racines"], [16.07, "tp", Vector2(30.1, 13.2)], [16.12, "calm", 900.0], [17.62, "shot", "l06_temple_porte_fermee"], [17.72, "flags", ["temple_ouvert"]], [18.32, "shot", "l07_temple_porte_s_ouvre"], [19.92, "shot", "l08_temple_porte_ouverte"], [20.02, "gset", ["day", 2]], [20.07, "clock", 22.0], [20.12, "weather", &"clear"], [20.22, "tp", Vector2(99.9, 23.2)], [20.27, "calm", 900.0], [23.27, "shot", "l09_nuit_roc_ponton"], [23.32, "weather", &"clear"], [23.42, "tp", Vector2(96.1, 87.6)], [23.47, "calm", 900.0], [26.47, "shot", "l10_pleine_lune_page16"], [26.57, "near", null],
+	],
+	# The Désert Aride (CARTE-C): the seam with the Marais, its places, Brac at the dead end, a sandstorm, the night, its map, a battle; the Carnotaurus, the door open, Maïa.
+	# The Désert Aride (CARTE-C): the seam with the Marais, its places, Brac at the dead end, a sandstorm, the night, its map, a battle; the Carnotaurus, the door open, Maïa.
+	# The Désert Aride (CARTE-C): the seam with the Marais, its places, Brac at the dead end, a sandstorm, the night, its map, a battle; the Carnotaurus, the door open, Maïa.
+	# The Désert Aride (CARTE-C): the seam with the Marais, its places, Brac at the dead end, a sandstorm, the night, its map, a battle; the Carnotaurus, the door open, Maïa.
+	"desert_tour": [
+		[0.80, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee", "maia_defi_1", "sceau_foret", "maia_defi_2", "meute_revenue", "marais_arrivee", "joss_marais_vu", "gilet_nage", "sceau_marais", "coeur_1", "maia_defi_3", "desert_arrivee", "sirocco_vue", "brac_desert_vu", "poursuite_1_ok", "poursuite_2_ok", "poursuite_3_ok"]], [0.82, "level", 24], [0.84, "give", "pinacosaurus"], [0.86, "level", 24], [0.88, "clock", 11.0], [0.90, "weather", &"clear"], [0.92, "talk", true], [1.02, "zone", &"marais"], [2.62, "weather", &"clear"], [2.72, "tp", Vector2(86, 4.5)], [2.77, "calm", 900.0], [4.27, "shot", "d00_marais_vers_desert"], [4.37, "zone", &"desert"], [5.97, "weather", &"clear"], [6.07, "tp", Vector2(102, 95)], [6.12, "calm", 900.0], [7.62, "shot", "d01_entree"], [7.72, "tp", Vector2(101, 85)], [7.77, "calm", 900.0], [9.27, "shot", "d02_canyon_entree"], [9.37, "tp", Vector2(87.5, 71.5)], [9.42, "calm", 900.0], [10.92, "shot", "d03_sirocco"], [11.02, "tp", Vector2(74.5, 75)], [11.07, "calm", 900.0], [12.57, "shot", "d04_cimetiere_crane"], [12.67, "tp", Vector2(65, 80)], [12.72, "calm", 900.0], [14.22, "shot", "d05_squelette_arche"], [14.32, "tp", Vector2(79, 93.2)], [14.37, "calm", 900.0], [15.87, "shot", "d06_lac_de_sel"], [15.97, "tp", Vector2(28.5, 63)], [16.02, "calm", 900.0], [17.52, "shot", "d07_eboulis"], [17.62, "tp", Vector2(21.5, 37.5)], [17.67, "calm", 900.0], [19.17, "shot", "d08_canyon_mure"], [19.27, "tp", Vector2(66, 44)], [19.32, "calm", 900.0], [20.82, "shot", "d09_erg"], [20.92, "tp", Vector2(60.5, 11.5)], [20.97, "calm", 900.0], [22.47, "shot", "d10_place_porte"], [22.57, "tp", Vector2(41, 13.6)], [22.62, "calm", 900.0], [24.12, "shot", "d11_canyon_vents"], [24.22, "tp", Vector2(15, 14.8)], [24.27, "calm", 900.0], [25.77, "shot", "d12_cul_de_sac_brac"], [25.87, "tp", Vector2(98, 37.5)], [25.92, "calm", 900.0], [27.42, "shot", "d13_oasis"], [27.52, "tp", Vector2(103, 16)], [27.57, "calm", 900.0], [29.07, "shot", "d14_grande_dune"], [29.17, "tp", Vector2(100, 5)], [29.22, "calm", 900.0], [30.72, "shot", "d15_sortie_cote"], [30.92, "map", null], [31.92, "shot", "d16_carte"], [32.02, "press", "cancel"], [32.32, "weather", &"sandstorm"], [32.42, "tp", Vector2(74.5, 75)], [32.47, "calm", 900.0], [40.47, "shot", "d17_tempete_cimetiere"], [40.57, "tp", Vector2(41, 13.6)], [40.62, "calm", 900.0], [42.62, "shot", "d18_tempete_canyon"], [42.72, "weather", &"clear"], [42.77, "clock", 22.0], [42.87, "tp", Vector2(60.5, 11.5)], [42.92, "calm", 900.0], [47.92, "shot", "d19_nuit_place"], [48.02, "tp", Vector2(98, 37.5)], [48.07, "calm", 900.0], [50.07, "shot", "d20_nuit_oasis"], [50.17, "clock", 11.0], [50.27, "fight", "pinacosaurus"], [53.47, "shot", "d21_combat"], [53.57, "auto", true], [67.57, "auto", false], [68.07, "flags", ["brac_desert_battu"]], [68.17, "zone", &"desert"], [69.77, "weather", &"clear"], [69.87, "tp", Vector2(16.5, 12.6)], [69.92, "calm", 900.0], [71.42, "shot", "d22_carnotaurus_cul_de_sac"], [71.52, "flags", ["carnotaurus_apaise", "sanctuaire_ouvert", "sceau_desert"]], [71.62, "zone", &"desert"], [73.22, "weather", &"clear"], [73.32, "tp", Vector2(60.5, 9)], [73.37, "calm", 900.0], [74.87, "shot", "d23_porte_ouverte_gardien"], [74.97, "tp", Vector2(94, 34)], [75.02, "calm", 900.0], [76.52, "shot", "d24_maia_oasis"], [76.62, "state", null],
+	],
+	# The sanctuary des Vents (CARTE-C): the corridor, the round hall, the altar, page 18, its map, the night, the way back out to the door.
+	# The sanctuary des Vents (CARTE-C): the corridor, the round hall, the altar, page 18, its map, the night, the way back out to the door.
+	# The sanctuary des Vents (CARTE-C): the corridor, the round hall, the altar, page 18, its map, the night, the way back out to the door.
+	# The sanctuary des Vents (CARTE-C): the corridor, the round hall, the altar, page 18, its map, the night, the way back out to the door.
+	"sanctuaire_tour": [
+		[0.80, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee", "maia_defi_1", "sceau_foret", "maia_defi_2", "meute_revenue", "marais_arrivee", "joss_marais_vu", "gilet_nage", "sceau_marais", "coeur_1", "maia_defi_3", "desert_arrivee", "sirocco_vue", "brac_desert_vu", "poursuite_1_ok", "poursuite_2_ok", "poursuite_3_ok"]], [0.82, "flags", ["brac_desert_battu", "carnotaurus_apaise", "sanctuaire_ouvert", "sceau_desert", "sanctuaire_entre"]], [0.84, "level", 24], [0.86, "clock", 11.0], [0.88, "talk", true], [0.98, "zone", &"sanctuaire_vents"], [2.58, "weather", &"clear"], [2.68, "shot", "s00_arrivee"], [2.78, "tp", Vector2(15.5, 19)], [2.83, "calm", 900.0], [4.33, "shot", "s01_couloir"], [4.43, "tp", Vector2(15.5, 14)], [4.48, "calm", 900.0], [5.98, "shot", "s02_salle"], [6.08, "tp", Vector2(15.5, 10.5)], [6.13, "calm", 900.0], [7.63, "shot", "s03_autel"], [7.73, "tp", Vector2(21, 7.5)], [7.78, "calm", 900.0], [9.28, "shot", "s04_page18"], [9.48, "map", null], [10.48, "shot", "s05_carte"], [10.58, "press", "cancel"], [10.68, "clock", 22.0], [10.78, "tp", Vector2(15.5, 13)], [10.83, "calm", 900.0], [14.83, "shot", "s06_nuit"], [14.93, "clock", 11.0], [15.03, "tp", Vector2(15.5, 22.4)], [15.13, "hold", "move_down"], [16.53, "hold", ""], [18.33, "weather", &"clear"], [18.83, "shot", "s07_retour_porte"], [18.93, "state", null],
+	],
 	"perf": [
 		[0.5, "vsync", false],
 		[4.0, "perf", "arrivee"], [4.1, "tp", Vector2(60.0, 47.0)], [7.0, "perf", "carrefour"],
@@ -487,6 +598,22 @@ var _talk_timer := 0.0
 var _auto_timer := 0.0
 var _quality_before := -1
 var _pick := -1
+## The live demo (command "demo"): the scenario's own clock, which stands still while it is
+## paused (P) or while a scene plays ("wait_idle"); N hurries the current scene and goes on to
+## the next part ("segment"); the lines stay on screen long enough to be read.
+var _demo := false
+var _sched := 0.0
+var _paused := false
+var _wait := {}
+var _turbo := false
+var _line_seen := ""
+var _line_at := 0.0
+var _menu_at := -1.0
+var _fast_battles := false
+var _fast_engine: Object = null
+var _keys := {}
+var _pause_layer: CanvasLayer
+var _rush := false   # (command line « rush=1 »: the demo at full speed, to check it)
 
 
 func _initialize() -> void:
@@ -496,7 +623,13 @@ func _initialize() -> void:
 			_out = arg.substr(4)
 		elif arg.begins_with("scenario="):
 			scenario = arg.substr(9)
-	_steps = SCENARIOS[scenario]
+		elif arg == "rush=1":
+			_rush = true
+		elif arg.begins_with("scenario_file="):   # a scenario of its own file: const STEPS := [...]
+			scenario = arg.substr(14)
+	_steps = SCENARIOS[scenario] if SCENARIOS.has(scenario) else (load(scenario) as Script).get_script_constant_map()["STEPS"]
+	# Never over the player's game: the tool saves in a file of its own.
+	root.get_node("Save").set("path", "user://capture_save.json")
 	DirAccess.make_dir_recursive_absolute(_out)
 	if scenario == "title":   # the real main scene, as the game starts
 		change_scene_to_file(ProjectSettings.get_setting("application/run/main_scene"))
@@ -517,6 +650,10 @@ func _initialize() -> void:
 
 func _process(delta: float) -> bool:
 	_time += delta
+	if _demo:
+		_demo_keys()
+		if _paused:
+			return false
 	if _pick >= 0:
 		var buttons := root.get_node("Dialogue").find_children("*", "Button", true, false)
 		if buttons.size() > _pick:
@@ -534,10 +671,14 @@ func _process(delta: float) -> bool:
 			print("» ", box.text)
 	if _auto:
 		_auto_timer += delta
-		if _auto_timer > 0.35:
+		if _auto_timer > (0.1 if _turbo or _rush else 0.35):
 			_auto_timer = 0.0
 			_auto_step()
-	while _step < _steps.size() and _time >= _steps[_step][0]:
+	if _wait.is_empty():
+		_sched += delta
+	else:
+		_check_wait(delta)
+	while _step < _steps.size() and _sched >= _steps[_step][0] and _wait.is_empty():
 		_run(_steps[_step][1], _steps[_step][2])
 		_step += 1
 	if _step >= _steps.size():
@@ -609,6 +750,19 @@ func _run(command: String, arg: Variant) -> void:
 				print("objectif : ", o["text"])
 		"motion":
 			load("res://world/view3d/sprite_motion.gd").set("enabled", arg)
+		"demo":   # the live demo mode (see _demo): its help line, its pace
+			_demo = arg
+			_demo_help()
+		"segment":   # a part of the demo: [chapter, title], shown a few seconds
+			_segment(arg[0], arg[1])
+		"wait_idle":   # the demo waits for the scene to be over: [at least, at most] seconds
+			_wait = {"since": _time, "min": float(arg[0]), "max": float(arg[1]), "idle": 0.0}
+		"interact_now":   # Chloé talks to what is in front of her (not a simulated key: never lost)
+			current_scene.get("player").call("_interact")
+		"fast_battles":   # the demo's battles are short: the foe falls (or calms) at once
+			_fast_battles = arg
+		"give_named":   # [species, name, level]: a dino of the party with its own name
+			root.get_node("Game").call("add_caught", load("res://game/dino.gd").create(StringName(arg[0]), arg[2], arg[1]))
 		"banner":   # big text at the top of the screen (a live demo)
 			var old := root.get_node_or_null("DemoBanner")
 			if old:
@@ -666,6 +820,7 @@ func _run(command: String, arg: Variant) -> void:
 		"level":
 			for d in root.get_node("Game").get("party"):
 				d.level = arg
+				d.moves = d.call("_moves_at_level")   # the moves of that level, as in play
 				d.heal()
 		"zone":
 			current_scene.call("goto_zone", arg)
@@ -837,15 +992,209 @@ func _map_screen() -> Node:
 
 
 ## Plays a battle by itself: first move when the menu is shown, otherwise taps.
+var _battle_said := ""
+
+
+## The move a player would pick: the strongest against the foe, among those left.
+func _best_move(engine) -> int:
+	var moves_db = load("res://data/moves_db.gd")
+	var best := 0
+	var best_power := -1.0
+	var mine: Array = engine.player().moves
+	for k in mine.size():
+		var mv: Dictionary = moves_db.move(mine[k]["id"])
+		var power: float = mv["power"] * moves_db.effectiveness(mv["type"], engine.foe.type())
+		if mine[k]["pp"] > 0 and power > best_power:
+			best_power = power
+			best = k
+	return best
+
+
 func _auto_step() -> void:
+	var fast := _turbo or _rush
 	for n in current_scene.get_children():
 		if n.has_signal("_action_chosen"):
+			var said: String = n.get("_message").text
+			if said != _battle_said and said != "":   # the battle's messages, in the log
+				_battle_said = said
+				print("⚔ ", said)
+			if _fast_battles:
+				_shorten(n.get("engine"))
 			if n.get("_menu").visible:
+				if _demo and not fast:   # a moment to see the menu
+					if _menu_at < 0.0:
+						_menu_at = _time
+					if _time - _menu_at < 0.8:
+						return
+				_menu_at = -1.0
 				# A corrupted foe: calm it; otherwise the first move.
 				var calm: bool = n.get("_calm_button").visible
-				n.emit_signal("_action_chosen", {"type": "calm"} if calm else {"type": "move", "index": 0})
+				n.emit_signal("_action_chosen", {"type": "calm"} if calm else {"type": "move", "index": _best_move(n.get("engine"))})
 				return
-	if root.get_node("Dialogue").get("_choosing"):
+			if _demo:   # the battle's lines move on by themselves
+				if fast:
+					_run("press", "interact")
+				return
+	var dialogue := root.get_node("Dialogue")
+	if dialogue.get("_choosing"):
+		if _demo and not fast and not _read_long_enough("<choix>", 1.8):
+			return
 		_run("press", "ui_accept")
 		return
+	if _demo:   # only the demo's steps start the scenes; here, the lines go on when read
+		if dialogue.get("active") and (fast or _page_read(dialogue)):
+			_run("press", "interact")
+		return
 	_run("press", "interact")
+
+
+## The page on screen has been there long enough to be read (a letter: a little longer).
+func _page_read(dialogue: Node) -> bool:
+	if dialogue.get("_in_letter"):
+		return _read_long_enough("<lettre>", 8.0)
+	var box: RichTextLabel = dialogue.get("_text")
+	if box == null or box.visible_characters != -1:
+		return false   # still being typed
+	var text := box.get_parsed_text()
+	return _read_long_enough(text, clampf(1.2 + text.length() * 0.032, 1.8, 6.0))
+
+
+func _read_long_enough(what: String, seconds: float) -> bool:
+	if what != _line_seen:
+		_line_seen = what
+		_line_at = _time
+		return false
+	return _time - _line_at >= seconds
+
+
+## A short battle for the demo: the foe at 1 PV, or a corrupted one nearly calm.
+func _shorten(engine: Object) -> void:
+	if engine == null or engine == _fast_engine:
+		return
+	_fast_engine = engine
+	var foe = engine.get("foe")
+	if foe.get("corrupted"):
+		engine.set("calm", int(engine.get("calm_full")) - 5)
+	else:
+		foe.set("hp", 1)
+
+
+## Something is playing: a line, a question, a battle, a zone change, Chloé held by a scene.
+func _scene_busy() -> bool:
+	if root.get_node("Dialogue").get("active"):
+		return true
+	if int(load("res://story/story.gd").get("playing")) > 0:   # a scene of the story is still going on
+		return true
+	for n in current_scene.get_children():
+		if n.has_signal("_action_chosen"):
+			return true
+	var player = current_scene.get("player")
+	return (player != null and player.get("busy")) or current_scene.get("_changing_zone")
+
+
+func _check_wait(delta: float) -> void:
+	_wait["idle"] = 0.0 if _scene_busy() else float(_wait["idle"]) + delta
+	var waited := _time - float(_wait["since"])
+	if (waited >= float(_wait["min"]) and float(_wait["idle"]) >= 1.2) or waited >= float(_wait["max"]):
+		_wait = {}
+		if _turbo:
+			_turbo = false
+			_next_part()
+
+
+## N: the current scene goes by as fast as it can, then the next part begins.
+func _skip_part() -> void:
+	if _wait.is_empty():
+		_next_part()
+	else:
+		_turbo = true
+
+
+func _next_part() -> void:
+	for j in range(_step, _steps.size()):
+		if _steps[j][1] == "segment":
+			_step = j
+			_sched = float(_steps[j][0])
+			return
+
+
+func _demo_keys() -> void:
+	for key: Key in [KEY_P, KEY_N]:
+		var down := Input.is_physical_key_pressed(key)
+		if down and not _keys.get(key, false):
+			if key == KEY_P:
+				_toggle_pause()
+			elif not _paused:
+				_skip_part()
+		_keys[key] = down
+
+
+func _toggle_pause() -> void:
+	_paused = not _paused
+	if _held != "":   # Chloé stops walking during the pause, and goes on afterwards
+		if _paused:
+			Input.action_release(_held)
+		else:
+			Input.action_press(_held)
+	if _pause_layer == null:
+		_pause_layer = CanvasLayer.new()
+		_pause_layer.layer = 96
+		var dim := ColorRect.new()
+		dim.color = Color(0, 0, 0, 0.35)
+		dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_pause_layer.add_child(dim)
+		var l := _demo_label("⏸  PAUSE\nP pour reprendre · N pour passer à la suite", 40)
+		l.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+		l.grow_horizontal = Control.GROW_DIRECTION_BOTH
+		l.grow_vertical = Control.GROW_DIRECTION_BOTH
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_pause_layer.add_child(l)
+		root.add_child(_pause_layer)
+	_pause_layer.visible = _paused
+
+
+func _demo_help() -> void:
+	var layer := CanvasLayer.new()
+	layer.name = "DemoHelp"
+	layer.layer = 95
+	var l := _demo_label("DÉMO   ·   P : pause   ·   N : étape suivante   ·   Espace : réplique suivante", 17)
+	l.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	l.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	l.offset_top = 6
+	layer.add_child(l)
+	root.add_child(layer)
+
+
+## A part's title: the chapter, then what it shows; it fades after a few seconds.
+func _segment(chapter: String, title: String) -> void:
+	print("— ", chapter, " · ", title)
+	var old := root.get_node_or_null("DemoBanner")
+	if old:
+		old.queue_free()
+	var layer := CanvasLayer.new()
+	layer.name = "DemoBanner"
+	layer.layer = 90
+	var box := VBoxContainer.new()
+	box.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	box.offset_top = 120
+	box.add_child(_demo_label(chapter, 24))
+	box.add_child(_demo_label(title, 36))
+	for l: Label in box.get_children():
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	layer.add_child(box)
+	root.add_child(layer)
+	var fade := box.create_tween()
+	fade.tween_interval(4.5)
+	fade.tween_property(box, "modulate:a", 0.0, 1.0)
+
+
+func _demo_label(text: String, size: int) -> Label:
+	var l := Label.new()
+	l.text = text
+	l.add_theme_font_size_override("font_size", size)
+	l.add_theme_color_override("font_color", Color(1, 0.9, 0.6))
+	l.add_theme_color_override("font_outline_color", Color(0.1, 0.07, 0.04))
+	l.add_theme_constant_override("outline_size", 10)
+	return l

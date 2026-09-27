@@ -22,6 +22,24 @@ const PATHS := {
 	&"allosaurus": "res://data/species/allosaurus.tres",
 	&"utahraptor": "res://data/species/utahraptor.tres",
 	&"griffe_grise": "res://data/species/griffe_grise.tres",
+	# Marais Brumeux
+	&"iguanodon": "res://data/species/iguanodon.tres",
+	&"corythosaurus": "res://data/species/corythosaurus.tres",
+	&"baryonyx": "res://data/species/baryonyx.tres",
+	&"koolasuchus": "res://data/species/koolasuchus.tres",
+	&"therizinosaurus": "res://data/species/therizinosaurus.tres",
+	&"suchomimus": "res://data/species/suchomimus.tres",
+	&"voix_du_marais": "res://data/species/voix_du_marais.tres",
+	&"spinosaurus": "res://data/species/spinosaurus.tres",
+	# Désert Aride
+	&"oviraptor": "res://data/species/oviraptor.tres",
+	&"pinacosaurus": "res://data/species/pinacosaurus.tres",
+	&"stygimoloch": "res://data/species/stygimoloch.tres",
+	&"ouranosaurus": "res://data/species/ouranosaurus.tres",
+	&"velociraptor_sables": "res://data/species/velociraptor_sables.tres",
+	&"majungasaurus": "res://data/species/majungasaurus.tres",
+	&"vieux_rempart": "res://data/species/vieux_rempart.tres",
+	&"carnotaurus": "res://data/species/carnotaurus.tres",
 }
 
 static var _cache: Dictionary = {}

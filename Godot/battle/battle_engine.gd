@@ -6,12 +6,27 @@ extends RefCounted
 ## on their own and the animations can change without touching them.
 ##
 ## Events: {"type": "text"|"move"|"miss"|"damage"|"heal"|"status"|"stat"|"faint"|"catch"|
-##          "run"|"switch"|"xp"|"level"|"learn"|"calm"|"calmed"|"end", …} — most carry a "text".
+##          "run"|"switch"|"xp"|"level"|"learn"|"calm"|"calmed"|"bond"|"bond_hold"|"end", …}
+##          — most carry a "text".
 ##
 ## A corrupted foe (Dino.corrupted, black amber) cannot be caught nor knocked out: the fury
 ## keeps it standing at 1 PV. It is calmed instead (Apaiser): each calm action that works
 ## fills its calm gauge (more with a dino of its own family, or when it is worn out); an
-## attack empties some of it. Full: the veins fade, the battle ends ("calmed").
+## attack empties some of it. Full: the veins fade, the battle ends ("calmed"). Calming is
+## always a way out, even for a young player: each refusal makes the next try likelier
+## (CALM_RETRY_BONUS), the calmer it gets, the softer it hits (CALM_SOFTENS), and while Chloé
+## speaks to it, it hesitates: that turn it hits softer still (CALM_HESITATES). Tiring it
+## first also helps, as the lines say: a worn foe listens more and calms faster (worn bonus),
+## and a hit only frightens it a little (CALM_LOST_ON_HIT).
+##
+## The Lien (Dino.bond) of the dino in battle helps, never blocks: each heart makes a calm
+## action likelier to work and worth more calm; at MAX_BOND hearts, the dino holds on at 1 PV
+## once per battle ("bond_hold"). A battle won (or a foe calmed) brings the dinos that fought
+## a little closer (Game.grow_bond, "bond" when a heart is gained).
+##
+## Rules (the third argument; BattleScene passes them): "long_calm": true for a deep
+## corruption, a gauge LONG_CALM_FACTOR times as long, where Chloé's own hatchling (species
+## "starter") stands between her and the foe: more calm per try (CALM_STARTER_BONUS).
 
 const STATUS_TURNS := {"saigne": 0, "etourdi": 1, "peur": 3}
 const STAT_NAMES := {"atk": "L'attaque", "def": "La défense", "spd": "La vitesse"}
@@ -21,28 +36,58 @@ var active := 0
 var foe: Dino
 var over := false
 var result := ""          # "win", "lose", "run", "catch", "calmed"
-## Calm of a corrupted foe, 0 to CALM_FULL.
+## Calm of a corrupted foe, 0 to `calm_full`.
 var calm := 0
+## The calm needed to free the foe: CALM_FULL, times LONG_CALM_FACTOR in a "long_calm" battle.
+var calm_full := CALM_FULL
+## A deep corruption (rule "long_calm"): see the header.
+var long_calm := false
+## Species of Chloé's hatchling (rule "starter"; &"" when unknown).
+var starter: StringName = &""
+## Who the foe belongs to (rule "trainer": "" for a wild dino), for its name in the lines.
+var trainer := ""
 const CALM_FULL := 100
 const CALM_STEP := 30        # a calm action that works
 const CALM_KIN_BONUS := 15   # …by a dino of the foe's family
-const CALM_LOST_ON_HIT := 12 # an attack frightens it again
+const CALM_LOST_ON_HIT := 5  # an attack frightens it again (a little)
 const CALM_BASE_CHANCE := 0.55
+const CALM_MAX_CHANCE := 0.95
+const CALM_BOND_CHANCE := 0.05   # per heart of the calming dino's Lien
+const CALM_BOND_STEP := 3        # calm per heart
+const LONG_CALM_FACTOR := 1.6
+## Worn out, it calms faster: up to this much more calm per try, at 1 PV.
+const CALM_WORN_STEP := 20
+## While Chloé speaks to it, its blow that turn is this much softer.
+const CALM_HESITATES := 0.45
+const CALM_STARTER_BONUS := 15   # Chloé's hatchling, in a long calm
+## A corrupted foe calming down hits softer: its blows lose up to this share (gauge full).
+const CALM_SOFTENS := 0.5
+## Each calm action refused in a row makes the next one likelier (it heard her all the same).
+const CALM_RETRY_BONUS := 0.15
 var stages := {"player": {"atk": 0, "def": 0, "spd": 0}, "foe": {"atk": 0, "def": 0, "spd": 0}}
 var rng := RandomNumberGenerator.new()
 
 var _escape_tries := 0
 var _told_fury := false
+var _told_starter := false
+## Calm actions refused since the last one that worked.
+var _calm_refusals := 0
+var _calming := false   # Chloé speaks to the corrupted foe this turn: it hesitates
 var _fought: Array[Dino] = []
+## The dinos of the party that already held on at 1 PV this battle (Lien at MAX_BOND).
+var _endured: Array[Dino] = []
 
 
-func _init(player_team: Array[Dino], wild: Dino) -> void:
+func _init(player_team: Array[Dino], wild: Dino, rules := {}) -> void:
 	team = player_team
 	foe = wild
 	active = _first_able()
 	_fought.append(team[active])
-	if foe.corrupted:   # the black amber drives it: stronger
-		stages["foe"]["atk"] = 1
+	long_calm = rules.get("long_calm", false)
+	starter = StringName(rules.get("starter", &""))
+	trainer = String(rules.get("trainer", ""))
+	if long_calm:
+		calm_full = roundi(CALM_FULL * LONG_CALM_FACTOR)
 
 
 func player() -> Dino:
@@ -53,10 +98,24 @@ func dino(side: String) -> Dino:
 	return player() if side == "player" else foe
 
 
+## How the lines call a fighter: Chloé's by name; a trainer's by its name (Caillou), or
+## « le Dilophosaurus de Firmin » when it has none; an Alpha or an Ancient by its title
+## (« le Tricératops Alpha », « le Spinosaure Ancestral »); any other « le … sauvage/corrompu ».
 func name_of(side: String) -> String:
 	if side == "player":
 		return player().nickname
-	return French.le("%s %s" % [foe.species_name(), "corrompu" if foe.corrupted else "sauvage"])
+	var named := foe.nickname != "" and foe.nickname != foe.species().display_name
+	if trainer != "":
+		# « Sbire à la lanterne » is who he is, not his name: « du sbire à la lanterne ».
+		var owner := "le s" + trainer.substr(1) if trainer.begins_with("Sbire") else trainer
+		return foe.nickname if named else "%s %s" % [French.le(foe.species_name()), French.de(owner)]
+	if foe.corrupted:
+		return French.le(foe.species_name() + " corrompu")
+	if named:
+		return French.le(foe.nickname)
+	if foe.species().rarity in ["epic", "legendary"]:
+		return French.le(foe.species_name())
+	return French.le(foe.species_name() + " sauvage")
 
 
 ## One turn with the player's choice: {"type": "move", "index": i} | {"type": "catch"} |
@@ -65,6 +124,7 @@ func turn(action: Dictionary) -> Array:
 	var ev: Array = []
 	if over:
 		return ev
+	_calming = false
 	var foe_move := _choose_foe_move()
 	match action["type"]:
 		"run":
@@ -74,6 +134,7 @@ func turn(action: Dictionary) -> Array:
 			if _try_catch(ev):
 				return ev
 		"calm":
+			_calming = true
 			if _try_calm(ev):
 				return ev
 	var order: Array = []
@@ -138,7 +199,7 @@ func _use_move(side: String, index: int, ev: Array) -> void:
 		return
 	if move["power"] > 0:
 		var hit := _damage(side, other, move)
-		target.hp = maxi(_lowest_hp(other), target.hp - hit["damage"])
+		var held := _hurt(other, hit["damage"])
 		ev.append({"type": "damage", "side": other, "amount": hit["damage"], "hp": target.hp, "max_hp": target.max_hp(),
 			"crit": hit["crit"], "eff": hit["eff"], "move_type": move["type"]})
 		if hit["crit"]:
@@ -147,6 +208,8 @@ func _use_move(side: String, index: int, ev: Array) -> void:
 			ev.append({"type": "text", "text": "C'est super efficace !"})
 		elif hit["eff"] < 1.0:
 			ev.append({"type": "text", "text": "Ce n'est pas très efficace…"})
+		if held:
+			_tell_held_on(ev)
 		if other == "foe" and foe.corrupted:
 			_frighten(ev)
 	var fx: Dictionary = move.get("effect", {})
@@ -178,7 +241,10 @@ func _damage(side: String, other: String, move: Dictionary) -> Dictionary:
 	var stab := 1.25 if move["type"] == user.type() else 1.0
 	var eff := MovesDB.effectiveness(move["type"], target.type())
 	var crit := rng.randf() < (1.0 / 6.0 if move.get("crit", false) else 1.0 / 16.0)
-	var total := maxi(1, int(dmg * stab * eff * (1.5 if crit else 1.0) * (0.85 + rng.randf() * 0.15)))
+	var soft := 1.0
+	if side == "foe" and foe.corrupted:
+		soft = (1.0 - CALM_SOFTENS * calm / float(calm_full)) * (1.0 - CALM_HESITATES if _calming else 1.0)
+	var total := maxi(1, int(dmg * stab * eff * soft * (1.5 if crit else 1.0) * (0.85 + rng.randf() * 0.15)))
 	return {"damage": total, "crit": crit, "eff": eff}
 
 
@@ -200,9 +266,11 @@ func _end_of_turn(ev: Array) -> void:
 			continue
 		if d.status == "saigne":
 			var loss := maxi(1, d.max_hp() / 12)
-			d.hp = maxi(_lowest_hp(side), d.hp - loss)
+			var held := _hurt(side, loss)
 			ev.append({"type": "damage", "side": side, "amount": loss, "hp": d.hp, "max_hp": d.max_hp(), "bleed": true,
 				"crit": false, "eff": 1.0, "text": "%s perd du sang…" % _cap(name_of(side))})
+			if held:
+				_tell_held_on(ev)
 		elif d.status == "peur":
 			d.status_turns -= 1
 			if d.status_turns <= 0:
@@ -233,7 +301,8 @@ func _check_faints(ev: Array) -> bool:
 	return false
 
 
-## XP for the dinos that fought; a share for the rest of the party (Game.XP_SHARE).
+## XP for the dinos that fought; a share for the rest of the party (Game.XP_SHARE). Those
+## that fought and are still standing grow closer to Chloé (Game.BOND_WIN bond points).
 func _give_xp(ev: Array) -> void:
 	var reward := foe.xp_reward()
 	for d in team:
@@ -251,11 +320,30 @@ func _give_xp(ev: Array) -> void:
 				if e["replaced"] != &"":
 					text = "%s oublie %s et apprend %s !" % [d.nickname, MovesDB.move(e["replaced"])["name"], name]
 				ev.append({"type": "learn", "dino": d, "text": text})
+		if _fought.has(d) and Game.grow_bond(d, Game.BOND_WIN) > 0:
+			ev.append({"type": "bond", "dino": d, "text": "Le lien entre Chloé et %s grandit ! (%d ♥)" % [d.nickname, d.bond]})
 
 
 ## A corrupted foe never goes below 1 PV: only calming it ends the battle.
 func _lowest_hp(side: String) -> int:
 	return 1 if side == "foe" and foe.corrupted else 0
+
+
+## Takes `amount` PV from `side`. A dino of the party with a full Lien holds on at 1 PV
+## instead of falling, once per battle: returns true when it just did.
+func _hurt(side: String, amount: int) -> bool:
+	var d := dino(side)
+	var hp := maxi(_lowest_hp(side), d.hp - amount)
+	var holds: bool = side == "player" and hp <= 0 and d.hp > 1 and d.bond >= Dino.MAX_BOND and not _endured.has(d)
+	if holds:
+		_endured.append(d)
+		hp = 1
+	d.hp = hp
+	return holds
+
+
+func _tell_held_on(ev: Array) -> void:
+	ev.append({"type": "bond_hold", "side": "player", "text": "%s tient bon, pour Chloé ! Le Lien le garde debout." % player().nickname})
 
 
 ## Hit, it is frightened again: some calm is lost (and, the first time it holds on at 1 PV,
@@ -270,19 +358,27 @@ func _frighten(ev: Array) -> void:
 
 
 ## Speaking softly to it (the dino in battle, then Chloé). Works more often when it is worn
-## out; a dino of its own family calms it faster.
+## out and with a strong Lien; a dino of its own family, a strong Lien, and in a long calm
+## Chloé's own hatchling, calm it faster.
 func _try_calm(ev: Array) -> bool:
-	var worn := 1.0 - float(foe.hp) / foe.max_hp()
-	var chance := clampf(CALM_BASE_CHANCE + worn * 0.4, 0.0, 0.95)
-	var kin := player().species().family == foe.species().family
-	ev.append({"type": "text", "text": "%s s'approche doucement %s, et Chloé lui parle tout bas…" % [player().nickname, French.de(French.le(foe.species_name() + " corrompu"))]})
-	if rng.randf() >= chance:
-		ev.append({"type": "text", "text": "%s gronde et refuse d'écouter." % _cap(name_of("foe"))})
+	var helper: bool = starter_helps()
+	var foe_name: String = French.le(foe.species_name() + " corrompu")
+	if helper and not _told_starter:
+		_told_starter = true
+		ev.append({"type": "text", "text": "%s se met entre Chloé et %s…" % [player().nickname, foe_name]})
+	ev.append({"type": "text", "text": "%s s'approche doucement %s, et Chloé lui parle tout bas…" % [player().nickname, French.de(foe_name)]})
+	if rng.randf() >= calm_chance():
+		_calm_refusals += 1
+		ev.append({"type": "text", "text": "%s gronde et refuse d'écouter… mais il l'a entendue." % _cap(name_of("foe"))})
 		return false
-	calm = mini(CALM_FULL, calm + CALM_STEP + (CALM_KIN_BONUS if kin else 0))
+	_calm_refusals = 0
+	var kin := player().species().family == foe.species().family
+	calm = mini(calm_full, calm + calm_step())
 	var how := "Il reconnaît un dino de sa famille : il s'apaise vite !" if kin else "Il écoute… ses veines violettes pâlissent un peu."
+	if helper:
+		how = "Il fixe %s, qui ne recule pas… ses veines violettes pâlissent !" % player().nickname
 	ev.append({"type": "calm", "calm": calm, "text": how})
-	if calm < CALM_FULL:
+	if calm < calm_full:
 		return false
 	ev.append({"type": "calmed", "text": "Les veines violettes s'effacent. %s est apaisé !" % _cap(foe.species_name())})
 	foe.corrupted = false
@@ -290,6 +386,30 @@ func _try_calm(ev: Array) -> bool:
 	_give_xp(ev)
 	_finish("calmed", ev)
 	return true
+
+
+## Chance that a calm action by the dino in battle works: more when the foe is worn out,
+## more with each heart of its Lien, more after each refusal in a row.
+func calm_chance() -> float:
+	var worn := 1.0 - float(foe.hp) / foe.max_hp()
+	return clampf(CALM_BASE_CHANCE + worn * 0.4 + player().bond * CALM_BOND_CHANCE + _calm_refusals * CALM_RETRY_BONUS,
+		0.0, CALM_MAX_CHANCE)
+
+
+## Calm brought by a calm action that works (of `calm_full`).
+func calm_step() -> int:
+	var worn := 1.0 - float(foe.hp) / foe.max_hp()
+	var step: int = CALM_STEP + player().bond * CALM_BOND_STEP + roundi(worn * CALM_WORN_STEP)
+	if player().species().family == foe.species().family:
+		step += CALM_KIN_BONUS
+	if starter_helps():
+		step += CALM_STARTER_BONUS
+	return step
+
+
+## In a long calm, the dino in battle is Chloé's own hatchling: it helps her calm the foe.
+func starter_helps() -> bool:
+	return long_calm and starter != &"" and player().species().id == starter
 
 
 func _try_run(ev: Array) -> bool:

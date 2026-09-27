@@ -15,11 +15,16 @@
 //           the stream from the northern spring to the Mare aux libellules, page 7 (68, 52);
 //   north   the Clairière (page 9, 46, 24); north-west the Clairière aux fougères géantes
 //           (24, 18, the Alpha's, chapter 2 part 2); north-east the Clairières rocheuses;
-//   south   the Haute futaie: a plateau 2.4 m up (ledges), three ramps, page 8 (70, 82);
-//   west    the Cœur de la forêt around the Mare du cœur; the rock face of the poachers' camp
-//           (10, 46, chapter 2 part 2: nothing there yet); south-west, in a wooded upland, the
-//           hidden ravine of Griffe-Grise (22, 80), reached by a faint trail.
-//   Reserved for later: the bridge to the Marais (2, 12, north-west border).
+//   south   the Haute futaie: a plateau 2.4 m up (ledges), three ramps, page 8 (70, 82); north
+//           of its trail, the Masque's rock and footbridge between two giant trees (56, 74);
+//   west    the Cœur de la forêt around the Mare du cœur; the rock face of the poachers' camp:
+//           a notch in the south face at the back of its bay (11-12, 39-40), the cracked wall
+//           in it, the way to the camp
+//           (zone camp_ombre, up on the rock: the ridge's west end is as high as the camp);
+//           south-west, in a wooded upland, the hidden ravine of Griffe-Grise (22, 80),
+//           reached by a faint trail.
+//   north-west  the bridge to the Marais over a marshy pond (0-5, 11-12), its trail from the
+//           Alpha's clearing.
 import sharp from "sharp";
 
 export const SOLS = {
@@ -32,8 +37,9 @@ const OUT = "Godot/tools/maps";
 const PLACES = {
   "entrée": [126, 52], "page 10 (lisière)": [118, 40], "page 7 (sous-bois)": [68, 52],
   "page 8 (haute futaie)": [70, 82], "page 9 (clairière)": [46, 24], "clairière de l'Alpha": [24, 18],
-  "Griffe-Grise (ravin)": [22, 80], "mur du camp (devant)": [12, 46], "clairières rocheuses": [96, 22],
-  "cœur de la forêt": [32, 56], "prairie des brachiosaures": [116, 68],
+  "Griffe-Grise (ravin)": [22, 80], "mur du camp (devant)": [12, 42], "entaille du camp": [12, 39],
+  "clairières rocheuses": [96, 22], "cœur de la forêt": [32, 56], "prairie des brachiosaures": [116, 68],
+  "pont du Marais": [3, 12], "Maïa (pont)": [6, 12], "sous la passerelle du Masque": [56, 77],
 };
 
 // ---------------------------------------------------------------- noise
@@ -99,7 +105,7 @@ each((x, y) => {
 
 // 2. Relief: the Haute futaie (a plateau in the south), the wooded upland of the south-west
 //    (the ravine cut into it), the rock ridge of the camp (west), the rocky outcrops (north-east).
-const PLATEAU = 2.4, UPLAND = 3.6;
+const PLATEAU = 2.4, UPLAND = 3.6, MASK_ROCK = PLATEAU + 1.4;
 const plateauAt = (x, y) => {
   const w = fbm(x * 0.09 + 12, y * 0.09 + 3);
   // Straight edges where the ramps meet it.
@@ -116,11 +122,29 @@ each((x, y) => {
   if (plateauAt(x, y)) height[y][x] = PLATEAU;
   if (uplandAt(x, y)) height[y][x] = y >= 86 ? PLATEAU : UPLAND;
   if (ridgeAt(x, y)) height[y][x] = UPLAND;
+  if (maskRockAt(x, y)) height[y][x] = MASK_ROCK;
 });
-// The camp's ridge: a rock face along x = 10 (straight in front of the camp's wall).
+// The camp's ridge: a rock face along x = 10, a bay in front of it (the end of the trail).
+// Its west end, by the border, runs further north: the camp (zone camp_ombre, beyond the west
+// edge) is up on the rock, as high as it (UPLAND = its relief level 3), all along their join.
 function ridgeAt(x, y) {
   const wr = fbm(x * 0.15 + 7, y * 0.15 + 70);
+  if (x <= 5 && y >= 24 && y <= 62) return true;
   return y >= 32 && y <= 62 && (x <= 10 || (x <= 12 + wr * 2 && (y < 41 || y > 51)));
+}
+// The notch in the bay's back wall (its face looks south, at the camera): the cracked wall
+// stands in it, the tunnel to the camp opens at its back (tools/zones/foret.gd).
+const CAMP_NOTCH = { x0: 11, x1: 12, y0: 39, y1: 40 };
+each((x, y) => {
+  if (x >= CAMP_NOTCH.x0 && x <= CAMP_NOTCH.x1 && y >= CAMP_NOTCH.y0 && y <= CAMP_NOTCH.y1) height[y][x] = 0;
+});
+// The Masque's rock: a low shelf up on the Haute futaie, just north of its trail, its straight
+// face towards the trail (south, y = 75: the camera looks north, at it). The footbridge hangs at
+// its foot, the two giant trees stand on it behind; he stands on the lip between them, just
+// behind the footbridge, as high as its deck (1.4 m over the plateau: out of reach).
+// (tools/zones/foret.gd places them.)
+function maskRockAt(x, y) {
+  return y >= 72 && y <= 74 && inEllipse(x, y, 56.3, 74.8, 4.8, 3.2, 0.2);
 }
 // The ramps up to the plateau: 3 steps of 0.6 m (and the floor), 2 tiles wide.
 for (let i = 0; i < 4; i++) for (const x of [80, 81]) height[67 - i][x] = PLATEAU - 0.6 * (i + 1);   // north
@@ -150,6 +174,9 @@ each((x, y) => {
 each((x, y) => {
   if (inEllipse(x, y, 64, 9, 2.4, 1.8, 0.3) || inEllipse(x, y, 54, 44, 5.2, 3.2, 0.35)
     || inEllipse(x, y, 37.5, 61, 4.2, 2.6, 0.3) || inEllipse(x, y, 122, 37, 3.2, 2.2, 0.3)) sol[y][x] = "water";
+  // The marshy pond by the west border, where the forest sinks into the Marais (not touching
+  // the edge: it is not the sea); the bridge crosses it.
+  if (x >= 1 && inEllipse(x, y, 2.6, 12.2, 3.0, 4.2, 0.3)) sol[y][x] = "water";
 });
 stroke([[64, 10], [61, 15], [62, 21], [58.5, 27], [59, 33], [56, 38.5], [55, 42]], 2, "water", 1.4);
 stroke([[51, 46], [46.5, 51], [42, 56.5], [39.5, 59.5]], 2, "water", 1.2);
@@ -166,6 +193,9 @@ path([[90, 28.5], [97, 36], [103, 43], [105, 50], [106, 55]]);                  
 path([[62, 56], [55, 56.5], [48, 56]]);                                                       // west…
 path([[48, 56], [38, 56]], 2, 0);                                                             // …over the stream
 path([[38, 56], [30, 54.5], [22, 49], [15, 46.5]]);                                           // the cœur, the camp's face
+path([[15, 46.5], [13, 44], [12, 41.5], [12, 39.5]], 2, 0);                                   // …into the notch (the wall)
+path([[0, 12], [6, 12]], 2, 0);                                                               // the bridge to the Marais
+path([[6, 12], [10, 13.5], [15, 16.5]], 2, 0.8);                                              // …from the Alpha's clearing
 path([[82, 55.5], [81, 60], [81, 64]]);                                                        // south, to the plateau
 path([[81, 64], [81, 69]], 2, 0);                                                             // the north ramp
 path([[81, 69], [78, 74], [72, 78.5], [64, 79.5], [56, 77.5], [49, 77]]);                      // along the Haute futaie
@@ -183,6 +213,8 @@ const CLEARINGS = [
   [46, 24, 9, 6], [24, 18, 9.5, 7], [119, 40, 6, 4.5], [62, 55, 4, 3], [68, 52.5, 3.2, 2.4],
   [15, 46, 5, 6], [36, 58, 8, 5.5], [70, 81, 7, 4.5], [116, 68, 7, 6], [96, 22, 5, 4], [90, 29, 4, 3],
   [118, 55, 5, 3.5], [100, 84, 4, 3],
+  // The bridge's landing (Maïa waits there); before the Masque's footbridge, seen from the trail.
+  [6.5, 12.5, 3.5, 3], [56.5, 75.5, 4.5, 1.2],
 ];
 each((x, y) => {
   if (CLEARINGS.some(([cx, cy, rx, ry]) => inEllipse(x, y, cx, cy, rx, ry, 0.4))) {
@@ -203,7 +235,8 @@ each((x, y) => {
 });
 each((x, y) => {
   const edge = Math.min(x, y, W - 1 - x, H - 1 - y);
-  if (sol[y][x] === "forest" && ((shadow[y][x] && edge >= 2) || (x >= 119 && y >= 47 && y <= 57))) sol[y][x] = "grass";
+  // (And by the two ways out on the edges: from the Plaines, east; to the Marais, south of the bridge.)
+  if (sol[y][x] === "forest" && ((shadow[y][x] && edge >= 2) || (x >= 119 && y >= 47 && y <= 57) || (x <= 3 && y >= 13 && y <= 18))) sol[y][x] = "grass";
 });
 
 // Distance (tiles, by steps) to the nearest tile of some kinds.
@@ -286,7 +319,7 @@ const PATCHES = [
 ];
 each((x, y) => {
   if (sol[y][x] !== "grass" || isCliff(x, y) || nearCliff[y][x] < 2) return;
-  if (inEllipse(x, y, 22, 80, 7, 6)) return;   // (the ravine stays calm)
+  if (inEllipse(x, y, 22, 80, 7, 6) || maskRockAt(x, y)) return;   // (the ravine stays calm; bare rock)
   if (PATCHES.some(([cx, cy, rx, ry]) => inEllipse(x, y, cx, cy, rx, ry, 0.6))) sol[y][x] = "tall_grass";
   // Along the edge by the way in: the forest floor meets the Plaines' meadow there.
   if (x >= 127 && ((y >= 45 && y <= 49) || (y >= 54 && y <= 58))) sol[y][x] = "tall_grass";
@@ -358,6 +391,13 @@ for (let pass = 0; pass < 40; pass++) {
   if (!found) { for (const [x, y] of tiles) sol[y][x] = "forest"; continue; }
   for (let c = found; c; c = prev.get(key(c[0], c[1]))) if (sol[c[1]][c[0]] === "forest") sol[c[1]][c[0]] = "grass";
 }
+
+// 10. Up on the ridge, where the camp (beyond the west edge) meets the forest: open rock and the
+//     camp's trail going on a little (seen from the camp, past its way out: rows 37-40 face its
+//     rows 12-15). Out of reach from the forest floor.
+each((x, y) => {
+  if (x <= 6 && y >= 35 && y <= 42) sol[y][x] = x <= 3 && y >= 37 && y <= 40 ? "path" : "grass";
+});
 
 // ---------------------------------------------------------------- checks
 const seen = reach(ENTRY);

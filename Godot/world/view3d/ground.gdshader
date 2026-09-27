@@ -13,8 +13,20 @@ uniform sampler2D paved_tex : source_color, repeat_enable, filter_linear_mipmap;
 uniform vec4 paved_rect = vec4(0.0);
 uniform sampler2D cliff_tex : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D terrain_mask : filter_linear, repeat_disable;
-// R = sand, G = forest floor (same layout as terrain_mask).
+// R = sand, G = forest floor, B = mud, A = rock (same layout as terrain_mask).
 uniform sampler2D terrain_mask2 : filter_linear, repeat_disable;
+// The mud of the Marais ("vase": dark, with puddles), where terrain_mask2.b says so.
+uniform sampler2D mud_tex : source_color, repeat_enable, filter_linear_mipmap;
+// The canyon rock of the Désert (cracked plates), where terrain_mask2.a says so.
+uniform sampler2D rock_tex : source_color, repeat_enable, filter_linear_mipmap;
+// The sand's own picture (the Désert's dunes); without it, the dirt lightened (beaches).
+uniform sampler2D sand_tex : source_color, repeat_enable, filter_linear_mipmap;
+uniform bool sand_picture = false;
+// A zone's own shade of grass (the Marais: olive), and of its cliffs (the Désert: warm).
+uniform vec3 grass_tint : source_color = vec3(1.0);
+uniform vec3 cliff_tint = vec3(1.0);
+// The tops of raised ground darker (walls paved like the floor, the temple's): 0 = none.
+uniform float top_shade = 0.0;
 // The ground's heights (HeightMap.height_texture), in the zone's own coordinates.
 uniform sampler2D height_tex : filter_linear, repeat_disable;
 uniform vec2 height_origin = vec2(-10.0);
@@ -92,7 +104,7 @@ void fragment() {
 	vec4 m = texture(terrain_mask, (local + warp * 0.9) / map_tiles);
 
 	float patches = noise(px / 900.0);
-	vec3 grass = texture(grass_tex, px / 320.0).rgb * (plain ? 1.0 : mix(0.84, 1.1, patches));
+	vec3 grass = texture(grass_tex, px / 320.0).rgb * grass_tint * (plain ? 1.0 : mix(0.84, 1.1, patches));
 	grass = mix(grass, grass * vec3(0.78, 0.86, 0.72), smoothstep(0.3, 0.7, m.g));
 
 	vec3 dirt = texture(dirt_tex, px / 256.0).rgb;
@@ -104,8 +116,25 @@ void fragment() {
 	// Sand (beaches) and the dark mossy floor under the woods.
 	vec4 m2 = texture(terrain_mask2, (local + warp * 0.9) / map_tiles);
 	float sandy = smoothstep(0.35, 0.65, m2.r + grain * 0.3);
-	grass = mix(grass, dirt * vec3(1.18, 1.08, 0.82) + 0.06, sandy);
+	vec3 sand_col = dirt * vec3(1.18, 1.08, 0.82) + 0.06;
+	if (sand_picture) {
+		// Dunes: the ripples of the picture, broad lighter and darker drifts over them, the
+		// hollows between the dunes warmer and darker, their crests pale.
+		sand_col = texture(sand_tex, px / 300.0).rgb * mix(0.88, 1.06, patches) * mix(0.95, 1.03, noise(px / 520.0));
+		sand_col *= mix(vec3(0.9, 0.83, 0.74), vec3(1.05), smoothstep(0.0, 1.2, height));
+		// A sandy land: no grass under the edges of the rock, the mud, the trails.
+		sandy = max(sandy, smoothstep(0.15, 0.5, m2.r + m2.b + m2.a + grain * 0.2));
+	}
+	grass = mix(grass, sand_col, sandy);
 	grass = mix(grass, grass * vec3(0.55, 0.66, 0.5), smoothstep(0.3, 0.7, m2.g));
+	if (m2.b > 0.01) {
+		float muddy = smoothstep(0.3, 0.6, m2.b + grain * 0.3);
+		grass = mix(grass, texture(mud_tex, px / 300.0).rgb * (plain ? 1.0 : mix(0.9, 1.06, patches)), muddy);
+	}
+	if (m2.a > 0.01) {
+		float rocky = smoothstep(0.3, 0.6, m2.a + grain * 0.3);
+		grass = mix(grass, texture(rock_tex, px / 340.0).rgb * (plain ? 1.0 : mix(0.88, 1.06, patches)), rocky);
+	}
 	float p = m.r + grain * 0.22;
 	float path = smoothstep(0.46, 0.56, p);
 	float rim = smoothstep(0.32, 0.48, p) * (1.0 - path);
@@ -129,11 +158,13 @@ void fragment() {
 		vec3 face = mix(face_z, face_x, side);
 		// Rock, not earth: greyer and darker than the paths, so the two never mix up.
 		float lum = dot(face, vec3(0.3, 0.55, 0.15));
-		face = mix(face, vec3(lum) * vec3(1.0, 0.95, 0.9), 0.4) * 0.82;
+		face = mix(face, vec3(lum) * vec3(1.0, 0.95, 0.9), 0.4) * 0.82 * cliff_tint;
 		// A little darker towards the foot, in the shade of the overhang.
 		face *= mix(0.78, 1.0, smoothstep(-0.2, 0.9, fract(height / 1.2 + 0.001)));
 		col = mix(col, face, rock);
 	}
+	// Walls paved like the floor: their tops darker than the rooms (not their lit faces).
+	col *= 1.0 - top_shade * smoothstep(0.45, 1.0, height) * (1.0 - rock);
 	// The ground at the foot of a wall is in its shade: a dark line marks where the wall stands.
 	col *= 1.0 - 0.45 * smoothstep(0.05, 0.5, hollow) * (1.0 - rock * 0.5);
 

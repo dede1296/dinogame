@@ -2,12 +2,14 @@
 class_name Obstacle
 extends Prop
 ## A prop blocking the way until a party dino uses the right exploration ability
-## (Tranche on a trunk, Charge on a boulder). Once cleared, it stays gone (story flag).
+## (Tranche on a trunk, Charge on a boulder, Coup de crâne on a cracked wall). Once
+## cleared, it stays gone (story flag).
 
 const SFX := {
 	&"tranche": preload("res://assets/audio/sfx/slice.wav"),
 	&"charge": preload("res://assets/audio/sfx/rock_heavy.wav"),
 	&"resonance": preload("res://assets/audio/sfx/glass.wav"),
+	&"coup_crane": preload("res://assets/audio/sfx/rock_heavy.wav"),
 }
 const CHOP := preload("res://assets/audio/sfx/chop.wav")
 ## Experience for the whole party when the way is cleared.

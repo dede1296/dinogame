@@ -59,6 +59,10 @@ func interact(player: Player) -> void:
 	sprite.play(StringName("idle_" + facing))
 
 
+## Walking (walk_to): not to be turned round meanwhile (Stage.turn_to, the dialogue box).
+var walking := false
+
+
 ## Turns to look at a point.
 func face(point: Vector2) -> void:
 	sprite.play(StringName("idle_" + SheetFrames.direction_name(point - global_position)))
@@ -70,10 +74,12 @@ func walk_to(target: Vector2, end_facing := "", speed := WALK_SPEED) -> void:
 	if to.length() < 2.0:
 		return
 	collision_layer = 0   # don't block Chloé on the way
+	walking = true
 	sprite.play(StringName("walk_" + SheetFrames.direction_name(to)))
 	var t := create_tween()
 	t.tween_property(self, "global_position", target, to.length() / speed)
 	await t.finished
+	walking = false
 	collision_layer = 1
 	if end_facing != "":
 		facing = end_facing

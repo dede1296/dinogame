@@ -51,9 +51,9 @@ const REGIONS = [
   { id: "plaines", name: "Plaines des Fougères", zones: ["plaines", "grotte_echos", "antre_crane"], levels: [2, 8], seeds: [[0.5, 0.72]], w: 0.02, c: "#93bb68" },
   { id: "port", name: "Port-Ambre", zones: ["port_ambre", "cabinet"], levels: [1, 1], seeds: [[0.49, 0.875]], w: -0.075, c: "#cdb98e" },
   { id: "havre", name: "Havre-Doré", zones: ["havre_dore"], levels: [1, 1], seeds: [[0.76, 0.755]], w: -0.06, c: "#d8bb78" },
-  { id: "foret", name: "Forêt Jurassique", zones: ["foret"], levels: [10, 18], seeds: [[0.27, 0.7], [0.36, 0.83]], w: 0.0, c: "#3f6d38" },
-  { id: "marais", name: "Marais Brumeux", zones: ["marais"], levels: [16, 24], seeds: [[0.15, 0.47]], w: 0.0, c: "#6d7f55" },
-  { id: "desert", name: "Désert Aride", zones: ["desert"], levels: [22, 30], seeds: [[0.28, 0.2], [0.2, 0.3]], w: 0.0, c: "#e2b56c" },
+  { id: "foret", name: "Forêt Jurassique", zones: ["foret", "camp_ombre"], levels: [10, 18], seeds: [[0.27, 0.7], [0.36, 0.83]], w: 0.0, c: "#3f6d38" },
+  { id: "marais", name: "Marais Brumeux", zones: ["marais", "temple_englouti"], levels: [15, 21], seeds: [[0.15, 0.47]], w: 0.0, c: "#6d7f55" },
+  { id: "desert", name: "Désert Aride", zones: ["desert", "sanctuaire_vents"], levels: [21, 27], seeds: [[0.28, 0.2], [0.2, 0.3]], w: 0.0, c: "#e2b56c" },
   { id: "cote", name: "Côte Préhistorique", zones: ["cote"], levels: [28, 35], seeds: [[0.55, 0.1], [0.7, 0.14]], w: -0.01, c: "#a7c98a" },
   { id: "monts", name: "Monts Gelés", zones: ["monts"], levels: [33, 40], seeds: [[0.84, 0.36], [0.76, 0.6]], w: 0.02, c: "#9ea08c" },
   { id: "cieux", name: "Cieux Éternels", zones: ["cieux"], levels: [38, 44], seeds: [[0.63, 0.3]], w: -0.035, c: "#dfe8f2" },
@@ -292,9 +292,30 @@ labels[G.volcan] = toImage([0.5, 0.41]);
 labels[G.apex] = toImage([0.5, 0.535]);
 labels[G.port] = [portAt[0], portAt[1] + 0.03];
 labels[G.havre] = [havreAt[0] + 0.015, havreAt[1] + 0.035];
+/** A point of region `id` at shares (fx, fy) of its box. */
+const inRegion = (id, fx, fy) => {
+  const g = G[id], b = bounds[g];
+  const i0 = Math.min(N - 1, Math.floor((b[0] + fx * b[2]) * N)), j0 = Math.min(N - 1, Math.floor((b[1] + fy * b[3]) * N));
+  // A region is not a box: when the point falls in a neighbour, the nearest cell of the region.
+  for (let r = 0; r < N; r++) {
+    let best = null;
+    for (let j = j0 - r; j <= j0 + r; j++) for (let i = i0 - r; i <= i0 + r; i++) {
+      if (Math.max(Math.abs(i - i0), Math.abs(j - j0)) !== r || i < 0 || j < 0 || i >= N || j >= N || region[j * N + i] !== g) continue;
+      const d = (i - i0) ** 2 + (j - j0) ** 2;
+      if (!best || d < best[2]) best = [i, j, d];
+    }
+    if (best) return [(best[0] + 0.5) / N, (best[1] + 0.5) / N];
+  }
+  return [b[0] + fx * b[2], b[1] + fy * b[3]];
+};
 const places = [
   ["grotte_echos", "Grotte des Échos", toImage([0.49, 0.64])], ["antre_crane", "Grand Crâne", toImage([0.58, 0.74])],
   ["cabinet", "Cabinet", [portAt[0] + 0.015, portAt[1] - 0.006]],
+  // The doors of the zones inside a region: where Chloé stands on the atlas at their entrance (the
+  // zone's map laid over its region's box, as for her marker): tile / map size of that zone.
+  ["camp_ombre", "Camp de l'Ombre Noire", inRegion("foret", 12 / 130, 39 / 100)],
+  ["temple_englouti", "Temple englouti", inRegion("marais", 30 / 120, 11.5 / 96)],
+  ["sanctuaire_vents", "Sanctuaire des Vents", inRegion("desert", 60.5 / 120, 3 / 100)],
 ];
 
 await sharp(img, { raw: { width: N, height: N, channels: 3 } }).png().toFile(`${OUT_ART}/atlas_ile.png`);

@@ -5,10 +5,13 @@
 //   - ground textures: made seamless (half-offset cross-fade) and scaled.
 // Usage (from the repository root): node Godot/tools/process-art.mjs [name …]
 //   With names, only the outputs whose path contains one of them (e.g. "parasaurolophus").
+// More jobs live in Godot/tools/art-jobs/*.mjs (one file per batch: a region, a chapter), each
+// exporting default (helpers) => [[out, job], …] with the helpers below.
 // `sharp` comes from the repository's node_modules.
 import sharp from "sharp";
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 const SRC = "generated_imgs";
 const OUT = "Godot/assets/art";
@@ -139,7 +142,7 @@ async function sheetInCells({ id, rows, cols, frameHeight, out, cell: [cw0, ch0]
 }
 
 // Lit objects painted with a glow: the glow over the magenta background stays pink.
-const GLOWING = ["lanterne", "lampe", "couveuse"];
+const GLOWING = ["lanterne", "lampe", "couveuse", "squelette_geant"];   // (and a soft sand edge)
 
 /** Clears (in place, RGBA raw) the half-transparent pinkish pixels around a glowing object. */
 function removePinkHalo(data) {
@@ -396,6 +399,13 @@ const JOBS = [
   })],
   [`${OUT}/foret/arbre_geant`, () => props({ id: "71zuo2", scale: 0.5, outDir: `${OUT}/props`, names: ["arbre_geant"] })],
 ];
+const JOB_DIR = "Godot/tools/art-jobs";
+const HELPERS = { sheet, props, icons, seamless, sharp, find, OUT };
+if (fs.existsSync(JOB_DIR)) {
+  for (const f of fs.readdirSync(JOB_DIR).filter((n) => n.endsWith(".mjs")).sort()) {
+    JOBS.push(...(await import(pathToFileURL(path.resolve(JOB_DIR, f)).href)).default(HELPERS));
+  }
+}
 const ONLY = process.argv.slice(2);
 const results = await Promise.all(JOBS
   .filter(([out]) => ONLY.length === 0 || ONLY.some((name) => out.includes(name)))

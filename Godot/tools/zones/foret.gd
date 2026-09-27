@@ -4,8 +4,10 @@ extends RefCounted
 ## East: the Lisière, the way in from the Plaines, the Mare de lune (page 10, full moon);
 ## centre: the Sous-bois, its stream and the Mare aux libellules (page 7); north: the Clairière
 ## (page 9), the Clairière aux fougères géantes (the Alpha's, chapter 2 part 2), the rocky
-## clearings; south: the Haute futaie on its plateau (page 8); west: the Cœur de la forêt,
-## the rock face of the poachers' camp (part 2), the hidden ravine of Griffe-Grise.
+## clearings; south: the Haute futaie on its plateau (page 8), the Masque's footbridge over its
+## trail; west: the Cœur de la forêt, the rock face of the poachers' camp (the cracked wall,
+## Coup de crâne, the tunnel to camp_ombre), the hidden ravine of Griffe-Grise; north-west:
+## the bridge to the Marais over a marshy pond, Maïa's second challenge.
 ## The new scenery (fougere_geante, tronc_mousse…) is used once world/prop.gd knows it:
 ## rebuild the zone then (the same tiles get it, in place of what stands there meanwhile).
 
@@ -15,6 +17,8 @@ const MAPS := "res://tools/maps/foret_%s.png"
 const PICKUP := "res://world/pickup.gd"
 const MOON_PAGE := "res://regions/foret/moon_page.gd"
 const STORY_PROP := "res://world/story_prop.gd"
+const OBSTACLE := "res://world/obstacle.gd"
+const CHARS := "res://assets/art/characters/%s.png"
 const MUSIC := "res://assets/audio/music/foret.ogg"
 const MUSIC_FALLBACK := "res://assets/audio/music/plaines.ogg"
 const GROUND := "res://assets/art/ground/sous_bois.png"
@@ -62,9 +66,28 @@ const KEEP_CLEAR := [
 	Rect2(43.5, 22, 5.5, 4.5), Rect2(15, 11, 18, 14), Rect2(16, 75, 12, 9), Rect2(10.5, 41, 8, 10),
 	Rect2(0, 7, 11, 10), Rect2(55, 23, 9, 6), Rect2(38, 53, 8, 6), Rect2(59, 52, 6, 6),
 	Rect2(78, 61, 6, 9), Rect2(41, 74, 9, 5.5), Rect2(106, 82, 8, 5.5), Rect2(28, 60, 6, 8),
+	# The notch of the camp's wall and the bay before it; the Masque's rock and footbridge.
+	Rect2(9.5, 37, 6, 5), Rect2(51, 71, 11, 6.5),
 ]
 ## The footbridges over the stream (tiles: where the trails cross it; gen-foret.mjs prints them).
 const BRIDGES := [Rect2(57, 25, 5, 2), Rect2(40, 55, 4, 2)]
+## The bridge to the Marais, over the marshy pond by the west border (also printed there).
+const MARAIS_BRIDGE := Rect2(1, 11, 5, 2)
+## The camp's wall (Coup de crâne) in the notch at the back of the bay, the tunnel's dark mouth
+## behind it (tiles). The notch is x 11-12, y 39-40 (gen-foret.mjs CAMP_NOTCH).
+const CAMP_WALL := Vector2(12.0, 40.6)
+const CAMP_MOUTH := Vector2(12.0, 39.0)
+## The Masque's rock up on the Haute futaie (gen-foret.mjs maskRockAt: a shelf 1.4 m over the
+## plateau, its straight face at y = 75, just north of the futaie's trail): the footbridge hangs
+## at its foot; the two giant trees stand on the shelf behind, where the picture's trunks are
+## (2.65 m either side); he stands on the lip between them, just behind the footbridge, his feet
+## as high as its deck, in front of the trees. The circle on the trail below, where he is seen:
+## close to it, or he would be at the top of the screen (tiles).
+const MASQUE_AT := Vector2(56.5, 74.75)
+const MASQUE_WALKWAY := Vector2(56.5, 75.2)
+const MASQUE_TREES := [Vector2(53.85, 73.3), Vector2(59.15, 73.3)]
+const MASQUE_TRIGGER := Vector2(56.5, 77.0)
+const MASQUE_RADIUS := 2.5
 
 
 static func build() -> Region:
@@ -95,18 +118,20 @@ static func build() -> Region:
 	return root
 
 
-## Planks over the stream where the trails cross it (their cells are painted as path).
+## Planks over the stream where the trails cross it, and the bridge to the Marais over the
+## pond (their cells are painted as path).
 static func _bridges(root: Region) -> void:
 	var terrain: TileMapLayer = root.get_node("Terrain")
-	for i in BRIDGES.size():
-		var r: Rect2 = BRIDGES[i]
+	var all: Array = BRIDGES + [MARAIS_BRIDGE]
+	for i in all.size():
+		var r: Rect2 = all[i]
 		for y in range(r.position.y, r.end.y):
 			for x in range(r.position.x, r.end.x):
 				var data := terrain.get_cell_tile_data(Vector2i(x, y))
 				if data == null or String(data.get_custom_data("terrain")) != "path":
 					push_warning("Passerelle %d : la case (%d, %d) n'est pas un sentier" % [i, x, y])
 		var d := B.dock(root, r)
-		d.name = "Passerelle%d" % (i + 1)
+		d.name = "PontMarais" if r == MARAIS_BRIDGE else "Passerelle%d" % (i + 1)
 
 
 ## A kind of scenery from a table row, or its stand-in while it is not drawn yet ("" = none).
@@ -277,6 +302,64 @@ static func _story(root: Region, entities: Node2D) -> void:
 	B.sign(entities, B.cell(121.6, 49.6), &"panneau_lisiere")
 	B.sign(entities, B.cell(33.4, 65.2), &"panneau_ravin", true)
 	B.sign(entities, B.cell(83.4, 63.4), &"panneau_futaie")
+	_camp_wall(entities)
+	_masque(root, entities)
+	_marais_bridge(root, entities)
+
+
+## The poachers' camp (zone camp_ombre, story/foret_camp.gd): the cracked wall (Coup de crâne)
+## in the notch at the back of the bay, the tunnel's dark mouth behind it, a sign.
+static func _camp_wall(entities: Node2D) -> void:
+	var mouth := CaveMouth.new()
+	mouth.name = "TunnelCamp"
+	mouth.width = 1.8
+	mouth.position = B.cell(CAMP_MOUTH.x, CAMP_MOUTH.y)
+	entities.add_child(mouth)
+	# (A boulder stands in for the cracked wall until world/prop.gd knows it.)
+	var wall = B.prop(entities, _kind(["mur_fissure", 0.0, "rocher"]), B.cell(CAMP_WALL.x, CAMP_WALL.y), false, load(OBSTACLE))
+	wall.name = "MurFissure"
+	wall.ability = &"coup_crane"
+	wall.cleared_flag = &"mur_camp_brise"
+	wall.blocked_dialogue = &"mur_fissure_bloque"
+	wall.debris_color = Color(0.52, 0.5, 0.47)
+	B.sign(entities, B.cell(14.3, 41.7), &"panneau_camp", true)
+
+
+## The Masque d'Obsidienne, seen once after the Sceau: on the footbridge between two giant trees
+## of the Haute futaie, over its trail (the trees hide nothing but the plateau's edge north of
+## his rock). He shows once the scene sets masque_en_vue; the circle on the trail below starts
+## the scene (story/foret_fin.gd).
+static func _masque(root: Region, entities: Node2D) -> void:
+	if Prop.KINDS.has("arbre_geant"):
+		for t: Vector2 in MASQUE_TREES:
+			B.prop(entities, "arbre_geant", B.cell(t.x, t.y), t.x > MASQUE_AT.x)
+	var walkway := _kind(["passerelle", 0.0, ""])
+	if walkway != "":
+		var w = B.prop(entities, walkway, B.cell(MASQUE_WALKWAY.x, MASQUE_WALKWAY.y))
+		w.name = "PasserelleMasque"
+	var drawn := ResourceLoader.exists(CHARS % "masque")
+	B.npc(root, "Masque", "Le Masque", CHARS % ("masque" if drawn else "sbire"), MASQUE_AT.x, MASQUE_AT.y, {
+		"facing": "down", "show_flag": &"masque_en_vue", "hide_flag": &"masque_vu",
+		"tint": Color.WHITE if drawn else Color(0.3, 0.26, 0.4)})
+	_trigger(root, MASQUE_TRIGGER, MASQUE_RADIUS, &"masque_passerelle", {"required_flag": &"sceau_foret", "once_flag": &"masque_vu"})
+
+
+## The bridge to the Marais (its planks: _bridges): Maïa waits by it after the Sceau for her
+## second challenge; the way over opens once she is beaten (see _places).
+static func _marais_bridge(root: Region, entities: Node2D) -> void:
+	B.npc(root, "MaiaPont", "Maïa", CHARS % "maia", 6.0, 12.0, {"facing": "right", "event": &"maia_defi_2",
+		"show_flag": &"sceau_foret", "hide_flag": &"maia_defi_2"})
+	B.sign(entities, B.cell(7.6, 10.5), &"panneau_pont")
+
+
+## A StoryTrigger (ZoneBuilder.trigger), called by name: the plan still builds while that
+## helper is missing (it then only warns).
+static func _trigger(root: Region, at: Vector2, radius: float, event: StringName, opts: Dictionary) -> void:
+	var builder: Script = load("res://tools/zone_builder.gd")
+	if not builder.get_script_method_list().any(func(m: Dictionary) -> bool: return m["name"] == "trigger"):
+		push_warning("ZoneBuilder.trigger n'existe pas encore : pas de déclencheur « %s »." % event)
+		return
+	builder.call(&"trigger", root, at.x, at.y, radius, event, opts)
 
 
 ## Campfires and a bench to rest by (see Rest), the ground around them cleared.
@@ -295,6 +378,13 @@ static func _places(root: Region) -> void:
 	B.spawn(root, "Depart", 123.0, 52.0)
 	B.spawn(root, "DepuisPlaines", 126.0, 52.0)
 	B.exit(root, Rect2(129.45, 50.0, 0.55, 4.0), &"plaines", &"DepuisForet")
+	# The tunnel to the camp, at the back of the notch (the wall stands in front of it; the
+	# flag is only a safety net). Chloé comes back just before the notch.
+	B.spawn(root, "DepuisCamp", 12.0, 42.2)
+	B.exit(root, Rect2(11.2, 38.95, 1.6, 0.5), &"camp_ombre", &"DepuisForet", &"mur_camp_brise", &"mur_fissure_bloque")
+	# Over the bridge, the Marais (zone marais: later), once Maïa's second challenge is won.
+	B.spawn(root, "DepuisMarais", 3.0, 12.0)
+	B.exit(root, Rect2(0.0, 10.0, 0.55, 4.0), &"marais", &"DepuisForet", &"maia_defi_2", &"pont_marais_bloque")
 
 
 static func _habitats(root: Region) -> void:

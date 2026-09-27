@@ -77,13 +77,13 @@ Zones : Roselière · Forêt noyée · Chenaux (Nage) · Îlot aux racines · Te
 
 | Espèce | Habitat | Famille | Rareté | Moment | Capacité |
 |---|---|---|---|---|---|
-| Iguanodon | rives | ornithopode | C | jour | Charge |
-| Corythosaurus | roselière | ornithopode | C | jour | Résonance |
-| Baryonyx | chenaux, eau peu profonde | spinosauridé | P | jour | Nage |
-| Koolasuchus | eau profonde | reptile marin | P | nuit | Nage |
-| Therizinosaurus | forêt noyée | petit théropode | R | brume | Tranche |
-| Suchomimus | îlot aux racines | spinosauridé | R | pluie | Nage |
-| *La Voix du Marais* (Ancienne, parente d'Écho) | cœur de la roselière (Résonance) | ornithopode | unique | — | — |
+| Iguanodon ✅ | rives | ornithopode | C | jour | Charge |
+| Corythosaurus ✅ | roselière | ornithopode | C | jour | Résonance |
+| Baryonyx ✅ | chenaux, eau peu profonde | spinosauridé | P | jour | Nage |
+| Koolasuchus ✅ | eau profonde | reptile marin | P | nuit | Nage |
+| Therizinosaurus ✅ | forêt noyée | petit théropode | R | brume | Tranche |
+| Suchomimus ✅ | îlot aux racines | spinosauridé | R | pluie | Nage |
+| *La Voix du Marais* ✅ (Ancienne, parente d'Écho) | cœur de la roselière (Résonance) | ornithopode | unique | — | — |
 | **Spinosaure Ancestral** | le temple englouti | spinosauridé | Alpha | — | — |
 
 ## Désert Aride — niv. 22 à 30
@@ -92,13 +92,13 @@ Zones : Canyon d'entrée · Cimetière des Géants · Dunes · Oasis · Sanctuai
 
 | Espèce | Habitat | Famille | Rareté | Moment | Capacité |
 |---|---|---|---|---|---|
-| Oviraptor | nids des canyons | petit théropode | C | jour | Flair |
-| Pinacosaurus | dunes | cuirassé | C | jour | Charge |
-| Stygimoloch | canyons | pachycéphalosaure | P | jour | Coup de crâne |
-| Ouranosaurus | oasis | ornithopode | P | jour | — |
-| Velociraptor des sables | dunes | raptor | P | nuit | Tranche |
-| Majungasaurus | cimetière des géants | grand théropode | R | nuit | — |
-| *Le Vieux Rempart* (Ancien, parent de Bastion) | canyon muré (Charge) | cuirassé | unique | — | — |
+| Oviraptor ✅ | nids des canyons | petit théropode | C | jour | Flair |
+| Pinacosaurus ✅ | dunes | cuirassé | C | jour | Charge |
+| Stygimoloch ✅ | canyons | pachycéphalosaure | P | jour | Coup de crâne |
+| Ouranosaurus ✅ | oasis | ornithopode | P | jour | — |
+| Velociraptor des sables ✅ | dunes | raptor | P | nuit | Tranche |
+| Majungasaurus ✅ | cimetière des géants | grand théropode | R | nuit | — |
+| *Le Vieux Rempart* ✅ (Ancien, parent de Bastion) | canyon muré (Charge) | cuirassé | unique | — | — |
 | **Carnotaurus Rouge** *(corrompu par Brac)* | le sanctuaire des Vents | grand théropode | Alpha | — | — |
 
 ## Côte Préhistorique — niv. 28 à 35
@@ -168,10 +168,17 @@ post-game, soit environ 60. Chaque espèce demande une planche de profil et une 
 région**, juste avant de construire la région.
 
 **Visuels faits** (planche de profil + planche face/dos, `assets/art/dinos/`, via `tools/process-art.mjs`) :
-les 9 espèces des Plaines, et le lot Grotte des Échos + Forêt Jurassique : Anurognathus,
+les 9 espèces des Plaines, le lot Grotte des Échos + Forêt Jurassique : Anurognathus,
 Dilophosaurus, Stegosaurus, Deinonychus, Pachycephalosaurus, Microraptor, Brachiosaurus (juvénile),
-Allosaurus, Utahraptor (Alpha) et Griffe-Grise (l'Ancien). Toutes ces espèces de la Forêt ont
-maintenant leur fiche (`data/species/*.tres`, `data/species_db.gd`) et leurs attaques
-(`data/moves_db.gd`) ; Griffe-Grise et les 7 espèces sauvages (✅ ci-dessus) sont jouables en
-combat. Utahraptor a sa fiche mais reste un Alpha (pas d'habitat, pas capturable en étape 1).
-Prochains lots : Marais, Désert, Côte, Monts, Cieux, Volcan, puis les légendaires.
+Allosaurus, Utahraptor (Alpha) et Griffe-Grise (l'Ancien) ; et maintenant le lot Marais Brumeux +
+Désert Aride (16 espèces) : Iguanodon, Corythosaurus, Baryonyx, Koolasuchus, Therizinosaurus,
+Suchomimus, La Voix du Marais (Ancienne), Spinosaure Ancestral (Alpha), Oviraptor, Pinacosaurus,
+Stygimoloch, Ouranosaurus, Velociraptor des sables, Majungasaurus, Le Vieux Rempart (Ancien) et
+Carnotaurus Rouge (Alpha, corrompu). Toutes ces espèces ont maintenant leur fiche
+(`data/species/*.tres`, `data/species_db.gd`) et leurs attaques (`data/moves_db.gd`), y compris les
+attaques eau (familles spino/marine) et nature (famille hadrosaur) qui manquaient jusqu'ici dans
+`MovesDB.MOVES` bien que déjà prévues dans `LEARN`. Griffe-Grise, La Voix du Marais, Le Vieux
+Rempart et les 13 espèces sauvages du Marais/Désert (✅ ci-dessus) sont jouables en combat.
+Utahraptor, Spinosaure Ancestral et Carnotaurus Rouge ont leur fiche mais restent des Alphas (pas
+d'habitat, pas capturables en étape 1).
+Prochains lots : Côte, Monts, Cieux, Volcan, puis les légendaires.

@@ -26,6 +26,9 @@ const ZONE_NAMES := {
 	&"port_ambre": "Port-Ambre", &"cabinet": "Cabinet du Pr Roc",
 	&"plaines": "Plaines des Fougères", &"grotte_echos": "Grotte des Échos",
 	&"antre_crane": "Antre du gardien", &"havre_dore": "Havre-Doré", &"foret": "Forêt Jurassique",
+	&"camp_ombre": "Camp de l'Ombre Noire", &"marais": "Marais Brumeux",
+	&"temple_englouti": "Temple englouti", &"desert": "Désert Aride",
+	&"sanctuaire_vents": "Sanctuaire des Vents", &"cote": "Côte Préhistorique",
 }
 
 var region: Region

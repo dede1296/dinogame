@@ -80,10 +80,34 @@ Ses figures :
 - **Le Masque d'Obsidienne**, chef mystérieux, qui connaît beaucoup trop bien le travail d'Hélène
   et les routes de la mer. C'est **Isaure Kerval** (voir plus bas).
 - **Brac**, le braconnier : lieutenant brutal, chasseur d'Alphas, dresse ses dinos à l'ambre noir.
-  Adversaire de la Forêt et du Désert.
+  Adversaire de la Forêt et du Désert. Un colosse à la barbe rousse pleine de cendre, le masque d'os
+  relevé sur le front comme une casquette, une voix à faire trembler les casseroles ; il appelle
+  Chloé « moucheron » et jure comme un charretier poli (« Crotte de Stégosaure ! Nom d'un fossile
+  moisi ! »). Pour lui, obéir et avoir peur, « c'est pareil ». Ses dinos : Tenaille (Deinonychus),
+  Mastoc (Allosaurus), et le troisième œuf du Cabinet, que le Masque lui a confié et qu'il a élevé à
+  l'ambre noir. Il a peur du Masque. Battu dans la Forêt, il fuit vers le Désert, où il « a des amis
+  avec des dents » ; sa liste désigne son prochain Alpha : le Carnotaurus Rouge. Dans le Désert, il
+  le corrompt pour qu'il ouvre le sanctuaire des Vents à sa place (« la peur ouvre tout », lui a
+  écrit le Masque) ; acculé dans le cul-de-sac du canyon des Vents avec ses nouveaux dinos (Cabosse
+  le Stygimoloch, Grognon le Majungasaurus, et Mastoc), il abandonne l'Alpha et s'enfuit par une
+  corde en jurant « par les écailles de sa grand-mère ». Sur sa liste, l'Alpha de la Forêt est
+  devenu « RATÉ (la gamine) ».
 - **Dame Suie**, la chimiste : fabrique l'ambre noir. Froide, curieuse, pas cruelle : elle finira par
-  douter. Adversaire du Marais et des Monts Gelés.
-- **Les sbires** : des masques d'os anonymes, souvent des pêcheurs du port payés pour se taire.
+  douter. Adversaire du Marais et des Monts Gelés. Manteau couleur de cendre, gants gris perle, chapeau à
+  voilette, lunettes aux verres fumés, petits ciseaux d'argent et fioles étiquetées d'une écriture fine ;
+  elle vouvoie Chloé (« mademoiselle Varenne ») et ne hausse jamais le ton. Elle croit sincèrement
+  **améliorer** les dinos (« Votre grand-mère les réveillait. Moi, je les termine. » ; « La peur n'est
+  qu'un problème de dosage. ») et méprise Brac, qui donne l'ambre noir « à la pelle ». Ses dinos portent
+  des noms de plantes qui empoisonnent : Mandragore (Therizinosaurus), Ciguë (Koolasuchus), Belladone (un
+  Dilophosaurus corrompu, « trois gouttes le matin, deux le soir » ; apaisé, il suit Chloé sous le nom de
+  Braise). Au Marais, elle cueille les « racines de brume » qui devraient « adoucir » ses mélanges ; voir
+  Chloé calmer Belladone « sans une goutte » la trouble (« Ce n'est pas dans mes tables. »). Elle sait
+  qu'Hélène avait brûlé ses notes « presque toutes » (« Presque. C'est un mot merveilleux. ») et que le
+  Masque cherche ce qui dort sous le temple. Elle promet de revoir Chloé « là où il fait plus froid ».
+- **Les sbires** : des masques d'os anonymes, souvent des pêcheurs du port payés pour se taire
+  (« Il paie. Au port, plus personne ne paie. »). Gustave (la Grotte) a démissionné pour
+  retourner pêcher ; son cousin Firmin garde le camp de la Forêt, avec le sbire à la lanterne, qui
+  en sait plus qu'il ne devrait sur le Masque.
 
 ## Havre-Doré, la ville qui brille
 
@@ -99,12 +123,36 @@ C'est aussi la ville des **dresseurs** : on y vient d'un peu partout sur l'île 
 - **Maître Ferréol**, négociant affable, généreux avec la ville. En réalité le **banquier de l'Ombre
   Noire** : son Comptoir blanchit l'ambre volé, et son entrepôt du port est la cache du chapitre 5.
 - **Joss Bastide**, 15 ans, sellier, ami d'enfance de Maïa. Fabrique les **selles, harnais et
-  gilets** qui permettent de monter, voler, nager avec ses dinos. Rêve de voir le continent.
+  gilets** qui permettent de monter, voler, nager avec ses dinos. Rêve de voir le continent. Bavard,
+  maladroit dans l'eau, très fier de ses coutures (« Regarde ces coutures. Non, vraiment : regarde-les. »).
+  L'été, il teste ses **gilets de nage** (cuir huilé, flotteurs de liège) dans sa cabane sur pilotis, à
+  l'entrée du Marais Brumeux ; c'est là qu'il donne le sien à Chloé, repris à un jeune Baryonyx chapardeur.
 - **Mémé Pervenche**, herboriste. Connaît chaque baie de l'île et a soigné les dinos d'Hélène.
   Sait beaucoup de choses, en dit peu, sauf si on lui achète des friandises.
 
 Havre-Doré pose la question du jeu en plus grand : la ville vit bien **en vendant l'île morceau par
 morceau**. Isaure voulait ça pour Port-Ambre ; Hélène a refusé. Chloé verra les deux côtés.
+
+## Le Marais Brumeux et le temple englouti
+
+À l'ouest, la Forêt s'enfonce dans l'eau : roselières, forêt noyée, chenaux profonds, et une brume qui
+monte de l'eau presque tous les matins. Hélène y a rendu les spinosauridés, les Corythosaurus et les
+Iguanodon ; on n'y traverse les chenaux qu'à la nage, sur le dos d'un Baryonyx, avec un gilet de Joss.
+
+Bien avant Hélène, des gens vivaient là. Ils n'avaient jamais vu un dino vivant : ils avaient les os que
+l'île recrache, l'ambre qui luit à la pleine lune, et un squelette immense à voile d'épines, couché au fond
+d'un bassin, autour duquel ils ont bâti leur **temple**. Ils taillaient des **masques d'os** en têtes de
+dinos pour ressembler aux géants endormis et leur promettre qu'on veillerait sur leur sommeil ; quand le
+volcan a fumé, ils sont partis en barques en laissant leurs masques sur les marches. Le temple a sombré
+peu à peu : ses galeries se vident par trois vannes de pierre, dans un ordre gravé sur les murs. L'Ombre
+Noire a volé le symbole : ses masques d'os servent à faire peur.
+
+Au fond, dans le bassin de la grande salle, vit le **Spinosaure Ancestral**, l'Alpha du Marais, le plus
+grand nageur de l'île : Hélène l'a réveillé dans le temple, et il lui a fallu trois pleines lunes pour
+qu'il sorte la tête de l'eau. Il y a vingt-cinq ans, il a pris le **premier Cœur** dans sa gueule, sans
+l'érafler, et l'a gardé sur l'autel « jusqu'à ce que quelqu'un vienne, avec les yeux et la confiance
+d'Hélène ». Il n'est pas corrompu : il met Chloé à l'épreuve, lui donne le **Sceau du Marais** (un disque
+d'ambre vert d'eau, une vague et la fougère d'Hélène) et le Cœur, qui bat plus vite quand le volcan gronde.
 
 ## Les personnages
 
@@ -134,9 +182,33 @@ montré les dents à Isaure. Chez les raptors, c'est souvent le père qui couve 
 Vif un mois sans dormir, puis l'a poussé vers Hélène, il y a un an. Récemment pris dans un piège de
 l'Ombre Noire, il l'a arraché de ses griffes : il sait qu'on a enlevé le chef de la meute.
 
+**La Voix du Marais**, le quatrième réveil d'Hélène : une Parasaurolophus qui a chanté avant même
+d'ouvrir les yeux (tout le Cabinet a vibré, Anselme en a lâché
+trois flacons). Elle a choisi le Marais toute seule, pour l'écho sous le temple englouti, et chante vers
+lui chaque soir ; c'est elle qui l'a ouvert pour Hélène, il y a vingt-cinq ans, et c'est encore sa voix
+qui l'ouvre pour Chloé. Trente ans plus tard, crête de vieux cuivre et écailles couleur de roseaux en
+hiver, elle vit sur un îlot au cœur de la roselière, derrière une porte d'ambre, son nom gravé avec une
+fougère : « La Voix ». Elle a couvé l'œuf d'Écho en fredonnant une berceuse, et chante faux le matin.
+Elle reconnaît son petit à sa note ; quand c'est le petit volé, nourri à l'ambre noir, elle lui chante
+tout bas jusqu'à ce qu'il arrête de trembler.
+
+**Le Vieux Rempart**, le troisième réveil d'Hélène : une Ankylosaurus « pas plus grande qu'une
+brouette », qui s'est couchée trois jours devant la porte du Cabinet (Anselme passait par la
+fenêtre). On l'a appelée « le Rempart » ; « Vieux » est venu tout seul, et c'est une dame. Trente
+ans plus tard, immense et couverte de lichen orange, on la prend pour un rocher (Chloé a voulu
+s'asseoir dessus). Elle vit au fond d'un canyon du Désert, qu'elle a muré elle-même à coups de
+massue quand l'Ombre Noire a voulu l'attraper au filet ; elle y garde de son ombre la carte des
+sanctuaires d'Hélène (page 20). Chez les Ankylosaurus, c'est la mère qui couve, assise sur l'œuf :
+elle a couvé celui de Bastion des semaines sans bouger, puis l'a donné à Hélène un matin « en se
+levant, comme on ouvre une porte ». Lente, douce, elle ne se plaint jamais de rien ; pour dire
+bonjour, elle souffle un petit nuage de sable. Elle et le Carnotaurus Rouge sont voisins depuis
+trente ans.
+
 Chloé en choisit un : c'est **son dino de départ**, lié à elle dès la première seconde, et c'est
 leur Lien qui sauvera le Souverain à la fin. Maïa reçoit le deuxième œuf. Le troisième est
-**volé** la nuit même par l'Ombre Noire (voir [histoire.md](histoire.md)). Le choix change le
+**volé** la nuit même par l'Ombre Noire (voir [histoire.md](histoire.md)) : le Masque le confie à
+Brac, qui l'élève à l'ambre noir. Chloé le retrouve dans la Forêt, l'apaise, et il la rejoint :
+il n'a jamais oublié l'odeur du Cabinet. Le choix change le
 déroulé du jeu, ce qui le rend rejouable (voir [mecaniques.md](mecaniques.md)).
 
 **Hélène Varenne**, la grand-mère. Géniale, têtue, tendre. Disparue depuis un an. On la découvre
@@ -144,15 +216,22 @@ déroulé du jeu, ce qui le rend rejouable (voir [mecaniques.md](mecaniques.md))
 **scellée dans l'ambre**, au cœur du cratère, pour garder le Souverain endormi (voir la chronologie).
 
 **Professeur Anselme Roc**, ancien assistant d'Hélène et gardien du Cabinet. Bougon, maladroit,
-bienveillant. Il cache des choses : il s'absente la nuit, garde de l'ambre noir dans un tiroir,
-connaît l'emplacement des sanctuaires. **Fausse piste** de la première moitié du jeu : en réalité,
+bienveillant. Il cache des choses : il s'absente la nuit, garde de l'ambre noir dans un tiroir
+(« cassé », dit-il ; Chloé l'y trouve au chapitre 2 et il la supplie de n'en parler à personne,
+« surtout pas à… » : il soupçonne quelqu'un sans oser le dire),
+connaît l'emplacement des sanctuaires. Au Marais, Chloé le surprend la nuit avec sa lanterne ; il avoue
+ses sorties sans dire où il va (« J'ai promis. À quelqu'un qui n'est plus là pour me délier de ma
+promesse. ») et la supplie de lui faire confiance. **Fausse piste** de la première moitié du jeu : en réalité,
 il surveille le sceau en secret et confisque l'ambre noir qu'il trouve. Il se sent coupable de
 n'avoir pas su retenir Hélène.
 
 **Maïa Kerval**, 12 ans, fille de la capitaine du port. Casse-cou, fière, drôle. Connaît l'île mieux
 que personne et devient la **rivale** de Chloé, avec des défis à chaque chapitre. Ses dinos : un
 Protoceratops têtu, **Caillou**, qui deviendra un Tricératops, et l'œuf d'Hélène qui a l'avantage
-sur celui de Chloé (Roc le lui confie : « Hélène t'aimait beaucoup, tu sais »). Son arc : découvrir que sa mère est
+sur celui de Chloé (Roc le lui confie : « Hélène t'aimait beaucoup, tu sais ») ; puis **Moustique**, un
+Dimorphodon (« il pique »), et **Pouce**, un Iguanodon qui dit bonjour avec son pouce en pointe. Elle
+défend Roc quand Chloé doute de lui (« Il est bizarre, pas méchant. Les méchants, ça ne recoud pas les
+doudous. »), et ne voit pas qui pourrait être « I. ». Son arc : découvrir que sa mère est
 le Masque, puis **choisir**, sans renier sa mère.
 
 **Capitaine Isaure Kerval**, mère de Maïa, capitaine du port. Chaleureuse, respectée, épuisée par
@@ -163,9 +242,30 @@ d'Obsidienne**, persuadée qu'en contrôlant le Souverain, elle pourrait tout ex
 son village. Ce n'est pas un monstre : c'est quelqu'un qui a fini par croire que la fin justifie
 les moyens.
 
+**Tante Sirocco**, vieille chasseuse de fossiles, vit sous une tente rapiécée au bord du Cimetière
+des Géants, dans le Désert. Foulard couleur de sable, lunettes de soudeur sur le front, pinceau
+entre les dents ; elle appelle tout le monde « ma caille », jure « par les dents du soleil » et
+parle du Désert comme d'un vieil ami (« le Désert n'aime pas qu'on se dépêche »). Elle a déterré
+la moitié du cimetière avec Hélène : l'une cherchait les dinos qui dorment, l'autre ceux qui ne se
+réveilleront jamais, « jamais d'accord, et on riait tout le temps ». Elle se souvient d'Isaure
+jeune, pieds nus dans le sable brûlant, qui gagnait toujours la dernière datte, et d'Anselme et de
+son coup de soleil en forme de fougère ; Roc dit qu'elle lui « doit un chapeau depuis vingt-deux
+ans ». Pour elle, « un os de l'île reste sur l'île » : elle dessine les fossiles dans un grand
+cahier, puis les rend.
+
 **Les Alphas**, un par région, gardiens des Cœurs et des passages. On ne les « bat » pas vraiment :
 on gagne leur confiance (combat d'honneur, ou apaisement quand l'Ombre Noire les a corrompus).
 Chacun remet un **Sceau**, qui prouve aux autres Alphas que Chloé est digne de passer.
+
+**Le Carnotaurus Rouge**, Alpha du Désert, garde le 2e Cœur au **sanctuaire des Vents** : une
+salle ronde creusée dans la falaise du nord, ouverte sur le ciel, où le vent chante dans des trous
+de la roche et où le sable tourne sans jamais retomber. Il a chargé Hélène quatre fois avant de
+l'accepter ; elle l'appelait « Piment », et il ronronne quand on lui gratte les cornes. Elle a
+voulu que la porte ne s'ouvre qu'à son vrai rugissement : « Au gardien sans peur, la porte
+s'ouvre » ; « la peur n'ouvre rien, ici » (page 18). Brac l'a corrompu à l'ambre noir (la
+fournée « trop forte » de Dame Suie) pour le faire rugir de peur devant la porte : elle n'a pas
+bougé. Apaisé par Chloé, il rentre, rugit, la porte s'ouvre, et il lui remet le Sceau du Désert,
+entre ses dents « grandes comme des bananes », aussi doucement qu'une plume.
 
 **Le Souverain**, l'Apex ancestral du cratère, immense, à la peau veinée d'ambre. Ni bon ni
 mauvais : c'est une force de la nature, qui a peur quand on le réveille de force.

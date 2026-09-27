@@ -23,13 +23,29 @@ func _ready() -> void:
 	super()
 	if Engine.is_editor_hint():
 		return
-	if (taken_flag != &"" and Game.flag(taken_flag)) or (show_flag != &"" and not Game.flag(show_flag)):
+	if taken_flag != &"" and Game.flag(taken_flag):
 		queue_free()
 		return
+	if show_flag != &"" and not Game.flag(show_flag):
+		# Not there yet: it shows up as soon as the story sets its flag (a page a scene uncovers).
+		visible = false
+		Game.flag_changed.connect(_on_flag_changed)
+		return
+	_appear()
+
+
+func _appear() -> void:
+	visible = true
 	add_to_group(&"interactable")
 	_add_glow()
 	Quality.changed.connect(_apply_quality)
 	_apply_quality()
+
+
+func _on_flag_changed(id: StringName, _value: Variant) -> void:
+	if id == show_flag and Game.flag(show_flag):
+		Game.flag_changed.disconnect(_on_flag_changed)
+		_appear()
 
 
 func _apply_quality() -> void:

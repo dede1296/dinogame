@@ -12,6 +12,11 @@ const ZONES := {
 	&"antre_crane": "res://regions/plaines/antre_crane.tscn",
 	&"havre_dore": "res://regions/havre/havre_dore.tscn",
 	&"foret": "res://regions/foret/foret.tscn",
+	&"camp_ombre": "res://regions/foret/camp_ombre.tscn",
+	&"marais": "res://regions/marais/marais.tscn",
+	&"temple_englouti": "res://regions/marais/temple_englouti.tscn",
+	&"desert": "res://regions/desert/desert.tscn",
+	&"sanctuaire_vents": "res://regions/desert/sanctuaire_vents.tscn",
 }
 const PLAYER := preload("res://actors/player.tscn")
 const COMPANION := preload("res://actors/companion.tscn")
@@ -34,6 +39,8 @@ const RAIN_SOUND := preload("res://assets/audio/ambience/pluie.mp3")
 const RAIN_DB := -7.0   # a light rain, under the zone's ambience
 const STORM_SOUND := preload("res://assets/audio/ambience/orage.mp3")
 const STORM_DB := -4.0
+const SAND_SOUND := preload("res://assets/audio/ambience/rafale.ogg")
+const SAND_DB := -5.0
 ## The map: Chloé sees this far around her (tiles), checked this often (s).
 const EXPLORE_RADIUS := 11.0
 const EXPLORE_EVERY := 0.25
@@ -54,6 +61,9 @@ var _map_button: Button
 var _ride_button: RideButton
 var _tracker: QuestTracker
 var _explore_timer := 0.0
+## Tiles Chloé can get to in this zone (see _reachable_tiles): roaming dinos appear only there.
+var _reachable := {}
+const TILE_PX := 48.0
 
 
 func _ready() -> void:
@@ -118,7 +128,8 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF) -> void:
 	region_holder.add_child(region)
 	Game.region_id = id
 	Game.zone_level = roundi((region.levels.x + region.levels.y) / 2.0)
-	Game.climate = {"rain": region.rain_chance, "mist": region.mist_chance, "storm": region.storm_chance}
+	Game.set_climate({"rain": region.rain_chance, "mist": region.mist_chance, "storm": region.storm_chance,
+		"sandstorm": region.sandstorm_chance})
 
 	if region.indoor:   # no riding under a roof
 		dismount()
@@ -186,19 +197,54 @@ func _spawn_roamers() -> void:
 	if region == null:
 		return
 	var phase := Game.phase()
+	_reachable = _reachable_tiles()
 	for h in region.habitats():
 		for w in h.spawn_roamers(phase, region.entities, _can_stand):
 			w.encountered.connect(_on_encountered)
 
 
-## Free ground for a dino: grass or path, nothing solid there, away from Chloé.
+## Free ground for a dino: ground Chloé can get to, nothing solid there, away from her.
 func _can_stand(p: Vector2) -> bool:
 	if region.surface_at(p) == &"water" or p.distance_to(player.global_position) < 200.0:
 		return false
+	if not _reachable.is_empty() and not _reachable.has(Vector2i((p / TILE_PX).floor())):
+		return false   # a ledge or a cliff top nobody can climb to
 	var query := PhysicsPointQueryParameters2D.new()
 	query.position = p
 	query.collision_mask = 1
 	return get_world_2d().direct_space_state.intersect_point(query, 1).is_empty()
+
+
+## The tiles Chloé can get to from where she stands: open ground joined without a cliff (a
+## step of at most Region.CLIFF_STEP), and water (swimming, later). Obstacles do not count: what
+## lies behind a rock is only « later ».
+func _reachable_tiles() -> Dictionary:
+	var out := {}
+	var size := region.map_size()
+	var start := Vector2i((player.global_position / TILE_PX).floor())
+	out[start] = true
+	var queue: Array[Vector2i] = [start]
+	while not queue.is_empty():
+		var c: Vector2i = queue.pop_back()
+		var here := _tile_kind(c)
+		var h := region.tile_height(c)
+		for d: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			var n := c + d
+			if out.has(n) or n.x < 0 or n.y < 0 or n.x >= size.x or n.y >= size.y:
+				continue
+			var kind := _tile_kind(n)
+			if kind != "water" and not kind in Story.OPEN_GROUND:
+				continue
+			if kind != "water" and here != "water" and absf(region.tile_height(n) - h) > Region.CLIFF_STEP:
+				continue
+			out[n] = true
+			queue.append(n)
+	return out
+
+
+func _tile_kind(c: Vector2i) -> String:
+	var data := region.terrain.get_cell_tile_data(c)
+	return "" if data == null else String(data.get_custom_data("terrain"))
 
 
 func _weather_sound() -> void:
@@ -207,6 +253,8 @@ func _weather_sound() -> void:
 			Audio.play_weather(RAIN_SOUND, 3.0, RAIN_DB)
 		&"storm":
 			Audio.play_weather(STORM_SOUND, 3.0, STORM_DB)
+		&"sandstorm":
+			Audio.play_weather(SAND_SOUND, 3.0, SAND_DB)
 		_:
 			Audio.play_weather(null, 3.0)
 
@@ -220,7 +268,8 @@ func _store_position() -> void:
 # ------------------------------------------------------------------ ambience
 
 func _process(delta: float) -> void:
-	_ride_button.show_state(Game.flag(&"selle") and region != null and not region.indoor, player.mount != null)
+	_ride_button.show_state(Game.flag(&"selle") and region != null and not region.indoor and not player.is_swimming(),
+		player.mount != null)
 	_explore_timer -= delta
 	if _explore_timer <= 0.0:
 		_explore_timer = EXPLORE_EVERY
@@ -318,6 +367,8 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Chloé climbs on the dino of her party able to carry her (Monture), or gets down.
 func toggle_ride() -> void:
 	if player.busy or _changing_zone or get_tree().paused or not Game.flag(&"selle") or region.indoor:
+		return
+	if player.is_swimming():   # (the swimmer carries her until the shore)
 		return
 	if player.mount:
 		dismount()

@@ -2,14 +2,17 @@ class_name PartyBar
 extends Control
 ## The party at a glance, top-left of the exploration screen: a round portrait per dino
 ## (the lead one bigger), an HP ring, an XP bar and the level. Experience gains pop up next
-## to the portrait ("+12 xp", "Niv. 6 !"). Tapping a portrait opens its menu: make it the
-## lead dino, give it a berry, or see its card. The game is paused while a menu is open.
+## to the portrait ("+12 xp", "Niv. 6 !"), and so does the Lien ("+1 ♥"). Tapping a portrait
+## opens its menu (with its Lien, in hearts): make it the lead dino, give it a berry, or see
+## its card. The game is paused while a menu is open.
 
 const LEAD_SIZE := 84.0
 const SIZE := 62.0
 const GAP := 12.0
 const RING := 5.0
 const REDRAW_S := 0.25
+## Between two pop-ups of the same wave ("+12 xp", then "Niv. 6 !", "+1 ♥"), so each is read.
+const POP_GAP_S := 0.45
 const INK := Color(0.106, 0.122, 0.157, 0.92)
 const CREAM := Color(1, 0.97, 0.9)
 const AMBER := Color(0.98, 0.76, 0.35)
@@ -19,6 +22,7 @@ const MENU_LAYER := 50   # over the HUD (quest tracker, buttons), under the sett
 var _slots: Array[Control] = []
 var _pending: Array = []   # [dino, text, colour] shown once the game runs again
 var _redraw := 0.0
+var _pop_wait := 0.0
 var _menu: Control
 var _menu_layer: CanvasLayer
 
@@ -29,6 +33,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	Game.party_changed.connect(_rebuild)
 	Game.xp_awarded.connect(_on_xp)
+	Game.bond_changed.connect(_on_bond)
 	get_viewport().size_changed.connect(_rebuild)
 	_rebuild()
 
@@ -39,7 +44,9 @@ func _process(delta: float) -> void:
 		_redraw = 0.0
 		for s in _slots:
 			s.queue_redraw()
-	if not get_tree().paused and not _pending.is_empty():
+	_pop_wait -= delta
+	if _pop_wait <= 0.0 and not get_tree().paused and not _pending.is_empty():
+		_pop_wait = POP_GAP_S
 		var p: Array = _pending.pop_front()
 		_popup(p[0], p[1], p[2])
 
@@ -80,6 +87,10 @@ func _on_xp(d: Dino, amount: int, levels: int) -> void:
 		_pending.append([d, "Niv. %d !" % d.level, AMBER])
 
 
+func _on_bond(d: Dino, hearts: int) -> void:
+	_pending.append([d, "+%d ♥" % hearts, DinoCard.BOND_PINK])
+
+
 func _popup(d: Dino, text: String, colour: Color) -> void:
 	var slot := _slot_of(d)
 	if slot == null:
@@ -108,7 +119,7 @@ func _popup(d: Dino, text: String, colour: Color) -> void:
 	t.tween_property(pill, "position:y", pill.position.y - 22.0, 1.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	t.tween_property(pill, "modulate:a", 0.0, 0.5).set_delay(0.9)
 	t.chain().tween_callback(pill.queue_free)
-	if text.begins_with("Niv."):
+	if text.begins_with("Niv.") or text.ends_with("♥"):
 		var bounce := create_tween()
 		bounce.tween_property(slot, "scale", Vector2(1.18, 1.18), 0.12)
 		bounce.tween_property(slot, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK)
@@ -126,6 +137,7 @@ func _open_menu(index: int) -> void:
 	col.add_theme_constant_override("separation", 8)
 	var panel := _panel(col)
 	col.add_child(_title(d.nickname, "%s · niv. %d · %d/%d PV" % [d.species_name(), d.level, d.hp, d.max_hp()]))
+	col.add_child(_bond_line(d))
 	if index > 0:
 		_menu_button(col, "Dino actif", Game.set_lead.bind(index))
 	var berries := Game.item_count("baie")
@@ -236,6 +248,21 @@ func _title(text: String, sub: String) -> Control:
 	s.add_theme_color_override("font_color", Color(CREAM, 0.8))
 	col.add_child(s)
 	return col
+
+
+## "Lien" and its hearts (DinoCard.hearts).
+func _bond_line(d: Dino) -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	var l := Label.new()
+	l.text = "Lien"
+	l.add_theme_font_size_override("font_size", 17)
+	l.add_theme_color_override("font_color", Color(CREAM, 0.8))
+	row.add_child(l)
+	var h := DinoCard.hearts(d.bond, 20.0)
+	h.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(h)
+	return row
 
 
 func _button(text: String) -> Button:

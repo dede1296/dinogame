@@ -9,7 +9,21 @@ const TOPICS := {
 	&"pieces": "Comment gagner des pièces ?",
 	&"selle": "Comment avoir une selle ?",
 	&"monter": "Quel dino peut me porter ?",
+	# The questions the story raises (story_topics), from chapter 2 on.
+	&"suite": "Où dois-je aller ?",
+	&"mur": "Comment passer le mur fissuré ?",
+	&"apaiser": "Comment apaiser un dino ?",
+	&"masque": "Qui est le Masque ?",
+	# Chapter 3, the Marais Brumeux.
+	&"nage": "Comment nager dans le Marais ?",
+	&"chanter": "Comment ouvrir la porte d'ambre ?",
+	&"voix": "Qui est la Voix du Marais ?",
+	&"temple": "Qu'y a-t-il dans le temple englouti ?",
+	&"suie": "Qui est la dame en gris ?",
+	&"roc_nuit": "Où va Roc, la nuit ?",
 }
+## The same question, asked to someone else in other words (npc -> topic -> words).
+const TOPICS_FOR := {&"roc": {&"roc_nuit": "Où allez-vous, la nuit ?"}}
 const GOODBYE := "Au revoir"
 const AGAIN := "Autre chose ?"
 
@@ -25,7 +39,7 @@ static func menu(npc: StringName, speaker: String, prompt: String, topics: Array
 			options.append(action)
 		var shown := topics.filter(func(t: StringName) -> bool: return not asked.has(t))
 		for t: StringName in shown:
-			options.append(TOPICS[t])
+			options.append(label(npc, t))
 		options.append(GOODBYE)
 		var pick := await Dialogue.choose(speaker, prompt, options)
 		if action != "" and pick == 0:
@@ -35,7 +49,7 @@ static func menu(npc: StringName, speaker: String, prompt: String, topics: Array
 			return false
 		var topic: StringName = shown[i]
 		asked[topic] = true
-		await S.say([{"who": "Chloé", "text": TOPICS[topic]}])
+		await S.say([{"who": "Chloé", "text": label(npc, topic)}])
 		await S.say(answer(npc, speaker, topic))
 		if asked.size() == topics.size() and action == "":
 			return false
@@ -52,7 +66,180 @@ static func answer(npc: StringName, speaker: String, topic: StringName) -> Array
 			return [{"who": speaker, "text": lead + saddle_step()}]
 		&"monter":
 			return [{"who": speaker, "text": "Seul un grand dino adulte (niveau %d) peut porter quelqu'un : un Tricératops, un Parasaurolophus, un Ankylosaurus, un Iguanodon… Pas un raptor, ni un petit. " % Abilities.ADULT_LEVEL + _party_mount()}]
-	return []
+		&"suite":
+			return [{"who": speaker, "text": _next_step(npc)}]
+		&"mur":
+			return [{"who": speaker, "text": _cracked_wall(npc)}]
+		&"apaiser":
+			return [{"who": speaker, "text": _calming(npc)}]
+		&"masque":
+			return [{"who": speaker, "text": _the_mask(npc)}]
+		&"nage":
+			return [{"who": speaker, "text": _swim(npc)}]
+		&"chanter":
+			return [{"who": speaker, "text": _sing(npc)}]
+		&"voix":
+			return [{"who": speaker, "text": _voice(npc)}]
+		&"temple":
+			return [{"who": speaker, "text": _temple(npc)}]
+		&"suie":
+			return [{"who": speaker, "text": _lady(npc)}]
+		&"roc_nuit":
+			return [{"who": speaker, "text": _roc_night(npc)}]
+	return DesertAsk.answer(npc, speaker, topic)   # chapter 4 (story/desert_ask.gd)
+
+
+## A question in Chloé's words, for npc (she does not ask Roc where Roc goes).
+static func label(npc: StringName, topic: StringName) -> String:
+	return TOPICS_FOR.get(npc, {}).get(topic, TOPICS.get(topic, DesertAsk.TOPICS.get(topic, String(topic))))
+
+
+## The questions of the moment (chapter 2 on): where to go, the cracked wall, calming the
+## pack's leader, the Masque. For Roc and Maïa (story.gd), after their own topics.
+static func story_topics() -> Array:
+	var out: Array = []
+	if not Game.flag(&"selle"):
+		return out
+	if Objectives.main_hint() != "":
+		out.append(&"suite")
+	if Game.flag(&"clairiere_vue") and not Game.flag(&"mur_camp_brise"):
+		out.append(&"mur")
+	if Game.flag(&"camp_arrive") and not Game.flag(&"sceau_foret"):
+		out.append(&"apaiser")
+	if Game.flag(&"clairiere_vue") and not Game.flag(&"marais_arrivee"):
+		out.append(&"masque")
+	# Chapter 3: only what is useful now (the menu has room for a few questions).
+	if Game.flag(&"marais_arrivee"):
+		if Marais.swim_step() != "":
+			out.append(&"nage")
+		elif not Game.flag(&"porte_voix_ouverte") and Marais.sing_step() != "":
+			out.append(&"chanter")
+		if not Game.flag(&"voix_rencontree"):
+			out.append(&"voix")
+		if Game.flag(&"temple_ouvert") and not Game.flag(&"sceau_marais"):
+			out.append(&"temple")
+		if Game.flag(&"gilet_nage") and not Game.flag(&"dame_suie_battue"):
+			out.append(&"suie")
+	if Game.flag(&"roc_marais_vu"):
+		out.append(&"roc_nuit")
+	# Chapter 4, the Désert Aride: the fossils, the fallen rocks, the storm, the Carnotaurus.
+	if Game.flag(&"desert_arrivee"):
+		out.append_array(DesertAsk.story_topics())
+	return out
+
+
+## The main objective, in the speaker's words.
+static func _next_step(npc: StringName) -> String:
+	var hint := Objectives.main_hint()
+	if hint == "":
+		return "Pour l'instant ? Rien ne presse. Explore, attrape, repose-toi."
+	match npc:
+		&"roc":
+			return "Hmm. Si j'étais toi… " + hint
+		&"maia":
+			return "Conseil de championne : " + hint
+		&"joss":
+			return "Si j'ai bien compris… " + hint
+	return hint
+
+
+## How to get through the cracked wall: a dome-headed dino (Coup de crâne).
+static func _cracked_wall(npc: StringName) -> String:
+	var dome := Game.ability_user(&"coup_crane")
+	if dome:
+		return "Ton %s a le crâne qu'il faut ! Un bon coup de tête contre la fissure, et le mur cédera." % dome.nickname
+	for d: Dino in Game.box:
+		if Abilities.has(d, &"coup_crane"):
+			return "Ton %s attend au Cabinet : c'est lui qu'il te faut. Le Pr Roc peut l'échanger contre un dino de ton équipe." % d.nickname
+	if npc == &"roc":
+		return "Un mur fissuré ? Il te faut un crâne en dôme : un Pachycephalosaurus. Ils vivent dans les clairières rocheuses, au nord-est de la Forêt, et ne sortent que le jour. Hélène disait qu'ils se disent bonjour à coups de tête. Je n'ai jamais essayé."
+	return "Un Pachycephalosaurus ! Aux clairières rocheuses, au nord-est de la Forêt, le jour. Ils se cognent la tête toute la journée. Caillou a essayé une fois. Une seule."
+
+
+## Calming a corrupted dino (the camp: the champion, the pack's leader).
+static func _calming(npc: StringName) -> String:
+	if npc == &"roc":
+		return "Au combat, choisis « Apaiser » au lieu d'attaquer. Plus il est fatigué, plus il écoute ; un dino de sa famille le rassure ; et plus ton dino a de cœurs de Lien, mieux ça marche. Mais chaque coup l'affole à nouveau. Hélène disait : il faut rester plus longtemps que sa peur."
+	return "Moi, d'habitude, j'attaque. Mais Hélène disait à maman qu'il faut « Apaiser » : parler doucement, ne plus taper, et avoir un dino qui a confiance en toi. Plus il a de cœurs, mieux c'est."
+
+
+## The Masque: nobody knows (Roc knows more than he says).
+static func _the_mask(npc: StringName) -> String:
+	if npc == &"roc":
+		if Game.flag(&"masque_vu"):
+			return "Un masque d'obsidienne… Du verre de volcan. On en trouve sur les plages noires, au nord. On n'y va qu'en bateau. … Je n'en sais pas plus. Vraiment."
+		return "Le chef de l'Ombre Noire ? Personne ne l'a jamais vu sans son masque. Et si je savais… Non. Je ne sais pas."
+	if Game.flag(&"masque_vu"):
+		return "Personne ne sait ! C'est ça qui est stylé. Tu crois qu'il a un nom normal, sous son masque ? Genre… Gérard ?"
+	return "Le chef de l'Ombre Noire. Il paraît que son masque est tout noir, et qu'il ne parle jamais fort. Trop stylé. Enfin, trop méchant. Mais stylé."
+
+
+## La Nage: what Chloé still needs (the vest, a grown swimmer), or how it works.
+static func _swim(npc: StringName) -> String:
+	var step := Marais.swim_step()
+	if step == "":
+		step = "Tu as tout ce qu'il faut : avance dans l'eau profonde, et ton nageur te prendra sur son dos. Pour ressortir, nage jusqu'à la rive."
+	match npc:
+		&"joss":
+			return "Mes gilets, c'est ma spécialité ! " + step
+		&"roc":
+			return "Hmm. Hélène traversait le Marais sur le dos d'un Baryonyx, avec un gilet de liège. " + step
+		&"maia":
+			return "Moi, je nage comme une enclume. Mais bon : " + step
+	return step
+
+
+## The amber door of the Voix's islet (Résonance).
+static func _sing(npc: StringName) -> String:
+	var step := Marais.sing_step()
+	if step == "":
+		var singer: Dino = Game.ability_user(&"resonance")
+		step = "Approche ton %s de la porte d'ambre : sa crête fera le reste." % singer.nickname if singer else "Une crête qui chante, et la porte s'ouvre."
+	if npc == &"roc":
+		return "Hélène disait que l'ambre écoute les crêtes. " + step
+	return step
+
+
+## The Voix du Marais: Hélène's old Parasaurolophus (Écho's mother).
+static func _voice(npc: StringName) -> String:
+	var echo: Dino = Marais.echo_dino()
+	match npc:
+		&"roc":
+			var mother := " C'est la mère %s, tu sais." % French.de(echo.nickname) if echo else ""
+			return "La vieille Parasaurolophus d'Hélène. Elle a chanté avant même d'ouvrir les yeux : j'en ai lâché trois flacons. Elle vit au cœur de la roselière, derrière une porte d'ambre." + mother
+		&"joss":
+			return "Je l'entends chanter depuis ma cabane, le soir : mes aiguilles vibrent dans leur boîte. Elle vit au cœur de la roselière, sur un îlot, derrière une porte d'ambre."
+	return "Maman dit qu'elle chante le soir, dans la brume, et qu'on l'entendait jusqu'au port, autrefois. Maman sait plein de choses sur Hélène. Trop, des fois."
+
+
+## The sunken temple.
+static func _temple(npc: StringName) -> String:
+	match npc:
+		&"roc":
+			return "Le temple englouti… Hélène y descendait avec une bougie et un carnet. L'eau passe d'une galerie à l'autre par des vannes : tourne-les dans l'ordre, et le temple s'assèche. Moi, j'y ai perdu une chaussure."
+		&"joss":
+			return "Personne n'y entrait. Mais les soirs de brume, on voit de la lumière derrière les fenêtres noyées. Moi, je reste dans ma cabane."
+	return "Un temple SOUS L'EAU ?! Il y a sûrement un trésor. Ou un monstre. Ou un monstre qui garde un trésor. J'espère les deux."
+
+
+## The lady in grey who picks roots on the islet (Dame Suie).
+static func _lady(npc: StringName) -> String:
+	match npc:
+		&"roc":
+			return "Une dame en gris qui cueille des racines ? Je ne connais pas de dame en gris. Mais si elle sent la cendre, reste loin d'elle, Chloé. Ou alors, emmène tous tes dinos."
+		&"joss":
+			return "Très polie. Des gants gris, une voilette, des petits ciseaux d'argent. Elle vient en barque cueillir des racines sur l'îlot aux racines. On n'y va qu'à la nage."
+	return "Une dame en gris avec une voilette ? Brr. On dirait une maîtresse d'école qui ne rit jamais."
+
+
+## Roc's nights out (after Chloé confronted him).
+static func _roc_night(npc: StringName) -> String:
+	match npc:
+		&"roc":
+			return "Je te l'ai dit : je ne peux pas. Pas encore. … Fais-moi confiance, Chloé. S'il te plaît."
+		&"joss":
+			return "Le professeur ? Je l'ai vu passer une nuit, avec sa lanterne, vers le nord. Il m'a dit bonsoir très poliment, puis il est tombé dans la vase. Il m'a redit bonsoir, moins poliment."
+	return "Roc ? Il cherche des escargots de nuit, je parie. Il est bizarre, pas méchant. Je te l'ai déjà dit, non ?"
 
 
 ## Where to earn coins, as each one sees it.

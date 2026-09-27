@@ -6,9 +6,11 @@ signal flag_changed(id: StringName, value: Variant)
 signal party_changed
 ## A dino gained experience (`levels`: levels gained); the party bar shows it.
 signal xp_awarded(dino: Dino, amount: int, levels: int)
+## A dino's Lien grew by `hearts` (the party bar shows "+1 ♥").
+signal bond_changed(dino: Dino, hearts: int)
 ## The time of day moved to another phase (&"dawn", &"day", &"dusk", &"night").
 signal phase_changed(phase: StringName)
-## The weather changed (&"clear", &"rain", &"mist", &"storm").
+## The weather changed (&"clear", &"rain", &"mist", &"storm", &"sandstorm").
 signal weather_changed(weather: StringName)
 
 ## The three hatchlings Hélène left for Chloé: species -> default name. Each one beats
@@ -24,10 +26,19 @@ const START_ITEMS := {}
 const BERRY_HP := 20
 ## Party members who did not fight get this share of a battle's experience.
 const XP_SHARE := 0.6
+## The Lien (Dino.bond): the hatchling of Hélène starts with a heart; bond points for a step
+## walked in the lead (or carrying Chloé), a battle won where it fought, a berry, a fern.
+const BOND_STARTER := 1
+const BOND_STEP := 1
+const BOND_WIN := 30
+const BOND_BERRY := 20
+const BOND_FERN := 40
 ## Game clock: minutes of the day (0–1440); one game hour lasts CLOCK_HOUR_S real seconds.
 const CLOCK_HOUR_S := 60.0
 const START_CLOCK := 9.0 * 60.0
-const WEATHERS: Array[StringName] = [&"clear", &"rain", &"mist", &"storm"]
+## A sandstorm blows only where the zone says it can (Region.sandstorm_chance: the Désert),
+## or when a scene sets it (set_weather(&"sandstorm")); leaving for a zone without, it stops.
+const WEATHERS: Array[StringName] = [&"clear", &"rain", &"mist", &"storm", &"sandstorm"]
 ## Each game hour, a spell of rain or mist ends with this chance.
 const WEATHER_CLEARS := 0.35
 
@@ -63,7 +74,8 @@ var arrival: StringName
 ## A game is loaded or started (a scene launched alone in the editor starts one).
 var in_game := false
 var weather: StringName = &"clear"
-## Chances per game hour of rain and mist starting, from the current zone (set by the world).
+## Chances per game hour of rain, mist, a storm, a sandstorm starting, from the current zone
+## (set by the world: set_climate).
 var climate := {"rain": 0.08, "mist": 0.1}
 ## Debug: how fast the clock runs (1 = normal).
 var time_scale := 1.0
@@ -161,17 +173,33 @@ func phase() -> StringName:
 ## Each new hour the weather may turn (mist is likelier at dawn).
 func _roll_weather(hour: int) -> void:
 	if weather != &"clear":
-		if randf() < WEATHER_CLEARS:
+		if randf() < WEATHER_CLEARS or (weather == &"sandstorm" and float(climate.get("sandstorm", 0.0)) <= 0.0):
 			set_weather(&"clear")
 		return
-	var mist: float = climate.get("mist", 0.0) * (3.0 if hour >= 4 and hour <= 8 else 1.0)
-	var roll := randf()
-	if roll < mist:
-		set_weather(&"mist")
-	elif roll < mist + float(climate.get("rain", 0.0)):
-		set_weather(&"rain")
-	elif roll < mist + float(climate.get("rain", 0.0)) + float(climate.get("storm", 0.0)):
-		set_weather(&"storm")
+	set_weather(weather_for(randf(), hour, climate))
+
+
+## The weather a roll (0–1) brings at `hour` with `chances` (a zone's climate, see
+## climate): the first spell whose share the roll falls into, else clear.
+static func weather_for(roll: float, hour: int, chances: Dictionary) -> StringName:
+	var mist: float = float(chances.get("mist", 0.0)) * (3.0 if hour >= 4 and hour <= 8 else 1.0)
+	var edge := 0.0
+	for spell: Array in [[&"mist", mist], [&"rain", float(chances.get("rain", 0.0))],
+			[&"storm", float(chances.get("storm", 0.0))], [&"sandstorm", float(chances.get("sandstorm", 0.0))]]:
+		if spell[1] <= 0.0:
+			continue
+		edge += spell[1]
+		if roll < edge:
+			return spell[0]
+	return &"clear"
+
+
+## The zone's chances of each weather (the world, entering a zone). A sandstorm stops at
+## once where none can blow (out of the Désert, indoors).
+func set_climate(chances: Dictionary) -> void:
+	climate = chances
+	if weather == &"sandstorm" and float(chances.get("sandstorm", 0.0)) <= 0.0:
+		set_weather(&"clear")
 
 
 ## Rain falls (a shower or a storm).
@@ -223,6 +251,7 @@ func feed_berry(d: Dino) -> bool:
 		return false
 	d.hp = mini(d.max_hp(), d.hp + BERRY_HP)
 	party_changed.emit()
+	grow_bond(d, BOND_BERRY)   # cared for: the Lien grows a little
 	return true
 
 
@@ -233,7 +262,42 @@ func feed_fern(d: Dino) -> int:
 		return 0
 	d.hp = d.max_hp()
 	party_changed.emit()
+	grow_bond(d, BOND_FERN)
 	return missing
+
+
+## A story moment brings Chloé and `d` closer: whole hearts of Lien (Dino.bond, at most
+## Dino.MAX_BOND). Returns the hearts gained; the party bar shows them ("+1 ♥").
+func add_bond(d: Dino, hearts := 1) -> int:
+	if d == null:
+		return 0
+	var gained: int = d.add_hearts(hearts)
+	if gained > 0:
+		bond_changed.emit(d, gained)
+	return gained
+
+
+## Bond points for `d` (a step together, a battle won, some care): a heart every so often
+## (see Dino.gain_bond_points). Returns the hearts gained.
+func grow_bond(d: Dino, points: int) -> int:
+	if d == null:
+		return 0
+	var gained: int = d.gain_bond_points(points)
+	if gained > 0:
+		bond_changed.emit(d, gained)
+	return gained
+
+
+## Chloé's own hatchling, the egg of Hélène she chose (in the party, else in the box), or
+## null. For the scenes that bring them closer: Game.add_bond(Game.starter_dino()).
+func starter_dino() -> Dino:
+	var species = flag(&"starter")
+	if not species is String:
+		return null
+	for d in party + box:
+		if String(d.species().id) == species:
+			return d
+	return null
 
 
 func new_game() -> void:
@@ -260,6 +324,7 @@ func new_game() -> void:
 ## Chloé takes one of the three hatchlings (the prologue; or directly, for tests).
 func give_starter(species: StringName) -> Dino:
 	var d := Dino.create(species, STARTER_LEVEL, STARTERS.get(species, ""))
+	d.bond = BOND_STARTER   # hatched for Chloé: already a heart
 	party.insert(0, d)
 	mark_caught(species)
 	flags["starter"] = String(species)

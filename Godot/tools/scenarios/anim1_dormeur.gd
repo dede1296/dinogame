@@ -1,0 +1,31 @@
+extends RefCounted
+## ANIM-1's check of the staging (story/*.gd): dormeur. See tools/capture.gd.
+
+const STEPS := [
+	[0.82, "calm", 900.0],
+	[0.84, "dlog", true],
+	[0.86, "demo", true],
+	[0.88, "auto", true],
+	[0.90, "fast_battles", true],
+	[0.92, "level", 10],
+	[0.94, "weather", &"clear"],
+	[0.96, "clock", 11.0],
+	[1.16, "tp", Vector2(56.4, 68.5)],
+	[1.31, "hold", "move_up"],
+	[1.41, "hold", ""],
+	[1.66, "interact_now", null],
+	[1.76, "wait_idle", [0.5, 20]],
+	[2.01, "interact_now", null],
+	[2.41, "shot", "d1_000"],
+	[2.91, "shot", "d1_001"],
+	[3.41, "shot", "d1_002"],
+	[3.91, "shot", "d1_003"],
+	[4.41, "shot", "d1_004"],
+	[4.51, "wait_idle", [0.5, 20]],
+	[4.76, "interact_now", null],
+	[5.16, "shot", "d2_000"],
+	[5.66, "shot", "d2_001"],
+	[6.16, "shot", "d2_002"],
+	[6.66, "shot", "d2_003"],
+	[7.16, "shot", "d2_004"],
+]

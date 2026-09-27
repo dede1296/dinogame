@@ -5,7 +5,10 @@ extends Node2D
 ## It senses what is hidden nearby (group "secret": a tree or a stone hiding an amber pebble,
 ## buried earth): a "!" over its head, a little cry when it first notices. Glad when found.
 ## It also reacts to the places it comes to (see REACTIONS): the water, a fire, a cave.
+## Each step together makes its Lien grow (Game.grow_bond): a "♥" over it at a new heart.
 ## When Chloé rides (Player.mount), it is her mount instead: under her, carrying her (Saddle).
+## In deep water (Player.swimmer), the swimmer of the party carries her the same way, half
+## under the water (the view sinks them both: WorldView).
 
 const FOLLOW_GAP := 8        # trail points behind Chloé (~48 px)
 const CATCH_UP := 7.0        # how fast it closes the gap
@@ -17,6 +20,7 @@ const REJOICE_DELAY_S := 0.7   # the pebble's chime first, then the dino's cry
 const REACTIONS := {&"water": ["~", 90.0], &"fire": ["♥", 110.0], &"cave": ["?", 260.0]}
 ## The same kind of place does not make it react again before this long (s).
 const REACT_AGAIN_S := 40.0
+const SWIM := preload("res://world/swim.gd")
 
 var player: Player
 var dino: Dino
@@ -38,13 +42,29 @@ func _ready() -> void:
 	add_to_group(&"companion")
 	_shadow = Shadow.make(self)
 	Game.party_changed.connect(refresh)
+	if player:
+		player.stepped.connect(_on_step)
+		player.swim_changed.connect(func(_swimming: bool) -> void: refresh())
 	refresh()
 
 
+## A step at Chloé's side (or carrying her): the Lien grows. A new heart: a "♥" and a cry.
+func _on_step(_surface: StringName) -> void:
+	if dino == null or player.busy:
+		return
+	if Game.grow_bond(dino, Game.BOND_STEP) > 0:
+		cry(&"neutre")
+		var view := get_tree().get_first_node_in_group(&"world_view") as WorldView
+		if view:
+			view.emote(self, "♥")
+
+
 func refresh() -> void:
-	if carrying() and not Game.party.has(player.mount):   # sent to the Cabinet meanwhile
+	if player and player.mount and not Game.party.has(player.mount):   # sent to the Cabinet meanwhile
 		player.mount = null
-	dino = player.mount if carrying() else Game.lead_dino()
+	if player and player.swimmer and not Game.party.has(player.swimmer):   # another swimmer, if any
+		player.swimmer = SWIM.swimmer()
+	dino = player.carried_by() if carrying() else Game.lead_dino()
 	visible = dino != null
 	if dino == null:
 		return
@@ -56,6 +76,7 @@ func refresh() -> void:
 	var h := species.sheet.get_height() / float(species.sheet_rows)
 	sprite.offset = Vector2(0, -h * 0.46)
 	Shadow.fit(_shadow, species.sheet.get_width() / float(species.sheet_columns) * size * 0.55)
+	_shadow.visible = not swimming()   # (under the water, no shadow on the ground)
 	sprite.play(&"idle")
 
 
@@ -98,8 +119,14 @@ func _process(_delta: float) -> void:
 		view.show_hint(self, hint and visible)
 
 
+## Chloé on its back: in the saddle, or swimming.
 func carrying() -> bool:
-	return player != null and player.mount != null
+	return player != null and player.carried_by() != null
+
+
+## Swimming with Chloé on its back (half under the water, in the view).
+func swimming() -> bool:
+	return player != null and player.mount == null and player.swimmer != null
 
 
 ## Chloé in the saddle on it, or back on her feet.

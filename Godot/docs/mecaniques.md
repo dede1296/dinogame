@@ -121,6 +121,21 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
   quelques lignes (drôles, parfois des indices : un tiroir fermé à clé, des bottes pleines de
   cendre), la suivante à chaque fois.
 
+### Scènes au passage ✅
+
+Une scène peut se jouer **quand Chloé arrive quelque part**, sans rien toucher (le Masque aperçu sur
+la passerelle…) : un **déclencheur** invisible (`world/story_trigger.gd`, `StoryTrigger`), un cercle
+de quelques cases posé par `ZoneBuilder.trigger(root, x, y, rayon, événement, {required_flag,
+once_flag})`. Il joue l'événement (`Story.run`) quand Chloé y entre, si son drapeau requis est posé
+et que son drapeau « déjà vu » ne l'est pas (la scène le pose à la fin). Si Chloé est occupée (une
+réplique, une autre scène), il attend qu'elle soit libre ; après une scène, il attend qu'elle ressorte
+avant de pouvoir rejouer.
+
+Un objet que révèle une scène (une page sous les racines, après le départ de Dame Suie) est posé
+dans la zone avec un `show_flag` : caché jusque-là, il apparaît dès que la scène pose le drapeau.
+Les grands dinos à qui l'on parle (Voix du Marais, Spinosaure, Carnotaurus…) se parlent aussi
+depuis leur tête ou leur flanc : leur portée grandit avec leur taille (`DinoNpc`).
+
 ### Fouiller l'île ✅
 
 - **Secouer un arbre** (A devant lui) : il tremble, des feuilles tombent ; une fois par jour et par
@@ -135,6 +150,11 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
 - **Pleine lune** ✅ : une nuit sur quatre. Nuit plus claire et argentée, les larmes cachées
   scintillent de loin, et à l'étang les Parasaurolophus chantent : un gué de pierres d'ambre
   mène à l'îlot jusqu'à l'aube. L'horloge montre une pleine lune ; la carte annonce la prochaine.
+- ✅ **Fossiles enfouis** (Désert, Cimetière des Géants) : la même terre remuée que pour un galet
+  (`DigSpot`), mais avec `item_id = "fossile"` : le dino au Flair creuse, le fossile saute de la
+  terre, Chloé le garde (objet `fossile`, jamais vendu ; « Fossile ! Tu en as 3. »), l'équipe
+  gagne de l'expérience. Posé par `ZoneBuilder.buried_item(root, x, y, "fossile", drapeau)`
+  (un drapeau unique, pas « galet_… » : un fossile ne compte pas comme une larme d'ambre).
 - **Le dino de tête sent les cachettes** : un « ! » au-dessus de lui et un petit cri quand un galet
   caché est tout près ; il saute de joie quand on le trouve. Il **réagit aux lieux** : l'eau (~),
   un feu (♥), une grotte (?).
@@ -162,8 +182,16 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
   nuit. Certaines espèces ne sortent que la nuit (Troodon, Leaellynasaura…).
 - **La pleine lune** revient régulièrement : l'ambre luit, révèle des passages secrets et des pages
   cachées, et fait sortir des espèces très rares.
-- **Météo par région** ✅ (beau temps, pluie fine, brume, **orage** : ciel sombre, éclairs, tonnerre ; aussi en combat) ; plus tard : tempêtes de sable, neige. Elle
+- **Météo par région** ✅ (beau temps, pluie fine, brume, **orage** : ciel sombre, éclairs, tonnerre ; aussi en combat) ; plus tard : neige. Elle
   change l'ambiance, certaines apparitions et certains effets en combat.
+- ✅ **Tempête de sable** (Désert, chapitre 4 ; météo `&"sandstorm"`) : seulement dans les zones
+  qui le permettent (`Region.sandstorm_chance` > 0, par heure de jeu ; 0 partout ailleurs), ou
+  quand une scène la lance (`Game.set_weather(&"sandstorm")`, la course-poursuite du canyon). Elle
+  s'arrête en entrant dans une zone sans tempête (`Game.set_climate`) et, comme les autres, finit
+  par passer. À l'écran : ciel et brume ocre, on voit moins loin (comme la brume), des traînées
+  de sable filent d'ouest en est, des nuages de poussière dérivent ; en combat, un voile ocre et
+  du sable qui vole ; l'horloge montre la brume teintée d'ocre (ou `meteo_sable.png` s'il existe) ;
+  le son reprend la rafale (`rafale.ogg`).
 
 ### Capacités d'exploration
 
@@ -175,9 +203,9 @@ introduit l'espèce qui ouvre la suite, ce qui rend la collection utile.
 | **Tranche** ✅ | Troncs, ronces | Raptors (Velociraptor, Deinonychus…) | Plaines (Vif, ou un Velociraptor sauvage) |
 | **Charge** ✅ | Rochers | Cératopsiens, cuirassés | Plaines (Bastion, ou un Protoceratops) |
 | **Résonance** | Portes et filons d'ambre éteints ; passages cachés (comme une pleine lune, à la demande) | Ornithopodes à crête (Parasaurolophus, Corythosaurus) | Plaines (Écho, ou un Parasaurolophus) |
-| **Flair** ✅ | Objets enfouis : galets d'ambre (puis fossiles, pages) | Compsognathus, Oviraptor, Troodon | Plaines (facultatif) |
-| **Coup de crâne** | Murs fissurés | Pachycéphalosaures | Forêt |
-| **Nage** | Eau profonde, rivières | Spinosauridés (Baryonyx…) | Marais |
+| **Flair** ✅ | Objets enfouis : galets d'ambre, fossiles ✅ (puis pages) | Compsognathus, Oviraptor, Troodon | Plaines (facultatif) |
+| **Coup de crâne** ✅ | Murs fissurés | Pachycéphalosaures (Pachycephalosaurus, Stygimoloch) | Forêt |
+| **Nage** ✅ | Eau profonde, rivières | Spinosauridés (Baryonyx…) | Marais |
 | **Plongée** | Grottes sous-marines | Reptiles marins (Plesiosaurus…) | Côte |
 | **Vol** | Falaises, îlots, déplacement rapide entre les régions visitées | Grands ptérosaures | Cieux |
 
@@ -189,7 +217,7 @@ sous-marines) et changent la façon de voyager :
 | Capacité | Qui | Équipement | Ce que ça ouvre |
 |---|---|---|---|
 | **Monture** ✅ | les grands marcheurs au dos praticable : cératopsiens (derrière la collerette), becs de canard, Iguanodon, Gallimimus, Ankylosaurus. Pas les raptors (trop petits), ni le Stégosaure (plaques), ni les sauropodes (hors de portée) | selle (Interlude) | voyager presque deux fois plus vite, traverser les herbes hautes sans rencontre cachée, courses |
-| **Nage** | spinosauridés (Baryonyx, Suchomimus, Spinosaurus) et reptiles marins | gilet de nage (ch. 3) | rivières, eau profonde, îlots proches |
+| **Nage** ✅ | spinosauridés (Baryonyx, Suchomimus, Spinosaurus) et reptiles marins | gilet de nage (ch. 3) | rivières, eau profonde, îlots proches |
 | **Plongée** | reptiles marins | masque de plongée (ch. 5) | grottes marines, épaves, récifs |
 | **Vol** | grands ptérosaures seulement (Pteranodon, Quetzalcoatlus ; le Dimorphodon est bien trop petit) | harnais de vol (ch. 7) | sommets, îlots lointains, et d'une région visitée à l'autre |
 
@@ -207,6 +235,48 @@ encore trop jeune, « bientôt » tant que la capacité n'est pas jouable.
 
 Côté données, chaque espèce liste ses capacités (plutôt que de les déduire de sa famille), ce qui
 permet des exceptions.
+
+✅ **Coup de crâne** (`data/abilities.gd`, id `coup_crane`, icône d'un crâne en dôme sur la fiche) :
+Pachycephalosaurus et Stygimoloch (quand il sera dans le jeu). Un **mur fissuré** est un `Obstacle`
+(kind `mur_fissure`, `ability = &"coup_crane"`) : le dino fonce, le mur s'effondre (son de rocher,
+débris). Le Pachycephalosaurus, de la famille des cuirassés, a aussi Charge : ce n'est pas un
+problème (les deux sont sur sa fiche).
+
+✅ **Nage** (`world/swim.gd`, `Swim` ; id `nage`) : il faut le **gilet de nage** (objet
+`gilet_nage`, ou le drapeau du même nom) **et** un dino nageur **adulte** dans l'équipe (Baryonyx,
+Suchomimus, Spinosaurus, reptiles marins ; niv. 12). Rien à presser : Chloé avance dans l'eau
+profonde et se met à nager toute seule, **sur le dos de son nageur** (le compagnon devient ce dino,
+comme la Monture ; Chloé garde sa pose assise). Tous deux sont **à demi dans l'eau** (enfoncés de
+42 % de la hauteur du dino, l'eau les coupe), avec un léger balancement, un **sillage** quand ils
+avancent et des **éclaboussures** en entrant et en sortant. Vitesse ×1,3. Sur la rive, elle
+redescend et marche (même si elle était en selle en entrant dans l'eau : le nageur la prend, puis
+elle continue à pied). Pas de rencontre cachée dans l'eau (pas d'herbes hautes), et les dinos
+sauvages ne vont pas dans l'eau ; si un combat arrive quand même (au bord), il se joue normalement,
+et elle nage encore après. Le bouton selle disparaît pendant la nage.
+Sans gilet ou sans nageur adulte, l'eau reste infranchissable ; si Chloé pousse contre elle, un
+message dit ce qui manque, une fois par zone (« Sans gilet de nage et sans dino nageur, impossible
+d'aller plus loin. », ou « Baryonyx est encore trop jeune… », ou « … sans gilet de nage… »).
+Côté technique : l'eau profonde bloque sur **sa propre couche physique** (couche 5, valeur 16 ; les
+tuiles d'eau du tileset sont sur `physics_layer_1`), Chloé la retire de son masque quand elle peut
+nager ; les rochers, les arbres, les falaises et les bords de la zone l'arrêtent toujours dans
+l'eau. Jamais coincée : si elle se retrouve dans l'eau sans pouvoir nager (partie rechargée, nageur
+parti au Cabinet), l'eau ne la bloque pas et elle en ressort à pied.
+
+✅ **Eau de crue** (`world/flood.gd`, `Flood` ; le temple englouti) : une nappe d'eau qui remplit un
+passage jusqu'en haut, **infranchissable même à la nage**, posée par
+`ZoneBuilder.flood(root, Rect2(cases), dry_flag, {flooded_flag, depth, blocked_dialogue, name})`.
+Elle reste tant que `dry_flag` n'est pas posé (ou, avec `flooded_flag`, seulement tant que ce
+drapeau l'est : une vanne qui peut la faire remonter). Quand le drapeau change (une vanne tournée,
+`Game.set_flag`), l'eau **baisse sous les yeux** de Chloé (≈ 3 s, grondement des pierres, bruit
+d'eau) et le passage s'ouvre ; elle peut aussi remonter, mais jamais sur Chloé : si elle est dedans,
+le passage ne se ferme qu'une fois qu'elle en est sortie. Devant l'eau, A : `blocked_dialogue` (ou
+« L'eau a tout envahi : impossible de passer, même à la nage… »). Dans la vue 3D : un bloc d'eau
+(surface qui ondule, écume sur les bords) de `depth` m (1,1 par défaut) qui s'abaisse.
+
+Essais : `tools/test_mecaniques_bc.gd` (headless, 80 vérifications) : conditions de la Nage, Chloé
+arrêtée au bord puis nageant sur un Baryonyx et ressortant à pied (dans une vraie petite zone,
+avec la physique), l'eau de crue qui bloque, baisse puis remonte sans enfermer Chloé, la tempête de
+sable (tirages, scènes, vue 3D, combat, horloge), les fossiles.
 
 ## Les dinos
 
@@ -234,23 +304,37 @@ Les 5 dinos de l'équipe **accompagnent Chloé** et restent visibles en permanen
   - **Actif** : ce dino devient le dino de tête (il suit Chloé à l'écran et combat en premier) ;
   - **Soigner** : utiliser un objet de soin ou un antidote sur lui ;
   - **Nourrir** : lui donner une friandise (monte le Lien) ;
-  - **Fiche** : ses statistiques, attaques, Lien, habitat d'origine ;
+  - **Fiche** : ses statistiques, attaques, Lien (✅ ses cœurs, aussi dans ce menu), habitat d'origine ;
   - **Capacité** : utiliser sa capacité d'exploration devant un obstacle proche (Tranche, Charge…).
 - **Glisser un portrait** sur un autre change l'ordre de l'équipe.
 - En combat, la même barre sert à **changer de dino** d'un seul toucher.
 
-### Le Lien
+### Le Lien ✅ (sauf friandises, caresses au Cabinet et attaque ultime)
 
 La mécanique de cœur, héritée d'Hélène.
 
-- Chaque dino a un **Lien** de 0 à 5 cœurs. Il monte en marchant avec lui (dino en tête d'équipe),
-  en combattant, en le soignant, en lui donnant ses friandises préférées, et en le caressant au
-  Cabinet.
-- Effets : petits bonus en combat (esquive, coup critique, il tient à 1 PV une fois par combat à 5
-  cœurs), puis **l'attaque ultime** de l'espèce à 5 cœurs (pour le dino de départ, elle s'apprend
-  auprès de son Ancien).
-- **Apaiser** : face à un dino corrompu, un dino dont le Lien est d'au moins 3 cœurs peut tenter
-  de l'apaiser au lieu de l'attaquer (voir Combat).
+- Chaque dino a un **Lien** de 0 à 5 cœurs (`Dino.bond`, sauvegardé ; 0 pour un dino capturé et
+  pour les sauvegardes d'avant le Lien). **Le dino de départ commence à 1 cœur.**
+- ✅ Il monte par **points de Lien** : un cœur à 600 points, puis 300 de plus à chaque cœur (600,
+  900, 1 200, 1 500, 1 800) :
+  - **marcher avec lui** : 1 point par pas quand il est en tête d'équipe (ou qu'il porte Chloé en
+    selle), soit environ 2 minutes de marche pour le premier cœur, 20 minutes de 1 à 5 cœurs ;
+  - **gagner un combat où il a combattu** (ou apaiser un corrompu) : 30 points ;
+  - **le soigner** : une baie 20 points, une fougère 40 ;
+  - **l'histoire** : certains moments donnent des cœurs entiers (`Game.add_bond(dino, n)`, et
+    `Game.starter_dino()` pour le dino de départ).
+  - Plus tard : ses **friandises** préférées, le **caresser** au Cabinet, le **collier de lien**.
+- ✅ À l'écran : « **+1 ♥** » jaillit de son portrait dans la barre d'équipe (qui rebondit) ; en
+  marchant, un ♥ au-dessus de lui et un petit cri ; en combat, « Le lien entre Chloé et Vif
+  grandit ! » ; ses cœurs dans son menu et sur sa **fiche** (ligne « Lien »).
+- ✅ Effets en combat :
+  - **Apaiser** : chaque cœur du dino qui apaise donne +5 % de chances de réussite et +3 de calme
+    par réussite (voir Combat). **Le Lien aide, il ne bloque jamais** : n'importe quel dino peut
+    tenter d'apaiser, même à 0 cœur (pas de condition de cœurs, pour ne jamais bloquer une enfant).
+  - **À 5 cœurs, il tient à 1 PV** une fois par combat au lieu de tomber (« Vif tient bon, pour
+    Chloé ! »).
+  - Pas encore : esquive, coup critique, et **l'attaque ultime** de l'espèce à 5 cœurs (pour le
+    dino de départ, elle s'apprend auprès de son Ancien).
 - Le dino en tête d'équipe suit Chloé dans l'exploration ✅. Il réagit au monde (renifle un objet
   enfoui, grogne près d'un sbire, se réjouit près de son habitat).
 
@@ -266,11 +350,29 @@ La mécanique de cœur, héritée d'Hélène.
     Lien fort ou un dino de la même famille) et baisse quand on l'attaque. Pleine, elle efface les
     veines : le combat s'arrête, et le dino peut rejoindre l'équipe s'il y a de la place.
   - ✅ Fait (`battle/battle_engine.gd`) : bouton « Apaiser » à la place du Collier, jauge de
-    Calme sous ses PV. Chance de réussite 55 % + 40 % × sa fatigue ; +30 de calme (+15 si même
-    famille) ; un coup lui en retire 12. Un corrompu ne tombe jamais sous 1 PV (« la fureur le
-    tient debout ») et frappe plus fort (attaque +1). Planche `<espèce>_corrompu.png` (veines
-    violettes) et lueur violette dans le monde. Le Lien n'existe pas encore : pas de condition
-    de cœurs pour l'instant.
+    Calme sous ses PV. Chance de réussite 55 % + 40 % × sa fatigue + 5 % par cœur de Lien du dino
+    qui apaise (95 % au plus) ; après chaque refus, l'essai suivant a 15 % de chances en plus
+    (« il gronde… mais il l'a entendue »). Une réussite : +30 de calme, +3 par cœur de Lien, +15
+    si même famille, et jusqu'à +20 s'il est épuisé (il écoute mieux une fois fatigué) ; un coup ne lui en
+    retire que 5. Plus il est calme, moins il frappe fort (jusqu'à moitié moins, jauge presque pleine),
+    et le tour où Chloé lui parle, il hésite : ce coup-là est 45 % plus doux. Un corrompu ne tombe
+    jamais sous 1 PV (« la fureur le tient debout »). (Rééquilibré le 27/09 : il n'a plus d'attaque +1,
+    pour qu'une enfant n'échoue pas en boucle.) Planche `<espèce>_corrompu.png` (veines
+    violettes) et lueur violette dans le monde. Aucune condition de cœurs : Apaiser est toujours
+    possible.
+  - ✅ **Apaisement long** (règle de combat `"long_calm": true`, pour les grands corrompus :
+    l'Utahraptor du camp, les Alphas corrompus…) : la jauge est **1,6 fois plus longue** (160).
+    Si le dino en combat est **le dino de départ** de Chloé, il se met entre elle et le corrompu
+    (« Vif se met entre Chloé et l'Utahraptor corrompu… », dit une fois) : **+15 de calme** à
+    chaque réussite.
+  - Essais (`tools/test_mecaniques.gd`, 50 combats par cas, en ne faisant qu'Apaiser) : un
+    Protoceratops corrompu niv. 8 s'apaise en 4 à 9 tours ; l'Utahraptor corrompu niv. 18
+    (apaisement long) contre une équipe niv. 16 en 6 à 11 tours avec le dino de départ (Lien 1),
+    8 à 17 sans lui ; jamais de défaite.
+- **Noms dans les répliques** ✅ : un dino de dresseur est appelé par son nom (« Caillou utilise… »),
+  sinon « le Dilophosaurus de Firmin » ; un Alpha ou un Ancien par son titre (« le Spinosaure
+  Ancestral ») ; les autres « le … sauvage » ou « le … corrompu » (`BattleEngine.name_of`, règle
+  `trainer` posée par `Story.duel`).
 - **Adversaires** : dinos sauvages ✅, sbires et lieutenants de l'Ombre Noire (équipes de plusieurs
   dinos), Maïa, les Alphas, le Masque, le Souverain.
 - **Récompenses** : expérience ✅, objets, argent (les **éclats d'ambre**, monnaie de l'île).
@@ -356,6 +458,9 @@ l'encart ouvre la carte.
 - **Colliers** (voir Capture).
 - **Objets clés** : la lettre d'Hélène, les Sceaux, les Cœurs, la lanterne d'ambre (grottes
   sombres). La carte, elle, est toujours disponible (voir *La carte*).
+  ✅ Dans `data/items_db.gd` : `gilet_nage` (Gilet de nage), `coeur_1` et `coeur_2` (Premier et
+  Deuxième Cœur d'ambre, icône `coeur_ambre`), `sceau_foret`, `sceau_marais`, `sceau_desert`
+  (objets clés), `fossile` (objet de quête, jamais vendu).
 
 ## Sauvegarde
 

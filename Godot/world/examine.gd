@@ -154,9 +154,146 @@ const LINES := {
 		"Hélène aurait sûrement voulu l'examiner pendant des heures, en prenant des notes totalement illisibles.",
 		"Il y en a d'autres, plus loin, du côté du ravin. Mieux vaut ne pas trop se demander à qui ils appartenaient.",
 	],
+	# Le camp de l'Ombre Noire (Forêt, étape 2).
+	"tente": [
+		"La tente de Brac : de la toile rapiécée qui sent le fumier de dino et les chaussettes pas lavées.",
+		"Un pan de toile mal recousu laisse deviner un sac plein de colliers d'ambre noir. Personne n'ose les compter.",
+	],
+	"cage": [
+		"Une cage vide, la porte grande ouverte. Quelqu'un s'est échappé. Ou quelqu'un a eu très peur en premier.",
+		"Des barreaux de fer rouillé et un peu de paille au fond. Ça sent la peur et le poisson séché.",
+	],
+	"caisse_ambre_noir": [
+		"Le couvercle est mal fermé : des éclats d'ambre noir dépassent, violets et froids comme un mauvais regard.",
+		"« FRAGILE, NE PAS TOUCHER » est écrit dessus, à l'envers. Brac ne sait visiblement pas lire à l'endroit.",
+	],
+	"table_papiers": [
+		"Une carte de la forêt couverte de croix. Une seule légende, en grosses lettres : « ICI, LE GROS. »",
+		"Une lanterne froide et des papiers épars. Sur l'un d'eux, un éclat d'ambre noir est entouré trois fois, au crayon appuyé.",
+	],
+	"palissade": [
+		"Des pieux taillés à la hâte, attachés avec des bouts de corde. Ça tiendrait à peine tête à un canard en colère.",
+		"L'écorce est encore toute fraîche : cette palissade n'est pas plus vieille que la peur qui l'a fait construire.",
+	],
+	"passerelle": [
+		"Une passerelle de bois et de corde tendue entre deux géants de la forêt. Elle grince à chaque pas, comme pour prévenir quelqu'un.",
+		"En bas, on ne voit que la cime des arbres. Mieux vaut ne pas trop regarder.",
+	],
+	# Marais Brumeux (chapitre 3).
+	"roseaux": [
+		"De hauts roseaux touffus, qui bruissent même quand l'air est parfaitement immobile. Peut-être qu'ils se racontent des secrets.",
+		"En écartant les tiges, on aperçoit un petit passage de libellules. Elles ont l'air pressées, comme toujours.",
+		"Certains roseaux sont couchés en étoile, comme si quelque chose de gros s'était assis dessus. Un Baryonyx, sans doute. Ou Maïa, fatiguée.",
+	],
+	"arbre_noye": [
+		"Un arbre de la mangrove, les racines plantées à même l'eau trouble. Il tient debout depuis plus longtemps que le port n'existe.",
+		"La mousse a tout envahi, jusqu'aux plus petites racines. Un crabe minuscule s'y est installé, et il n'a pas l'air de vouloir partir.",
+		"Hélène en aurait fait un dessin entier, rien que pour les racines. « Les arbres du marais marchent très, très lentement », disait-elle.",
+	],
+	"nenuphars": [
+		"Des nénuphars en fleurs, blancs et roses, posés sur l'eau comme des invités polis qui n'osent pas s'asseoir n'importe où.",
+		"Une grenouille minuscule saute d'une feuille à l'autre, très digne, comme si elle inspectait chaque pétale.",
+		"Hélène appelait ça « le tapis d'Ambrelune » : sous la brume, les fleurs semblent flotter sur rien du tout.",
+	],
+	"cabane_pilotis": [
+		"Une cabane de pêcheur sur pilotis, penchée mais fière de tenir encore debout au-dessus de l'eau.",
+		"Un vieux filet sèche sous l'avant-toit, tout troué. Personne n'a pêché ici depuis longtemps.",
+		"Par la fenêtre entrouverte, on devine une lampe éteinte et une chaise vide, tournée vers le marais.",
+	],
+	"statue_dino": [
+		"Une statue de pierre représentant un dinosaure, un masque d'os sculpté sur son visage érodé. Les anciens de l'île l'honoraient ainsi, bien avant l'Ombre Noire.",
+		"La mousse a rongé les détails, mais le regard reste étrangement doux, pour de la pierre.",
+		"Hélène a écrit quelque part que ce n'était pas une idole, mais un merci, sculpté pour durer plus longtemps qu'une phrase.",
+	],
+	"colonne": [
+		"Une colonne de temple, brisée à mi-hauteur, couverte de mousse. Ce qu'elle soutenait a disparu depuis longtemps.",
+		"Des motifs à peine visibles courent encore le long de la pierre : des vagues, ou des flammes, on ne sait plus trop.",
+	],
+	"vanne": [
+		"Une grande roue de vanne, en bois et en bronze verdi. Elle devait autrefois régler le niveau de l'eau du temple.",
+		"Elle grince à peine quand on la pousse, comme si elle attendait qu'on ait vraiment besoin d'elle pour tourner tout à fait.",
+	],
+	"fresque": [
+		"Une fresque usée par le temps : de petites silhouettes portant des masques d'os saluent des dinosaures peints en ocre. Les tout premiers habitants de l'île, sans doute.",
+		"L'Ombre Noire porte les mêmes masques aujourd'hui. Ça donne à Chloé un peu froid dans le dos, en repensant au voleur de la nuit du Cabinet.",
+		"Hélène avait recopié ce dessin dans un carnet, avec une seule note : « Ils remerciaient. Ils ne dominaient pas. »",
+	],
+	"porte_temple": [
+		"Une grande porte de pierre, fermée, gravée d'une fougère incrustée d'ambre. Elle n'a pas l'air décidée à s'ouvrir pour n'importe qui.",
+		"Le motif rappelle étrangement celui de la boussole de Maïa. Encore une coïncidence, sans doute.",
+	],
+	"racines": [
+		"Un enchevêtrement de grosses racines, si serrées qu'on ne sait plus quel arbre elles nourrissent encore.",
+		"En y regardant de plus près, elles ont l'air de tenir toute la berge d'une seule main, sans effort apparent.",
+	],
+	# Désert Aride (chapitre 4).
+	"os_geant": [
+		"Une côte fossile immense, plantée dans le sable comme un arc géant. Il devait appartenir à quelque chose d'énorme, et de très ancien.",
+		"Le vent siffle en passant à travers, un son grave et creux. Chloé préfère ne pas s'attarder juste dessous.",
+		"Hélène aurait sorti son mètre-ruban rien que pour celui-là, en notant tout, y compris ses propres frissons.",
+	],
+	"crane_geant_desert": [
+		"Un crâne fossile énorme, à moitié enfoui dans le sable, les orbites pleines d'ombre. Il regarde le désert depuis plus longtemps que l'île n'a de nom.",
+		"Des petits lézards se faufilent entre les dents géantes, sans aucun respect pour la taille de leur logeur.",
+	],
+	"rocher_canyon": [
+		"Un rocher ocre, strié comme un gâteau raté à force de couches. Chaque ligne raconte une éternité de vent et de sable.",
+		"À l'ombre du rocher, il fait presque frais. Presque.",
+	],
+	"arche_rocheuse": [
+		"Une arche de pierre sculptée par le vent, patiemment, pendant des milliers d'années. Elle n'est pas pressée de s'écrouler.",
+		"En passant dessous, l'écho répète chaque mot deux fois, comme s'il voulait être sûr d'avoir bien compris.",
+	],
+	"palmier_oasis": [
+		"Un palmier d'oasis, seul point d'ombre franche à des kilomètres à la ronde. Les Ouranosaurus se battent presque pour s'y poster.",
+		"Des dattes trop mûres tombent de temps en temps, pile sur la tête de qui s'endort dessous.",
+	],
+	"nid_oviraptor": [
+		"Un nid creusé dans le sable, plein d'œufs mouchetés bien alignés. Quelque part, un Oviraptor doit surveiller ça de très, très près.",
+		"Chloé résiste à l'envie d'y toucher. Une mère Oviraptor, ça ne pardonne pas grand-chose.",
+	],
+	"totem_vents": [
+		"Une pierre levée, gravée de longues spirales de vent. Un petit tas d'offrandes s'est formé à son pied : galets, plumes, un bouton perdu.",
+		"Le vent tourne un peu différemment autour d'elle, comme s'il connaissait le chemin par cœur.",
+	],
+	"buisson_sec": [
+		"Un buisson tout sec, plus épines que feuilles. Il a l'air de bouder le désert entier.",
+		"Un scorpion s'y est réfugié à l'ombre, immobile, visiblement décidé à ne rien avoir à faire aujourd'hui.",
+	],
+	"tente_nomade": [
+		"Une tente de toile claire, tendue au carré, qui claque doucement dans le vent chaud.",
+		"À l'intérieur, une natte, une gourde vide et un cercle de pierres noircies. Quelqu'un est passé par là, pas plus tard qu'hier.",
+	],
+	"porte_vents": [
+		"Une porte de pierre taillée à même la roche ocre, gravée de spirales de vent et d'une empreinte de corne. En son centre, un disque d'ambre... éteint.",
+		"Le vent semble se glisser entre les spirales gravées, comme s'il cherchait la sortie. Ou l'entrée.",
+		"On raconte que seul un Alpha peut réveiller l'ambre endormi de cette porte. Pour l'instant, elle dort aussi profondément que la roche.",
+	],
+	"chariot_cage": [
+		"Le chariot de Brac : une carriole cabossée, une cage vide aux barreaux tordus, et une bâche qui sent la peur et le fauve. Personne n'a envie de savoir ce qu'elle transportait.",
+		"Les roues sont couvertes de sable jusqu'au moyeu : ce chariot a roulé longtemps avant de s'arrêter ici. La cage, elle, est restée grande ouverte.",
+		"Sur un des barreaux tordus, de profondes griffures. Quelque chose n'a pas voulu y rester.",
+	],
+	"rempart_eboulis": [
+		"Un mur d'éboulis ferme complètement le canyon : de gros blocs ocres, entassés comme si la montagne avait claqué la porte elle-même.",
+		"Impossible de grimper par-dessus : il faudrait la force d'un dino tout entier pour dégager un passage.",
+	],
+	"squelette_geant": [
+		"Un squelette entier, immense, à moitié enseveli dans le sable : le cou et la queue dessinent une grande courbe endormie depuis des millions d'années.",
+		"Hélène aurait pu passer des semaines rien que sur ce squelette-là, carnet en main, en oubliant complètement de manger.",
+		"Tante Sirocco dit qu'elle rêve parfois de squelettes comme celui-ci. Elle ne précise jamais si ce sont de bons rêves.",
+	],
+	"puits_oasis": [
+		"Un vieux puits de pierre, avec un seau qui se balance doucement au bout de sa corde. L'eau, en bas, est fraîche et sombre.",
+		"La poulie grince à chaque coup de vent, comme si elle racontait, très lentement, une histoire à qui veut l'entendre.",
+	],
 }
 ## Reach for the big ones (px from their origin, the middle of their foot).
-const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.0, "barque": 40.0, "arbre_geant": 60.0}
+const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.0, "barque": 40.0, "arbre_geant": 60.0,
+	"tente": 40.0, "passerelle": 60.0,
+	"arbre_noye": 60.0, "cabane_pilotis": 60.0, "statue_dino": 40.0, "porte_temple": 50.0,
+	"crane_geant_desert": 50.0, "arche_rocheuse": 60.0, "os_geant": 40.0,
+	"porte_vents": 50.0, "chariot_cage": 40.0, "squelette_geant": 45.0}
 
 ## Lines already shown, per thing (zone + position): the next one comes next time.
 static var _seen := {}

@@ -244,8 +244,202 @@ static func lines(id: StringName) -> Array:
 				{"flag": &"found_journal_10"},
 				{"who": CHLOE, "text": "(« Rester plus longtemps que leur peur. » Je m'en souviendrai.)"},
 			]
+		# ------------------------------------------------ chapter 2, step 2 (story/foret_camp.gd, foret_fin.gd)
+		&"mur_fissure_bloque":
+			return cracked_wall()
+		&"pont_marais_bloque":
+			return marais_bridge()
+		&"panneau_camp":
+			return [{"text": "PROPRIÉTÉ DE L'OMBRE NOIRE. Défense d'entrer. Les curieux finissent en cage."},
+				{"text": "Dessous, d'une écriture tremblante : « Et Brac a mauvais caractère le matin. Et le soir. Et entre les deux. »"}]
+		&"panneau_pont":
+			return [{"text": "Pont du Marais. Ouest : le Marais Brumeux. Un seul dino à la fois. (Et pas un Stegosaurus.)"},
+				{"text": "Sur un poteau, deux initiales gravées dans une petite fougère : « H. + I. » Le bois est vieux. Très vieux."}]
+		&"page_11":
+			return [
+				{"letter": ["Le port se meurt",
+					"I. est venue ce soir, trempée. Trois bateaux vendus ce mois-ci ; au port, les filets sèchent vides. Elle m'a demandé de vendre l'ambre : « Juste un peu, Hélène. De quoi passer l'hiver. »",
+					"J'ai dit non. L'ambre, c'est là que l'île garde ses dinos endormis : qu'on en vende un seul morceau, et ils viendront tous, avec des pioches.",
+					"Elle n'a pas crié. Elle a reposé sa tasse, très doucement, et elle est partie.",
+					"Elle n'a pas claqué la porte. C'est pire."],
+					"sign": "— H."},
+				{"flag": &"found_journal_11"},
+			]
+		# ------------------------------------------------ chapter 3, the Marais Brumeux (story/marais.gd, marais_temple.gd)
+		&"panneau_marais":
+			return [{"text": "Marais Brumeux. Attention : la brume cache les chenaux, et les chenaux cachent les Koolasuchus."},
+				{"text": "Dessous, une planchette clouée de travers : « Gilets de nage : voir Joss, cabane sur pilotis. Testés et approuvés. (Bientôt approuvés.) »"}]
+		&"panneau_temple":
+			return [{"text": "Temple englouti. Entrée sur invitation. L'invitation se chante."},
+				{"text": "Gravé plus bas, presque effacé : « La Voix d'abord. Le Spinosaure ensuite. Et on ne court pas dans les galeries. — H. »"}]
+		&"panneau_desert":
+			return [{"text": "Nord : le Désert Aride. Plus une goutte d'eau pendant trois jours de marche. Remplissez vos gourdes. Et vos dinos."},
+				{"text": "Quelqu'un a gravé au couteau : « BRAC, RENTRE CHEZ TOI. » C'est barré. Dessous, en grosses lettres maladroites : « NON. — B. »"}]
+		&"desert_bloque":
+			return desert_road()
+		&"porte_temple_fermee":
+			return temple_door()
+		&"porte_voix_bloquee":
+			var sing: String = Marais.sing_step()
+			return [{"text": "Une porte d'ambre ferme l'îlot, entre deux arbres noyés. Derrière, une voix grave chante, et l'ambre tremble à chaque note, comme s'il voulait répondre."},
+				{"text": sing if sing != "" else "Une crête qui chante pourrait peut-être la réveiller…"}]
+		&"crue_temple":
+			return temple_flood()
+		&"page_12":
+			return [
+				{"text": "Sur une corniche de la galerie, bien au sec, une page du journal, calée sous un coquillage."},
+				{"letter": ["Les premiers habitants",
+					"J'ai passé la nuit devant les fresques du temple, une bougie à la main. Bien avant nous, des gens vivaient ici. Ils n'avaient jamais vu un dino vivant : ils avaient les os que l'île recrache, l'ambre qui luit, et la lune.",
+					"Ils ont taillé leurs masques dans les os des géants, pour leur ressembler, et pour leur promettre qu'on veillerait sur leur sommeil.",
+					"Anselme voulait en emporter un au Cabinet. J'ai dit non. Ce ne sont pas des souvenirs : ce sont des promesses."],
+					"sign": "— H."},
+				{"flag": &"found_journal_12"},
+				{"who": CHLOE, "text": "(Des promesses… Et l'Ombre Noire en a fait des masques pour faire peur.)" if Game.flag(&"fresques_vues")
+					else "(Des masques pour veiller, pas pour faire peur… Les fresques du temple doivent raconter ça.)"},
+			]
+		&"page_13":
+			var p13: Array = [
+				{"text": "Entre les racines que Dame Suie cueillait, roulée dans une feuille de nénuphar séchée, une page du journal." if Game.flag(&"dame_suie_battue")
+					else "Entre les racines tordues de l'îlot, roulée dans une feuille de nénuphar séchée, une page du journal."},
+				{"letter": ["Le premier Cœur",
+					"Le Spinosaure m'a regardée longtemps, du fond de son bassin. Puis il a ouvert la gueule, très doucement, et j'y ai posé le premier Cœur. Il l'a porté jusqu'à l'autel sans l'érafler.",
+					"Je lui ai demandé de le garder jusqu'à ce que quelqu'un vienne, avec mes yeux et ma confiance. Il a soufflé par les naseaux. Je crois que c'était oui.",
+					"(Mes mains me font encore mal. Je n'écris pas pourquoi.)"],
+					"sign": "— H."},
+				{"flag": &"found_journal_13"},
+			]
+			if Game.flag(&"coeur_1"):
+				p13.append({"who": CHLOE, "text": "(Le Cœur qu'il m'a donné… Il l'a gardé pour moi pendant vingt-cinq ans.)"})
+			elif Game.flag(&"temple_ouvert"):
+				p13.append({"who": CHLOE, "text": "(Le premier Cœur est dans le temple englouti. Avec le Spinosaure.)"})
+			else:
+				p13.append({"who": CHLOE, "text": "(Un Spinosaure, un bassin, un autel… Le temple englouti ?)"})
+			if Game.flag(&"masque_vu"):
+				p13.append({"who": CHLOE, "text": "(« Avec mes yeux »… Le Masque disait que j'ai les yeux de ma grand-mère.)"})
+			return p13
+		&"page_14":
+			var p14: Array = [
+				{"text": "Dans le creux d'un arbre noyé, au-dessus de l'eau, une boîte en fer bien fermée. Dedans, une page du journal, toute sèche."},
+				{"letter": ["Les notes volées",
+					"Mes carnets sur l'ambre forcé ont disparu. Ceux que je n'avais pas brûlés, rangés sous clé dans le tiroir du bas.",
+					"Pas de vitre cassée, pas de serrure forcée. Trois personnes ont la clé du Cabinet : moi, Anselme… et I.",
+					"J'ai tourné ça dans ma tête toute la nuit, et je n'aime aucune des réponses. Je n'en parlerai à personne. Pas avant d'être sûre."],
+					"sign": "— H."},
+				{"flag": &"found_journal_14"},
+				{"who": CHLOE, "text": "(Volés… sans effraction. Comme le petit, la nuit où je suis arrivée.)"},
+			]
+			if Game.flag(&"found_journal_11") or Game.flag(&"found_journal_3"):
+				p14.append({"who": CHLOE, "text": "(« I. »… L'amie de la barque. Celle qui voulait vendre l'ambre.)"})
+			p14.append_array([
+				{"who": CHLOE, "text": "(Et Anselme, c'est Roc. Roc avait la clé. Roc sort la nuit." + (" Roc cache de l'ambre noir dans son tiroir.)" if Game.flag(&"ambre_noir_tiroir") else ")")},
+				{"who": CHLOE, "text": "(Non. Je ne vais pas deviner. Je vais lui demander. En face.)"},
+			])
+			return p14
+		&"page_15":
+			var p15: Array = [
+				{"text": "Coincée dans les racines d'un arbre noyé, au milieu du chenal, une bouteille bouchée à la cire. Dedans, roulée bien serrée, une page du journal."},
+				{"letter": ["Le souffle du volcan",
+					"Le volcan a grondé trois fois ce mois-ci. Avant, c'était une fois par an.",
+					"Les Koolasuchus ne remontent plus des profondeurs, et les Baryonyx pêchent en silence. Le sceau s'use, comme une corde qu'on tire un peu plus chaque jour.",
+					"Je vais vérifier les Cœurs, un par un. Et apprendre à Anselme le chemin des sanctuaires. Au cas où."],
+					"sign": "— H."},
+				{"flag": &"found_journal_15"},
+				{"who": CHLOE, "text": "(« Au cas où »… Roc connaît le chemin des sanctuaires ?)"},
+			]
+			if Game.flag(&"coeur_1"):
+				p15.append({"who": CHLOE, "text": "(Dans le temple, quand le volcan a grondé, le Cœur a battu plus vite…)"})
+			return p15
+		&"page_16":
+			return [
+				{"text": "Au milieu du bassin, sur le plus grand des nénuphars, une page du journal brille comme une petite lune."},
+				{"letter": ["Ambrelune",
+					"Pourquoi l'ambre luit-il à la pleine lune ? Les pêcheurs disent que l'île se souvient. J'ai mesuré, calculé, veillé douze nuits.",
+					"Ma réponse de savante : je ne sais pas.",
+					"Ma réponse de grand-mère (je n'en suis pas encore une, mais je m'entraîne) : l'Ambre-Mère a été une forêt, un jour, sous une autre lune. Elle la reconnaît, et elle lui fait signe."],
+					"sign": "— H."},
+				{"flag": &"found_journal_16"},
+				{"who": CHLOE, "text": "(« Je m'entraîne »… Elle s'entraînait déjà pour moi.)"},
+			]
+	var desert: Array = DialogueDesert.lines(id)   # chapter 4 (data/dialogue_desert.gd)
+	if not desert.is_empty():
+		return desert
 	push_error("Dialogue inconnu : %s" % id)
 	return []
+
+
+## The cracked wall hiding the camp (Obstacle, Coup de crâne): what is behind, and who could
+## break it (a Pachycephalosaurus of the rocky clearings). Shorter once seen.
+static func cracked_wall() -> Array:
+	var steps: Array = []
+	if not Game.flag(&"mur_vu"):
+		steps.append({"text": "Une paroi de roche barre le chemin. Mais elle est fendue de haut en bas, et par la fissure passe un filet d'air froid… qui sent la cendre."})
+		if Game.flag(&"clairiere_vue"):
+			steps.append({"text": "Les sillons de la clairière s'arrêtent ici, net, au pied de la roche. Ce qu'on a traîné est passé de l'autre côté."})
+		steps.append({"text": "L'oreille contre la pierre, Chloé entend des coups de marteau, des voix… et, très loin, un raptor qui gronde."})
+		steps.append({"flag": &"mur_vu"})
+	else:
+		steps.append({"text": "La paroi fendue. Derrière, les coups de marteau continuent."})
+	for d: Dino in Game.box:
+		if Abilities.has(d, &"coup_crane"):
+			steps.append({"text": "La roche sonne creux. Ton %s saurait quoi en faire… mais il attend au Cabinet. Le Pr Roc peut te l'échanger contre un dino de l'équipe." % d.nickname})
+			return steps
+	steps.append({"text": "La roche sonne creux : un bon coup de tête bien placé, et elle céderait. Les Pachycephalosaurus des clairières rocheuses, au nord-est, passent leurs journées à se cogner le crâne. Pour eux, un mur, c'est un bonjour."})
+	return steps
+
+
+## The bridge to the Marais over the marshy pond, its last span's ropes cut (a closed ZoneExit):
+## Maïa ties it back up after her second challenge.
+static func marais_bridge() -> Array:
+	if Game.flag(&"maia_defi_2"):
+		return [{"text": "Le pont tient bon, grâce aux nœuds de Maïa. De l'autre côté, la brume du Marais avale les roseaux…"}]
+	if Game.flag(&"sceau_foret"):
+		return [{"text": "Au bout des planches, la dernière travée du pont pend toujours dans l'eau."},
+			{"who": MAIA, "text": "Hé ! Pas si vite ! Ce pont, c'est moi qui le répare. Et avant, tu me dois un défi !"}]
+	var steps: Array = [{"text": "Un vieux pont de planches file vers l'ouest, au-dessus de l'étang, vers la brume du Marais. Mais au bout, la dernière travée pend dans l'eau : ses cordes ont été tranchées net."}]
+	if Game.flag(&"clairiere_vue"):
+		steps.append({"text": "Tranchées d'un seul coup de lame, comme les cordes de la clairière…"})
+	steps.append_array([
+		{"who": CHLOE, "text": "(Quelqu'un ne veut pas qu'on aille au Marais. Ou qu'on en revienne.)"},
+		{"text": "Impossible de passer. Et pour l'instant, la meute a besoin de Chloé."},
+	])
+	return steps
+
+
+## The road north to the Désert (a closed ZoneExit until Maïa's third challenge).
+static func desert_road() -> Array:
+	var steps: Array = [{"text": "Au bout de la roselière, la vase sèche et craque. Au loin, une terre jaune et plate : le Désert."}]
+	if Game.flag(&"sceau_marais"):
+		steps.append({"who": MAIA, "text": "Hé ! Pas si vite, championne ! La route du Désert, ça se mérite. Et tu me dois un défi !"})
+	else:
+		steps.append({"text": "Mais le Marais n'a pas fini de parler : quelque part dans la brume, le temple englouti garde encore son secret."})
+	return steps
+
+
+## The sunken temple's great door, closed until the Voix du Marais sings to it.
+static func temple_door() -> Array:
+	var steps: Array = [
+		{"text": "Une grande porte de pierre, couverte de mousse et de coquillages, fermée comme une bouche qui se tait. Au-dessus, une tête de Spinosaure sculptée."},
+		{"text": "La pierre est percée de trous ronds, comme une flûte. Quand le vent passe, la porte chante une seule note, très grave."},
+	]
+	if Game.flag(&"porte_voix_ouverte"):
+		steps.append({"who": CHLOE, "text": "(Une note grave… comme le chant de la Voix, sur son îlot.)"})
+	else:
+		steps.append({"who": CHLOE, "text": "(Il faudrait lui répondre avec une voix bien plus grande que la mienne. Celle qui chante au cœur de la roselière, peut-être ?)"})
+	return steps
+
+
+## The temple's flood water (Flood, blocked_dialogue): which sluice to turn next.
+static func temple_flood() -> Array:
+	if not Game.flag(&"temple_vanne_1"):
+		return [{"text": "L'eau monte jusqu'au plafond. Impossible de passer, même à la nage."},
+			{"text": "Dans le hall, une grande roue de pierre sort du mur, avec des traits gravés qui mènent jusqu'ici. Une vanne ?"}]
+	if not Game.flag(&"temple_vanne_2"):
+		return [{"text": "Ici, l'eau monte toujours jusqu'au plafond."},
+			{"text": "Au bout de la galerie ouest, maintenant à sec, une deuxième roue attend. Son trait gravé file jusqu'ici."}]
+	if not Game.flag(&"temple_vanne_3"):
+		return [{"text": "L'escalier de la grande salle est encore sous l'eau. Tout au fond, quelque chose respire."},
+			{"text": "Au bout de la galerie est, la dernière roue attend."}]
+	return [{"text": "L'eau baisse encore, en gargouillant."}]
 
 
 ## What people say when there is nothing special to say: a line from their pool, the next one
@@ -269,6 +463,23 @@ static func chatter(who: StringName) -> Array:
 				pool.insert(0, "La Forêt… Hélène y avait un vieux raptor, gris comme un rocher. Il ne laissait approcher personne. Sauf elle.")
 			if Game.flag(&"griffe_grise_vu"):
 				pool.insert(0, "Il t'a laissée approcher ? … Moi, il m'a toujours montré les dents. Il avait peut-être ses raisons.")
+			var little: Dino = ForetCamp.recovered()
+			if little:
+				pool.insert(0, "On raconte sur le port que tu as retrouvé %s, le petit volé au Cabinet. … Il a l'air bien, avec toi. C'est… c'est bien. Vraiment." % little.nickname)
+			if Game.flag(&"sceau_foret"):
+				pool.insert(0, "Une fougère gravée sur ton Sceau ? Hélène en mettait partout. Sur ses portes, sur ses caisses, sur les boussoles qu'elle offrait… Bref. Va, moussaillon.")
+			if Game.flag(&"masque_vu"):
+				pool.insert(0, "Un masque noir, sur une passerelle ? Les gens du port racontent n'importe quoi. Ne crois pas tout ce qu'on te dit, moussaillon. Même moi.")
+			if Game.flag(&"found_journal_11"):
+				pool.append("Tu lis toutes les pages d'Hélène, on dirait. Elle écrivait bien. Elle avait toujours le dernier mot, même sur le papier.")
+			if Game.flag(&"marais_arrivee"):
+				pool.insert(0, "Le Marais ? Hélène y chantait avec sa vieille Parasaurolophus. Faux, toutes les deux. Ça s'entendait jusqu'au port, les soirs de brume.")
+			if Game.flag(&"found_journal_14"):
+				pool.insert(0, "Il paraît que tu poses des questions sur les clés du Cabinet ? Roc a toujours été distrait avec les siennes. Toujours.")
+			if Game.flag(&"dame_suie_battue"):
+				pool.append("Une dame en gris, dans le Marais ? Je ne connais personne de ce genre. … Personne.")
+			if Game.flag(&"coeur_1"):
+				pool.insert(0, "Un Cœur d'ambre ? … Garde-le bien, moussaillon. Il y a des gens qui traverseraient la mer pour ça.")
 			if Game.flag(&"boussole_rendue"):
 				pool.append("Maïa m'a rapporté ma boussole. Merci de l'avoir rattrapée. J'y tiens… plus que je ne devrais.")
 			if night:
@@ -303,14 +514,44 @@ static func chatter(who: StringName) -> Array:
 				pool.append("Tu pars pour la Forêt ? Il paraît que les raptors y crient toute la nuit, en ce moment. Comme s'ils avaient perdu quelqu'un.")
 			if Game.flag(&"griffe_grise_vu"):
 				pool.append("Un vieux raptor t'a laissée approcher ?! Moi, la dernière fois, un Dilophosaurus m'a craché dessus. On n'a pas la même Forêt.")
-			if Game.flag(&"clairiere_vue"):
+			if Game.flag(&"clairiere_vue") and not Game.flag(&"masque_vu"):
 				pool.append("Un masque d'os dans la Forêt ? Je parie que c'est leur chef, le Masque. Il paraît que le sien est tout noir. Trop stylé. … Enfin, trop méchant. Mais stylé.")
+			if Game.flag(&"camp_arrive") and not Game.flag(&"brac_battu"):
+				pool.insert(0, "Un camp de l'Ombre Noire ?! Dans la Forêt ?! Et tu y vas SANS MOI ? … Bon, vas-y. Mais tu me raconteras tout. TOUT.")
+			if Game.flag(&"oeuf_vole_apaise"):
+				var hers: String = Prologue.MAIA_NAMES.get(StringName(str(Game.flag(&"maia_starter"))), "Caillou")
+				pool.append("Tu as retrouvé le troisième petit ?! %s va être tellement content ! Ils ont dormi côte à côte, le premier jour. Enfin, il ne le montrera pas. Il est fier." % hers)
+			if Game.flag(&"sceau_foret") and not Game.flag(&"maia_defi_2"):
+				pool.insert(0, "Deux Sceaux, hein ? Viens me voir au pont du Marais, au nord-ouest de la Forêt. J'ai un défi tout neuf. Il pique.")
+			if Game.flag(&"masque_vu"):
+				pool.append("Je me suis fait un masque noir, avec du carton et du cirage. Maman est devenue toute pâle et m'a dit de l'enlever. Tout de suite. … Elle n'a aucun sens du style.")
+			if Game.flag(&"maia_defi_2") and not Game.flag(&"maia_defi_3"):
+				pool.append("Deux défaites. DEUX. Je m'entraîne jour et nuit, maintenant. Enfin, surtout le jour. La nuit, je dors.")
+			if Game.flag(&"marais_arrivee") and not Game.flag(&"maia_defi_3"):
+				pool.append("Le Marais, c'est plein de vase. J'y ai perdu une chaussure. Caillou l'a retrouvée. Il l'a mangée.")
+			if Game.flag(&"gilet_nage"):
+				pool.append("Joss t'a donné MON gilet ? … Bon, garde-le. Les gilets, c'est pour les poules mouillées. Enfin… il est joli quand même.")
+			if Game.flag(&"maia_defi_3"):
+				pool.append("Trois défaites. TROIS. Au Désert, ce sera différent : Caillou mange des cailloux depuis une semaine. C'est sa préparation.")
 		&"roc":
 			pool = [
 				"Hélène disait qu'un dino ne se dresse pas : il se rencontre. Je n'ai jamais bien compris la différence. Elle, si.",
 				"Trente ans que je vis ici, et les Parasaurolophus me font encore sursauter quand ils chantent.",
-				"Ne touche pas au tiroir de gauche. Il est… cassé. Voilà. Cassé.",
 			]
+			if not Game.flag(&"ambre_noir_tiroir"):
+				pool.append("Ne touche pas au tiroir de gauche. Il est… cassé. Voilà. Cassé.")
+			else:
+				pool.insert(0, "Le tiroir ? Quel tiroir ? … Tiens, mange donc une baie.")
+				pool.append("Je sais ce que tu penses. Tu te trompes. … Enfin, j'espère que tu te trompes.")
+			if Game.flag(&"camp_arrive") and not Game.flag(&"brac_battu"):
+				pool.insert(0, "Un camp de braconniers, dans la Forêt ? … Prends des baies. Beaucoup de baies. Et reviens entière, tu m'entends ?")
+			if Game.flag(&"brac_battu"):
+				pool.append("Un braconnier, dans la Forêt d'Hélène… Elle en a chassé trois de cette île, autrefois. À coups de parapluie. Le parapluie n'y a pas survécu.")
+			var little: Dino = ForetCamp.recovered()
+			if little and Game.flag(&"roc_oeuf_retrouve"):
+				pool.append("Chaque fois %s passe au Cabinet, il file droit se coucher contre la couveuse. Moi, je ne dis rien. Je pose une couverture." % French.que(little.nickname))
+			if Game.flag(&"masque_vu"):
+				pool.append("Un masque qui parle d'Hélène comme s'il la connaissait… Beaucoup de gens l'ont connue, Chloé. Beaucoup trop.")
 			if hint != "":
 				pool.insert(0, "Où en es-tu ? … Hmm. " + hint)
 			if Game.flag(&"selle") and not Game.flag(&"griffe_grise_vu"):
@@ -319,13 +560,43 @@ static func chatter(who: StringName) -> Array:
 				pool.insert(0, "Griffe-Grise ? Ce vieux grincheux est encore en vie ? Il m'a mordu trois fois. Enfin, deux. La troisième, je l'avais un peu cherchée.")
 			if Game.flag(&"clairiere_vue"):
 				pool.append("Des pièges, des pieux, un masque d'os… dans la Forêt d'Hélène. … Sois prudente, Chloé. Vraiment prudente.")
-			if night:
+			if Game.flag(&"marais_arrivee") and not Game.flag(&"gilet_nage"):
+				pool.insert(0, "Le Marais ? Hélène y allait avec un vieux gilet de liège. Elle ressemblait à un bouchon. Un bouchon très heureux.")
+			if Game.flag(&"voix_rencontree"):
+				pool.append("La Voix t'a chanté quelque chose ? Elle ne chantait que pour Hélène… et pour la lune.")
+			if Game.flag(&"dame_suie_battue"):
+				pool.append("Une chimiste qui « améliore » les dinos… Hélène a passé sa vie à prouver qu'on ne les améliore pas. On les écoute.")
+			if Game.flag(&"coeur_1"):
+				pool.append("Garde ce Cœur contre toi. Toujours. Même quand tu dors. Surtout quand tu dors.")
+			if Game.flag(&"roc_marais_vu"):
+				pool.insert(0, "À propos de l'autre soir… Non. Rien. Tu veux une baie ? Prends une baie.")
+				pool.append("Je sais ce que tu penses. À ta place, je me poserais des questions aussi. … Pose-les-toi. Mais pas trop fort.")
+			if night and Game.flag(&"roc_marais_vu"):
+				pool.append("Tu es encore debout ? … Non, moi, je ne sors pas ce soir. Enfin, pas tout de suite.")
+			elif night:
 				pool.append("Tu es encore debout ? Moi aussi. Je… vérifie des choses. Va dormir, va.")
+		&"joss":
+			pool = [
+				"Si tu vois un gilet flotter tout seul dans le Marais, c'est qu'il y a un Baryonyx dessous. Ou pas. Mais souvent si.",
+				"J'ai cousu un gilet pour Caillou, une fois. Il l'a mangé. Maïa dit que c'est un compliment.",
+				"Le soir, la Voix chante, et toutes mes aiguilles vibrent dans leur boîte. Je couds de travers, mais c'est joli.",
+			]
+			if hint != "":
+				pool.insert(1, "Si j'ai bien compris, toi, tu cherches ça : " + hint)
+			if night:
+				pool.append("La nuit, je vois parfois une lanterne sur les pontons. Un pêcheur, sûrement. Un pêcheur très maladroit : j'entends souvent « plouf ».")
+			if Game.flag(&"dame_suie_battue"):
+				pool.append("La dame en gris est repartie en barque ? Tant mieux. Elle regardait mes flotteurs comme si c'étaient des cobayes.")
+			if Game.flag(&"coeur_1"):
+				pool.insert(0, "Tu as vu la lumière dorée, au-dessus du temple ? Toute la roselière s'est tournée vers elle. Même les grenouilles.")
+			if Game.is_raining():
+				pool.append("La pluie ? Parfait pour tester l'étanchéité. Enfin, moi, je ne suis pas étanche.")
+	pool = DialogueDesert.chatter(who, pool)   # chapter 4 (data/dialogue_desert.gd)
 	if pool.is_empty():
 		return []
 	var n := int(Game.flag(StringName("bavard_%s" % who)))
 	Game.set_flag(StringName("bavard_%s" % who), n + 1)
-	var speaker: String = {&"isaure": "Isaure", &"maia": MAIA, &"roc": "Prof. Roc", &"maia_havre": MAIA}[who]
+	var speaker: String = {&"isaure": "Isaure", &"maia": MAIA, &"roc": "Prof. Roc", &"maia_havre": MAIA, &"joss": "Joss"}[who]
 	return [{"who": speaker, "text": pool[n % pool.size()]}]
 
 

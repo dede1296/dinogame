@@ -6,7 +6,6 @@ extends Node
 signal saved
 
 const PATH := "user://save.json"
-const TMP_PATH := "user://save.json.tmp"
 const VERSION := 1
 const AUTOSAVE_S := 30.0
 
@@ -14,6 +13,9 @@ const AUTOSAVE_S := 30.0
 var enabled := false
 ## Called before writing, so the world can store Chloé's position in Game.
 var before_save: Callable
+## Where the game is saved: PATH, except for the test and demo tool (tools/capture.gd), which
+## writes its own file, never over the player's game.
+var path := PATH
 
 var _timer := 0.0
 
@@ -34,7 +36,7 @@ func _notification(what: int) -> void:
 
 
 func has_save() -> bool:
-	return FileAccess.file_exists(PATH)
+	return FileAccess.file_exists(path)
 
 
 func save_game() -> bool:
@@ -42,13 +44,13 @@ func save_game() -> bool:
 	if before_save.is_valid():
 		before_save.call()
 	var data := {"version": VERSION, "saved_at": int(Time.get_unix_time_from_system()), "game": Game.to_dict()}
-	var file := FileAccess.open(TMP_PATH, FileAccess.WRITE)
+	var file := FileAccess.open(path + ".tmp", FileAccess.WRITE)
 	if file == null:
 		push_error("Sauvegarde impossible (%s)" % error_string(FileAccess.get_open_error()))
 		return false
 	file.store_string(JSON.stringify(data))
 	file.close()
-	var err := DirAccess.rename_absolute(TMP_PATH, PATH)
+	var err := DirAccess.rename_absolute(path + ".tmp", path)
 	if err != OK:
 		push_error("Sauvegarde : renommage impossible (%s)" % error_string(err))
 		return false
@@ -60,10 +62,10 @@ func save_game() -> bool:
 func load_game() -> bool:
 	if not has_save():
 		return false
-	var text := FileAccess.get_file_as_string(PATH)
+	var text := FileAccess.get_file_as_string(path)
 	var data: Variant = JSON.parse_string(text)
 	if not data is Dictionary or not data.has("game"):
-		push_error("Sauvegarde illisible : %s" % PATH)
+		push_error("Sauvegarde illisible : %s" % path)
 		return false
 	if int(data.get("version", 0)) > VERSION:
 		push_error("Sauvegarde d'une version plus récente du jeu")
@@ -74,4 +76,4 @@ func load_game() -> bool:
 
 func delete_save() -> void:
 	if has_save():
-		DirAccess.remove_absolute(PATH)
+		DirAccess.remove_absolute(path)

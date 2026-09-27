@@ -2,7 +2,8 @@ class_name BattleWeather
 extends Control
 ## The battle happens under the same sky as the exploration: the backdrop and the fighters
 ## take the light of the hour (dawn, dusk, night) and of the weather; rain falls in front of
-## the scene, mist veils its far part. Sits above the fighters, below the battle panels.
+## the scene, mist veils its far part, a sandstorm veils it in ochre with sand blowing across.
+## Sits above the fighters, below the battle panels.
 
 ## Light of the hour: [hour, colour], blended between neighbours.
 const DAYLIGHT := [
@@ -18,6 +19,10 @@ const RAIN := Color(0.85, 0.9, 1.0, 0.2)
 const STORM_RAIN := 1.8
 const LIGHTNING_EVERY := Vector2(5.0, 12.0)
 const THUNDER: Array[AudioStream] = [preload("res://assets/audio/ambience/tonnerre-1.mp3"), preload("res://assets/audio/ambience/tonnerre-2.mp3")]
+## A sandstorm: an ochre veil, grains streaking across from the left.
+const SAND_VEIL := Color(0.88, 0.68, 0.42)
+const SAND_GRAINS := 140
+const SAND := Color(0.95, 0.8, 0.55, 0.45)
 
 var _flash: ColorRect
 var _next_lightning := 3.0
@@ -49,6 +54,8 @@ static func tint(hour: float, weather: StringName) -> Color:
 		c = c.lerp(Color(0.62, 0.66, 0.72) * c.get_luminance(), 0.45) * 0.92
 	elif weather == &"mist":
 		c = c.lerp(Color(0.8, 0.83, 0.86) * maxf(c.get_luminance(), 0.4), 0.3)
+	elif weather == &"sandstorm":
+		c = c.lerp(SAND_VEIL * maxf(c.get_luminance(), 0.45), 0.45) * 0.95
 	return Color(c, 1.0)
 
 
@@ -57,6 +64,9 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if Game.weather == &"mist":
 		_add_mist()
+	elif Game.weather == &"sandstorm":
+		_add_mist(SAND_VEIL, 0.62)
+		_add_sand()
 	elif Game.is_raining():
 		_add_rain(STORM_RAIN if Game.weather == &"storm" else 1.0)
 	if Game.weather == &"storm":
@@ -84,12 +94,12 @@ func _process(delta: float) -> void:
 		Audio.play_sfx(THUNDER[0 if far > 0.5 else 1], lerpf(-4.0, -11.0, far), 0.08))
 
 
-## A pale veil, thick over the far part of the scene (the top), thin in front.
-func _add_mist() -> void:
+## A pale veil (`colour`), thick over the far part of the scene (the top), thin in front.
+func _add_mist(colour := Color(0.9, 0.92, 0.94), thick := 0.72) -> void:
 	var g := Gradient.new()
-	g.set_color(0, Color(0.9, 0.92, 0.94, 0.72))
-	g.add_point(0.45, Color(0.9, 0.92, 0.94, 0.4))
-	g.set_color(g.get_point_count() - 1, Color(0.9, 0.92, 0.94, 0.08))
+	g.set_color(0, Color(colour, thick))
+	g.add_point(0.45, Color(colour, thick * 5.0 / 9.0))
+	g.set_color(g.get_point_count() - 1, Color(colour, thick / 9.0))
 	var tex := GradientTexture2D.new()
 	tex.gradient = g
 	tex.fill_from = Vector2(0.5, 0.0)
@@ -103,6 +113,36 @@ func _add_mist() -> void:
 	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(veil)
 	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+
+## Grains of sand blowing across the whole scene, left to right, and a few drifting puffs.
+func _add_sand() -> void:
+	var screen := get_viewport().get_visible_rect().size
+	var p := CPUParticles2D.new()
+	p.amount = Quality.scaled(SAND_GRAINS)
+	p.lifetime = 0.9
+	p.preprocess = 0.9
+	p.position = Vector2(-60.0, screen.y / 2.0)
+	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	p.emission_rect_extents = Vector2(20.0, screen.y * 0.55)
+	p.direction = Vector2(1.0, 0.08)
+	p.spread = 4.0
+	p.gravity = Vector2(0, 30)
+	p.initial_velocity_min = screen.x * 1.1
+	p.initial_velocity_max = screen.x * 1.5
+	p.particle_flag_align_y = true
+	var streak := GradientTexture2D.new()
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 0))
+	g.set_color(1, Color(1, 1, 1, 1))
+	streak.gradient = g
+	streak.fill_from = Vector2(0.5, 0.0)
+	streak.fill_to = Vector2(0.5, 1.0)
+	streak.width = 2
+	streak.height = 18
+	p.texture = streak
+	p.color = SAND
+	add_child(p)
 
 
 ## Light, fine slanted streaks across the whole screen (`more`: a storm's heavier rain).

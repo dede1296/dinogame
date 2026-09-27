@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/suchomimus.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/suchomimus_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"suchomimus"
+display_name = "Suchomimus"
+family = &"spino"
+description = "Un grand pêcheur au museau allongé comme un crocodile, qui vit sur l'îlot aux racines du Marais. Il nage avec aisance dans les eaux les plus profondes."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.54
+walk_fps = 7.0
+cry_prefix = "spino"
+head_size = 8
+head_bite = 7
+teeth_sharp = 7
+teeth_count = 9
+front_power = 7
+front_reach = 7
+back_legs_power = 8
+back_legs_speed = 6
+back_armor = 4
+back_spikes = 5
+tail_power = 7
+tail_length = 8
+rarity = "rare"

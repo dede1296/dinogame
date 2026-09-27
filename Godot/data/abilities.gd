@@ -1,7 +1,7 @@
 class_name Abilities
 ## What a dino can do out in the world (like Pokémon HMs), from what it is: its family (a
 ## raptor slices, a ceratopsian charges) or its species (only the small hunters have Flair,
-## only the big ones carry Chloé). `soon`: planned, not playable yet (shown on its sheet).
+## only the domed heads have Coup de crâne, only the big ones carry Chloé). `soon`: planned, not playable yet (shown on its sheet).
 ## `adult`: only a grown dino can (a hatchling does not carry anyone): from ADULT_LEVEL.
 ## `icon`: how its sheet draws it (see draw_icon).
 ## Who can carry, fly, swim is chosen species by species, for what they really were:
@@ -22,15 +22,17 @@ const DEFS := {
 		"desc": "Sa crête chante : l'ambre endormi s'éveille et les portes d'ambre s'ouvrent."},
 	&"flair": {"name": "Flair", "icon": "paw", "part": &"head", "species": [&"compsognathus", &"troodon", &"oviraptor"],
 		"desc": "Un nez infaillible : sent ce qui est enfoui et le déterre."},
+	&"coup_crane": {"name": "Coup de crâne", "icon": "dome", "part": &"head", "species": [&"pachycephalosaurus", &"stygimoloch"],
+		"desc": "Un crâne en dôme : enfonce les murs fissurés."},
 	&"monture": {"name": "Monture", "icon": "saddle", "part": &"back_legs", "adult": true,
 		"species": [&"triceratops", &"styracosaurus", &"parasaurolophus", &"corythosaurus", &"edmontosaurus", &"maiasaura",
 			&"iguanodon", &"gallimimus", &"ankylosaurus"],
 		"desc": "Assez grand pour porter Chloé, avec une selle : on voyage bien plus vite."},
 	&"vol": {"name": "Vol", "icon": "wing", "part": &"back", "soon": true, "adult": true, "species": [&"pteranodon", &"quetzalcoatlus"],
 		"desc": "Emporte Chloé dans les airs : falaises, îlots, et d'une région visitée à l'autre."},
-	&"nage": {"name": "Nage", "icon": "wave", "part": &"tail", "soon": true, "adult": true,
+	&"nage": {"name": "Nage", "icon": "wave", "part": &"tail", "adult": true,
 		"species": [&"baryonyx", &"suchomimus", &"spinosaurus"], "families": [&"marine"],
-		"desc": "Traverse l'eau profonde et les rivières, Chloé sur le dos."},
+		"desc": "Traverse l'eau profonde et les rivières, Chloé sur le dos (avec le gilet de nage)."},
 	&"plongee": {"name": "Plongée", "icon": "bubbles", "part": &"tail", "soon": true, "adult": true, "families": [&"marine"],
 		"desc": "Descend sous l'eau : grottes marines, épaves, récifs."},
 }
@@ -95,6 +97,18 @@ static func draw_icon(ci: CanvasItem, icon: String, c: Vector2, s: float, colour
 			ci.draw_circle(c + Vector2(0, 5) * k, 6.5 * k, colour)
 			for p: Vector2 in [Vector2(-8, -3), Vector2(-3, -9), Vector2(3, -9), Vector2(8, -3)]:
 				ci.draw_circle(c + p * k, 3.0 * k, colour)
+		"dome":   # a domed skull with its knobs, and a crack in the wall it hits
+			var dome := PackedVector2Array()
+			for i in 13:
+				dome.append(c + (Vector2(-5, 4) + Vector2.from_angle(PI + i * PI / 12.0) * Vector2(9, 10)) * k)
+			ci.draw_colored_polygon(dome, colour)
+			for x in [-12.0, -8.0, -2.0, 2.0]:
+				ci.draw_circle(c + Vector2(x, 5.5) * k, 1.8 * k, colour)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(9, -13) * k, c + Vector2(6, -6) * k, c + Vector2(11, -1) * k,
+				c + Vector2(7, 5) * k, c + Vector2(10, 12) * k]), colour, w * 0.8, true)
+			for a in [-0.5, 0.5]:
+				var d := Vector2.from_angle(a)
+				ci.draw_line(c + Vector2(13, -1) * k + d * 1.5 * k, c + Vector2(13, -1) * k + d * 5.0 * k, colour, w * 0.7)
 		"saddle":   # a saddle and its stirrup
 			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-13, -2) * k, c + Vector2(-8, -9) * k, c + Vector2(-2, -4) * k,
 				c + Vector2(6, -5) * k, c + Vector2(12, -11) * k, c + Vector2(13, -1) * k, c + Vector2(0, 3) * k]), colour)

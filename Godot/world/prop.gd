@@ -77,6 +77,43 @@ const KINDS := {
 	"souche_geante": {"scale": 0.3, "foot": 0.12, "solid": 44.0, "sway": 0.0, "shadow": 110.0},
 	"arbre_geant": {"scale": 0.47, "foot": 0.04, "solid": 40.0, "sway": 0.0, "shadow": 240.0},
 	"os_dino": {"scale": 0.27, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# Le camp de l'Ombre Noire (Forêt, étape 2) : Brac, ses cages, et la brèche du Masque.
+	"mur_fissure": {"scale": 0.19, "foot": 0.0, "solid": Vector2(180, 70), "sway": 0.0, "shadow": 0.0},
+	"tente": {"scale": 0.25, "foot": 0.05, "solid": Vector2(110, 40), "sway": 0.0, "shadow": 130.0},
+	"cage": {"scale": 0.31, "foot": 0.05, "solid": Vector2(90, 40), "sway": 0.0, "shadow": 90.0},
+	# The front bars of a cage, in front of the dino it holds (the cage picture behind it).
+	"barreaux_cage": {"scale": 0.31, "foot": 0.03, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"caisse_ambre_noir": {"scale": 0.25, "foot": 0.06, "solid": Vector2(50, 22), "sway": 0.0, "shadow": 50.0},
+	"table_papiers": {"scale": 0.25, "foot": 0.05, "solid": Vector2(85, 30), "sway": 0.0, "shadow": 100.0},
+	"palissade": {"scale": 0.42, "foot": 0.05, "solid": Vector2(80, 14), "sway": 0.0, "shadow": 40.0},
+	# Suspendue entre deux arbre_geant : pas de collision (on ne marche pas dessus, juste le décor).
+	"passerelle": {"scale": 0.233, "foot": 0.18, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# Marais Brumeux (chapitre 3).
+	"roseaux": {"scale": 0.32, "foot": 0.04, "solid": 0.0, "sway": 2.5, "shadow": 0.0},
+	"arbre_noye": {"scale": 0.5, "foot": 0.08, "solid": 34.0, "sway": 1.0, "shadow": 200.0},
+	"nenuphars": {"scale": 0.24, "foot": 0.35, "solid": 0.0, "sway": 0.0, "shadow": 0.0, "float": true},
+	"cabane_pilotis": {"scale": 0.42, "foot": 0.06, "solid": Vector2(130, 50), "sway": 0.0, "shadow": 0.0},
+	"statue_dino": {"scale": 0.4, "foot": 0.04, "solid": 26.0, "sway": 0.0, "shadow": 80.0},
+	"colonne": {"scale": 0.32, "foot": 0.06, "solid": 16.0, "sway": 0.0, "shadow": 60.0},
+	"vanne": {"scale": 0.3, "foot": 0.06, "solid": 18.0, "sway": 0.0, "shadow": 50.0},
+	"fresque": {"scale": 0.4, "foot": 0.02, "solid": Vector2(130, 24), "sway": 0.0, "shadow": 0.0},
+	"porte_temple": {"scale": 0.42, "foot": 0.01, "solid": Vector2(140, 34), "sway": 0.0, "shadow": 0.0},
+	"racines": {"scale": 0.3, "foot": 0.12, "solid": Vector2(110, 26), "sway": 0.0, "shadow": 90.0},
+	# Désert Aride (chapitre 4).
+	"os_geant": {"scale": 0.36, "foot": 0.08, "solid": Vector2(80, 24), "sway": 0.0, "shadow": 70.0},
+	"crane_geant_desert": {"scale": 0.48, "foot": 0.03, "solid": Vector2(180, 40), "sway": 0.0, "shadow": 0.0},
+	"rocher_canyon": {"scale": 0.42, "foot": 0.1, "solid": Vector2(110, 38), "sway": 0.0, "shadow": 108.0},
+	"arche_rocheuse": {"scale": 0.55, "foot": 0.02, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"palmier_oasis": {"scale": 0.56, "foot": 0.03, "solid": 12.0, "sway": 1.8, "shadow": 90.0},
+	"nid_oviraptor": {"scale": 0.22, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 20.0},
+	"totem_vents": {"scale": 0.34, "foot": 0.05, "solid": 18.0, "sway": 0.0, "shadow": 55.0},
+	"buisson_sec": {"scale": 0.32, "foot": 0.08, "solid": 16.0, "sway": 1.0, "shadow": 70.0},
+	"tente_nomade": {"scale": 0.28, "foot": 0.05, "solid": Vector2(100, 38), "sway": 0.0, "shadow": 120.0},
+	"porte_vents": {"scale": 0.37, "foot": 0.01, "solid": Vector2(150, 34), "sway": 0.0, "shadow": 0.0},
+	"chariot_cage": {"scale": 0.37, "foot": 0.06, "solid": Vector2(140, 55), "sway": 0.0, "shadow": 110.0},
+	"rempart_eboulis": {"scale": 0.29, "foot": 0.0, "solid": Vector2(320, 90), "sway": 0.0, "shadow": 0.0},
+	"squelette_geant": {"scale": 0.52, "foot": 0.08, "solid": Vector2(190, 64), "sway": 0.0, "shadow": 0.0},
+	"puits_oasis": {"scale": 0.34, "foot": 0.06, "solid": Vector2(65, 34), "sway": 0.0, "shadow": 50.0},
 }
 
 @export_enum("arbre_rond", "araucaria", "fougere_arbre", "buisson", "rocher", "cailloux", "tronc", "ronces",
@@ -86,7 +123,11 @@ const KINDS := {
 	"bureau", "bibliotheque", "couveuse", "fougere_pot", "lampe", "fauteuil", "etabli", "mur_cabinet", "socle",
 	"porte_ambre", "ecaille", "serrure", "stalagmite", "cristaux", "rocher_grotte", "grand_crane",
 	"galet", "monticule", "feu_camp", "etal_fruits", "etal_poisson",
-	"fougere_geante", "tronc_mousse", "champignons", "rocher_mousse", "souche_geante", "arbre_geant", "os_dino")
+	"fougere_geante", "tronc_mousse", "champignons", "rocher_mousse", "souche_geante", "arbre_geant", "os_dino",
+	"mur_fissure", "tente", "cage", "caisse_ambre_noir", "table_papiers", "palissade", "passerelle",
+	"roseaux", "arbre_noye", "nenuphars", "cabane_pilotis", "statue_dino", "colonne", "vanne", "fresque", "porte_temple", "racines", "os_geant", "crane_geant_desert", "rocher_canyon", "arche_rocheuse", "palmier_oasis", "nid_oviraptor", "totem_vents", "buisson_sec", "tente_nomade",
+	"porte_vents", "chariot_cage", "rempart_eboulis", "squelette_geant", "puits_oasis",
+	"barreaux_cage")
 var kind := "arbre_rond":
 	set(value):
 		kind = value
