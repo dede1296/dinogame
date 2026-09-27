@@ -226,6 +226,7 @@ static func dino_npc(root: Region, node_name: String, species: StringName, x: fl
 	d.hide_flag = opts.get("hide_flag", &"")
 	d.size_scale = opts.get("size", 0.8)
 	d.lift = opts.get("lift", 0.0)
+	d.corrupted = opts.get("corrupted", false)
 	d.position = cell(x, y)
 	root.get_node("Entities").add_child(d)
 	return d

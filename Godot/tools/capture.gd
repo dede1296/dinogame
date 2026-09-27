@@ -13,7 +13,7 @@ extends SceneTree
 
 const TILE := 48.0
 const SCENARIOS := {
-	"title": [[2.0, "shot", "00_titre"]],
+	"title": [[2.0, "shot", "00_titre"], [3.0, "audio", null]],
 	"walk": [
 		[1.5, "shot", "01_arrivee"], [1.6, "hold", "move_up"], [3.0, "hold", "move_left"],
 		[4.2, "shot", "02_marche"], [4.3, "hold", ""], [5.0, "hold", "move_up"], [6.5, "hold", ""],
@@ -251,6 +251,54 @@ const SCENARIOS := {
 		[3.8, "shot", "p0_joss_refuse"], [5.0, "press", "interact"], [6.0, "tracker", null],
 		[6.1, "item", ["piece", 300]], [6.2, "talk", true], [6.5, "press", "interact"], [14.0, "coins", null], [14.1, "state", null],
 		[14.2, "talk", false], [14.3, "tp", Vector2(20.8, 11.2)], [14.5, "hold", "move_left"], [14.55, "hold", ""], [14.8, "press", "interact"], [17.0, "shot", "p2_revanche"],
+	],
+	"fin_ch1": [
+		[0.8, "flags", ["ecaille_bosquet", "ecaille_grotte", "ecaille_falaises", "crane_ouvert"]], [0.85, "calm", 900.0], [0.86, "level", 16],
+		[0.9, "zone", &"plaines"], [2.4, "tp", Vector2(105.6, 63.8)], [3.6, "hold", "move_right"], [3.7, "hold", ""], [3.9, "press", "interact"], [4.4, "auto", true],
+		[60.0, "state", null], [60.05, "shot", "e0_maia"], [70.0, "state", null], [70.1, "shot", "e0b"], [80.0, "state", null], [80.1, "shot", "e0c"], [95.0, "state", null], [110.0, "state", null], [140.0, "auto", false], [140.1, "state", null], [140.2, "tracker", null], [140.3, "shot", "e1_apres_maia"],
+	],
+	"cabinet_vide": [
+		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_5", "roc_parti_vu", "roc_dehors"]], [0.85, "calm", 900.0], [0.86, "clock", 21.5],
+		[0.9, "zone", &"cabinet"], [1.5, "shot", "c1"], [2.5, "shot", "c2"], [3.5, "shot", "c3"], [4.5, "shot", "c4"], [5.0, "state", null],
+	],
+	"labo_son": [
+		[0.85, "calm", 900.0], [0.9, "zone", &"cabinet"], [3.0, "audio", null],
+	],
+	"couveuse": [
+		[0.85, "calm", 900.0], [0.9, "zone", &"cabinet"], [2.3, "tp", Vector2(13.8, 4.6)], [2.5, "hold", "move_up"], [2.6, "hold", ""],
+		[2.8, "press", "interact"], [4.5, "shot", "v1"], [4.6, "press", "interact"], [5.2, "press", "interact"], [6.9, "shot", "v2"],
+		[7.0, "press", "interact"], [7.6, "press", "interact"], [9.3, "shot", "v3"], [9.4, "press", "interact"], [10.0, "press", "interact"], [11.7, "shot", "v4"],
+	],
+	"page6": [
+		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_5", "roc_parti_vu", "roc_dehors", "cabinet_vide_vu"]], [0.85, "calm", 900.0], [0.86, "clock", 21.5],
+		[0.9, "zone", &"cabinet"], [2.3, "tp", Vector2(13.8, 4.8)], [2.5, "hold", "move_up"], [2.6, "hold", ""], [2.8, "press", "interact"],
+		[4.2, "press", "interact"], [5.0, "press", "interact"], [9.5, "shot", "l0_lettre"], [9.6, "auto", true], [16.0, "auto", false],
+		[16.1, "clock", 8.0], [17.5, "state", null], [17.6, "zone", &"port_ambre"], [19.0, "zone", &"cabinet"], [20.5, "tp", Vector2(6.5, 5.8)],
+		[21.8, "hold", "move_up"], [21.9, "hold", ""], [22.1, "press", "interact"], [27.0, "shot", "l1_roc_matin"], [27.1, "press", "interact"], [31.0, "shot", "l2_roc_cendre"],
+	],
+	"fin_ch1_port": [
+		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_5"]], [0.85, "calm", 900.0],
+		[0.9, "zone", &"port_ambre"], [3.0, "shot", "p0_soir"], [3.1, "auto", true], [6.5, "shot", "p1_roc_sort"], [9.0, "shot", "p2_roc_part"], [20.0, "auto", false], [20.1, "state", null],
+		[20.3, "zone", &"cabinet"], [22.0, "auto", true], [26.0, "auto", false], [26.1, "shot", "p3_cabinet_vide"],
+		[26.3, "tp", Vector2(13.8, 4.8)], [27.5, "hold", "move_up"], [27.6, "hold", ""], [27.8, "press", "interact"], [30.0, "shot", "p4_page"], [31.0, "press", "interact"], [33.5, "shot", "p5_lettre"],
+		[33.6, "auto", true], [45.0, "auto", false], [45.1, "state", null], [45.2, "tracker", null],
+	],
+	"grotte2": [
+		[0.8, "flags", ["ecaille_bosquet", "sbire_grotte_1", "sbire_grotte_2"]], [0.85, "calm", 900.0], [0.86, "level", 12],
+		[0.9, "zone", &"grotte_echos"], [2.5, "tp", Vector2(17.4, 3.3)], [3.6, "shot", "m0_proto"],
+		[3.7, "hold", "move_right"], [3.8, "hold", ""], [4.0, "press", "interact"], [5.5, "press", "ui_accept"], [12.0, "shot", "m1_lecon"],
+		[12.1, "auto", true], [30.0, "shot", "m2_combat"], [70.0, "auto", false], [70.1, "state", null], [70.2, "party", null], [70.3, "shot", "m3_apres"],
+		[70.5, "tp", Vector2(18.1, 3.3)], [71.5, "hold", "move_right"], [71.6, "hold", ""], [71.8, "press", "interact"], [72.5, "auto", true], [78.0, "auto", false],
+		[78.1, "state", null], [78.2, "shot", "m4_ecaille"],
+	],
+	"grotte": [
+		[0.8, "flags", ["ecaille_bosquet", "rocher_casse"]], [0.85, "calm", 900.0], [0.86, "level", 12], [0.87, "give", "triceratops"], [0.88, "level", 12],
+		[0.9, "zone", &"grotte_echos"], [3.5, "shot", "k0_entree"], [3.6, "auto", true],
+		[40.0, "state", null], [40.1, "auto", false], [40.2, "shot", "k1_apres_gustave"],
+		[40.5, "tp", Vector2(14.8, 3.0)], [42.0, "shot", "k2_chef"], [42.1, "hold", "move_right"], [42.2, "hold", ""], [42.4, "press", "interact"], [42.6, "auto", true],
+		[85.0, "auto", false], [85.1, "state", null], [85.2, "tp", Vector2(17.3, 3.3)], [86.5, "shot", "k3_proto"],
+		[86.6, "hold", "move_right"], [86.7, "hold", ""], [86.9, "press", "interact"], [88.5, "press", "ui_accept"], [95.0, "shot", "k4_lecon"],
+		[95.1, "auto", true], [135.0, "auto", false], [135.1, "state", null], [135.2, "shot", "k5_apres"],
 	],
 	"pages": [
 		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive", "ferreol_rencontre", "selle_demandee"]], [0.85, "calm", 600.0],
@@ -679,6 +727,11 @@ func _auto_step() -> void:
 	for n in current_scene.get_children():
 		if n.has_signal("_action_chosen"):
 			if n.get("_menu").visible:
-				n.emit_signal("_action_chosen", {"type": "move", "index": 0})
+				# A corrupted foe: calm it; otherwise the first move.
+				var calm: bool = n.get("_calm_button").visible
+				n.emit_signal("_action_chosen", {"type": "calm"} if calm else {"type": "move", "index": 0})
 				return
+	if root.get_node("Dialogue").get("_choosing"):
+		_run("press", "ui_accept")
+		return
 	_run("press", "interact")

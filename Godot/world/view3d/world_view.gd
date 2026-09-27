@@ -999,11 +999,11 @@ func _sync(p: Dictionary) -> void:
 			foot.transform = Transform3D(Basis.from_scale(Vector3(w, 1.0, w * 0.62)), heights.to_3d(at) + Vector3(0, 0.03, 0))
 			foot.transparency = 1.0 - (src.modulate.a * sprite.modulate.a)
 	if p["light"]:
-		var glow: PointLight2D = p["glow"]
+		var glow = p["glow"]   # untyped: the light may have been freed (a corrupted dino calmed)
 		var light: OmniLight3D = p["light"]
 		light.visible = is_instance_valid(glow) and _shown(glow)
 		if light.visible:
-			light.light_energy = glow.energy * 1.4
+			light.light_energy = (glow as PointLight2D).energy * 1.4
 			light.position = vis.position + Vector3(0, 0.5, 0.2)
 
 

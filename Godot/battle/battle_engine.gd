@@ -6,7 +6,12 @@ extends RefCounted
 ## on their own and the animations can change without touching them.
 ##
 ## Events: {"type": "text"|"move"|"miss"|"damage"|"heal"|"status"|"stat"|"faint"|"catch"|
-##          "run"|"switch"|"xp"|"level"|"learn"|"end", …} — most carry a "text".
+##          "run"|"switch"|"xp"|"level"|"learn"|"calm"|"calmed"|"end", …} — most carry a "text".
+##
+## A corrupted foe (Dino.corrupted, black amber) cannot be caught nor knocked out: the fury
+## keeps it standing at 1 PV. It is calmed instead (Apaiser): each calm action that works
+## fills its calm gauge (more with a dino of its own family, or when it is worn out); an
+## attack empties some of it. Full: the veins fade, the battle ends ("calmed").
 
 const STATUS_TURNS := {"saigne": 0, "etourdi": 1, "peur": 3}
 const STAT_NAMES := {"atk": "L'attaque", "def": "La défense", "spd": "La vitesse"}
@@ -15,11 +20,19 @@ var team: Array[Dino]     # the player's party; `active` is the dino in battle
 var active := 0
 var foe: Dino
 var over := false
-var result := ""          # "win", "lose", "run", "catch"
+var result := ""          # "win", "lose", "run", "catch", "calmed"
+## Calm of a corrupted foe, 0 to CALM_FULL.
+var calm := 0
+const CALM_FULL := 100
+const CALM_STEP := 30        # a calm action that works
+const CALM_KIN_BONUS := 15   # …by a dino of the foe's family
+const CALM_LOST_ON_HIT := 12 # an attack frightens it again
+const CALM_BASE_CHANCE := 0.55
 var stages := {"player": {"atk": 0, "def": 0, "spd": 0}, "foe": {"atk": 0, "def": 0, "spd": 0}}
 var rng := RandomNumberGenerator.new()
 
 var _escape_tries := 0
+var _told_fury := false
 var _fought: Array[Dino] = []
 
 
@@ -28,6 +41,8 @@ func _init(player_team: Array[Dino], wild: Dino) -> void:
 	foe = wild
 	active = _first_able()
 	_fought.append(team[active])
+	if foe.corrupted:   # the black amber drives it: stronger
+		stages["foe"]["atk"] = 1
 
 
 func player() -> Dino:
@@ -39,10 +54,13 @@ func dino(side: String) -> Dino:
 
 
 func name_of(side: String) -> String:
-	return player().nickname if side == "player" else "le %s sauvage" % foe.species_name()
+	if side == "player":
+		return player().nickname
+	return "le %s %s" % [foe.species_name(), "corrompu" if foe.corrupted else "sauvage"]
 
 
-## One turn with the player's choice: {"type": "move", "index": i} | {"type": "catch"} | {"type": "run"}.
+## One turn with the player's choice: {"type": "move", "index": i} | {"type": "catch"} |
+## {"type": "calm"} | {"type": "run"}.
 func turn(action: Dictionary) -> Array:
 	var ev: Array = []
 	if over:
@@ -54,6 +72,9 @@ func turn(action: Dictionary) -> Array:
 				return ev
 		"catch":
 			if _try_catch(ev):
+				return ev
+		"calm":
+			if _try_calm(ev):
 				return ev
 	var order: Array = []
 	if action["type"] == "move":
@@ -117,7 +138,7 @@ func _use_move(side: String, index: int, ev: Array) -> void:
 		return
 	if move["power"] > 0:
 		var hit := _damage(side, other, move)
-		target.hp = maxi(0, target.hp - hit["damage"])
+		target.hp = maxi(_lowest_hp(other), target.hp - hit["damage"])
 		ev.append({"type": "damage", "side": other, "amount": hit["damage"], "hp": target.hp, "max_hp": target.max_hp(),
 			"crit": hit["crit"], "eff": hit["eff"], "move_type": move["type"]})
 		if hit["crit"]:
@@ -126,6 +147,8 @@ func _use_move(side: String, index: int, ev: Array) -> void:
 			ev.append({"type": "text", "text": "C'est super efficace !"})
 		elif hit["eff"] < 1.0:
 			ev.append({"type": "text", "text": "Ce n'est pas très efficace…"})
+		if other == "foe" and foe.corrupted:
+			_frighten(ev)
 	var fx: Dictionary = move.get("effect", {})
 	if fx.has("heal"):
 		var amount := mini(user.max_hp() - user.hp, ceili(user.max_hp() * fx["heal"]))
@@ -177,7 +200,7 @@ func _end_of_turn(ev: Array) -> void:
 			continue
 		if d.status == "saigne":
 			var loss := maxi(1, d.max_hp() / 12)
-			d.hp = maxi(0, d.hp - loss)
+			d.hp = maxi(_lowest_hp(side), d.hp - loss)
 			ev.append({"type": "damage", "side": side, "amount": loss, "hp": d.hp, "max_hp": d.max_hp(), "bleed": true,
 				"crit": false, "eff": 1.0, "text": "%s perd du sang…" % _cap(name_of(side))})
 		elif d.status == "peur":
@@ -228,6 +251,45 @@ func _give_xp(ev: Array) -> void:
 				if e["replaced"] != &"":
 					text = "%s oublie %s et apprend %s !" % [d.nickname, MovesDB.move(e["replaced"])["name"], name]
 				ev.append({"type": "learn", "dino": d, "text": text})
+
+
+## A corrupted foe never goes below 1 PV: only calming it ends the battle.
+func _lowest_hp(side: String) -> int:
+	return 1 if side == "foe" and foe.corrupted else 0
+
+
+## Hit, it is frightened again: some calm is lost (and, the first time it holds on at 1 PV,
+## the player is told why it does not fall).
+func _frighten(ev: Array) -> void:
+	if calm > 0:
+		calm = maxi(0, calm - CALM_LOST_ON_HIT)
+		ev.append({"type": "calm", "calm": calm, "text": "Le coup l'affole : il se méfie davantage…"})
+	if foe.hp == 1 and not _told_fury:
+		_told_fury = true
+		ev.append({"type": "text", "text": "La fureur le tient debout ! Seul l'apaisement peut l'arrêter."})
+
+
+## Speaking softly to it (the dino in battle, then Chloé). Works more often when it is worn
+## out; a dino of its own family calms it faster.
+func _try_calm(ev: Array) -> bool:
+	var worn := 1.0 - float(foe.hp) / foe.max_hp()
+	var chance := clampf(CALM_BASE_CHANCE + worn * 0.4, 0.0, 0.95)
+	var kin := player().species().family == foe.species().family
+	ev.append({"type": "text", "text": "%s s'approche doucement du %s corrompu, et Chloé lui parle tout bas…" % [player().nickname, foe.species_name()]})
+	if rng.randf() >= chance:
+		ev.append({"type": "text", "text": "%s gronde et refuse d'écouter." % _cap(name_of("foe"))})
+		return false
+	calm = mini(CALM_FULL, calm + CALM_STEP + (CALM_KIN_BONUS if kin else 0))
+	var how := "Il reconnaît un dino de sa famille : il s'apaise vite !" if kin else "Il écoute… ses veines violettes pâlissent un peu."
+	ev.append({"type": "calm", "calm": calm, "text": how})
+	if calm < CALM_FULL:
+		return false
+	ev.append({"type": "calmed", "text": "Les veines violettes s'effacent. %s est apaisé !" % _cap(foe.species_name())})
+	foe.corrupted = false
+	foe.status = ""
+	_give_xp(ev)
+	_finish("calmed", ev)
+	return true
 
 
 func _try_run(ev: Array) -> bool:

@@ -259,12 +259,18 @@ La mécanique de cœur, héritée d'Hélène.
 - **Tour par tour** ✅, un contre un, avec possibilité de changer de dino.
 - **7 types** ✅ : neutre, feu, eau, terre, vent, pierre, nature, avec une table des forces et
   faiblesses. Le type dépend de la famille de l'espèce.
-- **Statuts** ✅ : saigne, étourdi, peur. Plus un nouveau statut : **Corrompu**.
+- **Statuts** ✅ : saigne, étourdi, peur. Plus un nouveau statut : **Corrompu** ✅.
 - **Dinos corrompus** (ambre noir, veines violettes) : plus forts, imprévisibles, ils ne peuvent
   pas être capturés tant qu'ils ne sont pas apaisés.
   - **Apaiser** : une jauge de calme monte à chaque action d'apaisement réussie (plus vite avec un
     Lien fort ou un dino de la même famille) et baisse quand on l'attaque. Pleine, elle efface les
     veines : le combat s'arrête, et le dino peut rejoindre l'équipe s'il y a de la place.
+  - ✅ Fait (`battle/battle_engine.gd`) : bouton « Apaiser » à la place du Collier, jauge de
+    Calme sous ses PV. Chance de réussite 55 % + 40 % × sa fatigue ; +30 de calme (+15 si même
+    famille) ; un coup lui en retire 12. Un corrompu ne tombe jamais sous 1 PV (« la fureur le
+    tient debout ») et frappe plus fort (attaque +1). Planche `<espèce>_corrompu.png` (veines
+    violettes) et lueur violette dans le monde. Le Lien n'existe pas encore : pas de condition
+    de cœurs pour l'instant.
 - **Adversaires** : dinos sauvages ✅, sbires et lieutenants de l'Ombre Noire (équipes de plusieurs
   dinos), Maïa, les Alphas, le Masque, le Souverain.
 - **Récompenses** : expérience ✅, objets, argent (les **éclats d'ambre**, monnaie de l'île).

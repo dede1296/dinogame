@@ -41,7 +41,7 @@ Les trois fils qui traversent le jeu :
    blême. *(Fausse piste vers Roc, vrai indice vers Isaure, qui était là le soir.)*
 6. Au matin, Roc donne 5 **colliers d'ambre** et indique les Plaines.
 
-## Chapitre 1 — Les Plaines des Fougères et la Grotte des Échos
+## Chapitre 1 — Les Plaines des Fougères et la Grotte des Échos ✅
 
 **Structure : trois passages, dans l'ordre qu'on veut.** Au centre des Plaines, le **Grand Crâne**,
 un crâne fossile géant, est fermé par trois serrures d'ambre : c'est l'épreuve qu'Hélène a
@@ -55,7 +55,7 @@ herbes hautes, Parasaurolophus à l'étang, Velociraptor sauvage aux lisières, 
 2. **Le tronc → le bosquet d'Hélène** (**Tranche**) ✅ : un fragment d'ambre avec un minuscule
    Protoceratops, la **page 1** ✅, et la première écaille. Rapporté au Cabinet, le fragment devient
    un **œuf** : « Pépite », un Protoceratops spécial.
-3. **Le rocher → la Grotte des Échos** (**Charge**, le rocher est déjà en place ✅) : deux sbires
+3. **Le rocher → la Grotte des Échos** (**Charge**) ✅ : deux sbires
    arrachent de l'ambre aux parois (premiers combats de dresseurs). Chauves-souris-ptérosaures,
    Troodons dans le noir, la page 4. Au fond, **le premier corrompu** : un Protoceratops aux veines
    violettes, abandonné par les sbires, fou de peur. Le jeu apprend à **Apaiser**. Les veines
@@ -63,14 +63,19 @@ herbes hautes, Parasaurolophus à l'étang, Velociraptor sauvage aux lisières, 
 4. **La porte d'ambre → les falaises** (**Résonance**) : une porte d'ambre éteinte s'illumine au chant
    de la crête. Derrière, les nids de Dimorphodons, la page 3 (« I. », l'amie de la barque) et la
    troisième écaille, dans un ancien poste d'observation d'Hélène.
-5. **Le Grand Crâne.** Les trois écailles ouvrent le crâne. Le **Tricératops Alpha** y dort. Il met
+5. **Le Grand Crâne** ✅. Les trois écailles ouvrent le crâne. Le **Tricératops Alpha** y dort. Il met
    Chloé à l'épreuve (combat d'honneur) et lui confie le **Sceau des Plaines** : les Alphas se
    souviennent d'Hélène. Page 5.
-6. **Maïa, défi n° 1**, au pied du Crâne. Elle perd de peu, jure de prendre sa revanche, et révèle en
+6. **Maïa, défi n° 1** ✅, au pied du Crâne (Caillou + le petit qu'elle a pris). Elle perd de peu, jure de prendre sa revanche, et révèle en
    passant que sa mère rentre souvent tard « avec des bottes pleines de cendre ».
-7. **Retour au port.** De nuit, Chloé voit **Roc sortir du Cabinet** avec une lanterne, vers le
+7. **Retour au port** ✅. De nuit, Chloé voit **Roc sortir du Cabinet** avec une lanterne, vers le
    volcan. *(Fausse piste.)* Page 6, « Pour Chloé », dans la couveuse vide (sa version dépend de
-   l'œuf choisi). La route de la Forêt est ouverte.
+   l'œuf choisi). Le lendemain, Roc nie être sorti (« Il a de la cendre sur ses chaussures… »).
+   La suite mène au Havre, puis à la Forêt.
+
+   *Fait dans le jeu :* le premier sbire (Gustave, un pêcheur qui démissionne) attaque à
+   l'entrée de la grotte ; le second, au fond, garde le Protoceratops corrompu. Apaisé, celui-ci
+   peut rejoindre l'équipe ou retourner aux Plaines. Les combats de grotte ont leur propre décor.
 
 ### Chapitre 1 — Hors des sentiers (quêtes annexes des Plaines)
 

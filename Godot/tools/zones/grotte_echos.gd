@@ -1,10 +1,12 @@
 extends RefCounted
 ## Grotte des Échos: under the Plaines, behind the boulder (Charge). A dark cave in three
-## chambers joined by passages (relief: rock walls); Troodons in the dark, a page of the
-## journal, and the second amber scale among the crystals at the far end.
+## chambers joined by passages (relief: rock walls); Troodons in the dark, Anurognathus under
+## the ceiling, a page of the journal; two henchmen of the Ombre Noire tearing out amber, and
+## at the far end the corrupted Protoceratops lying on the second amber scale (story/grotte.gd).
 
 const PATH := "res://regions/plaines/grotte_echos.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const CHARS := "res://assets/art/characters/%s.png"
 
 const PLAN := [
 	"........................",
@@ -67,12 +69,21 @@ static func build() -> Region:
 	var page = B.prop(entities, "ambre", B.cell(18.4, 12.6), false, load("res://world/pickup.gd"))
 	page.taken_flag = &"found_journal_4"
 	page.dialogue_id = &"page_4"
+	# The scale shows once the Protoceratops lying on it is calmed (Grotte.proto drops it then).
 	var scale = B.prop(entities, "ecaille", B.cell(18.6, 2.9), false, load("res://world/pickup.gd"))
 	scale.taken_flag = &"ecaille_grotte"
 	scale.dialogue_id = &"ecaille_grotte"
+	scale.show_flag = &"proto_apaise"
+	B.npc(root, "Sbire1", "Sbire masqué", CHARS % "sbire", 7.2, 10.6, {"facing": "left", "event": &"sbire_grotte_1", "hide_flag": &"sbire_grotte_1"})
+	B.npc(root, "Sbire2", "Sbire à la pioche", CHARS % "sbire", 16.2, 2.6, {"facing": "left", "event": &"sbire_grotte_2",
+		"hide_flag": &"sbire_grotte_2", "tint": Color(0.86, 0.8, 1.0)})
+	B.dino_npc(root, "ProtoCorrompu", &"protoceratops", 18.6, 3.1, {"event": &"proto_corrompu", "hide_flag": &"proto_apaise",
+		"corrupted": true, "size": 1.0, "flip": true})
 	B.spawn(root, "Depart", 11.9, 16.2)
 	B.spawn(root, "DepuisCarrefour", 11.9, 16.2)
 	B.exit(root, Rect2(10.0, 17.45, 4.0, 0.55), &"plaines", &"DepuisGrotte")
 	B.habitat(root, "Salle basse", Rect2(4, 9, 16, 5), [[&"troodon", 6, 8, 10, "toujours", false]], 1)
-	B.habitat(root, "Salle haute", Rect2(4, 1, 17, 4), [[&"troodon", 6, 8, 10, "toujours", false]], 1)
+	B.habitat(root, "Salle haute", Rect2(4, 1, 17, 4), [[&"troodon", 6, 8, 10, "toujours", false],
+		[&"anurognathus", 6, 8, 10, "toujours", false]], 1)
+	B.habitat(root, "Le passage", Rect2(4, 5, 4, 4), [[&"anurognathus", 6, 7, 10, "toujours", false]], 1)
 	return root

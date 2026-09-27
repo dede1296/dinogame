@@ -352,6 +352,9 @@ const JOBS = [
     ["microraptor", "aw17f4", 138, [157, 148]], ["utahraptor", "8g9dhj", 228, [282, 238]], ["griffe_grise", "dlm1oz", 208, [258, 218]],
     ["anurognathus", "fnyct3", 118, [140, 128]]].map(([name, id, frameHeight, cell]) =>
     [`${OUT}/dinos/${name}_face_dos.png`, (out) => sheet({ id, rows: 2, cols: 4, frameHeight, cell, out })]),
+  // Chapter 1, the Grotte des Échos: a henchman of the Ombre Noire, the first corrupted dino.
+  [`${OUT}/characters/sbire.png`, (out) => sheet({ id: "slvv1l", rows: 4, cols: 4, frameHeight: 176, out })],
+  [`${OUT}/dinos/protoceratops_corrompu.png`, (out) => sheet({ id: "wpkxd3", rows: 2, cols: 3, frameHeight: 150, out })],
   [`${OUT}/characters/roc.png`, (out) => sheet({ id: "b0tan1", rows: 4, cols: 4, frameHeight: 176, out })],
   [`${OUT}/characters/isaure.png`, (out) => sheet({ id: "zp5pby", rows: 4, cols: 4, frameHeight: 176, out })],
   [`${OUT}/dinos/ankylosaurus.png`, (out) => sheet({ id: "96xapm", rows: 2, cols: 3, frameHeight: 140, out })],
@@ -379,6 +382,7 @@ const JOBS = [
   [`${OUT}/ui/meteo`, () => icons({ id: "na9sb3", cols: 2, rows: 2, size: 96, outDir: `${OUT}/ui`, names: ["meteo_soleil", "meteo_lune", "meteo_pluie", "meteo_brume"] })],
   // Battle backdrops: plain resize (opaque).
   [`${OUT}/battle/plaines.jpg`, (out) => sharp(find("frasoq")).resize(1920).jpeg({ quality: 86, mozjpeg: true }).toFile(out).then(() => out)],
+  [`${OUT}/battle/grotte.jpg`, (out) => sharp(find("9g4ogb")).resize(1920, 1072, { fit: "cover" }).jpeg({ quality: 86, mozjpeg: true }).toFile(out).then(() => out)],
   [`${OUT}/ground/herbe.png`, (out) => seamless({ id: "eszvx5", size: 512, out })],
   [`${OUT}/ground/terre.png`, (out) => seamless({ id: "oxlhun", size: 512, out })],
   [`${OUT}/ground/falaise.png`, (out) => seamless({ id: "o3jvsq", size: 512, out })],

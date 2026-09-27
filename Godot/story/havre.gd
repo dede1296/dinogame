@@ -18,7 +18,6 @@ const WELCOME_COINS := 200
 const SADDLE_PRICE := 350
 ## A beaten trainer takes a rematch once a day, for this share of the first prize.
 const REMATCH_SHARE := 0.35
-const TRAINER_MUSIC := preload("res://assets/audio/music/rivale.ogg")
 const COINS_SFX := preload("res://assets/audio/sfx/coins.wav")
 const DOOR_SFX := preload("res://assets/audio/sfx/door_open.wav")
 ## The trainers of the Relais: team (species, level), prize, their lines.
@@ -190,17 +189,8 @@ static func trainer(id: StringName, who: Node) -> void:
 		var pick := await Dialogue.choose(t["name"], "%s Prime du Relais : %d pièces." % [t["hello"], prize], ["Combattre", "Plus tard"])
 		if pick != 0:
 			return
-	if Game.party.is_empty():
+	if not await S.duel(t["name"], t["team"]):
 		return
-	var w = S.world()
-	for member: Array in t["team"]:
-		var foe := Dino.create(member[0], member[1])
-		var result: String = await w.call(&"_battle", foe, {
-			"catch": false, "run": false, "music": TRAINER_MUSIC,
-			"intro": "%s envoie %s !" % [t["name"], foe.species_name()],
-		})
-		if result != "win":
-			return
 	Game.set_flag(t["flag"])
 	if rematch:
 		Game.set_flag(rematch_flag, Game.day)
@@ -228,9 +218,8 @@ static func night() -> void:
 		w.player.face_towards(S.at(48.5, 20.0))
 		await S.wait(0.3))
 	await S.say([{"text": "Chloé se glisse derrière les caisses, sans un bruit."}])
-	var entities: Node = w.region.entities
-	var isaure := _stranger(entities, "IsaureNuit", "isaure", Color.WHITE, S.at(47.5, 24.6))
-	var ferreol := _stranger(entities, "FerreolNuit", "ferreol", Color.WHITE, S.at(48.5, 18.3))
+	var isaure := S.stranger("IsaureNuit", "isaure", S.at(47.5, 24.6))
+	var ferreol := S.stranger("FerreolNuit", "ferreol", S.at(48.5, 18.3))
 	await isaure.walk_to(S.at(47.5, 21.4), "up", 110.0)
 	await ferreol.walk_to(S.at(48.5, 20.4), "down", 90.0)
 	await S.say([
@@ -246,14 +235,3 @@ static func night() -> void:
 	await S.say([{"who": CHLOE, "text": "Isaure ? Qu'est-ce qu'elle livre au Comptoir… en pleine nuit ?"}, {"flag": &"barque_vue"}])
 	Save.save_game()
 	S.lock(false)
-
-
-static func _stranger(entities: Node, node_name: String, sheet: String, tint: Color, at: Vector2) -> Npc:
-	var n: Npc = load("res://actors/npc.tscn").instantiate()
-	n.name = node_name
-	n.sheet = load("res://assets/art/characters/%s.png" % sheet)
-	n.tint = tint
-	n.position = at
-	entities.add_child(n)
-	n.remove_from_group(&"interactable")
-	return n

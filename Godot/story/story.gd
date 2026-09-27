@@ -6,6 +6,7 @@ class_name Story
 
 const CELL := 48.0
 const VOICES := "res://assets/audio/voices/%s.mp3"
+const TRAINER_MUSIC := preload("res://assets/audio/music/rivale.ogg")
 
 
 static func on_zone_entered(zone: StringName) -> void:
@@ -13,14 +14,20 @@ static func on_zone_entered(zone: StringName) -> void:
 		&"port_ambre":
 			if not Game.flag(&"prologue_arrived") and not Game.flag(&"prologue_done"):
 				await Prologue.arrival()
+			else:
+				await Plaines.back_to_port()
 		&"cabinet":
 			await Prologue.cabinet()
+			await Plaines.empty_cabinet()
 		&"havre_dore":
 			await Havre.arrival()
+		&"grotte_echos":
+			await Grotte.arrival()
 
 
 ## The time of day changed while in zone `zone` (a scene that only happens at night…).
 static func on_phase_changed(zone: StringName) -> void:
+	Plaines.morning()
 	if zone == &"havre_dore":
 		await Havre.night()
 
@@ -31,6 +38,8 @@ static func run(event: StringName, who: Node) -> void:
 		&"choose_starter":
 			await Prologue.choose_starter(who)
 		&"roc":
+			if await Plaines.roc_denies():
+				return
 			var healed: bool = await Prologue.talk_roc()
 			var said: bool = await PlainesAnnexes.roc()
 			if not said and not healed and Game.flag(&"prologue_done"):
@@ -45,6 +54,8 @@ static func run(event: StringName, who: Node) -> void:
 			await Plaines.grand_crane()
 		&"alpha_plaines":
 			await Plaines.alpha(who)
+		&"maia_defi":
+			await Plaines.maia_duel(who)
 		&"shop_herboristerie":
 			await Havre.shop(&"herboristerie", who)
 		&"shop_mercerie":
@@ -63,6 +74,12 @@ static func run(event: StringName, who: Node) -> void:
 			await Ask.menu(&"maia", "Maïa", DialogueDB.chatter(&"maia_havre")[0]["text"], [&"pieces", &"selle", &"monter"])
 		&"marchande":
 			await Ask.menu(&"marchande", "La marchande", DialogueDB.lines(&"marchande")[0]["text"], [&"pieces", &"selle"])
+		&"sbire_grotte_1":
+			await Grotte.gustave(who)
+		&"sbire_grotte_2":
+			await Grotte.chef(who)
+		&"proto_corrompu":
+			await Grotte.proto(who)
 		&"entrepot":
 			await Dialogue.run(DialogueDB.lines(&"entrepot"))
 		_:
@@ -109,6 +126,38 @@ static func voice(id: String) -> Dictionary:
 
 static func wait(seconds: float) -> void:
 	await Engine.get_main_loop().create_timer(seconds).timeout
+
+
+## A battle against a trainer (a henchman, Maïa, a trainer of the Relais): their dinos one
+## after the other, [species, level, name?] each; no collar, no running away. True if Chloé
+## beats them all (on a defeat, the world has already taken her back to the zone's entry).
+static func duel(trainer: String, team: Array) -> bool:
+	var w = world()
+	if w == null or Game.party.is_empty():
+		return false
+	for member: Array in team:
+		var foe := Dino.create(member[0], member[1], member[2] if member.size() > 2 else "")
+		var result: String = await w.call(&"_battle", foe, {
+			"catch": false, "run": false, "music": TRAINER_MUSIC,
+			"intro": "%s envoie %s !" % [trainer, foe.nickname],
+		})
+		if result != "win":
+			return false
+	return true
+
+
+## A character only a scene needs (a passer-by, someone at night): added to the zone, not
+## to be talked to.
+static func stranger(node_name: String, sheet: String, at_px: Vector2, facing := "down") -> Npc:
+	var w = world()
+	var n: Npc = load("res://actors/npc.tscn").instantiate()
+	n.name = node_name
+	n.sheet = load("res://assets/art/characters/%s.png" % sheet)
+	n.facing = facing
+	n.position = at_px
+	w.region.entities.add_child(n)
+	n.remove_from_group(&"interactable")
+	return n
 
 
 ## Fades the screen out and back in around `between` (a Callable, may be a coroutine).

@@ -34,7 +34,13 @@ static func build() -> Region:
 			["bibliotheque", 1.6, 1.9], ["bureau", 5.2, 3.0], ["lampe", 7.4, 1.9], ["fauteuil", 9.4, 3.4],
 			["etabli", 11.2, 2.0], ["couveuse", 13.8, 3.2], ["fougere_pot", 0.9, 9.6], ["fougere_pot", 15.1, 9.6]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]))
-	B.npc(root, "Roc", "Prof. Roc", CHARS % "roc", 6.5, 4.6, {"facing": "down", "event": &"roc"})
+	B.npc(root, "Roc", "Prof. Roc", CHARS % "roc", 6.5, 4.6, {"facing": "down", "event": &"roc", "hide_flag": &"roc_dehors"})
+	# End of chapter 1: the night Roc goes out, page 6 waits in the empty incubator.
+	var page = B.prop(entities, "ambre", B.cell(13.8, 3.9), false, load("res://world/pickup.gd"))
+	page.name = "Page6"
+	page.show_flag = &"roc_parti_vu"
+	page.taken_flag = &"found_journal_6"
+	page.dialogue_id = &"page_6"
 	B.npc(root, "Isaure", "Isaure", CHARS % "isaure", 4.0, 7.0, {"facing": "right", "show_flag": &"prologue_arrived", "hide_flag": &"maia_left"})
 	B.npc(root, "Maia", "Maïa", CHARS % "maia", 5.2, 7.6, {"facing": "right", "show_flag": &"prologue_arrived", "hide_flag": &"maia_left"})
 	# The three hatchlings (story/prologue.gd removes the ones already gone).

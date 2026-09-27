@@ -6,6 +6,8 @@ signal _action_chosen(action: Dictionary)
 signal _tapped
 
 const BACKDROP := preload("res://assets/art/battle/plaines.jpg")
+## Underground (a cave zone), the same platforms in a cave lit by amber crystals.
+const CAVE_BACKDROP := preload("res://assets/art/battle/grotte.jpg")
 const COLLAR := preload("res://assets/art/ui/collier.webp")
 const MUSIC := preload("res://assets/audio/music/sauvage.ogg")
 const VICTORY := preload("res://assets/audio/music/victoire.ogg")
@@ -20,6 +22,9 @@ const FOE_SPOT := Vector2(0.78, 0.49)
 const PLAYER_SCALE := 1.2
 const FOE_SCALE := 0.95
 const AMBER := Color(0.98, 0.72, 0.28)
+const VIOLET := Color(0.62, 0.34, 0.95)   # black amber: a corrupted dino, the Apaiser action
+const CALM := Color(0.98, 0.84, 0.45)     # its calm gauge, golden
+const CALM_SFX := preload("res://assets/audio/sfx/item.wav")
 const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
 const PANEL_BG := Color(0.09, 0.1, 0.13, 0.84)
 const CARD_BG := Color(0.14, 0.16, 0.2, 0.94)
@@ -36,12 +41,16 @@ var _rules := {}
 var _root: Control
 var _backdrop: TextureRect
 var _world: Node2D
+var _weather: BattleWeather
 var _player_sprite: AnimatedSprite2D
 var _foe_sprite: AnimatedSprite2D
 var _foe_panel: Dictionary
 var _player_panel: Dictionary
 var _message: Label
 var _menu: HBoxContainer
+var _collar_button: Button
+var _calm_button: Button
+var _run_button: Button
 var _moves_menu: VBoxContainer
 var _moves_grid: GridContainer
 var _cry: AudioStreamPlayer
@@ -58,21 +67,28 @@ func _ready() -> void:
 	_burst(Vector2(-4000, -4000), Color(1, 1, 1, 0.01), 1, 1.0)
 
 
-## Plays a whole wild battle. Returns "win", "lose", "run" or "catch".
+## Plays a whole wild battle. Returns "win", "lose", "run", "catch" or "calmed" (a corrupted
+## dino, Dino.corrupted, calmed with Apaiser).
 ## `rules`: {"catch": false, "run": false} for a battle of honour (an Alpha), "intro": its
-## first line, "music": its theme.
+## first line, "music": its theme, "lesson": lines said after the intro (how to calm it),
+## "cave": true underground (the cave backdrop, no sky).
 func run(wild: Dino, rules := {}) -> String:
 	_rules = rules
+	if rules.get("cave", false):
+		_go_underground()
 	engine = BattleEngine.new(Game.party, wild)
 	Game.mark_seen(wild.species().id)
 	_setup_dino(_foe_sprite, wild, true)
 	_setup_dino(_player_sprite, engine.player(), false)
+	(_foe_panel["calm"] as ProgressBar).value = 0.0
 	_refresh_panel(_foe_panel, wild)
 	_refresh_panel(_player_panel, engine.player())
 	_layout()
 	Audio.push_music(_rules.get("music", MUSIC), 0.15)
 	Audio.fade_ambience(AMBIENCE_IN_BATTLE_DB)
 	await _intro()
+	for line: String in _rules.get("lesson", []):
+		await _say(line)
 	while not engine.over:
 		var action := await _choose_action()
 		await _play(engine.turn(action))
@@ -116,12 +132,13 @@ func _show_menu(menu: Control) -> void:
 	_menu.visible = menu == _menu
 	_moves_menu.visible = menu == _moves_menu
 	if menu == _menu:
-		var collar := _menu.get_child(1) as Button
-		collar.text = "Collier ×%d" % Game.item_count("collier")
-		collar.disabled = Game.item_count("collier") <= 0
-		collar.visible = _rules.get("catch", true)
-		_menu.get_child(2).visible = _rules.get("run", true)
-		_menu.get_child(0).grab_focus()
+		var corrupted := engine.foe.corrupted
+		_collar_button.text = "Collier ×%d" % Game.item_count("collier")
+		_collar_button.disabled = Game.item_count("collier") <= 0
+		_collar_button.visible = _rules.get("catch", true) and not corrupted
+		_calm_button.visible = corrupted
+		_run_button.visible = _rules.get("run", true)
+		(_calm_button if corrupted else _menu.get_child(0) as Button).grab_focus()
 	elif menu == _moves_menu:
 		_fill_moves()
 		_moves_grid.get_child(0).grab_focus()
@@ -207,6 +224,12 @@ func _play(events: Array) -> void:
 			"catch":
 				await _say(e["text"])
 				await _catch_anim(e["shakes"], e["success"])
+			"calm":
+				await _calm_anim(e["calm"])
+				await _say(e["text"])
+			"calmed":
+				await _calmed_anim()
+				await _say(e["text"])
 			"xp":
 				if e["dino"] == engine.player():
 					await _tween_xp(e["dino"])
@@ -360,9 +383,48 @@ func _outro(result: String) -> void:
 		"catch":
 			await _say("%s rejoint ton équipe !" % engine.foe.species_name() if Game.party.size() < Game.PARTY_MAX else
 				"%s est envoyé au Cabinet." % engine.foe.species_name())
+		"calmed":
+			Audio.play_jingle(VICTORY)
+			await get_tree().create_timer(1.2).timeout
 		"lose":
 			await get_tree().create_timer(0.6).timeout
 	await create_tween().tween_property(_root, "modulate:a", 0.0, 0.4).finished
+
+
+## In a cave: its backdrop, and no hour nor weather (no sky down there).
+func _go_underground() -> void:
+	_backdrop.texture = CAVE_BACKDROP
+	_backdrop.modulate = Color.WHITE
+	_world.modulate = Color.WHITE
+	if _weather:
+		_weather.queue_free()
+		_weather = null
+
+
+# ------------------------------------------------------------------ calming a corrupted dino
+
+## The calm gauge fills (or empties): golden sparkles around the foe when it rises.
+func _calm_anim(calm: int) -> void:
+	var bar: ProgressBar = _foe_panel["calm"]
+	var rising := calm > bar.value
+	if rising:
+		Audio.play_sfx(CALM_SFX, -4.0, 0.1)
+		_burst(_foe_sprite.position + Vector2(0, -70), CALM, 18, 120.0)
+	await create_tween().tween_property(bar, "value", float(calm), 0.45).finished
+
+
+## The veins fade: a white flash, its own colours come back, a burst of gold.
+func _calmed_anim() -> void:
+	var t := create_tween()
+	t.tween_property(_foe_sprite, "modulate", Color(3, 3, 3), 0.3)
+	await t.finished
+	_setup_dino(_foe_sprite, engine.foe, true)
+	_foe_sprite.modulate = Color(3, 3, 3)
+	_burst(_foe_sprite.position + Vector2(0, -60), CALM, 40, 260.0)
+	_burst(_foe_sprite.position + Vector2(0, -60), Color(1, 1, 0.9), 20, 160.0)
+	await create_tween().tween_property(_foe_sprite, "modulate", Color.WHITE, 0.8).finished
+	_refresh_panel(_foe_panel, engine.foe)
+	_cry_of(engine.foe, "neutre")
 
 
 # ------------------------------------------------------------------ effects
@@ -447,6 +509,11 @@ func _cry_of(d: Dino, kind: String) -> void:
 
 func _refresh_panel(panel: Dictionary, d: Dino) -> void:
 	var status: String = {"saigne": "  · saigne", "etourdi": "  · étourdi", "peur": "  · a peur"}.get(d.status, "")
+	if d.corrupted:
+		status = "  · corrompu"
+	if panel.has("calm"):
+		(panel["calm_row"] as Control).visible = d.corrupted or (engine != null and engine.calm > 0 and d == engine.foe)
+		panel["name"].add_theme_color_override("font_color", Color(0.82, 0.66, 1.0) if d.corrupted else CREAM)
 	panel["name"].text = "%s   Niv. %d%s" % [d.nickname if panel == _player_panel else d.species_name(), d.level, status]
 	var bar: ProgressBar = panel["hp"]
 	bar.max_value = d.max_hp()
@@ -487,7 +554,7 @@ static func _color_hp(bar: ProgressBar) -> void:
 
 func _setup_dino(s: AnimatedSprite2D, d: Dino, is_foe: bool) -> void:
 	var species := d.species()
-	s.sprite_frames = SheetFrames.dino(species)
+	s.sprite_frames = SheetFrames.dino(species, d.corrupted)
 	var k := (FOE_SCALE if is_foe else PLAYER_SCALE) * species.world_scale / 0.5
 	s.scale = Vector2(-k if is_foe else k, k)
 	var h := species.sheet.get_height() / float(species.sheet_rows)
@@ -501,7 +568,7 @@ func _layout() -> void:
 	if _backdrop == null:
 		return
 	var view := get_viewport().get_visible_rect().size
-	var tex := Vector2(BACKDROP.get_size())
+	var tex := Vector2(_backdrop.texture.get_size())
 	var cover := maxf(view.x / tex.x, view.y / tex.y)
 	var shown := tex * cover
 	var origin := (view - shown) / 2.0
@@ -537,7 +604,7 @@ func _build_ui() -> void:
 		else:
 			_player_sprite = s
 	# Same sky as the exploration: hour and weather.
-	BattleWeather.apply(_root, _backdrop, _world)
+	_weather = BattleWeather.apply(_root, _backdrop, _world)
 
 	_cry = AudioStreamPlayer.new()
 	_cry.bus = &"SFX"
@@ -577,13 +644,15 @@ func _build_ui() -> void:
 	_root.add_child(_menu)
 	var attack := _button("Attaquer", Color(0.86, 0.38, 0.22))
 	attack.pressed.connect(func() -> void: _show_menu(_moves_menu))
-	var catch_button := _button("Collier", AMBER)
-	catch_button.pressed.connect(func() -> void:
+	_calm_button = _button("Apaiser", VIOLET)
+	_calm_button.pressed.connect(func() -> void: _action_chosen.emit({"type": "calm"}))
+	_collar_button = _button("Collier", AMBER)
+	_collar_button.pressed.connect(func() -> void:
 		if Game.use_item("collier"):
 			_action_chosen.emit({"type": "catch"}))
-	var run_button := _button("Fuir", Color(0.5, 0.58, 0.66))
-	run_button.pressed.connect(func() -> void: _action_chosen.emit({"type": "run"}))
-	for b in [attack, catch_button, run_button]:
+	_run_button = _button("Fuir", Color(0.5, 0.58, 0.66))
+	_run_button.pressed.connect(func() -> void: _action_chosen.emit({"type": "run"}))
+	for b in [attack, _calm_button, _collar_button, _run_button]:
 		_menu.add_child(b)
 
 	# The moves grow upwards from the bottom-right corner: never cut, whatever their number.
@@ -635,6 +704,27 @@ func _make_panel(with_numbers: bool) -> Dictionary:
 	hp.add_theme_stylebox_override("fill", _bar_style(Color(0.36, 0.78, 0.35), 5))
 	v.add_child(hp)
 	var panel := {"box": box, "name": name_label, "hp": hp}
+	if not with_numbers:   # the foe: its calm gauge, when it is corrupted
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		row.visible = false
+		var word := Label.new()
+		word.text = "Calme"
+		word.add_theme_font_size_override("font_size", 14)
+		word.add_theme_color_override("font_color", CALM)
+		row.add_child(word)
+		var calm := ProgressBar.new()
+		calm.show_percentage = false
+		calm.max_value = BattleEngine.CALM_FULL
+		calm.custom_minimum_size = Vector2(0, 8)
+		calm.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		calm.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		calm.add_theme_stylebox_override("background", _bar_style(Color(0.2, 0.08, 0.3, 0.7), 4))
+		calm.add_theme_stylebox_override("fill", _bar_style(CALM, 4))
+		row.add_child(calm)
+		v.add_child(row)
+		panel["calm"] = calm
+		panel["calm_row"] = row
 	if with_numbers:
 		var hp_text := Label.new()
 		hp_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT

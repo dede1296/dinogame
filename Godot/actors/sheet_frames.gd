@@ -31,10 +31,18 @@ static func character(sheet: Texture2D, fps := 8.0) -> SpriteFrames:
 	return build(sheet, 4, 4, anims)
 
 
+## The corrupted look of a species (black amber veins), when drawn: same layout as its sheet.
+const CORRUPTED := "res://assets/art/dinos/%s_corrompu.png"
+
+
 ## Dino sheets described by its species: side view (walk, idle, attack) and, when the
 ## species has one, front/back views (walk_down, idle_down, walk_up, idle_up).
-static func dino(species: DinoSpecies) -> SpriteFrames:
-	var frames := build(species.sheet, species.sheet_columns, species.sheet_rows, {
+## `corrupted`: its corrupted side view, if drawn.
+static func dino(species: DinoSpecies, corrupted := false) -> SpriteFrames:
+	var sheet := species.sheet
+	if corrupted and ResourceLoader.exists(CORRUPTED % species.id):
+		sheet = load(CORRUPTED % species.id)
+	var frames := build(sheet, species.sheet_columns, species.sheet_rows, {
 		&"walk": {"frames": species.walk_frames, "fps": species.walk_fps},
 		&"idle": {"frames": species.idle_frames, "fps": 1.6},
 		&"attack": {"frames": [species.attack_frame], "fps": 1.0, "loop": false},

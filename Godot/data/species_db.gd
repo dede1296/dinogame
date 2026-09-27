@@ -12,6 +12,7 @@ const PATHS := {
 	&"dimorphodon": "res://data/species/dimorphodon.tres",
 	&"compsognathus": "res://data/species/compsognathus.tres",
 	&"triceratops": "res://data/species/triceratops.tres",
+	&"anurognathus": "res://data/species/anurognathus.tres",
 }
 
 static var _cache: Dictionary = {}

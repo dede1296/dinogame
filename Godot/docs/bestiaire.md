@@ -51,9 +51,9 @@ Zones : Prairie du Débarcadère · L'Étang · Le Bosquet d'Hélène · Pied de
 
 | Espèce | Habitat | Famille | Rareté | Moment |
 |---|---|---|---|---|
-| Anurognathus | plafonds de la grotte | ptérosaure | C | toujours |
+| Anurognathus ✅ | plafonds de la grotte | ptérosaure | C | toujours |
 | Troodon | galeries sombres | petit théropode | P | toujours (nuit dehors) |
-| *Protoceratops corrompu* | salle du fond | cératopsien | mini-boss | — |
+| *Protoceratops corrompu* ✅ | salle du fond | cératopsien | mini-boss | — |
 
 ## Forêt Jurassique — niv. 10 à 18
 

@@ -152,6 +152,13 @@ static func lines(id: StringName) -> Array:
 					"sign": "— H."},
 				{"flag": &"found_journal_5"},
 			]
+		&"page_6":
+			return [
+				{"text": "Une page pliée en quatre. Sur le dessus, d'une écriture penchée : « Pour Chloé »."},
+				{"letter": ["Pour Chloé"] + page_6_text(), "sign": "— H."},
+				{"flag": &"found_journal_6"},
+				{"text": "Chloé glisse la page avec les autres. Dehors, quelque part vers le volcan, une lanterne s'est éteinte."},
+			]
 		&"porte_ambre_bloquee":
 			return [{"text": "Une porte d'ambre, éteinte et froide, scellée dans la roche. Une fougère est gravée dessus."},
 				{"text": "On raconte que l'ambre répond au chant… Une crête qui résonne pourrait peut-être la réveiller."}]
@@ -233,6 +240,19 @@ static func chatter(who: StringName) -> Array:
 	Game.set_flag(StringName("bavard_%s" % who), n + 1)
 	var speaker: String = {&"isaure": "Isaure", &"maia": MAIA, &"roc": "Prof. Roc", &"maia_havre": MAIA}[who]
 	return [{"who": speaker, "text": pool[n % pool.size()]}]
+
+
+## Page 6, written a year ago for Chloé: why the hatchling she chose suits her (Hélène knew
+## which one she would choose). Three versions, by the starter.
+static func page_6_text() -> Array:
+	var why: String = {
+		"velociraptor": "Je t'ai laissé trois œufs, mais je crois savoir lequel tu choisiras : le plus vif. Petite, tu courais toujours devant, sans regarder derrière toi. Un raptor ne suit personne : il choisit qui suivre. S'il t'a choisie, c'est pour toujours. Son père, Griffe-Grise, veille encore dans la Forêt.",
+		"ankylosaurus": "Je t'ai laissé trois œufs, mais je crois savoir lequel tu choisiras : le plus calme. Tu es de celles qui tiennent bon quand tout tremble autour. Un Ankylosaurus ne recule jamais : il protège. Sa mère, le Vieux Rempart, garde un canyon du Désert.",
+		"parasaurolophus": "Je t'ai laissé trois œufs, mais je crois savoir lequel tu choisiras : celui qui chante. Petite, tu parlais aux mouettes, et elles te répondaient. Sa crête répond à l'ambre comme ton cœur répond aux gens. Sa mère, la Voix du Marais, chante encore dans les roseaux.",
+	}.get(str(Game.flag(&"starter")), "Je t'ai laissé trois œufs. Celui que tu as choisi t'a choisie aussi : c'est toujours comme ça que ça marche.")
+	return [why,
+		"Je n'ai pas eu le temps de tout t'apprendre. Alors l'île le fera, page après page. Ne fais confiance qu'à ceux qui ne veulent rien de l'ambre.",
+		"Un jour, je te montrerai tout. Promis."]
 
 
 ## Maïa, about the trunk: Chloé's own dino, or where to find one with claws.

@@ -2,6 +2,8 @@ extends Control
 ## Title screen. The first tap also unlocks audio in web browsers.
 
 const WORLD := "res://world/world.tscn"
+## The title theme of the web version (tools/render-phaser-music.mjs titre 1): harp, flute.
+const MUSIC := preload("res://assets/audio/music/titre.ogg")
 
 @onready var continue_button: Button = %Continue
 @onready var new_button: Button = %NewGame
@@ -21,6 +23,7 @@ func _ready() -> void:
 		RenderingServer.get_current_rendering_method(),
 	]
 	(continue_button if continue_button.visible else new_button).grab_focus()
+	Audio.play_music(MUSIC, 2.0)
 
 
 func _on_continue() -> void:

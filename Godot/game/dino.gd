@@ -20,6 +20,9 @@ var hp := 1
 var moves: Array = []        # [{"id": StringName, "pp": int}]
 var status := ""             # "", "saigne", "etourdi", "peur"
 var status_turns := 0
+## Maddened by black amber (veins of violet): cannot be caught, only calmed (Apaiser).
+## Only for the battle against it, never saved.
+var corrupted := false
 
 
 static func create(species_id: StringName, lvl: int, name := "") -> Dino:

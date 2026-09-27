@@ -19,7 +19,7 @@ const OUT = "Godot/assets/audio/ambience";
 const NAMES = ["brise", "rafale", "oiseau-1", "oiseau-2", "oiseau-3", "village", "vagues", "mouettes",
   "feu", "grotte", "goutte", "labo", "maison"];
 const NOTCHES = {};
-const LOWPASS = { brise: 2500 };   // Hz
+const LOWPASS = { brise: 2500, labo: 1800 };   // Hz (labo: whistles at 5.6 and 16.5 kHz, half its energy above 12 kHz)
 const TARGET_RMS = 0.1;
 const MAX_PEAK = 0.9;
 const WINDOW_S = 0.4;

@@ -91,6 +91,9 @@ static func _near_path(terrain: TileMapLayer, x: int, y: int) -> bool:
 static func _story(root: Region, entities: Node2D) -> void:
 	# The crossroads: Maïa, the signpost.
 	B.npc(root, "Maia", "Maïa", CHARS % "maia", 62.6, 44.4, {"facing": "left", "event": &"maia", "hide_flag": &"sceau_plaines"})
+	# After the Sceau: she waits at the foot of the skull for her challenge (story/plaines.gd).
+	B.npc(root, "MaiaDefi", "Maïa", CHARS % "maia", 100.8, 65.2, {"facing": "right", "event": &"maia_defi",
+		"show_flag": &"sceau_plaines", "hide_flag": &"maia_defi_1"})
 	B.sign(entities, B.cell(57.4, 44.8), &"panneau_carrefour")
 	B.sign(entities, B.cell(61.6, 84.6), &"panneau_debarcadere")
 	# Hélène's grove, behind the fallen trunk (Tranche): page 1 and the first amber scale.

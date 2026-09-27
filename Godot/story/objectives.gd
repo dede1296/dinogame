@@ -20,6 +20,9 @@ const JOSS := Vector2(42.0, 10.2)          # Havre-Doré
 const COMPTOIR := Vector2(33.0, 10.2)
 const RELAIS := Vector2(22.5, 9.0)
 const SKIN := Vector2(84.4, 50.2)          # the Plaines, by the pond
+const MAIA_DUEL := Vector2(100.8, 65.2)    # the Plaines, at the foot of the skull
+const SBIRE_2 := Vector2(16.2, 2.8)        # the Grotte des Échos, far end
+const PROTO := Vector2(18.6, 3.2)
 ## Tears Roc needs for each of his gifts (PlainesAnnexes).
 ## The short name of each objective (what the quest tracker and the map's list show).
 const TITLES := {
@@ -27,7 +30,7 @@ const TITLES := {
 	"bosquet": "Le bosquet d'Hélène", "grotte": "La Grotte des Échos", "falaises": "La porte des falaises",
 	"voleuse": "La voleuse de boussole", "boussole": "Rendre la boussole", "lunettes": "Les lunettes de Roc",
 	"etang": "L'étang qui chante", "larmes_roc": "Les larmes pour Roc", "larmes": "Les larmes de l'île", "oeuf": "L'œuf de Pépite",
-	"havre": "La route du Havre", "selle": "Une selle pour voyager", "relais": "Le Relais des Dresseurs",
+	"havre": "La route du Havre", "maia": "Le défi de Maïa", "retour": "Retour au port", "selle": "Une selle pour voyager", "relais": "Le Relais des Dresseurs",
 }
 const TEAR_GOALS := [[10, &"lanterne", "la lanterne d'ambre"], [20, &"pepite_oeuf", "réveiller le fragment"], [30, &"lettre_scellee", "une surprise"]]
 
@@ -81,6 +84,14 @@ static func _main(out: Array[Dictionary]) -> void:
 	if Game.flag(&"havre_arrive"):
 		_saddle(out)
 		return
+	if Game.flag(&"sceau_plaines") and not Game.flag(&"maia_defi_1"):
+		_add(out, "maia", "Maïa veut sa revanche : son défi t'attend au pied du Grand Crâne.", &"plaines", MAIA_DUEL, true)
+		return
+	if Game.flag(&"maia_defi_1") and not Game.flag(&"found_journal_6"):
+		var text := "Rentrer à Port-Ambre raconter ta victoire au Pr Roc." if not Game.flag(&"roc_parti_vu") \
+			else "Roc est parti vers le volcan… Entrer dans le Cabinet resté ouvert."
+		_add(out, "retour", text, &"port_ambre", CABINET_DOOR, true)
+		return
 	if Game.flag(&"sceau_plaines"):
 		_add(out, "havre", "Havre-Doré, par la route côtière à l'est de Port-Ambre. Le garde laisse passer ceux qui portent un Sceau.", &"port_ambre", COAST_ROAD, true)
 		return
@@ -94,8 +105,15 @@ static func _main(out: Array[Dictionary]) -> void:
 		var how := "" if Game.ability_user(&"tranche") else " Il faut un dino qui tranche : un Velociraptor, aux lisières au crépuscule."
 		_add(out, "bosquet", "Le bosquet d'Hélène, à l'ouest : un tronc barre le chemin." + how, &"plaines", TRUNK, true)
 	if not Game.flag(&"ecaille_grotte"):
-		var how := "" if Game.ability_user(&"charge") else " Il faut un dino qui charge : un Protoceratops, dans les herbes hautes."
-		_add(out, "grotte", "La Grotte des Échos, au nord : un rocher bouche l'entrée." + how, &"plaines", BOULDER, true)
+		if Game.flag(&"proto_apaise"):
+			_add(out, "grotte", "Ramasser l'écaille d'ambre, au fond de la Grotte des Échos.", &"grotte_echos", PROTO, true)
+		elif Game.flag(&"sbire_grotte_2"):
+			_add(out, "grotte", "Apaiser le Protoceratops corrompu, au fond de la Grotte des Échos.", &"grotte_echos", PROTO, true)
+		elif Game.flag(&"sbire_grotte_1"):
+			_add(out, "grotte", "Un autre sbire de l'Ombre Noire pille le fond de la Grotte des Échos.", &"grotte_echos", SBIRE_2, true)
+		else:
+			var how := "" if Game.ability_user(&"charge") else " Il faut un dino qui charge : un Protoceratops, dans les herbes hautes."
+			_add(out, "grotte", "La Grotte des Échos, au nord : un rocher bouche l'entrée." + how, &"plaines", BOULDER, true)
 	if not Game.flag(&"ecaille_falaises"):
 		var how := "" if Game.ability_user(&"resonance") else " Il faut un dino qui chante : un Parasaurolophus, à l'étang."
 		_add(out, "falaises", "Les falaises, au nord-est : une porte d'ambre éteinte." + how, &"plaines", AMBER_DOOR, true)

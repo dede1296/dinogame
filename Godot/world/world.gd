@@ -423,6 +423,8 @@ func _on_player_stepped(surface: StringName) -> void:
 ## `rules`: see BattleScene.run (an Alpha: no collar, no running away).
 func _battle(wild: Dino, rules := {}) -> String:
 	dismount()
+	if region and region.cave and not rules.has("cave"):
+		rules = rules.merged({"cave": true})
 	player.busy = true
 	player.velocity = Vector2.ZERO
 	var first_sighting := not Game.dex_seen.has(String(wild.species().id))

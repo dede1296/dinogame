@@ -13,6 +13,10 @@ extends StaticBody2D
 @export var size_scale := 0.8
 ## Raised above the ground (px), e.g. standing on a pedestal.
 @export var lift := 0.0
+## Maddened by black amber: its corrupted look and a violet glow (see cleanse).
+@export var corrupted := false
+
+const CORRUPTED_GLOW := Color(0.62, 0.3, 1.0)
 
 var sprite: AnimatedSprite2D
 var species: DinoSpecies
@@ -34,7 +38,7 @@ func _ready() -> void:
 	Shadow.make(self, species.sheet.get_width() / float(species.sheet_columns) * species.world_scale * size_scale * 0.55)
 	sprite = AnimatedSprite2D.new()
 	sprite.name = "Sprite"
-	sprite.sprite_frames = SheetFrames.dino(species)
+	sprite.sprite_frames = SheetFrames.dino(species, corrupted)
 	sprite.scale = Vector2.ONE * species.world_scale * size_scale
 	sprite.offset = Vector2(0, -species.sheet.get_height() / float(species.sheet_rows) * 0.46)
 	sprite.position.y = -lift
@@ -46,6 +50,37 @@ func _ready() -> void:
 	add_child(_cry)
 	if event != &"":
 		add_to_group(&"interactable")
+	if corrupted:
+		var glow := PointLight2D.new()
+		glow.name = "Glow"
+		glow.color = CORRUPTED_GLOW
+		glow.energy = 0.9
+		var g := Gradient.new()
+		g.set_color(0, Color(CORRUPTED_GLOW, 1.0))
+		g.set_color(1, Color(CORRUPTED_GLOW, 0.0))
+		var tex := GradientTexture2D.new()
+		tex.gradient = g
+		tex.fill = GradientTexture2D.FILL_RADIAL
+		tex.fill_from = Vector2(0.5, 0.5)
+		tex.fill_to = Vector2(1.0, 0.5)
+		glow.texture = tex
+		glow.visible = Quality.setting(&"lights")
+		add_child(glow)
+
+
+## The black amber lets go of it (calmed, Apaiser): its own colours come back (a white flash), the glow goes.
+func cleanse() -> void:
+	corrupted = false
+	var glow := get_node_or_null("Glow")
+	if glow:
+		glow.queue_free()
+	var t := create_tween()
+	t.tween_property(sprite, "modulate", Color(3, 3, 3), 0.25)
+	t.tween_callback(func() -> void:
+		sprite.sprite_frames = SheetFrames.dino(species)
+		sprite.play(&"idle"))
+	t.tween_property(sprite, "modulate", Color.WHITE, 0.6)
+	await t.finished
 
 
 func cry(kind: StringName = &"neutre") -> void:
