@@ -79,6 +79,21 @@ cargo marine, corde à l'épaule.
 - Effets vivants préférés aux images fixes : balancement des plantes (shader), eau animée,
   ombres de nuages, pollen, lueur de l'ambre, lumière qui tourne avec l'heure.
 
+## Mouvement ajouté aux images
+
+Les planches n'ont que 3 ou 4 images par cycle de marche : le jeu ajoute un mouvement calculé
+par-dessus (`world/view3d/sprite_motion.gd`), à tous les personnages et dinos de l'exploration.
+À la marche, un petit rebond à chaque pas dessiné (les planches dessinent un pas par cycle,
+deux pour les vues de face et de dos des dinos) : le corps est au plus haut sur l'image où les
+jambes se croisent, trouvée en mesurant l'écart des pieds, et s'écrase un peu quand le pied
+touche le sol. Les pas tournent vite pour suivre ce rebond : 14 à 15 images/s pour les
+personnages, `walk_fps` × 1,5 pour les dinos de profil (`SheetFrames`) ; à l'arrêt, une respiration lente, chacun à son rythme. Tout est mis à l'échelle
+depuis les pieds, qui restent plantés ; l'ombre ne rebondit pas. En selle, Chloé suit le pas de
+sa monture. En combat, la respiration seule (`battle/breathe.gdshader`, au niveau des sommets
+pour s'ajouter aux autres animations). Pas de fondu entre deux images (doubles contours sur des
+dessins cernés). Démo : scénario `demo_live` de `tools/capture.gd`, mouvement activé et coupé
+à tour de rôle.
+
 ## Points à surveiller
 
 - Halo rose léger autour des objets lumineux (l'ambre) : la lueur se mélange au magenta ;

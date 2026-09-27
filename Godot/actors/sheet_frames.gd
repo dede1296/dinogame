@@ -20,8 +20,9 @@ static func build(sheet: Texture2D, columns: int, rows: int, anims: Dictionary) 
 	return frames
 
 
-## Walking character sheet: 4 rows (down, left, right, up) x 4 walk frames.
-static func character(sheet: Texture2D, fps := 8.0) -> SpriteFrames:
+## Walking character sheet: 4 rows (down, left, right, up) x 4 walk frames. The 4 pictures
+## draw one step, so they turn fast (world/view3d/sprite_motion.gd hops once a cycle).
+static func character(sheet: Texture2D, fps := 14.0) -> SpriteFrames:
 	var anims := {}
 	for row in 4:
 		var dir: String = ["down", "left", "right", "up"][row]
@@ -33,6 +34,12 @@ static func character(sheet: Texture2D, fps := 8.0) -> SpriteFrames:
 
 ## The corrupted look of a species (black amber veins), when drawn: same layout as its sheet.
 const CORRUPTED := "res://assets/art/dinos/%s_corrompu.png"
+## The species' walk_fps, sped up for the side view: its 3 pictures draw one step. The front
+## and back views were drawn with two steps a cycle (left, together, right, together): as is.
+const DINO_WALK_TEMPO := 1.5
+## SpriteFrames meta: steps drawn in a cycle, per animation (1 when not listed), read by
+## world/view3d/sprite_motion.gd to hop at each one.
+const STEPS_META := &"steps_per_cycle"
 
 
 ## Dino sheets described by its species: side view (walk, idle, attack) and, when the
@@ -43,7 +50,7 @@ static func dino(species: DinoSpecies, corrupted := false) -> SpriteFrames:
 	if corrupted and ResourceLoader.exists(CORRUPTED % species.id):
 		sheet = load(CORRUPTED % species.id)
 	var frames := build(sheet, species.sheet_columns, species.sheet_rows, {
-		&"walk": {"frames": species.walk_frames, "fps": species.walk_fps},
+		&"walk": {"frames": species.walk_frames, "fps": species.walk_fps * DINO_WALK_TEMPO},
 		&"idle": {"frames": species.idle_frames, "fps": 1.6},
 		&"attack": {"frames": [species.attack_frame], "fps": 1.0, "loop": false},
 	})
@@ -54,6 +61,7 @@ static func dino(species: DinoSpecies, corrupted := false) -> SpriteFrames:
 			&"walk_up": {"frames": species.up_walk_frames, "fps": species.walk_fps},
 			&"idle_up": {"frames": [species.up_idle_frame], "fps": 1.0},
 		})
+		frames.set_meta(STEPS_META, {&"walk_down": 2, &"walk_up": 2})
 		for anim in fb.get_animation_names():
 			frames.add_animation(anim)
 			frames.set_animation_speed(anim, fb.get_animation_speed(anim))

@@ -71,6 +71,7 @@ var player: Node2D
 var _region: Region
 var _zone: Node3D                            # everything built for the current zone
 var _proxies: Array[Dictionary] = []         # {src, sprite, vis, light, glow, prev, cur}
+var _mount_hop := 0.0   # the mount's hop this frame (m): Chloé in the saddle rises with it
 ## Chloé's last two physics positions (the 2D world moves at the physics rate; the view
 ## blends between them, so it stays smooth on 90–120 Hz screens).
 var _player_prev := Vector2.ZERO
@@ -988,6 +989,12 @@ func _sync(p: Dictionary) -> void:
 		if anim.animation != sprite.animation:
 			anim.animation = sprite.animation
 		anim.frame = sprite.frame
+		if not src is Prop:   # characters and dinos: a hop at each step, breathing
+			var hop := SpriteMotion.apply(p, sprite, vis, get_process_delta_time())
+			if src is Companion and (src as Companion).carrying():
+				_mount_hop = hop
+			elif src is Player and (src as Player).mount:
+				vis.position.y += _mount_hop   # in the saddle: she follows her mount's steps
 	else:
 		(vis as Sprite3D).texture = (sprite as Sprite2D).texture
 	if p["foot"]:

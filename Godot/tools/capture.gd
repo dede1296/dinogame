@@ -261,6 +261,10 @@ const SCENARIOS := {
 		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_5", "roc_parti_vu", "roc_dehors"]], [0.85, "calm", 900.0], [0.86, "clock", 21.5],
 		[0.9, "zone", &"cabinet"], [1.5, "shot", "c1"], [2.5, "shot", "c2"], [3.5, "shot", "c3"], [4.5, "shot", "c4"], [5.0, "state", null],
 	],
+	# Sprite motion (world/view3d/sprite_motion.gd) on and off in turn, a banner says which.
+	"demo_live": [
+		[0.85, "calm", 900.0], [0.9, "motion", true], [0.95, "tp", Vector2(58.4, 60.0)], [2, "banner", "Pas plus rapides, un rebond par pas"], [2.1, "tp", Vector2(58.4, 60.0)], [2.4, "hold", "move_down"], [3.8, "hold", ""], [4.4, "hold", "move_left"], [5.4, "hold", ""], [6, "hold", "move_right"], [7, "hold", ""], [7.6, "hold", "move_up"], [9, "hold", ""], [11, "banner", "Pas plus rapides, un rebond par pas"], [11.1, "tp", Vector2(58.4, 60.0)], [11.4, "hold", "move_down"], [12.8, "hold", ""], [13.4, "hold", "move_left"], [14.4, "hold", ""], [15, "hold", "move_right"], [16, "hold", ""], [16.6, "hold", "move_up"], [18, "hold", ""], [20, "banner", "Pas plus rapides, un rebond par pas"], [20.1, "tp", Vector2(58.4, 60.0)], [20.4, "hold", "move_down"], [21.8, "hold", ""], [22.4, "hold", "move_left"], [23.4, "hold", ""], [24, "hold", "move_right"], [25, "hold", ""], [25.6, "hold", "move_up"], [27, "hold", ""], [29, "banner", "Pas plus rapides, un rebond par pas"], [29.1, "tp", Vector2(58.4, 60.0)], [29.4, "hold", "move_down"], [30.8, "hold", ""], [31.4, "hold", "move_left"], [32.4, "hold", ""], [33, "hold", "move_right"], [34, "hold", ""], [34.6, "hold", "move_up"], [36, "hold", ""], [38, "banner", "Pas plus rapides, un rebond par pas"], [38.1, "tp", Vector2(58.4, 60.0)], [38.4, "hold", "move_down"], [39.8, "hold", ""], [40.4, "hold", "move_left"], [41.4, "hold", ""], [42, "hold", "move_right"], [43, "hold", ""], [43.6, "hold", "move_up"], [45, "hold", ""], [47, "banner", "Pas plus rapides, un rebond par pas"], [47.1, "tp", Vector2(58.4, 60.0)], [47.4, "hold", "move_down"], [48.8, "hold", ""], [49.4, "hold", "move_left"], [50.4, "hold", ""], [51, "hold", "move_right"], [52, "hold", ""], [52.6, "hold", "move_up"], [54, "hold", ""], [56, "banner", ""],
+	],
 	"labo_son": [
 		[0.85, "calm", 900.0], [0.9, "zone", &"cabinet"], [3.0, "audio", null],
 	],
@@ -523,6 +527,27 @@ func _run(command: String, arg: Variant) -> void:
 		"tracker":
 			for o in load("res://story/objectives.gd").call("current"):
 				print("objectif : ", o["text"])
+		"motion":
+			load("res://world/view3d/sprite_motion.gd").set("enabled", arg)
+		"banner":   # big text at the top of the screen (a live demo)
+			var old := root.get_node_or_null("DemoBanner")
+			if old:
+				old.queue_free()
+			if arg != "":
+				var layer := CanvasLayer.new()
+				layer.name = "DemoBanner"
+				layer.layer = 90
+				var l := Label.new()
+				l.text = arg
+				l.add_theme_font_size_override("font_size", 34)
+				l.add_theme_color_override("font_color", Color(1, 0.9, 0.6))
+				l.add_theme_color_override("font_outline_color", Color(0.1, 0.07, 0.04))
+				l.add_theme_constant_override("outline_size", 10)
+				l.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+				l.grow_horizontal = Control.GROW_DIRECTION_BOTH
+				l.offset_top = 150
+				layer.add_child(l)
+				root.add_child(layer)
 		"lead":
 			root.get_node("Game").call("set_lead", arg)
 		"party":

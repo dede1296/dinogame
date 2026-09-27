@@ -25,6 +25,7 @@ const AMBER := Color(0.98, 0.72, 0.28)
 const VIOLET := Color(0.62, 0.34, 0.95)   # black amber: a corrupted dino, the Apaiser action
 const CALM := Color(0.98, 0.84, 0.45)     # its calm gauge, golden
 const CALM_SFX := preload("res://assets/audio/sfx/item.wav")
+const BREATHE := preload("res://battle/breathe.gdshader")
 const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
 const PANEL_BG := Color(0.09, 0.1, 0.13, 0.84)
 const CARD_BG := Color(0.14, 0.16, 0.2, 0.94)
@@ -598,6 +599,12 @@ func _build_ui() -> void:
 		shadow.scale = Vector2(3.4, 1.1) if is_foe else Vector2(3.8, 1.25)
 		shadow.show_behind_parent = true
 		s.add_child(shadow)
+		var breath := ShaderMaterial.new()
+		breath.shader = BREATHE
+		breath.set_shader_parameter("amount", SpriteMotion.BREATH)
+		breath.set_shader_parameter("period", SpriteMotion.BREATH_S)
+		breath.set_shader_parameter("phase", PI if is_foe else 0.0)
+		s.material = breath
 		_world.add_child(s)
 		if is_foe:
 			_foe_sprite = s
