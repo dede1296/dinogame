@@ -118,9 +118,45 @@ const LINES := {
 		"Un bloc tombé du plafond. Mieux vaut ne pas se demander quand.",
 		"Des traces de pioche sur la roche. Récentes. Quelqu'un cherchait de l'ambre, ici.",
 	],
+	# La Forêt Jurassique.
+	"fougere_geante": [
+		"Une fougère géante, sûrement aussi vieille que la forêt elle-même. Ses frondes bruissent même sans un souffle de vent.",
+		"Hélène l'avait dessinée dans un carnet, avec une seule note en marge : « Ne pas grimper dedans. » On se demande pourquoi cette précision.",
+		"Un escargot minuscule fait le tour du tronc, très sérieusement. À ce rythme, il y sera encore l'an prochain.",
+	],
+	"tronc_mousse": [
+		"Un tronc couché, tapissé de mousse. Il est tombé il y a si longtemps que la forêt a fini par le recouvrir de vert, tout doucement.",
+		"En s'approchant, on entend un léger grattement à l'intérieur. Mieux vaut ne pas savoir qui a emménagé.",
+		"De petits champignons ont poussé dessus, bien alignés. On dirait qu'ils attendent l'autobus.",
+	],
+	"champignons": [
+		"Une touffe de champignons serrés les uns contre les autres. Un vrai petit village, avec leurs chapeaux en guise de toits.",
+		"Hélène notait toujours leurs noms savants. Chloé préfère les siens : Gros, Penché, et Le Timide.",
+		"Plus loin, d'autres poussent en cercle. Un « rond de sorcière », disent les vieux du port. Chloé trouve surtout ça joli.",
+	],
+	"rocher_mousse": [
+		"Un rocher si couvert de mousse qu'on devine à peine la pierre en dessous. On dirait un rocher qui a simplement renoncé.",
+		"Au toucher, la mousse est étonnamment douce et fraîche. Un coin de canapé, en pleine forêt.",
+		"Des fourmis y ont tracé une autoroute bien nette, d'un bord à l'autre. Priorité à droite, visiblement.",
+	],
+	"souche_geante": [
+		"Une souche immense, large comme une table. On y compterait les années, s'il y en avait le temps.",
+		"L'arbre a dû être gigantesque, avant de finir ainsi. Maïa jure qu'on pourrait y faire la sieste à quatre.",
+		"Sur l'écorce, quelqu'un a gravé un « H », déjà à moitié effacé par la mousse.",
+	],
+	"arbre_geant": [
+		"Un arbre gigantesque. Il faudrait sûrement dix personnes, bras tendus, pour en faire le tour.",
+		"Les racines s'enfoncent si loin qu'on dirait qu'elles tiennent toute la forêt debout. Peut-être que c'est vrai.",
+		"On raconte que Griffe-Grise vient parfois s'y appuyer, pour dormir debout comme le font les très vieilles bêtes.",
+	],
+	"os_dino": [
+		"Un vieil os, à moitié enfoui dans l'herbe. Il appartenait à quelque chose de très grand, et probablement de très ancien.",
+		"Hélène aurait sûrement voulu l'examiner pendant des heures, en prenant des notes totalement illisibles.",
+		"Il y en a d'autres, plus loin, du côté du ravin. Mieux vaut ne pas trop se demander à qui ils appartenaient.",
+	],
 }
 ## Reach for the big ones (px from their origin, the middle of their foot).
-const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.0, "barque": 40.0}
+const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.0, "barque": 40.0, "arbre_geant": 60.0}
 
 ## Lines already shown, per thing (zone + position): the next one comes next time.
 static var _seen := {}

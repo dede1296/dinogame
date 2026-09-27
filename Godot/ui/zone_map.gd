@@ -25,7 +25,7 @@ const PULSE_S := 1.4
 const ZONE_NAMES := {
 	&"port_ambre": "Port-Ambre", &"cabinet": "Cabinet du Pr Roc",
 	&"plaines": "Plaines des Fougères", &"grotte_echos": "Grotte des Échos",
-	&"antre_crane": "Antre du gardien", &"havre_dore": "Havre-Doré",
+	&"antre_crane": "Antre du gardien", &"havre_dore": "Havre-Doré", &"foret": "Forêt Jurassique",
 }
 
 var region: Region

@@ -32,6 +32,9 @@ extends Node2D
 ## Where path_tex is used (tiles); elsewhere the paths are plain dirt. Empty = everywhere.
 ## (A village paved with cobbles, and its road out of it in dirt, like the next zone's.)
 @export var paved_rect := Rect2()
+## The picture behind the battles fought here (assets/art/battle; its platforms where the
+## others have them). Null: the meadow of the Plaines, or the cave's in a cave zone.
+@export var battle_backdrop: Texture2D
 ## Chances per game hour that rain or mist sets in here.
 @export_range(0.0, 1.0) var rain_chance := 0.08
 @export_range(0.0, 1.0) var mist_chance := 0.1

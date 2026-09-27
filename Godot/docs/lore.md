@@ -124,6 +124,16 @@ dinos d'Hélène, encore vivants trente ans plus tard dans un coin secret de l'�
 | Ankylosaurus | pierre | **Bastion** | le Vieux Rempart, dans les canyons du Désert |
 | Parasaurolophus | nature | **Écho** | la Voix du Marais, dans la roselière |
 
+**Griffe-Grise**, le premier Velociraptor d'Hélène (son deuxième réveil, juste après le
+Protoceratops) : pas plus gros qu'un chat, il lui a mordu le pouce avant de s'endormir dessus, et
+une griffe grise comme un galet lui a donné son nom. Trente ans plus tard, museau gris et deux
+dents en moins, il vit seul dans un ravin caché au sud-ouest de la Forêt, son nom gravé dans la
+roche avec la fougère d'Hélène. Trop vieux pour la meute des Deinonychus, il en est respecté : son
+cri la fait taire. Il n'a jamais obéi à personne ; il ne laissait approcher qu'Hélène, et a toujours
+montré les dents à Isaure. Chez les raptors, c'est souvent le père qui couve : il a veillé l'œuf de
+Vif un mois sans dormir, puis l'a poussé vers Hélène, il y a un an. Récemment pris dans un piège de
+l'Ombre Noire, il l'a arraché de ses griffes : il sait qu'on a enlevé le chef de la meute.
+
 Chloé en choisit un : c'est **son dino de départ**, lié à elle dès la première seconde, et c'est
 leur Lien qui sauvera le Souverain à la fin. Maïa reçoit le deuxième œuf. Le troisième est
 **volé** la nuit même par l'Ombre Noire (voir [histoire.md](histoire.md)). Le choix change le
@@ -166,7 +176,7 @@ mauvais : c'est une force de la nature, qui a peur quand on le réveille de forc
 |---|---|
 | −66 millions d'années | Une éruption engloutit une forêt de résine : naissance de l'Ambre-Mère. |
 | −32 ans | Hélène arrive sur Ambrelune, conduite par une jeune marin du port : Isaure. Anselme Roc la rejoint. |
-| −30 ans | Premier réveil au Cabinet : un petit Protoceratops (page 1 du journal). |
+| −30 ans | Premier réveil au Cabinet : un petit Protoceratops (page 1 du journal). Puis un Velociraptor : Griffe-Grise. |
 | −30 à −25 ans | Hélène réveille des dizaines d'espèces et les rend chacune à leur habitat. |
 | −25 ans | Découverte du Souverain. Tentative de réveil, éruption. Hélène l'apaise, scelle le cratère, brise la clé en cinq Cœurs et les confie aux Alphas. |
 | −20 ans | Le port décline (la pêche s'effondre). Isaure demande à Hélène de vendre de l'ambre. Refus. Rupture. Ferréol ouvre le Comptoir d'Ambre à Havre-Doré, qui prospère. |

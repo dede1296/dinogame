@@ -386,6 +386,15 @@ const JOBS = [
   [`${OUT}/ground/herbe.png`, (out) => seamless({ id: "eszvx5", size: 512, out })],
   [`${OUT}/ground/terre.png`, (out) => seamless({ id: "oxlhun", size: 512, out })],
   [`${OUT}/ground/falaise.png`, (out) => seamless({ id: "o3jvsq", size: 512, out })],
+  // Forêt Jurassique: battle backdrop (from the Plaines backdrop), forest-floor ground and new scenery props.
+  [`${OUT}/battle/foret.jpg`, (out) => sharp(find("fyp8fd")).resize(1920, 1072, { fit: "cover" }).jpeg({ quality: 86, mozjpeg: true }).toFile(out).then(() => out)],
+  [`${OUT}/ground/sous_bois.png`, (out) => seamless({ id: "zbken5", size: 512, out })],
+  // Sheet has a spare log and a spare bone (the model drew two of each): kept the cleaner one of each, null for the other.
+  [`${OUT}/foret/props`, () => props({
+    id: "6vqggs", scale: 0.5, outDir: `${OUT}/props`,
+    names: ["fougere_geante", null, "tronc_mousse", "os_dino", "champignons", "rocher_mousse", "souche_geante", null],
+  })],
+  [`${OUT}/foret/arbre_geant`, () => props({ id: "71zuo2", scale: 0.5, outDir: `${OUT}/props`, names: ["arbre_geant"] })],
 ];
 const ONLY = process.argv.slice(2);
 const results = await Promise.all(JOBS

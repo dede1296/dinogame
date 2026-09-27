@@ -18,7 +18,7 @@ route du port, carrefour, étang, anse et sa plage, bosquet d'Hélène derrière
 la porte d'ambre (**Résonance**) avec le poste d'observation d'Hélène, Grand Crâne et l'antre de son Alpha),
 bordée de montagnes, de forêt et de mer ; **Havre-Doré**, la ville marchande au bout de la route
 côtière (boutiques et pièces, Comptoir de Ferréol, Relais des Dresseurs, la selle de Joss et la
-**Monture** : Chloé chevauche un grand dino adulte) ; la carte du monde qui se dévoile en explorant ; jour et
+**Monture** : Chloé chevauche un grand dino adulte) ; la **Forêt Jurassique** (130 × 100 cases, à l'ouest des Plaines, ouverte avec la selle : sous-bois, clairières, haute futaie, ravin de Griffe-Grise, 9 nouvelles espèces, pages 7 à 10) ; la carte du monde qui se dévoile en explorant ; jour et
 nuit, météo, habitats par lieu et par heure, la barre d'équipe, les pages du journal d'Hélène,
 la sauvegarde locale, les contrôles tactiles, la musique et l'ambiance sonore.
 

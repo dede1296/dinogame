@@ -29,6 +29,16 @@ const AMBIENCES := {
 		"beds": [["grotte", 0.75, ""], ["feu", 1.0, "fire"]],
 		"calls": [{"ids": ["goutte"], "every": [4.0, 12.0], "vol": 0.45}],
 	},
+	## Forêt Jurassique : no sea (inland), rain layers on top automatically (Game.is_raining(),
+	## see audio_director.gd) — birds fall silent then, like everywhere else with "day": true.
+	# The web's forest recording is a cricket drone: made of clean sounds instead.
+	&"foret": {
+		"beds": [["brise", 0.3, ""], ["feu", 1.0, "fire"]],
+		"calls": [
+			{"ids": BIRDS, "every": [4.0, 10.0], "vol": 0.42, "day": true},
+			{"ids": ["goutte"], "every": [5.0, 13.0], "vol": 0.22},   # drops falling from the ferns
+		],
+	},
 	&"cabinet": {"beds": [["labo", 1.0, ""]], "calls": []},
 	&"maison": {"beds": [["maison", 0.9, ""]], "calls": []},
 }

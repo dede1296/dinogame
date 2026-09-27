@@ -38,21 +38,22 @@ const inEllipse = (x, y, cx, cy, rx, ry, wobble = 0) =>
   ((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy) / ry) ** 2 < 1 + wobble * (fbm(x * 0.35, y * 0.35) - 0.5);
 const each = (f) => { for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) f(x, y); };
 
-// Paths: polylines, 2 tiles wide, slightly wavy.
-function path(points, width = 2) {
+// Paths: polylines, 2 tiles wide, slightly wavy (by `wobble` tiles: 0 = straight).
+function path(points, width = 2, wobble = 1.2) {
   for (let i = 0; i < points.length - 1; i++) {
     const [x0, y0] = points[i], [x1, y1] = points[i + 1];
     const n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) * 3);
     for (let k = 0; k <= n; k++) {
       const t = k / n;
-      const wob = (noise((x0 + x1) * 0.1 + t * 4, (y0 + y1) * 0.1) - 0.5) * 1.2;
+      const wob = (noise((x0 + x1) * 0.1 + t * 4, (y0 + y1) * 0.1) - 0.5) * wobble;
       const px = x0 + (x1 - x0) * t + (y1 !== y0 ? wob : 0), py = y0 + (y1 - y0) * t + (x1 !== x0 ? wob : 0);
       for (let dy = 0; dy < width; dy++) for (let dx = 0; dx < width; dx++) set(Math.floor(px - width / 2 + dx + 0.5), Math.floor(py - width / 2 + dy + 0.5), "path");
     }
   }
 }
 
-// 1. Borders: mountains north and east, forest west and south (the road and the cove open).
+// 1. Borders: mountains north and east, forest west and south (the road, the trail to the
+//    Forêt Jurassique and the cove open).
 //    The mountains rise in ledges of 2 levels (a smooth slope would show as a blurred bank).
 const LEDGE = 2.4;
 each((x, y) => {
@@ -63,7 +64,7 @@ each((x, y) => {
   const rise = mountain * (8 + fbm(x * 0.07, y * 0.07) * 5);
   if (mountain > 0) height[y][x] = Math.max(height[y][x], Math.floor(rise / LEDGE) * LEDGE);
   const west = x < 4 + n * 4, south = y > 84 - n * 3;
-  if (west || (south && !(x >= 55 && x <= 64))) sol[y][x] = "forest";
+  if ((west && !(y >= 47 && y <= 57)) || (south && !(x >= 55 && x <= 64))) sol[y][x] = "forest";
 });
 
 // 2. Paths (drawn first: the woods below close in on them except at their openings).
@@ -74,6 +75,8 @@ path([[60, 46], [72, 42], [86, 42], [93, 39], [93, 30], [96, 26]]); // to the cl
 path([[86, 42], [94, 54], [96, 64], [104, 65]]);                    // to the Grand Crâne
 path([[96, 26], [96, 20], [92, 16], [95, 11]]);                     // up the terraces
 path([[20, 36], [16, 30]], 1);                                      // into the grove
+path([[24, 46.5], [16, 49.5], [9, 52], [7, 52]]);                   // west, to the Forêt Jurassique…
+path([[7, 52], [0, 52]], 2, 0);                                     // …straight at the edge (rows 51-52, as there)
 
 // 3. The cove (south-west): the sea comes in, with a sandy beach around it.
 each((x, y) => {
@@ -149,6 +152,8 @@ const patches = [[46, 70, 7, 4], [70, 76, 6, 4], [38, 40, 6, 4], [70, 55, 5, 3],
 each((x, y) => {
   if (sol[y][x] !== "grass" || height[y][x] > 1.2) return;
   if (patches.some(([cx, cy, rx, ry]) => inEllipse(x, y, cx, cy, rx, ry, 0.6))) sol[y][x] = "tall_grass";
+  // Along the west edge by the trail: the meadow meets the forest floor of the Forêt there.
+  if (x <= 2 && ((y >= 45 && y <= 49) || (y >= 54 && y <= 58))) sol[y][x] = "tall_grass";
 });
 
 // ---------------------------------------------------------------- write

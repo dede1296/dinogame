@@ -173,6 +173,77 @@ static func lines(id: StringName) -> Array:
 			return [{"text": "Le tunnel sent le gardien, mais il est vide. Le Tricératops Alpha t'attend dehors, devant le crâne."}]
 		&"panneau_grotte_int":
 			return [{"text": "Quelqu'un a gravé une flèche dans la roche, vers le nord. Et, dessous : « H. »"}]
+		# ------------------------------------------------ chapter 2, the Forêt Jurassique
+		&"foret_bloquee":
+			var blocked: Array = [
+				{"text": "Le bois s'épaissit d'un coup : des troncs larges comme des maisons, des fougères plus hautes que Chloé, et des sentiers qui se séparent en trois tous les dix pas."},
+				{"text": "C'est la Forêt Jurassique. Elle est immense : à pied, on s'y perdrait avant le goûter. Même les Stegosaurus s'y perdent. (Bon, ils ont un cerveau grand comme une noix.)"},
+			]
+			if Game.flag(&"havre_arrive"):
+				blocked.append({"text": "Il faudrait un grand dino à monter, et une selle. Joss, le sellier de Havre-Doré, en fabrique justement."})
+			elif Game.flag(&"sceau_plaines"):
+				blocked.append({"text": "Il faudrait un grand dino à monter, et une selle. On dit qu'à Havre-Doré, au bout de la route côtière (à l'est de Port-Ambre), un sellier en fabrique."})
+			else:
+				blocked.append({"text": "Plus tard, peut-être, avec un grand dino à monter. Pour l'instant, les Plaines ont encore leurs secrets : le Grand Crâne attend toujours."})
+			return blocked
+		&"panneau_lisiere":
+			return [{"text": "Forêt Jurassique. Ouest : le sous-bois. Nord : les clairières. Sud : la haute futaie. Est : les Plaines des Fougères."},
+				{"text": "Dessous, une petite plaque : « Ne pas nourrir les Dilophosaurus. Ils crachent. Même pour dire merci. »"}]
+		&"panneau_ravin":
+			return [{"text": "Ravin. Sentier non entretenu. (Exprès.)"},
+				{"text": "Plus bas, d'une écriture penchée que Chloé connaît bien : « Chez Griffe-Grise. On n'entre pas sans y être invité. Il n'invite jamais. — H. »"}]
+		&"panneau_futaie":
+			return [{"text": "Haute futaie. Rampes taillées à la main par A. Roc, qui a le vertige. Merci de ne pas le lui rappeler."},
+				{"text": "Au crayon, dessous : « Les Microraptors volent les chapeaux. Et les lunettes. SURTOUT les lunettes. »"}]
+		&"page_7":
+			return [
+				{"text": "Sous la plus grande fougère du sous-bois, roulée dans une feuille cirée, une page du journal."},
+				{"letter": ["Confiance",
+					"Trois jours cachée sous une fougère, à regarder la meute. Les Deinonychus ne suivent pas le plus fort : ils suivent celui qui revient chercher le dernier. Leur chef, un grand Utahraptor, compte les siens à chaque ruisseau.",
+					"Anselme voudrait leur apprendre à obéir. Mais le Lien n'est pas l'obéissance : un dino qui obéit attend un ordre ; un dino qui a confiance n'en a pas besoin.",
+					"(Quarante piqûres de moustique. Ça valait le coup.)"],
+					"sign": "— H."},
+				{"flag": &"found_journal_7"},
+				{"who": CHLOE, "text": "(Un chef qui compte les siens à chaque ruisseau… Et maintenant qu'on l'a emmené, qui les compte ?)" if Game.flag(&"clairiere_vue")
+					else "(Un chef qui compte les siens à chaque ruisseau… Alors pourquoi la meute appelle-t-elle dans le vide ?)"},
+			]
+		&"page_8":
+			return [
+				{"text": "Glissée dans une fente de l'écorce, tout en haut de la futaie, une page du journal."},
+				{"letter": ["Anselme",
+					"Anselme a taillé à la main les rampes de la haute futaie, pour que je puisse observer les Microraptors. Il a le vertige. Il est tombé deux fois, a cassé trois paires de lunettes, et ne s'est plaint qu'en latin.",
+					"Il ne sait pas dire les choses : il les répare. C'est sa façon d'aimer.",
+					"P.-S. S'il se sent coupable un jour de ne pas m'avoir retenue, dis-lui que non. Personne n'a jamais su me retenir."],
+					"sign": "— H."},
+				{"flag": &"found_journal_8"},
+				{"text": "Le P.-S. est d'une autre encre, plus noire, plus récente. Hélène l'a ajouté bien plus tard. Peut-être juste avant de cacher la page."},
+				{"who": CHLOE, "text": "(Coupable… de quoi, professeur ?)"},
+			]
+		&"page_9":
+			var page: Array = [
+				{"text": "Parmi les fleurs de la clairière, glissée sous une racine, une page du journal. L'écriture est plus serrée que d'habitude, comme écrite très vite."},
+				{"letter": ["Les veines violettes",
+					"Ce matin, dans la clairière, un jeune Stegosaurus blessé. Les yeux troubles, et sous la peau, des veines violettes.",
+					"Je ne les avais vues qu'une fois, il y a dix-sept ans, dans mon propre laboratoire. Quelqu'un a refait ce que j'avais brûlé. Mal : il souffre. Mais assez bien pour me faire peur.",
+					"Je l'ai veillé toute la nuit ; au matin, les veines avaient pâli. Je ne sais pas qui fait ça. J'ai peur de le savoir."],
+					"sign": "— H."},
+				{"flag": &"found_journal_9"},
+			]
+			if Game.flag(&"proto_apaise"):
+				page.append({"who": CHLOE, "text": "(Des veines violettes… comme le Protoceratops de la grotte. Ça dure depuis si longtemps ?)"})
+			return page
+		&"page_10":
+			return [
+				{"text": "Au bord de la mare de la lisière, une page du journal brille doucement dans l'herbe, comme si la lune l'avait gardée au chaud." if Game.is_full_moon()
+					else "Au bord de la mare de la lisière, à l'abri d'une touffe de fleurs, une page du journal."},
+				{"letter": ["Apaiser",
+					"Cette nuit, un jeune Brachiosaurus perdu, fou de peur. On ne calme pas un dino affolé en le tenant. On se met à sa hauteur (pour un Brachiosaurus : debout sur une souche), on respire lentement, assez fort pour qu'il l'entende, et on regarde la même chose que lui.",
+					"Il ne comprend pas les mots. Il comprend qu'on reste.",
+					"Avec les veines violettes, c'est plus long. Il faut rester plus longtemps que leur peur."],
+					"sign": "— H."},
+				{"flag": &"found_journal_10"},
+				{"who": CHLOE, "text": "(« Rester plus longtemps que leur peur. » Je m'en souviendrai.)"},
+			]
 	push_error("Dialogue inconnu : %s" % id)
 	return []
 
@@ -194,6 +265,10 @@ static func chatter(who: StringName) -> Array:
 			]
 			if Game.flag(&"sceau_plaines"):
 				pool.insert(0, "Le Havre ? Là-bas, ils ont de l'argent. Et ils ne se demandent jamais d'où il vient. Toi, demande-toi toujours.")
+			if Game.flag(&"selle") and not Game.flag(&"griffe_grise_vu"):
+				pool.insert(0, "La Forêt… Hélène y avait un vieux raptor, gris comme un rocher. Il ne laissait approcher personne. Sauf elle.")
+			if Game.flag(&"griffe_grise_vu"):
+				pool.insert(0, "Il t'a laissée approcher ? … Moi, il m'a toujours montré les dents. Il avait peut-être ses raisons.")
 			if Game.flag(&"boussole_rendue"):
 				pool.append("Maïa m'a rapporté ma boussole. Merci de l'avoir rattrapée. J'y tiens… plus que je ne devrais.")
 			if night:
@@ -224,6 +299,12 @@ static func chatter(who: StringName) -> Array:
 			]
 			if hint != "":
 				pool.insert(0, "Conseil de championne : " + hint)
+			if Game.flag(&"selle") and not Game.flag(&"griffe_grise_vu"):
+				pool.append("Tu pars pour la Forêt ? Il paraît que les raptors y crient toute la nuit, en ce moment. Comme s'ils avaient perdu quelqu'un.")
+			if Game.flag(&"griffe_grise_vu"):
+				pool.append("Un vieux raptor t'a laissée approcher ?! Moi, la dernière fois, un Dilophosaurus m'a craché dessus. On n'a pas la même Forêt.")
+			if Game.flag(&"clairiere_vue"):
+				pool.append("Un masque d'os dans la Forêt ? Je parie que c'est leur chef, le Masque. Il paraît que le sien est tout noir. Trop stylé. … Enfin, trop méchant. Mais stylé.")
 		&"roc":
 			pool = [
 				"Hélène disait qu'un dino ne se dresse pas : il se rencontre. Je n'ai jamais bien compris la différence. Elle, si.",
@@ -232,6 +313,12 @@ static func chatter(who: StringName) -> Array:
 			]
 			if hint != "":
 				pool.insert(0, "Où en es-tu ? … Hmm. " + hint)
+			if Game.flag(&"selle") and not Game.flag(&"griffe_grise_vu"):
+				pool.insert(0, "La Forêt ? Hélène y passait des semaines. Elle en revenait trempée, pleine de mousse, et heureuse comme une gamine. Méfie-toi des Deinonychus : ils chassent à plusieurs.")
+			if Game.flag(&"griffe_grise_vu"):
+				pool.insert(0, "Griffe-Grise ? Ce vieux grincheux est encore en vie ? Il m'a mordu trois fois. Enfin, deux. La troisième, je l'avais un peu cherchée.")
+			if Game.flag(&"clairiere_vue"):
+				pool.append("Des pièges, des pieux, un masque d'os… dans la Forêt d'Hélène. … Sois prudente, Chloé. Vraiment prudente.")
 			if night:
 				pool.append("Tu es encore debout ? Moi aussi. Je… vérifie des choses. Va dormir, va.")
 	if pool.is_empty():

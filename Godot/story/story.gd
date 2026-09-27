@@ -23,6 +23,8 @@ static func on_zone_entered(zone: StringName) -> void:
 			await Havre.arrival()
 		&"grotte_echos":
 			await Grotte.arrival()
+		&"foret":
+			await Foret.arrival()
 
 
 ## The time of day changed while in zone `zone` (a scene that only happens at night…).
@@ -82,6 +84,10 @@ static func run(event: StringName, who: Node) -> void:
 			await Grotte.proto(who)
 		&"entrepot":
 			await Dialogue.run(DialogueDB.lines(&"entrepot"))
+		&"griffe_grise":
+			await Foret.griffe_grise(who)
+		&"clairiere_vide":
+			await Foret.clairiere_vide(who)
 		_:
 			push_error("Scène inconnue : %s" % event)
 

@@ -262,6 +262,27 @@ const SCENARIOS := {
 		[0.9, "zone", &"cabinet"], [1.5, "shot", "c1"], [2.5, "shot", "c2"], [3.5, "shot", "c3"], [4.5, "shot", "c4"], [5.0, "state", null],
 	],
 	# Sprite motion (world/view3d/sprite_motion.gd) on and off in turn, a banner says which.
+	"foret_integ": [
+		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_6", "havre_arrive", "selle", "barque_vue"]], [0.85, "calm", 900.0], [0.86, "level", 14],
+		[0.9, "zone", &"plaines"], [2.3, "tp", Vector2(3.0, 52.0)], [2.5, "hold", "move_left"], [3.4, "hold", ""], [3.5, "talk", true],
+		[6.0, "shot", "i0_arrivee"], [22.0, "talk", false], [22.1, "state", null], [22.2, "tracker", null],
+		[22.5, "tp", Vector2(23.4, 81.0)], [24.0, "shot", "i1_ravin"], [24.1, "hold", "move_left"], [24.2, "hold", ""], [24.4, "press", "interact"], [25.0, "auto", true],
+		[30.0, "shot", "i2_griffe"], [70.0, "auto", false], [70.1, "state", null], [70.2, "tracker", null],
+		[70.5, "tp", Vector2(24.0, 19.8)], [72.0, "hold", "move_up"], [72.1, "hold", ""], [72.3, "press", "interact"], [72.8, "auto", true],
+		[76.0, "shot", "i3_clairiere"], [110.0, "auto", false], [110.1, "state", null], [110.2, "tracker", null], [110.3, "shot", "i4_fin"],
+	],
+	"griffe_ankylosaurus": [
+		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_6", "havre_arrive", "selle", "barque_vue", "foret_arrivee"]], [0.85, "calm", 900.0],
+		[0.86, "starter", "ankylosaurus"], [0.87, "dlog", true],
+		[0.9, "zone", &"foret"], [2.5, "tp", Vector2(23.4, 81.0)], [3.8, "hold", "move_left"], [3.9, "hold", ""], [4.1, "press", "interact"], [4.6, "auto", true],
+		[45.0, "auto", false], [45.1, "tracker", null],
+	],
+	"griffe_parasaurolophus": [
+		[0.8, "flags", ["sceau_plaines", "maia_defi_1", "found_journal_6", "havre_arrive", "selle", "barque_vue", "foret_arrivee"]], [0.85, "calm", 900.0],
+		[0.86, "starter", "parasaurolophus"], [0.87, "dlog", true],
+		[0.9, "zone", &"foret"], [2.5, "tp", Vector2(23.4, 81.0)], [3.8, "hold", "move_left"], [3.9, "hold", ""], [4.1, "press", "interact"], [4.6, "auto", true],
+		[45.0, "auto", false], [45.1, "tracker", null],
+	],
 	"demo_live": [
 		[0.85, "calm", 900.0], [0.9, "motion", true], [0.95, "tp", Vector2(58.4, 60.0)], [2, "banner", "Pas plus rapides, un rebond par pas"], [2.1, "tp", Vector2(58.4, 60.0)], [2.4, "hold", "move_down"], [3.8, "hold", ""], [4.4, "hold", "move_left"], [5.4, "hold", ""], [6, "hold", "move_right"], [7, "hold", ""], [7.6, "hold", "move_up"], [9, "hold", ""], [11, "banner", "Pas plus rapides, un rebond par pas"], [11.1, "tp", Vector2(58.4, 60.0)], [11.4, "hold", "move_down"], [12.8, "hold", ""], [13.4, "hold", "move_left"], [14.4, "hold", ""], [15, "hold", "move_right"], [16, "hold", ""], [16.6, "hold", "move_up"], [18, "hold", ""], [20, "banner", "Pas plus rapides, un rebond par pas"], [20.1, "tp", Vector2(58.4, 60.0)], [20.4, "hold", "move_down"], [21.8, "hold", ""], [22.4, "hold", "move_left"], [23.4, "hold", ""], [24, "hold", "move_right"], [25, "hold", ""], [25.6, "hold", "move_up"], [27, "hold", ""], [29, "banner", "Pas plus rapides, un rebond par pas"], [29.1, "tp", Vector2(58.4, 60.0)], [29.4, "hold", "move_down"], [30.8, "hold", ""], [31.4, "hold", "move_left"], [32.4, "hold", ""], [33, "hold", "move_right"], [34, "hold", ""], [34.6, "hold", "move_up"], [36, "hold", ""], [38, "banner", "Pas plus rapides, un rebond par pas"], [38.1, "tp", Vector2(58.4, 60.0)], [38.4, "hold", "move_down"], [39.8, "hold", ""], [40.4, "hold", "move_left"], [41.4, "hold", ""], [42, "hold", "move_right"], [43, "hold", ""], [43.6, "hold", "move_up"], [45, "hold", ""], [47, "banner", "Pas plus rapides, un rebond par pas"], [47.1, "tp", Vector2(58.4, 60.0)], [47.4, "hold", "move_down"], [48.8, "hold", ""], [49.4, "hold", "move_left"], [50.4, "hold", ""], [51, "hold", "move_right"], [52, "hold", ""], [52.6, "hold", "move_up"], [54, "hold", ""], [56, "banner", ""],
 	],
@@ -392,6 +413,58 @@ const SCENARIOS := {
 		[14.2, "tp", Vector2(80.0, 42.0)], [15.6, "shot", "c9_etang"], [15.7, "state", null],
 		[15.8, "map", null], [16.4, "shot", "c10_carte"], [16.5, "press", "cancel"], [17.0, "shot", "c11_carte_fermee"], [17.2, "tp", Vector2(97.0, 15.6)], [17.5, "hold", "move_up"], [18.8, "hold", ""], [19.8, "shot", "c12_pied_falaise"],
 	],
+	# The Forêt Jurassique: in by the Plaines' west trail (saddle), its places, page 10 at full
+	# moon, the map, the frame rate at each quality, a battle on its backdrop.
+	"foret": [
+		[0.8, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1", "selle", "foret_arrivee"]], [0.82, "level", 14],
+		[0.84, "clock", 11.0], [0.86, "weather", &"clear"], [0.9, "calm", 900.0], [0.95, "talk", true],
+		[1.0, "tp", Vector2(5.0, 52.0)], [2.4, "shot", "f00_plaines_ouest"], [2.5, "hold", "move_left"], [3.8, "hold", ""],
+		[5.4, "state", null], [5.5, "shot", "f01_arrivee"], [5.6, "calm", 900.0], [5.7, "weather", &"clear"],
+		[5.8, "tp", Vector2(119.0, 53.5)], [7.2, "shot", "f02_lisiere"],
+		[7.3, "tp", Vector2(118.5, 44.0)], [8.7, "shot", "f03_mare_de_lune"],
+		[8.8, "tp", Vector2(68.5, 55.4)], [10.2, "shot", "f04_page7"],
+		[10.3, "tp", Vector2(62.5, 57.5)], [11.7, "shot", "f05_carrefour"],
+		[11.8, "tp", Vector2(63.5, 28.5)], [13.2, "shot", "f06_passerelle_nord"],
+		[13.3, "tp", Vector2(46.5, 28.5)], [14.7, "shot", "f07_clairiere_page9"],
+		[14.8, "tp", Vector2(24.0, 23.5)], [16.2, "shot", "f08_clairiere_fougeres"],
+		[16.3, "tp", Vector2(95.0, 25.5)], [17.7, "shot", "f09_rocheuses"],
+		[17.8, "tp", Vector2(81.0, 61.5)], [19.2, "shot", "f10_rampe_nord"],
+		[19.3, "tp", Vector2(70.5, 86.0)], [20.7, "shot", "f11_futaie_page8"],
+		[20.8, "tp", Vector2(44.5, 58.0)], [22.2, "shot", "f12_passerelle_ouest"],
+		[22.3, "tp", Vector2(31.5, 62.0)], [23.7, "shot", "f13_entree_ravin"],
+		[23.8, "tp", Vector2(24.0, 83.5)], [25.2, "shot", "f14_griffe_grise"],
+		[25.3, "tp", Vector2(14.0, 47.0)], [26.7, "shot", "f15_face_du_camp"],
+		[26.8, "tp", Vector2(116.0, 72.0)], [28.2, "shot", "f16_prairie"], [28.3, "state", null],
+		[28.4, "gset", ["day", 2]], [28.5, "clock", 22.0], [28.6, "tp", Vector2(118.5, 43.0)], [31.0, "shot", "f17_page10_pleine_lune"],
+		[31.1, "near", null], [31.2, "clock", 11.0], [31.3, "gset", ["day", 3]],
+		[31.5, "map", null], [32.4, "shot", "f18_carte"], [32.5, "press", "cancel"],
+		[33.0, "vsync", false], [33.05, "quality", 1], [33.1, "tp", Vector2(62.5, 57.5)], [36.0, "perf", "carrefour_moyenne"],
+		[36.1, "quality", 2], [39.0, "perf", "carrefour_haute"], [39.1, "quality", 0], [42.0, "perf", "carrefour_basse"],
+		[42.1, "quality", 1], [42.2, "tp", Vector2(70.5, 86.0)], [45.0, "perf", "futaie_moyenne"],
+		[45.1, "tp", Vector2(119.0, 53.5)], [48.0, "perf", "lisiere_moyenne"], [48.1, "state", null],
+		[48.2, "fight", "dilophosaurus"], [51.5, "shot", "f19_combat"],
+	],
+	# The way into the Forêt closed without a saddle; the ramps of the Haute futaie; rain and
+	# mist under the trees; Griffe-Grise, the empty clearing and page 7 (the story's scenes).
+	"foret2": [
+		[0.8, "flags", ["sceau_plaines", "havre_arrive", "met_maia", "found_journal_1"]], [0.82, "level", 14],
+		[0.84, "clock", 11.0], [0.86, "weather", &"clear"], [0.9, "calm", 900.0],
+		[1.0, "tp", Vector2(3.0, 52.0)], [1.5, "hold", "move_left"], [2.4, "hold", ""], [3.2, "shot", "g00_foret_fermee"], [3.3, "state", null],
+		[3.4, "talk", true], [6.0, "talk", false], [6.1, "flags", ["selle", "foret_arrivee"]],
+		[6.2, "tp", Vector2(3.0, 52.0)], [6.4, "hold", "move_left"], [7.4, "hold", ""], [9.0, "state", null],
+		[9.1, "calm", 900.0], [9.2, "weather", &"clear"],
+		[9.3, "tp", Vector2(81.0, 71.5)], [10.8, "shot", "g01_rampe_nord_haut"],
+		[10.9, "tp", Vector2(41.5, 79.5)], [12.4, "shot", "g02_rampe_ouest"],
+		[12.5, "tp", Vector2(113.0, 88.0)], [14.0, "shot", "g03_rampe_est"],
+		[14.1, "tp", Vector2(68.5, 56.0)], [14.2, "weather", &"rain"], [19.0, "shot", "g04_sous_bois_pluie"],
+		[19.1, "weather", &"mist"], [24.0, "shot", "g05_sous_bois_brume"], [24.1, "weather", &"clear"],
+		[24.2, "talk", true], [24.3, "tp", Vector2(68.5, 53.7)], [25.0, "hold", "move_up"], [25.1, "hold", ""], [25.3, "press", "interact"],
+		[26.2, "shot", "g06_page7"], [32.0, "state", null],
+		[32.1, "tp", Vector2(22.4, 81.3)], [33.0, "hold", "move_up"], [33.1, "hold", ""], [33.3, "press", "interact"],
+		[34.5, "shot", "g07_griffe_grise"], [50.0, "state", null],
+		[50.1, "tp", Vector2(24.0, 19.9)], [51.0, "hold", "move_up"], [51.1, "hold", ""], [51.3, "press", "interact"],
+		[52.5, "shot", "g08_clairiere_vide"], [66.0, "state", null], [66.1, "shot", "g09_apres"],
+	],
 	"perf": [
 		[0.5, "vsync", false],
 		[4.0, "perf", "arrivee"], [4.1, "tp", Vector2(60.0, 47.0)], [7.0, "perf", "carrefour"],
@@ -407,6 +480,8 @@ var _time := 0.0
 var _step := 0
 var _held := ""
 var _auto := false
+var _dlog := false
+var _dlog_last := ""
 var _talk := false
 var _talk_timer := 0.0
 var _auto_timer := 0.0
@@ -452,6 +527,11 @@ func _process(delta: float) -> bool:
 		if _talk_timer > 0.3:
 			_talk_timer = 0.0
 			_run("press", "interact")
+	if _dlog:
+		var box = root.get_node("Dialogue").get("_text")
+		if box and box.text != _dlog_last and box.visible_characters == -1:
+			_dlog_last = box.text
+			print("» ", box.text)
 	if _auto:
 		_auto_timer += delta
 		if _auto_timer > 0.35:
@@ -548,6 +628,15 @@ func _run(command: String, arg: Variant) -> void:
 				l.offset_top = 150
 				layer.add_child(l)
 				root.add_child(layer)
+		"starter":   # play with another hatchling: it replaces the first dino of the party
+			var game := root.get_node("Game")
+			game.call("set_flag", &"starter", String(arg))
+			var names: Dictionary = game.get_script().get_script_constant_map()["STARTERS"]
+			var d = load("res://game/dino.gd").create(StringName(arg), 14, names[StringName(arg)])
+			game.get("party")[0] = d
+			game.emit_signal("party_changed")
+		"dlog":   # print every line the dialogue box shows
+			_dlog = arg
 		"lead":
 			root.get_node("Game").call("set_lead", arg)
 		"party":

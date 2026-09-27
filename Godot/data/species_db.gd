@@ -13,6 +13,15 @@ const PATHS := {
 	&"compsognathus": "res://data/species/compsognathus.tres",
 	&"triceratops": "res://data/species/triceratops.tres",
 	&"anurognathus": "res://data/species/anurognathus.tres",
+	&"dilophosaurus": "res://data/species/dilophosaurus.tres",
+	&"stegosaurus": "res://data/species/stegosaurus.tres",
+	&"deinonychus": "res://data/species/deinonychus.tres",
+	&"pachycephalosaurus": "res://data/species/pachycephalosaurus.tres",
+	&"microraptor": "res://data/species/microraptor.tres",
+	&"brachiosaurus": "res://data/species/brachiosaurus.tres",
+	&"allosaurus": "res://data/species/allosaurus.tres",
+	&"utahraptor": "res://data/species/utahraptor.tres",
+	&"griffe_grise": "res://data/species/griffe_grise.tres",
 }
 
 static var _cache: Dictionary = {}

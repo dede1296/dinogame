@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/allosaurus.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/allosaurus_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"allosaurus"
+display_name = "Allosaurus"
+family = &"tyrant"
+description = "Le plus grand chasseur de la forêt, redouté de tous. Il rôde surtout par temps de pluie, quand le bruit des gouttes couvre ses pas."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.58
+walk_fps = 7.0
+cry_prefix = "tyran"
+head_size = 8
+head_bite = 8
+teeth_sharp = 9
+teeth_count = 8
+front_power = 5
+front_reach = 5
+back_legs_power = 8
+back_legs_speed = 8
+back_armor = 3
+back_spikes = 0
+tail_power = 7
+tail_length = 7
+rarity = "rare"

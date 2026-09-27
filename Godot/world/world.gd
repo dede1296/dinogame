@@ -11,6 +11,7 @@ const ZONES := {
 	&"grotte_echos": "res://regions/plaines/grotte_echos.tscn",
 	&"antre_crane": "res://regions/plaines/antre_crane.tscn",
 	&"havre_dore": "res://regions/havre/havre_dore.tscn",
+	&"foret": "res://regions/foret/foret.tscn",
 }
 const PLAYER := preload("res://actors/player.tscn")
 const COMPANION := preload("res://actors/companion.tscn")
@@ -425,6 +426,8 @@ func _battle(wild: Dino, rules := {}) -> String:
 	dismount()
 	if region and region.cave and not rules.has("cave"):
 		rules = rules.merged({"cave": true})
+	if region and region.battle_backdrop and not rules.has("backdrop"):
+		rules = rules.merged({"backdrop": region.battle_backdrop})
 	player.busy = true
 	player.velocity = Vector2.ZERO
 	var first_sighting := not Game.dex_seen.has(String(wild.species().id))

@@ -168,14 +168,15 @@ l'Ombre Noire.
 
 ## Chapitre 2 — La Forêt Jurassique
 
-1. Lisière, sous-bois sous la pluie, passerelles de la canopée. Rencontres : Dilophosaurus,
-   Stegosaurus, Microraptor, Deinonychus en meute.
+1. Lisière, sous-bois sous la pluie, haute futaie. Rencontres : Dilophosaurus,
+   Stegosaurus, Microraptor, Deinonychus en meute. ✅ (étape 1)
 2. **La meute sans chef.** Les Deinonychus sont nerveux : leur Alpha, l'**Utahraptor Chef de
-   Meute**, a été capturé par **Brac**, le braconnier de l'Ombre Noire.
+   Meute**, a été capturé par **Brac**, le braconnier de l'Ombre Noire. ✅ (installée à l'étape 1,
+   sans nommer Brac)
 3. **Coup de crâne** : un Pachycephalosaurus des clairières rocheuses (à capturer) enfonce le mur
    fissuré qui cache le **camp de l'Ombre Noire**.
-   Dans un ravin caché du sous-bois vit **Griffe-Grise**, le vieux Velociraptor d'Hélène. Si l'œuf
-   choisi était celui de Vif, c'est son parent : scène, page de l'Ancien, attaque ultime à Lien 5.
+   Dans un ravin caché, au sud-ouest, vit **Griffe-Grise**, le vieux Velociraptor d'Hélène ✅. Si
+   l'œuf choisi était celui de Vif, c'est son père : scène, page de l'Ancien ✅, attaque ultime à Lien 5.
 4. **Le camp.** Des cages, de l'ambre noir, des dinos corrompus. Combat contre **Brac**, dont le
    champion est **le troisième œuf**, volé au Cabinet et élevé à l'ambre noir : un jeune dino aux
    veines violettes, qui ne connaît que la peur. **Premier grand apaisement** ; il rejoint Chloé.
@@ -186,6 +187,58 @@ l'Ombre Noire.
    bat pas : « Tu as les yeux de ta grand-mère. Ne fais pas les mêmes erreurs qu'elle. » Et il s'en va.
 6. **Maïa, défi n° 2**, au pont vers le Marais. Elle a vu le Masque aussi, et a trouvé ça « trop
    stylé ». Au Cabinet, Chloé découvre de l'**ambre noir dans un tiroir de Roc**. *(Fausse piste n° 2.)*
+
+### Chapitre 2 — Étape 1 dans le jeu ✅
+
+La région, ses rencontres, Griffe-Grise et les pages 7 à 10 (`story/foret.gd`). L'étape 2 (Brac, le
+camp, le troisième œuf, l'Utahraptor, le Masque, Maïa, Coup de crâne) reste à faire.
+
+1. **Le chemin.** La sortie ouest des Plaines demande la selle. Sans elle : « la Forêt est immense, à
+   pied on s'y perdrait avant le goûter » ; le texte renvoie vers Joss (Havre-Doré), vers la route
+   côtière si Chloé n'y est pas encore allée, ou vers le Grand Crâne avant le Sceau.
+2. **L'arrivée** (première entrée). La pluie sur les fougères géantes (ou, par beau temps, les
+   fougères qui égouttent encore l'averse). Des cris de raptors s'appellent dans tous les sens, trop
+   vite : « On dirait qu'ils cherchent quelqu'un. Et que personne ne leur répond. » Puis un cri grave,
+   venu d'un ravin au sud-ouest, les fait tous taire. Avec Vif dans l'équipe, il y répond d'un cri
+   qu'on ne lui connaissait pas, et Chloé se souvient de la page 6 (« Son père, Griffe-Grise, veille
+   encore dans la Forêt »).
+3. **Griffe-Grise**, dans son ravin (sud-ouest). Un vieux raptor au museau gris, une éraflure à
+   peine refermée au flanc, son nom gravé dans la roche avec une petite fougère. Il se redresse et
+   gronde.
+   - **Avec Vif** (son petit) : Vif avance sans gronder ; le vieux raptor baisse la tête jusqu'à
+     toucher son museau (si Vif est resté au Cabinet, il reconnaît son odeur sur les mains de Chloé).
+     Ils crient sur la même note. Si Chloé a lu la lettre scellée : « Hélène m'a demandé de te dire
+     qu'elle va bien » ; il n'y croit pas tout à fait, Chloé non plus. Il sort de la mousse une boîte
+     en fer-blanc (« Pour Chloé. Il te la donnera. ») : la **page de l'Ancien**. « Gratte-le sous le
+     menton » : Chloé le fait. Vif se roule en boule contre son père, « il a l'air de n'avoir rien à
+     prouver ».
+   - **Avec Bastion ou Écho** : il avance, Chloé choisit de ne pas bouger ou de reculer doucement (les
+     deux marchent : il renifle, il ne chasse pas). Il plonge le museau dans la sacoche aux pages du
+     journal et reconnaît l'odeur d'Hélène : il accepte Chloé et son équipe. Chloé pense à la mère
+     de son propre dino, qui l'attend quelque part dans le Désert ou le Marais.
+   - **Dans les deux cas** : il lâche aux pieds de Chloé un **piège à mâchoires** arraché, ouvert de
+     force par ses griffes, qui sent la **cendre froide** (« De la cendre. Encore. »). Puis il appelle
+     vers le nord-ouest ; la meute répond, des dizaines de voix, « et pas une qui commande ». Chloé
+     comprend qu'on a pris leur chef, qui vivait dans la clairière aux fougères géantes. Griffe-Grise
+     ne la suit pas (trop vieux pour la meute) ; ensuite, une réplique courte à chaque visite.
+4. **La clairière vide** (nord-ouest). Les fougères géantes couchées, écrasées ; un anneau de pieux
+   et des cordes coupées : une cage sans toit, vide. Une empreinte de raptor à deux doigts, grande
+   comme une bassine (« Un raptor grand comme ÇA ? »). La cendre froide. Un morceau de **masque d'os**,
+   comme celui du voleur du Cabinet (« Ceux qui ont volé le troisième œuf… »). Le dino de tête trouve
+   des sillons : on a traîné quelque chose de très lourd **vers l'ouest** (le mur fissuré, étape 2).
+   Trois Deinonychus observent Chloé sans attaquer : ils attendent quelqu'un. « Tiens bon, qui que tu
+   sois. On va te retrouver. » Objectif : « À suivre… ».
+5. **Autour** : les pages 7 à 10 ; trois panneaux (lisière, ravin « Chez Griffe-Grise. On n'entre pas
+   sans y être invité. Il n'invite jamais. — H. », futaie « Rampes taillées à la main par A. Roc, qui a
+   le vertige ») ; Roc, Maïa et Isaure parlent de la Forêt (Isaure : « Moi, il m'a toujours montré les
+   dents. Il avait peut-être ses raisons. »).
+6. **Objectifs** : la Forêt par la sortie ouest des Plaines → le cri du ravin → la clairière du chef
+   de meute → « À suivre… ». En secondaire, les pages de la Forêt, avec une direction pour chacune
+   (sous-bois, haut de la futaie, clairière du nord, lisière à la pleine lune).
+
+Drapeaux : `foret_arrivee`, `griffe_grise_vu`, `found_journal_ancien`, `clairiere_vue`,
+`found_journal_7` à `_10` (et `griffe_grise_n`, `clairiere_n`, `griffe_apres_clairiere` pour les
+répliques). Événements : `griffe_grise` (DinoNpc du ravin), `clairiere_vide` (StoryProp de la clairière).
 
 ## Chapitre 3 — Le Marais Brumeux · 1er Cœur
 
@@ -307,7 +360,7 @@ l'Ombre Noire.
 |---|---|---|
 | Prologue | L'œuf volé sans effraction : il fallait une clé | Elle demande si Hélène a laissé une lettre ; elle était au Cabinet le soir du vol |
 | 1 | Roc part de nuit vers le volcan | Maïa : « bottes pleines de cendre » ; page 3 : « I. », l'amie de la barque |
-| 2 | Ambre noir dans son tiroir | Le Masque : « ne fais pas les mêmes erreurs qu'elle » (il l'a connue) ; page 11 : « I. » a demandé de vendre l'ambre |
+| 2 | Ambre noir dans son tiroir ; le piège de la Forêt sent la cendre (ses chaussures) ; page 8 : « s'il se sent coupable… » | Le piège sent la cendre (ses bottes) ; Griffe-Grise lui « a toujours montré les dents » ; le Masque : « ne fais pas les mêmes erreurs qu'elle » (il l'a connue) ; page 11 : « I. » a demandé de vendre l'ambre |
 | 3 | Page 14 : il avait la clé du Cabinet | Page 14 : « I. » aussi |
 | 5 | — | La barque d'Isaure à la cache ; page 21 : le passage du récif ; page 23 : « Isaure » en toutes lettres |
 | 6 | Innocenté (page 28) | Isaure ne nie pas |
@@ -340,15 +393,15 @@ précise, chaleureuse, parfois drôle, de plus en plus inquiète.
 | # | Où | Date | Titre | Ce qu'elle révèle |
 |---|---|---|---|---|
 | 1 ✅ | Plaines · bosquet | −30 ans | Le premier réveil | Le Protoceratops, Anselme qui pleure, le secret à garder |
-| 2 | Plaines · îlot de l'étang (pleine lune) | −29 ans | Chacun chez soi | Elle rend chaque espèce à son habitat |
-| 3 | Plaines · falaises | −31 ans | La barque | « I. », l'amie marin sans qui elle ne serait jamais venue |
-| 4 | Grotte des Échos | −28 ans | Ce qui ne dort pas | Son essai d'« ambre forcé », abandonné avec horreur |
-| 5 | Grand Crâne | −27 ans | Le premier Alpha | Le Tricératops ; la découverte du Lien |
-| 6 | Cabinet (après ch. 1) | −1 an | Pour Chloé | **Trois versions**, selon l'œuf choisi : pourquoi ce dino-là irait bien à Chloé ; « un jour je te montrerai tout » |
-| 7 | Forêt · sous-bois | −26 ans | Confiance | Le Lien n'est pas l'obéissance ; la meute de raptors |
-| 8 | Forêt · canopée | −24 ans | Anselme | Roc, maladroit et fidèle ; « s'il se sent coupable, dis-lui que non » |
-| 9 | Forêt · clairière | −11 ans | Les veines violettes | Un dino blessé aux veines violettes : quelqu'un copie ses méthodes |
-| 10 | Forêt · lisière (pleine lune) | −10 ans | Apaiser | Comment elle calme un dino affolé |
+| 2 ✅ | Plaines · îlot de l'étang (pleine lune) | −29 ans | Chacun chez soi | Elle rend chaque espèce à son habitat |
+| 3 ✅ | Plaines · falaises | −31 ans | La barque | « I. », l'amie marin sans qui elle ne serait jamais venue |
+| 4 ✅ | Grotte des Échos | −28 ans | Ce qui ne dort pas | Son essai d'« ambre forcé », abandonné avec horreur |
+| 5 ✅ | Grand Crâne | −27 ans | Le premier Alpha | Le Tricératops ; la découverte du Lien |
+| 6 ✅ | Cabinet (après ch. 1) | −1 an | Pour Chloé | **Trois versions**, selon l'œuf choisi : pourquoi ce dino-là irait bien à Chloé ; « un jour je te montrerai tout » |
+| 7 ✅ | Forêt · sous-bois | −26 ans | Confiance | Le Lien n'est pas l'obéissance ; la meute de raptors |
+| 8 ✅ | Forêt · haute futaie | −24 ans | Anselme | Roc, maladroit et fidèle ; « s'il se sent coupable, dis-lui que non » |
+| 9 ✅ | Forêt · clairière | −11 ans | Les veines violettes | Un dino blessé aux veines violettes : quelqu'un copie ses méthodes |
+| 10 ✅ | Forêt · lisière (pleine lune) | −10 ans | Apaiser | Comment elle calme un dino affolé |
 | 11 | Camp de l'Ombre Noire | −20 ans | Le port se meurt | « I. » lui demande de vendre l'ambre. Elle refuse. « Elle n'a pas claqué la porte. C'est pire. » |
 | 12 | Marais · temple | −23 ans | Les premiers habitants | Les masques d'os des anciens, qui honoraient les dinos |
 | 13 | Marais · îlot | −25 ans | Le premier Cœur | Le Cœur confié au Spinosaure |
@@ -388,3 +441,9 @@ se lire seule, sans supposer les autres.
 son premier individu de l'espèce, trente ans plus tôt, et pourquoi elle a gardé un œuf de lui pour
 Chloé. On lit celle de son propre œuf ; les autres se trouvent en visitant les autres Anciens, ou
 en Nouvelle partie+.
+
+| Ancien | Où | Date | Titre | Ce qu'elle révèle |
+|---|---|---|---|---|
+| Griffe-Grise ✅ | Forêt · ravin (avec Vif), dans une boîte en fer-blanc | −1 an | Griffe-Grise | Son deuxième réveil, « pas plus gros qu'un chat », qui lui a mordu le pouce ; chez les raptors, le père couve : il a veillé l'œuf de Vif un mois et l'a poussé vers elle, « il savait pour qui » ; « gratte-le sous le menton » |
+| Le Vieux Rempart | Désert · canyon muré | −1 an | — | À écrire (parent de Bastion) |
+| La Voix du Marais | Marais · roselière | −1 an | — | À écrire (parente d'Écho) |

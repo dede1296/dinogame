@@ -18,8 +18,11 @@ const OUT = "Godot/assets/audio/ambience";
 // Loops (beds) and short calls used by the game's places (see AmbienceDB).
 const NAMES = ["brise", "rafale", "oiseau-1", "oiseau-2", "oiseau-3", "village", "vagues", "mouettes",
   "feu", "grotte", "goutte", "labo", "maison"];
+// Hz. labo: whistles at 5.6 and 16.5 kHz, half its energy above 12 kHz. (The web's
+// foret.mp3 is not used: a cricket drone, 92 % of its energy above 4 kHz, and a whistle
+// sweeping 2-2.9 kHz; filtered, nothing worth keeping is left.)
 const NOTCHES = {};
-const LOWPASS = { brise: 2500, labo: 1800 };   // Hz (labo: whistles at 5.6 and 16.5 kHz, half its energy above 12 kHz)
+const LOWPASS = { brise: 2500, labo: 1800 };
 const TARGET_RMS = 0.1;
 const MAX_PEAK = 0.9;
 const WINDOW_S = 0.4;

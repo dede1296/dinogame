@@ -5,6 +5,7 @@ extends CanvasLayer
 signal _action_chosen(action: Dictionary)
 signal _tapped
 
+## The default backdrop (a zone may have its own: Region.battle_backdrop, rules "backdrop").
 const BACKDROP := preload("res://assets/art/battle/plaines.jpg")
 ## Underground (a cave zone), the same platforms in a cave lit by amber crystals.
 const CAVE_BACKDROP := preload("res://assets/art/battle/grotte.jpg")
@@ -72,9 +73,12 @@ func _ready() -> void:
 ## dino, Dino.corrupted, calmed with Apaiser).
 ## `rules`: {"catch": false, "run": false} for a battle of honour (an Alpha), "intro": its
 ## first line, "music": its theme, "lesson": lines said after the intro (how to calm it),
-## "cave": true underground (the cave backdrop, no sky).
+## "cave": true underground (the cave backdrop, no sky), "backdrop": the picture behind the
+## fighters (a Texture2D: the region's own, Region.battle_backdrop; the default: the meadow).
 func run(wild: Dino, rules := {}) -> String:
 	_rules = rules
+	if rules.get("backdrop") is Texture2D:
+		_backdrop.texture = rules["backdrop"]
 	if rules.get("cave", false):
 		_go_underground()
 	engine = BattleEngine.new(Game.party, wild)
@@ -392,9 +396,11 @@ func _outro(result: String) -> void:
 	await create_tween().tween_property(_root, "modulate:a", 0.0, 0.4).finished
 
 
-## In a cave: its backdrop, and no hour nor weather (no sky down there).
+## In a cave: its backdrop (unless the zone has its own), and no hour nor weather (no sky
+## down there).
 func _go_underground() -> void:
-	_backdrop.texture = CAVE_BACKDROP
+	if not _rules.get("backdrop") is Texture2D:
+		_backdrop.texture = CAVE_BACKDROP
 	_backdrop.modulate = Color.WHITE
 	_world.modulate = Color.WHITE
 	if _weather:

@@ -61,14 +61,14 @@ Zones : Lisière · Sous-bois · Canopée (passerelles) · Clairières rocheuses
 
 | Espèce | Habitat | Famille | Rareté | Moment | Capacité |
 |---|---|---|---|---|---|
-| Dilophosaurus | sous-bois | grand théropode | C | jour | — |
-| Stegosaurus | clairières | cuirassé | C | jour | Charge |
-| Deinonychus | sous-bois, en meute | raptor | P | crépuscule | Tranche |
-| Pachycephalosaurus | clairières rocheuses | pachycéphalosaure | P | jour | Coup de crâne |
-| Microraptor | canopée | raptor | P | jour | Tranche |
-| Brachiosaurus (juvénile) | lisière | sauropode | R | aube | — |
-| Allosaurus | cœur de la forêt | grand théropode | R | pluie | — |
-| *Griffe-Grise* (Ancien, parent de Vif) | ravin caché du sous-bois | raptor | unique | — | — |
+| Dilophosaurus ✅ | sous-bois | grand théropode | C | jour | — |
+| Stegosaurus ✅ | clairières | cuirassé | C | jour | Charge |
+| Deinonychus ✅ | sous-bois, en meute | raptor | P | crépuscule | Tranche |
+| Pachycephalosaurus ✅ | clairières rocheuses | pachycéphalosaure (armored pour l'instant) | P | jour | Charge |
+| Microraptor ✅ | canopée | raptor | P | jour | Tranche |
+| Brachiosaurus (juvénile) ✅ | lisière | sauropode | R | aube | — |
+| Allosaurus ✅ | cœur de la forêt | grand théropode | R | pluie | — |
+| *Griffe-Grise* ✅ (Ancien, parent de Vif) | ravin caché du sous-bois | raptor | unique | — | — |
 | **Utahraptor, Chef de Meute** | la clairière aux fougères géantes | raptor | Alpha | — | — |
 
 ## Marais Brumeux — niv. 16 à 24
@@ -170,6 +170,8 @@ région**, juste avant de construire la région.
 **Visuels faits** (planche de profil + planche face/dos, `assets/art/dinos/`, via `tools/process-art.mjs`) :
 les 9 espèces des Plaines, et le lot Grotte des Échos + Forêt Jurassique : Anurognathus,
 Dilophosaurus, Stegosaurus, Deinonychus, Pachycephalosaurus, Microraptor, Brachiosaurus (juvénile),
-Allosaurus, Utahraptor (Alpha) et Griffe-Grise (l'Ancien). Ces derniers n'ont pas encore leur fiche
-d'espèce (`data/species/`) : elle viendra avec la région. Prochains lots : Marais, Désert, Côte,
-Monts, Cieux, Volcan, puis les légendaires.
+Allosaurus, Utahraptor (Alpha) et Griffe-Grise (l'Ancien). Toutes ces espèces de la Forêt ont
+maintenant leur fiche (`data/species/*.tres`, `data/species_db.gd`) et leurs attaques
+(`data/moves_db.gd`) ; Griffe-Grise et les 7 espèces sauvages (✅ ci-dessus) sont jouables en
+combat. Utahraptor a sa fiche mais reste un Alpha (pas d'habitat, pas capturable en étape 1).
+Prochains lots : Marais, Désert, Côte, Monts, Cieux, Volcan, puis les légendaires.

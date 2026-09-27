@@ -19,6 +19,16 @@ const MOVES := {
 	&"bondGriffu": {"name": "Bond griffu", "type": "vent", "power": 50, "accuracy": 1.0, "pp": 20, "priority": true, "fx": "claw"},
 	&"laceration": {"name": "Lacération", "type": "vent", "power": 65, "accuracy": 0.95, "pp": 15, "crit": true, "effect": {"status": "saigne", "chance": 0.2}, "fx": "claw"},
 	&"blindage": {"name": "Blindage", "type": "pierre", "power": 0, "accuracy": 1.0, "pp": 10, "effect": {"self": {"def": 2}}, "fx": "shield"},
+	## Forêt Jurassique : attaques de type des familles tyrant (feu), armored (pierre) et
+	## sauropod (terre), déjà présentes dans LEARN mais absentes de MOVES jusqu'ici.
+	&"ragePredateur": {"name": "Rage du prédateur", "type": "feu", "power": 0, "accuracy": 1.0, "pp": 10, "effect": {"self": {"atk": 2}}, "fx": "roar"},
+	&"morsureBroyeuse": {"name": "Morsure broyeuse", "type": "feu", "power": 75, "accuracy": 0.9, "pp": 10, "effect": {"status": "saigne", "chance": 0.3}, "fx": "bite"},
+	&"crocsBrulants": {"name": "Crocs brûlants", "type": "feu", "power": 60, "accuracy": 1.0, "pp": 15, "fx": "bite"},
+	&"coupCrane": {"name": "Coup de crâne", "type": "pierre", "power": 70, "accuracy": 0.9, "pp": 10, "fx": "charge"},
+	&"picsDorsaux": {"name": "Pics dorsaux", "type": "pierre", "power": 50, "accuracy": 1.0, "pp": 15, "effect": {"status": "saigne", "chance": 0.3}, "fx": "spikes"},
+	&"massue": {"name": "Massue", "type": "pierre", "power": 80, "accuracy": 0.85, "pp": 10, "effect": {"status": "etourdi", "chance": 0.3}, "fx": "tail"},
+	&"fouetCaudal": {"name": "Fouet caudal", "type": "terre", "power": 55, "accuracy": 1.0, "pp": 15, "fx": "tail"},
+	&"seisme": {"name": "Séisme", "type": "terre", "power": 95, "accuracy": 0.9, "pp": 5, "fx": "quake"},
 }
 
 const TYPE_NAMES := {"neutre": "Neutre", "feu": "Feu", "eau": "Eau", "terre": "Terre", "vent": "Vent", "pierre": "Pierre", "nature": "Nature"}

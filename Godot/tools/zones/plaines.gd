@@ -4,7 +4,8 @@ extends RefCounted
 ## South: the road from Port-Ambre and the cove; centre: the crossroads, the pond; west:
 ## Hélène's grove behind the trunk (Tranche); north: the Grotte des Échos in its hill, behind
 ## the boulder (Charge); north-east: the cliffs behind the amber door (Résonance), Hélène's
-## observation post on top; south-east: the Grand Crâne and its Alpha.
+## observation post on top; south-east: the Grand Crâne and its Alpha; west: the trail into
+## the Forêt Jurassique (with a saddle).
 
 const PATH := "res://regions/plaines/plaines.tscn"
 const B := preload("res://tools/zone_builder.gd")
@@ -236,6 +237,10 @@ static func _places(root: Region) -> void:
 	# Into the Alpha's lair, at the back of the Grand Crâne (once its door is open).
 	B.spawn(root, "DepuisAntre", 104.0, 60.0)
 	B.exit(root, Rect2(102.5, 58.0, 3.0, 0.6), &"antre_crane", &"DepuisPlaines", &"crane_ouvert")
+	# West, the trail into the Forêt Jurassique (rows 51-52, as on its side): open once
+	# Chloé has a saddle (Monture), the forest being too big to cross on foot.
+	B.spawn(root, "DepuisForet", 2.5, 52.0)
+	B.exit(root, Rect2(0.0, 50.0, 0.55, 4.0), &"foret", &"DepuisPlaines", &"selle", &"foret_bloquee")
 
 
 static func _habitats(root: Region) -> void:

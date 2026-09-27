@@ -23,14 +23,22 @@ const SKIN := Vector2(84.4, 50.2)          # the Plaines, by the pond
 const MAIA_DUEL := Vector2(100.8, 65.2)    # the Plaines, at the foot of the skull
 const SBIRE_2 := Vector2(16.2, 2.8)        # the Grotte des Échos, far end
 const PROTO := Vector2(18.6, 3.2)
+const FORET_EXIT := Vector2(1.0, 52.0)     # the Plaines, the way west into the Forêt
+const RAVIN := Vector2(22.0, 80.0)         # the Forêt, Griffe-Grise's hidden ravine (south-west)
+const CLAIRIERE := Vector2(24.0, 18.0)     # the Forêt, the clearing of the giant ferns (north-west)
+## The Forêt's journal pages, and roughly where Hélène hid them (a direction, not the place).
+const FOREST_PAGES := [[&"found_journal_7", "au cœur du sous-bois"], [&"found_journal_8", "en haut de la futaie, au sud"],
+	[&"found_journal_9", "dans une clairière du nord"], [&"found_journal_10", "à la lisière, une nuit de pleine lune"]]
 ## Tears Roc needs for each of his gifts (PlainesAnnexes).
 ## The short name of each objective (what the quest tracker and the map's list show).
 const TITLES := {
-	"fin_plaines": "La suite de l'aventure", "alpha": "Le défi de l'Alpha", "crane": "Le Grand Crâne",
+	"alpha": "Le défi de l'Alpha", "crane": "Le Grand Crâne",
 	"bosquet": "Le bosquet d'Hélène", "grotte": "La Grotte des Échos", "falaises": "La porte des falaises",
 	"voleuse": "La voleuse de boussole", "boussole": "Rendre la boussole", "lunettes": "Les lunettes de Roc",
 	"etang": "L'étang qui chante", "larmes_roc": "Les larmes pour Roc", "larmes": "Les larmes de l'île", "oeuf": "L'œuf de Pépite",
 	"havre": "La route du Havre", "maia": "Le défi de Maïa", "retour": "Retour au port", "selle": "Une selle pour voyager", "relais": "Le Relais des Dresseurs",
+	"foret": "La Forêt Jurassique", "ravin": "Le cri du ravin", "clairiere": "La clairière du chef de meute", "fin_foret": "À suivre…",
+	"pages_foret": "Le journal dans la Forêt",
 }
 const TEAR_GOALS := [[10, &"lanterne", "la lanterne d'ambre"], [20, &"pepite_oeuf", "réveiller le fragment"], [30, &"lettre_scellee", "une surprise"]]
 
@@ -79,7 +87,7 @@ static func followed(zone: StringName, chloe_tile: Vector2) -> Dictionary:
 
 static func _main(out: Array[Dictionary]) -> void:
 	if Game.flag(&"selle"):
-		_add(out, "fin_plaines", "La Forêt Jurassique t'attend, à l'ouest des Plaines. (Bientôt !)", &"plaines", Vector2.INF, true)
+		_forest(out)
 		return
 	if Game.flag(&"havre_arrive"):
 		_saddle(out)
@@ -133,7 +141,46 @@ static func _saddle(out: Array[Dictionary]) -> void:
 		_add(out, "selle", "Rapporter le cuir, la boucle et les pièces à Joss.", &"havre_dore", JOSS, true)
 
 
+## Chapter 2, the Forêt Jurassique (step 1): getting there, Griffe-Grise, the empty clearing.
+static func _forest(out: Array[Dictionary]) -> void:
+	if not Game.flag(&"foret_arrivee"):
+		var mount := "" if Game.ability_user(&"monture") else " Pour monter, il te faudra un grand dino adulte (niveau %d)." % Abilities.ADULT_LEVEL
+		_add(out, "foret", "La Forêt Jurassique, par la sortie ouest des Plaines. En selle, ses chemins immenses deviennent enfin praticables." + mount, &"plaines", FORET_EXIT, true)
+		return
+	if not Game.flag(&"griffe_grise_vu"):
+		var vif: Dino = Foret.vif_dino()
+		var text := "Un cri grave, venu d'un ravin au sud-ouest de la Forêt, a fait taire toute la meute. Qui a bien pu le pousser ?"
+		if Game.flag(&"clairiere_vue"):
+			text = "Quelqu'un a emmené le chef de la meute. Celui qui a crié dans le ravin du sud-ouest sait peut-être qui."
+		elif vif:
+			text = "Un cri grave est monté d'un ravin caché, au sud-ouest de la Forêt. Griffe-Grise, le père %s, vivrait là." % French.de(vif.nickname)
+		_add(out, "ravin", text, &"foret", RAVIN, true)
+		return
+	if not Game.flag(&"clairiere_vue"):
+		_add(out, "clairiere", "Griffe-Grise regarde vers le nord-ouest : la clairière aux fougères géantes, où vivait le chef de la meute.", &"foret", CLAIRIERE, true)
+		return
+	_add(out, "fin_foret", "Qui a emmené le chef de la meute ? Les sillons de la clairière filent vers l'ouest… (La suite de l'aventure arrive bientôt !)", &"foret", Vector2.INF, true)
+
+
+## The Forêt's journal pages still to find, with a direction for each (not the exact place).
+static func _forest_pages(out: Array[Dictionary]) -> void:
+	var missing: Array[String] = []
+	for page: Array in FOREST_PAGES:
+		if not Game.flag(page[0]):
+			missing.append(page[1])
+	if missing.is_empty():
+		return
+	var moon := Game.is_full_moon() or Game.nights_to_full_moon() == 0
+	if not Game.flag(&"found_journal_10"):
+		var nights := Game.nights_to_full_moon()
+		missing[-1] += " (ce soir)" if moon else " (dans %d nuit%s)" % [nights, "s" if nights > 1 else ""]
+	var where := ", ".join(missing.slice(0, -1)) + " et " + missing[-1] if missing.size() > 1 else missing[0]
+	_add(out, "pages_foret", "Pages d'Hélène dans la Forêt : %d sur %d. Il en reste %s." % [FOREST_PAGES.size() - missing.size(), FOREST_PAGES.size(), where], &"foret")
+
+
 static func _side(out: Array[Dictionary]) -> void:
+	if Game.flag(&"foret_arrivee"):
+		_forest_pages(out)
 	if Game.flag(&"havre_arrive") and not (Game.flag(&"gaspard_battu") and Game.flag(&"lilou_battu")):
 		_add(out, "relais", "Affronter les dresseurs du Relais : Gaspard (rang Bronze), puis Lilou (rang Argent).", &"havre_dore", RELAIS)
 	if Game.flag(&"boussole_volee") and not Game.flag(&"boussole_trouvee"):

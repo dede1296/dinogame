@@ -56,7 +56,7 @@ func dino(side: String) -> Dino:
 func name_of(side: String) -> String:
 	if side == "player":
 		return player().nickname
-	return "le %s %s" % [foe.species_name(), "corrompu" if foe.corrupted else "sauvage"]
+	return French.le("%s %s" % [foe.species_name(), "corrompu" if foe.corrupted else "sauvage"])
 
 
 ## One turn with the player's choice: {"type": "move", "index": i} | {"type": "catch"} |
@@ -187,10 +187,10 @@ func _change_stage(side: String, stat: String, delta: int, ev: Array) -> void:
 	stages[side][stat] = clampi(before + delta, -4, 4)
 	var who := _cap(name_of(side))
 	if stages[side][stat] == before:
-		ev.append({"type": "text", "text": "%s de %s ne peut plus changer !" % [STAT_NAMES[stat], who]})
+		ev.append({"type": "text", "text": "%s %s ne peut plus changer !" % [STAT_NAMES[stat], French.de(who)]})
 		return
 	var word := "augmente beaucoup" if delta > 1 else "augmente" if delta > 0 else "baisse beaucoup" if delta < -1 else "baisse"
-	ev.append({"type": "stat", "side": side, "stat": stat, "delta": delta, "text": "%s de %s %s !" % [STAT_NAMES[stat], who, word]})
+	ev.append({"type": "stat", "side": side, "stat": stat, "delta": delta, "text": "%s %s %s !" % [STAT_NAMES[stat], French.de(who), word]})
 
 
 func _end_of_turn(ev: Array) -> void:
@@ -275,7 +275,7 @@ func _try_calm(ev: Array) -> bool:
 	var worn := 1.0 - float(foe.hp) / foe.max_hp()
 	var chance := clampf(CALM_BASE_CHANCE + worn * 0.4, 0.0, 0.95)
 	var kin := player().species().family == foe.species().family
-	ev.append({"type": "text", "text": "%s s'approche doucement du %s corrompu, et Chloé lui parle tout bas…" % [player().nickname, foe.species_name()]})
+	ev.append({"type": "text", "text": "%s s'approche doucement %s, et Chloé lui parle tout bas…" % [player().nickname, French.de(French.le(foe.species_name() + " corrompu"))]})
 	if rng.randf() >= chance:
 		ev.append({"type": "text", "text": "%s gronde et refuse d'écouter." % _cap(name_of("foe"))})
 		return false

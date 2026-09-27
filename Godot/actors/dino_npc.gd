@@ -87,7 +87,8 @@ func cry(kind: StringName = &"neutre") -> void:
 	var stream := species.cry(kind)
 	if stream:
 		_cry.stream = stream
-		_cry.pitch_scale = randf_range(1.15, 1.3)   # a hatchling: higher
+		# A hatchling (a small one) higher; a grown dino (an Alpha, Griffe-Grise) lower.
+		_cry.pitch_scale = randf_range(1.15, 1.3) if size_scale < 0.9 else randf_range(0.82, 0.92)
 		_cry.play()
 
 

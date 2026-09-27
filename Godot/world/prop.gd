@@ -69,6 +69,14 @@ const KINDS := {
 	"etal_fruits": {"scale": 0.5, "foot": 0.03, "solid": Vector2(120, 30), "sway": 0.0, "shadow": 120.0},
 	"etal_poisson": {"scale": 0.5, "foot": 0.03, "solid": Vector2(120, 30), "sway": 0.0, "shadow": 120.0},
 	"feu_camp": {"scale": 0.25, "foot": 0.07, "solid": 24.0, "sway": 0.0, "shadow": 60.0},
+	# Forêt Jurassique.
+	"fougere_geante": {"scale": 0.5, "foot": 0.04, "solid": 0.0, "sway": 2.0, "shadow": 110.0},
+	"tronc_mousse": {"scale": 0.42, "foot": 0.15, "solid": Vector2(130, 28), "sway": 0.0, "shadow": 140.0},
+	"champignons": {"scale": 0.2, "foot": 0.06, "solid": 0.0, "sway": 0.0, "shadow": 24.0},
+	"rocher_mousse": {"scale": 0.34, "foot": 0.1, "solid": Vector2(100, 36), "sway": 0.0, "shadow": 108.0},
+	"souche_geante": {"scale": 0.3, "foot": 0.12, "solid": 44.0, "sway": 0.0, "shadow": 110.0},
+	"arbre_geant": {"scale": 0.47, "foot": 0.04, "solid": 40.0, "sway": 0.0, "shadow": 240.0},
+	"os_dino": {"scale": 0.27, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 }
 
 @export_enum("arbre_rond", "araucaria", "fougere_arbre", "buisson", "rocher", "cailloux", "tronc", "ronces",
@@ -77,7 +85,8 @@ const KINDS := {
 	"lanterne", "casiers", "cordage", "banc", "sechoir", "ancre", "bac_fleurs",
 	"bureau", "bibliotheque", "couveuse", "fougere_pot", "lampe", "fauteuil", "etabli", "mur_cabinet", "socle",
 	"porte_ambre", "ecaille", "serrure", "stalagmite", "cristaux", "rocher_grotte", "grand_crane",
-	"galet", "monticule", "feu_camp", "etal_fruits", "etal_poisson")
+	"galet", "monticule", "feu_camp", "etal_fruits", "etal_poisson",
+	"fougere_geante", "tronc_mousse", "champignons", "rocher_mousse", "souche_geante", "arbre_geant", "os_dino")
 var kind := "arbre_rond":
 	set(value):
 		kind = value
