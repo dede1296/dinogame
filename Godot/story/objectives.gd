@@ -109,8 +109,10 @@ static func _saddle(out: Array[Dictionary]) -> void:
 		_add(out, "selle", "Trouver du cuir mué de Parasaurolophus, au bord de l'étang des Plaines, pour Joss.", &"plaines", SKIN, true)
 	elif Game.item_count("boucle") == 0:
 		_add(out, "selle", "Acheter une boucle d'ambre au Comptoir de Ferréol, pour Joss.", &"havre_dore", COMPTOIR, true)
+	elif Game.coins() < Havre.SADDLE_PRICE:
+		_add(out, "selle", "Réunir %d pièces pour le travail de Joss (tu en as %d) : les dresseurs du Relais, la revente au Comptoir." % [Havre.SADDLE_PRICE, Game.coins()], &"havre_dore", RELAIS, true)
 	else:
-		_add(out, "selle", "Rapporter le cuir et la boucle à Joss.", &"havre_dore", JOSS, true)
+		_add(out, "selle", "Rapporter le cuir, la boucle et les pièces à Joss.", &"havre_dore", JOSS, true)
 
 
 static func _side(out: Array[Dictionary]) -> void:

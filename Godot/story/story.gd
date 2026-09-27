@@ -60,7 +60,9 @@ static func run(event: StringName, who: Node) -> void:
 		&"dresseur_lilou":
 			await Havre.trainer(&"lilou", who)
 		&"maia_havre":
-			await Dialogue.run(DialogueDB.chatter(&"maia_havre"))
+			await Ask.menu(&"maia", "Maïa", DialogueDB.chatter(&"maia_havre")[0]["text"], [&"pieces", &"selle", &"monter"])
+		&"marchande":
+			await Ask.menu(&"marchande", "La marchande", DialogueDB.lines(&"marchande")[0]["text"], [&"pieces", &"selle"])
 		&"entrepot":
 			await Dialogue.run(DialogueDB.lines(&"entrepot"))
 		_:

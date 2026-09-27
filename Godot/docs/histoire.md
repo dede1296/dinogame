@@ -147,7 +147,8 @@ Havre ? Là-bas, ils ont de l'argent. Et ils ne se demandent jamais d'où il vie
    rachète volontiers les larmes de l'île, très cher. *(Choix pour le joueur : les vendre pour
    s'équiper, ou les garder pour Roc et ses récompenses.)*
 3. **La première selle.** Joss peut fabriquer une selle si Chloé rapporte du cuir de Parasaurolophus
-   mué (au bord de l'étang des Plaines) et une boucle d'ambre (Comptoir). La **Monture** s'ouvre :
+   mué (au bord de l'étang des Plaines), une boucle d'ambre (Comptoir) et 350 pièces pour son travail
+   (le Relais, le Comptoir : la selle se mérite). La **Monture** s'ouvre :
    les grands dinos portent Chloé, et la Forêt, immense, devient praticable.
 4. **Le Relais des Dresseurs** : premiers combats contre d'autres dresseurs (pièces, rangs, un
    tableau de petites quêtes qui se renouvelle).

@@ -4,7 +4,7 @@ class_name Havre
 ## shops; Ferréol and his Comptoir d'Ambre; the Relais des Dresseurs; the saddle (Monture);
 ## Isaure's boat at the Comptoir's warehouse, one night.
 ## Flags: havre_arrive, ferreol_rencontre, selle_demandee, cuir_trouve, selle, gaspard_battu,
-## lilou_battu, barque_vue, vu_<shop>.
+## lilou_battu, barque_vue, vu_<shop>; revanche_<trainer> = the day of the last rematch.
 
 const S := preload("res://story/story.gd")
 const CHLOE := "Chloé"
@@ -13,6 +13,11 @@ const JOSS := "Joss"
 const FERREOL := "Maître Ferréol"
 const ISAURE := "Isaure"
 const WELCOME_COINS := 200
+## Joss's work on the saddle, besides the skin and the buckle: more than Ferréol's welcome
+## coins leave once the buckle is bought, so the saddle is earned (the Relais, the Comptoir).
+const SADDLE_PRICE := 350
+## A beaten trainer takes a rematch once a day, for this share of the first prize.
+const REMATCH_SHARE := 0.35
 const TRAINER_MUSIC := preload("res://assets/audio/music/rivale.ogg")
 const COINS_SFX := preload("res://assets/audio/sfx/coins.wav")
 const DOOR_SFX := preload("res://assets/audio/sfx/door_open.wav")
@@ -63,14 +68,17 @@ static func arrival() -> void:
 ## A shopkeeper (or its door): a word the first time, then the shop.
 static func shop(id: StringName, who: Node) -> void:
 	var first: bool = not Game.flag(StringName("vu_%s" % id))
+	var shopping := false
 	match id:
 		&"herboristerie":
-			await S.say([{"who": "Mémé Pervenche", "text": "Des baies, des fougères… Tout ce qui soigne pousse quelque part sur cette île. J'ai soigné les dinos d'Hélène, dans le temps. Elle me devait trois tartes." if first
-				else "Entre, entre. Et essuie tes pieds, tu ramènes toute la prairie."}])
+			shopping = await Ask.menu(&"pervenche", "Mémé Pervenche", "Des baies, des fougères… Tout ce qui soigne pousse quelque part sur cette île. J'ai soigné les dinos d'Hélène, dans le temps. Elle me devait trois tartes." if first
+				else "Entre, entre. Et essuie tes pieds, tu ramènes toute la prairie.", [&"pieces"], "Voir la boutique")
 		&"mercerie":
-			await S.say([{"who": "Rosalie", "text": "Des colliers tout neufs ! Et des bottes d'ambre souple : avec ça, tu traverses l'île avant le goûter." if first
-				else "Tu reviens déjà ? C'est bien, ça. J'aime les clientes qui reviennent."}])
+			shopping = await Ask.menu(&"rosalie", "Rosalie", "Des colliers tout neufs ! Et des bottes d'ambre souple : avec ça, tu traverses l'île avant le goûter." if first
+				else "Tu reviens déjà ? C'est bien, ça. J'aime les clientes qui reviennent.", [&"pieces", &"selle"], "Voir la boutique")
 	Game.set_flag(StringName("vu_%s" % id))
+	if not shopping:
+		return
 	Audio.play_sfx(DOOR_SFX, -6.0)
 	var screen := ShopScreen.open(S.world(), id)
 	await screen.closed
@@ -93,8 +101,10 @@ static func ferreol() -> void:
 		])
 		S.lock(false)
 	else:
-		await S.say([{"who": FERREOL, "text": ["Que puis-je pour vous, mademoiselle Varenne ?", "L'ambre, voyez-vous, c'est de la lumière qu'on peut mettre en poche.",
-			"Votre grand-mère gardait tout pour elle. Moi, je partage. Contre paiement, naturellement."].pick_random()}])
+		var prompt: String = ["Que puis-je pour vous, mademoiselle Varenne ?", "L'ambre, voyez-vous, c'est de la lumière qu'on peut mettre en poche.",
+			"Votre grand-mère gardait tout pour elle. Moi, je partage. Contre paiement, naturellement."].pick_random()
+		if not await Ask.menu(&"ferreol", FERREOL, prompt, [&"pieces"], "Faire affaire"):
+			return
 	Audio.play_sfx(DOOR_SFX, -6.0)
 	var screen := ShopScreen.open(S.world(), &"comptoir")
 	await screen.closed
@@ -104,31 +114,40 @@ static func ferreol() -> void:
 
 static func joss() -> void:
 	if Game.flag(&"selle"):
-		await S.say([{"who": JOSS, "text": ["Elle tient bien, ta selle ? Si elle grince, c'est normal : elle est contente.",
+		await Ask.menu(&"joss", JOSS, ["Elle tient bien, ta selle ? Si elle grince, c'est normal : elle est contente.",
 			"Un jour, je ferai un harnais pour voler. Il me faut juste un ptérosaure assez grand. Et du courage.",
-			"Maïa dit qu'elle va gagner la prochaine course. Elle dit ça depuis qu'on a six ans."].pick_random()}])
+			"Maïa dit qu'elle va gagner la prochaine course. Elle dit ça depuis qu'on a six ans."].pick_random(), [&"monter"])
 		return
 	if not Game.flag(&"selle_demandee"):
 		await S.say([
 			{"who": JOSS, "text": "Salut ! Toi, c'est Chloé. Maïa ne parle que de toi. Enfin… de comment elle va te battre."},
 			{"who": JOSS, "text": "Une selle ? Je peux te la faire. Mais il me faut du cuir mué de Parasaurolophus : ils perdent leur vieille peau au bord de l'étang des Plaines."},
 			{"who": JOSS, "text": "Et une boucle d'ambre pour la sangle. Le Comptoir de Ferréol en vend. Il est cher, mais il est le seul."},
+			{"who": JOSS, "text": "Et mon travail : %d pièces. C'est un prix d'ami de Maïa. Pour Ferréol, c'est le double." % SADDLE_PRICE},
+			{"who": CHLOE, "text": "%d pièces ?! Je n'en ai même pas la moitié…" % SADDLE_PRICE},
+			{"who": JOSS, "text": "Le Relais paie bien les bons dresseurs. Et le Comptoir rachète tout ce qui brille. Tout."},
 			{"who": JOSS, "text": "Attention : seul un grand dino adulte peut te porter (niveau %d). Un Tricératops, un Parasaurolophus, un Ankylosaurus… Un raptor ? Il te ferait tomber exprès." % Abilities.ADULT_LEVEL},
 			{"flag": &"selle_demandee"},
 		])
 		return
 	var cuir := Game.item_count("cuir") > 0
 	var boucle := Game.item_count("boucle") > 0
-	if not (cuir and boucle):
+	var paid := Game.coins() >= SADDLE_PRICE
+	if not (cuir and boucle and paid):
 		var missing := []
 		if not cuir:
 			missing.append("le cuir mué (au bord de l'étang des Plaines)")
 		if not boucle:
 			missing.append("la boucle d'ambre (au Comptoir)")
-		await S.say([{"who": JOSS, "text": "Il me manque encore " + " et ".join(missing) + "."}])
+		if not paid:
+			missing.append("mes %d pièces (tu en as %d)" % [SADDLE_PRICE, Game.coins()])
+		await Ask.menu(&"joss", JOSS, "Il me manque encore " + ", ".join(missing.slice(0, -1)) + (" et " if missing.size() > 1 else "") + missing[-1] + ".",
+			[&"pieces", &"monter"])
 		return
 	S.lock(true)
-	await S.say([{"who": JOSS, "text": "Le cuir ET la boucle ! Donne. Ne regarde pas, je suis timide quand je couds."}])
+	await S.say([{"who": JOSS, "text": "Le cuir, la boucle… et les pièces ! Marché conclu. Ne regarde pas, je suis timide quand je couds."}])
+	Game.pay(SADDLE_PRICE)
+	Audio.play_sfx(COINS_SFX)
 	await S.fade_through(func() -> void: await S.wait(1.0))
 	Game.use_item("cuir")
 	Game.use_item("boucle")
@@ -156,12 +175,21 @@ static func relais() -> void:
 
 static func trainer(id: StringName, who: Node) -> void:
 	var t: Dictionary = TRAINERS[id]
-	if Game.flag(t["flag"]):
-		await S.say([{"who": t["name"], "text": t["after"]}])
-		return
-	var pick := await Dialogue.choose(t["name"], t["hello"], ["Combattre", "Plus tard"])
-	if pick != 0:
-		return
+	var rematch_flag := StringName("revanche_%s" % id)
+	var rematch: bool = Game.flag(t["flag"])
+	var prize: int = t["prize"]
+	if rematch:
+		if int(Game.flag(rematch_flag)) == Game.day:
+			await S.say([{"who": t["name"], "text": t["after"]}, {"who": t["name"], "text": "Une revanche par jour, c'est la règle du Relais. Reviens demain."}])
+			return
+		prize = roundi(prize * REMATCH_SHARE)
+		var again := await Dialogue.choose(t["name"], "%s Une revanche ? Mise : %d pièces." % [t["after"], prize], ["Revanche", "Plus tard"])
+		if again != 0:
+			return
+	else:
+		var pick := await Dialogue.choose(t["name"], "%s Prime du Relais : %d pièces." % [t["hello"], prize], ["Combattre", "Plus tard"])
+		if pick != 0:
+			return
 	if Game.party.is_empty():
 		return
 	var w = S.world()
@@ -174,9 +202,12 @@ static func trainer(id: StringName, who: Node) -> void:
 		if result != "win":
 			return
 	Game.set_flag(t["flag"])
-	Game.give_item("piece", t["prize"])
+	if rematch:
+		Game.set_flag(rematch_flag, Game.day)
+	Game.give_item("piece", prize)
 	Audio.play_sfx(COINS_SFX)
-	await S.say([{"who": t["name"], "text": t["won"]}, {"text": "Tu gagnes %d pièces." % t["prize"]}])
+	var line: String = "Encore ?! Bon. Demain, je t'aurai." if rematch else t["won"]
+	await S.say([{"who": t["name"], "text": line}, {"text": "Tu gagnes %d pièces." % prize}])
 	Save.save_game()
 
 

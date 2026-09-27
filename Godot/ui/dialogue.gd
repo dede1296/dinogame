@@ -2,13 +2,17 @@ extends CanvasLayer
 ## Dialogue box (autoload "Dialogue"). `await Dialogue.run(DialogueDB.lines(id))` shows a
 ## script step by step (see DialogueDB); advances with the interact button or a tap.
 ## A character's line is typed with its little voice (VoiceBlips), unless a recorded voice
-## plays; a "letter" step shows a handwritten page (LetterView).
+## plays; a "letter" step shows a handwritten page (LetterView). A line too long for the box is
+## cut into pages of MAX_LINES lines: « suite ▼ » until the last one.
 
 signal finished
 
 const CHARS_PER_SECOND := 48.0
 const MIN_ADVANCE_INTERVAL := 0.15   # a tap on the A button also sends a touch: count it once
 const VOICE_DUCK_DB := -12.0
+const MAX_LINES := 3
+const MORE := "suite ▼"
+const END := "▼"
 
 var active := false
 
@@ -127,7 +131,41 @@ func _play_voice(path: String) -> void:
 
 
 ## `wait`: false = return once the line is typed (a question waits for its answer instead).
+## A long line comes in pages; each but the last waits for a press.
 func _show_line(who: String, text: String, wait := true) -> void:
+	var pages := _pages(text)
+	for i in pages.size():
+		var last := i == pages.size() - 1
+		_next_marker.text = END if last else MORE
+		await _show_page(who, pages[i], wait or not last)
+
+
+## The line cut into pages of MAX_LINES lines, as the box wraps them (word by word).
+func _pages(text: String) -> Array[String]:
+	var font := _text.get_theme_font(&"normal_font")
+	var font_size := _text.get_theme_font_size(&"normal_font_size")
+	var width := _text.size.x
+	if width < 100.0:   # not laid out yet: the box's width on screen
+		width = get_viewport().get_visible_rect().size.x - 300.0 - 52.0
+	width *= 0.97
+	var lines: Array[String] = []
+	for paragraph in text.split("\n"):
+		var line := ""
+		for word in paragraph.split(" ", false):
+			var candidate := word if line == "" else line + " " + word
+			if line != "" and font.get_string_size(candidate, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > width:
+				lines.append(line)
+				line = word
+			else:
+				line = candidate
+		lines.append(line)
+	var pages: Array[String] = []
+	for start in range(0, lines.size(), MAX_LINES):
+		pages.append(" ".join(lines.slice(start, start + MAX_LINES)))
+	return pages
+
+
+func _show_page(who: String, text: String, wait: bool) -> void:
 	_name_tag.visible = who != ""
 	_name_tag.text = who
 	_text.text = text

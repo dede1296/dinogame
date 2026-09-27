@@ -85,6 +85,7 @@ func _ready() -> void:
 	_ride_button = RideButton.add(hud, toggle_ride)
 	hud.add_child(PartyBar.new())
 	hud.add_child(ClockBadge.new())
+	hud.add_child(PurseBadge.new())
 	_tracker = QuestTracker.new()
 	_tracker.player = player
 	_tracker.zone = region.region_id

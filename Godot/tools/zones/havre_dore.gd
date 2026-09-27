@@ -117,5 +117,5 @@ static func _people(root: Region) -> void:
 	B.npc(root, "Maia", "Maïa", CHARS % "maia", 24.6, 9.9, {"facing": "down", "event": &"maia_havre"})
 	B.npc(root, "Gaspard", "Gaspard", CHARS % "gaspard", 19.6, 11.2, {"facing": "right", "event": &"dresseur_gaspard"})
 	B.npc(root, "Lilou", "Lilou", CHARS % "lilou", 26.4, 11.2, {"facing": "left", "event": &"dresseur_lilou"})
-	B.npc(root, "Marchande", "La marchande", CHARS % "marchande", 27.6, 15.0, {"facing": "down", "dialogue": &"marchande"})
+	B.npc(root, "Marchande", "La marchande", CHARS % "marchande", 27.6, 15.0, {"facing": "down", "event": &"marchande"})
 	B.npc(root, "Pecheur", "Un pêcheur", CHARS % "pecheur", 11.6, 21.4, {"facing": "down", "dialogue": &"pecheur_havre"})

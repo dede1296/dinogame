@@ -244,6 +244,32 @@ const SCENARIOS := {
 		[36.1, "auto", true], [48.0, "auto", false],
 		[48.5, "weather", &"rain"], [54.0, "shot", "73_exploration_pluie"],
 	],
+	"selle_prix": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive", "ferreol_rencontre", "selle_demandee", "gaspard_battu"]], [0.85, "calm", 600.0],
+		[0.86, "item", ["cuir", 1]], [0.87, "item", ["boucle", 1]], [0.88, "item", ["piece", 100]], [0.89, "level", 12],
+		[0.9, "zone", &"havre_dore"], [2.3, "tp", Vector2(42.0, 10.7)], [2.5, "hold", "move_up"], [2.6, "hold", ""], [2.9, "press", "interact"],
+		[3.8, "shot", "p0_joss_refuse"], [5.0, "press", "interact"], [6.0, "tracker", null],
+		[6.1, "item", ["piece", 300]], [6.2, "talk", true], [6.5, "press", "interact"], [14.0, "coins", null], [14.1, "state", null],
+		[14.2, "talk", false], [14.3, "tp", Vector2(20.8, 11.2)], [14.5, "hold", "move_left"], [14.55, "hold", ""], [14.8, "press", "interact"], [17.0, "shot", "p2_revanche"],
+	],
+	"pages": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive", "ferreol_rencontre", "selle_demandee"]], [0.85, "calm", 600.0],
+		[0.86, "item", ["piece", 120]], [0.87, "pebbles", 7],
+		[0.9, "zone", &"havre_dore"], [2.3, "tp", Vector2(24.6, 11.0)], [2.5, "hold", "move_up"], [2.55, "hold", ""], [2.6, "shot", "g0_bourse"], [2.8, "press", "interact"],
+		[7.0, "press", "ui_down"], [7.1, "press", "ui_down"], [7.3, "press", "ui_accept"], [8.6, "press", "interact"], [13.0, "shot", "g1_page1"],
+		[13.1, "press", "interact"], [16.5, "shot", "g2_page2"], [16.6, "item", ["piece", 150]], [16.75, "shot", "g3_bourse_gain"],
+	],
+	"questions": [
+		[0.8, "flags", ["sceau_plaines", "met_maia", "found_journal_1", "havre_arrive", "ferreol_rencontre", "selle_demandee"]], [0.85, "calm", 600.0],
+		[0.86, "item", ["piece", 120]], [0.87, "item", ["cuir", 1]],
+		[0.9, "zone", &"havre_dore"], [2.3, "tp", Vector2(24.6, 11.0)], [2.5, "hold", "move_up"], [2.55, "hold", ""], [2.8, "press", "interact"],
+		[7.0, "press", "ui_down"], [7.2, "press", "ui_accept"], [8.2, "press", "interact"], [12.0, "shot", "q1_maia_selle"],
+		[12.1, "press", "interact"], [14.0, "press", "ui_down"], [14.2, "press", "ui_accept"], [15.2, "press", "interact"], [19.5, "shot", "q2_maia_monter"],
+		[19.6, "press", "interact"], [21.0, "press", "cancel"],
+		[22.0, "tp", Vector2(6.0, 10.7)], [22.2, "hold", "move_up"], [22.25, "hold", ""], [22.5, "press", "interact"],
+		[28.0, "press", "ui_down"], [28.2, "press", "ui_accept"], [29.2, "press", "interact"], [33.5, "shot", "q3_pervenche_pieces"],
+		[33.6, "press", "interact"], [35.0, "press", "ui_accept"], [36.0, "shot", "q4_boutique"],
+	],
 	"images": [
 		[0.85, "calm", 600.0], [0.9, "tp", Vector2(104.0, 65.0)], [2.3, "shot", "i0_crane"],
 		[2.4, "tp_prop", ["galet", Vector2(0, 50), 0]], [3.8, "shot", "i1_galet"],
@@ -446,6 +472,9 @@ func _run(command: String, arg: Variant) -> void:
 							sum += al
 							n += 1
 				print(a, " ", img.get_size(), " fmt=", img.get_format(), " alpha moyen=%.2f" % (sum / maxf(n, 1)), " tex=", fr.get_frame_texture(a, 0))
+		"tracker":
+			for o in load("res://story/objectives.gd").call("current"):
+				print("objectif : ", o["text"])
 		"lead":
 			root.get_node("Game").call("set_lead", arg)
 		"party":

@@ -315,6 +315,17 @@ Relais), trois boutiques (écran d'achat et de vente, onglets, le marchand répo
 **bottes de marche** : +20 % à pied), Comptoir (boucle d'ambre ; il rachète les larmes 40 pièces).
 Le reste ci-dessous (tenues, friandises, pension…) viendra avec les chapitres.
 
+- **La selle se gagne** : en plus du cuir et de la boucle (150), Joss demande **350 pièces** pour
+  son travail. La prime de Ferréol ne suffit donc pas : il faut battre les dresseurs du Relais,
+  revendre au Comptoir (larmes, objets) ou chez Pervenche (baies).
+- **Revanches du Relais** : un dresseur battu accepte une revanche par jour, pour environ un tiers
+  de sa prime (50 et 88 pièces) : une source de pièces qui se renouvelle.
+- **Poser une question** (`story/ask.gd`) : après sa réplique, un personnage concerné propose des
+  sujets (« Comment gagner des pièces ? », « Comment avoir une selle ? », « Quel dino peut me
+  porter ? »). Les réponses suivent l'avancement (la prochaine étape de la selle, le dino de
+  l'équipe qui pourra porter Chloé). Maïa, Joss, Ferréol, Pervenche, Rosalie, la marchande.
+- **Bourse** sous l'horloge : pièces, larmes d'ambre, colliers, baies (un nombre qui change rebondit).
+
 - **Monnaie** : les **pièces**. On en gagne en battant des dresseurs, au Relais, en finissant des
   petites quêtes, en revendant des trouvailles au Comptoir (fossiles en double, écailles, larmes :
   la vente des larmes est un choix, Roc les attend aussi).
