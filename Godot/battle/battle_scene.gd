@@ -1,6 +1,7 @@
 extends CanvasLayer
 ## Battle screen, shown over the paused world. `var result := await battle.run(wild)`.
-## The rules are in BattleEngine; this plays its events with animations and sounds.
+## The rules are in BattleEngine; this plays its events with animations and sounds. The panels,
+## the message band and the action wheel are BattleHud's.
 
 signal _action_chosen(action: Dictionary)
 signal _tapped
@@ -23,7 +24,6 @@ const FOE_SPOT := Vector2(0.78, 0.49)
 const PLAYER_SCALE := 1.2
 const FOE_SCALE := 0.95
 const AMBER := Color(0.98, 0.72, 0.28)
-const VIOLET := Color(0.62, 0.34, 0.95)   # black amber: a corrupted dino, the Apaiser action
 const CALM := Color(0.98, 0.84, 0.45)     # its calm gauge, golden
 const BOND_PINK := Color(0.96, 0.45, 0.58)   # the Lien (hearts)
 const CALM_SFX := preload("res://assets/audio/sfx/item.wav")
@@ -31,15 +31,9 @@ const BREATHE := preload("res://battle/breathe.gdshader")
 ## Under the sea (rule "underwater"): the water's rules and look.
 const UNDERWATER_ENGINE := preload("res://battle/underwater_engine.gd")
 const UNDERWATER_LOOK := preload("res://battle/battle_underwater.gd")
+const HUD := preload("res://battle/battle_hud.gd")
 const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
-const PANEL_BG := Color(0.09, 0.1, 0.13, 0.84)
-const CARD_BG := Color(0.14, 0.16, 0.2, 0.94)
-const CREAM := Color(0.97, 0.94, 0.87)
-const MUTED := Color(0.97, 0.94, 0.87, 0.62)
-const MENU_BUTTON := Vector2(150, 54)
-const MOVE_CARD := Vector2(236, 60)
-const MENU_WIDTH := 482.0   # the moves grid: two cards and a gap
-const EDGE := 16.0
+const HEAL_GREEN := Color(0.55, 0.95, 0.5)
 
 var engine: BattleEngine
 var _rules := {}
@@ -50,15 +44,14 @@ var _world: Node2D
 var _weather: BattleWeather
 var _player_sprite: AnimatedSprite2D
 var _foe_sprite: AnimatedSprite2D
+var _hud: HUD
+## The HUD's parts, by the names the test tools know (tools/capture.gd, tools/test_mecaniques.gd).
 var _foe_panel: Dictionary
 var _player_panel: Dictionary
 var _message: Label
-var _menu: HBoxContainer
-var _collar_button: Button
+var _menu: Control          # the action wheel
+var _moves_menu: Control    # the moves' list
 var _calm_button: Button
-var _run_button: Button
-var _moves_menu: VBoxContainer
-var _moves_grid: GridContainer
 var _cry: AudioStreamPlayer
 var _waiting_tap := false
 var _say_id := 0
@@ -105,10 +98,7 @@ func run(wild: Dino, rules := {}) -> String:
 	Game.mark_seen(wild.species().id)
 	_setup_dino(_foe_sprite, wild, true)
 	_setup_dino(_player_sprite, engine.player(), false)
-	(_foe_panel["calm"] as ProgressBar).max_value = engine.calm_full
-	(_foe_panel["calm"] as ProgressBar).value = 0.0
-	_refresh_panel(_foe_panel, wild)
-	_refresh_panel(_player_panel, engine.player())
+	_hud.bind(engine, _rules)
 	_layout()
 	Audio.push_music(_rules.get("music", MUSIC), 0.15)
 	Audio.fade_ambience(AMBIENCE_IN_BATTLE_DB)
@@ -147,51 +137,17 @@ func _intro() -> void:
 
 
 func _choose_action() -> Dictionary:
-	_message.text = "Que doit faire %s ?" % engine.player().nickname
+	_hud.say("Que doit faire %s ?" % engine.player().nickname)
 	_show_menu(_menu)
 	var action: Dictionary = await _action_chosen
 	_show_menu(null)
 	return action
 
 
+## The wheel (`_menu`), a list (`_moves_menu`, or the HUD's bag_panel, team_panel), or nothing.
 func _show_menu(menu: Control) -> void:
-	_menu.visible = menu == _menu
-	_moves_menu.visible = menu == _moves_menu
-	if menu == _menu:
-		var corrupted := engine.foe.corrupted
-		_collar_button.text = "Collier ×%d" % Game.item_count("collier")
-		_collar_button.disabled = Game.item_count("collier") <= 0
-		_collar_button.visible = _rules.get("catch", true) and not corrupted
-		_calm_button.visible = corrupted
-		_run_button.visible = _rules.get("run", true)
-		(_calm_button if corrupted else _menu.get_child(0) as Button).grab_focus()
-	elif menu == _moves_menu:
-		_fill_moves()
-		_moves_grid.get_child(0).grab_focus()
-
-
-## One card per move (2 × 2 at most): name, type, power points, the type's colour on the side.
-func _fill_moves() -> void:
-	for child in _moves_grid.get_children():
-		_moves_grid.remove_child(child)
-		child.queue_free()
-	var d := engine.player()
-	for i in d.moves.size():
-		var slot: Dictionary = d.moves[i]
-		var move := MovesDB.move(slot["id"])
-		var water_mark: String = (engine as UNDERWATER_ENGINE).mark(move["type"]) if engine is UNDERWATER_ENGINE else ""
-		var card := _move_card(move["name"], "%s · PP %d/%d%s" % [MovesDB.TYPE_NAMES[move["type"]], slot["pp"], move["pp"], water_mark],
-			MovesDB.TYPE_COLORS[move["type"]])
-		card.disabled = slot["pp"] <= 0
-		card.modulate.a = 0.45 if card.disabled else 1.0
-		card.pressed.connect(func() -> void: _action_chosen.emit({"type": "move", "index": i}))
-		_moves_grid.add_child(card)
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"cancel") and _moves_menu.visible:
-		_show_menu(_menu)
-		get_viewport().set_input_as_handled()
+	var names := {_menu: "wheel", _moves_menu: "moves", _hud.bag_panel: "bag", _hud.team_panel: "team"}
+	_hud.show_panel(names.get(menu, ""))
 
 
 func _input(event: InputEvent) -> void:
@@ -204,7 +160,7 @@ func _input(event: InputEvent) -> void:
 
 ## Shows a line; continues on a tap or after a reading delay.
 func _say(text: String) -> void:
-	_message.text = text
+	_hud.say(text, true)
 	_waiting_tap = true
 	_say_id += 1
 	var my_id := _say_id
@@ -214,6 +170,7 @@ func _say(text: String) -> void:
 			_tapped.emit())
 	await _tapped
 	_waiting_tap = false
+	_hud.stop_waiting()
 
 
 # ------------------------------------------------------------------ events
@@ -222,7 +179,7 @@ func _play(events: Array) -> void:
 	for e: Dictionary in events:
 		match e["type"]:
 			"move":
-				_message.text = e["text"]
+				_hud.say(e["text"])
 				await _attack_anim(e["side"], e.get("fx", "charge"), e.get("move_type", "neutre"))
 			"damage":
 				await _hit(e)
@@ -234,6 +191,7 @@ func _play(events: Array) -> void:
 			"heal":
 				var panel := _player_panel if e["side"] == "player" else _foe_panel
 				await _tween_hp(panel, e["hp"], e["max_hp"])
+				_refresh_panel(panel, engine.dino(e["side"]))   # (an item: its Lien may have grown)
 				await _say(e["text"])
 			"stat":
 				_stat_particles(e["side"], e["delta"] > 0)
@@ -245,6 +203,12 @@ func _play(events: Array) -> void:
 			"faint":
 				await _faint(e["side"])
 				await _say(e["text"])
+			"item":   # Chloé gives it to the dino in battle ("heal" follows)
+				_hud.say(e["text"])
+				await _item_anim(e["id"])
+			"recall":   # it comes back to Chloé ("switch" follows)
+				_hud.say(e["text"])
+				await _recall()
 			"switch":
 				await _switch_in()
 				await _say(e["text"])
@@ -364,6 +328,37 @@ func _switch_in() -> void:
 	_cry_of(engine.player(), "neutre")
 
 
+## Called back, the dino in battle turns to light and shrinks away towards Chloé (off the left).
+func _recall() -> void:
+	var s := _player_sprite
+	var t := create_tween().set_parallel(true)
+	t.tween_property(s, "modulate", Color(2.2, 1.8, 1.2, 0.0), 0.4)
+	t.tween_property(s, "scale", s.scale * 0.35, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	t.tween_property(s, "position:x", s.position.x - 120.0, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	await t.finished
+
+
+## The item (its picture) is tossed from Chloé's side to the dino in battle, then sparkles.
+func _item_anim(id: String) -> void:
+	var item := Sprite2D.new()
+	item.texture = ItemsDB.icon(id)
+	item.scale = Vector2(0.45, 0.45)
+	var start := Vector2(-40.0, _player_sprite.position.y - 40.0)
+	var target := _player_sprite.position + Vector2(0, -90)
+	item.position = start
+	_world.add_child(item)
+	var arc := create_tween()
+	arc.tween_method(func(k: float) -> void:
+		item.position = start.lerp(target, k) + Vector2(0, -120 * sin(k * PI))
+		item.rotation = k * TAU, 0.0, 1.0, 0.5)
+	await arc.finished
+	Audio.play_sfx(ITEM_SFX)
+	item.queue_free()
+	_burst(target, HEAL_GREEN, 26, 200.0)
+	_stat_particles("player", true, HEAL_GREEN)
+	await get_tree().create_timer(0.25).timeout
+
+
 ## The amber collar flies to the wild dino, draws it in, falls and wobbles `shakes` times.
 func _catch_anim(shakes: int, success: bool) -> void:
 	var collar := Sprite2D.new()
@@ -446,12 +441,11 @@ func _go_underground() -> void:
 
 ## The calm gauge fills (or empties): golden sparkles around the foe when it rises.
 func _calm_anim(calm: int) -> void:
-	var bar: ProgressBar = _foe_panel["calm"]
-	var rising := calm > bar.value
+	var rising: bool = calm > _foe_panel["calm"].value
 	if rising:
 		Audio.play_sfx(CALM_SFX, -4.0, 0.1)
 		_burst(_foe_sprite.position + Vector2(0, -70), CALM, 18, 120.0)
-	await create_tween().tween_property(bar, "value", float(calm), 0.45).finished
+	await _hud.tween_calm(calm)
 
 
 ## The veins fade: a white flash, its own colours come back, a burst of gold.
@@ -493,7 +487,7 @@ func _burst(pos: Vector2, color: Color, amount: int, speed: float) -> void:
 	p.finished.connect(p.queue_free)
 
 
-func _stat_particles(side: String, up: bool) -> void:
+func _stat_particles(side: String, up: bool, tint := Color(0, 0, 0, 0)) -> void:
 	var s := _sprite(side)
 	var p := CPUParticles2D.new()
 	p.position = s.position + Vector2(0, -40)
@@ -509,7 +503,7 @@ func _stat_particles(side: String, up: bool) -> void:
 	p.initial_velocity_max = 140.0
 	p.scale_amount_min = 4.0
 	p.scale_amount_max = 6.0
-	p.color = Color(1.0, 0.55, 0.3) if up else Color(0.45, 0.65, 1.0)
+	p.color = tint if tint.a > 0.0 else Color(1.0, 0.55, 0.3) if up else Color(0.45, 0.65, 1.0)
 	_world.add_child(p)
 	p.emitting = true
 	p.finished.connect(p.queue_free)
@@ -546,49 +540,18 @@ func _cry_of(d: Dino, kind: String) -> void:
 		_cry.play()
 
 
-# ------------------------------------------------------------------ panels
+# ------------------------------------------------------------------ panels (BattleHud)
 
 func _refresh_panel(panel: Dictionary, d: Dino) -> void:
-	var status: String = {"saigne": "  · saigne", "etourdi": "  · étourdi", "peur": "  · a peur"}.get(d.status, "")
-	if d.corrupted:
-		status = "  · corrompu"
-	if panel.has("calm"):
-		(panel["calm_row"] as Control).visible = d.corrupted or (engine != null and engine.calm > 0 and d == engine.foe)
-		panel["name"].add_theme_color_override("font_color", Color(0.82, 0.66, 1.0) if d.corrupted else CREAM)
-	panel["name"].text = "%s   Niv. %d%s" % [d.nickname if panel == _player_panel else d.species_name(), d.level, status]
-	var bar: ProgressBar = panel["hp"]
-	bar.max_value = d.max_hp()
-	bar.value = d.hp
-	_color_hp(bar)
-	if panel.has("hp_text"):
-		panel["hp_text"].text = "%d / %d PV" % [d.hp, d.max_hp()]
-	if panel.has("xp"):
-		panel["xp"].max_value = Dino.xp_to_next(d.level)
-		panel["xp"].value = d.xp
+	_hud.refresh(panel, d)
 
 
 func _tween_hp(panel: Dictionary, hp: int, max_hp: int) -> void:
-	var bar: ProgressBar = panel["hp"]
-	bar.max_value = max_hp
-	var t := create_tween()
-	t.tween_method(func(v: float) -> void:
-		bar.value = v
-		_color_hp(bar)
-		if panel.has("hp_text"):
-			panel["hp_text"].text = "%d / %d PV" % [roundi(v), max_hp], bar.value, float(hp), 0.5)
-	await t.finished
+	await _hud.tween_hp(panel, hp, max_hp)
 
 
 func _tween_xp(d: Dino) -> void:
-	var bar: ProgressBar = _player_panel["xp"]
-	bar.max_value = Dino.xp_to_next(d.level)
-	await create_tween().tween_property(bar, "value", float(d.xp), 0.6).finished
-
-
-static func _color_hp(bar: ProgressBar) -> void:
-	var r := bar.value / maxf(bar.max_value, 1.0)
-	var c := Color(0.36, 0.78, 0.35) if r > 0.5 else Color(0.95, 0.75, 0.2) if r > 0.2 else Color(0.9, 0.3, 0.25)
-	(bar.get_theme_stylebox("fill") as StyleBoxFlat).bg_color = c
+	await _hud.tween_xp(d)
 
 
 # ------------------------------------------------------------------ building
@@ -668,199 +631,13 @@ func _build_ui() -> void:
 	_cry.bus = &"SFX"
 	add_child(_cry)
 
-	_foe_panel = _make_panel(false)
-	_foe_panel["box"].position = Vector2(EDGE + 8, EDGE)
-	_player_panel = _make_panel(true)
-	var pbox: Control = _player_panel["box"]
-	pbox.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	pbox.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	pbox.offset_left = EDGE + 8
-	pbox.offset_right = EDGE + 8
-	pbox.offset_top = -112
-	pbox.offset_bottom = -112
-
-	# The message, bottom-left; the menus sit to its right.
-	var bar := PanelContainer.new()
-	bar.add_theme_stylebox_override("panel", _accent_style(PANEL_BG, AMBER, 12))
-	bar.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bar.offset_left = EDGE
-	bar.offset_right = -(MENU_WIDTH + EDGE * 2)
-	bar.offset_top = -98
-	bar.offset_bottom = -EDGE
-	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_root.add_child(bar)
-	_message = Label.new()
-	_message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_message.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_message.add_theme_font_size_override("font_size", 22)
-	_message.add_theme_color_override("font_color", CREAM)
-	bar.add_child(_message)
-
-	_menu = HBoxContainer.new()
-	_menu.add_theme_constant_override("separation", 10)
-	_anchor_bottom_right(_menu, 24.0)
-	_root.add_child(_menu)
-	var attack := _button("Attaquer", Color(0.86, 0.38, 0.22))
-	attack.pressed.connect(func() -> void: _show_menu(_moves_menu))
-	_calm_button = _button("Apaiser", VIOLET)
-	_calm_button.pressed.connect(func() -> void: _action_chosen.emit({"type": "calm"}))
-	_collar_button = _button("Collier", AMBER)
-	_collar_button.pressed.connect(func() -> void:
-		if Game.use_item("collier"):
-			_action_chosen.emit({"type": "catch"}))
-	_run_button = _button("Fuir", Color(0.5, 0.58, 0.66))
-	_run_button.pressed.connect(func() -> void: _action_chosen.emit({"type": "run"}))
-	for b in [attack, _calm_button, _collar_button, _run_button]:
-		_menu.add_child(b)
-
-	# The moves grow upwards from the bottom-right corner: never cut, whatever their number.
-	_moves_menu = VBoxContainer.new()
-	_moves_menu.add_theme_constant_override("separation", 10)
-	_anchor_bottom_right(_moves_menu, EDGE)
-	_root.add_child(_moves_menu)
-	var back := _button("◀  Retour", Color(0.5, 0.58, 0.66))
-	back.custom_minimum_size = Vector2(150, 44)
-	back.size_flags_horizontal = Control.SIZE_SHRINK_END
-	back.add_theme_font_size_override("font_size", 17)
-	back.pressed.connect(func() -> void: _show_menu(_menu))
-	_moves_menu.add_child(back)
-	_moves_grid = GridContainer.new()
-	_moves_grid.columns = 2
-	_moves_grid.add_theme_constant_override("h_separation", 10)
-	_moves_grid.add_theme_constant_override("v_separation", 10)
-	_moves_menu.add_child(_moves_grid)
-	_show_menu(null)
-
-
-func _anchor_bottom_right(c: Control, bottom: float) -> void:
-	c.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	c.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	c.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	c.offset_left = -EDGE
-	c.offset_right = -EDGE
-	c.offset_top = -bottom
-	c.offset_bottom = -bottom
-
-
-func _make_panel(with_numbers: bool) -> Dictionary:
-	var box := PanelContainer.new()
-	box.add_theme_stylebox_override("panel", _accent_style(PANEL_BG, AMBER, 12))
-	box.custom_minimum_size = Vector2(300, 0)
-	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_root.add_child(box)
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 5)
-	box.add_child(v)
-	var name_label := Label.new()
-	name_label.add_theme_font_size_override("font_size", 19)
-	name_label.add_theme_color_override("font_color", CREAM)
-	v.add_child(name_label)
-	var hp := ProgressBar.new()
-	hp.show_percentage = false
-	hp.custom_minimum_size = Vector2(0, 10)
-	hp.add_theme_stylebox_override("background", _bar_style(Color(0, 0, 0, 0.5), 5))
-	hp.add_theme_stylebox_override("fill", _bar_style(Color(0.36, 0.78, 0.35), 5))
-	v.add_child(hp)
-	var panel := {"box": box, "name": name_label, "hp": hp}
-	if not with_numbers:   # the foe: its calm gauge, when it is corrupted
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
-		row.visible = false
-		var word := Label.new()
-		word.text = "Calme"
-		word.add_theme_font_size_override("font_size", 14)
-		word.add_theme_color_override("font_color", CALM)
-		row.add_child(word)
-		var calm := ProgressBar.new()
-		calm.show_percentage = false
-		calm.max_value = BattleEngine.CALM_FULL
-		calm.custom_minimum_size = Vector2(0, 8)
-		calm.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		calm.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		calm.add_theme_stylebox_override("background", _bar_style(Color(0.2, 0.08, 0.3, 0.7), 4))
-		calm.add_theme_stylebox_override("fill", _bar_style(CALM, 4))
-		row.add_child(calm)
-		v.add_child(row)
-		panel["calm"] = calm
-		panel["calm_row"] = row
-	if with_numbers:
-		var hp_text := Label.new()
-		hp_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		hp_text.add_theme_font_size_override("font_size", 14)
-		hp_text.add_theme_color_override("font_color", MUTED)
-		v.add_child(hp_text)
-		var xp := ProgressBar.new()
-		xp.show_percentage = false
-		xp.custom_minimum_size = Vector2(0, 4)
-		xp.add_theme_stylebox_override("background", _bar_style(Color(0, 0, 0, 0.5), 2))
-		xp.add_theme_stylebox_override("fill", _bar_style(Color(0.4, 0.72, 0.98), 2))
-		v.add_child(xp)
-		panel["hp_text"] = hp_text
-		panel["xp"] = xp
-	return panel
-
-
-## A compact action button: dark, with the action's colour as a strip on the left.
-func _button(text: String, color: Color) -> Button:
-	var b := Button.new()
-	b.text = text
-	b.custom_minimum_size = MENU_BUTTON
-	b.add_theme_font_size_override("font_size", 20)
-	b.add_theme_color_override("font_color", CREAM)
-	b.add_theme_color_override("font_disabled_color", Color(CREAM, 0.35))
-	b.add_theme_stylebox_override("normal", _accent_style(CARD_BG, color, 10, 5))
-	b.add_theme_stylebox_override("hover", _accent_style(CARD_BG.lightened(0.08), color, 10, 5))
-	b.add_theme_stylebox_override("pressed", _accent_style(color.darkened(0.45), color, 10, 5))
-	b.add_theme_stylebox_override("focus", _accent_style(Color(0, 0, 0, 0), color.lightened(0.3), 10, 5, 2))
-	b.add_theme_stylebox_override("disabled", _accent_style(Color(0.12, 0.12, 0.14, 0.8), Color(0.3, 0.3, 0.32), 10, 5))
-	return b
-
-
-## A move: its name, and below it the type and power points, smaller.
-func _move_card(title: String, detail: String, color: Color) -> Button:
-	var b := _button("", color)
-	b.custom_minimum_size = MOVE_CARD
-	var v := VBoxContainer.new()
-	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	v.offset_left = 18
-	v.offset_right = -10
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 0)
-	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	b.add_child(v)
-	for line: Array in [[title, 19, CREAM], [detail, 14, MUTED]]:
-		var l := Label.new()
-		l.text = line[0]
-		l.add_theme_font_size_override("font_size", line[1])
-		l.add_theme_color_override("font_color", line[2])
-		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		v.add_child(l)
-	return b
-
-
-## A progress bar's part: rounded, no inner margin (so the bar keeps its thin height).
-static func _bar_style(bg: Color, radius: int) -> StyleBoxFlat:
-	var s := _style(bg, Color(0, 0, 0, 0), radius, 0)
-	s.set_content_margin_all(0)
-	return s
-
-
-## Rounded box with a coloured strip on its left edge (and an optional thin outline).
-static func _accent_style(bg: Color, accent: Color, radius: int, strip := 4, outline := 0) -> StyleBoxFlat:
-	var s := _style(bg, accent, radius, outline)
-	s.border_width_left = strip
-	s.content_margin_left = 14 + strip
-	return s
-
-
-static func _style(bg: Color, border: Color, radius: int, border_width := 3) -> StyleBoxFlat:
-	var s := StyleBoxFlat.new()
-	s.bg_color = bg
-	s.border_color = border
-	s.set_border_width_all(border_width)
-	s.set_corner_radius_all(radius)
-	s.content_margin_left = 16
-	s.content_margin_right = 16
-	s.content_margin_top = 10
-	s.content_margin_bottom = 10
-	return s
+	# The panels, the message band and the action wheel, over the fighters and the weather.
+	_hud = HUD.new()
+	_root.add_child(_hud)
+	_hud.chosen.connect(func(action: Dictionary) -> void: _action_chosen.emit(action))
+	_foe_panel = _hud.foe
+	_player_panel = _hud.mine
+	_message = _hud.message
+	_menu = _hud.wheel
+	_moves_menu = _hud.moves_panel
+	_calm_button = _hud.calm_button

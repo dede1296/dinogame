@@ -149,6 +149,12 @@ func _end_of_turn(ev: Array) -> void:
 			"text": "%s s'enfonce dans le noir de l'abîme… On ne le voit plus !" % _cap(name_of("foe"))})
 
 
+## Would move `index` of Chloé's dino be lost in the dark (the foe hidden in the abyss)? For the
+## hint on its card.
+func out_of_reach(index: int) -> bool:
+	return deep == Deep.HIDDEN and _reaches_foe(index)
+
+
 ## A move of Chloé's dino that would reach the foe (an attack, or an effect on it).
 func _reaches_foe(index: int) -> bool:
 	if index >= player().moves.size():

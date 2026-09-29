@@ -611,6 +611,7 @@ var _line_at := 0.0
 var _menu_at := -1.0
 var _fast_battles := false
 var _fast_engine: Object = null
+var _hud_taps: Array = []   # (command "hud_tap")
 var _keys := {}
 var _pause_layer: CanvasLayer
 var _rush := false   # (command line « rush=1 »: the demo at full speed, to check it)
@@ -854,6 +855,27 @@ func _run(command: String, arg: Variant) -> void:
 			for n in current_scene.get_children():
 				if n.has_signal("_action_chosen"):
 					n.call("_show_menu", n.get("_moves_menu"))
+		"hud":   # the battle HUD shows "wheel", "moves", "bag" or "team" (BattleHud.show_panel)
+			for n in current_scene.get_children():
+				if n.has_signal("_action_chosen"):
+					n.get("_hud").call("show_panel", arg)
+		"hud_tap":   # with "auto": at the next choice, taps these buttons of the battle HUD in turn
+			_hud_taps.append_array(arg if arg is Array else [arg])   # (BattleHud.tap: "sac", "item:baie", "dinos", "dino:1"…)
+		"battle_corrupt":   # [species, level]: a battle against a corrupted dino (black amber)
+			var corrupt = load("res://game/dino.gd").create(StringName(arg[0]), arg[1])
+			corrupt.set("corrupted", true)
+			current_scene.call("_battle", corrupt)
+		"battle_set":   # [property, value] on the battle's engine (BattleEngine, UnderwaterEngine: "deep"…)
+			for n in current_scene.get_children():
+				if n.has_signal("_action_chosen"):
+					n.get("engine").set(arg[0], arg[1])
+		"hurt":   # [party index, PV]: that dino of the party down to these PV (-1: the foe in battle)
+			if arg[0] >= 0:
+				root.get_node("Game").get("party")[arg[0]].set("hp", arg[1])
+			for n in current_scene.get_children():
+				if arg[0] < 0 and n.has_signal("_action_chosen"):
+					n.get("engine").get("foe").set("hp", arg[1])
+					n.call("_refresh_panel", n.get("_foe_panel"), n.get("engine").get("foe"))
 		"dive":   # Chloé dives at the dive spot named `arg` (put in its water first; "": the one she is on)
 			load("res://world/dive.gd").call("debug_plunge", current_scene, String(arg) if arg else "")
 		"surface":   # under the water, she goes back up (the Remonter button)
@@ -1139,13 +1161,18 @@ func _auto_step() -> void:
 			if _fast_battles:
 				_shorten(n.get("engine"))
 			var moves_open: bool = n.get("_moves_menu") != null and n.get("_moves_menu").visible   # (opened by "moves")
-			if n.get("_menu").visible or moves_open:
+			var hud = n.get("_hud")
+			if n.get("_menu").visible or moves_open or (hud != null and hud.call("is_open")):
 				if _demo and not fast:   # a moment to see the menu
 					if _menu_at < 0.0:
 						_menu_at = _time
 					if _time - _menu_at < 0.8:
 						return
 				_menu_at = -1.0
+				if not _hud_taps.is_empty():   # the scenario's own choices first (command "hud_tap")
+					var what: String = _hud_taps.pop_front()
+					print("⚔ [tap ", what, "] ", "ok" if hud.call("tap", what) else "IMPOSSIBLE")
+					return
 				# A corrupted foe: calm it; otherwise the first move.
 				var calm: bool = n.get("_calm_button").visible
 				n.emit_signal("_action_chosen", {"type": "calm"} if calm else {"type": "move", "index": _best_move(n.get("engine"))})

@@ -6,8 +6,12 @@ extends RefCounted
 ## on their own and the animations can change without touching them.
 ##
 ## Events: {"type": "text"|"move"|"miss"|"damage"|"heal"|"status"|"stat"|"faint"|"catch"|
-##          "run"|"switch"|"xp"|"level"|"learn"|"calm"|"calmed"|"bond"|"bond_hold"|"end", …}
-##          — most carry a "text".
+##          "run"|"item"|"recall"|"switch"|"xp"|"level"|"learn"|"calm"|"calmed"|"bond"|"bond_hold"|
+##          "end", …} — most carry a "text".
+##
+## Using a healing item (HEAL_ITEMS) or sending another dino of the party in takes the turn: the
+## foe acts after it. The item heals the dino in battle as out of battle (Game.feed_berry,
+## Game.feed_fern: the same PV, the same little growth of the Lien).
 ##
 ## A corrupted foe (Dino.corrupted, black amber) cannot be caught nor knocked out: the fury
 ## keeps it standing at 1 PV. It is calmed instead (Apaiser): each calm action that works
@@ -30,6 +34,8 @@ extends RefCounted
 
 const STATUS_TURNS := {"saigne": 0, "etourdi": 1, "peur": 3}
 const STAT_NAMES := {"atk": "L'attaque", "def": "La défense", "spd": "La vitesse"}
+## The items that can be used in a battle (ItemsDB ids), and how Chloé gives them.
+const HEAL_ITEMS := {"baie": "Chloé donne une baie à %s.", "fougere": "Chloé donne une fougère curative à %s."}
 
 var team: Array[Dino]     # the player's party; `active` is the dino in battle
 var active := 0
@@ -119,12 +125,21 @@ func name_of(side: String) -> String:
 
 
 ## One turn with the player's choice: {"type": "move", "index": i} | {"type": "catch"} |
-## {"type": "calm"} | {"type": "run"}.
+## {"type": "calm"} | {"type": "run"} | {"type": "item", "id": "baie"} (heals the dino in
+## battle) | {"type": "switch", "index": i} (that dino of the party takes its place). An item
+## that cannot be used, or a dino that cannot fight, changes nothing: no event, the turn is kept.
 func turn(action: Dictionary) -> Array:
 	var ev: Array = []
 	if over:
 		return ev
 	_calming = false
+	match action["type"]:
+		"item":
+			if not can_use_item(String(action.get("id", ""))):
+				return ev
+		"switch":
+			if not can_switch_to(int(action.get("index", -1))):
+				return ev
 	var foe_move := _choose_foe_move()
 	match action["type"]:
 		"run":
@@ -137,6 +152,11 @@ func turn(action: Dictionary) -> Array:
 			_calming = true
 			if _try_calm(ev):
 				return ev
+		"item":
+			_use_item(String(action["id"]), ev)
+		"switch":
+			ev.append({"type": "recall", "side": "player", "text": "Reviens, %s !" % player().nickname})
+			_send_in(int(action["index"]), ev)
 	var order: Array = []
 	if action["type"] == "move":
 		order.append({"side": "player", "move": action["index"]})
@@ -292,13 +312,50 @@ func _check_faints(ev: Array) -> bool:
 			ev.append({"type": "text", "text": "Tous tes dinos sont épuisés…"})
 			_finish("lose", ev)
 			return true
-		active = next
-		stages["player"] = {"atk": 0, "def": 0, "spd": 0}
-		if not _fought.has(player()):
-			_fought.append(player())
-		ev.append({"type": "switch", "side": "player", "text": "Vas-y, %s !" % player().nickname})
+		_send_in(next, ev)
 		return true
 	return false
+
+
+## Dino `index` of the party goes into battle (its stat changes start afresh; it shares the XP).
+func _send_in(index: int, ev: Array) -> void:
+	active = index
+	stages["player"] = {"atk": 0, "def": 0, "spd": 0}
+	if not _fought.has(player()):
+		_fought.append(player())
+	ev.append({"type": "switch", "side": "player", "text": "Vas-y, %s !" % player().nickname})
+
+
+## Can dino `index` of the party take the place of the one in battle? (standing, not already in)
+func can_switch_to(index: int) -> bool:
+	return index >= 0 and index < team.size() and index != active and team[index].hp > 0
+
+
+## Is there an item `id` to give the dino in battle, and would it help? (HEAL_ITEMS, not at full PV)
+func can_use_item(id: String) -> bool:
+	return HEAL_ITEMS.has(id) and Game.item_count(id) > 0 and player().hp < player().max_hp()
+
+
+## The dino in battle eats a berry or a fern (see HEAL_ITEMS): the same care as out of battle.
+func _use_item(id: String, ev: Array) -> void:
+	var d := player()
+	var before := d.hp
+	var used := Game.feed_berry(d) if id == "baie" else Game.feed_fern(d) > 0
+	if not used:
+		return
+	ev.append({"type": "item", "id": id, "side": "player", "text": HEAL_ITEMS[id] % d.nickname})
+	var text := "%s est complètement soigné !" % d.nickname if id == "fougere" else "%s récupère %d PV !" % [d.nickname, d.hp - before]
+	ev.append({"type": "heal", "side": "player", "amount": d.hp - before, "hp": d.hp, "max_hp": d.max_hp(), "text": text})
+
+
+## How well move `index` of the dino in battle would hit the foe: 1 strong, -1 weak, 0 as usual
+## (or a move that does not hurt). For the hint on its card.
+func move_hint(index: int) -> int:
+	var move := MovesDB.move(player().moves[index]["id"])
+	if move["power"] <= 0:
+		return 0
+	var eff := MovesDB.effectiveness(move["type"], foe.type())
+	return 1 if eff > 1.0 else -1 if eff < 1.0 else 0
 
 
 ## XP for the dinos that fought; a share for the rest of the party (Game.XP_SHARE). Those
