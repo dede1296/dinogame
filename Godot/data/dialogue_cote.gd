@@ -24,7 +24,7 @@ static func lines(id: StringName) -> Array:
 				{"text": "Une planche clouée dessous : « Baignade déconseillée, bis. — La direction. » En guise de signature, une marque de dent grande comme une main."},
 			]
 			if Game.flag(&"prologue_done"):
-				steps.append({"who": CHLOE, "text": "(La même « direction » que la crique des Plaines. Elle a de grandes dents, la direction.)"})
+				steps.append({"who": CHLOE, "text": "(La même « direction » que la crique de la Prairie. Elle a de grandes dents, la direction.)"})
 			return steps
 		&"panneau_plage_tortues":
 			var steps: Array = [{"text": "Plage aux tortues. Tortues en sieste : ne pas s'asseoir dessus, même si ça ressemble à un rocher. — H."}]

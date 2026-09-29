@@ -41,7 +41,7 @@ Les trois fils qui traversent le jeu :
    blême. *(Fausse piste vers Roc, vrai indice vers Isaure, qui était là le soir.)*
 6. Au matin, Roc donne 5 **colliers d'ambre** et indique les Plaines.
 
-## Chapitre 1 — Les Plaines des Fougères et la Grotte des Échos ✅
+## Chapitre 1 — La Prairie du Grand Crâne et la Grotte des Échos ✅
 
 **Structure : trois passages, dans l'ordre qu'on veut.** Au centre des Plaines, le **Grand Crâne**,
 un crâne fossile géant, est fermé par trois serrures d'ambre : c'est l'épreuve qu'Hélène a
@@ -130,7 +130,7 @@ au loin avant d'y entrer.
 | Où | Région | Biome | Transition avec la précédente |
 |---|---|---|---|
 | sud (côte) | **Port-Ambre** ✅ | village de pêcheurs | — |
-| sud | **Plaines des Fougères** ✅ | prairie tempérée, étang, bosquets, falaises au nord | la route du port monte dans les prés |
+| sud | **Prairie du Grand Crâne** ✅ | prairie tempérée, étang, bosquets, falaises au nord | la route du port monte dans les prés |
 | sud-est (baie) | **Havre-Doré** ✅ | ville marchande, port, marché | la route côtière depuis Port-Ambre, entre mer et collines |
 | sud-ouest | **Forêt Jurassique** | forêt géante, sous-bois, canopée | le bois qui borde les Plaines à l'ouest s'épaissit |
 | ouest (côte) | **Marais Brumeux** | mangrove, roselières, brume | la forêt s'enfonce dans l'eau |

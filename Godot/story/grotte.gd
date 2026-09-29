@@ -182,7 +182,7 @@ static func proto(who: Node) -> void:
 	_drop_scale()
 	_come_close(who)   # it comes to rub against her leg (the question says so)
 	var join := await Dialogue.choose("", "Le Protoceratops se frotte contre la jambe de Chloé. Il ne veut plus rester seul dans le noir.",
-		["Viens avec moi !", "Retourne aux Plaines"])
+		["Viens avec moi !", "Retourne à la Prairie"])
 	if join == 0:
 		var d := Dino.create(&"protoceratops", PROTO_LEVEL)
 		var in_party := Game.add_caught(d)

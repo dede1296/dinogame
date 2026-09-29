@@ -264,7 +264,7 @@ static func _coins(npc: StringName) -> String:
 		&"ferreol":
 			return "Rien de plus simple : apportez-moi les larmes de l'île, ces galets d'ambre cachés partout. %d pièces chacune. Je reprends aussi les objets dont vous n'avez plus l'usage." % tear
 		&"pervenche":
-			return "Des baies, ma grande. Secoue les arbres des Plaines, un par jour, et apporte-les-moi : je te les reprends %d pièces. Et les dresseurs du Relais paient mieux que moi, les chenapans." % berry
+			return "Des baies, ma grande. Secoue les arbres de la Prairie, un par jour, et apporte-les-moi : je te les reprends %d pièces. Et les dresseurs du Relais paient mieux que moi, les chenapans." % berry
 		&"rosalie":
 			return "Revends ce qui ne te sert plus : un collier en trop, je te le reprends. Et le Relais paie les bons dresseurs, à ce qu'on dit."
 		&"marchande":
@@ -280,7 +280,7 @@ static func saddle_step() -> String:
 		return "Va voir Joss, le sellier : la grande maison à l'est de la rue, avec l'ancre sur l'enseigne."
 	var todo: Array[String] = []
 	if Game.item_count("cuir") == 0:
-		todo.append("du cuir mué de Parasaurolophus (au bord de l'étang des Plaines)")
+		todo.append("du cuir mué de Parasaurolophus (au bord de l'étang de la Prairie)")
 	if Game.item_count("boucle") == 0:
 		todo.append("une boucle d'ambre (au Comptoir de Ferréol)")
 	if Game.coins() < Havre.SADDLE_PRICE:
@@ -298,4 +298,4 @@ static func _party_mount() -> String:
 	for d in Game.party:
 		if Abilities.has(d, &"monture"):
 			return "Ton %s pourra, une fois adulte : encore %d niveaux." % [d.nickname, Abilities.ADULT_LEVEL - d.level]
-	return "Dans ton équipe, aucun ne le pourra. Des Parasaurolophus vivent au bord de l'étang des Plaines, et un Ankylosaurus rôde autour du Grand Crâne, la nuit."
+	return "Dans ton équipe, aucun ne le pourra. Des Parasaurolophus vivent au bord de l'étang de la Prairie, et un Ankylosaurus rôde autour du Grand Crâne, la nuit."

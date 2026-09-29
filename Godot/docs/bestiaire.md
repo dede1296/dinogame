@@ -37,7 +37,7 @@ Niveaux indicatifs, pour une progression douce.
   vole le troisième.
 - Des **Compsognathus** chapardeurs traînent sur les quais (on peut les nourrir, pas les combattre).
 
-## Plaines des Fougères — niv. 2 à 8
+## Prairie du Grand Crâne — niv. 2 à 8
 
 Zones : Prairie du Débarcadère · L'Étang · Le Bosquet d'Hélène · Pied des Falaises · Le Grand Crâne.
 

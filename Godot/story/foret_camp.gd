@@ -476,7 +476,7 @@ static func _brac_hello(who: Node) -> Array:
 		GESTES.cue("Brac se retourne. Il regarde Chloé de haut en bas. Ça prend un moment : il y a beaucoup de haut.",
 			func() -> void: _sizes_her_up(who)),
 		{"who": BRAC, "text": "Tiens, tiens. Une gamine dans mon camp. Et mes deux andouilles qui détalent comme des lapins."},
-		{"who": BRAC, "text": "Tu sais qui je suis, moucheron ? Brac. Chasseur d'Alphas. Le Tricératops des Plaines, j'aurais dû m'en occuper avant toi. Pas grave : j'ai eu mieux."},
+		{"who": BRAC, "text": "Tu sais qui je suis, moucheron ? Brac. Chasseur d'Alphas. Le Tricératops de la Prairie, j'aurais dû m'en occuper avant toi. Pas grave : j'ai eu mieux."},
 		{"who": CHLOE, "text": "Relâchez le chef de la meute. Et tous les autres."},
 		{"who": BRAC, "text": "Le relâcher ? Il m'a coûté trois pièges, deux filets et un sbire, qui court encore. Sans compter le vieux raptor gris du ravin, qui m'a arraché mon meilleur piège."},
 	]

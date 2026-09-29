@@ -264,7 +264,7 @@ static func _maia_takes_hers() -> void:
 				_look_between(isaure, stolen)
 				Stage.emote(isaure, "…")),
 		{"who": ISAURE, "text": "Il se fait tard. Maïa, on rentre."},
-		_cue({"who": MAIA, "text": "Rendez-vous aux Plaines demain, Chloé ! La première qui trouve une page du journal d'Hélène a gagné !"},
+		_cue({"who": MAIA, "text": "Rendez-vous à la Prairie demain, Chloé ! La première qui trouve une page du journal d'Hélène a gagné !"},
 			func() -> void: Stage.look_back()),
 	])
 	var door: Vector2 = S.at(8.0, 10.2)
@@ -388,7 +388,7 @@ static func _morning() -> void:
 		_cue({"who": ROC, "text": "Tiens : des colliers d'ambre, pour te faire d'autres compagnons, et des baies pour soigner %s." % (starter.nickname if starter else "ton dino")},
 			func() -> void: _step_to_chloe(roc)),
 		{"text": "Chloé reçoit 5 colliers d'ambre et 3 baies !"},
-		{"who": ROC, "text": "Les Plaines des Fougères sont au nord du village. Maïa doit déjà y être. Et reviens me voir si ton équipe est fatiguée."},
+		{"who": ROC, "text": "La Prairie du Grand Crâne est au nord du village. Maïa doit déjà y être. Et reviens me voir si ton équipe est fatiguée."},
 	])
 	Game.items["collier"] = Game.item_count("collier") + 5
 	Game.items["baie"] = Game.item_count("baie") + 3

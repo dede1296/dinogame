@@ -165,7 +165,7 @@ static func _saddle(out: Array[Dictionary]) -> void:
 	if not Game.flag(&"selle_demandee"):
 		_add(out, "selle", "Joss, le sellier de Havre-Doré, peut te fabriquer une selle.", &"havre_dore", JOSS, true)
 	elif Game.item_count("cuir") == 0:
-		_add(out, "selle", "Trouver du cuir mué de Parasaurolophus, au bord de l'étang des Plaines, pour Joss.", &"plaines", SKIN, true)
+		_add(out, "selle", "Trouver du cuir mué de Parasaurolophus, au bord de l'étang de la Prairie, pour Joss.", &"plaines", SKIN, true)
 	elif Game.item_count("boucle") == 0:
 		_add(out, "selle", "Acheter une boucle d'ambre au Comptoir de Ferréol, pour Joss.", &"havre_dore", COMPTOIR, true)
 	elif Game.coins() < Havre.SADDLE_PRICE:
@@ -178,7 +178,7 @@ static func _saddle(out: Array[Dictionary]) -> void:
 static func _forest(out: Array[Dictionary]) -> void:
 	if not Game.flag(&"foret_arrivee"):
 		var mount := "" if Game.ability_user(&"monture") else " Pour monter, il te faudra un grand dino adulte (niveau %d)." % Abilities.ADULT_LEVEL
-		_add(out, "foret", "La Forêt Jurassique, par la sortie ouest des Plaines. En selle, ses chemins immenses deviennent enfin praticables." + mount, &"plaines", FORET_EXIT, true)
+		_add(out, "foret", "La Forêt Jurassique, par la sortie ouest de la Prairie. En selle, ses chemins immenses deviennent enfin praticables." + mount, &"plaines", FORET_EXIT, true)
 		return
 	if not Game.flag(&"griffe_grise_vu"):
 		var vif: Dino = Foret.vif_dino()

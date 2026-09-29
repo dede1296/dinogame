@@ -150,7 +150,7 @@ static func joss() -> void:
 	if not Game.flag(&"selle_demandee"):
 		await S.say([
 			{"who": JOSS, "text": "Salut ! Toi, c'est Chloé. Maïa ne parle que de toi. Enfin… de comment elle va te battre."},
-			{"who": JOSS, "text": "Une selle ? Je peux te la faire. Mais il me faut du cuir mué de Parasaurolophus : ils perdent leur vieille peau au bord de l'étang des Plaines."},
+			{"who": JOSS, "text": "Une selle ? Je peux te la faire. Mais il me faut du cuir mué de Parasaurolophus : ils perdent leur vieille peau au bord de l'étang de la Prairie."},
 			{"who": JOSS, "text": "Et une boucle d'ambre pour la sangle. Le Comptoir de Ferréol en vend. Il est cher, mais il est le seul."},
 			{"who": JOSS, "text": "Et mon travail : %d pièces. C'est un prix d'ami de Maïa. Pour Ferréol, c'est le double." % SADDLE_PRICE},
 			{"who": CHLOE, "text": "%d pièces ?! Je n'en ai même pas la moitié…" % SADDLE_PRICE},
@@ -165,7 +165,7 @@ static func joss() -> void:
 	if not (cuir and boucle and paid):
 		var missing := []
 		if not cuir:
-			missing.append("le cuir mué (au bord de l'étang des Plaines)")
+			missing.append("le cuir mué (au bord de l'étang de la Prairie)")
 		if not boucle:
 			missing.append("la boucle d'ambre (au Comptoir)")
 		if not paid:

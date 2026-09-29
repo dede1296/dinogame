@@ -21,7 +21,7 @@ L'île est ronde, découpée en régions qui montent en spirale vers le volcan c
 |---|---|
 | **Port-Ambre** | Village de pêcheurs en déclin, le Cabinet d'Hélène |
 | **Havre-Doré** | Ville marchande de la baie du sud-est, riche du commerce de l'ambre |
-| **Plaines des Fougères** | Prairies, étang, bosquet d'Hélène, le Grand Crâne |
+| **Prairie du Grand Crâne** | Prairie tempérée, étang, bosquet d'Hélène, le Grand Crâne |
 | **Grotte des Échos** | Première grotte, sous les Plaines |
 | **Forêt Jurassique** | Arbres géants, sous-bois, clairières rocheuses |
 | **Marais Brumeux** | Brume, racines, temple englouti — *sanctuaire du 1er Cœur* |

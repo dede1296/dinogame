@@ -12,7 +12,7 @@ soleil et lune avec ombres, brume, flou lointain, caméra inclinée zoomable (pi
 réglage). Aucun nœud 2D du monde n'est dessiné ; la caméra 2D sert encore au son positionnel.
 
 Contenu actuel (vertical slice) : le prologue (Port-Ambre, le Cabinet du Pr Roc, le choix du
-petit), puis les **Plaines des Fougères** en **une seule grande carte ouverte** (120 × 90 cases :
+petit), puis la **Prairie du Grand Crâne** en **une seule grande carte ouverte** (120 × 90 cases :
 route du port, carrefour, étang, crique et sa plage, bosquet d'Hélène derrière le tronc à trancher
 (**Tranche**), Grotte des Échos dans sa colline derrière le rocher (**Charge**), falaises derrière
 la porte d'ambre (**Résonance**) avec le poste d'observation d'Hélène, Grand Crâne et l'antre de son Alpha),

@@ -94,11 +94,11 @@ static func lines(id: StringName) -> Array:
 		&"cabinet_bloque":
 			return [{"who": "Prof. Roc", "text": "Où vas-tu comme ça ? Les petits sont sur les socles, à droite : choisis d'abord ton compagnon !"}]
 		&"panneau_plaines":
-			return [{"text": "Nord : les Plaines des Fougères.  Est : le Cabinet du Professeur Roc."}]
+			return [{"text": "Nord : la Prairie du Grand Crâne.  Est : le Cabinet du Professeur Roc."}]
 		&"panneau_port":
 			return [{"text": "Sud : Port-Ambre et le Cabinet du Professeur Roc."}]
 		&"panneau_debarcadere":
-			return [{"text": "Nord : le carrefour des Plaines. Sud : Port-Ambre. Attention, dinos dans les herbes hautes !"}]
+			return [{"text": "Nord : le carrefour de la Prairie. Sud : Port-Ambre. Attention, dinos dans les herbes hautes !"}]
 		&"panneau_grotte":
 			return [{"text": "Grotte des Échos — entrée fermée par un éboulement."}]
 		&"tronc_bloque":
@@ -165,7 +165,7 @@ static func lines(id: StringName) -> Array:
 		&"panneau_falaises":
 			return [{"text": "Poste d'observation d'H. Varenne. Nids de Dimorphodons : ne pas déranger !"}]
 		&"panneau_crane":
-			return [{"text": "Le Grand Crâne. Dans sa grotte dort le gardien des Plaines."}]
+			return [{"text": "Le Grand Crâne. Dans sa grotte dort le gardien de la Prairie."}]
 		&"antre_gardien":
 			if Game.flag(&"sceau_plaines"):
 				return [{"text": "Du fond du tunnel monte une respiration lente et profonde… Le gardien dort."},
@@ -184,10 +184,10 @@ static func lines(id: StringName) -> Array:
 			elif Game.flag(&"sceau_plaines"):
 				blocked.append({"text": "Il faudrait un grand dino à monter, et une selle. On dit qu'à Havre-Doré, au bout de la route côtière (à l'est de Port-Ambre), un sellier en fabrique."})
 			else:
-				blocked.append({"text": "Plus tard, peut-être, avec un grand dino à monter. Pour l'instant, les Plaines ont encore leurs secrets : le Grand Crâne attend toujours."})
+				blocked.append({"text": "Plus tard, peut-être, avec un grand dino à monter. Pour l'instant, la Prairie a encore ses secrets : le Grand Crâne attend toujours."})
 			return blocked
 		&"panneau_lisiere":
-			return [{"text": "Forêt Jurassique. Ouest : le sous-bois. Nord : les clairières. Sud : la haute futaie. Est : les Plaines des Fougères."},
+			return [{"text": "Forêt Jurassique. Ouest : le sous-bois. Nord : les clairières. Sud : la haute futaie. Est : la Prairie du Grand Crâne."},
 				{"text": "Dessous, une petite plaque : « Ne pas nourrir les Dilophosaurus. Ils crachent. Même pour dire merci. »"}]
 		&"panneau_ravin":
 			return [{"text": "Ravin. Sentier non entretenu. (Exprès.)"},
@@ -474,7 +474,7 @@ static func chatter(who: StringName) -> Array:
 				"La pêche est maigre, ces temps-ci… Mais toi, va ! L'île t'attend. Et garde un œil sur ma fille, d'accord ?",
 				"Hélène ? On a été amies, oui. Il y a longtemps. Les gens changent… ou ils restent pareils trop longtemps. Ça revient au même.",
 				"Tu vois cette jetée ? Quand j'avais ton âge, on ne voyait pas le bois, tellement il y avait de barques.",
-				"Maïa t'attend aux Plaines, je parie. Elle ne tient pas en place. Comme moi, à son âge.",
+				"Maïa t'attend à la Prairie, je parie. Elle ne tient pas en place. Comme moi, à son âge.",
 			]
 			if Game.flag(&"sceau_plaines"):
 				pool.insert(0, "Le Havre ? Là-bas, ils ont de l'argent. Et ils ne se demandent jamais d'où il vient. Toi, demande-toi toujours.")
@@ -511,7 +511,7 @@ static func chatter(who: StringName) -> Array:
 			pool = [
 				"Caillou a encore mangé mes lacets. Il croit que ce sont des vers de terre. Il n'a jamais vu de vers de terre.",
 				"Un jour, je ferai le tour de l'île en une journée. Maman dit que c'est impossible. Maman dit ça de tout.",
-				"Tu sais pourquoi on les appelle les Plaines des Fougères ? Moi non plus. Il y a plus de dinos que de fougères.",
+				"Tu sais pourquoi on l'appelle la Prairie du Grand Crâne ? Moi non plus. Il y a plus de dinos que de crânes.",
 			]
 			if hint != "":
 				pool.insert(1, "Un conseil de championne ? " + hint)
@@ -658,7 +658,7 @@ static func moon_text() -> String:
 static func ecailles_text() -> String:
 	var n := ecailles()
 	if n >= 3:
-		return "Chloé a les trois écailles d'ambre ! Le Grand Crâne, au sud-est des Plaines, attend."
+		return "Chloé a les trois écailles d'ambre ! Le Grand Crâne, au sud-est de la Prairie, attend."
 	return "Écailles d'ambre : %d sur 3." % n
 
 

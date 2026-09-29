@@ -10,7 +10,7 @@ class_name DexPlaces
 const ZONES := {
 	&"port_ambre": {"name": "Port-Ambre", "size": Vector2i(40, 24), "indoor": false},
 	&"cabinet": {"name": "Le Cabinet d'Hélène", "size": Vector2i(16, 11), "indoor": true},
-	&"plaines": {"name": "Plaines des Fougères", "size": Vector2i(120, 90), "indoor": false},
+	&"plaines": {"name": "Prairie du Grand Crâne", "size": Vector2i(120, 90), "indoor": false},
 	&"grotte_echos": {"name": "Grotte des Échos", "size": Vector2i(24, 18), "indoor": true},
 	&"antre_crane": {"name": "Antre du gardien", "size": Vector2i(14, 12), "indoor": true},
 	&"havre_dore": {"name": "Havre-Doré", "size": Vector2i(56, 32), "indoor": false},

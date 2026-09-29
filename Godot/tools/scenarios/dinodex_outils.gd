@@ -256,7 +256,7 @@ static func logic() -> String:
 	check.call("un Unique pas vu d'une région inconnue : personne n'en parle",
 		db.call("hints", &"cryolophosaure_titan") == [db.get_script_constant_map()["NOBODY"]])
 	check.call("une espèce pas vue d'une région connue : une rumeur de la région seulement",
-		String(db.call("hints", &"parasaurolophus")[0]).contains("Plaines des Fougères") and not String(db.call("hints", &"parasaurolophus")[0]).contains("étang"))
+		String(db.call("hints", &"parasaurolophus")[0]).contains("Prairie du Grand Crâne") and not String(db.call("hints", &"parasaurolophus")[0]).contains("étang"))
 	check.call("une espèce vue : ses lieux précis", String(db.call("hints", &"psittacosaurus")[0]).contains("carrefour"))
 	check.call("une espèce du Marais pas vue : rien (région inconnue)", db.call("hints", &"koolasuchus") == [db.get_script_constant_map()["NOBODY"]])
 	check.call("39 espèces + 9 uniques", db.call("order").size() == 39 and db.call("uniques").size() == 9)

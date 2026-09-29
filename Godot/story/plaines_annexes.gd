@@ -151,7 +151,7 @@ static func nest(bush: Node) -> void:
 	var in_party := Game.add_caught(Dino.create(&"compsognathus", CHIPIE_LEVEL, "Chipie"))
 	await S.say([
 		{"text": "Chipie rejoint l'équipe !" if in_party else "Chipie rejoint le Cabinet, où elle attend avec impatience."},
-		{"text": "Elle a du Flair : elle sent ce qui est enfoui. La terre remuée des Plaines ne lui échappera pas."},
+		{"text": "Elle a du Flair : elle sent ce qui est enfoui. La terre remuée de la Prairie ne lui échappera pas."},
 	])
 	await Stage.fade_out(chipie, 0.4, true)
 	Toast.say(S.world().get_tree(), "Galets d'ambre : +2 (%d / 30)" % Game.pebbles_found("plaines"))
@@ -170,7 +170,7 @@ static func _compass_back() -> void:
 		_cue({"text": "Maïa ouvre la boussole pour vérifier qu'elle marche. À l'intérieur du couvercle, une petite fougère est gravée."},
 			func() -> void: Stage.bow(maia_npc, 1.6)),
 		{"who": CHLOE, "text": "Cette fougère… C'est le signe de ma grand-mère. Il est sur la porte d'ambre des falaises."},
-		{"who": MAIA, "text": "Hein ? Plein de gens gravent des fougères. On est dans les Plaines des Fougères, je te rappelle."},
+		{"who": MAIA, "text": "Hein ? Plein de gens gravent des fougères. C'est une vieille habitude, par ici, je te rappelle."},
 		{"who": MAIA, "text": "Maman ne s'en sépare jamais. Elle dit qu'on la lui a offerte « quand elle savait encore où elle allait »."},
 		{"who": MAIA, "text": "… Je ne sais jamais ce que ça veut dire, quand elle parle comme ça."},
 		{"who": MAIA, "text": "Bon ! Tiens, prends ça, j'en ai plein. Et au fait : maman dit que les soirs de pleine lune, l'étang chante."},
@@ -274,7 +274,7 @@ static func _milestones(count: int) -> bool:
 		if Game.flag(&"amber_protoceratops"):
 			await _wake_pepite()
 		else:
-			await S.say([{"who": ROC, "text": "Vingt larmes, bravo. Il ne me manque qu'un fragment avec un petit dedans. Hélène en cachait dans son bosquet, à l'ouest des Plaines."}])
+			await S.say([{"who": ROC, "text": "Vingt larmes, bravo. Il ne me manque qu'un fragment avec un petit dedans. Hélène en cachait dans son bosquet, à l'ouest de la Prairie."}])
 		said = true
 	if count >= LETTER_AT and not Game.flag(&"lettre_scellee"):
 		await _sealed_letter()
@@ -316,14 +316,14 @@ static func _sealed_letter() -> void:
 	var prof = S.actor("Roc")
 	var fetched := {"done": false}
 	await S.say([
-		{"who": ROC, "text": "Trente ?! Toutes les larmes des Plaines…"},
+		{"who": ROC, "text": "Trente ?! Toutes les larmes de la Prairie…"},
 		# He goes to the drawer of his desk, unlocks it, and comes back with the envelope.
 		_cue({"text": "Roc ouvre un tiroir fermé à clé et en sort une enveloppe cachetée de cire ambrée."},
 			func() -> void: _run(func() -> void: await _fetch_letter(prof), fetched)),
 	])
 	await _finish(fetched)
 	await S.say([
-		{"who": ROC, "text": "Hélène me l'a confiée il y a un an. « Pour qui rapportera toutes les larmes des Plaines. » J'ai toujours su que ce serait toi."},
+		{"who": ROC, "text": "Hélène me l'a confiée il y a un an. « Pour qui rapportera toutes les larmes de la Prairie. » J'ai toujours su que ce serait toi."},
 		{"letter": ["Pour toi, qui as tout ramassé",
 			"Si tu lis ceci, tu as secoué chaque arbre, soulevé chaque pierre et attendu la lune au bord de l'étang. Tu es bien ma petite-fille.",
 			"Je te dois un secret. L'œuf que je t'ai laissé ne vient pas de nulle part : son parent vit encore. C'est %s. Je l'ai réveillé il y a trente ans, et il ne m'a jamais oubliée." % parent,
@@ -379,7 +379,7 @@ const SLEEPER := [
 	"Chloé lui pose une fougère sur la tête. Il ne se réveille pas. Ça lui va plutôt bien.",
 	"Il marmonne quelque chose qui ressemble à « encore cinq minutes ».",
 	"On ne réveille pas un dino qui dort. Ça, même Chloé le sait.",
-	"Toujours endormi. Il a trouvé le coin le plus confortable des Plaines, et il compte bien le garder.",
+	"Toujours endormi. Il a trouvé le coin le plus confortable de la Prairie, et il compte bien le garder.",
 ]
 
 

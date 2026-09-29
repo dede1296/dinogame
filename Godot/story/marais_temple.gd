@@ -409,7 +409,7 @@ static func _spino_rises(who: Node) -> void:
 				Stage.look_back()
 				if is_instance_valid(who):
 					Stage.turn_to(chloe, (who as Node2D).global_position)),
-		Act.cue({"text": "Il baisse le museau vers la sacoche de Chloé et renifle. Le Sceau des Plaines, le Sceau de la Forêt… Il connaît ces odeurs."},
+		Act.cue({"text": "Il baisse le museau vers la sacoche de Chloé et renifle. Le Sceau de la Prairie, le Sceau de la Forêt… Il connaît ces odeurs."},
 			func() -> void:
 				Stage.bow(who, 2.2)
 				Act.lean(who, chloe.global_position, 14.0, 2.2)),

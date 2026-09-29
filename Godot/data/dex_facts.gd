@@ -15,7 +15,7 @@ const DIETS := {
 }
 
 const INFO := {
-	# ---------------------------------------------------------------- Plaines des Fougères
+	# ---------------------------------------------------------------- Prairie du Grand Crâne
 	&"velociraptor": {"size": "2 m de long, 15 kg", "diet": "carnivore", "era": "Crétacé, il y a 75 millions d'années", "from": "en Mongolie",
 		"trait": "Une griffe en faucille à chaque pied, et des plumes.",
 		"fact": "Il avait des plumes, comme un oiseau, et il était à peine plus grand qu'une dinde. Rien à voir avec les géants des films !"},
@@ -172,9 +172,9 @@ const INFO := {
 ## they are; `region`: AtlasDB region; `rumour`: what is said of them before Chloé meets them
 ## (once she knows the region); `where`: where she met them.
 const UNIQUES := [
-	{"id": &"triceratops", "role": "L'Alpha des Plaines", "region": &"plaines",
-		"rumour": "On murmure qu'un Tricératops immense veille sur le Grand Crâne des Plaines.",
-		"where": "Il veille sur le Grand Crâne, dans les Plaines des Fougères. Aucun Tricératops n'est sauvage sur l'île : Caillou, celui de Maïa, était un Protoceratops qui a grandi."},
+	{"id": &"triceratops", "role": "L'Alpha de la Prairie", "region": &"plaines",
+		"rumour": "On murmure qu'un Tricératops immense veille sur le Grand Crâne, au cœur de la Prairie.",
+		"where": "Il veille sur le Grand Crâne, au cœur de la Prairie qui porte son nom. Aucun Tricératops n'est sauvage sur l'île : Caillou, celui de Maïa, était un Protoceratops qui a grandi."},
 	{"id": &"griffe_grise", "role": "L'Ancien de la Forêt, parent de Vif", "region": &"foret",
 		"rumour": "Hélène parlait d'un vieux Velociraptor caché dans un ravin du sous-bois.",
 		"where": "Dans un ravin caché du sous-bois de la Forêt Jurassique."},

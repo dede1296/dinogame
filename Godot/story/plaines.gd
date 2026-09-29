@@ -1,5 +1,5 @@
 class_name Plaines
-## Chapter 1, Plaines des Fougères: the Grand Crâne and its three amber locks, the
+## Chapter 1, Prairie du Grand Crâne: the Grand Crâne and its three amber locks, the
 ## Tricératops Alpha's battle of honour; then the end of the chapter (docs/histoire.md,
 ## steps 6 and 7): Maïa's first challenge at the foot of the skull, and back at the port at
 ## nightfall, Roc slipping out of the Cabinet towards the volcano, page 6 in the empty
@@ -54,7 +54,7 @@ const ROC_PATH_MIDDLE := Vector2(34.2, 6.4)
 
 static func grand_crane() -> void:
 	if Game.flag(&"sceau_plaines"):
-		await S.say([{"text": "Le crâne est silencieux. Quelque part dans l'ombre, le gardien des Plaines veille."}])
+		await S.say([{"text": "Le crâne est silencieux. Quelque part dans l'ombre, le gardien de la Prairie veille."}])
 		return
 	if Game.flag(&"crane_ouvert"):
 		var waiting = S.actor("Alpha")
@@ -90,7 +90,7 @@ static func grand_crane() -> void:
 		# The rumble, then the Alpha comes out of the dark while its line shows.
 		_cue({"text": "Un grondement monte du fond de la grotte. Un immense Tricératops sort de l'ombre, les cornes basses."},
 			func() -> void: _run(func() -> void: await _emerge(alpha), out)),
-		_cue({"text": "C'est le gardien des Plaines : le Tricératops Alpha. Il fixe Chloé, puis son équipe."},
+		_cue({"text": "C'est le gardien de la Prairie : le Tricératops Alpha. Il fixe Chloé, puis son équipe."},
 			func() -> void: _face(alpha, Stage.chloe())),
 	])
 	await _finish(out)
@@ -182,7 +182,7 @@ static func alpha(who: Node) -> void:
 		# The horn comes to her hand; the amber on it glows.
 		_cue({"text": "Il pose le bout de sa corne dans la main de Chloé. Elle est tiède, et il y a quelque chose dessus : un sceau d'ambre."},
 			func() -> void: _horn_to_hand(who)),
-		_cue({"text": "Chloé reçoit le Sceau des Plaines !"},
+		_cue({"text": "Chloé reçoit le Sceau de la Prairie !"},
 			func() -> void:
 				_amber(chloe, 2, 0.9)
 				Stage.companion_joy()),
@@ -252,7 +252,7 @@ static func maia_arrives() -> void:
 	await maia.walk_to(w.player.global_position + Vector2(-90, 12), "right", 200.0)
 	await S.say([
 		{"who": MAIA, "text": "Chloé ! J'ai entendu le Tricératops rugir jusqu'à l'étang ! Ne me dis pas que…"},
-		{"who": CHLOE, "text": "Le Sceau des Plaines. Il me l'a donné."},
+		{"who": CHLOE, "text": "Le Sceau de la Prairie. Il me l'a donné."},
 		{"who": MAIA, "text": "… Bon. D'accord. Bravo. MAIS. Un Sceau, ça se défend. Toi et moi, ici, maintenant."},
 	])
 	S.lock(false)

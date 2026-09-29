@@ -6,7 +6,7 @@ class_name AtlasDB
 ## atlas_regions.png holds each region's index * 16 (the sea: 255).
 
 const REGIONS := [
-	{"id": &"plaines", "name": "Plaines des Fougères", "zones": [&"plaines", &"grotte_echos", &"antre_crane"], "levels": Vector2i(2, 8), "label": Vector2(0.540, 0.686), "bounds": Rect2(0.422, 0.521, 0.227, 0.299)},
+	{"id": &"plaines", "name": "Prairie du Grand Crâne", "zones": [&"plaines", &"grotte_echos", &"antre_crane"], "levels": Vector2i(2, 8), "label": Vector2(0.540, 0.686), "bounds": Rect2(0.422, 0.521, 0.227, 0.299)},
 	{"id": &"port", "name": "Port-Ambre", "zones": [&"port_ambre", &"cabinet"], "levels": Vector2i(1, 1), "label": Vector2(0.493, 0.821), "bounds": Rect2(0.483, 0.778, 0.141, 0.080)},
 	{"id": &"havre", "name": "Havre-Doré", "zones": [&"havre_dore"], "levels": Vector2i(1, 1), "label": Vector2(0.709, 0.737), "bounds": Rect2(0.644, 0.675, 0.075, 0.094)},
 	{"id": &"foret", "name": "Forêt Jurassique", "zones": [&"foret", &"camp_ombre"], "levels": Vector2i(10, 18), "label": Vector2(0.339, 0.627), "bounds": Rect2(0.146, 0.464, 0.342, 0.327)},

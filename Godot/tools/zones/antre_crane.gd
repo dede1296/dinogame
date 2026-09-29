@@ -39,7 +39,7 @@ const RELIEF := [
 
 
 static func build() -> Region:
-	var root := B.region(&"antre_crane", "Plaines des Fougères", "Antre du gardien", Vector2i(7, 8), PLAN)
+	var root := B.region(&"antre_crane", "Prairie du Grand Crâne", "Antre du gardien", Vector2i(7, 8), PLAN)
 	root.indoor = true
 	root.cave = true
 	root.relief = PackedStringArray(RELIEF)

@@ -1,5 +1,5 @@
 extends RefCounted
-## Plaines des Fougères — the whole region in one open map (120 x 90 tiles), drawn from
+## Prairie du Grand Crâne — the whole region in one open map (120 x 90 tiles), drawn from
 ## tools/maps/plaines_sols.png and plaines_relief.png (made by gen-plaines.mjs, retouchable).
 ## South: the road from Port-Ambre and the cove; centre: the crossroads, the pond; west:
 ## Hélène's grove behind the trunk (Tranche); north: the Grotte des Échos in its hill, behind
@@ -39,7 +39,7 @@ const SLEEPER := "res://world/sleeper.gd"
 
 
 static func build() -> Region:
-	var root := B.region_from_maps(&"plaines", "Plaines des Fougères", "", Vector2i(3, 7),
+	var root := B.region_from_maps(&"plaines", "Prairie du Grand Crâne", "", Vector2i(3, 7),
 		MAPS % "sols", MAPS % "relief", "res://regions/plaines/plaines_relief.res")
 	root.music = load("res://assets/audio/music/plaines.ogg")
 	root.ambience_id = &"plaines"

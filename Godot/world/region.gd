@@ -10,7 +10,7 @@ extends Node2D
 
 ## Id of this zone (what the save and the ZoneExits use).
 @export var region_id: StringName
-## Name of the region the zone belongs to ("Plaines des Fougères")…
+## Name of the region the zone belongs to ("Prairie du Grand Crâne")…
 @export var display_name := ""
 ## …and of the zone itself ("Prairie du Débarcadère").
 @export var zone_name := ""

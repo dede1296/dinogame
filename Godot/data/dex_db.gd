@@ -14,7 +14,7 @@ const CAUGHT := &"caught"
 ## The Dinodex's regions, in the island's order (AtlasDB region ids): the short name of their
 ## tab, how to say « in it ». Those without species yet get no tab.
 const REGIONS := [
-	{"id": &"plaines", "short": "Plaines", "in": "dans les Plaines des Fougères"},
+	{"id": &"plaines", "short": "Prairie", "in": "dans la Prairie du Grand Crâne"},
 	{"id": &"foret", "short": "Forêt", "in": "dans la Forêt Jurassique"},
 	{"id": &"marais", "short": "Marais", "in": "dans le Marais Brumeux"},
 	{"id": &"desert", "short": "Désert", "in": "dans le Désert Aride"},
@@ -263,7 +263,7 @@ static func place_details(p: Dictionary) -> String:
 	return " · ".join(bits)
 
 
-## The title of a place: « Plaines des Fougères — L'étang, à l'est ».
+## The title of a place: « Prairie du Grand Crâne — L'étang, à l'est ».
 static func place_title(p: Dictionary) -> String:
 	var where: String = p["where"]
 	return "%s — %s%s" % [p["zone_name"], p["place"], ", " + where if where != "" else ""]
