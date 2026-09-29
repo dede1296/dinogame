@@ -468,7 +468,7 @@ la remontée, le passage noyé).
 - **Équipe** de 5 dinos ✅. Les autres attendent au Cabinet.
 - **Surnoms** : on peut nommer ses dinos.
 
-### L'équipe à l'écran ✅ (sauf glisser pour réordonner, Nourrir et Capacité)
+### L'équipe à l'écran ✅ (sauf Nourrir et Capacité)
 
 Les 5 dinos de l'équipe **accompagnent Chloé** et restent visibles en permanence :
 
@@ -485,7 +485,10 @@ Les 5 dinos de l'équipe **accompagnent Chloé** et restent visibles en permanen
   - **Nourrir** : lui donner une friandise (monte le Lien) ;
   - **Fiche** : ses statistiques, attaques, Lien (✅ ses cœurs, aussi dans ce menu), habitat d'origine ;
   - **Capacité** : utiliser sa capacité d'exploration devant un obstacle proche (Tranche, Charge…).
-- **Glisser un portrait** sur un autre change l'ordre de l'équipe.
+- **Glisser un portrait** sur un autre ✅ : ils échangent leur place (au doigt ou à la souris ; le
+  glisser démarre après un petit déplacement, un simple toucher ouvre toujours le menu). Posé sur
+  le premier, il passe en tête et c'est lui qui suit Chloé. Pas pendant une scène ni un combat.
+  (`ui/party_bar.gd`, `ui/dex_tile.gd`, `ui/dino_drag.gd`.)
 - En combat, la même barre sert à **changer de dino** d'un seul toucher.
 
 ### Le Lien ✅ (sauf friandises, caresses au Cabinet et attaque ultime)
@@ -570,7 +573,8 @@ Le laboratoire d'Hélène, à Port-Ambre, où Roc tient boutique. C'est le point
 chapitre.
 
 - **Soins** gratuits de l'équipe.
-- **Réserve** : les dinos hors de l'équipe, qu'on peut échanger à volonté.
+- **Réserve** : les dinos hors de l'équipe, qu'on peut échanger à volonté ✅ (avec Roc, et partout
+  depuis le Dinodex, sauf dans l'eau).
 - **Fragments d'ambre** : chacun renferme un dino endormi. Roc sait maintenant le **réveiller** :
   on obtient un **œuf**, qui éclôt après un certain nombre de pas. Ce sont des individus spéciaux :
   une espèce rare, ou une espèce commune avec une attaque unique et un Lien de départ.
@@ -589,10 +593,44 @@ chapitre.
 
 ## Collection
 
-- **Dinodex** : chaque espèce vue ✅ et capturée ✅, avec son **habitat**, ses **horaires**, sa
+- **Dinodex** ✅ : chaque espèce vue et capturée, avec son **habitat**, ses **horaires**, sa
   taille, sa description, et le nombre d'individus capturés. Compléter une région donne une
-  récompense au Cabinet.
+  récompense au Cabinet ✅.
 - **Fossiles** et **pages du journal** comptent aussi dans la complétion.
+
+### Le Dinodex ✅
+
+- **Ouvrir** : le bouton rond au livre (sous la carte) ou la touche **X** (manette : gâchette haute
+  droite), partout sauf en combat et pendant une scène. Le jeu est en pause. Il s'ouvre sur la
+  région où est Chloé. `ui/dex_screen.gd` (écran), `ui/dex_entry.gd` (fiche), `ui/dex_tiles.gd`.
+- **Onglets** : Tous (#001 à #039, ordre de l'île), une page par région (« ??? » tant que Chloé n'y
+  est pas allée ; compteurs vues / possédées et leur barre), **★ Uniques** à part (les Alphas et les
+  Anciens : « rencontrés », jamais capturés), **Réserve**.
+- **Trois états** : *pas encore vu* (ombre noire, « ??? », seulement une rumeur de région — et
+  seulement si Chloé connaît cette région) ; *vu* (images de profil et de face, nom, type, famille,
+  taille, description, chaque lieu avec ses moments — soleil, lune, aube, pleine lune, météo — et
+  ses niveaux, forces et faiblesses ; un lieu d'une région pas encore visitée n'est pas nommé) ;
+  *possédé* (tout : régime, époque, fossiles, signe particulier, capacités d'exploration, attaques
+  niveau par niveau, points forts, une anecdote vraie « Le savais-tu ? », le carnet, et ses dinos à
+  elle : combien, où, dans l'équipe ou la réserve).
+- **Vu** = combattu, ou croisé à moins de 6,5 cases (dino sauvage ou dino d'une scène : groupe
+  `dino_actor`, `world.gd _spot_dinos`) : « Nouveau dans le Dinodex : … » (hors scène) et de
+  l'expérience pour l'équipe. **Possédé** = capturé, offert, éclos, confié (tout passe par
+  `Game.add_caught` / `mark_caught`).
+- **Équipe** : colonne de droite, toujours visible. Glisser un dino de la réserve (ou d'une fiche)
+  sur l'équipe le fait entrer (celui qui y était part en réserve) ; glisser deux dinos de l'équipe
+  l'un sur l'autre les échange (le premier suit Chloé) ; glisser un dino de l'équipe sur « Réserve »
+  l'y laisse (jamais le dernier). Les mêmes gestes en boutons dans la fiche (« Dans l'équipe »,
+  « En tête », « En réserve » ; équipe pleine : on choisit qui sort). Dans l'eau, l'équipe ne change
+  pas (le dino qui porte Chloé ne peut pas partir). Si Chloé montait le dino qui part, elle descend.
+- **Où les trouver** : tiré automatiquement des habitats des zones. `tools/gen_dex.gd` lit les
+  scènes de zones (leurs nœuds Habitat et Encounter) et écrit `data/dex_places.gd` ; il tourne à
+  la fin de `tools/build_zone.gd`, et à la main après une zone retouchée dans Godot :
+  `godot --headless --path Godot --script res://tools/gen_dex.gd`. Les fiches (taille, régime,
+  époque, anecdote) et les Uniques sont dans `data/dex_facts.gd` ; la logique dans `data/dex_db.gd`.
+- **Récompenses de Roc** (au Cabinet, en lui parlant) : 10, 20, 30 espèces possédées, chaque
+  région complète, le Dinodex entier (colliers, fougères, baies, pièces ; `DexDB.pending_rewards`).
+- Vérification : `tools/scenarios/dinodex_equipe.gd`, `dinodex_logique.gd`, `dinodex_barre.gd`.
 
 ## Havre-Doré : acheter, s'équiper ✅
 

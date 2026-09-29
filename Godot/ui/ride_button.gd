@@ -4,7 +4,7 @@ extends Button
 ## (key R). Shown once Joss has made her saddle, outdoors only; lit while she rides.
 
 const SIZE := 76.0
-const TOP := 172.0   # under the map button (MapScreen.add_open_button)
+const TOP := 258.0   # under the map and Dinodex buttons (MapScreen, DexScreen.add_open_button)
 const ICON := preload("res://assets/art/ui/selle.png")
 const GOLD := Color(1, 0.86, 0.5)
 

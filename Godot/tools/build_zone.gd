@@ -23,4 +23,6 @@ func _initialize() -> void:
 	var err: Error = builder.save(zone, path, "--force" in args)
 	print("Zone : ", path, " -> ", error_string(err))
 	zone.free()
+	if err == OK:   # its habitats may have changed: the Dinodex's hints follow (data/dex_places.gd)
+		print(load("res://tools/gen_dex.gd").write())
 	quit(0 if err == OK else 1)

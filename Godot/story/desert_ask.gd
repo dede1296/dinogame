@@ -120,7 +120,7 @@ static func _fossils(npc: StringName) -> String:
 		return "Ton %s ! Il renifle partout, non ? Laisse-le faire, et creuse là où il gratte. Caillou, lui, creuse partout. Il ne trouve jamais rien. Il est content quand même." % nose.nickname
 	for d: Dino in Game.box:
 		if Abilities.has(d, &"flair"):
-			return "Ton %s a du flair, mais il attend au Cabinet. Le Pr Roc peut te l'échanger contre un dino de ton équipe." % d.nickname
+			return "Ton %s a du flair, mais il attend au Cabinet. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname
 	match npc:
 		&"sirocco":
 			return "Avec un nez, ma caille ! Les Oviraptors nichent dans les canyons et sortent le jour : curieux comme des pies, ils viendront te voir tout seuls. Un Compsognathus ferait l'affaire aussi, mais il te volerait tes lacets."
@@ -137,7 +137,7 @@ static func _rocks(npc: StringName) -> String:
 		return "Ton %s sait charger ! Un bon coup de tête dans les éboulis du canyon muré, et ça passera.%s" % [horn.nickname, soft]
 	for d: Dino in Game.box:
 		if Abilities.has(d, &"charge"):
-			return "Ton %s attend au Cabinet : lui saurait charger. Le Pr Roc peut te l'échanger contre un dino de ton équipe." % d.nickname
+			return "Ton %s attend au Cabinet : lui saurait charger. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname
 	match npc:
 		&"sirocco":
 			return "Il te faut un dino qui charge. Les Pinacosaurus des dunes foncent sur tout ce qui bouge : les rochers, les palmiers, ma tente, moi. Un Tricératops ou un Protoceratops ferait l'affaire aussi."

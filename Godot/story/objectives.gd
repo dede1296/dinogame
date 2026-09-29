@@ -332,7 +332,7 @@ static func _marais_side(out: Array[Dictionary]) -> void:
 		_add(out, "fresques", "Les fresques du temple englouti : %d sur 3. Une dans le hall, une au bout de chaque galerie." % seen, &"temple_englouti")
 	var echo: Dino = Marais.echo_dino()
 	if echo and Game.flag(&"voix_rencontree") and not Game.flag(&"voix_echo_reconnu"):
-		var with_her := "" if Game.party.has(echo) else " (Il attend au Cabinet : le Pr Roc peut te l'échanger.)"
+		var with_her := "" if Game.party.has(echo) else " (Il attend au Cabinet : fais-le venir depuis ton Dinodex.)"
 		_add(out, "voix_petit", "La Voix du Marais cherche son petit. Ramène-lui %s, sur son îlot." % echo.nickname + with_her, &"marais", spot(&"marais", "VoixDuMarais"))
 
 
@@ -366,8 +366,8 @@ static func _read_spots(zone: StringName) -> Dictionary:
 static func _dome_text() -> String:
 	for d: Dino in Game.box:
 		if Abilities.has(d, &"coup_crane"):
-			return "Ton %s attend au Cabinet : lui saurait enfoncer le mur fissuré. Le Pr Roc peut l'échanger contre un dino de ton équipe." % d.nickname
-	var full := " Ton équipe est pleine : il ira attendre au Cabinet, où Roc pourra l'échanger." if Game.party.size() >= Game.PARTY_MAX else ""
+			return "Ton %s attend au Cabinet : lui saurait enfoncer le mur fissuré. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname
+	var full := " Ton équipe est pleine : il ira attendre au Cabinet ; tu pourras le faire venir depuis ton Dinodex." if Game.party.size() >= Game.PARTY_MAX else ""
 	return "Pour enfoncer le mur fissuré, il faut un crâne bien dur : un Pachycephalosaurus. Ils vivent dans les clairières rocheuses, au nord-est de la Forêt, et sortent le jour." + full
 
 
@@ -377,7 +377,7 @@ static func _forest_side(out: Array[Dictionary]) -> void:
 	if little == null or ForetCamp.stolen_species() != &"velociraptor":
 		return
 	if Game.flag(&"griffe_grise_vu") and not Game.flag(&"griffe_vole_reconnu"):
-		var with_her := "" if Game.party.has(little) else " (Il attend au Cabinet : le Pr Roc peut te l'échanger.)"
+		var with_her := "" if Game.party.has(little) else " (Il attend au Cabinet : fais-le venir depuis ton Dinodex.)"
 		_add(out, "griffe_petit", "Un Velociraptor d'Hélène… Griffe-Grise, dans son ravin, le reconnaîtrait peut-être." + with_her, &"foret", RAVIN)
 
 

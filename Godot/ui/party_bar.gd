@@ -4,7 +4,9 @@ extends Control
 ## (the lead one bigger), an HP ring, an XP bar and the level. Experience gains pop up next
 ## to the portrait ("+12 xp", "Niv. 6 !"), and so does the Lien ("+1 ♥"). Tapping a portrait
 ## opens its menu (with its Lien, in hearts): make it the lead dino, give it a berry, or see
-## its card. The game is paused while a menu is open.
+## its card. The game is paused while a menu is open. A portrait dragged onto another one
+## (finger or mouse: DexTile, DinoDrag) swaps their places: onto the first, it leads, and the
+## dino following Chloé changes. Not during a scene or a battle.
 
 const LEAD_SIZE := 84.0
 const SIZE := 62.0
@@ -25,12 +27,19 @@ var _redraw := 0.0
 var _pop_wait := 0.0
 var _menu: Control
 var _menu_layer: CanvasLayer
+var _drag: DinoDrag
 
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	var drag_layer := CanvasLayer.new()   # the carried portrait, over the whole HUD
+	drag_layer.layer = MENU_LAYER
+	add_child(drag_layer)
+	_drag = DinoDrag.new()
+	_drag.lift = 0.7   # (under the finger: the bar is at the top of the screen)
+	drag_layer.add_child(_drag)
 	Game.party_changed.connect(_rebuild)
 	Game.xp_awarded.connect(_on_xp)
 	Game.bond_changed.connect(_on_bond)
@@ -55,6 +64,7 @@ func _rebuild() -> void:
 	for s in _slots:
 		s.queue_free()
 	_slots.clear()
+	_drag.clear_targets()
 	var inset := SafeArea.insets(get_viewport())
 	var x := inset.x
 	for i in Game.party.size():
@@ -67,9 +77,30 @@ func _rebuild() -> void:
 		slot.position = Vector2(x, inset.y + (0.0 if i == 0 else (LEAD_SIZE - SIZE) * 0.5))
 		slot.add_to_group(&"touch_blockers")
 		slot.tapped.connect(_open_menu.bind(i))
+		slot.draggable = true
+		slot.drag = _drag
+		slot.payload = {"kind": "party", "index": i}
+		slot.picture = portrait(d.species())
+		slot.can_drag = _can_reorder
 		add_child(slot)
 		_slots.append(slot)
+		_drag.add_target(slot, func(p: Dictionary) -> bool: return p.get("index", -1) != i, _dropped_on.bind(i))
 		x += size + GAP
+
+
+## A portrait may be dragged: two dinos at least, no menu, no scene, no battle (paused).
+func _can_reorder() -> bool:
+	if Game.party.size() < 2 or _menu or get_tree().paused:
+		return false
+	var player = get_tree().get_first_node_in_group(&"player")
+	return player == null or not player.get("busy")
+
+
+## Portrait `payload` dropped on portrait `i`: they swap places.
+func _dropped_on(payload: Dictionary, i: int) -> void:
+	var lead := Game.lead_dino()
+	if Game.swap_party(payload["index"], i) and Game.lead_dino() != lead:
+		Toast.say(get_tree(), "%s passe en tête !" % Game.lead_dino().nickname)
 
 
 func _slot_of(d: Dino) -> Control:
@@ -320,25 +351,23 @@ static func portrait(species: DinoSpecies) -> Texture2D:
 
 
 ## One portrait of the bar.
-class Slot extends Control:
-	signal tapped
-
+## (A tap opens its menu; dragged, it swaps places: DexTile.)
+class Slot extends DexTile:
 	var dino: Dino
 	var lead := false
 
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_STOP
+		focus_mode = Control.FOCUS_NONE
 		pivot_offset = Vector2(size.x / 2.0, size.x / 2.0)
-
-	func _gui_input(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			accept_event()
-			tapped.emit()
 
 	func _draw() -> void:
 		var d := size.x
 		var c := Vector2(d, d) / 2.0
 		var r := d / 2.0
+		if dragging():   # carried away: only its place, faint
+			draw_arc(c, r - 1.0, 0.0, TAU, 48, Color(PartyBar.AMBER, 0.6), 2.0, true)
+			return
 		var ko := dino.hp <= 0
 		draw_circle(c + Vector2(0, 2), r, Color(0, 0, 0, 0.35))
 		draw_circle(c, r, Color(0.2, 0.24, 0.2) if not ko else Color(0.2, 0.2, 0.2))

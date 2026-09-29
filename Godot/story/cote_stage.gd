@@ -323,7 +323,7 @@ static func dive_step() -> String:
 			return "Ton %s est encore trop jeune pour plonger : il doit être adulte (niveau %d)." % [d.nickname, Abilities.ADULT_LEVEL]
 	for d: Dino in Game.box:
 		if Abilities.usable(d, DIVE):
-			return "Ton %s attend au Cabinet : lui saurait plonger. Le Pr Roc peut l'échanger contre un dino de ton équipe." % d.nickname
+			return "Ton %s attend au Cabinet : lui saurait plonger. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname
 	return "Avec le masque, il te faut un dino plongeur adulte : un Plesiosaurus du lagon, ou un Ichthyosaurus, au large de la Pointe des Palmes."
 
 

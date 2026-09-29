@@ -125,7 +125,7 @@ static func charge_step() -> String:
 		return ""
 	for d: Dino in Game.box:
 		if Abilities.usable(d, &"charge"):
-			return "Ton %s attend au Cabinet : lui enfoncerait la glace. Le Pr Roc peut l'échanger contre un dino de ton équipe." % d.nickname
+			return "Ton %s attend au Cabinet : lui enfoncerait la glace. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname
 	return "Il faut un dino qui charge, la tête dure : les grands Pachyrhinosaurus de la vallée cassent la glace du lac chaque matin, d'un coup de nez. Les Minmi des grottes aussi, dit-on."
 
 

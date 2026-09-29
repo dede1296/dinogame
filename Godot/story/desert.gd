@@ -289,7 +289,7 @@ static func _sirocco_fossils() -> Array:
 		lines.append({"who": SIROCCO, "text": "Avec un nez, pardi ! Un dino qui a du flair : un Compsognathus, un Troodon… ou un Oviraptor. Ils nichent dans les canyons, ces petits voleurs d'œufs, et ils déterrent tout ce qui dépasse."})
 		for d: Dino in Game.box:
 			if Abilities.has(d, &"flair"):
-				lines.append({"who": CHLOE, "text": "(Mon %s a du flair… mais il attend au Cabinet. Roc pourrait me l'échanger.)" % d.nickname})
+				lines.append({"who": CHLOE, "text": "(Mon %s a du flair… mais il attend au Cabinet. Je peux le faire venir depuis mon Dinodex.)" % d.nickname})
 				break
 	lines.append({"who": SIROCCO, "text": "Et fais attention où tu mets les pieds. Politesse !"})
 	return lines

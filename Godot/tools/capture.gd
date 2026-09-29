@@ -861,6 +861,20 @@ func _run(command: String, arg: Variant) -> void:
 					n.get("_hud").call("show_panel", arg)
 		"hud_tap":   # with "auto": at the next choice, taps these buttons of the battle HUD in turn
 			_hud_taps.append_array(arg if arg is Array else [arg])   # (BattleHud.tap: "sac", "item:baie", "dinos", "dino:1"…)
+		"hud_press":   # taps this button of the battle HUD now (BattleHud.tap), without "auto"
+			for n in current_scene.get_children():
+				if n.has_signal("_action_chosen"):
+					print("⚔ [tap ", arg, "] ", "ok" if n.get("_hud").call("tap", arg) else "IMPOSSIBLE")
+		"pp":   # [party index, PP]: every move of that dino of the party left with these power points
+			for m: Dictionary in root.get_node("Game").get("party")[arg[0]].get("moves"):
+				m["pp"] = arg[1]
+		"key":   # a real key, pressed and released (InputEventKey: "E"…), unlike "press" (an action)
+			for pressed in [true, false]:
+				var key := InputEventKey.new()
+				key.physical_keycode = OS.find_keycode_from_string(String(arg))
+				key.keycode = key.physical_keycode
+				key.pressed = pressed
+				Input.parse_input_event(key)
 		"battle_corrupt":   # [species, level]: a battle against a corrupted dino (black amber)
 			var corrupt = load("res://game/dino.gd").create(StringName(arg[0]), arg[1])
 			corrupt.set("corrupted", true)
@@ -1135,10 +1149,11 @@ func _map_screen() -> Node:
 var _battle_said := ""
 
 
-## The move a player would pick: the strongest against the foe, among those left.
+## The move a player would pick: the strongest against the foe, among those left (none left:
+## it struggles, the index moves.size()).
 func _best_move(engine) -> int:
 	var moves_db = load("res://data/moves_db.gd")
-	var best := 0
+	var best: int = engine.player().moves.size()
 	var best_power := -1.0
 	var mine: Array = engine.player().moves
 	for k in mine.size():
@@ -1173,6 +1188,12 @@ func _auto_step() -> void:
 					var what: String = _hud_taps.pop_front()
 					print("⚔ [tap ", what, "] ", "ok" if hud.call("tap", what) else "IMPOSSIBLE")
 					return
+				var battle = n.get("engine")
+				if battle.get("must_switch"):   # after a knock-out: the first dino still standing goes in
+					for k in battle.get("team").size():
+						if battle.call("can_switch_to", k):
+							n.emit_signal("_action_chosen", {"type": "switch", "index": k})
+							return
 				# A corrupted foe: calm it; otherwise the first move.
 				var calm: bool = n.get("_calm_button").visible
 				n.emit_signal("_action_chosen", {"type": "calm"} if calm else {"type": "move", "index": _best_move(n.get("engine"))})

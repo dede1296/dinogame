@@ -55,6 +55,8 @@ var box: Array[Dino] = []
 var items: Dictionary = {}
 var dex_seen: Dictionary = {}   # species id -> first time seen (unix seconds)
 var dex_caught: Dictionary = {}
+## The Dinodex's notebook: species id -> the zone where it was first seen.
+var dex_where: Dictionary = {}
 var flags: Dictionary = {}
 var play_time := 0.0
 var clock := START_CLOCK
@@ -266,6 +268,46 @@ func set_lead(index: int) -> void:
 	party_changed.emit()
 
 
+## Party dinos `a` and `b` swap places (one of them 0: the lead changes, the dino following
+## Chloé too). The Dinodex, the party bar (dragged one onto the other).
+func swap_party(a: int, b: int) -> bool:
+	if a == b or a < 0 or b < 0 or a >= party.size() or b >= party.size():
+		return false
+	var d: Dino = party[a]
+	party[a] = party[b]
+	party[b] = d
+	party_changed.emit()
+	return true
+
+
+## The reserve's dino `box_index` joins the party at `party_index`: the one there goes to the
+## reserve in its place; past the end of the party (a free place), it is added. The Dinodex.
+func from_box(box_index: int, party_index: int) -> bool:
+	if box_index < 0 or box_index >= box.size() or party_index < 0:
+		return false
+	var incoming: Dino = box[box_index]
+	if party_index < party.size():
+		box[box_index] = party[party_index]
+		party[party_index] = incoming
+	elif party.size() < PARTY_MAX:
+		box.remove_at(box_index)
+		party.append(incoming)
+	else:
+		return false
+	party_changed.emit()
+	return true
+
+
+## Party dino `index` goes to the reserve; never the last one (Chloé is never alone).
+func to_box(index: int) -> bool:
+	if party.size() <= 1 or index < 0 or index >= party.size():
+		return false
+	box.append(party[index])
+	party.remove_at(index)
+	party_changed.emit()
+	return true
+
+
 ## Feeds a berry to `d`. Returns false when there is none or it is already healthy.
 func feed_berry(d: Dino) -> bool:
 	if d.hp >= d.max_hp() or not use_item("baie"):
@@ -328,6 +370,7 @@ func new_game() -> void:
 	flags = {}
 	dex_seen = {}
 	dex_caught = {}
+	dex_where = {}
 	explored = {}
 	searched = {}
 	egg = {}
@@ -399,11 +442,14 @@ func set_flag(id: StringName, value: Variant = true) -> void:
 	flag_changed.emit(id, value)
 
 
+## Chloé sees a species (a battle, a dino close by, a scene): in the Dinodex, with where.
+## True the first time.
 func mark_seen(species_id: StringName) -> bool:
 	var key := String(species_id)
 	if dex_seen.has(key):
 		return false
 	dex_seen[key] = int(Time.get_unix_time_from_system())
+	dex_where[key] = String(region_id)
 	return true
 
 
@@ -472,6 +518,7 @@ func to_dict() -> Dictionary:
 		"items": items,
 		"dex_seen": dex_seen,
 		"dex_caught": dex_caught,
+		"dex_where": dex_where,
 		"flags": flags,
 		"explored": seen,
 		"play_time": play_time,
@@ -509,6 +556,10 @@ func from_dict(data: Dictionary) -> void:
 		items[String(k)] = int(data["items"][k])
 	dex_seen = data.get("dex_seen", {})
 	dex_caught = data.get("dex_caught", {})
+	dex_where = data.get("dex_where", {})
+	# Saves from before every gift counted in the Dinodex: the dinos Chloé has are hers.
+	for d in party + box:
+		mark_caught(d.species().id)
 	flags = data.get("flags", {})
 	explored = {}
 	var seen: Dictionary = data.get("explored", {})

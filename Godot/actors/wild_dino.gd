@@ -31,6 +31,7 @@ var _idle_anim: StringName = &"idle"
 
 func _ready() -> void:
 	species = SpeciesDB.get_species(species_id)
+	add_to_group(&"dino_actor")   # Chloé sees it: the Dinodex (world.gd _spot_dinos)
 	level = randi_range(level_range.x, level_range.y)
 	var size := species.world_scale * DinoSize.growth(species, level)
 	sprite.sprite_frames = SheetFrames.dino(species)

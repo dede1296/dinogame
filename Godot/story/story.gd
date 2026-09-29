@@ -111,6 +111,7 @@ static func _run(event: StringName, who: Node) -> void:
 			said = await Desert.roc() or said
 			said = await Cote.roc() or said
 			said = await MontsFin.roc() or said
+			said = await _dex_rewards() or said
 			if not said and not healed and Game.flag(&"prologue_done"):
 				await _roc_chat()
 		&"maia":
@@ -298,6 +299,21 @@ static func _roc_chat() -> void:
 		return
 	if await Ask.menu(&"roc", "Prof. Roc", line[0]["text"], topics, action):
 		await reserve()
+
+
+## Roc looks at the Dinodex: its rewards not given yet (DexDB.pending_rewards). True if any.
+static func _dex_rewards() -> bool:
+	if not Game.flag(&"prologue_done"):
+		return false
+	var rewards := DexDB.pending_rewards()
+	for r in rewards:
+		for id: String in r["items"]:
+			Game.give_item(id, r["items"][id])
+		Game.set_flag(r["flag"])
+		await say([{"who": "Prof. Roc", "text": r["text"]}, {"text": "Tu reçois : %s." % r["gift"]}])
+	if not rewards.is_empty():
+		Save.save_game()
+	return not rewards.is_empty()
 
 
 ## The Cabinet's reserve (Game.box, the dinos caught while the party was full): one of them

@@ -39,6 +39,10 @@ const OUTLEVELED_BY := 5
 const OUTLEVELED_RATE := 0.25
 ## Experience for the whole party when a species is met for the first time.
 const XP_NEW_SPECIES := 10
+## Chloé sees the dinos this close (tiles): they go in the Dinodex (_spot_dinos). Its group of
+## dinos (DinoNpc, WildDino).
+const SIGHT_TILES := 6.5
+const DINO_ACTORS := &"dino_actor"
 const MOUNT_SFX := preload("res://assets/audio/sfx/latch.wav")   # the saddle buckled
 const ZONE_FADE := 0.3
 const RAIN_SOUND := preload("res://assets/audio/ambience/pluie.mp3")
@@ -105,6 +109,9 @@ func _ready() -> void:
 	_weather_sound()
 	SettingsMenu.add_open_button(hud)
 	_map_button = MapScreen.add_open_button(hud, _open_map)
+	DexScreen.ensure_action()
+	DexScreen.add_open_button(hud, _open_dex)
+	Game.party_changed.connect(_on_party_changed)
 	_ride_button = RideButton.add(hud, toggle_ride)
 	hud.add_child(DIVE_BUTTON.new())
 	hud.add_child(PartyBar.new())
@@ -325,6 +332,7 @@ func _process(delta: float) -> void:
 		_explore_timer = EXPLORE_EVERY
 		_explore()
 		_hear_surroundings()
+		_spot_dinos()
 
 
 ## The sea and the fires sound louder as Chloé comes near them.
@@ -407,6 +415,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"map"):
 		get_viewport().set_input_as_handled()
 		_open_map()
+	elif event.is_action_pressed(DexScreen.ACTION):
+		get_viewport().set_input_as_handled()
+		_open_dex()
 	elif event.is_action_pressed(&"ride"):
 		get_viewport().set_input_as_handled()
 		toggle_ride()
@@ -456,6 +467,41 @@ func _open_map() -> void:
 	# Indoors (a cave, the Cabinet): no detailed map, the island opens.
 	var layers := {} if region.indoor else _view.map_layers()
 	MapScreen.open(self, region, layers, player.global_position / region.tile_size(), ZONES)
+
+
+## The Dinodex, anywhere but in a battle or a scene. In the water, the team stays as it is
+## (the dino carrying Chloé must not leave her).
+func _open_dex() -> void:
+	if player.busy or _changing_zone or get_tree().paused:
+		return
+	var lock := "Dans l'eau, on garde son équipe : reviens sur la terre ferme pour la changer." if player.is_swimming() else ""
+	DexScreen.open(self, lock)
+
+
+## The team changed (the Dinodex, the Cabinet…): if the dino Chloé rides left it, she gets down.
+func _on_party_changed() -> void:
+	if player and player.mount and not Game.party.has(player.mount):
+		dismount()
+
+
+## Chloé sees the dinos close to her: a species new to her goes in the Dinodex (with a word on
+## screen, when no scene is playing) and teaches the party something, as a first battle does.
+func _spot_dinos() -> void:
+	if region == null or player == null:
+		return
+	var reach := SIGHT_TILES * TILE_PX
+	for n in get_tree().get_nodes_in_group(DINO_ACTORS):
+		var dino := n as Node2D
+		if dino == null or not dino.visible or dino.modulate.a < 0.4 or dino.is_queued_for_deletion():
+			continue
+		if dino.global_position.distance_to(player.global_position) > reach:
+			continue
+		var id: StringName = dino.get("species_id")
+		if not SpeciesDB.PATHS.has(id) or not Game.mark_seen(id):
+			continue
+		Game.award_team_xp(XP_NEW_SPECIES)
+		if not player.busy:
+			Toast.say(get_tree(), "Nouveau dans le Dinodex : %s !" % SpeciesDB.get_species(id).display_name)
 
 
 func _show_banner(title: String, subtitle := "") -> void:

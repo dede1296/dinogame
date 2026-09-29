@@ -160,7 +160,7 @@ static func _cracked_wall(npc: StringName) -> String:
 		return "Ton %s a le crâne qu'il faut ! Un bon coup de tête contre la fissure, et le mur cédera." % dome.nickname
 	for d: Dino in Game.box:
 		if Abilities.has(d, &"coup_crane"):
-			return "Ton %s attend au Cabinet : c'est lui qu'il te faut. Le Pr Roc peut l'échanger contre un dino de ton équipe." % d.nickname
+			return "Ton %s attend au Cabinet : c'est lui qu'il te faut. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname
 	if npc == &"roc":
 		return "Un mur fissuré ? Il te faut un crâne en dôme : un Pachycephalosaurus. Ils vivent dans les clairières rocheuses, au nord-est de la Forêt, et ne sortent que le jour. Hélène disait qu'ils se disent bonjour à coups de tête. Je n'ai jamais essayé."
 	return "Un Pachycephalosaurus ! Aux clairières rocheuses, au nord-est de la Forêt, le jour. Ils se cognent la tête toute la journée. Caillou a essayé une fois. Une seule."

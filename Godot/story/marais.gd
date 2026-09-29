@@ -429,7 +429,7 @@ static func _swim_lesson(caught: Dino) -> Array:
 	if caught and Game.party.has(caught):
 		lines.append({"who": JOSS, "text": "Et tu as %s ! Il est assez grand. Essaie donc : avance dans le chenal." % caught.nickname})
 	elif caught:
-		lines.append({"who": JOSS, "text": "%s est parti au Cabinet ? Ton équipe était pleine… Le professeur Roc peut te l'échanger contre un autre dino." % caught.nickname})
+		lines.append({"who": JOSS, "text": "%s est parti au Cabinet ? Ton équipe était pleine… Tu peux le faire venir depuis ton Dinodex, ou le professeur Roc te l'échangera." % caught.nickname})
 	elif swimmer:
 		lines.append({"who": JOSS, "text": "Ton %s nage très bien, lui. Essaie : avance dans le chenal." % swimmer.nickname})
 	else:
@@ -465,7 +465,7 @@ static func swim_step() -> String:
 			return "Ton %s est encore trop jeune pour te porter dans l'eau : il doit être adulte (niveau %d)." % [d.nickname, Abilities.ADULT_LEVEL]
 	for d: Dino in Game.box:
 		if Abilities.usable(d, &"nage"):
-			return "Ton %s attend au Cabinet : lui te porterait dans l'eau. Le Pr Roc peut l'échanger contre un dino de ton équipe." % d.nickname
+			return "Ton %s attend au Cabinet : lui te porterait dans l'eau. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname
 	return "Avec le gilet, il te faut un dino nageur adulte : les Baryonyx pêchent dans les roseaux du Marais, le jour. Affaiblis-en un, puis un collier !"
 
 
@@ -475,7 +475,7 @@ static func sing_step() -> String:
 		return ""
 	for d: Dino in Game.box:
 		if Abilities.has(d, &"resonance"):
-			return "Ton %s attend au Cabinet : sa crête ferait chanter l'ambre. Le Pr Roc peut te l'échanger." % d.nickname
+			return "Ton %s attend au Cabinet : sa crête ferait chanter l'ambre. Fais-le venir depuis ton Dinodex." % d.nickname
 	return "Il faut un dino dont la crête chante : un Corythosaurus de la roselière, un Iguanodon des rives, ou un Parasaurolophus."
 
 

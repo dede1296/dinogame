@@ -388,7 +388,7 @@ static func cracked_wall() -> Array:
 		steps.append({"text": "La paroi fendue. Derrière, les coups de marteau continuent."})
 	for d: Dino in Game.box:
 		if Abilities.has(d, &"coup_crane"):
-			steps.append({"text": "La roche sonne creux. Ton %s saurait quoi en faire… mais il attend au Cabinet. Le Pr Roc peut te l'échanger contre un dino de l'équipe." % d.nickname})
+			steps.append({"text": "La roche sonne creux. Ton %s saurait quoi en faire… mais il attend au Cabinet. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname})
 			return steps
 	steps.append({"text": "La roche sonne creux : un bon coup de tête bien placé, et elle céderait. Les Pachycephalosaurus des clairières rocheuses, au nord-est, passent leurs journées à se cogner le crâne. Pour eux, un mur, c'est un bonjour."})
 	return steps
@@ -628,7 +628,7 @@ static func claws_text() -> String:
 	if vif and Game.party.has(vif):
 		return "Ton Velociraptor a l'air d'en avoir, des griffes. Et méfie-toi des hautes herbes : les dinos sauvages adorent s'y cacher !"
 	if vif:   # (Vif waits at the Cabinet)
-		return "Ton Velociraptor en a, des griffes… mais il attend au Cabinet. Le Pr Roc peut te l'échanger. Et méfie-toi des hautes herbes : les dinos sauvages adorent s'y cacher !"
+		return "Ton Velociraptor en a, des griffes… mais il attend au Cabinet. Fais-le venir depuis ton Dinodex. Et méfie-toi des hautes herbes : les dinos sauvages adorent s'y cacher !"
 	return "Il te faudrait un raptor : les Velociraptor sauvages rôdent aux lisières, au crépuscule. Et méfie-toi des hautes herbes : les dinos adorent s'y cacher !"
 
 

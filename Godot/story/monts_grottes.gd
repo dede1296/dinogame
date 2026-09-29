@@ -556,8 +556,8 @@ static func dormeurs(who: Node) -> void:
 		CS.cue({"text": "Les trois petits se serrent contre Chloé en grelottant. Ils ont faim, ils ont froid, et ils ont tous choisi la même personne."}, huddle),
 		{"who": CHLOE, "text": "Je vous emmène au Cabinet. Roc a une couveuse bien chaude. Et beaucoup de baies."},
 	])
-	lines.append({"text": "Bertille les descendra au port avec son troupeau : ils partent attendre au Cabinet. (Le Pr Roc peut te les échanger contre un dino de ton équipe.)" if Game.flag(&"bertille_vue")
-		else "Les trois petits partent attendre au Cabinet, bien au chaud. (Le Pr Roc peut te les échanger contre un dino de ton équipe.)"})
+	lines.append({"text": "Bertille les descendra au port avec son troupeau : ils partent attendre au Cabinet. (Tu peux les faire venir depuis ton Dinodex, ou demander au Pr Roc.)" if Game.flag(&"bertille_vue")
+		else "Les trois petits partent attendre au Cabinet, bien au chaud. (Tu peux les faire venir depuis ton Dinodex, ou demander au Pr Roc.)"})
 	lines.append({"flag": &"dormeurs_reveilles"})
 	await S.say(lines)
 	_to_the_cabinet()

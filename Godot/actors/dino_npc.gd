@@ -31,6 +31,7 @@ func _ready() -> void:
 		queue_free()
 		return
 	species = SpeciesDB.get_species(species_id)
+	add_to_group(&"dino_actor")   # Chloé sees it: the Dinodex (world.gd _spot_dinos)
 	collision_layer = 1
 	collision_mask = 0
 	var size := species.world_scale * share()

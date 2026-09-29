@@ -92,7 +92,7 @@ static func _charge_how() -> String:
 		return " Ton %s sait charger : un bon coup de tête, et ça passera." % horn.nickname
 	for d: Dino in Game.box:
 		if Abilities.has(d, &"charge"):
-			return " Ton %s attend au Cabinet : lui saurait charger. Le Pr Roc peut te l'échanger." % d.nickname
+			return " Ton %s attend au Cabinet : lui saurait charger. Fais-le venir depuis ton Dinodex." % d.nickname
 	return " Il faut un dino qui charge : un Pinacosaurus des dunes, un Protoceratops, un Tricératops…"
 
 
@@ -118,7 +118,7 @@ static func _fossils(out: Array[Dictionary]) -> void:
 		how = " Il faut un dino qui a du flair : un Oviraptor (dans les nids des canyons, le jour), un Compsognathus ou un Troodon."
 		for d: Dino in Game.box:
 			if Abilities.has(d, &"flair"):
-				how = " Ton %s a du flair, mais il attend au Cabinet : le Pr Roc peut te l'échanger." % d.nickname
+				how = " Ton %s a du flair, mais il attend au Cabinet : fais-le venir depuis ton Dinodex." % d.nickname
 				break
 	_add(out, "fossiles", "Fossiles pour Tante Sirocco : %d sur %d (six sont enfouis dans le Cimetière des Géants)." % [n, P.FOSSILS_WANTED] + how, &"desert", P.CIMETIERE)
 
@@ -141,7 +141,7 @@ static func _rempart_little(out: Array[Dictionary]) -> void:
 	var little: Dino = bastion_dino()
 	if little == null or not Game.flag(&"rempart_rencontre") or Game.flag(&"rempart_bastion_reconnu"):
 		return
-	var with_her := "" if Game.party.has(little) else " (Il attend au Cabinet : le Pr Roc peut te l'échanger.)"
+	var with_her := "" if Game.party.has(little) else " (Il attend au Cabinet : fais-le venir depuis ton Dinodex.)"
 	var text := "Le Vieux Rempart a senti l'odeur %s sur tes mains. Emmène-le la voir, au fond du canyon muré." % French.de(little.nickname)
 	if str(Game.flag(&"starter")) != "ankylosaurus":
 		text = "Un Ankylosaurus d'Hélène… Le Vieux Rempart, au fond du canyon muré, reconnaîtrait peut-être %s." % little.nickname

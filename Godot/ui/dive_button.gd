@@ -6,7 +6,7 @@ extends Button
 ## Pressing « Plonger » without the mask or a grown diver says what is missing.
 
 const SIZE := 76.0
-const TOP := 172.0   # under the map button, in the saddle button's place (RideButton)
+const TOP := 258.0   # under the map and Dinodex buttons, in the saddle button's place (RideButton)
 const DIVE := preload("res://world/dive.gd")
 const CYAN := Color(0.62, 0.92, 1.0)
 const DEEP := Color(0.04, 0.2, 0.3)

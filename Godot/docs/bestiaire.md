@@ -3,6 +3,11 @@
 > Bible du jeu, 3/4. Qui vit où. Voir [mecaniques.md](mecaniques.md) pour les règles
 > (habitats, rencontres, capacités) et [lore.md](lore.md) pour le pourquoi : Hélène a rendu chaque
 > espèce à l'endroit de l'île qui ressemblait à son monde d'origine.
+>
+> Dans le jeu, le **Dinodex** le montre (mecaniques.md, « Le Dinodex ») : où vit chaque espèce est
+> relu dans les habitats des zones (`data/dex_places.gd`, généré), et sa fiche vraie — taille réelle,
+> régime, époque, fossiles, signe particulier, anecdote — est dans `data/dex_facts.gd` (à compléter
+> pour chaque nouvelle espèce, Uniques compris).
 
 ## Familles et types
 

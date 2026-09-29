@@ -115,7 +115,7 @@ static func _rocks() -> Array:
 		steps.append({"text": "Les éboulis du canyon muré. De l'autre côté, la grande respiration continue, lente comme la marée."})
 	for d: Dino in Game.box:
 		if Abilities.has(d, &"charge"):
-			steps.append({"text": "Ton %s saurait les enfoncer d'un coup de tête… mais il attend au Cabinet. Le Pr Roc peut te l'échanger contre un dino de l'équipe." % d.nickname})
+			steps.append({"text": "Ton %s saurait les enfoncer d'un coup de tête… mais il attend au Cabinet. Fais-le venir depuis ton Dinodex, ou demande au Pr Roc." % d.nickname})
 			return steps
 	steps.append({"text": "Il faudrait un dino qui charge. Les Pinacosaurus des dunes foncent tête baissée sur tout ce qui bouge ; un Tricératops ou un Protoceratops ferait l'affaire aussi."})
 	return steps
