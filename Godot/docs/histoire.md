@@ -1061,6 +1061,50 @@ ch. 5 fini : le manteau), `mur_glace_bloque`, `porte_givre_fermee`, `cieux_bloqu
 - **Hélène au Cabinet** : de nouvelles conversations, et des œufs d'ambre rares.
 - **Nouvelle partie+** : recommencer avec un autre œuf (voir [mecaniques.md](mecaniques.md)).
 
+## Clins d'œil (hommages à un grand film de dinosaures)
+
+Règle : des références **reconnaissables** (gestes, objets, allure, phrases dites autrement), jamais un
+logo, un nom de marque, le titre du film écrit, un personnage ou le visage d'un acteur ; rien de vraiment
+effrayant. Code : `story/clins_doeil.gd` (hors chapitres), `story/visiteurs.gd` (les visiteurs), lignes
+d'examen dans `world/examine.gd` ; décors placés par `tools/zones/*.gd` (`_clins_doeil`, `_visiteurs`).
+Tests : `tools/scenarios/jp_*.gd` (`rush=1` pour aller vite).
+
+**Dans le jeu (29/09)**
+1. **Le moustique dans l'ambre** : la canne de Roc (pommeau œuf d'ambre, Cabinet, contre le fauteuil),
+   examinable ; Roc accourt la première fois (« Doucement avec le pommeau ! »). Un galet d'ambre au moustique
+   caché dans les racines d'une souche géante, au bord de la mare du Cœur de la forêt (objet clé
+   `ambre_moustique`) ; montré à Roc : « Un moustique qui a bu le sang d'un dino… Non. Même moi, je n'y crois pas. »
+2. **La longue-vue d'Hélène** (Plaines) : « Les dinos vus dans cette longue-vue sont plus près qu'ils n'en ont l'air. »
+3. **« La vie trouve toujours un chemin »** : page 26 (les dormeurs) ; Ivan Malcombe la cite au Havre
+   (« C'est d'une certaine Hélène ») et Chloé le reconnaît en lisant la page.
+4. **Le Dilophosaure** : Tante Sirocco, avec un Dilophosaurus dans l'équipe : « pas de collerette, pas de
+   venin »… et il ouvre sa collerette ; Roc en parle aussi ; anecdote du Dinodex.
+5. **« T'as pas dit le mot magique ! »** : un Anurognathus sur le coffre du Comptoir de Ferréol (Havre).
+6. **L'eau qui tremble** : entrant au sanctuaire de Givre, une flaque ronde ; des cercles, un « boum » sourd,
+   la caméra tressaille, puis le silence, et le Titan descend.
+7. **Le raptor qui ouvre la porte** : en sortant du Cabinet après le Sceau de la Forêt (de jour), Roc montre
+   sa serrure neuve et ferme… un raptor de Chloé (ou de la réserve, ou un jeune Velociraptor venu dormir
+   contre la couveuse) rouvre la porte en sautant sur la poignée : « … Ils savent ouvrir les portes, maintenant ? »
+8. **Deux Compsognathus dans la cuisine** de Mémé Pervenche (ruelle derrière l'Herboristerie, une fois par
+   jour, pas la nuit) : Chloé s'accroupit derrière la table, ils volent deux biscuits.
+9. **Brac : « Petite futée… »**, tout bas, dans le cul-de-sac du Canyon des Vents (Désert), quand il comprend
+   qu'elle l'a suivi à travers la tempête.
+- Décors : griffe de raptor fossile (bureau de Roc, cadeau du Pr Granit), affiche « Monsieur ADN
+  explique… », chapeau d'Hélène à sa patère (Cabinet) ; la vieille voiture d'expédition verte et jaune
+  (« 04 ») coincée dans un arbre, derrière une clôture de rondins brisée de l'intérieur et son panneau « Ne
+  pas nourrir les animaux » (Forêt, Prairie des brachiosaures ; Roc : « Notre vieille voiture ! ») ; la
+  banderole « Quand les dinosaures régnaient sur la Terre » (fouilles de Sirocco) ; la bombe de mousse à
+  raser aux fioles (cache des grottes marines).
+- **Les visiteurs** (docs/lore.md) : M. Hamon et Ivan Malcombe (Havre), le Pr Granit (fouilles de Sirocco,
+  une fois Sirocco rencontrée), Élise Sablier et son Tricératops malade (Plaines, dès le Havre ; petite
+  quête : une baie ; récompense : 2 fougères curatives).
+
+**À venir**
+10. **L'éternuement du Brachiosaure** : la première rencontre du Grand Voyageur (avec le voyage rapide).
+11. **Chapitre 8** : « un T-Rex ne voit pas ce qui ne bouge pas » → Roc : « Une légende. Cours. » (et l'eau
+    qui tremble avant le T-Rex de Magma).
+12. **Chapitre 9** : un grand portail de bois entre deux torches, à l'entrée de la Terre des Apex.
+
 ---
 
 ## Le fil du Masque : fausses pistes et vrais indices

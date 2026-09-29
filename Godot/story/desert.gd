@@ -194,6 +194,8 @@ static func sirocco(who: Node) -> void:
 	if Game.phase() == &"night":
 		await S.say([{"text": "Tante Sirocco dort sous sa tente, un Oviraptor roulé en boule sur le ventre. Elle ronfle comme une dune qui s'écroule."}])
 		return
+	if await S.clins().sirocco_dilo(who):   # (a Dilophosaurus in the party: no frill, no venom… really?)
+		return
 	await A.menu(&"sirocco", SIROCCO, _sirocco_again(), A.sirocco_topics())
 
 

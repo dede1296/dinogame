@@ -323,6 +323,40 @@ static func light_at(px: Vector2, colour: Color, reach := 3.2) -> OmniLight3D:
 	return light
 
 
+## Rings on still water at `px` (world pixels: a puddle that trembles at each heavy step, far
+## off): `rings` circles flat on the ground grow from its middle and fade, one after the other, to
+## `radius_m` metres. Awaitable (until the last one has started).
+static func ripples(px: Vector2, rings := 2, radius_m := 0.4, secs := 0.9, colour := Color(0.88, 0.96, 1.0, 0.9)) -> void:
+	var view := _view()
+	if view == null or view.heights == null:
+		return
+	var at: Vector3 = view.heights.to_3d(px) + Vector3(0.0, 0.02, 0.0)
+	for i in rings:
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.albedo_color = colour
+		mat.no_depth_test = true   # (over the puddle's standing picture, which would hide its far half)
+		mat.render_priority = 1
+		var torus := TorusMesh.new()   # (flat on the ground: its axis is up)
+		torus.inner_radius = 0.9
+		torus.outer_radius = 1.0
+		torus.rings = 40
+		torus.ring_segments = 4
+		torus.material = mat
+		var ring := MeshInstance3D.new()
+		ring.mesh = torus
+		ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		view.add_child(ring)
+		ring.position = at
+		ring.scale = Vector3(1.0, 0.25, 1.0) * radius_m * 0.15
+		var t := ring.create_tween().set_parallel(true)
+		t.tween_property(ring, "scale", Vector3(1.0, 0.25, 1.0) * radius_m, secs).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		t.tween_property(mat, "albedo_color:a", 0.0, secs).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		t.chain().tween_callback(ring.queue_free)
+		await S.wait(secs * 0.3)
+
+
 ## The whole screen flashes (a burst of amber light, lightning, a great revelation). Awaitable.
 static func flash(colour := Color(1.0, 0.85, 0.45, 0.8), secs := 0.6) -> void:
 	var tree := Engine.get_main_loop() as SceneTree

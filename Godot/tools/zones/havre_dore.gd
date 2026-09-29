@@ -10,6 +10,8 @@ const PATH := "res://regions/havre/havre_dore.tscn"
 const B := preload("res://tools/zone_builder.gd")
 const CHARS := "res://assets/art/characters/%s.png"
 const STORY_PROP := "res://world/story_prop.gd"
+## The Anurognathus on Ferréol's chest: its picture raised onto the lid (px; the chest ~0.6 m up).
+const ANURO_LIFT := 26.0
 
 const PLAN := [
 	"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
@@ -68,7 +70,29 @@ static func build() -> Region:
 	B.spawn(root, "Depart", 3.0, 10.5)
 	B.spawn(root, "DepuisPort", 1.8, 10.5)
 	B.exit(root, Rect2(0.0, 9.0, 0.55, 3.0), &"port_ambre", &"DepuisHavre")
+	_clins_doeil(root, entities)
 	return root
+
+
+## Winks at a famous dinosaur film (29/09; docs/histoire.md « Clins d'œil », story/clins_doeil.gd):
+## Ferréol's iron-bound chest before his window, an Anurognathus perched on its lid (« T'as pas dit
+## le mot magique ! »); Mémé Pervenche's kitchen table in the lane behind her shop, and the
+## circle round it where, once a day, two Compsognathus come for the biscuits.
+static func _clins_doeil(root: Region, entities: Node2D) -> void:
+	if Prop.KINDS.has("coffre_comptoir"):
+		B.prop(entities, "coffre_comptoir", B.cell(31.2, 9.0))
+		# Just in front of the chest (so it is the one talked to), up on its lid.
+		B.dino_npc(root, "Anurognathus", &"anurognathus", 31.2, 9.04, {"event": &"anurognathus_coffre", "lift": ANURO_LIFT})
+	if Prop.KINDS.has("table_cuisine"):
+		# (in the lane between her shop and the haberdashery, x 8.9-10.6: in sight from the street, the
+		# forest at its end; the west side of her shop is all trees, they would hide it)
+		B.prop(entities, "table_cuisine", B.cell(9.75, 4.9))
+		B.trigger(root, 9.75, 6.6, 1.0, &"cuisine_compsos", {"name": "CuisinePervenche"})
+	# « Les visiteurs » come by boat (story/visiteurs.gd), once their sheets are drawn: M. Hamon by
+	# the square's east bench, looking at the sea; Ivan Malcombe on the quay, counting the waves.
+	for v: Array in [["Hamon", "M. Hamon", "hamon", 34.2, 16.6, &"hamon"], ["Malcombe", "Ivan Malcombe", "malcombe", 24.5, 22.2, &"malcombe"]]:
+		if ResourceLoader.exists(CHARS % v[2]):
+			B.npc(root, v[0], v[1], CHARS % v[2], v[3], v[4], {"facing": "down", "event": v[5]})
 
 
 ## The buildings face the street below them (their origin: the middle of the facade's foot).

@@ -32,6 +32,7 @@ static func _on_zone_entered(zone: StringName) -> void:
 				await Prologue.arrival()
 			else:
 				await Plaines.back_to_port()
+				await clins().porte_cabinet()   # (out of the Cabinet: a raptor opens its door)
 		&"cabinet":
 			await Prologue.cabinet()
 			await Plaines.empty_cabinet()
@@ -39,6 +40,8 @@ static func _on_zone_entered(zone: StringName) -> void:
 			await MaraisSuite.cabinet()
 		&"havre_dore":
 			await Havre.arrival()
+		&"plaines":
+			await visiteurs().plaines()   # (the sick Triceratops asleep, until Élise's berry)
 		&"grotte_echos":
 			await Grotte.arrival()
 		&"foret":
@@ -111,6 +114,7 @@ static func _run(event: StringName, who: Node) -> void:
 			said = await Desert.roc() or said
 			said = await Cote.roc() or said
 			said = await MontsFin.roc() or said
+			said = await clins().roc() or said   # (the car in the tree, the mosquito in amber)
 			said = await _dex_rewards() or said
 			if not said and not healed and Game.flag(&"prologue_done"):
 				await _roc_chat()
@@ -284,6 +288,26 @@ static func _run(event: StringName, who: Node) -> void:
 			await MontsSanctuaire.coeur(who)
 		&"maia_monts":
 			await MontsFin.maia(who)
+		# Winks at a famous dinosaur film (story/clins_doeil.gd, docs/histoire.md « Clins d'œil »)
+		&"canne_roc":
+			await clins().canne(who)
+		&"anurognathus_coffre":
+			await clins().anuro(who)
+		&"cuisine_compsos":
+			await clins().cuisine(who)
+		&"voiture_arbre":
+			await clins().voiture(who)
+		# « Les visiteurs » (story/visiteurs.gd)
+		&"hamon":
+			await visiteurs().hamon(who)
+		&"malcombe":
+			await visiteurs().malcombe(who)
+		&"granit":
+			await visiteurs().granit(who)
+		&"elise":
+			await visiteurs().elise(who)
+		&"triceratops_malade", &"crottes_triceratops":
+			await visiteurs().triceratops(who)
 		_:
 			push_error("Scène inconnue : %s" % event)
 
@@ -348,6 +372,17 @@ static func reserve() -> void:
 
 
 # ------------------------------------------------------------------ helpers for scenes
+
+## The winks at a famous dinosaur film that are no chapter's (story/clins_doeil.gd, docs/histoire.md
+## « Clins d'œil »), loaded when they play (that script preloads this one).
+static func clins():
+	return load("res://story/clins_doeil.gd")
+
+
+## « Les visiteurs », the little group come by boat to the Havre (story/visiteurs.gd), the same way.
+static func visiteurs():
+	return load("res://story/visiteurs.gd")
+
 
 ## The exploration screen (world.gd), untyped for its player, companion, region.
 static func world():

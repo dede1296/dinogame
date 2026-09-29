@@ -143,7 +143,24 @@ C'est aussi la ville des **dresseurs** : on y vient d'un peu partout sur l'île 
   L'été, il teste ses **gilets de nage** (cuir huilé, flotteurs de liège) dans sa cabane sur pilotis, à
   l'entrée du Marais Brumeux ; c'est là qu'il donne le sien à Chloé, repris à un jeune Baryonyx chapardeur.
 - **Mémé Pervenche**, herboriste. Connaît chaque baie de l'île et a soigné les dinos d'Hélène.
-  Sait beaucoup de choses, en dit peu, sauf si on lui achète des friandises.
+  Sait beaucoup de choses, en dit peu, sauf si on lui achète des friandises. Tous les jours, deux
+  Compsognathus viennent chiper un biscuit sur sa table de cuisine, dans la ruelle derrière la
+  boutique : elle fait semblant de ne pas les voir.
+- **Les visiteurs** (clins d'œil à un grand film de dinosaures : l'allure, jamais un nom ou un visage) :
+  un petit groupe de savants arrivé au Havre par le bateau du mardi. Tous ont connu Hélène.
+  - **M. Hamon**, vieil homme tout en blanc, chapeau de paille, barbe de neige, canne à pommeau
+    d'œuf d'ambre (un cadeau d'Hélène, comme celle de Roc). Il rêve d'« un parc, pour que tout le
+    monde voie les dinos » (« Je n'ai lésiné sur rien ! ») ; Chloé lui répond par la règle d'Hélène,
+    « chacun chez soi » ; son parc sera un banc face à l'île. Son premier spectacle : un cirque de
+    puces imaginaires.
+  - **Ivan Malcombe**, mathématicien tout en noir (veste de cuir, lunettes teintées), sur le quai :
+    une goutte d'eau sur la main de Chloé pour expliquer le chaos. Il cite « une certaine Hélène »,
+    qui l'a battu trois fois aux échecs : « La vie trouve toujours un chemin » (page 26 du journal).
+  - **Pr Granit**, paléontologue (chapeau de feutre, chemise de jean, foulard rouge), vieux complice
+    et rival de Tante Sirocco aux fouilles du Désert. « Pas doué avec les enfants », il leur apprend
+    tout ; il a offert à Anselme la griffe de raptor fossile de son bureau ; il déteste « ces machines ».
+  - **Élise Sablier**, botaniste (chemise saumon nouée, short, bottes), dans les Plaines : elle fouille
+    les crottes d'un Tricératops malade (du lilas des falaises) ; une baie le remet sur pied.
 
 Havre-Doré pose la question du jeu en plus grand : la ville vit bien **en vendant l'île morceau par
 morceau**. Isaure voulait ça pour Port-Ambre ; Hélène a refusé. Chloé verra les deux côtés.
@@ -328,7 +345,7 @@ mauvais : c'est une force de la nature, qui a peur quand on le réveille de forc
 | −66 millions d'années | Une éruption engloutit une forêt de résine : naissance de l'Ambre-Mère. |
 | −32 ans | Hélène arrive sur Ambrelune, conduite par une jeune marin du port : Isaure. Anselme Roc la rejoint. |
 | −30 ans | Premier réveil au Cabinet : un petit Protoceratops (page 1 du journal). Puis un Velociraptor : Griffe-Grise. |
-| −30 à −25 ans | Hélène réveille des dizaines d'espèces et les rend chacune à leur habitat. |
+| −30 à −25 ans | Hélène réveille des dizaines d'espèces et les rend chacune à leur habitat. La voiture d'expédition (verte et jaune, « 04 »), montée par bateau, disparaît la première semaine : un Tricératops l'a poussée… jusque dans un arbre de la Forêt. |
 | −25 ans | Découverte du Souverain. Tentative de réveil, éruption. Hélène l'apaise, scelle le cratère, brise la clé en cinq Cœurs et les confie aux Alphas. |
 | −20 ans | Le port décline (la pêche s'effondre). Isaure demande à Hélène de vendre de l'ambre. Refus. Rupture. Ferréol ouvre le Comptoir d'Ambre à Havre-Doré, qui prospère. |
 | −12 ans | Isaure vole des notes d'Hélène sur « l'ambre forcé ». Naissance secrète de l'Ombre Noire. |

@@ -9,7 +9,8 @@ class_name Doorway
 ## if it fits through the door; one too tall for it waits outside, beside it, and joins her as
 ## she comes out (Companion.outside while she is in another zone: the Cabinet). A character (an
 ## Npc) walks its walk. Used by the world (World.goto_zone: the Cabinet of Port-Ambre) and by
-## the scenes (the shops of Havre-Doré, Ferréol's warehouse at night, Roc leaving the Cabinet).
+## the scenes (the shops of Havre-Doré, Ferréol's warehouse at night, Roc leaving the Cabinet, a
+## raptor opening its door: story/clins_doeil.gd).
 ## All awaitable; at their end (or whatever cut them short: settle) everything is as it was.
 
 const S := preload("res://story/story.gd")
@@ -177,6 +178,65 @@ static func npc_out(house: Node2D, who: Npc, speed := KEEPER_SPEED) -> bool:
 	if is_instance_valid(who):
 		who.collision_layer = 1
 	return true
+
+
+# ------------------------------------------------------------------ a dino of a scene
+
+## A dino of a scene (a DinoNpc: the raptor that opens the Cabinet's door) comes out of `house`:
+## in the dark on its threshold, the door opens (unless it is already, `secs` long), out to its
+## front (the door stays open). False (nothing done): no door known.
+static func dino_out(house: Node2D, who: DinoNpc, speed := DINO_SPEED * 0.7, secs := Doors.OPEN_S) -> bool:
+	var d := _door(house)
+	if d.is_empty() or not is_instance_valid(who):
+		return false
+	who.collision_layer = 0
+	who.global_position = d["inside"]
+	who.reset_physics_interpolation()
+	_set_modulate(who, DARK)
+	_lift(who, d)
+	await _view().open_door(house, true, secs)
+	_fade(who, Color.WHITE, FADE_S)
+	await _scene_dino_walk(who, d["front"], speed, d)
+	_unlift(who)
+	return true
+
+
+## A dino of a scene goes into `house`: to its door, which opens (unless it is already), and in,
+## out of sight; the door closes behind it if `close`. False (nothing done): no door known.
+static func dino_in(house: Node2D, who: DinoNpc, speed := DINO_SPEED * 1.4, close := true) -> bool:
+	var d := _door(house)
+	if d.is_empty() or not is_instance_valid(who):
+		return false
+	who.collision_layer = 0
+	await _scene_dino_walk(who, d["front"], speed, d)
+	await _view().open_door(house)
+	_fade(who, DARK, FADE_S, _to_facade(speed * 0.5))
+	await _scene_dino_walk(who, d["inside"], speed * 0.5, d)
+	if close:
+		await _view().open_door(house, false)
+	return true
+
+
+## A dino of a scene walks to `to` (its walk; up or down the steps of the door `d`). Not
+## DinoNpc.walk_to, which hops down to the ground first (the steps' lift would be lost).
+static func _scene_dino_walk(who: DinoNpc, to: Vector2, speed: float, d: Dictionary) -> void:
+	if not is_instance_valid(who) or who.sprite == null:
+		return
+	var from := who.global_position
+	var way := to - from
+	if way.length() < 2.0:
+		return
+	var anims: Array = SheetFrames.dino_anims(who.sprite.sprite_frames, way)
+	if absf(way.x) > 1.0:
+		who.sprite.flip_h = way.x < 0.0
+	who.sprite.play(anims[0])
+	var t := who.create_tween()
+	t.tween_method(func(p: Vector2) -> void:
+		who.global_position = p
+		_lift(who, d), from, to, way.length() / speed)
+	await t.finished
+	if is_instance_valid(who):
+		who.sprite.play(anims[1])
 
 
 # ------------------------------------------------------------------ the shops

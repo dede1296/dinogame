@@ -19,6 +19,10 @@ const PEOPLE := {
 	"chloe_bottes": [1.50, 173.5], "joss_bocal": [1.69, 178.5],
 	# Le manteau chaud des régions froides (AJOUT du 29/09) : la capuche compte dans l'union.
 	"chloe_manteau": [1.50, 175.0], "maia_manteau": [1.50, 174.0],
+	# Les visiteurs, clins d'œil à Jurassic Park (AJOUT du 29/09, tools/art-jobs/jurassique.mjs) :
+	# planches éditées depuis roc/garde/isaure/gaspard puis recalées (alignWithBase) sur ces mêmes
+	# planches — hauteur dessinée = médiane des 16 cases (mêmes ~174 px, cohérent avec leurs sources).
+	"hamon": [1.70, 174.0], "granit": [1.85, 173.5], "elise": [1.65, 173.5], "malcombe": [1.80, 173.0],
 }
 ## Someone not in the table yet.
 const DEFAULT := [1.70, 174.0]

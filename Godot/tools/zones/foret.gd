@@ -91,6 +91,15 @@ const MASQUE_WALKWAY := Vector2(56.5, 75.2)
 const MASQUE_TREES := [Vector2(53.85, 73.3), Vector2(59.15, 73.3)]
 const MASQUE_TRIGGER := Vector2(56.5, 77.0)
 const MASQUE_RADIUS := 2.5
+## The old broken fence (west of the trail down the Prairie des brachiosaures, x 113-115), its
+## sign by the trail; the amber pebble in the roots of the giant stump by the pond of the Cœur de la
+## forêt, on its far side from the trail.
+const FENCE := Vector2(110.3, 69.8)
+const FENCE_SIGN := Vector2(112.7, 71.2)
+const MOSQUITO_AMBER := Vector2(28.2, 59.5)
+## The old expedition car stuck high in a big tree, behind the broken fence (the forest behind it:
+## it hides nothing to be seen).
+const CAR_TREE := Vector2(107.6, 66.6)
 
 
 static func build() -> Region:
@@ -125,7 +134,29 @@ static func build() -> Region:
 	BORDERS.plants(root, entities, marsh, ["roseaux", "roseaux", "hautes_herbes", "prele"], 0.3, 4473, KEEP_CLEAR)
 	_places(root)
 	_habitats(root)
+	_clins_doeil(root, entities)
 	return root
+
+
+## Winks at a famous dinosaur film (29/09; docs/histoire.md « Clins d'œil »; last: nothing placed
+## before moves): west of the trail down through the Prairie des brachiosaures, an old giant fence
+## of logs broken from the inside, its sign, and behind it an old expedition car stuck high in a tree
+## (Roc knows it: story/clins_doeil.gd); in the roots of a giant stump by the pond, a pebble
+## of amber with a mosquito in it (a rare find: Roc has a word about it, story/clins_doeil.gd).
+static func _clins_doeil(root: Region, entities: Node2D) -> void:
+	if Prop.KINDS.has("cloture_brisee"):
+		B.prop(entities, "cloture_brisee", _open_near(root, FENCE))
+		B.sign(entities, B.cell(FENCE_SIGN.x, FENCE_SIGN.y), &"panneau_cloture")
+	if Prop.KINDS.has("voiture_arbre"):
+		var car = B.prop(entities, "voiture_arbre", _open_near(root, CAR_TREE), false, load(STORY_PROP))
+		car.name = "VoitureArbre"
+		car.event = &"voiture_arbre"
+	if Prop.KINDS.has("ambre_moustique"):
+		var amber = B.prop(entities, "ambre_moustique", B.cell(MOSQUITO_AMBER.x, MOSQUITO_AMBER.y), false, load(PICKUP))
+		amber.name = "AmbreMoustique"
+		amber.taken_flag = &"ambre_moustique_trouve"
+		amber.dialogue_id = &"ambre_moustique"
+		amber.item_id = "ambre_moustique"
 
 
 ## Planks over the stream where the trails cross it, and the bridge to the Marais over the

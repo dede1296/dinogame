@@ -85,4 +85,24 @@ static func build() -> Region:
 		B.dino_npc(root, "Bebe_" + String(b[0]), b[0], b[1], b[2], {"event": &"choose_starter", "flip": true, "level": 5, "lift": 25.0})
 	B.spawn(root, "Depart", 8.0, 9.4)
 	B.exit(root, Rect2(7.0, 10.45, 2.0, 0.55), &"port_ambre", &"DepuisCabinet", &"prologue_done", &"cabinet_bloque")
+	_clins_doeil(entities)
 	return root
+
+
+## Winks at a famous dinosaur film (29/09; docs/histoire.md « Clins d'œil », story/clins_doeil.gd):
+## a raptor's fossil claw on Roc's desk (raised onto its top by its foot), the « Monsieur ADN »
+## poster and Hélène's hat on its peg on the back wall (hung: foot < 0), Roc's walking stick
+## against the armchair, leaning on it (a story prop: its scene; gone with him the nights he is out).
+static func _clins_doeil(entities: Node2D) -> void:
+	if Prop.KINDS.has("griffe_fossile"):
+		B.prop(entities, "griffe_fossile", B.cell(5.78, 3.05))
+	var poster := "affiche_adn" if Prop.KINDS.has("affiche_adn") else "affiche_ambre"   # (« Monsieur ADN explique… »)
+	if Prop.KINDS.has(poster):
+		B.prop(entities, poster, B.cell(9.0, 1.42))   # (between a portrait and the lantern's hook)
+	if Prop.KINDS.has("chapeau_helene"):
+		B.prop(entities, "chapeau_helene", B.cell(15.1, 1.4))
+	if Prop.KINDS.has("canne_roc"):
+		var stick = B.prop(entities, "canne_roc", B.cell(10.05, 3.5), true, load("res://world/story_prop.gd"))
+		stick.name = "CanneRoc"
+		stick.event = &"canne_roc"
+		stick.hide_flag = &"roc_dehors"

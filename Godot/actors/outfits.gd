@@ -61,6 +61,7 @@ const POSES := {
 	"maia_manteau": {
 		&"assis": {"sheet": "maia_manteau_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
 	},
+	"elise": {&"accroupi": {"sheet": "elise_accroupie", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"tante_sirocco": {&"assis": {"sheet": "tante_sirocco_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"roc": {&"assis": {"sheet": "roc_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"pecheur": {&"assis": {"sheet": "pecheur_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},

@@ -53,6 +53,9 @@ const ITEMS := {
 		"desc": "Un disque d'ambre bleu pâle, un flocon et la fougère d'Hélène : la confiance du Cryolophosaure Titan."},
 	"moufles_helene": {"name": "Moufles d'Hélène", "icon": "moufles", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Rouges, tricotées main, un peu feutrées, reprisées au pouce. Bertille les avait tricotées pour Hélène. Trop grandes pour Chloé. Parfaites."},
+	# A rare find in the Forêt (a wink: docs/histoire.md « Clins d'œil »); Roc has a word about it.
+	"ambre_moustique": {"name": "Ambre au moustique", "icon": "ambre_moustique", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Un galet d'ambre trouvé dans les racines d'une vieille souche de la Forêt. Dedans, un moustique figé depuis des millions d'années. Il a l'air très surpris."},
 	# The warm coat: without it, no going up into the cold regions (the Monts, later the Cieux).
 	# Priced for what a player has at the end of chapter 5 (docs/mecaniques.md, « Les régions froides »).
 	"manteau_duvet": {"name": "Manteau de duvet", "icon": "manteau_duvet", "kind": "cle", "price": 300, "sell": 0,

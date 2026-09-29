@@ -1,7 +1,8 @@
 class_name MontsSanctuaire
 ## Chapter 6, the Monts Gelés, the sanctuary of Givre (zone sanctuaire_givre; docs/histoire.md,
 ## ch. 6, point 4): a round hall cut in the ice, blue light falling through the vault, a high
-## wall of ice, two statues by the altar. Down the wall of ice climbs the
+## wall of ice, two statues by the altar. Heavy steps up there make a puddle tremble (a wink:
+## docs/histoire.md « Clins d'œil »), then silence; down the wall of ice climbs the
 ## Cryolophosaure Titan, silent (a crest across its head like a Sunday hairdo: Anselme called it
 ## « Toupet », page 27). It smells the Sceaux and the three Cœurs, then roars: a battle of honour.
 ## Won, it bows, breathes on the altar until the ice opens: the Sceau des Monts and the fourth
@@ -27,6 +28,13 @@ const TITAN_SIZE := 1.1
 ## How high up the wall of ice it starts its climb down (px of its picture's lift).
 const CLIMB_FROM := 170.0
 const XP_ARRIVEE := 20
+## Its heavy steps up there before it climbs down: the puddle of melted ice by the way in
+## (tools/zones/sanctuaire_givre.gd), a dull thud (low), every so often (s).
+const PUDDLE_NODE := "FlaqueRonde"
+const PUDDLE_MIDDLE_PX := 8.0
+const STEP_DB := -5.0
+const STEP_PITCH := 0.55
+const STEP_EVERY := 1.25
 const XP_COEUR := 110
 const TITAN_AGAIN := [
 	"Le Titan souffle doucement sur les mains de Chloé. De petites fleurs de givre poussent sur ses manches.",
@@ -73,9 +81,27 @@ static func arrival() -> void:
 			Stage.turn_to(guardian, chloe.global_position)
 			MS.breath(guardian, 14)
 		Stage.emote(chloe, "!")
+	# (Clin d'œil, docs/histoire.md « Clins d'œil »: the water that trembles before a giant comes.)
+	var steps := {"on": true}
+	var puddle_px: Vector2 = _puddle_px(chloe)
+	var trembles := func() -> void:
+		Stage.look_at(puddle_px + Vector2(0.0, -12.0), 1.0)
+		await S.wait(0.7)
+		while steps["on"]:
+			Audio.play_sfx(load(MS.RUMBLE), STEP_DB, 0.03, STEP_PITCH)
+			Stage.shake(1.6, 0.18)
+			Stage.ripples(puddle_px, 3, 0.42, 1.0)
+			await S.wait(STEP_EVERY)
+	var silence := func() -> void:
+		steps["on"] = false
+		Stage.emote(chloe, "!")
+		await S.wait(0.6)
+		CS.pan(rest + Vector2(0.0, -1.0 * S.CELL), 1.4)
 	var lines: Array = [
 		CS.cue({"text": "Derrière la porte, une salle ronde, taillée dans la glace. La lumière tombe d'en haut, à travers la voûte, bleue et tremblante."}, hall),
 		CS.cue({"text": "Au fond, une haute paroi de glace, et deux statues de Cryolophosaure qui montent la garde de chaque côté d'un autel."}, far_wall),
+		CS.cue({"text": "Aux pieds de Chloé, dans une petite flaque de fonte, l'eau se met à trembler. Des cercles, bien ronds. Boum. … Boum."}, trembles),
+		CS.cue({"who": CHLOE, "text": "(Quelque chose de très lourd marche, là-haut… Et puis, plus rien.)"}, silence),
 		CS.cue({"text": "Du haut de la paroi, quelque chose descend. Les griffes plantées dans la glace, sans un bruit."}, climbs),
 		CS.cue({"text": "Il se pose devant l'autel, et la glace ne se fend même pas. Un Cryolophosaure, grand comme un arbre, avec une crête toute droite en travers de la tête."}, lands),
 		{"who": CHLOE, "text": "(On dirait qu'il s'est coiffé pour me recevoir.)"},
@@ -92,6 +118,14 @@ static func arrival() -> void:
 	Game.award_team_xp(XP_ARRIVEE)
 	Save.save_game()
 	S.lock(false)
+
+
+## The middle of the puddle by the way in (its node, else just north of Chloé's feet).
+static func _puddle_px(chloe: Player) -> Vector2:
+	var puddle = S.actor(PUDDLE_NODE)
+	if puddle is Node2D:   # (its picture stands up from its foot: its middle is seen a little further north)
+		return (puddle as Node2D).global_position + Vector2(0.0, -PUDDLE_MIDDLE_PX)
+	return chloe.global_position + Vector2(-20.0, -60.0)
 
 
 # ------------------------------------------------------------------ the Titan

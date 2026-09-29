@@ -94,10 +94,13 @@ static func _page_26() -> Array:
 		{"letter": ["Les dormeurs",
 			"Aujourd'hui, j'ai mis à l'abri ce que je ne peux pas me permettre de perdre : des œufs, et quelques petits trop fragiles pour le monde d'en bas.",
 			"La glace les garde comme l'ambre, sans rien forcer. Ils dormiront jusqu'à ce qu'ils soient prêts, ou jusqu'à ce que quelqu'un vienne, avec des mains chaudes et un cœur patient.",
+			"La vie trouve toujours un chemin. Moi, je lui garde seulement la porte entrouverte.",
 			"Bertille m'a prêté son traîneau sans poser une seule question. Elle m'a seulement demandé si j'avais pensé à mes moufles. Non."],
 			"sign": "— H."},
 		{"flag": &"found_journal_26"},
 	]
+	if Game.flag(&"malcombe_vu"):   # (Ivan Malcombe quoted her, at the Havre: story/visiteurs.gd)
+		steps.append({"who": CHLOE, "text": "(« La vie trouve toujours un chemin. » M. Malcombe avait raison : c'était bien d'elle.)"})
 	if Game.flag(&"dormeurs_reveilles"):
 		steps.append({"who": CHLOE, "text": "(Des mains chaudes… Les Cœurs ont réchauffé les miennes. Tu avais tout prévu, hein ?)"})
 	else:

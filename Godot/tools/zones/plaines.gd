@@ -12,6 +12,10 @@ const B := preload("res://tools/zone_builder.gd")
 const BORDERS := preload("res://tools/zones/borders.gd")
 const MAPS := "res://tools/maps/plaines_%s.png"
 const CHARS := "res://assets/art/characters/%s.png"
+## Élise Sablier's sick Triceratops (« les visiteurs »): it, its pile, her (tiles).
+const ELISE_TRI := Vector2(82.0, 54.4)
+const ELISE_PILE := Vector2(79.8, 55.1)
+const ELISE_AT := Vector2(79.1, 56.3)
 const OBSTACLE := "res://world/obstacle.gd"
 const PICKUP := "res://world/pickup.gd"
 const STORY_PROP := "res://world/story_prop.gd"
@@ -56,7 +60,24 @@ static func build() -> Region:
 	BORDERS.plants(root, entities, forest, ["fougeres", "fougeres", "fougeres", "fougeres", "champignons", "souche"], 0.3, 5171, KEEP_CLEAR)
 	_places(root)
 	_habitats(root)
+	_visiteurs(root, entities)
 	return root
+
+
+## « Les visiteurs » (29/09, story/visiteurs.gd; last: nothing placed before moves): in the open meadow
+## south of the pond (clear of the tall grass, which would hide them), a sick Triceratops asleep by an enormous pile of its dung, and Élise
+## Sablier, botanist, digging in it — once her sheet is drawn, from the Havre on.
+static func _visiteurs(root: Region, entities: Node2D) -> void:
+	if not ResourceLoader.exists(CHARS % "elise"):
+		return
+	B.dino_npc(root, "TriceratopsMalade", &"triceratops", ELISE_TRI.x, ELISE_TRI.y, {"event": &"triceratops_malade",
+		"show_flag": &"havre_arrive", "flip": true})
+	if Prop.KINDS.has("crottes_triceratops"):
+		var pile = B.prop(entities, "crottes_triceratops", B.cell(ELISE_PILE.x, ELISE_PILE.y), false, load("res://world/story_prop.gd"))
+		pile.name = "CrottesTriceratops"
+		pile.event = &"crottes_triceratops"
+	B.npc(root, "Elise", "Élise Sablier", CHARS % "elise", ELISE_AT.x, ELISE_AT.y, {"facing": "left", "event": &"elise",
+		"show_flag": &"havre_arrive"})
 
 
 static func _scatter(root: Region, entities: Node2D) -> void:

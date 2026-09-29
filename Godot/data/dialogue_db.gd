@@ -195,6 +195,18 @@ static func lines(id: StringName) -> Array:
 		&"panneau_futaie":
 			return [{"text": "Haute futaie. Rampes taillées à la main par A. Roc, qui a le vertige. Merci de ne pas le lui rappeler."},
 				{"text": "Au crayon, dessous : « Les Microraptors volent les chapeaux. Et les lunettes. SURTOUT les lunettes. »"}]
+		# Clins d'œil (docs/histoire.md « Clins d'œil »): the sign by the old broken fence of the
+		# Prairie des brachiosaures, and the amber pebble with a mosquito in it (Forêt, a rare find).
+		&"panneau_cloture":
+			return [{"text": "Un vieux panneau, tout penché : « NE PAS NOURRIR LES ANIMAUX. »"},
+				{"text": "Dessous, d'une écriture penchée que Chloé connaît bien : « De toute façon, ils se servent tout seuls. — H. »"}]
+		&"ambre_moustique":
+			return [
+				{"text": "Dans les racines de la vieille souche, quelque chose brille. Un galet d'ambre, lisse et doré, gros comme un œuf de caille."},
+				{"text": "Et dedans, figé depuis des millions d'années, un moustique. Les ailes bien à plat, les pattes repliées."},
+				{"who": CHLOE, "text": "(Il a l'air aussi surpris que moi.)"},
+				{"text": "Chloé range l'ambre au moustique tout au fond de sa sacoche. Roc voudra sûrement le voir."},
+			]
 		&"page_7":
 			return [
 				{"text": "Sous la plus grande fougère du sous-bois, roulée dans une feuille cirée, une page du journal."},
@@ -554,6 +566,8 @@ static func chatter(who: StringName) -> Array:
 				pool.insert(0, "Un camp de braconniers, dans la Forêt ? … Prends des baies. Beaucoup de baies. Et reviens entière, tu m'entends ?")
 			if Game.flag(&"brac_battu"):
 				pool.append("Un braconnier, dans la Forêt d'Hélène… Elle en a chassé trois de cette île, autrefois. À coups de parapluie. Le parapluie n'y a pas survécu.")
+			if Game.party.any(func(d: Dino) -> bool: return d.species().id == &"dilophosaurus"):
+				pool.append("Ton Dilophosaurus a ouvert sa collerette sur mon bureau. Toutes mes notes se sont envolées. Il paraît que les vrais n'en avaient pas. Ça ne me console pas du tout.")
 			var little: Dino = ForetCamp.recovered()
 			if little and Game.flag(&"roc_oeuf_retrouve"):
 				pool.append("Chaque fois %s passe au Cabinet, il file droit se coucher contre la couveuse. Moi, je ne dis rien. Je pose une couverture." % French.que(little.nickname))

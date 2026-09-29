@@ -17,6 +17,8 @@ const BACKDROP := ["res://assets/art/battle/sanctuaire_givre.jpg", "res://assets
 const FLOORS := ["res://assets/art/ground/sol_grotte_glace.png", "res://assets/art/ground/grotte_sol.png"]
 ## The Titan: an Alpha, bigger than its kind (docs/direction-artistique.md « Échelle »).
 const TITAN_SIZE := 1.2
+## The puddle whose water trembles before the Titan comes down (story/monts_sanctuaire.gd).
+const PUDDLE := Vector2(15.3, 28.7)
 
 ## The ground (see ZoneBuilder): . the floor, s clear ice (the ring round the Titan).
 const PLAN := [
@@ -140,6 +142,11 @@ static func build() -> Region:
 	B.exit(root, Rect2(14.0, 33.45, 4.0, 0.55), &"monts", P.SPAWN_SANCTUAIRE)
 	# (Its name on the map.)
 	B.habitat(root, "Le Sanctuaire de Givre", Rect2(3, 1, 26, 21), [], 0)
+	# (29/09) Wink at a famous dinosaur film (docs/histoire.md « Clins d'œil »; last: nothing placed
+	# before moves): a round puddle of melted ice in the corridor, just north of the way in (its
+	# corridor's clearing ends at y 29.4), whose water trembles at the Titan's steps (story/monts_sanctuaire.gd).
+	if Prop.KINDS.has("flaque_ronde"):
+		B.prop(entities, "flaque_ronde", B.cell(PUDDLE.x, PUDDLE.y))
 	return root
 
 

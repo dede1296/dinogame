@@ -617,6 +617,15 @@ static func _brac_hello(who: Node) -> Array:
 		(who as Npc).face(chloe.global_position)
 		await S.wait(0.6)
 		Stage.bow(who, 1.4)   # eyes shut very tight
+	var sizes_up := func() -> void:   # at her, past her at the storm behind, at the rock, back at her
+		for look: Vector2 in [chloe.global_position, chloe.global_position + Vector2(0.0, 200.0),
+				(who as Node2D).global_position + Vector2(0.0, -100.0), chloe.global_position]:
+			if not is_instance_valid(who):
+				return
+			(who as Npc).face(look)
+			await S.wait(0.9)
+		if is_instance_valid(who):
+			Stage.bow(who, 0.8)
 	var over_the_shoulder := func() -> void:
 		await S.wait(1.4)
 		(who as Npc).face((who as Node2D).global_position + Vector2(0.0, -100.0))
@@ -633,6 +642,10 @@ static func _brac_hello(who: Node) -> Array:
 	lines.append_array([
 		D._cue({"text": "Il se retourne. Il voit Chloé. Il ferme les yeux très fort, comme s'il espérait qu'elle disparaisse."}, turns),
 		{"who": BRAC, "text": "… Évidemment. Le moucheron."},
+		# (Clin d'œil, docs/histoire.md « Clins d'œil »: the words exactly as they are, under his breath.)
+		D._cue({"text": "Il la regarde. Puis la tempête derrière elle, où ses traces se sont effacées. Puis son cul-de-sac. Et il marmonne, tout bas, presque malgré lui :"},
+			sizes_up),
+		{"who": BRAC, "text": "Petite futée…"},
 		{"who": CHLOE, "text": "Laissez-le partir, Brac. Il n'ouvrira jamais la porte pour vous. Elle ne s'ouvre qu'au gardien sans peur."},
 		{"who": BRAC, "text": "Sans peur, sans peur… Il a peur de TOUT, ce gros lézard ! Des cailloux, du vent, de son ombre ! Il a même peur de MOI !"},
 		{"who": CHLOE, "text": "C'est vous qui lui avez fait ça."},

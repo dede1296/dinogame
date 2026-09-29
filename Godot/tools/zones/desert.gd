@@ -72,6 +72,10 @@ const RUBBLE := Vector2(28.5, 58.8)
 const RAMPART := Vector2(20.5, 32.0)
 const MAIA := Vector2(93.2, 30.2)
 const WELL := Vector2(92.2, 27.6)
+## Tante Sirocco's banner at her dig, stretched in front of the cemetery's long skeleton (70.2, 79.6).
+const BANNER := Vector2(70.2, 81.5)
+## The Pr Granit, one of « the visitors », at Tante Sirocco's dig (east of her vertebra).
+const GRANIT := Vector2(88.4, 68.4)
 ## The six fossils, where Tante Sirocco's hints say (story/desert_places.gd FOSSILS), each at
 ## the foot of its landmark: [flag, fossil (tiles), landmark kind, landmark (tiles), flip].
 const FOSSILS := [
@@ -115,6 +119,14 @@ static func build() -> Region:
 	# its green reeds and ferns (tools/zones/borders.gd; last: nothing placed before moves).
 	var marsh := BORDERS.cover(root, "marais", "vase", "terre", "res://regions/desert")
 	BORDERS.plants(root, entities, marsh, ["roseaux", "roseaux", "fougeres", "hautes_herbes"], 0.25, 5261, KEEP_CLEAR)
+	# (29/09) Wink at a famous dinosaur film (docs/histoire.md « Clins d'œil »; last: nothing placed
+	# before moves): Tante Sirocco's torn banner, between two poles, at her dig.
+	if Prop.KINDS.has("banderole_fouilles"):
+		B.prop(entities, "banderole_fouilles", B.cell(BANNER.x, BANNER.y))
+	# « Les visiteurs » (story/visiteurs.gd): the Pr Granit digs beside Tante Sirocco, once she has met
+	# Chloé and once his sheet is drawn.
+	if ResourceLoader.exists(CHARS % "granit"):
+		B.npc(root, "Granit", "Pr Granit", CHARS % "granit", GRANIT.x, GRANIT.y, {"facing": "left", "event": &"granit", "show_flag": &"sirocco_vue"})
 	return root
 
 

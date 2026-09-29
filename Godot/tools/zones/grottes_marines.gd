@@ -135,6 +135,10 @@ static func build() -> Region:
 	B.habitat(root, "La Cache des contrebandiers", Rect2(1, 1, 38, 8), [
 		[&"elasmosaurus", 33, 35, 10, moon, false],
 	], 1)
+	# (29/09) Wink at a famous dinosaur film (docs/histoire.md « Clins d'œil »; last: nothing placed
+	# before moves): among the smugglers' crates, a dented tin of shaving cream… hiding three vials.
+	if Prop.KINDS.has("creme_raser"):
+		B.prop(entities, "creme_raser", B.cell(9.25, 4.95))
 	return root
 
 

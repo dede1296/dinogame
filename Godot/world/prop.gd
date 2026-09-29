@@ -289,6 +289,49 @@ const KINDS := {
 	# underneath like arche_rocheuse (no blocking collision, no shadow).
 	"abri_roche": {"scale": 0.327, "foot": 0.0, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	"statue_cryolophosaure": {"scale": 0.236, "foot": 0.02, "solid": 30.0, "sway": 0.0, "shadow": 85.0},
+	# Clins d'œil à Jurassic Park (29/09, agent A, tools/art-jobs/jurassique.mjs). Sizes checked
+	# against the K≈45 rule (docs de l'agent, <scratchpad>/jp/PLAN.md « Tailles réelles »). Placement
+	# and story wiring: agent B (world/examine.gd, tools/zones/*, docs/histoire.md « Clins d'œil »).
+	# griffe_fossile: sits on furniture (Roc's desk) — no ground collision, like registre/panier_fioles.
+	# foot -3.1 (demande d'agent B, 29/09) : la monte de ~0,85 m à l'écran pour qu'elle repose SUR le
+	# plateau du bureau (devant le microscope) plutôt que par terre à son pied.
+	"griffe_fossile": {"scale": 0.0278, "foot": -3.1, "solid": 0.0, "sway": 0.0, "shadow": 10.0},
+	# chapeau_helene: wall-mounted (Cabinet), foot négatif (prop.gd docstring) — bottom edge floats
+	# ~1.3 m up the wall (same wall height as lanterne_crochet); exact hang height retuned once placed
+	# against the real Cabinet wall geometry.
+	"chapeau_helene": {"scale": 0.054, "foot": -2.6, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# affiche_adn ("Monsieur ADN explique...", 29/09, NOUVELLE DIRECTION — remplace affiche_ambre):
+	# wall-mounted, same Cabinet wall as chapeau_helene; foot négatif, bottom edge floats ~1.0 m up.
+	"affiche_adn": {"scale": 0.09, "foot": -0.83, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# canne_roc: leaning against the armchair, thin — walk-through like other small handheld props.
+	"canne_roc": {"scale": 0.0793, "foot": 0.05, "solid": 0.0, "sway": 0.0, "shadow": 8.0},
+	# ambre_moustique: the hidden Forêt trouvaille (same footprint as "ambre"; also ui/ambre_moustique.png).
+	"ambre_moustique": {"scale": 0.02184, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 10.0},
+	# voiture_arbre (29/09, NOUVELLE DIRECTION — remplace barque_arbre, déplacée du Marais à la Forêt):
+	# édité depuis arbre_geant.png lui-même et recalé à sa même hauteur réelle (scale 1.0 : la mise à
+	# l'échelle réelle est déjà appliquée à l'image par le job, voir tools/art-jobs/jurassique.mjs) —
+	# mêmes solid/shadow que "arbre_geant" (le même tronc).
+	"voiture_arbre": {"scale": 0.5, "foot": 0.04, "solid": 40.0, "sway": 0.0, "shadow": 240.0},   # (~6 m: the car up in the branches, seen by the camera)
+	# cloture_brisee: broken from the inside — no collision (the gap is meant to be walked through),
+	# no shadow, like the intact "cloture".
+	"cloture_brisee": {"scale": 0.3982, "foot": 0.06, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# banderole_fouilles: two poles + cloth over Sirocco's dig — decorative, no collision. Refaite
+	# 29/09 (NOUVELLE DIRECTION, style réf. film) — texte composé en SVG dans le job (accents garantis).
+	"banderole_fouilles": {"scale": 0.2616, "foot": 0.03, "solid": 0.0, "sway": 0.0, "shadow": 20.0},
+	# creme_raser: refaite 29/09 (NOUVELLE DIRECTION) — bombe à spirale de barbier, plus haute et plus
+	# fine que l'ancienne boîte de fer-blanc ; même cache (grottes marines), comme boite_fer_blanc.
+	"creme_raser": {"scale": 0.01895, "foot": 0.12, "solid": 4.0, "sway": 0.0, "shadow": 10.0},
+	# coffre_comptoir: like caisse_ambre_noir (no such chest existed before).
+	"coffre_comptoir": {"scale": 0.0867, "foot": 0.06, "solid": Vector2(40, 18), "sway": 0.0, "shadow": 38.0},
+	# table_cuisine: same footprint as table_observation (outdoor furniture, Havre-Doré).
+	"table_cuisine": {"scale": 0.1147, "foot": 0.04, "solid": Vector2(40, 14), "sway": 0.0, "shadow": 45.0},
+	# flaque_ronde: flat ground decal (Sanctuaire de Givre) — walk-through, no shadow. Image écrasée à
+	# 55% de sa hauteur + éclaircie de 15% (demande d'agent B, 29/09 : se lisait comme une flaque
+	# debout, trop sombre contre la glace) ; foot 0.25 comme "natte_fouilles" (même idée d'objet plat).
+	"flaque_ronde": {"scale": 0.0879, "foot": 0.25, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# crottes_triceratops (29/09, PERSONNAGES CLINS D'ŒIL — la quête du Dr Sablier, Plaines) : grosse
+	# pile, ~0,9 m — solid/shadow comme "rocher_mousse" (un tas au sol de taille comparable).
+	"crottes_triceratops": {"scale": 0.1005, "foot": 0.08, "solid": Vector2(70, 26), "sway": 0.0, "shadow": 85.0},
 }
 
 @export_enum("arbre_rond", "araucaria", "fougere_arbre", "buisson", "rocher", "cailloux", "tronc", "ronces",
@@ -316,7 +359,10 @@ const KINDS := {
 	"nid_dimorphodon", "buisson_nid", "rocher_oeuf", "frise_masques", "corde_falaise", "nid_tortue_vide",
 	"lanterne_crochet", "crochet_vide", "bouilloire_poele",
 	"bloc_glace", "oeufs_glace", "mur_glace", "stalactites_glace", "cristaux_glace", "porte_givre", "porte_givre_1", "porte_givre_2", "porte_givre_3",
-	"traineau_suie", "fioles_suie", "abri_roche", "statue_cryolophosaure", "fiole_vide")
+	"traineau_suie", "fioles_suie", "abri_roche", "statue_cryolophosaure", "fiole_vide",
+	"griffe_fossile", "chapeau_helene", "affiche_adn", "canne_roc", "ambre_moustique", "voiture_arbre",
+	"cloture_brisee", "banderole_fouilles", "creme_raser", "coffre_comptoir", "table_cuisine", "flaque_ronde",
+	"crottes_triceratops")
 var kind := "arbre_rond":
 	set(value):
 		kind = value

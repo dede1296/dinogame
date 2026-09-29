@@ -46,7 +46,7 @@ const INFO := {
 		"fact": "Ce minuscule ptérosaure, plus léger qu'une pomme, attrapait les insectes en plein vol, la bouche grande ouverte."},
 	&"dilophosaurus": {"size": "7 m de long, 400 kg", "diet": "carnivore", "era": "Jurassique, il y a 193 millions d'années", "from": "aux États-Unis",
 		"trait": "Deux crêtes fines sur la tête.",
-		"fact": "Au cinéma, il crache du venin et ouvre une collerette : c'est inventé ! Le vrai avait surtout deux jolies crêtes."},
+		"fact": "Au cinéma, il crache du venin et ouvre une collerette : c'est inventé ! Aucun fossile n'en a. Le vrai avait surtout deux crêtes, fines comme des coquilles d'œuf."},
 	&"stegosaurus": {"size": "9 m de long, 5 tonnes", "diet": "herbivore", "era": "Jurassique, il y a 150 millions d'années", "from": "aux États-Unis et au Portugal",
 		"trait": "De grandes plaques sur le dos, des pointes au bout de la queue.",
 		"fact": "Les savants appellent les pointes de sa queue le « thagomizer » : un mot inventé pour rire… dans une bande dessinée !"},

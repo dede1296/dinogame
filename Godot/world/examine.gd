@@ -347,7 +347,10 @@ const LINES := {
 	"natte_fouilles": ["La natte de Tante Sirocco : des pinceaux, une truelle, un cahier tout gondolé et trois fossiles bien rangés."],
 	"vertebre": ["Une vertèbre géante, à moitié époussetée. Chloé pourrait s'asseoir dedans."],
 	"cotes_sable": ["Des côtes pétrifiées sortent du sable, longues comme des rames. On dirait une barrière très, très ancienne."],
-	"table_observation": ["La table du poste d'observation d'Hélène : une longue-vue, un carnet, un encrier. Tout attend qu'elle revienne."],
+	"table_observation": [
+		"La table du poste d'observation d'Hélène : une longue-vue, un carnet, un encrier. Tout attend qu'elle revienne.",
+		"Gravé sur le cuivre de la longue-vue, en toutes petites lettres : « Les dinos vus dans cette longue-vue sont plus près qu'ils n'en ont l'air. »",
+	],
 	"etagere_bocaux": [
 		"Des bocaux, un crâne de Compsognathus, une théière et des cartes roulées. La grande étagère de Roc.",
 		"Dans un bocal, une araignée conservée dans l'alcool. Chloé décide de ne pas la regarder trop longtemps.",
@@ -367,6 +370,49 @@ const LINES := {
 	"lanterne_crochet": ["La vieille lanterne de Roc, à son crochet. Elle brûle doucement, même quand il n'est pas là pour la voir."],
 	"crochet_vide": ["Un crochet vide. La lanterne de Roc n'y est plus. (« … disparu du crochet », a pensé Chloé, une fois.)"],
 	"bouilloire_poele": ["Une bouilloire sur un petit poêle. De l'eau chauffe doucement, pour un thé que personne ne vient jamais boire."],
+	# Clins d'œil à un grand film de dinosaures (29/09; docs/histoire.md « Clins d'œil »). (La canne de
+	# Roc a sa scène : story/clins_doeil.gd.)
+	"griffe_fossile": [
+		"Une griffe fossile, longue comme la main de Chloé et courbée comme une faucille. Roc s'en sert de presse-papier.",
+		"Sur le socle, une étiquette de l'écriture de Roc : « Ne pas s'en servir pour se gratter le dos. » Dessous, d'une autre écriture : « Trop tard. — H. »",
+	],
+	"affiche_adn": [
+		"Une affiche en trois cases : « Monsieur ADN explique… ». Un drôle de bonhomme tout en perles de couleur, tortillé comme un escalier en colimaçon, fait coucou avec ses gants blancs.",
+		"« Voici un moustique magique… piégé dans la sève pendant des millions d'années ! » Monsieur ADN a l'air très fier de lui. Le moustique, beaucoup moins.",
+		"Dans un coin, au crayon : « Anselme, tu parles EXACTEMENT comme ce bonhomme. — H. »",
+	],
+	"chapeau_helene": [
+		"Le vieux chapeau d'Hélène, sur sa patère. Cabossé, délavé, un peu troué. Personne n'a le droit de le déplacer.",
+		["Le bord est tout mâchouillé. Le Chef de Meute le lui a volé trois fois, a dit Roc. Et trois fois, elle est allée le rechercher.", "roc_sceau_foret"],
+		"Chloé ne le touche pas. Mais elle lui dit bonjour, à chaque fois. Juste au cas où.",
+	],
+	"cloture_brisee": [
+		"Une vieille clôture de rondins, haute comme deux grands messieurs l'un sur l'autre. Au milieu, un grand trou. Les rondins sont tombés vers l'extérieur.",
+		"Brisée de l'intérieur… Quelqu'un avait voulu enfermer ici quelque chose de très grand, il y a très longtemps. Ça n'a pas marché.",
+		"Des fougères poussent entre les rondins cassés. La forêt a repris sa place, tranquillement, comme si de rien n'était.",
+	],
+	"banderole_fouilles": [
+		"Une grande banderole noire, déchirée, au-dessus du squelette : « QUAND LES DINOSAURES RÉGNAIENT SUR LA TERRE », en grosses lettres rouges bordées de jaune.",
+		"Tante Sirocco l'a peinte elle-même. Elle dit que c'est pour motiver les os. Les os ne disent rien, mais ils ont l'air motivés.",
+		"« RÉGNAIENT », avec l'accent : Tante Sirocco l'a vérifié trois fois. Elle déteste les fautes presque autant que les pelles.",
+	],
+	"creme_raser": [
+		"Une bombe de « MOUSSE À RASER », rayée rouge, blanc et bleu comme l'enseigne d'un barbier. Au fond d'une grotte ? Bizarre.",
+		"Chloé la retourne : le fond se dévisse. Dedans, pas de mousse : des petites fioles violettes, bien calées. L'ambre noir a trouvé une drôle de cachette.",
+		"Une cachette maligne. Mais qui irait se raser au fond d'une grotte ? Personne. C'est justement ça qui cloche.",
+	],
+	"coffre_comptoir": [
+		"Un gros coffre cerclé de fer, fermé par un cadenas plus gros que la tête de Chloé. Ferréol n'y range sûrement pas ses chaussettes.",
+		"Sur le couvercle, de toutes petites griffures bien fraîches : quelqu'un y a ses habitudes.",
+	],
+	"table_cuisine": [
+		"La table de cuisine de Mémé Pervenche, dehors, dans la ruelle derrière sa boutique. Dessus, un bocal de biscuits, ouvert. Le couvercle est posé à côté.",
+		"Les biscuits sentent le miel et la noisette. Il en manque. Il en manque toujours deux.",
+	],
+	"flaque_ronde": [
+		"Une flaque de glace fondue, toute ronde, lisse comme un miroir. Chloé y voit son reflet… et le bout de son nez, tout rouge.",
+		["L'eau de la flaque ne tremble plus. Chloé l'écoute quand même, de temps en temps. Juste au cas où.", "sanctuaire_givre_arrivee"],
+	],
 }
 ## Reach for the big ones (px from their origin, the middle of their foot).
 const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.0, "maison_3d": 90.0, "barque": 40.0, "arbre_geant": 60.0,
@@ -375,7 +421,8 @@ const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.
 	"arbre_noye": 60.0, "cabane_pilotis": 60.0, "statue_dino": 40.0, "porte_temple": 50.0,
 	"crane_geant_desert": 50.0, "arche_rocheuse": 60.0, "os_geant": 40.0,
 	"porte_vents": 50.0, "chariot_cage": 40.0, "squelette_geant": 45.0,
-	"statue_spinosaure": 40.0, "cotes_sable": 30.0, "bois_flotte": 30.0}
+	"statue_spinosaure": 40.0, "cotes_sable": 30.0, "bois_flotte": 30.0,
+	"cloture_brisee": 60.0, "banderole_fouilles": 45.0, "table_cuisine": 20.0, "coffre_comptoir": 20.0}
 
 ## Under the sea (a zone played under the water: the Récif du Sanctuaire), what the things there
 ## are really like: no wind, no dragonflies, the reeds are kelp, the rocks coral.
