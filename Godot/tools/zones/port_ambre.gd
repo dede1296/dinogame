@@ -82,4 +82,11 @@ static func build() -> Region:
 	B.exit(root, Rect2(39.45, 9.0, 0.55, 3.0), &"havre_dore", &"DepuisPort", &"sceau_plaines", &"route_cotiere")
 	B.exit(root, Rect2(15.0, 0.0, 4.0, 0.55), &"plaines", &"DepuisPort", &"prologue_done", &"port_bloque")
 	B.exit(root, Rect2(30.9, 8.35, 1.2, 0.5), &"cabinet", &"Depart")
+	# The Grand Voyageur's stop (fast travel, story/voyage.gd): the dino, the arrival point
+	# right beside him, and Hélène's sign marking the stop. Here on the quay east of the pier
+	# where Chloé lands: an old adult is 7 tiles wide, and the streets of the village are too
+	# narrow for him — the harbour front is the only open ground, and a ferry-beast waits there.
+	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 26.6, 15.4, {"event": &"grand_voyageur", "size": 1.6})
+	B.spawn(root, "Voyageur", 23.8, 15.9)
+	B.sign(entities, B.cell(27.6, 16.5), &"panneau_escale")
 	return root

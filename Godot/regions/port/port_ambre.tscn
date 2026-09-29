@@ -1,823 +1,840 @@
 [gd_scene format=4]
 
-[ext_resource type="Script" path="res://world/region.gd" id="1_te28e"]
-[ext_resource type="AudioStream" path="res://assets/audio/music/plaines.ogg" id="2_qd7iu"]
-[ext_resource type="Texture2D" path="res://assets/art/ground/paves.png" id="3_j46vj"]
-[ext_resource type="TileSet" path="res://regions/terrain_tileset.tres" id="4_j6fx8"]
-[ext_resource type="Script" path="res://world/ground.gd" id="5_6o4dc"]
-[ext_resource type="Script" path="res://world/tall_grass.gd" id="6_802ut"]
-[ext_resource type="Script" path="res://world/prop.gd" id="7_5tasp"]
-[ext_resource type="Script" path="res://world/sign.gd" id="8_dth6l"]
-[ext_resource type="PackedScene" path="res://actors/npc.tscn" id="9_f4v4p"]
-[ext_resource type="Script" path="res://actors/npc.gd" id="10_m714b"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="11_aqdj1"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="12_5q2di"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/garde.png" id="13_n28m7"]
-[ext_resource type="Script" path="res://world/zone_exit.gd" id="14_o56jy"]
-[ext_resource type="Script" path="res://world/dock.gd" id="15_w7ifx"]
+[ext_resource type="Script" path="res://world/region.gd" id="1_qd7iu"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/plaines.ogg" id="2_j46vj"]
+[ext_resource type="Texture2D" path="res://assets/art/ground/paves.png" id="3_j6fx8"]
+[ext_resource type="TileSet" path="res://regions/terrain_tileset.tres" id="4_6o4dc"]
+[ext_resource type="Script" path="res://world/ground.gd" id="5_802ut"]
+[ext_resource type="Script" path="res://world/tall_grass.gd" id="6_5tasp"]
+[ext_resource type="Script" path="res://world/prop.gd" id="7_dth6l"]
+[ext_resource type="Script" path="res://world/sign.gd" id="8_f4v4p"]
+[ext_resource type="PackedScene" path="res://actors/npc.tscn" id="9_m714b"]
+[ext_resource type="Script" path="res://actors/npc.gd" id="10_aqdj1"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="11_5q2di"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="12_n28m7"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/garde.png" id="13_o56jy"]
+[ext_resource type="Script" path="res://actors/dino_npc.gd" id="14_w7ifx"]
+[ext_resource type="Script" path="res://world/zone_exit.gd" id="15_8mw0v"]
+[ext_resource type="Script" path="res://world/dock.gd" id="16_lc2tk"]
 
-[node name="PortAmbre" type="Node2D" unique_id=1435857788]
-script = ExtResource("1_te28e")
+[node name="PortAmbre" type="Node2D" unique_id=2081277539]
+script = ExtResource("1_qd7iu")
 region_id = &"port_ambre"
 display_name = "Port-Ambre"
 levels = Vector2i(1, 1)
-music = ExtResource("2_qd7iu")
+music = ExtResource("2_j46vj")
 ambience_id = &"port"
-path_tex = ExtResource("3_j46vj")
+path_tex = ExtResource("3_j6fx8")
 paved_rect = Rect2(0, 8.6, 40, 16)
 rain_chance = 0.1
 mist_chance = 0.12
 relief = PackedStringArray()
 
-[node name="Terrain" type="TileMapLayer" parent="." unique_id=810825613]
+[node name="Terrain" type="TileMapLayer" parent="." unique_id=295302148]
 tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAANAAAAAAAAAAAAAAAOAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAQAAAAAAABAAAAAAARAAAAAAABAAAAAAASAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAVAAAAAAAAAAAAAAAWAAAAAAAAAAAAAAAXAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAZAAAAAAAAAAAAAAAaAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAdAAAAAAAAAAAAAAAeAAAAAAAAAAAAAAAfAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAhAAAAAAAAAAAAAAAiAAAAAAAAAAAAAAAjAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAlAAAAAAAAAAAAAAAmAAAAAAAAAAAAAAAnAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAEAAAAAAAAAAAAPAAEAAAAAAAAAAAAQAAEAAAABAAAAAAARAAEAAAABAAAAAAASAAEAAAAAAAAAAAATAAEAAAAAAAAAAAAUAAEAAAAAAAAAAAAVAAEAAAAAAAAAAAAWAAEAAAAAAAAAAAAXAAEAAAAAAAAAAAAYAAEAAAAAAAAAAAAZAAEAAAAAAAAAAAAaAAEAAAAAAAAAAAAbAAEAAAAAAAAAAAAcAAEAAAAAAAAAAAAdAAEAAAAAAAAAAAAeAAEAAAAAAAAAAAAfAAEAAAAAAAAAAAAgAAEAAAAAAAAAAAAhAAEAAAAAAAAAAAAiAAEAAAAAAAAAAAAjAAEAAAAAAAAAAAAkAAEAAAAAAAAAAAAlAAEAAAAAAAAAAAAmAAEAAAAAAAAAAAAnAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAAAAAAAAAAOAAIAAAAAAAAAAAAPAAIAAAAAAAAAAAAQAAIAAAABAAAAAAARAAIAAAABAAAAAAASAAIAAAAAAAAAAAATAAIAAAAAAAAAAAAUAAIAAAAAAAAAAAAVAAIAAAAAAAAAAAAWAAIAAAAAAAAAAAAXAAIAAAAAAAAAAAAYAAIAAAAAAAAAAAAZAAIAAAAAAAAAAAAaAAIAAAAAAAAAAAAbAAIAAAAAAAAAAAAcAAIAAAAAAAAAAAAdAAIAAAAAAAAAAAAeAAIAAAAAAAAAAAAfAAIAAAAAAAAAAAAgAAIAAAAAAAAAAAAhAAIAAAAAAAAAAAAiAAIAAAAAAAAAAAAjAAIAAAAAAAAAAAAkAAIAAAAAAAAAAAAlAAIAAAAAAAAAAAAmAAIAAAAAAAAAAAAnAAIAAAAAAAAAAAAAAAMAAAAAAAAAAAABAAMAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAAJAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAANAAMAAAAAAAAAAAAOAAMAAAAAAAAAAAAPAAMAAAAAAAAAAAAQAAMAAAABAAAAAAARAAMAAAABAAAAAAASAAMAAAAAAAAAAAATAAMAAAAAAAAAAAAUAAMAAAAAAAAAAAAVAAMAAAAAAAAAAAAWAAMAAAAAAAAAAAAXAAMAAAAAAAAAAAAYAAMAAAAAAAAAAAAZAAMAAAAAAAAAAAAaAAMAAAAAAAAAAAAbAAMAAAAAAAAAAAAcAAMAAAAAAAAAAAAdAAMAAAAAAAAAAAAeAAMAAAAAAAAAAAAfAAMAAAAAAAAAAAAgAAMAAAAAAAAAAAAhAAMAAAAAAAAAAAAiAAMAAAAAAAAAAAAjAAMAAAAAAAAAAAAkAAMAAAAAAAAAAAAlAAMAAAAAAAAAAAAmAAMAAAAAAAAAAAAnAAMAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAANAAQAAAAAAAAAAAAOAAQAAAAAAAAAAAAPAAQAAAAAAAAAAAAQAAQAAAABAAAAAAARAAQAAAABAAAAAAASAAQAAAAAAAAAAAATAAQAAAAAAAAAAAAUAAQAAAAAAAAAAAAVAAQAAAAAAAAAAAAWAAQAAAAAAAAAAAAXAAQAAAAAAAAAAAAYAAQAAAAAAAAAAAAZAAQAAAAAAAAAAAAaAAQAAAAAAAAAAAAbAAQAAAAAAAAAAAAcAAQAAAAAAAAAAAAdAAQAAAAAAAAAAAAeAAQAAAAAAAAAAAAfAAQAAAAAAAAAAAAgAAQAAAAAAAAAAAAhAAQAAAAAAAAAAAAiAAQAAAAAAAAAAAAjAAQAAAAAAAAAAAAkAAQAAAAAAAAAAAAlAAQAAAAAAAAAAAAmAAQAAAAAAAAAAAAnAAQAAAAAAAAAAAAAAAUAAAAAAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAAAAAAAAAAEAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAGAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAJAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAMAAUAAAAAAAAAAAANAAUAAAAAAAAAAAAOAAUAAAAAAAAAAAAPAAUAAAAAAAAAAAAQAAUAAAABAAAAAAARAAUAAAABAAAAAAASAAUAAAAAAAAAAAATAAUAAAAAAAAAAAAUAAUAAAAAAAAAAAAVAAUAAAAAAAAAAAAWAAUAAAAAAAAAAAAXAAUAAAAAAAAAAAAYAAUAAAAAAAAAAAAZAAUAAAAAAAAAAAAaAAUAAAAAAAAAAAAbAAUAAAAAAAAAAAAcAAUAAAAAAAAAAAAdAAUAAAAAAAAAAAAeAAUAAAAAAAAAAAAfAAUAAAAAAAAAAAAgAAUAAAAAAAAAAAAhAAUAAAAAAAAAAAAiAAUAAAAAAAAAAAAjAAUAAAAAAAAAAAAkAAUAAAAAAAAAAAAlAAUAAAAAAAAAAAAmAAUAAAAAAAAAAAAnAAUAAAAAAAAAAAAAAAYAAAAAAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAAOAAYAAAAAAAAAAAAPAAYAAAAAAAAAAAAQAAYAAAABAAAAAAARAAYAAAABAAAAAAASAAYAAAAAAAAAAAATAAYAAAAAAAAAAAAUAAYAAAAAAAAAAAAVAAYAAAAAAAAAAAAWAAYAAAAAAAAAAAAXAAYAAAAAAAAAAAAYAAYAAAAAAAAAAAAZAAYAAAAAAAAAAAAaAAYAAAAAAAAAAAAbAAYAAAAAAAAAAAAcAAYAAAAAAAAAAAAdAAYAAAAAAAAAAAAeAAYAAAAAAAAAAAAfAAYAAAAAAAAAAAAgAAYAAAAAAAAAAAAhAAYAAAAAAAAAAAAiAAYAAAAAAAAAAAAjAAYAAAAAAAAAAAAkAAYAAAAAAAAAAAAlAAYAAAAAAAAAAAAmAAYAAAAAAAAAAAAnAAYAAAAAAAAAAAAAAAcAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAANAAcAAAAAAAAAAAAOAAcAAAAAAAAAAAAPAAcAAAAAAAAAAAAQAAcAAAABAAAAAAARAAcAAAABAAAAAAASAAcAAAAAAAAAAAATAAcAAAAAAAAAAAAUAAcAAAAAAAAAAAAVAAcAAAAAAAAAAAAWAAcAAAAAAAAAAAAXAAcAAAAAAAAAAAAYAAcAAAAAAAAAAAAZAAcAAAAAAAAAAAAaAAcAAAAAAAAAAAAbAAcAAAAAAAAAAAAcAAcAAAAAAAAAAAAdAAcAAAAAAAAAAAAeAAcAAAAAAAAAAAAfAAcAAAAAAAAAAAAgAAcAAAAAAAAAAAAhAAcAAAAAAAAAAAAiAAcAAAAAAAAAAAAjAAcAAAAAAAAAAAAkAAcAAAAAAAAAAAAlAAcAAAAAAAAAAAAmAAcAAAAAAAAAAAAnAAcAAAAAAAAAAAAAAAgAAAAAAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAAAAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAOAAgAAAAAAAAAAAAPAAgAAAAAAAAAAAAQAAgAAAABAAAAAAARAAgAAAABAAAAAAASAAgAAAAAAAAAAAATAAgAAAAAAAAAAAAUAAgAAAAAAAAAAAAVAAgAAAAAAAAAAAAWAAgAAAAAAAAAAAAXAAgAAAAAAAAAAAAYAAgAAAAAAAAAAAAZAAgAAAAAAAAAAAAaAAgAAAAAAAAAAAAbAAgAAAAAAAAAAAAcAAgAAAAAAAAAAAAdAAgAAAAAAAAAAAAeAAgAAAAAAAAAAAAfAAgAAAAAAAAAAAAgAAgAAAAAAAAAAAAhAAgAAAAAAAAAAAAiAAgAAAAAAAAAAAAjAAgAAAAAAAAAAAAkAAgAAAAAAAAAAAAlAAgAAAAAAAAAAAAmAAgAAAAAAAAAAAAnAAgAAAAAAAAAAAAAAAkAAAAAAAAAAAABAAkAAAAAAAAAAAACAAkAAAABAAAAAAADAAkAAAABAAAAAAAEAAkAAAABAAAAAAAFAAkAAAABAAAAAAAGAAkAAAABAAAAAAAHAAkAAAABAAAAAAAIAAkAAAABAAAAAAAJAAkAAAABAAAAAAAKAAkAAAABAAAAAAALAAkAAAABAAAAAAAMAAkAAAABAAAAAAANAAkAAAABAAAAAAAOAAkAAAABAAAAAAAPAAkAAAABAAAAAAAQAAkAAAABAAAAAAARAAkAAAABAAAAAAASAAkAAAABAAAAAAATAAkAAAABAAAAAAAUAAkAAAABAAAAAAAVAAkAAAABAAAAAAAWAAkAAAABAAAAAAAXAAkAAAABAAAAAAAYAAkAAAABAAAAAAAZAAkAAAABAAAAAAAaAAkAAAABAAAAAAAbAAkAAAABAAAAAAAcAAkAAAABAAAAAAAdAAkAAAABAAAAAAAeAAkAAAABAAAAAAAfAAkAAAABAAAAAAAgAAkAAAABAAAAAAAhAAkAAAABAAAAAAAiAAkAAAABAAAAAAAjAAkAAAABAAAAAAAkAAkAAAABAAAAAAAlAAkAAAABAAAAAAAmAAkAAAABAAAAAAAnAAkAAAABAAAAAAAAAAoAAAAAAAAAAAABAAoAAAAAAAAAAAACAAoAAAABAAAAAAADAAoAAAABAAAAAAAEAAoAAAABAAAAAAAFAAoAAAABAAAAAAAGAAoAAAABAAAAAAAHAAoAAAABAAAAAAAIAAoAAAABAAAAAAAJAAoAAAABAAAAAAAKAAoAAAABAAAAAAALAAoAAAABAAAAAAAMAAoAAAABAAAAAAANAAoAAAABAAAAAAAOAAoAAAABAAAAAAAPAAoAAAABAAAAAAAQAAoAAAABAAAAAAARAAoAAAABAAAAAAASAAoAAAABAAAAAAATAAoAAAABAAAAAAAUAAoAAAABAAAAAAAVAAoAAAABAAAAAAAWAAoAAAABAAAAAAAXAAoAAAABAAAAAAAYAAoAAAABAAAAAAAZAAoAAAABAAAAAAAaAAoAAAABAAAAAAAbAAoAAAABAAAAAAAcAAoAAAABAAAAAAAdAAoAAAABAAAAAAAeAAoAAAABAAAAAAAfAAoAAAABAAAAAAAgAAoAAAABAAAAAAAhAAoAAAABAAAAAAAiAAoAAAABAAAAAAAjAAoAAAABAAAAAAAkAAoAAAABAAAAAAAlAAoAAAABAAAAAAAmAAoAAAABAAAAAAAnAAoAAAABAAAAAAAAAAsAAAAAAAAAAAABAAsAAAAAAAAAAAACAAsAAAABAAAAAAADAAsAAAABAAAAAAAEAAsAAAABAAAAAAAFAAsAAAABAAAAAAAGAAsAAAABAAAAAAAHAAsAAAABAAAAAAAIAAsAAAABAAAAAAAJAAsAAAABAAAAAAAKAAsAAAABAAAAAAALAAsAAAABAAAAAAAMAAsAAAABAAAAAAANAAsAAAABAAAAAAAOAAsAAAABAAAAAAAPAAsAAAABAAAAAAAQAAsAAAABAAAAAAARAAsAAAABAAAAAAASAAsAAAABAAAAAAATAAsAAAABAAAAAAAUAAsAAAABAAAAAAAVAAsAAAABAAAAAAAWAAsAAAABAAAAAAAXAAsAAAABAAAAAAAYAAsAAAABAAAAAAAZAAsAAAABAAAAAAAaAAsAAAABAAAAAAAbAAsAAAABAAAAAAAcAAsAAAABAAAAAAAdAAsAAAABAAAAAAAeAAsAAAABAAAAAAAfAAsAAAABAAAAAAAgAAsAAAABAAAAAAAhAAsAAAABAAAAAAAiAAsAAAABAAAAAAAjAAsAAAABAAAAAAAkAAsAAAABAAAAAAAlAAsAAAABAAAAAAAmAAsAAAABAAAAAAAnAAsAAAABAAAAAAAAAAwAAAAAAAAAAAABAAwAAAAAAAAAAAACAAwAAAAAAAAAAAADAAwAAAAAAAAAAAAEAAwAAAAAAAAAAAAFAAwAAAAAAAAAAAAGAAwAAAAAAAAAAAAHAAwAAAAAAAAAAAAIAAwAAAAAAAAAAAAJAAwAAAAAAAAAAAAKAAwAAAAAAAAAAAALAAwAAAAAAAAAAAAMAAwAAAAAAAAAAAANAAwAAAAAAAAAAAAOAAwAAAAAAAAAAAAPAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAARAAwAAAABAAAAAAASAAwAAAABAAAAAAATAAwAAAABAAAAAAAUAAwAAAAAAAAAAAAVAAwAAAAAAAAAAAAWAAwAAAAAAAAAAAAXAAwAAAAAAAAAAAAYAAwAAAAAAAAAAAAZAAwAAAAAAAAAAAAaAAwAAAAAAAAAAAAbAAwAAAAAAAAAAAAcAAwAAAAAAAAAAAAdAAwAAAAAAAAAAAAeAAwAAAAAAAAAAAAfAAwAAAAAAAAAAAAgAAwAAAAAAAAAAAAhAAwAAAAAAAAAAAAiAAwAAAAAAAAAAAAjAAwAAAAAAAAAAAAkAAwAAAAAAAAAAAAlAAwAAAAAAAAAAAAmAAwAAAAAAAAAAAAnAAwAAAAAAAAAAAAAAA0AAAAAAAAAAAABAA0AAAAAAAAAAAACAA0AAAAAAAAAAAADAA0AAAAAAAAAAAAEAA0AAAAAAAAAAAAFAA0AAAAAAAAAAAAGAA0AAAAAAAAAAAAHAA0AAAAAAAAAAAAIAA0AAAAAAAAAAAAJAA0AAAAAAAAAAAAKAA0AAAAAAAAAAAALAA0AAAAAAAAAAAAMAA0AAAAAAAAAAAANAA0AAAAAAAAAAAAOAA0AAAAAAAAAAAAPAA0AAAAAAAAAAAAQAA0AAAAAAAAAAAARAA0AAAABAAAAAAASAA0AAAABAAAAAAATAA0AAAABAAAAAAAUAA0AAAAAAAAAAAAVAA0AAAAAAAAAAAAWAA0AAAAAAAAAAAAXAA0AAAAAAAAAAAAYAA0AAAAAAAAAAAAZAA0AAAAAAAAAAAAaAA0AAAAAAAAAAAAbAA0AAAAAAAAAAAAcAA0AAAAAAAAAAAAdAA0AAAAAAAAAAAAeAA0AAAAAAAAAAAAfAA0AAAAAAAAAAAAgAA0AAAAAAAAAAAAhAA0AAAAAAAAAAAAiAA0AAAAAAAAAAAAjAA0AAAAAAAAAAAAkAA0AAAAAAAAAAAAlAA0AAAAAAAAAAAAmAA0AAAAAAAAAAAAnAA0AAAAAAAAAAAAAAA4AAAAAAAAAAAABAA4AAAAAAAAAAAACAA4AAAAAAAAAAAADAA4AAAAAAAAAAAAEAA4AAAAAAAAAAAAFAA4AAAAAAAAAAAAGAA4AAAAAAAAAAAAHAA4AAAAAAAAAAAAIAA4AAAAAAAAAAAAJAA4AAAAAAAAAAAAKAA4AAAAAAAAAAAALAA4AAAAAAAAAAAAMAA4AAAAAAAAAAAANAA4AAAAAAAAAAAAOAA4AAAAAAAAAAAAPAA4AAAAAAAAAAAAQAA4AAAAAAAAAAAARAA4AAAABAAAAAAASAA4AAAABAAAAAAATAA4AAAABAAAAAAAUAA4AAAAAAAAAAAAVAA4AAAAAAAAAAAAWAA4AAAAAAAAAAAAXAA4AAAAAAAAAAAAYAA4AAAAAAAAAAAAZAA4AAAAAAAAAAAAaAA4AAAAAAAAAAAAbAA4AAAAAAAAAAAAcAA4AAAAAAAAAAAAdAA4AAAAAAAAAAAAeAA4AAAAAAAAAAAAfAA4AAAAAAAAAAAAgAA4AAAAAAAAAAAAhAA4AAAAAAAAAAAAiAA4AAAAAAAAAAAAjAA4AAAAAAAAAAAAkAA4AAAAAAAAAAAAlAA4AAAAAAAAAAAAmAA4AAAAAAAAAAAAnAA4AAAAAAAAAAAAAAA8AAAABAAAAAAABAA8AAAABAAAAAAACAA8AAAABAAAAAAADAA8AAAABAAAAAAAEAA8AAAABAAAAAAAFAA8AAAABAAAAAAAGAA8AAAABAAAAAAAHAA8AAAABAAAAAAAIAA8AAAABAAAAAAAJAA8AAAABAAAAAAAKAA8AAAABAAAAAAALAA8AAAABAAAAAAAMAA8AAAABAAAAAAANAA8AAAABAAAAAAAOAA8AAAABAAAAAAAPAA8AAAABAAAAAAAQAA8AAAABAAAAAAARAA8AAAABAAAAAAASAA8AAAABAAAAAAATAA8AAAABAAAAAAAUAA8AAAABAAAAAAAVAA8AAAABAAAAAAAWAA8AAAABAAAAAAAXAA8AAAABAAAAAAAYAA8AAAABAAAAAAAZAA8AAAABAAAAAAAaAA8AAAABAAAAAAAbAA8AAAABAAAAAAAcAA8AAAABAAAAAAAdAA8AAAABAAAAAAAeAA8AAAABAAAAAAAfAA8AAAABAAAAAAAgAA8AAAABAAAAAAAhAA8AAAABAAAAAAAiAA8AAAABAAAAAAAjAA8AAAABAAAAAAAkAA8AAAABAAAAAAAlAA8AAAABAAAAAAAmAA8AAAABAAAAAAAnAA8AAAABAAAAAAAAABAAAAABAAAAAAABABAAAAABAAAAAAACABAAAAABAAAAAAADABAAAAABAAAAAAAEABAAAAABAAAAAAAFABAAAAABAAAAAAAGABAAAAABAAAAAAAHABAAAAABAAAAAAAIABAAAAABAAAAAAAJABAAAAABAAAAAAAKABAAAAABAAAAAAALABAAAAABAAAAAAAMABAAAAABAAAAAAANABAAAAABAAAAAAAOABAAAAABAAAAAAAPABAAAAABAAAAAAAQABAAAAABAAAAAAARABAAAAABAAAAAAASABAAAAABAAAAAAATABAAAAABAAAAAAAUABAAAAABAAAAAAAVABAAAAABAAAAAAAWABAAAAABAAAAAAAXABAAAAABAAAAAAAYABAAAAABAAAAAAAZABAAAAABAAAAAAAaABAAAAABAAAAAAAbABAAAAABAAAAAAAcABAAAAABAAAAAAAdABAAAAABAAAAAAAeABAAAAABAAAAAAAfABAAAAABAAAAAAAgABAAAAABAAAAAAAhABAAAAABAAAAAAAiABAAAAABAAAAAAAjABAAAAABAAAAAAAkABAAAAABAAAAAAAlABAAAAABAAAAAAAmABAAAAABAAAAAAAnABAAAAABAAAAAAAAABEAAAADAAAAAAABABEAAAADAAAAAAACABEAAAADAAAAAAADABEAAAADAAAAAAAEABEAAAADAAAAAAAFABEAAAADAAAAAAAGABEAAAADAAAAAAAHABEAAAADAAAAAAAIABEAAAADAAAAAAAJABEAAAADAAAAAAAKABEAAAADAAAAAAALABEAAAADAAAAAAAMABEAAAADAAAAAAANABEAAAADAAAAAAAOABEAAAADAAAAAAAPABEAAAADAAAAAAAQABEAAAADAAAAAAARABEAAAADAAAAAAASABEAAAABAAAAAAATABEAAAABAAAAAAAUABEAAAABAAAAAAAVABEAAAADAAAAAAAWABEAAAADAAAAAAAXABEAAAADAAAAAAAYABEAAAADAAAAAAAZABEAAAADAAAAAAAaABEAAAADAAAAAAAbABEAAAADAAAAAAAcABEAAAADAAAAAAAdABEAAAADAAAAAAAeABEAAAADAAAAAAAfABEAAAADAAAAAAAgABEAAAADAAAAAAAhABEAAAADAAAAAAAiABEAAAADAAAAAAAjABEAAAADAAAAAAAkABEAAAADAAAAAAAlABEAAAADAAAAAAAmABEAAAADAAAAAAAnABEAAAADAAAAAAAAABIAAAADAAAAAAABABIAAAADAAAAAAACABIAAAADAAAAAAADABIAAAADAAAAAAAEABIAAAADAAAAAAAFABIAAAADAAAAAAAGABIAAAADAAAAAAAHABIAAAADAAAAAAAIABIAAAADAAAAAAAJABIAAAADAAAAAAAKABIAAAADAAAAAAALABIAAAADAAAAAAAMABIAAAADAAAAAAANABIAAAADAAAAAAAOABIAAAADAAAAAAAPABIAAAADAAAAAAAQABIAAAADAAAAAAARABIAAAADAAAAAAASABIAAAABAAAAAAATABIAAAABAAAAAAAUABIAAAABAAAAAAAVABIAAAADAAAAAAAWABIAAAADAAAAAAAXABIAAAADAAAAAAAYABIAAAADAAAAAAAZABIAAAADAAAAAAAaABIAAAADAAAAAAAbABIAAAADAAAAAAAcABIAAAADAAAAAAAdABIAAAADAAAAAAAeABIAAAADAAAAAAAfABIAAAADAAAAAAAgABIAAAADAAAAAAAhABIAAAADAAAAAAAiABIAAAADAAAAAAAjABIAAAADAAAAAAAkABIAAAADAAAAAAAlABIAAAADAAAAAAAmABIAAAADAAAAAAAnABIAAAADAAAAAAAAABMAAAADAAAAAAABABMAAAADAAAAAAACABMAAAADAAAAAAADABMAAAADAAAAAAAEABMAAAADAAAAAAAFABMAAAADAAAAAAAGABMAAAADAAAAAAAHABMAAAADAAAAAAAIABMAAAADAAAAAAAJABMAAAADAAAAAAAKABMAAAADAAAAAAALABMAAAADAAAAAAAMABMAAAADAAAAAAANABMAAAADAAAAAAAOABMAAAADAAAAAAAPABMAAAADAAAAAAAQABMAAAADAAAAAAARABMAAAADAAAAAAASABMAAAABAAAAAAATABMAAAABAAAAAAAUABMAAAABAAAAAAAVABMAAAADAAAAAAAWABMAAAADAAAAAAAXABMAAAADAAAAAAAYABMAAAADAAAAAAAZABMAAAADAAAAAAAaABMAAAADAAAAAAAbABMAAAADAAAAAAAcABMAAAADAAAAAAAdABMAAAADAAAAAAAeABMAAAADAAAAAAAfABMAAAADAAAAAAAgABMAAAADAAAAAAAhABMAAAADAAAAAAAiABMAAAADAAAAAAAjABMAAAADAAAAAAAkABMAAAADAAAAAAAlABMAAAADAAAAAAAmABMAAAADAAAAAAAnABMAAAADAAAAAAAAABQAAAADAAAAAAABABQAAAADAAAAAAACABQAAAADAAAAAAADABQAAAADAAAAAAAEABQAAAADAAAAAAAFABQAAAADAAAAAAAGABQAAAADAAAAAAAHABQAAAADAAAAAAAIABQAAAADAAAAAAAJABQAAAADAAAAAAAKABQAAAADAAAAAAALABQAAAADAAAAAAAMABQAAAADAAAAAAANABQAAAADAAAAAAAOABQAAAADAAAAAAAPABQAAAADAAAAAAAQABQAAAADAAAAAAARABQAAAADAAAAAAASABQAAAABAAAAAAATABQAAAABAAAAAAAUABQAAAABAAAAAAAVABQAAAADAAAAAAAWABQAAAADAAAAAAAXABQAAAADAAAAAAAYABQAAAADAAAAAAAZABQAAAADAAAAAAAaABQAAAADAAAAAAAbABQAAAADAAAAAAAcABQAAAADAAAAAAAdABQAAAADAAAAAAAeABQAAAADAAAAAAAfABQAAAADAAAAAAAgABQAAAADAAAAAAAhABQAAAADAAAAAAAiABQAAAADAAAAAAAjABQAAAADAAAAAAAkABQAAAADAAAAAAAlABQAAAADAAAAAAAmABQAAAADAAAAAAAnABQAAAADAAAAAAAAABUAAAADAAAAAAABABUAAAADAAAAAAACABUAAAADAAAAAAADABUAAAADAAAAAAAEABUAAAADAAAAAAAFABUAAAADAAAAAAAGABUAAAADAAAAAAAHABUAAAADAAAAAAAIABUAAAADAAAAAAAJABUAAAADAAAAAAAKABUAAAADAAAAAAALABUAAAADAAAAAAAMABUAAAADAAAAAAANABUAAAADAAAAAAAOABUAAAADAAAAAAAPABUAAAADAAAAAAAQABUAAAADAAAAAAARABUAAAADAAAAAAASABUAAAABAAAAAAATABUAAAABAAAAAAAUABUAAAABAAAAAAAVABUAAAADAAAAAAAWABUAAAADAAAAAAAXABUAAAADAAAAAAAYABUAAAADAAAAAAAZABUAAAADAAAAAAAaABUAAAADAAAAAAAbABUAAAADAAAAAAAcABUAAAADAAAAAAAdABUAAAADAAAAAAAeABUAAAADAAAAAAAfABUAAAADAAAAAAAgABUAAAADAAAAAAAhABUAAAADAAAAAAAiABUAAAADAAAAAAAjABUAAAADAAAAAAAkABUAAAADAAAAAAAlABUAAAADAAAAAAAmABUAAAADAAAAAAAnABUAAAADAAAAAAAAABYAAAADAAAAAAABABYAAAADAAAAAAACABYAAAADAAAAAAADABYAAAADAAAAAAAEABYAAAADAAAAAAAFABYAAAADAAAAAAAGABYAAAADAAAAAAAHABYAAAADAAAAAAAIABYAAAADAAAAAAAJABYAAAADAAAAAAAKABYAAAADAAAAAAALABYAAAADAAAAAAAMABYAAAADAAAAAAANABYAAAADAAAAAAAOABYAAAADAAAAAAAPABYAAAADAAAAAAAQABYAAAADAAAAAAARABYAAAADAAAAAAASABYAAAABAAAAAAATABYAAAABAAAAAAAUABYAAAABAAAAAAAVABYAAAADAAAAAAAWABYAAAADAAAAAAAXABYAAAADAAAAAAAYABYAAAADAAAAAAAZABYAAAADAAAAAAAaABYAAAADAAAAAAAbABYAAAADAAAAAAAcABYAAAADAAAAAAAdABYAAAADAAAAAAAeABYAAAADAAAAAAAfABYAAAADAAAAAAAgABYAAAADAAAAAAAhABYAAAADAAAAAAAiABYAAAADAAAAAAAjABYAAAADAAAAAAAkABYAAAADAAAAAAAlABYAAAADAAAAAAAmABYAAAADAAAAAAAnABYAAAADAAAAAAAAABcAAAADAAAAAAABABcAAAADAAAAAAACABcAAAADAAAAAAADABcAAAADAAAAAAAEABcAAAADAAAAAAAFABcAAAADAAAAAAAGABcAAAADAAAAAAAHABcAAAADAAAAAAAIABcAAAADAAAAAAAJABcAAAADAAAAAAAKABcAAAADAAAAAAALABcAAAADAAAAAAAMABcAAAADAAAAAAANABcAAAADAAAAAAAOABcAAAADAAAAAAAPABcAAAADAAAAAAAQABcAAAADAAAAAAARABcAAAADAAAAAAASABcAAAADAAAAAAATABcAAAADAAAAAAAUABcAAAADAAAAAAAVABcAAAADAAAAAAAWABcAAAADAAAAAAAXABcAAAADAAAAAAAYABcAAAADAAAAAAAZABcAAAADAAAAAAAaABcAAAADAAAAAAAbABcAAAADAAAAAAAcABcAAAADAAAAAAAdABcAAAADAAAAAAAeABcAAAADAAAAAAAfABcAAAADAAAAAAAgABcAAAADAAAAAAAhABcAAAADAAAAAAAiABcAAAADAAAAAAAjABcAAAADAAAAAAAkABcAAAADAAAAAAAlABcAAAADAAAAAAAmABcAAAADAAAAAAAnABcAAAADAAAAAAA=")
-tile_set = ExtResource("4_j6fx8")
+tile_set = ExtResource("4_6o4dc")
 
-[node name="Ground" type="ColorRect" parent="." unique_id=1458711192 node_paths=PackedStringArray("terrain")]
+[node name="Ground" type="ColorRect" parent="." unique_id=1905474527 node_paths=PackedStringArray("terrain")]
 z_index = -10
-script = ExtResource("5_6o4dc")
+script = ExtResource("5_802ut")
 terrain = NodePath("../Terrain")
 
-[node name="Entities" type="Node2D" parent="." unique_id=483855019]
+[node name="Entities" type="Node2D" parent="." unique_id=1753027284]
 y_sort_enabled = true
 
-[node name="TallGrass" type="Node2D" parent="Entities" unique_id=1110723970 node_paths=PackedStringArray("terrain")]
-script = ExtResource("6_802ut")
+[node name="TallGrass" type="Node2D" parent="Entities" unique_id=937273817 node_paths=PackedStringArray("terrain")]
+script = ExtResource("6_5tasp")
 terrain = NodePath("../../Terrain")
 
-[node name="Araucaria" type="StaticBody2D" parent="Entities" unique_id=259744516]
+[node name="Araucaria" type="StaticBody2D" parent="Entities" unique_id=694114116]
 position = Vector2(-31.259825, -12.157593)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="Araucaria2" type="StaticBody2D" parent="Entities" unique_id=1573014208]
+[node name="Araucaria2" type="StaticBody2D" parent="Entities" unique_id=123012969]
 position = Vector2(85.2811, -10.817989)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="ArbreRond" type="StaticBody2D" parent="Entities" unique_id=285635605]
+[node name="ArbreRond" type="StaticBody2D" parent="Entities" unique_id=1488985735]
 position = Vector2(163.21837, 1.4192052)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond2" type="StaticBody2D" parent="Entities" unique_id=27512521]
+[node name="ArbreRond2" type="StaticBody2D" parent="Entities" unique_id=1831393930]
 position = Vector2(264.69934, 3.5890408)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond3" type="StaticBody2D" parent="Entities" unique_id=2071180211]
+[node name="ArbreRond3" type="StaticBody2D" parent="Entities" unique_id=1984660401]
 position = Vector2(349.01016, -3.6880934)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="FougereArbre" type="StaticBody2D" parent="Entities" unique_id=1099278579]
+[node name="FougereArbre" type="StaticBody2D" parent="Entities" unique_id=2115246036]
 position = Vector2(452.91446, 3.9069033)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="ArbreRond4" type="StaticBody2D" parent="Entities" unique_id=1803867305]
+[node name="ArbreRond4" type="StaticBody2D" parent="Entities" unique_id=514826949]
 position = Vector2(556.51715, -1.4224229)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond5" type="StaticBody2D" parent="Entities" unique_id=1899488652]
+[node name="ArbreRond5" type="StaticBody2D" parent="Entities" unique_id=59925678]
 position = Vector2(650.2603, -4.7326303)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond6" type="StaticBody2D" parent="Entities" unique_id=699561839]
+[node name="ArbreRond6" type="StaticBody2D" parent="Entities" unique_id=1110614905]
 position = Vector2(1036.3517, -11.368581)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="FougereArbre2" type="StaticBody2D" parent="Entities" unique_id=74139289]
+[node name="FougereArbre2" type="StaticBody2D" parent="Entities" unique_id=1432463500]
 position = Vector2(1123.0817, -3.134185)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="ArbreRond7" type="StaticBody2D" parent="Entities" unique_id=1241983383]
+[node name="ArbreRond7" type="StaticBody2D" parent="Entities" unique_id=604096516]
 position = Vector2(1231.3358, 3.8920674)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="Araucaria3" type="StaticBody2D" parent="Entities" unique_id=1438962289]
+[node name="Araucaria3" type="StaticBody2D" parent="Entities" unique_id=58508180]
 position = Vector2(1329.6165, -13.684315)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="ArbreRond8" type="StaticBody2D" parent="Entities" unique_id=177200117]
+[node name="ArbreRond8" type="StaticBody2D" parent="Entities" unique_id=1578149544]
 position = Vector2(1415.8846, -12.333314)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="Araucaria4" type="StaticBody2D" parent="Entities" unique_id=2106459641]
+[node name="Araucaria4" type="StaticBody2D" parent="Entities" unique_id=233405473]
 position = Vector2(1504.6221, 2.2968225)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="ArbreRond9" type="StaticBody2D" parent="Entities" unique_id=1388681209]
+[node name="ArbreRond9" type="StaticBody2D" parent="Entities" unique_id=819546080]
 position = Vector2(1606.3634, -7.0579786)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond10" type="StaticBody2D" parent="Entities" unique_id=1595256537]
+[node name="ArbreRond10" type="StaticBody2D" parent="Entities" unique_id=1432353114]
 position = Vector2(1716.8004, -9.326984)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="Araucaria5" type="StaticBody2D" parent="Entities" unique_id=719823823]
+[node name="Araucaria5" type="StaticBody2D" parent="Entities" unique_id=1488174494]
 position = Vector2(1805.4557, 3.9197206)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="ArbreRond11" type="StaticBody2D" parent="Entities" unique_id=224484709]
+[node name="ArbreRond11" type="StaticBody2D" parent="Entities" unique_id=1434679574]
 position = Vector2(1899.3519, -2.6618273)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond12" type="StaticBody2D" parent="Entities" unique_id=1882313956]
+[node name="ArbreRond12" type="StaticBody2D" parent="Entities" unique_id=1618253472]
 position = Vector2(35.63538, 46.01106)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="Araucaria6" type="StaticBody2D" parent="Entities" unique_id=954689306]
+[node name="Araucaria6" type="StaticBody2D" parent="Entities" unique_id=1742838879]
 position = Vector2(109.44874, 39.937435)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="ArbreRond13" type="StaticBody2D" parent="Entities" unique_id=473621386]
+[node name="ArbreRond13" type="StaticBody2D" parent="Entities" unique_id=1379275945]
 position = Vector2(204.69965, 34.746433)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="FougereArbre3" type="StaticBody2D" parent="Entities" unique_id=142336779]
+[node name="FougereArbre3" type="StaticBody2D" parent="Entities" unique_id=1797914927]
 position = Vector2(307.53152, 49.263012)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="FougereArbre4" type="StaticBody2D" parent="Entities" unique_id=1256023113]
+[node name="FougereArbre4" type="StaticBody2D" parent="Entities" unique_id=1529737186]
 position = Vector2(404.92868, 48.566868)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="FougereArbre5" type="StaticBody2D" parent="Entities" unique_id=410715405]
+[node name="FougereArbre5" type="StaticBody2D" parent="Entities" unique_id=1240304144]
 position = Vector2(499.33362, 44.300816)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="FougereArbre6" type="StaticBody2D" parent="Entities" unique_id=2018950800]
+[node name="FougereArbre6" type="StaticBody2D" parent="Entities" unique_id=1712477795]
 position = Vector2(600.9453, 35.82487)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="Araucaria7" type="StaticBody2D" parent="Entities" unique_id=370713313]
+[node name="Araucaria7" type="StaticBody2D" parent="Entities" unique_id=941296473]
 position = Vector2(988.4563, 42.175163)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="ArbreRond14" type="StaticBody2D" parent="Entities" unique_id=1735147253]
+[node name="ArbreRond14" type="StaticBody2D" parent="Entities" unique_id=848570286]
 position = Vector2(1069.3658, 36.92467)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="Araucaria8" type="StaticBody2D" parent="Entities" unique_id=901756394]
+[node name="Araucaria8" type="StaticBody2D" parent="Entities" unique_id=1386124845]
 position = Vector2(1183.2319, 51.847992)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="ArbreRond15" type="StaticBody2D" parent="Entities" unique_id=1037835938]
+[node name="ArbreRond15" type="StaticBody2D" parent="Entities" unique_id=868780581]
 position = Vector2(1267.8424, 51.908325)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="FougereArbre7" type="StaticBody2D" parent="Entities" unique_id=286936099]
+[node name="FougereArbre7" type="StaticBody2D" parent="Entities" unique_id=131303617]
 position = Vector2(1380.7115, 49.16352)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="FougereArbre8" type="StaticBody2D" parent="Entities" unique_id=1827451083]
+[node name="FougereArbre8" type="StaticBody2D" parent="Entities" unique_id=1133973413]
 position = Vector2(1456.1903, 44.931263)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="FougereArbre9" type="StaticBody2D" parent="Entities" unique_id=1281716991]
+[node name="FougereArbre9" type="StaticBody2D" parent="Entities" unique_id=1051420901]
 position = Vector2(1550.0851, 52.31781)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="ArbreRond16" type="StaticBody2D" parent="Entities" unique_id=1172054978]
+[node name="ArbreRond16" type="StaticBody2D" parent="Entities" unique_id=641592494]
 position = Vector2(1653.6635, 42.017452)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond17" type="StaticBody2D" parent="Entities" unique_id=620818645]
+[node name="ArbreRond17" type="StaticBody2D" parent="Entities" unique_id=2127236284]
 position = Vector2(1764.6921, 46.045223)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond18" type="StaticBody2D" parent="Entities" unique_id=1854035163]
+[node name="ArbreRond18" type="StaticBody2D" parent="Entities" unique_id=176083075]
 position = Vector2(1844.3431, 48.069515)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond19" type="StaticBody2D" parent="Entities" unique_id=1112682229]
+[node name="ArbreRond19" type="StaticBody2D" parent="Entities" unique_id=648973981]
 position = Vector2(1930.5114, 44.837994)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="FougereArbre10" type="StaticBody2D" parent="Entities" unique_id=1060567296]
+[node name="FougereArbre10" type="StaticBody2D" parent="Entities" unique_id=783066784]
 position = Vector2(-15.692176, 90.39246)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="ArbreRond20" type="StaticBody2D" parent="Entities" unique_id=1388084371]
+[node name="ArbreRond20" type="StaticBody2D" parent="Entities" unique_id=658908845]
 position = Vector2(67.03669, 83.81684)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="FougereArbre11" type="StaticBody2D" parent="Entities" unique_id=1306993678]
+[node name="FougereArbre11" type="StaticBody2D" parent="Entities" unique_id=107073006]
 position = Vector2(158.68909, 99.304344)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="ArbreRond21" type="StaticBody2D" parent="Entities" unique_id=801187053]
+[node name="ArbreRond21" type="StaticBody2D" parent="Entities" unique_id=987715305]
 position = Vector2(256.00677, 82.869865)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="Araucaria9" type="StaticBody2D" parent="Entities" unique_id=1635571218]
+[node name="Araucaria9" type="StaticBody2D" parent="Entities" unique_id=1369116619]
 position = Vector2(373.60706, 83.881294)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="Araucaria10" type="StaticBody2D" parent="Entities" unique_id=734185367]
+[node name="Araucaria10" type="StaticBody2D" parent="Entities" unique_id=276604541]
 position = Vector2(445.58282, 99.842804)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="ArbreRond22" type="StaticBody2D" parent="Entities" unique_id=135594845]
+[node name="ArbreRond22" type="StaticBody2D" parent="Entities" unique_id=1796560590]
 position = Vector2(563.12415, 85.54395)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="FougereArbre12" type="StaticBody2D" parent="Entities" unique_id=1636902338]
+[node name="FougereArbre12" type="StaticBody2D" parent="Entities" unique_id=206334758]
 position = Vector2(645.5139, 85.34352)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="ArbreRond23" type="StaticBody2D" parent="Entities" unique_id=1983664901]
+[node name="ArbreRond23" type="StaticBody2D" parent="Entities" unique_id=1035705496]
 position = Vector2(1018.2414, 93.088684)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="FougereArbre13" type="StaticBody2D" parent="Entities" unique_id=1293921556]
+[node name="FougereArbre13" type="StaticBody2D" parent="Entities" unique_id=351135487]
 position = Vector2(1132.0879, 82.96414)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="Araucaria11" type="StaticBody2D" parent="Entities" unique_id=1089071890]
+[node name="Araucaria11" type="StaticBody2D" parent="Entities" unique_id=742186176]
 position = Vector2(1216.1256, 85.549934)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="ArbreRond24" type="StaticBody2D" parent="Entities" unique_id=512341058]
+[node name="ArbreRond24" type="StaticBody2D" parent="Entities" unique_id=401324082]
 position = Vector2(1332.0297, 89.189735)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond25" type="StaticBody2D" parent="Entities" unique_id=954851151]
+[node name="ArbreRond25" type="StaticBody2D" parent="Entities" unique_id=725081469]
 position = Vector2(1425.6191, 92.71624)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="FougereArbre14" type="StaticBody2D" parent="Entities" unique_id=792875759]
+[node name="FougereArbre14" type="StaticBody2D" parent="Entities" unique_id=710928922]
 position = Vector2(1521.0831, 98.102234)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="ArbreRond26" type="StaticBody2D" parent="Entities" unique_id=1160732080]
+[node name="ArbreRond26" type="StaticBody2D" parent="Entities" unique_id=395989898]
 position = Vector2(1600.5472, 85.42789)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond27" type="StaticBody2D" parent="Entities" unique_id=668140871]
+[node name="ArbreRond27" type="StaticBody2D" parent="Entities" unique_id=1036256612]
 position = Vector2(1710.028, 90.94696)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="Araucaria12" type="StaticBody2D" parent="Entities" unique_id=184662170]
+[node name="Araucaria12" type="StaticBody2D" parent="Entities" unique_id=2025273453]
 position = Vector2(1803.7655, 93.88079)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="ArbreRond28" type="StaticBody2D" parent="Entities" unique_id=939553899]
+[node name="ArbreRond28" type="StaticBody2D" parent="Entities" unique_id=130053713]
 position = Vector2(1907.9948, 93.50615)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond29" type="StaticBody2D" parent="Entities" unique_id=103879139]
+[node name="ArbreRond29" type="StaticBody2D" parent="Entities" unique_id=1090789954]
 position = Vector2(24.998081, 139.61108)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond30" type="StaticBody2D" parent="Entities" unique_id=559765665]
+[node name="ArbreRond30" type="StaticBody2D" parent="Entities" unique_id=1656517575]
 position = Vector2(1839.7621, 130.24681)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="FougereArbre15" type="StaticBody2D" parent="Entities" unique_id=342802125]
+[node name="FougereArbre15" type="StaticBody2D" parent="Entities" unique_id=526610689]
 position = Vector2(1952.233, 143.08818)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="ArbreRond31" type="StaticBody2D" parent="Entities" unique_id=2073491630]
+[node name="ArbreRond31" type="StaticBody2D" parent="Entities" unique_id=1393042871]
 position = Vector2(-32.470406, 181.94165)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond32" type="StaticBody2D" parent="Entities" unique_id=89976324]
+[node name="ArbreRond32" type="StaticBody2D" parent="Entities" unique_id=854152712]
 position = Vector2(85.15872, 181.45343)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="FougereArbre16" type="StaticBody2D" parent="Entities" unique_id=862057184]
+[node name="FougereArbre16" type="StaticBody2D" parent="Entities" unique_id=55234859]
 position = Vector2(1903.7416, 188.71365)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="Araucaria13" type="StaticBody2D" parent="Entities" unique_id=2091197052]
+[node name="Araucaria13" type="StaticBody2D" parent="Entities" unique_id=942420160]
 position = Vector2(17.382206, 239.42854)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="ArbreRond33" type="StaticBody2D" parent="Entities" unique_id=811740727]
+[node name="ArbreRond33" type="StaticBody2D" parent="Entities" unique_id=1389349604]
 position = Vector2(1835.7814, 226.95215)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond34" type="StaticBody2D" parent="Entities" unique_id=2136556608]
+[node name="ArbreRond34" type="StaticBody2D" parent="Entities" unique_id=505742678]
 position = Vector2(1954.9412, 241.39693)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond35" type="StaticBody2D" parent="Entities" unique_id=260102626]
+[node name="ArbreRond35" type="StaticBody2D" parent="Entities" unique_id=827209743]
 position = Vector2(-24.037987, 289.5386)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond36" type="StaticBody2D" parent="Entities" unique_id=169158671]
+[node name="ArbreRond36" type="StaticBody2D" parent="Entities" unique_id=773805675]
 position = Vector2(71.46175, 287.0593)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="Araucaria14" type="StaticBody2D" parent="Entities" unique_id=875184718]
+[node name="Araucaria14" type="StaticBody2D" parent="Entities" unique_id=567467091]
 position = Vector2(1903.0281, 274.87244)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="Araucaria15" type="StaticBody2D" parent="Entities" unique_id=247447102]
+[node name="Araucaria15" type="StaticBody2D" parent="Entities" unique_id=1447962605]
 position = Vector2(35.20525, 332.66965)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="ArbreRond37" type="StaticBody2D" parent="Entities" unique_id=1020676284]
+[node name="ArbreRond37" type="StaticBody2D" parent="Entities" unique_id=834363954]
 position = Vector2(1848.5684, 329.36368)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="FougereArbre17" type="StaticBody2D" parent="Entities" unique_id=1805392421]
+[node name="FougereArbre17" type="StaticBody2D" parent="Entities" unique_id=1483699906]
 position = Vector2(1937.5267, 339.914)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="Araucaria16" type="StaticBody2D" parent="Entities" unique_id=992793283]
+[node name="Araucaria16" type="StaticBody2D" parent="Entities" unique_id=699254385]
 position = Vector2(-27.107395, 382.8938)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="FougereArbre18" type="StaticBody2D" parent="Entities" unique_id=1937564373]
+[node name="FougereArbre18" type="StaticBody2D" parent="Entities" unique_id=528767769]
 position = Vector2(77.949135, 370.88046)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="ArbreRond38" type="StaticBody2D" parent="Entities" unique_id=875417376]
+[node name="ArbreRond38" type="StaticBody2D" parent="Entities" unique_id=1117540023]
 position = Vector2(1897.9781, 383.96503)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="Araucaria17" type="StaticBody2D" parent="Entities" unique_id=1239949736]
+[node name="Araucaria17" type="StaticBody2D" parent="Entities" unique_id=1245000959]
 position = Vector2(25.88553, 430.1622)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="FougereArbre19" type="StaticBody2D" parent="Entities" unique_id=591474920]
+[node name="FougereArbre19" type="StaticBody2D" parent="Entities" unique_id=1501148737]
 position = Vector2(1848.5476, 421.38153)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="ArbreRond39" type="StaticBody2D" parent="Entities" unique_id=1697555107]
+[node name="ArbreRond39" type="StaticBody2D" parent="Entities" unique_id=1519279015]
 position = Vector2(1938.1987, 417.71384)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="ArbreRond40" type="StaticBody2D" parent="Entities" unique_id=651562081]
+[node name="ArbreRond40" type="StaticBody2D" parent="Entities" unique_id=894070738]
 position = Vector2(-34.650734, 482.2843)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="Araucaria18" type="StaticBody2D" parent="Entities" unique_id=459280369]
+[node name="Araucaria18" type="StaticBody2D" parent="Entities" unique_id=421285227]
 position = Vector2(57.76217, 481.73004)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="FougereArbre20" type="StaticBody2D" parent="Entities" unique_id=1054154410]
+[node name="FougereArbre20" type="StaticBody2D" parent="Entities" unique_id=354870145]
 position = Vector2(35.315964, 519.0961)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 
-[node name="ArbreRond41" type="StaticBody2D" parent="Entities" unique_id=540718557]
+[node name="ArbreRond41" type="StaticBody2D" parent="Entities" unique_id=1598934203]
 position = Vector2(-13.1500025, 567.6812)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 flip = true
 
-[node name="Araucaria19" type="StaticBody2D" parent="Entities" unique_id=702475340]
+[node name="Araucaria19" type="StaticBody2D" parent="Entities" unique_id=1926247380]
 position = Vector2(84.656, 577.14014)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="Araucaria20" type="StaticBody2D" parent="Entities" unique_id=1312883696]
+[node name="Araucaria20" type="StaticBody2D" parent="Entities" unique_id=974237718]
 position = Vector2(28.248606, 609.6076)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 flip = true
 
-[node name="ArbreRond42" type="StaticBody2D" parent="Entities" unique_id=1559011849]
+[node name="ArbreRond42" type="StaticBody2D" parent="Entities" unique_id=1969143757]
 position = Vector2(1838.4192, 622.69226)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="FougereArbre21" type="StaticBody2D" parent="Entities" unique_id=625890959]
+[node name="FougereArbre21" type="StaticBody2D" parent="Entities" unique_id=637150822]
 position = Vector2(1932.8735, 622.9318)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="ArbreRond43" type="StaticBody2D" parent="Entities" unique_id=1400590974]
+[node name="ArbreRond43" type="StaticBody2D" parent="Entities" unique_id=1305744298]
 position = Vector2(-14.06282, 661.97)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="ArbreRond44" type="StaticBody2D" parent="Entities" unique_id=339581201]
+[node name="ArbreRond44" type="StaticBody2D" parent="Entities" unique_id=453041524]
 position = Vector2(85.37841, 660.0259)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="Araucaria21" type="StaticBody2D" parent="Entities" unique_id=1880569939]
+[node name="Araucaria21" type="StaticBody2D" parent="Entities" unique_id=736740509]
 position = Vector2(1899.9556, 666.3641)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="FougereArbre22" type="StaticBody2D" parent="Entities" unique_id=794682200]
+[node name="FougereArbre22" type="StaticBody2D" parent="Entities" unique_id=865084859]
 position = Vector2(15.596199, 712.5651)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougere_arbre"
 flip = true
 
-[node name="ArbreRond45" type="StaticBody2D" parent="Entities" unique_id=2038109857]
+[node name="ArbreRond45" type="StaticBody2D" parent="Entities" unique_id=1789524914]
 position = Vector2(1837.2991, 717.7691)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 
-[node name="Araucaria22" type="StaticBody2D" parent="Entities" unique_id=1192939881]
+[node name="Araucaria22" type="StaticBody2D" parent="Entities" unique_id=1786492282]
 position = Vector2(1945.5049, 706.7136)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "araucaria"
 
-[node name="Fougeres" type="StaticBody2D" parent="Entities" unique_id=529097150]
+[node name="Fougeres" type="StaticBody2D" parent="Entities" unique_id=1230467053]
 position = Vector2(1124.8383, 603.587)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougeres"
 flip = true
 
-[node name="Fougeres2" type="StaticBody2D" parent="Entities" unique_id=1898951257]
+[node name="Fougeres2" type="StaticBody2D" parent="Entities" unique_id=1747407446]
 position = Vector2(309.28586, 130.694)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougeres"
 
-[node name="FleursRoses" type="StaticBody2D" parent="Entities" unique_id=1563623982]
+[node name="FleursRoses" type="StaticBody2D" parent="Entities" unique_id=1417360597]
 position = Vector2(133.92906, 707.817)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fleurs_roses"
 
-[node name="FleursViolettes" type="StaticBody2D" parent="Entities" unique_id=1996324300]
+[node name="FleursViolettes" type="StaticBody2D" parent="Entities" unique_id=2075935912]
 position = Vector2(1596.848, 137.69958)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fleurs_violettes"
 
-[node name="Fougeres3" type="StaticBody2D" parent="Entities" unique_id=2093422368]
+[node name="Fougeres3" type="StaticBody2D" parent="Entities" unique_id=321336700]
 position = Vector2(1272.8306, 650.71564)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougeres"
 flip = true
 
-[node name="FleursRoses2" type="StaticBody2D" parent="Entities" unique_id=2130381113]
+[node name="FleursRoses2" type="StaticBody2D" parent="Entities" unique_id=31303109]
 position = Vector2(1034.684, 653.13153)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fleurs_roses"
 
-[node name="Fougeres4" type="StaticBody2D" parent="Entities" unique_id=1937943563]
+[node name="Fougeres4" type="StaticBody2D" parent="Entities" unique_id=499110004]
 position = Vector2(612.87024, 650.82587)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougeres"
 flip = true
 
-[node name="FleursRoses3" type="StaticBody2D" parent="Entities" unique_id=572093881]
+[node name="FleursRoses3" type="StaticBody2D" parent="Entities" unique_id=2118996349]
 position = Vector2(1023.5145, 619.1081)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fleurs_roses"
 
-[node name="FleursViolettes2" type="StaticBody2D" parent="Entities" unique_id=229424582]
+[node name="FleursViolettes2" type="StaticBody2D" parent="Entities" unique_id=1443377070]
 position = Vector2(550.9769, 661.0884)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fleurs_violettes"
 
-[node name="Fougeres5" type="StaticBody2D" parent="Entities" unique_id=103717810]
+[node name="Fougeres5" type="StaticBody2D" parent="Entities" unique_id=1083090882]
 position = Vector2(1087.1735, 695.964)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougeres"
 
-[node name="FleursRoses4" type="StaticBody2D" parent="Entities" unique_id=628037859]
+[node name="FleursRoses4" type="StaticBody2D" parent="Entities" unique_id=729494786]
 position = Vector2(1042.6316, 608.517)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fleurs_roses"
 
-[node name="FleursViolettes3" type="StaticBody2D" parent="Entities" unique_id=1768607312]
+[node name="FleursViolettes3" type="StaticBody2D" parent="Entities" unique_id=1896589914]
 position = Vector2(123.089935, 270.76764)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fleurs_violettes"
 flip = true
 
-[node name="Fougeres6" type="StaticBody2D" parent="Entities" unique_id=699700534]
+[node name="Fougeres6" type="StaticBody2D" parent="Entities" unique_id=1915094912]
 position = Vector2(129.50403, 187.03024)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougeres"
 flip = true
 
-[node name="Fougeres7" type="StaticBody2D" parent="Entities" unique_id=544190261]
+[node name="Fougeres7" type="StaticBody2D" parent="Entities" unique_id=1213262603]
 position = Vector2(359.14032, 699.29333)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougeres"
 flip = true
 
-[node name="Fougeres8" type="StaticBody2D" parent="Entities" unique_id=296456592]
+[node name="Fougeres8" type="StaticBody2D" parent="Entities" unique_id=48307396]
 position = Vector2(1094.0371, 131.32356)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fougeres"
 
-[node name="FleursViolettes4" type="StaticBody2D" parent="Entities" unique_id=1890951501]
+[node name="FleursViolettes4" type="StaticBody2D" parent="Entities" unique_id=608638329]
 position = Vector2(1141.4734, 709.6415)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "fleurs_violettes"
 flip = true
 
-[node name="MaisonBlanche" type="StaticBody2D" parent="Entities" unique_id=1805760080]
+[node name="MaisonBlanche" type="StaticBody2D" parent="Entities" unique_id=382056471]
 position = Vector2(312, 398.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "maison_blanche"
 
-[node name="MaisonJaune" type="StaticBody2D" parent="Entities" unique_id=2089826228]
+[node name="MaisonJaune" type="StaticBody2D" parent="Entities" unique_id=2056978672]
 position = Vector2(604.8, 398.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "maison_jaune"
 
-[node name="MaisonPort" type="StaticBody2D" parent="Entities" unique_id=1005654454]
+[node name="MaisonPort" type="StaticBody2D" parent="Entities" unique_id=159741400]
 position = Vector2(1152, 398.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "maison_port"
 
-[node name="Cabinet" type="StaticBody2D" parent="Entities" unique_id=1241324239]
+[node name="Cabinet" type="StaticBody2D" parent="Entities" unique_id=199666332]
 position = Vector2(1512, 398.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "cabinet"
 
-[node name="Lanterne" type="StaticBody2D" parent="Entities" unique_id=144829247]
+[node name="Lanterne" type="StaticBody2D" parent="Entities" unique_id=1110815508]
 position = Vector2(480, 432)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "lanterne"
 
-[node name="Lanterne2" type="StaticBody2D" parent="Entities" unique_id=1875580948]
+[node name="Lanterne2" type="StaticBody2D" parent="Entities" unique_id=1749547508]
 position = Vector2(777.6, 432)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "lanterne"
 
-[node name="Lanterne3" type="StaticBody2D" parent="Entities" unique_id=809953848]
+[node name="Lanterne3" type="StaticBody2D" parent="Entities" unique_id=138453736]
 position = Vector2(998.4, 432)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "lanterne"
 
-[node name="Lanterne4" type="StaticBody2D" parent="Entities" unique_id=554875408]
+[node name="Lanterne4" type="StaticBody2D" parent="Entities" unique_id=1201483483]
 position = Vector2(1334.4, 432)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "lanterne"
 
-[node name="BacFleurs" type="StaticBody2D" parent="Entities" unique_id=114994165]
+[node name="BacFleurs" type="StaticBody2D" parent="Entities" unique_id=1694288951]
 position = Vector2(412.8, 417.6)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "bac_fleurs"
 
-[node name="BacFleurs2" type="StaticBody2D" parent="Entities" unique_id=1650662466]
+[node name="BacFleurs2" type="StaticBody2D" parent="Entities" unique_id=528024746]
 position = Vector2(691.2, 417.6)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "bac_fleurs"
 
-[node name="Tonneau" type="StaticBody2D" parent="Entities" unique_id=9232754]
+[node name="Tonneau" type="StaticBody2D" parent="Entities" unique_id=741773806]
 position = Vector2(1065.6, 422.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "tonneau"
 
-[node name="Caisses" type="StaticBody2D" parent="Entities" unique_id=390080403]
+[node name="Caisses" type="StaticBody2D" parent="Entities" unique_id=756829958]
 position = Vector2(1267.2, 427.2)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "caisses"
 
-[node name="Filet" type="StaticBody2D" parent="Entities" unique_id=968650449]
+[node name="Filet" type="StaticBody2D" parent="Entities" unique_id=1759421435]
 position = Vector2(240, 662.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "filet"
 
-[node name="Sechoir" type="StaticBody2D" parent="Entities" unique_id=1369581304]
+[node name="Sechoir" type="StaticBody2D" parent="Entities" unique_id=2105423807]
 position = Vector2(460.8, 652.8)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "sechoir"
 
-[node name="Banc" type="StaticBody2D" parent="Entities" unique_id=1461596496]
+[node name="Banc" type="StaticBody2D" parent="Entities" unique_id=1600613025]
 position = Vector2(652.8, 633.6)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "banc"
 
-[node name="Casiers" type="StaticBody2D" parent="Entities" unique_id=415005833]
+[node name="Casiers" type="StaticBody2D" parent="Entities" unique_id=328926975]
 position = Vector2(1132.8, 662.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "casiers"
 
-[node name="Ancre" type="StaticBody2D" parent="Entities" unique_id=2130202344]
+[node name="Ancre" type="StaticBody2D" parent="Entities" unique_id=1016493194]
 position = Vector2(1401.6, 652.8)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "ancre"
 
-[node name="BacFleurs3" type="StaticBody2D" parent="Entities" unique_id=779914204]
+[node name="BacFleurs3" type="StaticBody2D" parent="Entities" unique_id=1543691390]
 position = Vector2(1632, 633.6)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "bac_fleurs"
 
-[node name="Tonneau2" type="StaticBody2D" parent="Entities" unique_id=1336174374]
+[node name="Tonneau2" type="StaticBody2D" parent="Entities" unique_id=1609192546]
 position = Vector2(1689.6, 652.8)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "tonneau"
 
-[node name="Bitte" type="StaticBody2D" parent="Entities" unique_id=838736467]
+[node name="Bitte" type="StaticBody2D" parent="Entities" unique_id=633151387]
 position = Vector2(216, 806.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "bitte"
 
-[node name="Bitte2" type="StaticBody2D" parent="Entities" unique_id=1042739030]
+[node name="Bitte2" type="StaticBody2D" parent="Entities" unique_id=1617041982]
 position = Vector2(528, 806.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "bitte"
 
-[node name="Bitte3" type="StaticBody2D" parent="Entities" unique_id=145027118]
+[node name="Bitte3" type="StaticBody2D" parent="Entities" unique_id=1287809156]
 position = Vector2(1248, 806.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "bitte"
 
-[node name="Bitte4" type="StaticBody2D" parent="Entities" unique_id=1422029547]
+[node name="Bitte4" type="StaticBody2D" parent="Entities" unique_id=504913988]
 position = Vector2(1584, 806.4)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "bitte"
 
-[node name="Caisses2" type="StaticBody2D" parent="Entities" unique_id=388873760]
+[node name="Caisses2" type="StaticBody2D" parent="Entities" unique_id=1669541369]
 position = Vector2(1420.8, 753.6)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "caisses"
 
-[node name="Tonneau3" type="StaticBody2D" parent="Entities" unique_id=34319504]
+[node name="Tonneau3" type="StaticBody2D" parent="Entities" unique_id=592654291]
 position = Vector2(1497.6, 739.2)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "tonneau"
 
-[node name="Cordage" type="StaticBody2D" parent="Entities" unique_id=1034108841]
+[node name="Cordage" type="StaticBody2D" parent="Entities" unique_id=688107949]
 position = Vector2(1056, 787.2)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "cordage"
 
-[node name="Casiers2" type="StaticBody2D" parent="Entities" unique_id=1900935945]
+[node name="Casiers2" type="StaticBody2D" parent="Entities" unique_id=1536271645]
 position = Vector2(384, 748.8)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "casiers"
 
-[node name="Barque" type="StaticBody2D" parent="Entities" unique_id=1353485348]
+[node name="Barque" type="StaticBody2D" parent="Entities" unique_id=1366154789]
 position = Vector2(1113.6, 979.2)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "barque"
 
-[node name="Barque2" type="StaticBody2D" parent="Entities" unique_id=595094407]
+[node name="Barque2" type="StaticBody2D" parent="Entities" unique_id=322536195]
 position = Vector2(748.8, 940.8)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "barque"
 flip = true
 
-[node name="Barque3" type="StaticBody2D" parent="Entities" unique_id=37388543]
+[node name="Barque3" type="StaticBody2D" parent="Entities" unique_id=1746613438]
 position = Vector2(1368, 921.6)
-script = ExtResource("7_5tasp")
+script = ExtResource("7_dth6l")
 kind = "barque"
 
-[node name="Panneau" type="StaticBody2D" parent="Entities" unique_id=574969711]
+[node name="Panneau" type="StaticBody2D" parent="Entities" unique_id=1106383333]
 position = Vector2(998.4, 134.4)
-script = ExtResource("8_dth6l")
+script = ExtResource("8_f4v4p")
 dialogue_id = &"panneau_plaines"
 kind = "panneau"
 flip = true
 
-[node name="IsaureQuai" type="StaticBody2D" parent="Entities" unique_id=776308590 instance=ExtResource("9_f4v4p")]
+[node name="IsaureQuai" type="StaticBody2D" parent="Entities" unique_id=815713561 instance=ExtResource("9_m714b")]
 position = Vector2(974.4, 1027.2)
 collision_mask = 0
-script = ExtResource("10_m714b")
+script = ExtResource("10_aqdj1")
 display_name = "Isaure"
-sheet = ExtResource("11_aqdj1")
+sheet = ExtResource("11_5q2di")
 facing = "left"
 hide_flag = &"prologue_arrived"
 
-[node name="MaiaQuai" type="StaticBody2D" parent="Entities" unique_id=22596792 instance=ExtResource("9_f4v4p")]
+[node name="MaiaQuai" type="StaticBody2D" parent="Entities" unique_id=494590157 instance=ExtResource("9_m714b")]
 position = Vector2(950.4, 758.4)
 collision_mask = 0
-script = ExtResource("10_m714b")
+script = ExtResource("10_aqdj1")
 display_name = "Maïa"
-sheet = ExtResource("12_5q2di")
+sheet = ExtResource("12_n28m7")
 hide_flag = &"prologue_arrived"
 
-[node name="Isaure" type="StaticBody2D" parent="Entities" unique_id=1683073275 instance=ExtResource("9_f4v4p")]
+[node name="Isaure" type="StaticBody2D" parent="Entities" unique_id=776878850 instance=ExtResource("9_m714b")]
 position = Vector2(1084.8, 753.6)
 collision_mask = 0
-script = ExtResource("10_m714b")
+script = ExtResource("10_aqdj1")
 display_name = "Isaure"
-sheet = ExtResource("11_aqdj1")
+sheet = ExtResource("11_5q2di")
 dialogue_id = &"isaure"
 show_flag = &"prologue_done"
 
-[node name="Garde" type="StaticBody2D" parent="Entities" unique_id=1083838880 instance=ExtResource("9_f4v4p")]
+[node name="Garde" type="StaticBody2D" parent="Entities" unique_id=1091697393 instance=ExtResource("9_m714b")]
 position = Vector2(1804.8, 412.8)
 collision_mask = 0
-script = ExtResource("10_m714b")
+script = ExtResource("10_aqdj1")
 display_name = "Le garde du Havre"
-sheet = ExtResource("13_n28m7")
+sheet = ExtResource("13_o56jy")
 dialogue_id = &"garde_route"
 
-[node name="Panneau2" type="StaticBody2D" parent="Entities" unique_id=1687929953]
+[node name="Panneau2" type="StaticBody2D" parent="Entities" unique_id=844988981]
 position = Vector2(1737.6, 417.6)
-script = ExtResource("8_dth6l")
+script = ExtResource("8_f4v4p")
 dialogue_id = &"panneau_route_cotiere"
 kind = "panneau"
 
-[node name="Spawns" type="Node2D" parent="." unique_id=17093621]
+[node name="GrandVoyageur" type="StaticBody2D" parent="Entities" unique_id=403908167]
+position = Vector2(1276.8, 739.2)
+script = ExtResource("14_w7ifx")
+species_id = &"brachiosaurus"
+event = &"grand_voyageur"
+size_scale = 1.6
 
-[node name="Depart" type="Marker2D" parent="Spawns" unique_id=1492507286]
+[node name="Panneau3" type="StaticBody2D" parent="Entities" unique_id=130971760]
+position = Vector2(1324.8, 792)
+script = ExtResource("8_f4v4p")
+dialogue_id = &"panneau_escale"
+kind = "panneau"
+
+[node name="Spawns" type="Node2D" parent="." unique_id=185849788]
+
+[node name="Depart" type="Marker2D" parent="Spawns" unique_id=531425845]
 position = Vector2(912, 1017.6)
 
-[node name="DepuisPlaines" type="Marker2D" parent="Spawns" unique_id=788086135]
+[node name="DepuisPlaines" type="Marker2D" parent="Spawns" unique_id=1848311561]
 position = Vector2(816, 72)
 
-[node name="DepuisCabinet" type="Marker2D" parent="Spawns" unique_id=1183581427]
+[node name="DepuisCabinet" type="Marker2D" parent="Spawns" unique_id=1960787599]
 position = Vector2(1512, 465.6)
 
-[node name="DepuisHavre" type="Marker2D" parent="Spawns" unique_id=1596680065]
+[node name="DepuisHavre" type="Marker2D" parent="Spawns" unique_id=657933057]
 position = Vector2(1814.4, 504)
 
-[node name="Habitats" type="Node2D" parent="." unique_id=1776166194]
+[node name="Voyageur" type="Marker2D" parent="Spawns" unique_id=745985480]
+position = Vector2(1142.4, 763.2)
 
-[node name="Exits" type="Node2D" parent="." unique_id=917186099]
+[node name="Habitats" type="Node2D" parent="." unique_id=1476533917]
 
-[node name="VersHavreDore" type="Area2D" parent="Exits" unique_id=679485593]
+[node name="Exits" type="Node2D" parent="." unique_id=1454638687]
+
+[node name="VersHavreDore" type="Area2D" parent="Exits" unique_id=580146836]
 position = Vector2(1893.6001, 432)
-script = ExtResource("14_o56jy")
+script = ExtResource("15_8mw0v")
 size = Vector2(26.400002, 144)
 target_zone = &"havre_dore"
 target_spawn = &"DepuisPort"
 required_flag = &"sceau_plaines"
 blocked_dialogue = &"route_cotiere"
 
-[node name="VersPlaines" type="Area2D" parent="Exits" unique_id=1965408838]
+[node name="VersPlaines" type="Area2D" parent="Exits" unique_id=820250946]
 position = Vector2(720, 0)
-script = ExtResource("14_o56jy")
+script = ExtResource("15_8mw0v")
 size = Vector2(192, 26.400002)
 target_zone = &"plaines"
 target_spawn = &"DepuisPort"
 required_flag = &"prologue_done"
 blocked_dialogue = &"port_bloque"
 
-[node name="VersCabinet" type="Area2D" parent="Exits" unique_id=1330961117]
+[node name="VersCabinet" type="Area2D" parent="Exits" unique_id=1162535348]
 position = Vector2(1483.2, 400.80002)
-script = ExtResource("14_o56jy")
+script = ExtResource("15_8mw0v")
 size = Vector2(57.600002, 24)
 target_zone = &"cabinet"
 
-[node name="Ponton" type="Node2D" parent="." unique_id=242867512]
+[node name="Ponton" type="Node2D" parent="." unique_id=1264593949]
 position = Vector2(864, 816)
-script = ExtResource("15_w7ifx")
+script = ExtResource("16_lc2tk")

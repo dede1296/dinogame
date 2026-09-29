@@ -111,6 +111,13 @@ static func build() -> Region:
 	BORDERS.plants(root, entities, dry, ["buisson_sec", "roseaux_secs", "roseaux_secs"], 0.3, 5133, KEEP_CLEAR)
 	_places(root)
 	_habitats(root)
+	# The Grand Voyageur's stop (fast travel, story/voyage.gd): the dino, the arrival point
+	# right beside him, and Hélène's sign marking the stop. Here on the firm ground of the
+	# landing island, never on the boardwalks: they would not bear him; far enough south that
+	# his neck does not hide Joss.
+	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 99.5, 73.6, {"event": &"grand_voyageur", "size": 1.6})
+	B.spawn(root, "Voyageur", 102.2, 72.4)
+	B.sign(entities, B.cell(101.8, 74.4), &"panneau_escale")
 	return root
 
 

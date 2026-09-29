@@ -135,6 +135,12 @@ static func build() -> Region:
 	_places(root)
 	_habitats(root)
 	_clins_doeil(root, entities)
+	# The Grand Voyageur's stop (fast travel, story/voyage.gd): the dino, the arrival point
+	# right beside him, and Hélène's sign marking the stop. Here on the Lisière est, at the head
+	# of the Prairie des brachiosaures where his kin graze, just off the road from the Plaines.
+	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 114.6, 56.2, {"event": &"grand_voyageur", "size": 1.6})
+	B.spawn(root, "Voyageur", 114.2, 58.2)
+	B.sign(entities, B.cell(116.4, 58.4), &"panneau_escale")
 	return root
 
 

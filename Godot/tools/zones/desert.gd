@@ -127,6 +127,12 @@ static func build() -> Region:
 	# Chloé and once his sheet is drawn.
 	if ResourceLoader.exists(CHARS % "granit"):
 		B.npc(root, "Granit", "Pr Granit", CHARS % "granit", GRANIT.x, GRANIT.y, {"facing": "left", "event": &"granit", "show_flag": &"sirocco_vue"})
+	# The Grand Voyageur's stop (fast travel, story/voyage.gd): the dino, the arrival point
+	# right beside him, and Hélène's sign marking the stop. Here on the sand where the canyon
+	# from the Marais opens out, by the campfire, clear of the track between the walls.
+	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 102.2, 83.0, {"event": &"grand_voyageur", "size": 1.6})
+	B.spawn(root, "Voyageur", 100.4, 84.6)
+	B.sign(entities, B.cell(105.0, 84.0), &"panneau_escale")
 	return root
 
 

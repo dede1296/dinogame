@@ -71,6 +71,13 @@ static func build() -> Region:
 	B.spawn(root, "DepuisPort", 1.8, 10.5)
 	B.exit(root, Rect2(0.0, 9.0, 0.55, 3.0), &"port_ambre", &"DepuisHavre")
 	_clins_doeil(root, entities)
+	# The Grand Voyageur's stop (fast travel, story/voyage.gd): the dino, the arrival point
+	# right beside him, and Hélène's sign marking the stop. Here at the west end of the quay,
+	# below the way in from Port-Ambre and well clear of the market: the streets above are
+	# hemmed in by the houses, the quay is the only open ground a sauropod fits on.
+	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 4.8, 21.2, {"event": &"grand_voyageur", "size": 1.6})
+	B.spawn(root, "Voyageur", 7.4, 20.6)
+	B.sign(entities, B.cell(3.0, 22.4), &"panneau_escale")
 	return root
 
 

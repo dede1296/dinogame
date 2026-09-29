@@ -118,6 +118,12 @@ static func build() -> Region:
 	_swap_stand_ins(entities)
 	_places(root)
 	_habitats(root)
+	# The Grand Voyageur's stop (fast travel, story/voyage.gd): the dino, the arrival point
+	# right beside him, and Hélène's sign marking the stop. Here on the open beach west of the
+	# track up from the Désert, a few steps from the way in, well above the waterline.
+	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 13.6, 91.2, {"event": &"grand_voyageur", "size": 1.6})
+	B.spawn(root, "Voyageur", 16.6, 91.4)
+	B.sign(entities, B.cell(15.6, 93.2), &"panneau_escale")
 	return root
 
 

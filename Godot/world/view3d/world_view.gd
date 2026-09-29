@@ -1581,6 +1581,10 @@ func _track(node: Node) -> void:
 		# character in front of a big facade is never drawn behind it (the rest is only sorted).
 		pic.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
 		pic.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		# Sorted by its feet, not by the middle of its picture: the middle of a tall one (a Grand
+		# Voyageur, 6.5 m) is nearer the tilted camera than Chloé, and it would be drawn over her
+		# even when she stands in front of it.
+		pic.sorting_use_aabb_center = false
 		vis = pic
 	vis.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	_zone.add_child(vis)
