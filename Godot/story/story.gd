@@ -115,6 +115,7 @@ static func _run(event: StringName, who: Node) -> void:
 			said = await Cote.roc() or said
 			said = await MontsFin.roc() or said
 			said = await clins().roc() or said   # (the car in the tree, the mosquito in amber)
+			said = await Voyage.roc() or said    # (the Grands Voyageurs, once she has met one)
 			said = await _dex_rewards() or said
 			if not said and not healed and Game.flag(&"prologue_done"):
 				await _roc_chat()
@@ -297,6 +298,9 @@ static func _run(event: StringName, who: Node) -> void:
 			await clins().cuisine(who)
 		&"voiture_arbre":
 			await clins().voiture(who)
+		# Le voyage rapide (story/voyage.gd)
+		&"grand_voyageur":
+			await Voyage.talk(who)
 		# « Les visiteurs » (story/visiteurs.gd)
 		&"hamon":
 			await visiteurs().hamon(who)

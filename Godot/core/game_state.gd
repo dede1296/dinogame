@@ -118,6 +118,15 @@ func pass_time_until(hour: float) -> void:
 	clock = target
 
 
+## Time passes: `minutes` further on (a long ride on a Grand Voyageur's back). _process sees the
+## new hour and takes care of the weather and the phase.
+func pass_minutes(minutes: float) -> void:
+	var before := clock
+	clock = fmod(clock + minutes, 1440.0)
+	if clock < before:
+		day += 1
+
+
 ## The day the current night began on (-1 in the daytime): a night belongs to its evening.
 func night_of() -> int:
 	var h := clock / 60.0

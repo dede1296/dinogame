@@ -1061,6 +1061,26 @@ ch. 5 fini : le manteau), `mur_glace_bloque`, `porte_givre_fermee`, `cieux_bloqu
 - **Hélène au Cabinet** : de nouvelles conversations, et des œufs d'ambre rares.
 - **Nouvelle partie+** : recommencer avec un autre œuf (voir [mecaniques.md](mecaniques.md)).
 
+## Le Grand Voyageur (voyage rapide)
+
+De **vieux Brachiosaures** parcourent l'île depuis toujours, par les mêmes chemins, et s'arrêtent
+toujours aux mêmes endroits : les **escales**. Il y en a une par région, marquée par une planche où
+Hélène a gravé une petite fougère. Chloé parle au dino de l'escale, choisit une escale qu'elle a
+déjà trouvée, et il l'y porte sur son dos (le trajet fait passer 1 h 30 dans le jeu).
+
+- **Le premier qu'elle rencontre lui éternue dessus** (clin d'œil, voir plus bas). Il plie ensuite
+  les pattes et lui offre son dos.
+- Une escale est notée **en lui parlant** : tant qu'elle n'en connaît qu'une, le dino attend.
+- **Roc** explique ce que sont les Grands Voyageurs la première fois qu'elle le revoit après en
+  avoir rencontré un, et qu'Hélène ne voyageait plus autrement. On peut le redemander à Roc, Maïa
+  ou Joss (« Les Grands Voyageurs ? »).
+- Les escales : Port-Ambre, Prairie du Grand Crâne, Havre-Doré, Forêt Jurassique, Marais Brumeux,
+  Désert Aride, Côte Préhistorique, Monts Gelés. Le Vol (ch. 7) viendra en plus, pas à la place.
+
+Code : `story/voyage.gd` (les escales, la rencontre, le trajet), `ui/voyage_screen.gd` (le choix de
+la destination) ; posés par `tools/zones/*.gd` (le dino « GrandVoyageur », l'arrivée « Voyageur »,
+l'écriteau `panneau_escale`). Tests : `tools/scenarios/test_voyage.gd` et `test_voyage_jeu.gd`.
+
 ## Clins d'œil (hommages à un grand film de dinosaures)
 
 Règle : des références **reconnaissables** (gestes, objets, allure, phrases dites autrement), jamais un

@@ -21,6 +21,8 @@ const TOPICS := {
 	&"temple": "Qu'y a-t-il dans le temple englouti ?",
 	&"suie": "Qui est la dame en gris ?",
 	&"roc_nuit": "Où va Roc, la nuit ?",
+	# The fast travel (story/voyage.gd), once Chloé has met a Grand Voyageur.
+	&"voyageur": "Les Grands Voyageurs ?",
 }
 ## The same question, asked to someone else in other words (npc -> topic -> words).
 const TOPICS_FOR := {&"roc": {&"roc_nuit": "Où allez-vous, la nuit ?"}}
@@ -86,6 +88,8 @@ static func answer(npc: StringName, speaker: String, topic: StringName) -> Array
 			return [{"who": speaker, "text": _lady(npc)}]
 		&"roc_nuit":
 			return [{"who": speaker, "text": _roc_night(npc)}]
+		&"voyageur":
+			return [{"who": speaker, "text": _traveller(npc)}]
 	var monts: Array = MontsAsk.answer(npc, speaker, topic)   # chapter 6 (story/monts_ask.gd)
 	if not monts.is_empty():
 		return monts
@@ -126,6 +130,8 @@ static func story_topics() -> Array:
 			out.append(&"suie")
 	if Game.flag(&"roc_marais_vu"):
 		out.append(&"roc_nuit")
+	if Game.flag(&"voyageur_rencontre"):
+		out.append(&"voyageur")
 	# Chapter 4, the Désert Aride: the fossils, the fallen rocks, the storm, the Carnotaurus.
 	if Game.flag(&"desert_arrivee"):
 		out.append_array(DesertAsk.story_topics())
@@ -250,6 +256,18 @@ static func _roc_night(npc: StringName) -> String:
 		&"joss":
 			return "Le professeur ? Je l'ai vu passer une nuit, avec sa lanterne, vers le nord. Il m'a dit bonsoir très poliment, puis il est tombé dans la vase. Il m'a redit bonsoir, moins poliment."
 	return "Roc ? Il cherche des escargots de nuit, je parie. Il est bizarre, pas méchant. Je te l'ai déjà dit, non ?"
+
+
+## The Grands Voyageurs and their stops (story/voyage.gd), as each one sees them.
+static func _traveller(npc: StringName) -> String:
+	match npc:
+		&"roc":
+			return "De vieux Brachiosaures. Ils suivent les mêmes chemins depuis avant nous, d'une escale à l'autre. Monte sur le dos de l'un d'eux, dis-lui une escale que tu connais, et il t'y emmènera. Hélène ne se déplaçait plus autrement."
+		&"maia":
+			return "Tu as vu leurs escales ? Une planche avec une fougère gravée. Tu parles au gros, tu choisis une escale où tu es déjà allée, et hop. C'est lent, mais c'est reposant. Et ça éternue."
+		&"joss":
+			return "Les gros du bout des chemins ? Ils sont doux comme tout. Pas besoin de selle pour ceux-là : on s'assied entre leurs épaules, et on se tient au cou."
+	return "Les gros au long cou ? Ils passent, ils repassent, toujours aux mêmes endroits. Les anciens disent qu'ils connaissent l'île mieux que nous."
 
 
 ## Where to earn coins, as each one sees it.

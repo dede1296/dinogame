@@ -93,6 +93,10 @@ static func lines(id: StringName) -> Array:
 			return [{"text": "Le Professeur Roc t'attend au Cabinet, la grande maison couverte de lierre à l'est du village."}]
 		&"cabinet_bloque":
 			return [{"who": "Prof. Roc", "text": "Où vas-tu comme ça ? Les petits sont sur les socles, à droite : choisis d'abord ton compagnon !"}]
+		&"panneau_escale":
+			if Game.flag(&"voyageur_rencontre"):
+				return [{"text": "Une planche usée, plantée dans l'herbe, avec une petite fougère gravée. C'est une escale du Grand Voyageur."}]
+			return [{"text": "Une planche usée, plantée dans l'herbe. Quelqu'un y a gravé une petite fougère… et des traces de pas énormes s'arrêtent juste devant."}]
 		&"panneau_plaines":
 			return [{"text": "Nord : la Prairie du Grand Crâne.  Est : le Cabinet du Professeur Roc."}]
 		&"panneau_port":
