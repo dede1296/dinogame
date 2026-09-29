@@ -10,6 +10,7 @@ const PATH := "res://regions/havre/havre_dore.tscn"
 const B := preload("res://tools/zone_builder.gd")
 const CHARS := "res://assets/art/characters/%s.png"
 const STORY_PROP := "res://world/story_prop.gd"
+const FLAGGED_PROP := "res://tools/zones/flagged_prop.gd"
 ## The Anurognathus on Ferréol's chest: its picture raised onto the lid (px; the chest ~0.6 m up).
 const ANURO_LIFT := 26.0
 
@@ -95,6 +96,12 @@ static func _clins_doeil(root: Region, entities: Node2D) -> void:
 		# forest at its end; the west side of her shop is all trees, they would hide it)
 		B.prop(entities, "table_cuisine", B.cell(9.75, 4.9))
 		B.trigger(root, 9.75, 6.6, 1.0, &"cuisine_compsos", {"name": "CuisinePervenche"})
+	# Mémé Pervenche's goat, stolen by Brac's henchmen to bait the forest's Ancien: home again in
+	# her lane, beside the table, once Brac is beaten (she chewed through her rope and walked back).
+	if Prop.KINDS.has("chevre"):
+		var goat = B.prop(entities, "chevre", B.cell(10.9, 5.6), false, load(FLAGGED_PROP))
+		goat.name = "ChevrePervenche"
+		goat.show_flag = &"brac_battu"
 	# « Les visiteurs » come by boat (story/visiteurs.gd), once their sheets are drawn: M. Hamon by
 	# the square's east bench, looking at the sea; Ivan Malcombe on the quay, counting the waves.
 	for v: Array in [["Hamon", "M. Hamon", "hamon", 34.2, 16.6, &"hamon"], ["Malcombe", "Ivan Malcombe", "malcombe", 24.5, 22.2, &"malcombe"]]:

@@ -298,6 +298,10 @@ static func _run(event: StringName, who: Node) -> void:
 			await clins().cuisine(who)
 		&"voiture_arbre":
 			await clins().voiture(who)
+		&"chevre_appat":
+			await clins().chevre(who)
+		&"chevre_partie":
+			await clins().chevre_partie()
 		# Le voyage rapide (story/voyage.gd)
 		&"grand_voyageur":
 			await Voyage.talk(who)

@@ -8,7 +8,7 @@ extends RefCounted
 ## Sirocco and a Dilophosaurus. (Elsewhere: the water that trembles before the Titan,
 ## story/monts_sanctuaire.gd; Brac's « Petite futée… », story/desert_sanctuaire.gd; « La vie trouve
 ## toujours un chemin », page 26, data/dialogue_monts.gd; the scenery's lines, world/examine.gd.)
-## Flags: canne_vue, canne_n (lines), ambre_moustique_trouve (the pebble: its Pickup),
+## Flags: chevre_vue, chevre_n (lines), chevre_partie_vue, canne_vue, canne_n (lines), ambre_moustique_trouve (the pebble: its Pickup),
 ## roc_moustique, voiture_vue, voiture_n (lines), roc_voiture, raptor_porte_vu, anuro_vu, anuro_n (lines), compsos_cuisine (the day of the last
 ## visit), sirocco_dilo. No class_name: loaded by Story.clins() when they play.
 
@@ -27,6 +27,12 @@ const LATCH := preload("res://assets/audio/sfx/latch.wav")
 const PALE: Array[Color] = [Color(0.86, 0.9, 0.95), Color(0.8, 0.86, 0.94)]
 ## The raptors that can open a door (jumping on its handle), if they fit through it.
 const DOOR_RAPTORS: Array[StringName] = [&"velociraptor", &"velociraptor_sables", &"deinonychus", &"microraptor", &"utahraptor"]
+## What the tied goat does when Chloé comes back to her.
+const CHEVRE_AGAIN := [
+	"Elle a déjà mangé un bon tiers de sa corde. Elle prend son temps : elle n'est pas très bonne.",
+	"Elle tire un coup sec sur la corde, regarde Chloé, et recommence à mâcher. Elle a un plan.",
+	"Elle s'est assise sur la corde. Difficile de savoir si c'est pour la mâcher ou par principe.",
+]
 ## None of Chloé's dinos is one: a young Velociraptor of the Plaines, curled up by the warm incubator.
 const WILD_RAPTOR := &"velociraptor"
 const WILD_RAPTOR_LEVEL := 6
@@ -602,6 +608,49 @@ static func _frill(actor) -> void:
 	await S.wait(1.6)
 	if is_instance_valid(sprite):
 		sprite.play(&"idle")
+
+
+# ------------------------------------------------------------------ la chèvre de Mémé Pervenche
+
+## Brac's henchmen stole Mémé Pervenche's goat from Havre-Doré and tied her to a stake in the
+## open, to bring the forest's Ancien in. She is not frightened: she is eating her rope.
+static func chevre(who: Node) -> void:
+	var chews := func() -> void:
+		if who and is_instance_valid(who):
+			Stage.emote(who, "…")
+	if Game.flag(&"chevre_vue"):
+		chews.call()
+		await S.say([{"text": ForetCamp.next_line(&"chevre_n", CHEVRE_AGAIN)}])
+		return
+	S.lock(true)
+	await S.say([
+		_cue({"text": "Au bout d'une corde tendue, attachée à un pieu planté dans la boue, une chèvre mâchonne. Elle mâchonne sa corde, surtout."}, chews),
+		{"who": CHLOE, "text": "Une chèvre ? Ici ? Mais qu'est-ce que tu fais là, toi ?"},
+		{"text": "Elle lève la tête, souffle par le nez, et se remet à mâcher. Elle n'a pas l'air d'avoir peur. Elle a l'air de trouver ça très impoli."},
+		{"who": CHLOE, "text": "(Un collier de cuir, une clochette arrachée… Elle vient d'un village. Elle appartient à quelqu'un.)"},
+		{"who": CHLOE, "text": "(Une corde, un pieu, au milieu du camp, bien en vue. Ce n'est pas une prisonnière. C'est un appât.)"},
+		{"who": CHLOE, "text": "(Ils veulent faire venir quelque chose de gros. Quelque chose d'assez gros pour ne pas voir la corde.)"},
+		{"who": CHLOE, "text": "Tiens bon. Je reviens te chercher."},
+		{"flag": &"chevre_vue"},
+	])
+	S.lock(false)
+
+
+## Brac beaten, back by the stake: the rope hangs, chewed through, and the goat is gone (the
+## film's beat). Chloé finds out where she went when she gets back to Havre-Doré.
+static func chevre_partie() -> void:
+	S.lock(true)
+	var chloe := Stage.chloe()
+	await S.say([
+		{"text": "Le pieu est toujours là. La corde aussi : elle pend, rongée en biais, comme coupée aux dents."},
+		{"who": CHLOE, "text": "…"},
+		_cue({"who": CHLOE, "text": "(Et la chèvre n'est plus là.)"}, func() -> void: Stage.emote(chloe, "!")),
+		{"text": "Pas un bêlement. Pas une trace de lutte. Rien que de petites empreintes de sabots, qui s'en vont vers l'est, bien tranquillement, l'une après l'autre."},
+		{"who": CHLOE, "text": "(Vers l'est… vers la route. Vers Havre-Doré.)"},
+		{"who": CHLOE, "text": "(Tu as mangé ta corde et tu es rentrée toute seule. Bravo. Vraiment.)"},
+		{"flag": &"chevre_partie_vue"},
+	])
+	S.lock(false)
 
 
 # ------------------------------------------------------------------ staging

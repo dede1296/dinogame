@@ -97,6 +97,11 @@ export default ({ sheet, props, icons, sharp, find, OUT }) => [
   // hauteur d'une pile que Chloé fouille debout — pas de collision, comme un tas au sol).
   [`${OUT}/props/crottes_triceratops`, () => props({ id: "9ldhdx", scale: 0.5, outDir: `${OUT}/props`, names: [null, "crottes_triceratops"] })],
 
+  // chevre (29/09) : la chèvre de Mémé Pervenche, volée par les sbires de Brac pour servir d'appât
+  // au camp (clin d'œil : l'appât attaché… puis plus là). De profil vers la droite, collier de cuir
+  // et bout de corde rongé au collier : la même image sert attachée au piquet et rentrée au Havre.
+  [`${OUT}/props/chevre`, () => props({ id: "vtqzqm", scale: 0.5, outDir: `${OUT}/props`, names: ["chevre"] })],
+
   // === PERSONNAGES CLINS D'ŒIL (29/09) : planches de marche 4x4, éditées depuis un personnage
   // existant de même gabarit (méthode chloe_manteau/maia_manteau, tools/art-jobs/monts.mjs) pour
   // garder la grille de pas, puis recalées avec alignWithBase (±3 px) sur ce même personnage source.

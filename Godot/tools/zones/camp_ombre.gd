@@ -74,6 +74,11 @@ const RELIEF := [
 	"3333333333333333333333333333333333333333",
 ]
 
+## Brac's bait, a wink at a famous dinosaur film (story/clins_doeil.gd): the stake in the open
+## and, tied to it, Mémé Pervenche's goat, stolen from Havre-Doré.
+const STAKE := Vector2(28.0, 14.0)
+const GOAT := Vector2(28.9, 14.2)
+
 ## Where the story's people and cages are (tiles).
 const BRAC := Vector2(20.0, 11.0)
 const UTAHRAPTOR := Vector2(31.0, 8.0)
@@ -107,6 +112,7 @@ static func build() -> Region:
 	_cages(root, entities)
 	_edges(entities)
 	_people(root)
+	_bait(root, entities)
 	B.spawn(root, "Depart", 37.0, 14.0)
 	B.spawn(root, "DepuisForet", 37.0, 14.0)
 	B.exit(root, Rect2(39.45, 12.0, 0.55, 4.0), &"foret", &"DepuisCamp")
@@ -186,6 +192,20 @@ static func _edges(entities: Node2D) -> void:
 
 ## Brac and his henchmen (gone once beaten), the Utahraptor in its cage (gone once calmed:
 ## it hands over the Sceau de la Forêt).
+## Brac's bait: Mémé Pervenche's goat, tied to a stake in the open in the middle of the camp, to
+## bring the forest's Ancien in. Brac beaten, she is gone — only the rope, chewed through — and
+## she walks home to Havre-Doré by herself (Chloé finds out passing the stake again).
+static func _bait(root: Region, entities: Node2D) -> void:
+	_put(entities, "pieu_corde", "cloture", STAKE.x, STAKE.y)
+	var goat := _put(entities, "chevre", "", GOAT.x, GOAT.y, true, load(STORY_PROP))
+	if goat:
+		goat.name = "Chevre"
+		goat.event = &"chevre_appat"
+		goat.hide_flag = &"brac_battu"
+	B.trigger(root, STAKE.x, STAKE.y + 1.2, 2.0, &"chevre_partie", {"name": "DeclencheurChevrePartie",
+		"required_flag": &"brac_battu", "once_flag": &"chevre_partie_vue"})
+
+
 static func _people(root: Region) -> void:
 	var drawn := ResourceLoader.exists(CHARS % "brac")
 	B.npc(root, "Brac", "Brac", CHARS % ("brac" if drawn else "sbire"), BRAC.x, BRAC.y, {"facing": "down",

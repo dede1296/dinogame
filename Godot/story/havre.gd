@@ -12,6 +12,9 @@ const MAIA := "Maïa"
 const JOSS := "Joss"
 const FERREOL := "Maître Ferréol"
 const ISAURE := "Isaure"
+const PERVENCHE := "Mémé Pervenche"
+## What Pervenche gives for her goat coming home.
+const GOAT_BERRIES := 5
 const WELCOME_COINS := 200
 ## Joss's work on the saddle, besides the skin and the buckle: more than Ferréol's welcome
 ## coins leave once the buckle is bought, so the saddle is earned (the Relais, the Comptoir).
@@ -85,6 +88,8 @@ static func arrival() -> void:
 ## A shopkeeper (or its door): a word the first time, then the shop.
 static func shop(id: StringName, who: Node) -> void:
 	var first: bool = not Game.flag(StringName("vu_%s" % id))
+	if id == &"herboristerie" and await _goat(who):
+		return
 	var shopping := false
 	match id:
 		&"herboristerie":
@@ -97,6 +102,42 @@ static func shop(id: StringName, who: Node) -> void:
 	if not shopping:
 		return
 	await _visit(id)
+
+
+## Mémé Pervenche's goat (a wink, story/clins_doeil.gd): she tells Chloé the goat was taken the
+## night Brac's people passed, then thanks her once the goat has walked home by herself. True
+## when she said it: the shop waits for the next visit.
+static func _goat(who: Node) -> bool:
+	if Game.flag(&"brac_battu"):
+		if Game.flag(&"chevre_rendue"):
+			return false
+		var goat = S.actor("ChevrePervenche")
+		if goat is Node2D:
+			Stage.look_at((goat as Node2D).global_position, 1.0)
+		await S.say([
+			{"who": PERVENCHE, "text": "Chloé ! Tu ne devineras jamais. Bardane est revenue."},
+			{"who": CHLOE, "text": "Bardane ?"},
+			{"who": PERVENCHE, "text": "Ma chèvre. Elle est rentrée avant-hier, toute seule, par la route. Avec un bout de corde au collier. Rongé net."},
+			{"who": PERVENCHE, "text": "Elle avait mangé le reste, évidemment. Elle mange tout. Elle a mangé mon chapeau, une fois."},
+			{"who": CHLOE, "text": "(Je l'ai vue, là-bas. Attachée au milieu de leur camp, bien en vue.)"},
+			{"who": CHLOE, "text": "(Ils l'avaient mise là pour faire venir quelque chose de gros… et c'est elle qui s'en est sortie toute seule.)"},
+			{"who": PERVENCHE, "text": "Tiens, prends ça pour la route. Des baies. Et une tarte, si tu repasses jeudi."},
+			{"flag": &"chevre_rendue"},
+		])
+		Game.give_item("baie", GOAT_BERRIES)
+		await S.say([{"text": "Chloé reçoit %d baies !" % GOAT_BERRIES}])
+		Stage.look_back()
+		return true
+	if Game.flag(&"chevre_volee_dite") or not Game.flag(&"vu_herboristerie"):
+		return false
+	await S.say([
+		{"who": PERVENCHE, "text": "Tu n'aurais pas vu une chèvre, sur ta route ? Blanche, tachée de brun, un collier de cuir. Bardane, elle s'appelle."},
+		{"who": PERVENCHE, "text": "Elle a disparu la nuit où ces gens en noir sont passés sur le quai. Ils n'ont rien volé d'autre. Juste ma chèvre."},
+		{"who": CHLOE, "text": "Pourquoi une chèvre ?"},
+		{"who": PERVENCHE, "text": "Va savoir. On n'emporte pas une chèvre pour le lait quand on dort dans la forêt, ma belle. On l'emporte pour qu'elle fasse du bruit."},
+		{"flag": &"chevre_volee_dite"},
+	])
+	return true
 
 
 ## Into a shop: its keeper goes in first, the door opens, Chloé follows (Doorway); its screen;

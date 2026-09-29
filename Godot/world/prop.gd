@@ -329,6 +329,9 @@ const KINDS := {
 	# 55% de sa hauteur + éclaircie de 15% (demande d'agent B, 29/09 : se lisait comme une flaque
 	# debout, trop sombre contre la glace) ; foot 0.25 comme "natte_fouilles" (même idée d'objet plat).
 	"flaque_ronde": {"scale": 0.0879, "foot": 0.25, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# chevre (29/09, clin d'œil : l'appât attaché, puis plus là) : la chèvre de Mémé Pervenche, de
+	# profil, collier et bout de corde rongé. ~1 m cornes comprises (Chloé 1,50 m) ; on la contourne.
+	"chevre": {"scale": 0.053, "foot": 0.03, "solid": Vector2(38, 14), "sway": 0.0, "shadow": 46.0},
 	# crottes_triceratops (29/09, PERSONNAGES CLINS D'ŒIL — la quête du Dr Sablier, Plaines) : grosse
 	# pile, ~0,9 m — solid/shadow comme "rocher_mousse" (un tas au sol de taille comparable).
 	"crottes_triceratops": {"scale": 0.1005, "foot": 0.08, "solid": Vector2(70, 26), "sway": 0.0, "shadow": 85.0},
@@ -361,7 +364,7 @@ const KINDS := {
 	"bloc_glace", "oeufs_glace", "mur_glace", "stalactites_glace", "cristaux_glace", "porte_givre", "porte_givre_1", "porte_givre_2", "porte_givre_3",
 	"traineau_suie", "fioles_suie", "abri_roche", "statue_cryolophosaure", "fiole_vide",
 	"griffe_fossile", "chapeau_helene", "affiche_adn", "canne_roc", "ambre_moustique", "voiture_arbre",
-	"cloture_brisee", "banderole_fouilles", "creme_raser", "coffre_comptoir", "table_cuisine", "flaque_ronde",
+	"cloture_brisee", "banderole_fouilles", "creme_raser", "coffre_comptoir", "table_cuisine", "flaque_ronde", "chevre",
 	"crottes_triceratops")
 var kind := "arbre_rond":
 	set(value):
