@@ -177,11 +177,11 @@ export default ({ sharp, find, OUT }) => {
   ];
   const jobs = FAUNA.map(([name, id, count, frameHeight, opts = {}]) =>
     [`${FAUNA_DIR}/${name}.png`, (out) => faunaRow({ id, count, frameHeight, out, ...opts })]);
-  // Le Ptéranodon en vol (bestiaire des dinos, pas la faune) : même échelle de dessin que
-  // pteranodon.png (frameHeight 190 dans cote.mjs / le JOBS principal) — garde une hauteur
-  // cohérente pour que Wildlife/l'intégrateur puisse le poser à côté de l'espèce au sol. Même
-  // refonte en grille 2x2 très espacée (référence pteranodon.png + sa source, envergure complète
-  // jamais rognée).
-  jobs.push([`${OUT}/dinos/pteranodon_vol.png`, (out) => faunaRow({ id: "keilcf", count: 4, frameHeight: 190, out })]);
+  // Le Ptéranodon en vol (bestiaire des dinos, pas la faune) : déplacé dans avant_ch6.mjs (29/09,
+  // passe « avant ch6 ») — nano-banana répétait les mêmes ailes hautes sur les 4 temps de ce
+  // job-ci (id "keilcf", voir docs/direction-artistique.md « À refaire », entrée retirée) ; un
+  // vrai cycle (poses générées séparément, assemblées par tools/art-jobs/avant_ch6.mjs) écrit
+  // maintenant ce même fichier. Job retiré d'ici pour ne plus écrire deux fois le même PNG (une
+  // course : `process-art.mjs pteranodon_vol` matchait les deux). Voir vivants/patch_images.md.
   return jobs;
 };

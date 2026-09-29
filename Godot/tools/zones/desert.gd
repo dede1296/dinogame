@@ -257,9 +257,12 @@ static func _landmarks(root: Region, entities: Node2D) -> void:
 	for p: Array in [["rocher_canyon", 9.4, 6.2, false], ["rocher_canyon", 20.6, 5.4, true], ["cailloux", 8.6, 12.4, false],
 			["os_dino", 19.8, 13.6, true], ["buisson_sec", 10.2, 14.2, false]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]), p[3])
-	# (The old rope Brac climbs away on, props/corde_falaise.png, is not placed here: at (8.5, 2.2)
-	# the ground is flat, it stood 8 m high out of nothing. It belongs to his scene, against a
-	# real rock face — still to do.)
+	# The old rope Brac climbs away on (story/desert_sanctuaire.gd _brac_climbs): it hangs down the
+	# 3.6 m rock face at the canyon's dead end, where DesertSanctuaire._cliff_foot sends him (the
+	# face between rows 5 and 6 at x 8; a little left of the rocher_canyon at 9.4 so it shows),
+	# 5 cm in front of it; 3.9 m long, its anchor stone on the edge above.
+	if Prop.KINDS.has("corde_falaise"):
+		B.prop(entities, "corde_falaise", B.cell(8.15, 6.05))
 	# The Vieux Rempart's hollow: a dry bush, bones of old meals, a boulder.
 	for p: Array in [["buisson_sec", 25.4, 30.2, true], ["os_dino", 17.4, 35.4, false], ["rocher_canyon", 15.0, 33.8, false]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]), p[3])

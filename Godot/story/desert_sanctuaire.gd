@@ -240,6 +240,7 @@ static func _tracks() -> void:
 			await S.wait(0.6)
 		await D._chloe_walk(chloe.global_position + ahead * 80.0, 100.0, 1.6)
 	var circles := func() -> void:   # left, left again, left again… the same rock
+		Stage.show_thing("rocher_grave", chloe.global_position + ahead * 70.0, "RocherParOu")   # (out of the sand storm)
 		for i in 2:
 			var step := ahead * 36.0
 			for k in 4:
@@ -276,6 +277,7 @@ static func _tracks() -> void:
 		{"who": CHLOE, "text": "(Il n'est pas loin.)"},
 	])
 	await S.say(after)
+	Stage.fade_out(S.actor("RocherParOu"), 1.2, true)   # (lost in the storm again)
 	D._companion_back()
 	if guide and guide == Game.lead_dino():
 		S.world().companion.rejoice()

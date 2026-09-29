@@ -37,7 +37,12 @@ const pictures = {
     <rect x="5.5" y="2" width="1" height="7" fill="#2a1a0a"/>`, 6],
 };
 
+// feu_camp.png is painted since 29/09 (art-jobs/retouches_ch6.mjs): its drawing here is kept for
+// the record, never written again.
+const PAINTED = ["feu_camp"];
+
 for (const [name, [w, h, body, k = 2]] of Object.entries(pictures)) {
+  if (PAINTED.includes(name)) continue;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${body}</svg>`;
   await sharp(Buffer.from(svg)).resize(w * k, h * k).png().toFile(`${OUT}/${name}.png`);
   console.log(`${OUT}/${name}.png`);

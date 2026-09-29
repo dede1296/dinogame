@@ -147,7 +147,7 @@ export default ({ sharp, props, find, OUT }) => {
     // de la porte d'ambre du temple, tools/zones/marais.gd).
     [`${OUT}/finition/decor_falaises`, () => props({
       id: "edited-2026-09-29T07-48-02-595Z-fz3vxo", scale: 0.5, outDir: `${OUT}/props`,
-      names: ["nid_dimorphodon", "buisson_nid", "rocher_oeuf", "frise_masques"],
+      names: ["nid_dimorphodon", "buisson_nid", "rocher_oeuf", "frise_masques_plaque"],   // (the frieze: art-jobs/frise.mjs since 29/09)
     })],
     // La vieille corde qui pend de la falaise (Sanctuaire des Vents, desert_sanctuaire.gd:677) et
     // le nid de tortues VIDE (Côte, cote_lagon.gd:329 : l'intégrateur fera l'échange une fois

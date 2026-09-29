@@ -97,7 +97,7 @@ const KINDS := {
 	"monticule": {"scale": 0.26, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	"etal_fruits": {"scale": 0.35, "foot": 0.03, "solid": Vector2(84, 21), "sway": 0.0, "shadow": 84.0},
 	"etal_poisson": {"scale": 0.35, "foot": 0.03, "solid": Vector2(84, 21), "sway": 0.0, "shadow": 84.0},
-	"feu_camp": {"scale": 0.175, "foot": 0.07, "solid": 16.8, "sway": 0.0, "shadow": 42.0},
+	"feu_camp": {"scale": 0.0834, "foot": 0.07, "solid": 16.8, "sway": 0.0, "shadow": 42.0},
 	# Forêt Jurassique.
 	"fougere_geante": {"scale": 0.5, "foot": 0.04, "solid": 0.0, "sway": 2.0, "shadow": 110.0},
 	"tronc_mousse": {"scale": 0.42, "foot": 0.15, "solid": Vector2(130, 28), "sway": 0.0, "shadow": 140.0},
@@ -139,6 +139,9 @@ const KINDS := {
 	"os_geant": {"scale": 0.36, "foot": 0.08, "solid": Vector2(80, 24), "sway": 0.0, "shadow": 70.0},
 	"crane_geant_desert": {"scale": 0.48, "foot": 0.03, "solid": Vector2(180, 40), "sway": 0.0, "shadow": 0.0},
 	"rocher_canyon": {"scale": 0.42, "foot": 0.1, "solid": Vector2(110, 38), "sway": 0.0, "shadow": 108.0},
+	# Rocher du canyon des Vents gravé « PAR OÙ ?! » (~1,5 m) : montré pendant la scène de Brac
+	# (Stage.prop), pas posé dans la zone.
+	"rocher_grave": {"scale": 0.177, "foot": 0.1, "solid": Vector2(58.0, 19.0), "sway": 0.0, "shadow": 57.0},
 	"arche_rocheuse": {"scale": 0.55, "foot": 0.02, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	"palmier_oasis": {"scale": 0.56, "foot": 0.03, "solid": 12.0, "sway": 1.8, "shadow": 90.0},
 	"nid_oviraptor": {"scale": 0.22, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 20.0},
@@ -243,10 +246,10 @@ const KINDS := {
 	"rocher_oeuf": {"scale": 0.243, "foot": 0.1, "solid": Vector2(72, 26), "sway": 0.0, "shadow": 58.0},
 	# The frieze of bone masks over the amber door of the Temple (tools/zones/marais.gd), mounted
 	# above the doorway: no ground collision, no shadow.
-	"frise_masques": {"scale": 0.6, "foot": 0.0, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"frise_masques": {"scale": 0.139, "foot": -2.05, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	# The rope hanging down the cliff where Brac climbs away (Sanctuaire des Vents), mounted on
 	# the rock face: no ground collision, no shadow.
-	"corde_falaise": {"scale": 0.4, "foot": 0.02, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"corde_falaise": {"scale": 0.189, "foot": 0.02, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	# The turtles' nest once it is empty (cote_lagon.gd: the integrator swaps it in once
 	# "tortues_sauvees"); same footprint as "nid_tortue".
 	"nid_tortue_vide": {"scale": 0.108, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
@@ -268,7 +271,7 @@ const KINDS := {
 	"galet", "monticule", "feu_camp", "etal_fruits", "etal_poisson",
 	"fougere_geante", "tronc_mousse", "champignons", "rocher_mousse", "souche_geante", "arbre_geant", "os_dino",
 	"mur_fissure", "tente", "cage", "caisse_ambre_noir", "table_papiers", "palissade", "passerelle",
-	"roseaux", "arbre_noye", "nenuphars", "cabane_pilotis", "statue_dino", "colonne", "vanne", "fresque", "porte_temple", "racines", "os_geant", "crane_geant_desert", "rocher_canyon", "arche_rocheuse", "palmier_oasis", "nid_oviraptor", "totem_vents", "buisson_sec", "tente_nomade",
+	"roseaux", "arbre_noye", "nenuphars", "cabane_pilotis", "statue_dino", "colonne", "vanne", "fresque", "porte_temple", "racines", "os_geant", "crane_geant_desert", "rocher_canyon", "rocher_grave", "arche_rocheuse", "palmier_oasis", "nid_oviraptor", "totem_vents", "buisson_sec", "tente_nomade",
 	"porte_vents", "chariot_cage", "rempart_eboulis", "squelette_geant", "puits_oasis",
 	"barreaux_cage", "maison_3d",
 	"havre_herboristerie", "havre_mercerie", "havre_relais", "havre_comptoir", "havre_sellerie", "havre_entrepot",

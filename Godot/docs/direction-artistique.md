@@ -95,7 +95,6 @@ chaque nouveau repli ; retirer la ligne une fois refait.
 | Élément | Fichiers | Fait aujourd'hui par | À faire avec nano-banana |
 |---|---|---|---|
 | Corde de falaise, nid de tortues vide (29/09) | `generated_imgs/derived-finition-corde-nid.jpg` → `props/corde_falaise.png`, `nid_tortue_vide.png` | nano-banana a peint une ombre portée floue sous les deux objets et a refusé deux fois de l'effacer : bande basse repeinte en magenta à la main | Redemander sans ombre portée (le résultat actuel est propre) |
-| Ptéranodon en vol (29/09) | `dinos/pteranodon_vol.png` (keilcf) | nano-banana : les 4 temps ont tous les ailes plutôt hautes | Redemander un vrai cycle (ailes hautes, à plat, basses) |
 | Maisons de Havre-Doré 1 à 4 (bleue, corail, sauge, ivoire) : côtés et dos | `generated_imgs/vues/havre_maison_{1..4}_cote.png` et `_dos.png` → `assets/models/volumes/havre_maison_*.glb` | Repli : composés depuis la vue de face (`maisons.py vues`, porte et lanterne effacées, mur étiré ; dos = face en miroir). Une repeinte ComfyUI floutait sans rien apporter | Dessiner le côté droit et le dos (même méthode que les boutiques), puis `maisons.py textures` + `tout` |
 | Relais des Dresseurs : vue de côté | `generated_imgs/vues/havre_relais_cote.png` | nano-banana a échoué (3 essais) : vue de 3/4, seul le grand mur est utilisé ; croupes peintes avec les tuiles de la façade | Retenter un vrai profil à 90° |
 | Cabane sur pilotis : vue de côté | `generated_imgs/vues/cabane_pilotis_cote.png` | nano-banana a dessiné un pignon en planches, contraire aux croupes retenues : seul le mur latéral est utilisé | Redessiner le côté avec un toit de chaume à croupes |
@@ -270,10 +269,21 @@ nouvelle sorte (hauteur de l'image × scale, rapportée à la bibliothèque ≈ 
 sortaient 3 à 4 fois trop grands. Deux décors de la même profondeur qui se chevauchent se
 découpent en escalier : décaler l'un de quelques centimètres (murs du Cabinet).
 
-**Reste à faire** : la corde pendante et le rocher « PAR OÙ ?! » du canyon des Vents (à poser
-pendant la scène de Brac, contre une vraie paroi : à (8,5 ; 2,2) le sol est plat, la corde de 8 m
-tenait debout dans le vide, retirée) ; frise du temple centrée (la peindre dans `porte_temple`) ;
-fumée du feu du camp.
+**Retouches avant le chapitre 6 (29/09, faites)** — `tools/art-jobs/avant_ch6.mjs`, `retouches_ch6.mjs` :
+- corde de Brac (3,9 m) au pied de la vraie paroi du cul-de-sac du canyon des Vents (8,15 ; 6,05),
+  là où `DesertSanctuaire._cliff_foot` l'envoie grimper ;
+- rocher gravé « PAR OÙ ?! » (`rocher_grave`, 1,5 m), montré dans la tempête pendant que Chloé
+  tourne en rond, effacé ensuite ;
+- frise du temple redessinée (des dizaines de masques d'os : becs, crêtes, cornes), centrée
+  au-dessus de l'entrée, accrochée dans la paroi (`foot` négatif) ; `Region._clear_exit_corridors`
+  épargne désormais les décors accrochés (il effaçait la frise, posée devant une sortie) ;
+- feu de camp peint : foyer (pierres, bûches noircies, braises), flamme animée en 6 temps
+  (`flamme_anim.png`, `WorldView._fire_flame`), fumée en particules (`fumee.png`,
+  `WorldView._fire_smoke`) ; `tools/draw-placeholders.mjs` ne réécrit plus `feu_camp.png` ;
+- Ptéranodon en vol : vrai cycle (haut, à plat, bas, remontée), une image nano-banana par pose,
+  corps ramenés à la même taille (facteur `k` par pose mesuré sur l'iris).
+
+**Reste à faire** : rien de connu pour les chapitres 1 à 5.
 La faune (crabes, moustiques, libellules, poissons, ptérosaures en vol…) a sa propre passe
 (`assets/art/fauna/`, `world/view3d/wildlife.gd`).
 

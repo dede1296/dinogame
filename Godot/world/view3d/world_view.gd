@@ -42,6 +42,10 @@ const GRASS_RANGE := 46.0
 ## A campfire's flame (tools/draw-placeholders.mjs, as the web version drew it), metres wide.
 const FLAME := preload("res://assets/art/props/flamme.png")
 const FLAME_WIDTH := 0.5
+## The painted campfire (29/09): its dancing flame, FLAME_FRAMES cells in a row, and its smoke.
+const FLAME_ANIM := "res://assets/art/props/flamme_anim.png"
+const FLAME_FRAMES := 6
+const SMOKE := "res://assets/art/props/fumee.png"
 ## The colour of a little sign over a dino (emote): a heart is red, the rest dark brown.
 const EMOTE_COLOURS := {"♥": Color(0.86, 0.22, 0.35), "♪": Color(0.3, 0.2, 0.55)}
 ## The signs over heads (emote, show_hint): this far above the top of the picture (m).
@@ -727,21 +731,23 @@ static func head_height(who: Node2D) -> float:
 ## A campfire's flame (the web version's picture, flickering), a few embers rising, and its
 ## wavering light.
 func _add_fire(at: Vector3) -> void:
-	var flame := Sprite3D.new()
-	flame.texture = FLAME
-	flame.pixel_size = FLAME_WIDTH / FLAME.get_width()
-	flame.centered = false
-	flame.offset = Vector2(-FLAME.get_width() / 2.0, 0.0)
+	var flame: SpriteBase3D = _fire_flame()
 	flame.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 	flame.shaded = false
 	flame.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	flame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	flame.position = at + Vector3(0, 0.08, 0.02)
 	_zone.add_child(flame)
-	# The web version's flicker: taller and narrower, back again, 170 ms each way.
-	var t := flame.create_tween().set_loops()
-	t.tween_property(flame, "scale", Vector3(0.9, 1.18, 1.0), 0.17).set_trans(Tween.TRANS_SINE)
-	t.tween_property(flame, "scale", Vector3.ONE, 0.17).set_trans(Tween.TRANS_SINE)
+	if flame is AnimatedSprite3D:
+		(flame as AnimatedSprite3D).play(&"burn")
+	else:   # the web version's flicker: taller and narrower, back again, 170 ms each way
+		var t := flame.create_tween().set_loops()
+		t.tween_property(flame, "scale", Vector3(0.9, 1.18, 1.0), 0.17).set_trans(Tween.TRANS_SINE)
+		t.tween_property(flame, "scale", Vector3.ONE, 0.17).set_trans(Tween.TRANS_SINE)
+	var smoke := _fire_smoke()
+	if smoke:
+		smoke.position = at + Vector3(0, 0.95, 0.05)
+		_zone.add_child(smoke)
 	var embers := CPUParticles3D.new()
 	var quad := QuadMesh.new()
 	quad.size = Vector2(0.05, 0.05)
@@ -778,6 +784,76 @@ func _add_fire(at: Vector3) -> void:
 		w.tween_property(light, "light_energy", 1.2, 0.13).set_trans(Tween.TRANS_SINE)
 		w.tween_property(light, "light_energy", 1.8, 0.17).set_trans(Tween.TRANS_SINE)
 		w.tween_property(light, "light_energy", 1.4, 0.11).set_trans(Tween.TRANS_SINE)
+
+
+## The campfire's flame, FLAME_WIDTH wide, its base at its origin: the painted one dancing
+## (props/flamme_anim.png, FLAME_FRAMES cells, « burn »), or the web version's picture.
+func _fire_flame() -> SpriteBase3D:
+	if not ResourceLoader.exists(FLAME_ANIM):
+		var still := Sprite3D.new()
+		still.texture = FLAME
+		still.pixel_size = FLAME_WIDTH / FLAME.get_width()
+		still.centered = false
+		still.offset = Vector2(-FLAME.get_width() / 2.0, 0.0)
+		return still
+	var sheet: Texture2D = load(FLAME_ANIM)
+	var cell := Vector2(sheet.get_width() / float(FLAME_FRAMES), sheet.get_height())
+	var frames := SpriteFrames.new()
+	frames.add_animation(&"burn")
+	frames.set_animation_speed(&"burn", 10.0)
+	for i in FLAME_FRAMES:
+		var frame := AtlasTexture.new()
+		frame.atlas = sheet
+		frame.region = Rect2(Vector2(cell.x * i, 0.0), cell)
+		frames.add_frame(&"burn", frame)
+	var dancing := AnimatedSprite3D.new()
+	dancing.sprite_frames = frames
+	dancing.pixel_size = FLAME_WIDTH / cell.x
+	dancing.centered = false
+	dancing.offset = Vector2(-cell.x / 2.0, 0.0)
+	dancing.frame = randi() % FLAME_FRAMES   # (two fires side by side do not dance in step)
+	return dancing
+
+
+## The campfire's smoke (props/fumee.png): soft grey puffs rising slowly, drifting with the
+## wind, swelling and fading; null while the picture is not there.
+func _fire_smoke() -> CPUParticles3D:
+	if not ResourceLoader.exists(SMOKE):
+		return null
+	var puffs := CPUParticles3D.new()
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.5, 0.5)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	mat.vertex_color_use_as_albedo = true
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_texture = load(SMOKE)
+	quad.material = mat
+	puffs.mesh = quad
+	puffs.amount = maxi(3, Quality.scaled(9))
+	puffs.lifetime = 4.5
+	puffs.preprocess = 4.5
+	puffs.direction = Vector3.UP
+	puffs.spread = 12.0
+	puffs.initial_velocity_min = 0.35
+	puffs.initial_velocity_max = 0.55
+	puffs.gravity = Vector3(0.12, 0.05, -0.04)   # (a light breeze)
+	puffs.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+	puffs.emission_sphere_radius = 0.1
+	puffs.angle_min = -180.0
+	puffs.angle_max = 180.0
+	puffs.angular_velocity_min = -12.0
+	puffs.angular_velocity_max = 12.0
+	var grow := Curve.new()
+	grow.add_point(Vector2(0.0, 0.35))
+	grow.add_point(Vector2(1.0, 1.6))
+	puffs.scale_amount_curve = grow
+	var fade := Gradient.new()
+	fade.offsets = PackedFloat32Array([0.0, 0.2, 1.0])
+	fade.colors = PackedColorArray([Color(0.8, 0.78, 0.75, 0.0), Color(0.75, 0.73, 0.7, 0.42), Color(0.7, 0.7, 0.7, 0.0)])
+	puffs.color_ramp = fade
+	return puffs
 
 
 ## A warm glow around a lantern, a lamp, the incubator.

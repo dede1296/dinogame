@@ -324,8 +324,11 @@ func _clear_exit_corridors() -> void:
 		func(c: Rect2) -> bool: return c.has_area())
 	for n in entities.get_children():
 		if n is Prop and n.get_script() == preload("res://world/prop.gd"):
-			if Prop.KINDS.get((n as Prop).kind, {}).get("solid", 0.0) is Vector2:
+			var def: Dictionary = Prop.KINDS.get((n as Prop).kind, {})
+			if def.get("solid", 0.0) is Vector2:
 				continue   # a building, a stall: placed on purpose (the Cabinet by its own door)
+			if float(def.get("foot", 0.0)) < 0.0:
+				continue   # hung up on a rock face or a wall (a frieze over an entrance): not in the way
 			for c: Rect2 in corridors:
 				if c.has_point(n.position):
 					entities.remove_child(n)
