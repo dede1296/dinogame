@@ -4,11 +4,25 @@ extends Node
 ##   Ambience  — the sounds of the place (AmbiencePlayer: layered loops and calls, see
 ##               AmbienceDB), and the weather's (rain) on top of them;
 ##   SFX       — short one-shot sounds from a pool of players (many at once);
-## Positional sounds (a dino crying nearby) use AudioStreamPlayer2D on the "SFX" bus directly.
+##   Cries, Voices, Steps — the dinos' cries, the recorded voices, Chloé's steps: play_sfx sends
+##               a sound there by the folder it comes from (FOLDER_BUS); players of their own
+##               (a dino crying nearby: AudioStreamPlayer2D) are set on them.
+## The player sets each one's volume (Paramètres → Sons: CATEGORIES), on a gain of its own
+## (an Amplify effect), apart from the ducks and fades this node plays on the buses' volume.
 
 const MUSIC_BUS := &"Music"
 const AMBIENCE_BUS := &"Ambience"
 const SFX_BUS := &"SFX"
+const CRIES_BUS := &"Cries"
+const VOICE_BUS := &"Voices"
+const STEPS_BUS := &"Steps"
+## The kinds of sound the player sets apart (Paramètres → Sons): [bus, name shown]; Master: all.
+const CATEGORIES := [
+	[&"Master", "Général"], [MUSIC_BUS, "Musique"], [AMBIENCE_BUS, "Ambiance"], [CRIES_BUS, "Cris des dinos"],
+	[VOICE_BUS, "Voix"], [SFX_BUS, "Bruitages"], [STEPS_BUS, "Pas"],
+]
+## Where play_sfx sends a sound, by the folder it comes from (the others: SFX_BUS).
+const FOLDER_BUS := {"/audio/cries/": CRIES_BUS, "/audio/voices/": VOICE_BUS, "/audio/footsteps/": STEPS_BUS}
 const SFX_VOICES := 16
 const SILENT_DB := -60.0
 
@@ -25,6 +39,8 @@ var _duck_tween: Tween
 var _music_stack: Array = []
 ## Each bus's normal level (default_bus_layout.tres): ducks and fades are relative to it.
 var _base_db := {}
+## bus -> AudioEffectAmplify: the player's volume for it (set_volume).
+var _gain := {}
 
 
 func _ready() -> void:
@@ -38,6 +54,11 @@ func _ready() -> void:
 		_sfx.append(_make_player(SFX_BUS))
 	ambience = AmbiencePlayer.new()
 	add_child(ambience)
+	for category: Array in CATEGORIES:
+		var amplify := AudioEffectAmplify.new()
+		AudioServer.add_bus_effect(AudioServer.get_bus_index(category[0]), amplify, 0)
+		_gain[category[0]] = amplify
+		set_volume(category[0], volume(category[0]), false)
 
 
 func _make_player(bus: StringName) -> AudioStreamPlayer:
@@ -120,13 +141,15 @@ func _set_looping(stream: AudioStream, loop: bool) -> void:
 
 
 ## One-shot sound. `pitch_jitter`: random pitch spread (0.05 = ±5%), so repeats don't sound identical;
-## `pitch`: lower (< 1) or higher (a door closing: its creak, lower and duller).
-func play_sfx(stream: AudioStream, volume_db := 0.0, pitch_jitter := 0.0, pitch := 1.0) -> void:
+## `pitch`: lower (< 1) or higher (a door closing: its creak, lower and duller); `bus`: where it
+## goes, for a sound made in the game (no folder: see bus_for).
+func play_sfx(stream: AudioStream, volume_db := 0.0, pitch_jitter := 0.0, pitch := 1.0, bus := &"") -> void:
 	if stream == null:
 		return
 	var p := _sfx[_sfx_next]
 	_sfx_next = (_sfx_next + 1) % _sfx.size()
 	p.stream = stream
+	p.bus = bus if bus != &"" else bus_for(stream)
 	p.volume_db = volume_db
 	p.pitch_scale = pitch + randf_range(-pitch_jitter, pitch_jitter)
 	p.play()
@@ -151,5 +174,25 @@ func fade_ambience(db: float, time := 0.5) -> void:
 		AudioServer.get_bus_volume_db(idx), _base_db[AMBIENCE_BUS] + db, time)
 
 
-func set_bus_volume(bus: StringName, linear: float) -> void:
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(bus), linear_to_db(maxf(linear, 0.0001)))
+## The bus a one-shot sound goes to (FOLDER_BUS).
+func bus_for(stream: AudioStream) -> StringName:
+	for folder: String in FOLDER_BUS:
+		if stream.resource_path.contains(folder):
+			return FOLDER_BUS[folder]
+	return SFX_BUS
+
+
+## The player's volume for a kind of sound (CATEGORIES), 0 to 1 (settings.cfg; 1 by default).
+func volume(bus: StringName) -> float:
+	return clampf(float(Quality.pref("audio", String(bus), 1.0)), 0.0, 1.0)
+
+
+## `linear`: the slider's share, squared into a gain (half-way sounds half as loud, not nearly
+## as loud). `save` false: kept in memory (a slider being dragged); Quality.save_prefs() writes it.
+func set_volume(bus: StringName, linear: float, save := true) -> void:
+	linear = clampf(linear, 0.0, 1.0)
+	Quality.set_pref("audio", String(bus), linear, save)
+	var amplify: AudioEffectAmplify = _gain.get(bus)
+	if amplify:
+		amplify.volume_db = maxf(linear_to_db(maxf(linear * linear, 0.0001)), -80.0)
+	AudioServer.set_bus_mute(AudioServer.get_bus_index(bus), linear <= 0.001)

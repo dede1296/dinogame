@@ -72,7 +72,7 @@ func _setup(paragraphs: Array, sign: String, voice: String) -> void:
 	add_child(hint)
 
 	_voice = AudioStreamPlayer.new()
-	_voice.bus = &"SFX"
+	_voice.bus = Audio.VOICE_BUS
 	add_child(_voice)
 	if voice != "" and ResourceLoader.exists(voice):
 		_voice.stream = load(voice)

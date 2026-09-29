@@ -10,4 +10,4 @@ script = ExtResource("1_companion")
 [node name="Cry" type="AudioStreamPlayer2D" parent="."]
 volume_db = -4.0
 max_distance = 900.0
-bus = &"SFX"
+bus = &"Cries"

@@ -639,7 +639,7 @@ func _build_ui() -> void:
 	_weather = BattleWeather.apply(_root, _backdrop, _world)
 
 	_cry = AudioStreamPlayer.new()
-	_cry.bus = &"SFX"
+	_cry.bus = Audio.CRIES_BUS
 	add_child(_cry)
 
 	# The panels, the message band and the action wheel, over the fighters and the weather.

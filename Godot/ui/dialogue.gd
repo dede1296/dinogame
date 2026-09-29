@@ -38,7 +38,7 @@ func _ready() -> void:
 	_build_ui()
 	_panel.visible = false
 	_voice = AudioStreamPlayer.new()
-	_voice.bus = &"SFX"
+	_voice.bus = Audio.VOICE_BUS
 	add_child(_voice)
 
 

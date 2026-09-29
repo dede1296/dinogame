@@ -38,7 +38,7 @@ static func blip(speaker: String, volume_db := -9.0) -> void:
 		return
 	if not _cache.has(speaker):
 		_cache[speaker] = _synth(profile(speaker))
-	Audio.play_sfx(_cache[speaker], volume_db, DETUNE)
+	Audio.play_sfx(_cache[speaker], volume_db, DETUNE, 1.0, Audio.VOICE_BUS)
 
 
 static func _synth(p: Dictionary) -> AudioStreamWAV:

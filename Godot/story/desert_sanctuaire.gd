@@ -1403,7 +1403,7 @@ static func _cry(prefix: String, kind: String, volume_db: float, pitch := 1.0) -
 	if w == null or not ResourceLoader.exists(path):
 		return
 	var p := AudioStreamPlayer.new()
-	p.bus = &"SFX"
+	p.bus = Audio.CRIES_BUS
 	p.stream = load(path)
 	p.volume_db = volume_db
 	p.pitch_scale = pitch

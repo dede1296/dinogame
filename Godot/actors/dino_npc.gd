@@ -49,7 +49,7 @@ func _ready() -> void:
 	sprite.play(&"idle")
 	add_child(sprite)
 	_cry = AudioStreamPlayer2D.new()
-	_cry.bus = &"SFX"
+	_cry.bus = Audio.CRIES_BUS
 	add_child(_cry)
 	if event != &"":
 		add_to_group(&"interactable")

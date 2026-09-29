@@ -129,6 +129,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	Save.enabled = false
 	Audio.play_weather(null, 0.8)
+	Audio.play_ambience(&"")   # (back to the title screen: the places' sounds go too)
 
 
 # ------------------------------------------------------------------ zones
