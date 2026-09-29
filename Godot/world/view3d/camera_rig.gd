@@ -120,10 +120,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		set_distance(_distance / event.factor)
 
 
-## Pinch: two fingers down at once zoom (and take the joystick's finger back).
+## Pinch: two fingers down at once zoom (and take the joystick's finger back). A finger on an
+## on-screen control (B to run, a button) is not a pinch's: the other one keeps walking.
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		if event.pressed:
+			if touch_controls and touch_controls.has_method(&"owns_touch") and touch_controls.owns_touch(event.position):
+				return
 			_touches[event.index] = event.position
 		else:
 			_touches.erase(event.index)

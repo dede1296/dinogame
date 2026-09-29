@@ -704,6 +704,23 @@ func _run(command: String, arg: Variant) -> void:
 				Input.action_press(StringName(arg[0]))
 			else:
 				Input.action_release(StringName(arg[0]))
+		"touch":   # [finger, "down" | "drag" | "up", where]: a finger on the touch screen, through the whole
+			# input path (Input.parse_input_event); where = screen pixels, or "A" / "B": that on-screen button
+			var at: Variant = arg[2]
+			if at is String:
+				var buttons: Array = current_scene.get_node("TouchControls").get("_buttons")
+				var button: TouchScreenButton = buttons[0 if at == "A" else 1]
+				at = button.global_position + Vector2.ONE * (button.shape as CircleShape2D).radius
+			var ev: InputEvent
+			if arg[1] == "drag":
+				ev = InputEventScreenDrag.new()
+			else:
+				ev = InputEventScreenTouch.new()
+				ev.pressed = arg[1] == "down"
+			ev.index = arg[0]
+			ev.position = at
+			Input.parse_input_event(ev)
+			print("touch ", arg[0], " ", arg[1], " ", at, " run=", Input.is_action_pressed(&"cancel"), " t=", Time.get_ticks_msec())
 		"where":   # Chloé's position (tiles), to measure a speed
 			var p: Node2D = current_scene.get("player")
 			print("where ", arg, " : ", p.global_position / 48.0, " t=", Time.get_ticks_msec())

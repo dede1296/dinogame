@@ -4,8 +4,10 @@ extends Control
 ## team or of the reserve, a portrait of the party bar. A tap opens it (Enter or the A button
 ## too, when it has the focus). Pressed and moved when `draggable`, its dino is carried by a
 ## DinoDrag (`drag`, with `payload` and `picture`) to another place. In a list that scrolls
-## (`scroll`), moving up or down scrolls it, moving sideways drags at once, and holding still
-## a moment (HOLD_S) drags in any direction. Subclasses draw it (and call draw_focus_ring).
+## (`scroll`), moving up or down scrolls it, moving sideways (even a thumb's slanting start)
+## drags at once, and holding still a moment (HOLD_S) drags in any direction; a list too short to
+## scroll never takes the finger, and one scrolled by mistake lets the drag go on when the finger
+## heads clearly sideways. Subclasses draw it (and call draw_focus_ring).
 
 signal tapped
 ## Moved as if to be dragged, but it may not be now (can_drag): the owner says why.
@@ -13,6 +15,8 @@ signal drag_refused
 
 const MOVE_PX := 12.0      # a finger moving less than this is still a tap
 const HOLD_S := 0.35       # held this long without moving: the drag starts where the finger is
+const SIDEWAYS := 0.6      # a move this much sideways (|x| over |y|) or more drags; less scrolls
+const RESCUE_PX := 48.0    # scrolled, then this far sideways (and more than up or down): it drags
 const FOCUS := Color(1, 0.86, 0.5)
 
 enum { IDLE, PRESSED, SCROLLING, DRAGGING, CANCELLED }
@@ -32,6 +36,7 @@ var _mode := IDLE
 var _from := Vector2.ZERO
 var _last := Vector2.ZERO   # where the finger was last seen while dragging
 var _held := 0.0
+var _by_touch := false   # pressed by a finger (the mouse events a touch screen makes), not the mouse
 
 
 func _init() -> void:
@@ -76,6 +81,7 @@ func _gui_input(event: InputEvent) -> void:
 			_mode = PRESSED
 			_from = at
 			_held = 0.0
+			_by_touch = event.device == InputEvent.DEVICE_ID_EMULATION
 			return
 		var was := _mode
 		_mode = IDLE
@@ -88,7 +94,7 @@ func _gui_input(event: InputEvent) -> void:
 		var motion := event as InputEventMouseMotion
 		var moved := motion.global_position - _from
 		if _mode == PRESSED and moved.length() > MOVE_PX:
-			var sideways := scroll == null or absf(moved.x) > absf(moved.y)
+			var sideways := not _can_scroll() or absf(moved.x) >= absf(moved.y) * SIDEWAYS
 			if _drag_allowed() and sideways:
 				_start_drag(motion.global_position)
 			else:
@@ -97,6 +103,8 @@ func _gui_input(event: InputEvent) -> void:
 					drag_refused.emit()
 		if _mode == SCROLLING:
 			scroll.scroll_vertical -= int(motion.relative.y)
+			if _drag_allowed() and absf(moved.x) > RESCUE_PX and absf(moved.x) > absf(moved.y):
+				_start_drag(motion.global_position)
 		elif _mode == DRAGGING and drag:
 			_last = motion.global_position
 			drag.move(_last)
@@ -110,6 +118,14 @@ func dragging() -> bool:
 	return _mode == DRAGGING
 
 
+## Is it in a list long enough to scroll?
+func _can_scroll() -> bool:
+	if scroll == null:
+		return false
+	var bar := scroll.get_v_scroll_bar()
+	return bar.max_value - bar.page > 1.0
+
+
 func _drag_allowed() -> bool:
 	return draggable and drag != null and (not can_drag.is_valid() or can_drag.call())
 
@@ -117,7 +133,7 @@ func _drag_allowed() -> bool:
 func _start_drag(at: Vector2) -> void:
 	_mode = DRAGGING
 	_last = at
-	drag.begin(payload, picture, at)
+	drag.begin(payload, picture, at, _by_touch)
 	queue_redraw()
 
 

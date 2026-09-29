@@ -7,10 +7,14 @@ const RADIUS := 78.0
 const DEAD_ZONE := 0.18
 const BUTTON_RADIUS := 52.0
 
+## The HUD (world.gd): a finger landing on one of its buttons is the button's (owns_touch).
+var hud: Node
+
 var _touch_index := -1
 var _origin := Vector2.ZERO
 var _knob := Vector2.ZERO
 var _pad: Control
+var _buttons: Array[TouchScreenButton] = []
 
 
 func _ready() -> void:
@@ -40,6 +44,7 @@ func _add_button(label: String, action: StringName, corner_offset: Vector2, colo
 	button.shape_centered = true
 	button.action = action
 	button.visibility_mode = TouchScreenButton.VISIBILITY_TOUCHSCREEN_ONLY
+	_buttons.append(button)
 	var anchor := Control.new()
 	anchor.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	# Keep clear of the notch / camera hole (the offsets already include the comfort margin).
@@ -80,7 +85,7 @@ func _input(event: InputEvent) -> void:
 		if not visible:
 			visible = true   # first touch on a device that didn't report a touch screen
 		var half := get_viewport().get_visible_rect().size.x * 0.5
-		if event.pressed and _touch_index < 0 and event.position.x < half and not _on_blocker(event.position):
+		if event.pressed and _touch_index < 0 and event.position.x < half and not owns_touch(event.position):
 			_touch_index = event.index
 			_origin = event.position
 			_knob = Vector2.ZERO
@@ -102,6 +107,22 @@ func release_stick() -> void:
 	_apply(Vector2.ZERO)
 	if _pad:
 		_pad.queue_redraw()
+
+
+## A finger landing at `pos` on an on-screen control (A / B, a button of the HUD, the party
+## portraits) is that control's: neither the joystick's nor a pinch's (CameraRig). So the thumb
+## that presses B to run while the other one walks does not stop Chloé.
+func owns_touch(pos: Vector2) -> bool:
+	for button in _buttons:
+		var middle := button.global_position + Vector2.ONE * BUTTON_RADIUS
+		if button.is_visible_in_tree() and pos.distance_to(middle) <= BUTTON_RADIUS:
+			return true
+	if hud:
+		for node in hud.find_children("*", "BaseButton", true, false):
+			var c := node as Control
+			if c.is_visible_in_tree() and c.get_global_rect().has_point(pos):
+				return true
+	return _on_blocker(pos)
 
 
 ## Touches on some on-screen controls (the party portraits) are theirs, not the joystick's.

@@ -132,6 +132,54 @@ static func pick_leaver(i: int) -> String:
 	return report()
 
 
+# ------------------------------------------------------------------ the Dinodex with a finger
+
+## (Input.use_accumulated_input off: each event handled at once and on its own, in order, as a real
+## finger's moves come frame after frame — not merged into one.)
+static func _finger(pressed: bool, at: Vector2) -> void:
+	Input.use_accumulated_input = false
+	var t := InputEventScreenTouch.new()
+	t.index = 0
+	t.pressed = pressed
+	t.position = at
+	Input.parse_input_event(t)
+
+
+static func _finger_to(from: Vector2, to: Vector2, steps: int) -> void:
+	for k in range(1, steps + 1):
+		var d := InputEventScreenDrag.new()
+		d.index = 0
+		d.position = from.lerp(to, k / float(steps))
+		d.relative = (to - from) / steps
+		Input.parse_input_event(d)
+
+
+## A finger takes tile `tile` of the page to the team's place `slot` as a thumb does on a phone:
+## its first move (fx, fy px: e.g. a little more up than sideways), then to (ax, ay) px from the
+## place's middle (the finger below it: it aims with the portrait drawn above it), and holds it
+## there (finger_drop lets go; the input is only handled at the next frame).
+static func finger_drag(tile: int, slot: int, fx: float, fy: float, ax: float, ay: float) -> String:
+	var from := _owned_tile(tile).get_global_rect().get_center()
+	var place := _slot(slot)
+	var to := place.get_global_rect().get_center() + Vector2(ax, ay)
+	_finger(true, from)
+	_finger_to(from, from + Vector2(fx, fy), 3)
+	_finger_to(from + Vector2(fx, fy), to, 6)
+	_finger_at = to
+	return "doigt %s -> %s (place %s)" % [from, to, place.get_global_rect()]
+
+
+static var _finger_at := Vector2.ZERO
+
+
+## What the finger carries and the place lit under it, then it lets go.
+static func finger_drop() -> String:
+	var drag := _dex().get("drag") as Node
+	var said := "porté=%s survol=%d au doigt=%s" % [drag.call("active"), drag.get("_hover"), drag.get("_by_touch")]
+	_finger(false, _finger_at)
+	return said
+
+
 # ------------------------------------------------------------------ the party bar (a finger)
 
 static func _bar_slot(i: int) -> Control:
@@ -158,6 +206,26 @@ static func bar_drag_begin(from_i: int, to_i: int) -> String:
 		d.relative = (to - from) / 4.0
 		Input.parse_input_event(d)
 	return "doigt %s -> %s" % [from, to]
+
+
+## A thumb takes portrait `from_i` of the party bar to portrait `to_i`, its tip (ax, ay) px from
+## that one's middle (a thumb presses below the row), and holds it there (bar_drop lets go).
+static func bar_thumb(from_i: int, to_i: int, ax: float, ay: float) -> String:
+	var from := _bar_slot(from_i).get_global_rect().get_center()
+	var to := _bar_slot(to_i).get_global_rect().get_center() + Vector2(ax, ay)
+	_finger(true, from)
+	_finger_to(from, from + Vector2(0.0, 20.0), 2)
+	_finger_to(from + Vector2(0.0, 20.0), to, 6)
+	_finger_at = to
+	return "pouce %s -> %s (portrait visé %s)" % [from, to, _bar_slot(to_i).get_global_rect()]
+
+
+static func bar_drop() -> String:
+	var bar: Node = _tree().current_scene.find_children("*", "PartyBar", true, false)[0]
+	var drag := bar.get("_drag") as Node
+	var said := "porté=%s survol=%d à côté=%s pris en %s" % [drag.call("active"), drag.get("_hover"), drag.get("_beside"), drag.get("_origin")]
+	_finger(false, _finger_at)
+	return said
 
 
 static func bar_drag_end(to_i: int) -> String:

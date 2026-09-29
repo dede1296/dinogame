@@ -38,7 +38,6 @@ func _ready() -> void:
 	drag_layer.layer = MENU_LAYER
 	add_child(drag_layer)
 	_drag = DinoDrag.new()
-	_drag.lift = 0.7   # (under the finger: the bar is at the top of the screen)
 	drag_layer.add_child(_drag)
 	Game.party_changed.connect(_rebuild)
 	Game.xp_awarded.connect(_on_xp)

@@ -104,6 +104,7 @@ func _ready() -> void:
 	_enter_zone(id, Game.arrival if Game.arrival != &"" else &"Depart", pos)
 	Game.arrival = &""
 	_view.camera.touch_controls = $TouchControls
+	$TouchControls.hud = hud
 	Game.phase_changed.connect(_on_phase_changed)
 	Game.weather_changed.connect(_on_weather_changed)
 	_weather_sound()
