@@ -136,9 +136,15 @@ func _intro() -> void:
 	await _say("Vas-y, %s !" % engine.player().nickname)
 
 
+## The player's choice. After a knock-out (BattleEngine.must_switch): who takes over, from the
+## party's list, without Retour.
 func _choose_action() -> Dictionary:
-	_hud.say("Que doit faire %s ?" % engine.player().nickname)
-	_show_menu(_menu)
+	if engine.must_switch:
+		_hud.say("%s ne peut plus se battre. Qui prend le relais ?" % engine.player().nickname)
+		_hud.show_panel("relief")
+	else:
+		_hud.say("Que doit faire %s ?" % engine.player().nickname)
+		_show_menu(_menu)
 	var action: Dictionary = await _action_chosen
 	_show_menu(null)
 	return action
@@ -189,9 +195,12 @@ func _play(events: Array) -> void:
 				await _dodge(e["side"])
 				await _say(e["text"])
 			"heal":
-				var panel := _player_panel if e["side"] == "player" else _foe_panel
-				await _tween_hp(panel, e["hp"], e["max_hp"])
-				_refresh_panel(panel, engine.dino(e["side"]))   # (an item: its Lien may have grown)
+				if e.get("dino", engine.dino(e["side"])) == engine.dino(e["side"]):
+					var panel := _player_panel if e["side"] == "player" else _foe_panel
+					await _tween_hp(panel, e["hp"], e["max_hp"])
+					_refresh_panel(panel, engine.dino(e["side"]))   # (an item: its Lien may have grown)
+				else:   # an item for a dino of the party that waits beside Chloé
+					_float_number(_player_panel["box"].position + Vector2(40, -30), "+%d PV" % e["amount"], HEAL_GREEN)
 				await _say(e["text"])
 			"stat":
 				_stat_particles(e["side"], e["delta"] > 0)
@@ -203,9 +212,9 @@ func _play(events: Array) -> void:
 			"faint":
 				await _faint(e["side"])
 				await _say(e["text"])
-			"item":   # Chloé gives it to the dino in battle ("heal" follows)
+			"item":   # Chloé gives it to a dino of the party ("heal" follows)
 				_hud.say(e["text"])
-				await _item_anim(e["id"])
+				await _item_anim(e["id"], e.get("dino", engine.player()) == engine.player())
 			"recall":   # it comes back to Chloé ("switch" follows)
 				_hud.say(e["text"])
 				await _recall()
@@ -338,13 +347,14 @@ func _recall() -> void:
 	await t.finished
 
 
-## The item (its picture) is tossed from Chloé's side to the dino in battle, then sparkles.
-func _item_anim(id: String) -> void:
+## The item (its picture) is tossed from Chloé's side to the dino in battle (`on_field`), then
+## sparkles; for one waiting beside Chloé, it only rises and sparkles over her side of the screen.
+func _item_anim(id: String, on_field := true) -> void:
 	var item := Sprite2D.new()
 	item.texture = ItemsDB.icon(id)
 	item.scale = Vector2(0.45, 0.45)
 	var start := Vector2(-40.0, _player_sprite.position.y - 40.0)
-	var target := _player_sprite.position + Vector2(0, -90)
+	var target := _player_sprite.position + Vector2(0, -90) if on_field else Vector2(150.0, _player_sprite.position.y - 150.0)
 	item.position = start
 	_world.add_child(item)
 	var arc := create_tween()
@@ -355,7 +365,8 @@ func _item_anim(id: String) -> void:
 	Audio.play_sfx(ITEM_SFX)
 	item.queue_free()
 	_burst(target, HEAL_GREEN, 26, 200.0)
-	_stat_particles("player", true, HEAL_GREEN)
+	if on_field:
+		_stat_particles("player", true, HEAL_GREEN)
 	await get_tree().create_timer(0.25).timeout
 
 

@@ -1,10 +1,10 @@
 extends RefCounted
-## A whole battle played by the HUD's buttons: a berry for Vif, then Compsognathus sent in, then
-## the fight goes on by itself (auto) to the end. See tools/capture.gd (« hud_tap »).
+## A whole battle played by the HUD's buttons: a berry (given to Vif), then Compsognathus sent
+## in, then the fight goes on by itself (auto) to the end. See tools/capture.gd (« hud_tap »).
 
 const STEPS := [
 	[0.9, "give", "compsognathus"], [1.0, "tp", Vector2(60.0, 62.0)], [1.05, "hurt", [0, 8]],
-	[1.1, "hud_tap", ["sac", "item:baie", "dinos", "dino:1"]],
+	[1.1, "hud_tap", ["sac", "item:baie", "dino:0", "dinos", "dino:1"]],
 	[1.3, "battle", [&"protoceratops", 4]], [1.4, "auto", true],
 	[6.0, "shot", "hc_06"], [6.4, "shot", "hc_06b"], [6.8, "shot", "hc_07"], [7.2, "shot", "hc_07b"],
 	[7.6, "shot", "hc_08"], [8.0, "shot", "hc_08b"], [9.0, "shot", "hc_09"], [10.0, "shot", "hc_10"],

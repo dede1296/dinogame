@@ -158,7 +158,7 @@ func out_of_reach(index: int) -> bool:
 ## A move of Chloé's dino that would reach the foe (an attack, or an effect on it).
 func _reaches_foe(index: int) -> bool:
 	if index >= player().moves.size():
-		return true
+		return true   # (a struggle)
 	var move := MovesDB.move(player().moves[index]["id"])
 	var fx: Dictionary = move.get("effect", {})
 	return move["power"] > 0 or fx.has("foe") or fx.has("status")
@@ -166,8 +166,8 @@ func _reaches_foe(index: int) -> bool:
 
 ## The foe is deep in the dark: the move is used (its power point too) and lost.
 func _lost_in_the_dark(index: int, ev: Array) -> void:
-	var slot: Dictionary = player().moves[index] if index < player().moves.size() else {"id": &"charge", "pp": 1}
-	var move := MovesDB.move(slot["id"])
+	var slot: Dictionary = player().moves[index] if index < player().moves.size() else {"id": &"se_debattre", "pp": 1}
+	var move := _move_of(player(), index)
 	slot["pp"] = maxi(0, slot["pp"] - 1)
 	ev.append({"type": "move", "side": "player", "move": slot["id"], "fx": move.get("fx", "charge"), "move_type": move["type"],
 		"text": "%s utilise %s !" % [_cap(name_of("player")), move["name"]]})

@@ -3,7 +3,9 @@ extends Control
 ## A battle under the sea (UnderwaterEngine, BattleScene rule "underwater"): the fighters float
 ## in blue-green water. The backdrop is the zone's (Region.battle_backdrop), else BACKDROP, else
 ## the given one tinted deep; over it a veil, lighter towards the surface, slow shafts of light,
-## specks drifting and bubbles rising; the fighters bob and sway gently, their shadows faint. No
+## specks drifting and bubbles rising. The fighters swim, never stand on the floor (the rule of
+## the game under the sea): lifted above their platforms (LIFT_PX), paddling slowly (their walk,
+## PADDLE_SPEED), they bob and sway gently, their shadows small and faint on the floor below. No
 ## weather down there (the rain falls up above), and the battle's music is heard clearly (the
 ## world's sounds are muffled under the water: Underwater.hold_muffle). The first battle under
 ## the water tells its rules. The Mosasaure's abyss (events "abyss", abyss()): it sinks into the
@@ -18,6 +20,10 @@ const VEIL_TOP := Color(0.55, 0.9, 1.0, 0.2)
 const VEIL_BOTTOM := Color(0.02, 0.18, 0.3, 0.5)
 const SHAFTS := 5
 const BOB_PX := 7.0
+## How high the fighters swim above their platforms (screen px): Chloé's dino, the foe (farther).
+const LIFT_PX: Array[float] = [72.0, 48.0]
+const PADDLE_SPEED := 0.45
+const SHADOW_SHRINK := 0.7
 const BOB_S := 2.6
 const SWAY := 0.022
 const BUBBLE := Color(0.86, 0.96, 1.0)
@@ -37,7 +43,7 @@ void fragment() {
 """
 
 var _sprites: Array[AnimatedSprite2D] = []
-var _bases := {}   # sprite -> [its frames, its offset without the bob]
+var _bases := {}   # sprite -> [its frames, its offset without the bob, its scale then]
 var _shafts: Array[ColorRect] = []
 var _dark: ColorRect
 var _t := 0.0
@@ -120,16 +126,24 @@ func _process(delta: float) -> void:
 			continue
 		var base: Array = _bases.get(s, [])
 		if base.is_empty() or base[0] != s.sprite_frames:
-			base = [s.sprite_frames, s.offset]
+			base = [s.sprite_frames, s.offset, maxf(absf(s.scale.y), 0.01)]
 			_bases[s] = base
-			var shadow: CanvasItem = null
+			var shadow: Node2D = null
 			if s.get_child_count() > 0:
-				shadow = s.get_child(0) as CanvasItem
+				shadow = s.get_child(0) as Node2D
 			if shadow:
 				shadow.modulate.a = 0.35
+				if not shadow.has_meta(&"swim_shrunk"):   # (once: the shadow stays, the dinos change)
+					shadow.set_meta(&"swim_shrunk", true)
+					shadow.scale *= SHADOW_SHRINK
 		var phase := _t * TAU / BOB_S + k * PI
-		s.offset = (base[1] as Vector2) + Vector2(0.0, sin(phase) * BOB_PX)
+		# The picture rises (its offset, in its own units): the sprite's place, its shadow, stay on the floor.
+		var lift: float = LIFT_PX[mini(k, LIFT_PX.size() - 1)] / float(base[2])
+		s.offset = (base[1] as Vector2) + Vector2(0.0, -lift + sin(phase) * BOB_PX)
 		s.rotation = sin(phase * 0.5) * SWAY
+		if s.animation == &"idle" and s.sprite_frames.has_animation(&"walk"):
+			s.play(&"walk")   # at rest, it paddles
+		s.speed_scale = PADDLE_SPEED if s.animation == &"walk" else 1.0
 
 
 ## The Mosasaure's abyss, played for event `e` of the battle `scene`: it sinks into the dark

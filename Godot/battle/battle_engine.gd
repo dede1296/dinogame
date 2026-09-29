@@ -9,9 +9,13 @@ extends RefCounted
 ##          "run"|"item"|"recall"|"switch"|"xp"|"level"|"learn"|"calm"|"calmed"|"bond"|"bond_hold"|
 ##          "end", …} — most carry a "text".
 ##
-## Using a healing item (HEAL_ITEMS) or sending another dino of the party in takes the turn: the
-## foe acts after it. The item heals the dino in battle as out of battle (Game.feed_berry,
-## Game.feed_fern: the same PV, the same little growth of the Lien).
+## Using a healing item (HEAL_ITEMS) on a dino of the party, or sending another one in, takes the
+## turn: the foe acts after it. The item heals as out of battle (Game.feed_berry, Game.feed_fern:
+## the same PV, the same little growth of the Lien), never a knocked-out dino. When the dino in
+## battle is knocked out and another can fight, the player picks who takes its place
+## (must_switch): that choice is the next action, and nothing else happens that turn. A dino with
+## no power points left in any move struggles (STRUGGLE, the move index moves.size()): a weak blow
+## that hurts itself a little; so does the foe.
 ##
 ## A corrupted foe (Dino.corrupted, black amber) cannot be caught nor knocked out: the fury
 ## keeps it standing at 1 PV. It is calmed instead (Apaiser): each calm action that works
@@ -36,12 +40,17 @@ const STATUS_TURNS := {"saigne": 0, "etourdi": 1, "peur": 3}
 const STAT_NAMES := {"atk": "L'attaque", "def": "La défense", "spd": "La vitesse"}
 ## The items that can be used in a battle (ItemsDB ids), and how Chloé gives them.
 const HEAL_ITEMS := {"baie": "Chloé donne une baie à %s.", "fougere": "Chloé donne une fougère curative à %s."}
+## No power points left: « Se débattre », weak, and it costs its user this share of its PV.
+const STRUGGLE := {"name": "Se débattre", "type": "neutre", "power": 40, "accuracy": 1.0, "pp": 1, "fx": "charge"}
+const STRUGGLE_RECOIL := 0.125
 
 var team: Array[Dino]     # the player's party; `active` is the dino in battle
 var active := 0
 var foe: Dino
 var over := false
 var result := ""          # "win", "lose", "run", "catch", "calmed"
+## The dino in battle is knocked out: the next action must send another in ({"type": "switch"}).
+var must_switch := false
 ## Calm of a corrupted foe, 0 to `calm_full`.
 var calm := 0
 ## The calm needed to free the foe: CALM_FULL, times LONG_CALM_FACTOR in a "long_calm" battle.
@@ -125,17 +134,24 @@ func name_of(side: String) -> String:
 
 
 ## One turn with the player's choice: {"type": "move", "index": i} | {"type": "catch"} |
-## {"type": "calm"} | {"type": "run"} | {"type": "item", "id": "baie"} (heals the dino in
-## battle) | {"type": "switch", "index": i} (that dino of the party takes its place). An item
-## that cannot be used, or a dino that cannot fight, changes nothing: no event, the turn is kept.
+## {"type": "calm"} | {"type": "run"} | {"type": "item", "id": "baie", "target": i} (heals dino
+## i of the party; the one in battle without "target") | {"type": "switch", "index": i} (that
+## dino takes its place). An item that cannot be used, or a dino that cannot fight, changes
+## nothing: no event, the turn is kept. After a knock-out (must_switch), only a switch is taken.
 func turn(action: Dictionary) -> Array:
 	var ev: Array = []
 	if over:
 		return ev
+	if must_switch:
+		if action["type"] == "switch" and can_switch_to(int(action.get("index", -1))):
+			must_switch = false
+			_send_in(int(action["index"]), ev)
+		return ev
 	_calming = false
+	var target := int(action.get("target", active))
 	match action["type"]:
 		"item":
-			if not can_use_item(String(action.get("id", ""))):
+			if not can_use_item(String(action.get("id", "")), target):
 				return ev
 		"switch":
 			if not can_switch_to(int(action.get("index", -1))):
@@ -153,7 +169,7 @@ func turn(action: Dictionary) -> Array:
 			if _try_calm(ev):
 				return ev
 		"item":
-			_use_item(String(action["id"]), ev)
+			_use_item(String(action["id"]), target, ev)
 		"switch":
 			ev.append({"type": "recall", "side": "player", "text": "Reviens, %s !" % player().nickname})
 			_send_in(int(action["index"]), ev)
@@ -177,11 +193,16 @@ func turn(action: Dictionary) -> Array:
 
 
 func _foe_goes_first(player_move: int, foe_move: int) -> bool:
-	var pp := 1 if MovesDB.move(player().moves[player_move]["id"]).get("priority", false) else 0
-	var pf := 1 if MovesDB.move(foe.moves[foe_move]["id"]).get("priority", false) else 0
+	var pp := 1 if _move_of(player(), player_move).get("priority", false) else 0
+	var pf := 1 if _move_of(foe, foe_move).get("priority", false) else 0
 	var sp := _speed("player")
 	var sf := _speed("foe")
 	return pf > pp or (pf == pp and (sf > sp or (sf == sp and rng.randf() < 0.5)))
+
+
+## Move `index` of `d`: one of its moves, or STRUGGLE (index moves.size()).
+static func _move_of(d: Dino, index: int) -> Dictionary:
+	return MovesDB.move(d.moves[index]["id"]) if index < d.moves.size() else STRUGGLE
 
 
 func _speed(side: String) -> float:
@@ -197,7 +218,7 @@ func _choose_foe_move() -> int:
 	for i in foe.moves.size():
 		if foe.moves[i]["pp"] > 0:
 			usable.append(i)
-	return usable.pick_random() if not usable.is_empty() else 0
+	return usable.pick_random() if not usable.is_empty() else foe.moves.size()   # (it struggles)
 
 
 func _use_move(side: String, index: int, ev: Array) -> void:
@@ -209,8 +230,9 @@ func _use_move(side: String, index: int, ev: Array) -> void:
 		user.status = ""
 		ev.append({"type": "status", "side": side, "status": ""})
 		return
-	var slot: Dictionary = user.moves[index] if index < user.moves.size() else {"id": &"charge", "pp": 1}
-	var move := MovesDB.move(slot["id"])
+	var struggling := index >= user.moves.size()
+	var slot: Dictionary = {"id": &"se_debattre", "pp": 1} if struggling else user.moves[index]
+	var move := _move_of(user, index)
 	slot["pp"] = maxi(0, slot["pp"] - 1)
 	ev.append({"type": "move", "side": side, "move": slot["id"], "fx": move.get("fx", "charge"), "move_type": move["type"],
 		"text": "%s utilise %s !" % [_cap(name_of(side)), move["name"]]})
@@ -232,6 +254,8 @@ func _use_move(side: String, index: int, ev: Array) -> void:
 			_tell_held_on(ev)
 		if other == "foe" and foe.corrupted:
 			_frighten(ev)
+		if struggling:
+			_struggle_recoil(side, ev)
 	var fx: Dictionary = move.get("effect", {})
 	if fx.has("heal"):
 		var amount := mini(user.max_hp() - user.hp, ceili(user.max_hp() * fx["heal"]))
@@ -266,6 +290,19 @@ func _damage(side: String, other: String, move: Dictionary) -> Dictionary:
 		soft = (1.0 - CALM_SOFTENS * calm / float(calm_full)) * (1.0 - CALM_HESITATES if _calming else 1.0)
 	var total := maxi(1, int(dmg * stab * eff * soft * (1.5 if crit else 1.0) * (0.85 + rng.randf() * 0.15)))
 	return {"damage": total, "crit": crit, "eff": eff}
+
+
+## Struggling hurts its user a little (STRUGGLE_RECOIL of its PV).
+func _struggle_recoil(side: String, ev: Array) -> void:
+	var d := dino(side)
+	if d.hp <= 0:
+		return
+	var loss := maxi(1, ceili(d.max_hp() * STRUGGLE_RECOIL))
+	var held := _hurt(side, loss)
+	ev.append({"type": "damage", "side": side, "amount": loss, "hp": d.hp, "max_hp": d.max_hp(), "bleed": true,
+		"crit": false, "eff": 1.0, "text": "%s se fait mal en se débattant…" % _cap(name_of(side))})
+	if held:
+		_tell_held_on(ev)
 
 
 func _change_stage(side: String, stat: String, delta: int, ev: Array) -> void:
@@ -305,14 +342,14 @@ func _check_faints(ev: Array) -> bool:
 		_give_xp(ev)
 		_finish("win", ev)
 		return true
-	if player().hp <= 0:
+	if player().hp <= 0 and not must_switch:
 		ev.append({"type": "faint", "side": "player", "text": "%s est K.O. !" % player().nickname})
 		var next := _first_able()
 		if next < 0:
 			ev.append({"type": "text", "text": "Tous tes dinos sont épuisés…"})
 			_finish("lose", ev)
 			return true
-		_send_in(next, ev)
+		must_switch = true   # Chloé picks who goes in: the next action
 		return true
 	return false
 
@@ -331,27 +368,32 @@ func can_switch_to(index: int) -> bool:
 	return index >= 0 and index < team.size() and index != active and team[index].hp > 0
 
 
-## Is there an item `id` to give the dino in battle, and would it help? (HEAL_ITEMS, not at full PV)
-func can_use_item(id: String) -> bool:
-	return HEAL_ITEMS.has(id) and Game.item_count(id) > 0 and player().hp < player().max_hp()
+## Is there an item `id` to give dino `target` of the party (-1: the one in battle), and would it
+## help? (HEAL_ITEMS; standing, not at full PV: an item never brings back a knocked-out dino)
+func can_use_item(id: String, target := -1) -> bool:
+	var i := active if target < 0 else target
+	if not HEAL_ITEMS.has(id) or Game.item_count(id) <= 0 or i >= team.size():
+		return false
+	return team[i].hp > 0 and team[i].hp < team[i].max_hp()
 
 
-## The dino in battle eats a berry or a fern (see HEAL_ITEMS): the same care as out of battle.
-func _use_item(id: String, ev: Array) -> void:
-	var d := player()
+## Dino `target` of the party eats a berry or a fern (see HEAL_ITEMS): the same care as out of
+## battle. The events carry the dino ("dino"): it may not be the one in battle.
+func _use_item(id: String, target: int, ev: Array) -> void:
+	var d := team[target]
 	var before := d.hp
 	var used := Game.feed_berry(d) if id == "baie" else Game.feed_fern(d) > 0
 	if not used:
 		return
-	ev.append({"type": "item", "id": id, "side": "player", "text": HEAL_ITEMS[id] % d.nickname})
+	ev.append({"type": "item", "id": id, "side": "player", "dino": d, "text": HEAL_ITEMS[id] % d.nickname})
 	var text := "%s est complètement soigné !" % d.nickname if id == "fougere" else "%s récupère %d PV !" % [d.nickname, d.hp - before]
-	ev.append({"type": "heal", "side": "player", "amount": d.hp - before, "hp": d.hp, "max_hp": d.max_hp(), "text": text})
+	ev.append({"type": "heal", "side": "player", "dino": d, "amount": d.hp - before, "hp": d.hp, "max_hp": d.max_hp(), "text": text})
 
 
 ## How well move `index` of the dino in battle would hit the foe: 1 strong, -1 weak, 0 as usual
 ## (or a move that does not hurt). For the hint on its card.
 func move_hint(index: int) -> int:
-	var move := MovesDB.move(player().moves[index]["id"])
+	var move := _move_of(player(), index)
 	if move["power"] <= 0:
 		return 0
 	var eff := MovesDB.effectiveness(move["type"], foe.type())

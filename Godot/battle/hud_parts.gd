@@ -170,7 +170,7 @@ static func two_lines(title: String, detail: String) -> VBoxContainer:
 	col.alignment = BoxContainer.ALIGNMENT_CENTER
 	col.add_theme_constant_override("separation", 0)
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_child(fitted(label(title, 19, CREAM)))
+	col.add_child(shrink_to_fit(label(title, 19, CREAM), 14))
 	col.add_child(fitted(label(detail, 14, MUTED)))
 	return col
 
@@ -181,6 +181,20 @@ static func fitted(l: Label) -> Label:
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	l.custom_minimum_size = Vector2(20, 0)
 	return l
+
+
+## A label whose text keeps to its width: its font gets smaller, down to `smallest`, then the
+## ellipsis (a long name, « Parasaurolophus », in a card).
+static func shrink_to_fit(l: Label, smallest: int) -> Label:
+	var biggest := l.get_theme_font_size(&"font_size")
+	l.resized.connect(func() -> void:
+		var font := l.get_theme_font(&"font")
+		var size := biggest
+		while size > smallest and font.get_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x > l.size.x:
+			size -= 1
+		if l.get_theme_font_size(&"font_size") != size:
+			l.add_theme_font_size_override("font_size", size))
+	return fitted(l)
 
 
 ## A little round of a type's colour, on the left of a move's card.

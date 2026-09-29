@@ -8,8 +8,10 @@ extends Control
 ## it glows softly once the wild dino is worn out) or Apaiser (violet, against a corrupted dino),
 ## Sac, Dinos and Fuir. Every action is one tap. Attaquer, Sac and Dinos open their list in the
 ## same corner (the moves with their type, power points and a hint of how well they hit; the
-## healing items; the party), with Retour. The choices come out as `chosen`, an action for
-## BattleEngine.turn(). Keyboard and pad: the arrows turn around the wheel, « cancel » goes back.
+## healing items, then who gets one; the party), with Retour. After a knock-out, the party's list
+## asks who takes over (no Retour: someone must go in). The choices come out as `chosen`, an action for
+## BattleEngine.turn(). Keyboard and pad: the arrows turn around the wheel, « cancel » goes back,
+## Entrée, Espace and E (« interact ») press.
 ## Its panels, cards and round buttons are drawn by battle/hud_parts.gd.
 
 signal chosen(action: Dictionary)
@@ -53,6 +55,10 @@ const MINE_W := 240.0   # the text column next to the portrait
 ## The wild dino is worn out (the Collier glows): at or below this share of its PV.
 const WORN := 0.4
 const POP_S := 0.18
+## The lists and the panel each is shown in: the party's panel serves "team" (send another in),
+## "relief" (after a knock-out) and "heal" (who gets the item picked in the Sac).
+const LISTS := {"moves": "moves", "bag": "bag", "team": "team", "relief": "team", "heal": "team"}
+const HEAL_TITLES := {"baie": "À qui donner la baie ?", "fougere": "À qui donner la fougère ?"}
 
 
 var engine: BattleEngine
@@ -76,6 +82,7 @@ var _band: Control
 var _tap_hint: Label
 var _panels: Dictionary = {}   # name -> Control
 var _shown := ""
+var _heal_item := ""   # the item picked in the Sac, while the party's list says who gets it
 var _t := 0.0
 
 
@@ -416,23 +423,24 @@ func _open_wheel() -> void:
 
 # ------------------------------------------------------------------ the lists
 
-## Shows one of "wheel", "moves", "bag", "team" ("": none, while the lines play).
+## Shows "wheel" or one of the LISTS ("": none, while the lines play).
 func show_panel(which: String) -> void:
 	_shown = which
-	for key: String in _panels:
-		_panels[key].visible = key == which
-	match which:
-		"wheel":
-			_fill_wheel()
-			_open_wheel()
-			attack_button.grab_focus()
-		"moves", "bag", "team":
-			_fill_list(which)
-			_place_list(_panels[which])
-			_pop(_panels[which], 0.92)
-			var grid: GridContainer = _panels[which].get_meta(&"grid")
-			var first := _first_enabled(grid)
-			(first if first else _panels[which].get_meta(&"back") as Control).grab_focus()
+	var panel: Control = _panels.get(LISTS.get(which, which))
+	for p: Control in [wheel, moves_panel, bag_panel, team_panel]:
+		p.visible = p == panel
+	if which == "wheel":
+		_fill_wheel()
+		_open_wheel()
+		attack_button.grab_focus()
+	elif panel:
+		_fill_list(which)
+		var back: Control = panel.get_meta(&"back")
+		back.get_parent().visible = which != "relief"   # (someone must go in)
+		_place_list(panel)
+		_pop(panel, 0.92)
+		var first := _first_enabled(panel.get_meta(&"grid"))
+		(first if first else back).grab_focus()
 
 
 ## Is Chloé choosing (the wheel or a list on screen)?
@@ -440,15 +448,27 @@ func is_open() -> bool:
 	return _shown != ""
 
 
+## Where Retour (or « cancel ») leads from a list.
+func _back_from(which: String) -> String:
+	return "bag" if which == "heal" else "wheel"
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"cancel") and _shown in ["moves", "bag", "team"]:
+	if event.is_action_pressed(&"cancel") and _shown in ["moves", "bag", "team", "heal"]:
 		get_viewport().set_input_as_handled()
-		show_panel("wheel")
+		show_panel(_back_from(_shown))
+	# E (« interact », out of battle) presses too; Entrée and Espace already do (« ui_accept »).
+	elif event is InputEventKey and event.is_action_pressed(&"interact") and not event.is_action(&"ui_accept"):
+		var focused := get_viewport().gui_get_focus_owner()
+		if focused is BaseButton and is_ancestor_of(focused) and focused.is_visible_in_tree() and not (focused as BaseButton).disabled:
+			get_viewport().set_input_as_handled()
+			(focused as BaseButton).pressed.emit()
 
 
 ## Presses the button `id` on screen, as a tap would (the test tool: tools/capture.gd
 ## « hud_tap »): "attaquer", "collier", "apaiser", "sac", "dinos", "fuir", "retour", "move:0",
-## "item:baie", "dino:1". Returns false when it is not there, or cannot be pressed.
+## "item:baie", "dino:1" (sent in, or given the item). Returns false when it is not there, or
+## cannot be pressed.
 func tap(id: String) -> bool:
 	for b: BaseButton in find_children("*", "BaseButton", true, false):
 		if b.is_visible_in_tree() and not b.disabled and String(b.get_meta(&"tap_id", "")) == id:
@@ -472,7 +492,7 @@ func _list_panel() -> Control:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(title)
 	var back := PARTS.round_button(RUN_SLATE, null, "Retour", BACK_D, "retour", "◀")
-	back.pressed.connect(func() -> void: show_panel("wheel"))
+	back.pressed.connect(func() -> void: show_panel(_back_from(_shown)))
 	var holder := Control.new()   # (the round button keeps its own size and bounce)
 	holder.custom_minimum_size = back.size + Vector2(0, 6)
 	holder.add_child(back)
@@ -489,7 +509,7 @@ func _list_panel() -> Control:
 
 
 func _fill_list(which: String) -> void:
-	var panel: Control = _panels[which]
+	var panel: Control = _panels[LISTS[which]]
 	var grid: GridContainer = panel.get_meta(&"grid")
 	for child in grid.get_children():
 		grid.remove_child(child)
@@ -498,17 +518,21 @@ func _fill_list(which: String) -> void:
 	match which:
 		"moves":
 			panel.get_meta(&"title").text = "Attaques de %s" % d.nickname
-			for i in d.moves.size():
-				grid.add_child(_move_card(i))
+			if d.moves.any(func(m: Dictionary) -> bool: return m["pp"] > 0):
+				for i in d.moves.size():
+					grid.add_child(_move_card(i))
+			else:   # no power points left at all: it struggles
+				grid.add_child(_struggle_card())
 		"bag":
-			panel.get_meta(&"title").text = "Soigner %s" % d.nickname
+			panel.get_meta(&"title").text = "Soins"
 			for id: String in BattleEngine.HEAL_ITEMS:
 				if Game.item_count(id) > 0:
 					grid.add_child(_item_card(id))
-		"team":
-			panel.get_meta(&"title").text = "Changer de dino"
+		"team", "relief", "heal":
+			panel.get_meta(&"title").text = {"team": "Changer de dino", "relief": "Qui prend le relais ?"}.get(which,
+				HEAL_TITLES.get(_heal_item, "À qui le donner ?"))
 			for i in engine.team.size():
-				grid.add_child(_dino_card(i))
+				grid.add_child(_dino_card(i, which))
 	var cards := grid.get_children()
 	for i in cards.size():   # the arrows stay in the list, then reach Retour
 		var card: Control = cards[i]
@@ -551,7 +575,8 @@ func _move_card(i: int) -> Button:
 	return card
 
 
-## A healing item: its picture, what it does, how many are left. Given to the dino in battle.
+## A healing item: its picture, what it does, how many are left. Then who gets it (the party's
+## list, "heal"); with a single dino, it is given at once.
 func _item_card(id: String) -> Button:
 	var card := PARTS.card_button(INK_TOP, INK_BOTTOM, GOLD, "item:%s" % id)
 	var row: HBoxContainer = card.get_meta(&"row")
@@ -562,18 +587,26 @@ func _item_card(id: String) -> Button:
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(icon)
-	var usable := engine.can_use_item(id)
+	var usable := false
+	for i in engine.team.size():
+		usable = usable or engine.can_use_item(id, i)
 	var what := "Soin complet" if id == "fougere" else "+%d PV" % Game.BERRY_HP
-	row.add_child(PARTS.two_lines(String(ItemsDB.item(id)["name"]).get_slice(" ", 0), what if usable else "PV au maximum"))
+	row.add_child(PARTS.two_lines(String(ItemsDB.item(id)["name"]).get_slice(" ", 0), what if usable else "Tous en forme"))
 	row.add_child(PARTS.label("×%d" % Game.item_count(id), 22, GOLD))
-	card.pressed.connect(func() -> void: chosen.emit({"type": "item", "id": id}))
+	card.pressed.connect(func() -> void:
+		if engine.team.size() == 1:
+			chosen.emit({"type": "item", "id": id, "target": engine.active})
+		else:
+			_heal_item = id
+			show_panel("heal"))
 	PARTS.enable_card(card, usable)
 	return card
 
 
-## A dino of the party: portrait, level, health. The one in battle and the knocked-out ones
-## cannot be sent in.
-func _dino_card(i: int) -> Button:
+## A dino of the party: portrait, level, health. `mode` "team" or "relief": sent in (not the one in
+## battle, not a knocked-out one); "heal": given the item picked in the Sac (not a knocked-out one,
+## not one at full health).
+func _dino_card(i: int, mode: String) -> Button:
 	var d: Dino = engine.team[i]
 	var card := PARTS.card_button(INK_TOP, INK_BOTTOM, GOLD, "dino:%d" % i)
 	var row: HBoxContainer = card.get_meta(&"row")
@@ -588,21 +621,41 @@ func _dino_card(i: int) -> Button:
 	col.alignment = BoxContainer.ALIGNMENT_CENTER
 	col.add_theme_constant_override("separation", 3)
 	row.add_child(col)
-	col.add_child(PARTS.fitted(PARTS.label(d.nickname, 18, CREAM)))
+	col.add_child(PARTS.shrink_to_fit(PARTS.label(d.nickname, 18, CREAM), 13))
 	var hp := PARTS.Gauge.new()
 	hp.max_value = d.max_hp()
 	hp.value = d.hp
 	hp.custom_minimum_size = Vector2(0, 8)
 	col.add_child(hp)
 	var bottom := HBoxContainer.new()
-	var info := "K.O." if d.hp <= 0 else "Au combat" if i == engine.active else "%d / %d PV" % [d.hp, d.max_hp()]
-	bottom.add_child(PARTS.fitted(PARTS.label(info, 13, BAD if d.hp <= 0 else GOLD if i == engine.active else MUTED)))
+	var in_battle := i == engine.active
+	var info := "K.O." if d.hp <= 0 else "Au combat" if in_battle and mode != "heal" else "%d / %d PV" % [d.hp, d.max_hp()]
+	bottom.add_child(PARTS.fitted(PARTS.label(info, 13, BAD if d.hp <= 0 else GOLD if in_battle else MUTED)))
 	bottom.add_child(PARTS.label("Niv. %d" % d.level, 13, GOLD))
 	col.add_child(bottom)
-	card.pressed.connect(func() -> void: chosen.emit({"type": "switch", "index": i}))
-	PARTS.enable_card(card, engine.can_switch_to(i))
+	if mode == "heal":
+		if in_battle:
+			_corner_tag(card, PARTS.pill("au combat", 12, GOLD.darkened(0.35), CREAM))
+		card.pressed.connect(func() -> void: chosen.emit({"type": "item", "id": _heal_item, "target": i}))
+		PARTS.enable_card(card, engine.can_use_item(_heal_item, i))
+	else:
+		card.pressed.connect(func() -> void: chosen.emit({"type": "switch", "index": i}))
+		PARTS.enable_card(card, engine.can_switch_to(i))
 	if d.hp <= 0:
 		face.modulate = Color(0.6, 0.6, 0.6)
+	return card
+
+
+## No power points left in any move: « Se débattre » (BattleEngine.STRUGGLE), the move index
+## moves.size(), weak and hurting its user a little.
+func _struggle_card() -> Button:
+	var index := engine.player().moves.size()
+	var colour: Color = MovesDB.TYPE_COLORS["neutre"]
+	var card := PARTS.card_button(Color(colour.darkened(0.42), 0.95), Color(colour.darkened(0.7), 0.95), GOLD, "move:%d" % index)
+	var row: HBoxContainer = card.get_meta(&"row")
+	row.add_child(PARTS.gem(colour))
+	row.add_child(PARTS.two_lines(BattleEngine.STRUGGLE["name"], "Plus de PP · il se fait mal"))
+	card.pressed.connect(func() -> void: chosen.emit({"type": "move", "index": index}))
 	return card
 
 
@@ -636,9 +689,9 @@ func _layout() -> void:
 	mine["box"].reset_size()
 	mine["box"].position = Vector2(inset.x, _band.position.y - 8.0 - mine["box"].size.y)
 	wheel.position = view - inset - WHEEL
-	for key: String in ["moves", "bag", "team"]:
-		if _panels.has(key) and _panels[key].visible:
-			_place_list(_panels[key])
+	for panel: Control in [moves_panel, bag_panel, team_panel]:
+		if panel and panel.visible:
+			_place_list(panel)
 
 
 ## Appears with a small spring (`from`: its starting scale).
