@@ -7,8 +7,10 @@ class_name CoteFin
 ## refuses, will not fight, runs away; her cardboard mask stays with Chloé. The saddest moment of
 ## the game: no music, only the wind and the sea. Also Maïa at the Havre afterwards, and the
 ## Comptoir's warehouse (Ferréol, a side quest once the crates are read).
+## At the very end, snow on the mountains to the east: the way to the Monts Gelés opens
+## (monts_ouverts, chapter 6: with a warm coat, Monts.update_access).
 ## Flags: moustique_vu, maia_guet_vue, found_journal_23, maia_enfuie, masque_carton,
-## entrepot_ferreol.
+## monts_ouverts, entrepot_ferreol.
 
 const S := preload("res://story/story.gd")
 const P := preload("res://story/cote_places.gd")
@@ -19,6 +21,8 @@ const MAIA := "Maïa"
 const FERREOL := "Maître Ferréol"
 const RUST: Array[Color] = [Color(0.62, 0.36, 0.2), Color(0.48, 0.3, 0.2), Color(0.8, 0.55, 0.35)]
 const VIOLET := Color(0.62, 0.3, 1.0)
+## The first snowflake of the Monts, on the cardboard mask (the call of chapter 6).
+const SNOWFLAKE: Array[Color] = [Color(1.0, 1.0, 1.0), Color(0.92, 0.95, 1.0)]
 const XP_FIN := 60
 const XP_ENTREPOT := 30
 ## Sitting at the edge, chin on her knees (a squash of the picture).
@@ -92,6 +96,7 @@ static func maia(who: Node) -> void:
 	await S.say(_page_23(who))
 	await S.say(_refuses(who, caillou))
 	await S.say(_the_mask_left())
+	Monts.update_access()   # (the way up to the Monts, with a warm coat: chapter 6)
 	Audio.pop_music(3.0)
 	Game.award_team_xp(XP_FIN)
 	Save.save_game()
@@ -321,6 +326,15 @@ static func _the_mask_left() -> Array:
 				Stage.fade_in(p, 1.0)
 				CS.circle(p, sea, radius, 4.0, CS.FLY_HEIGHT + 60.0, phase)
 				CS.later(4.2, func() -> void: Stage.fade_out(p, 1.2, true))
+	# Chapter 6 calls: the snow on the mountains to the east, a flake on the mask.
+	var east := func() -> void:
+		var mountains: Vector2 = chloe.global_position.lerp(S.at(P.SORTIE_MONTS.x, P.SORTIE_MONTS.y), 0.35)
+		Stage.turn_to(chloe, mountains)
+		Stage.look_at(mountains, 1.6)
+	var flake := func() -> void:
+		Stage.look_back(1.0)
+		CS.Act.burst(chloe.global_position + Vector2(6.0, 0.0), SNOWFLAKE, 3, 1.2, 0.04)
+		Stage.bow(chloe, 1.0)
 	return [
 		CS.cue({"text": "Sur la roche, là où Maïa était assise, quelque chose est tombé de son sac : le masque en carton noir qu'elle s'était fabriqué après la Forêt. L'élastique est cassé."}, looks),
 		CS.cue({"text": "Le vent le pousse vers le bord. Chloé se jette dessus, et le rattrape juste avant le vide."}, catches),
@@ -328,7 +342,11 @@ static func _the_mask_left() -> Array:
 		CS.cue({"text": "Au-dessus de la mer, les Ptéranodons tournent, sans un cri."}, wheel),
 		CS.cue({"who": CHLOE, "text": "(Hélène… Tu savais. Depuis le début, tu savais.)"}, func() -> void: Stage.look_back(1.2)),
 		{"who": CHLOE, "text": "(Maïa, je te le rendrai. Promis.)"},
-		{"text": "(La suite de l'aventure arrive bientôt !)"},
+		CS.cue({"text": "Un vent froid descend des falaises de l'est. Tout là-haut, au-dessus de la mer, les montagnes ont blanchi pendant la nuit."}, east),
+		CS.cue({"text": "Un flocon se pose sur le masque en carton. Puis il fond."}, flake),
+		{"who": CHLOE, "text": "(Les Monts Gelés… Le quatrième Cœur m'attend là-haut.)"},
+		{"who": CHLOE, "text": "(J'irai. Même toute seule.)" if Monts.has_coat()
+			else "(J'irai. Même toute seule. Mais pas sans un vêtement chaud : là-haut, on gèle.)"},
 	]
 
 

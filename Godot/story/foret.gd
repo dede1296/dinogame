@@ -107,10 +107,14 @@ static func arrival() -> void:
 	var vif := vif_dino()
 	var lead := Game.lead_dino()
 	var lines: Array = []
+	var buddy: DinoNpc = null   # Vif out of her party for his answer, when he is not her lead
 	if vif and Game.party.has(vif):
+		if lead != vif:
+			buddy = GESTES.stand_in(vif)
+		var raptor: Node = buddy if buddy else w.companion
 		lines = [
 			GESTES.cue("%s se fige, la tête tournée vers le sud-ouest. Puis il répond : un petit cri aigu, que Chloé ne lui a jamais entendu." % vif.nickname,
-				func() -> void: _answers(w.companion, lead == vif)),
+				func() -> void: _answers(raptor)),
 			{"who": CHLOE, "text": "(« Son père, Griffe-Grise, veille encore dans la Forêt »… C'était lui ?)"},
 			{"who": CHLOE, "text": "Viens, %s. On va voir qui t'appelle." % vif.nickname},
 		]
@@ -124,6 +128,7 @@ static func arrival() -> void:
 		lines.append({"who": CHLOE, "text": "Allez. On va voir qui peut faire taire une meute entière d'un seul cri."})
 	lines.append({"flag": &"foret_arrivee"})
 	await S.say(lines)
+	await GESTES.stand_in_back(buddy)
 	Save.save_game()
 	S.lock(false)
 
@@ -147,13 +152,14 @@ static func _all_look(chloe: Player, companion: Node, dir: Vector2) -> void:
 
 
 ## Her Velociraptor freezes towards the south-west, then answers: head up, a little high cry
-## (when it is the one at her side).
-static func _answers(companion: Node, at_her_side: bool) -> void:
-	if not at_her_side:
+## (at her side, or out of her party for it).
+static func _answers(raptor: Node) -> void:
+	if not is_instance_valid(raptor):
 		return
+	Stage.turn_to(raptor, (raptor as Node2D).global_position + SOUTH_WEST * 100.0)
 	await S.wait(1.2)
-	Stage.rear(companion, 0.8)
-	Stage.cry(companion, &"neutre")
+	Stage.rear(raptor, 0.8)
+	Stage.cry(raptor, &"neutre")
 
 
 ## Back in the Forêt once the leader is free (the Sceau): the pack calls, and a deep voice
@@ -201,7 +207,9 @@ static func griffe_grise(who: Node) -> void:
 			Save.save_game()
 			S.lock(false)
 			return
-		await S.say([_griffe_again(who)])
+		var cast := {}   # Vif out of her party for the line (cast « vif »), when he is not her lead
+		await S.say([_griffe_again(who, cast)])
+		await GESTES.stand_in_back(cast.get("vif"))
 		return
 	var w = S.world()
 	if w == null:
@@ -424,8 +432,9 @@ static func _the_pack(griffe: Node, home: Vector2) -> void:
 	await GESTES.halt(griffe)   # (still on his way back)
 
 
-## A short line when Chloé comes back (the next one each time), with what it says he does.
-static func _griffe_again(griffe: Node) -> Dictionary:
+## A short line when Chloé comes back (the next one each time), with what it says he does. Vif,
+## when a line shows him, is brought out of her party for it (cast « vif », given back after).
+static func _griffe_again(griffe: Node, cast: Dictionary) -> Dictionary:
 	var chloe := Stage.chloe()
 	var vif := vif_dino()
 	if vif == null and Game.flag(&"griffe_vole_reconnu"):   # his stolen little one, back
@@ -433,9 +442,16 @@ static func _griffe_again(griffe: Node) -> Dictionary:
 	if Game.flag(&"sceau_foret") and not Game.flag(&"griffe_apres_sceau"):
 		Game.set_flag(&"griffe_apres_sceau")
 		var sigh := "Griffe-Grise renifle Chloé : elle sent le Chef de Meute. Le vieux raptor ferme les yeux et pousse un long soupir, comme quelqu'un qui va enfin pouvoir dormir."
-		if vif and Game.party.has(vif):
+		var with_vif: bool = vif != null and Game.party.has(vif)
+		if with_vif:
 			sigh += " %s se couche contre son flanc. Ils s'endorment tous les deux." % vif.nickname
-		return GESTES.cue(sigh, func() -> void: await GESTES.lean(griffe, chloe.global_position, 10.0, 1.0); Stage.emote(griffe, "…"); GESTES.lie_down(griffe, 1.6, DOZING))
+		return GESTES.cue(sigh, func() -> void:
+			if with_vif:   # (at her side or out of her party, he walks to his father's flank)
+				cast["vif"] = GESTES.stand_in(vif)
+				_curls_up_by(cast["vif"], griffe)
+			await GESTES.lean(griffe, chloe.global_position, 10.0, 1.0)
+			Stage.emote(griffe, "…")
+			GESTES.lie_down(griffe, 1.6, DOZING))
 	if Game.flag(&"camp_arrive") and not Game.flag(&"sceau_foret") and not Game.flag(&"griffe_apres_camp"):
 		Game.set_flag(&"griffe_apres_camp")
 		return GESTES.cue("Griffe-Grise renifle Chloé : la boue du camp, la cendre, l'ambre noir. Il retrousse les babines, et regarde vers l'ouest sans cligner des yeux.",
@@ -460,7 +476,7 @@ static func _griffe_again(griffe: Node) -> Dictionary:
 			func() -> void: _sniffs_then_looks_behind(griffe, chloe))
 	var i := n % AGAIN_VIF.size()
 	return GESTES.cue((AGAIN_VIF[i] as String).replace("%s", vif.nickname),
-		func() -> void: _again_vif_move(griffe, chloe, i, Game.lead_dino() == vif))
+		func() -> void: _again_vif_move(griffe, chloe, i, vif, cast))
 
 
 ## What he does with each of the lines of AGAIN (by its index).
@@ -477,9 +493,13 @@ static func _again_move(griffe: Node, chloe: Player, i: int) -> void:
 			Stage.turn_to(griffe, _px_of(griffe) + NORTH_WEST * 100.0)
 
 
-## What he (and Vif) do with each of the lines of AGAIN_VIF (by its index).
-static func _again_vif_move(griffe: Node, chloe: Player, i: int, vif_leads: bool) -> void:
-	var companion: Node2D = S.world().companion if vif_leads else null
+## What he (and Vif) do with each of the lines of AGAIN_VIF (by its index): Vif at her side (her
+## lead), or brought out of her party for the lines that show him (cast « vif »).
+static func _again_vif_move(griffe: Node, chloe: Player, i: int, vif: Dino, cast: Dictionary) -> void:
+	var companion: Node2D = S.world().companion if Game.lead_dino() == vif else null
+	if companion == null and i != 3:   # (the chin scratch is Chloé's alone)
+		companion = GESTES.stand_in(vif)
+		cast["vif"] = companion
 	match i:
 		0:   # he opens an eye, sees Vif, closes it
 			Stage.emote(griffe, "…")
@@ -489,7 +509,7 @@ static func _again_vif_move(griffe: Node, chloe: Player, i: int, vif_leads: bool
 			GESTES.lean(griffe, companion.global_position if companion else chloe.global_position, 10.0, 1.6)
 		2:   # he jumps on his rock; Vif tries and lands beside it
 			await Stage.hop(griffe, 1, 26.0)
-			if companion:
+			if is_instance_valid(companion):
 				Stage.hop(companion, 1, 14.0)
 		3:   # Chloé scratches his chin; he grumbles
 			_scratches_his_chin(chloe, griffe)

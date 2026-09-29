@@ -66,7 +66,13 @@ var walking := false
 
 ## Turns to look at a point.
 func face(point: Vector2) -> void:
-	sprite.play(StringName("idle_" + SheetFrames.direction_name(point - global_position)))
+	var dir := SheetFrames.direction_name(point - global_position)
+	if has_meta(&"pose"):   # holding a pose of a scene (sitting…): turned, not stood up
+		var held := Outfits.pose_anim(get_meta(&"pose"), dir)
+		if sprite.sprite_frames.has_animation(held):
+			sprite.play(held)
+		return
+	sprite.play(StringName("idle_" + dir))
 
 
 ## Walks to `target` (world px) in a straight line, then stands facing `end_facing`.

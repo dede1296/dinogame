@@ -33,7 +33,7 @@ static func main(out: Array[Dictionary]) -> void:
 		_add(out, "cote", "La Côte Préhistorique, au nord : le vent a tourné, et la piste descend enfin vers la mer.", &"desert", P.spot(&"desert", "DepuisCote", Vector2(100.0, 1.0)), true)
 		return
 	if Game.flag(&"maia_enfuie"):
-		_add(out, "monts", "À l'est de la Côte, les falaises montent vers la neige : les Monts Gelés. (La suite de l'aventure arrive bientôt !)", &"cote", P.SORTIE_MONTS, true)
+		MontsObjectives.main(out)   # chapter 6, the Monts Gelés (story/monts_objectives.gd)
 		return
 	if Game.flag(&"coeur_3"):
 		var text := "Moustique est venu te chercher. Maïa t'attend au belvédère des falaises, au-dessus de la crique." if Game.flag(&"moustique_vu") \

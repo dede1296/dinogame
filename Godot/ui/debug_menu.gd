@@ -10,7 +10,8 @@ const AMBER := Color(0.98, 0.76, 0.35)
 const INK := Color(0.106, 0.122, 0.157, 0.97)
 const HOURS := [["Aube", 6.0], ["Midi", 12.0], ["Crépuscule", 19.0], ["Nuit", 23.0]]
 const SPEEDS := [1.0, 10.0, 60.0]
-const WEATHER_NAMES := {&"clear": "Beau temps", &"rain": "Pluie", &"mist": "Brume", &"storm": "Orage", &"sandstorm": "Sable"}
+const WEATHER_NAMES := {&"clear": "Beau temps", &"rain": "Pluie", &"mist": "Brume", &"storm": "Orage", &"sandstorm": "Sable",
+	&"snow": "Neige", &"blizzard": "Blizzard"}
 
 var _was_paused := false
 var _species_ids: Array = []
@@ -73,7 +74,9 @@ func _build() -> void:
 	close.custom_minimum_size.x = 160
 	head.add_child(close)
 	col.add_child(head)
-	_status = _label("", 17, Color(CREAM, 0.75))
+	_status = _label("", 17, Color(CREAM, 0.75), true)
+	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # (the party's levels would widen the window)
+	_status.custom_minimum_size.x = 1.0
 	col.add_child(_status)
 
 	col.add_child(_label("Heure", 22, CREAM))

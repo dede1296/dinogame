@@ -10,7 +10,7 @@ signal xp_awarded(dino: Dino, amount: int, levels: int)
 signal bond_changed(dino: Dino, hearts: int)
 ## The time of day moved to another phase (&"dawn", &"day", &"dusk", &"night").
 signal phase_changed(phase: StringName)
-## The weather changed (&"clear", &"rain", &"mist", &"storm", &"sandstorm").
+## The weather changed (&"clear", &"rain", &"mist", &"storm", &"sandstorm", &"snow", &"blizzard").
 signal weather_changed(weather: StringName)
 
 ## The three hatchlings Hélène left for Chloé: species -> default name. Each one beats
@@ -38,7 +38,10 @@ const CLOCK_HOUR_S := 60.0
 const START_CLOCK := 9.0 * 60.0
 ## A sandstorm blows only where the zone says it can (Region.sandstorm_chance: the Désert),
 ## or when a scene sets it (set_weather(&"sandstorm")); leaving for a zone without, it stops.
-const WEATHERS: Array[StringName] = [&"clear", &"rain", &"mist", &"storm", &"sandstorm"]
+## Snow and the blizzard likewise (Region.snow_chance, blizzard_chance: the Monts).
+const WEATHERS: Array[StringName] = [&"clear", &"rain", &"mist", &"storm", &"sandstorm", &"snow", &"blizzard"]
+## The weathers that come only where the zone's climate gives them a chance (see can_blow).
+const LOCAL_WEATHERS: Array[StringName] = [&"sandstorm", &"snow", &"blizzard"]
 ## Each game hour, a spell of rain or mist ends with this chance.
 const WEATHER_CLEARS := 0.35
 
@@ -74,8 +77,8 @@ var arrival: StringName
 ## A game is loaded or started (a scene launched alone in the editor starts one).
 var in_game := false
 var weather: StringName = &"clear"
-## Chances per game hour of rain, mist, a storm, a sandstorm starting, from the current zone
-## (set by the world: set_climate).
+## Chances per game hour of rain, mist, a storm, a sandstorm, snow, a blizzard starting, from
+## the current zone (set by the world: set_climate).
 var climate := {"rain": 0.08, "mist": 0.1}
 ## Debug: how fast the clock runs (1 = normal).
 var time_scale := 1.0
@@ -170,11 +173,14 @@ func phase() -> StringName:
 	return &"night"
 
 
-## Each new hour the weather may turn (mist is likelier at dawn).
+## Each new hour the weather may turn (mist is likelier at dawn). A blizzard dies down into
+## snow where it can snow.
 func _roll_weather(hour: int) -> void:
 	if weather != &"clear":
-		if randf() < WEATHER_CLEARS or (weather == &"sandstorm" and float(climate.get("sandstorm", 0.0)) <= 0.0):
+		if not can_blow(weather):
 			set_weather(&"clear")
+		elif randf() < WEATHER_CLEARS:
+			set_weather(&"snow" if weather == &"blizzard" and can_blow(&"snow") else &"clear")
 		return
 	set_weather(weather_for(randf(), hour, climate))
 
@@ -185,7 +191,8 @@ static func weather_for(roll: float, hour: int, chances: Dictionary) -> StringNa
 	var mist: float = float(chances.get("mist", 0.0)) * (3.0 if hour >= 4 and hour <= 8 else 1.0)
 	var edge := 0.0
 	for spell: Array in [[&"mist", mist], [&"rain", float(chances.get("rain", 0.0))],
-			[&"storm", float(chances.get("storm", 0.0))], [&"sandstorm", float(chances.get("sandstorm", 0.0))]]:
+			[&"storm", float(chances.get("storm", 0.0))], [&"sandstorm", float(chances.get("sandstorm", 0.0))],
+			[&"snow", float(chances.get("snow", 0.0))], [&"blizzard", float(chances.get("blizzard", 0.0))]]:
 		if spell[1] <= 0.0:
 			continue
 		edge += spell[1]
@@ -194,12 +201,26 @@ static func weather_for(roll: float, hour: int, chances: Dictionary) -> StringNa
 	return &"clear"
 
 
-## The zone's chances of each weather (the world, entering a zone). A sandstorm stops at
-## once where none can blow (out of the Désert, indoors).
+## The zone's chances of each weather (the world, entering a zone). A sandstorm (snow, a
+## blizzard) stops at once where none can blow (out of the Désert, out of the Monts, indoors).
+## Rain walked into a snowy zone (the Monts) turns to snow there.
 func set_climate(chances: Dictionary) -> void:
 	climate = chances
-	if weather == &"sandstorm" and float(chances.get("sandstorm", 0.0)) <= 0.0:
+	if is_raining() and can_blow(&"snow") and float(climate.get("rain", 0.0)) <= 0.0:
+		set_weather(&"snow")
+	elif not can_blow(weather):
 		set_weather(&"clear")
+
+
+## Can this weather go on in the current zone? Those of LOCAL_WEATHERS only where its climate
+## gives them a chance; the others anywhere.
+func can_blow(value: StringName) -> bool:
+	return not value in LOCAL_WEATHERS or float(climate.get(String(value), 0.0)) > 0.0
+
+
+## Snow falls (gently, or blown in a blizzard).
+func is_snowing() -> bool:
+	return weather == &"snow" or weather == &"blizzard"
 
 
 ## Rain falls (a shower or a storm).

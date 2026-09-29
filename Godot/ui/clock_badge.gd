@@ -1,7 +1,8 @@
 class_name ClockBadge
 extends PanelContainer
 ## The time of day at a glance, top-right next to the menu button: an icon (sun, moon, rain,
-## mist, sandstorm) and the hour. Holding it down (or F2 on a computer) opens the debug panel.
+## mist, sandstorm, snow, blizzard) and the hour. Holding it down (or F2 on a computer) opens
+## the debug panel.
 
 const ICONS := {
 	&"sun": preload("res://assets/art/ui/meteo_soleil.png"),
@@ -11,9 +12,13 @@ const ICONS := {
 	&"mist": preload("res://assets/art/ui/meteo_brume.png"),
 	&"storm": preload("res://assets/art/ui/meteo_orage.png"),
 }
-## The sandstorm's own icon when there is one; else the mist's, tinted ochre (SAND_TINT).
-const SANDSTORM_ICON := "res://assets/art/ui/meteo_sable.png"
-const SAND_TINT := Color(1.0, 0.72, 0.38)
+## The weathers of one region (sandstorm, snow, blizzard): their own icon when it is there;
+## else the mist's, tinted (ochre, icy blue, white).
+const LOCAL_ICONS := {
+	&"sandstorm": ["res://assets/art/ui/meteo_sable.png", Color(1.0, 0.72, 0.38)],
+	&"snow": ["res://assets/art/ui/meteo_neige.png", Color(0.7, 0.85, 1.0)],
+	&"blizzard": ["res://assets/art/ui/meteo_blizzard.png", Color(0.92, 0.96, 1.0)],
+}
 const HOLD_S := 1.0          # long press for the debug panel
 const RIGHT_OF_MENU := 96.0  # room left for the menu button (76 px + gap)
 
@@ -75,8 +80,8 @@ func _process(delta: float) -> void:
 func _refresh() -> void:
 	var minutes := int(Game.clock)
 	_label.text = "%02d:%02d" % [floori(minutes / 60.0), minutes % 60]
-	if Game.weather == &"sandstorm":
-		_show_sandstorm()
+	if LOCAL_ICONS.has(Game.weather):
+		_show_local(Game.weather)
 		return
 	var key := &"sun"
 	if Game.weather == &"storm":
@@ -91,14 +96,17 @@ func _refresh() -> void:
 	_icon.modulate = Color.WHITE
 
 
-static var _sand_icon: Texture2D
+## LOCAL_ICONS loaded: weather -> its icon, or null (the mist's, tinted).
+static var _local_icons := {}
 
 
-func _show_sandstorm() -> void:
-	if _sand_icon == null:
-		_sand_icon = load(SANDSTORM_ICON) if ResourceLoader.exists(SANDSTORM_ICON) else ICONS[&"mist"]
-	_icon.texture = _sand_icon
-	_icon.modulate = Color.WHITE if _sand_icon != ICONS[&"mist"] else SAND_TINT
+func _show_local(weather: StringName) -> void:
+	var entry: Array = LOCAL_ICONS[weather]
+	if not _local_icons.has(weather):
+		_local_icons[weather] = load(entry[0]) if ResourceLoader.exists(entry[0]) else null
+	var own: Texture2D = _local_icons[weather]
+	_icon.texture = own if own else ICONS[&"mist"]
+	_icon.modulate = Color.WHITE if own else entry[1]
 
 
 func _gui_input(event: InputEvent) -> void:

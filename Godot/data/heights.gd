@@ -13,8 +13,12 @@ const PEOPLE := {
 	"isaure": [1.70, 173.0], "masque": [1.70, 172.0], "roc": [1.72, 171.0],
 	"pecheur": [1.74, 176.0], "gaspard": [1.78, 173.0], "sbire": [1.80, 172.0],
 	"ferreol": [1.82, 174.5], "garde": [1.85, 176.0], "brac": [2.00, 174.0],
+	# Chapitre 6 (Les Monts Gelés).
+	"bertille": [1.60, 173.0],
 	# Variants (Outfits): the same scale as their base sheet (Chloé's boots, Joss's jar counted in).
 	"chloe_bottes": [1.50, 173.5], "joss_bocal": [1.69, 178.5],
+	# Le manteau chaud des régions froides (AJOUT du 29/09) : la capuche compte dans l'union.
+	"chloe_manteau": [1.50, 175.0], "maia_manteau": [1.50, 174.0],
 }
 ## Someone not in the table yet.
 const DEFAULT := [1.70, 174.0]

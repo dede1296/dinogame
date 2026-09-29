@@ -55,7 +55,7 @@ const REGIONS = [
   { id: "marais", name: "Marais Brumeux", zones: ["marais", "temple_englouti"], levels: [15, 21], seeds: [[0.15, 0.47]], w: 0.0, c: "#6d7f55" },
   { id: "desert", name: "Désert Aride", zones: ["desert", "sanctuaire_vents"], levels: [21, 27], seeds: [[0.28, 0.2], [0.2, 0.3]], w: 0.0, c: "#e2b56c" },
   { id: "cote", name: "Côte Préhistorique", zones: ["cote", "grottes_marines", "recif_sanctuaire"], levels: [28, 35], seeds: [[0.55, 0.1], [0.7, 0.14]], w: -0.01, c: "#a7c98a" },
-  { id: "monts", name: "Monts Gelés", zones: ["monts"], levels: [33, 40], seeds: [[0.84, 0.36], [0.76, 0.6]], w: 0.02, c: "#9ea08c" },
+  { id: "monts", name: "Monts Gelés", zones: ["monts", "grottes_glace", "sanctuaire_givre"], levels: [33, 40], seeds: [[0.84, 0.36], [0.76, 0.6]], w: 0.02, c: "#9ea08c" },
   { id: "cieux", name: "Cieux Éternels", zones: ["cieux"], levels: [38, 44], seeds: [[0.63, 0.3]], w: -0.035, c: "#dfe8f2" },
   { id: "volcan", name: "Plaine Volcanique", zones: ["volcan"], levels: [42, 48], seeds: [], w: 0, c: "#5f4a42" },
   { id: "apex", name: "Terre des Apex", zones: ["apex"], levels: [50, 50], seeds: [], w: 0, c: "#3a2622" },
@@ -318,6 +318,8 @@ const places = [
   ["sanctuaire_vents", "Sanctuaire des Vents", inRegion("desert", 60.5 / 120, 3 / 100)],
   ["grottes_marines", "Grottes marines", inRegion("cote", 93 / 128, 25 / 100)],
   ["recif_sanctuaire", "Récif du Sanctuaire", inRegion("cote", 68.5 / 128, 20.5 / 100)],
+  ["grottes_glace", "Grottes de glace", inRegion("monts", 66 / 130, 6 / 110)],
+  ["sanctuaire_givre", "Sanctuaire de Givre", inRegion("monts", 114.5 / 130, 7.55 / 110)],
 ];
 
 await sharp(img, { raw: { width: N, height: N, channels: 3 } }).png().toFile(`${OUT_ART}/atlas_ile.png`);

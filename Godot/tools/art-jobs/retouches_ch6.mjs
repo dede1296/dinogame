@@ -9,4 +9,11 @@
 export default ({ props, OUT }) => [
   [`${OUT}/retouches/frise_masques`, () => props({ id: "7bjgtu", scale: 0.5, outDir: `${OUT}/props`, names: ["frise_masques"] })],
   [`${OUT}/retouches/feu_camp`, () => props({ id: "d1apov", scale: 0.5, outDir: `${OUT}/props`, names: ["feu_camp"] })],
+  // The frost door of the sanctuary (Monts), strictly front-on (the first one, monts.mjs, was drawn
+  // at an angle: it looked turned aside in its notch), its four hollows empty.
+  [`${OUT}/retouches/porte_givre`, () => props({ id: "oanutv", scale: 0.5, outDir: `${OUT}/props`, names: ["porte_givre"] })],
+  // The same door with 1, 2, 3 of Chloé's Cœurs set in its hollows (top left, top right, bottom left;
+  // the 4th, bottom right, waits for the Cœur of the sanctuary): the hearts of the first drawing
+  // (4zk7z8, same geometry) pasted into the empty door (derived-porte-givre-coeurs<n>.png).
+  ...[1, 2, 3].map((n) => [`${OUT}/retouches/porte_givre_${n}`, () => props({ id: `derived-porte-givre-coeurs${n}`, scale: 0.5, outDir: `${OUT}/props`, names: [`porte_givre_${n}`] })]),
 ];

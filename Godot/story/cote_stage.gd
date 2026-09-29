@@ -86,7 +86,12 @@ static func kneel() -> void:
 	var drawn := Outfits.has_pose(chloe, &"accroupi")
 	await D._crouch(chloe, 0.22, 0.25 if drawn else 0.6)
 	if drawn and Stage.pose(chloe, &"accroupi"):
-		await D._get_up(chloe, 0.15)
+		# (back to her full size, the crouching picture kept: D._get_up would release the pose)
+		var sprite := Stage.sprite_of(chloe)
+		if sprite:
+			var t := sprite.create_tween()
+			t.tween_property(sprite, "scale", D._full_of(sprite), 0.15).set_trans(Tween.TRANS_SINE)
+			await t.finished
 
 
 # ------------------------------------------------------------------ water and light

@@ -119,7 +119,7 @@ func _play_call(def: Dictionary) -> void:
 	var level: float = _mix[def["follows"]] if def.has("follows") else 1.0
 	if level <= 0.05:
 		return
-	if def.get("day", false) and (Game.phase() == &"night" or Game.is_raining()):
+	if def.get("day", false) and (Game.phase() == &"night" or Game.is_raining() or Game.weather == &"blizzard"):
 		return
 	var p := _voices[_next_voice]
 	_next_voice = (_next_voice + 1) % _voices.size()

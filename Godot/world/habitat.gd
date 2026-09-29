@@ -4,7 +4,8 @@ extends Node2D
 ## An area of a zone where some species live (the pond's edge, a patch of tall grass, the
 ## edge of the woods…). Place it in the zone scene, size it, and list its Encounters:
 ## hidden ones are met by walking in the tall grass inside it, visible ones roam in it
-## (`roamers` at a time, at the right time of day). Drawn in the editor only.
+## (`roamers` at a time, at the right time of day, in the right weather: Encounter.weathers).
+## Drawn in the editor only.
 
 const WILD_DINO := preload("res://actors/wild_dino.tscn")
 
@@ -32,9 +33,15 @@ func has_point(p: Vector2) -> bool:
 	return area().has_point(p)
 
 
-## A random hidden encounter active in this part of the day, weighted, or null.
+## A random hidden encounter active in this part of the day (and this weather), weighted, or null.
 func pick_hidden(phase: StringName) -> Encounter:
 	return _pick(encounters.filter(func(e: Encounter) -> bool: return e.hidden and e.active(phase)))
+
+
+## Does one of its roamers come out only in some weathers (the world then sends them out again
+## when the weather turns)?
+func weather_bound() -> bool:
+	return encounters.any(func(e: Encounter) -> bool: return e and not e.hidden and not e.weathers.is_empty())
 
 
 ## Replaces the roaming dinos with ones that fit the part of the day. `can_stand(point)`

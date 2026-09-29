@@ -32,6 +32,13 @@ L'île est ronde, découpée en régions qui montent en spirale vers le volcan c
 | **Plaine Volcanique** | Lave, cendres, forges de l'Ombre Noire — *sanctuaire du 5e Cœur* |
 | **Terre des Apex** | Le cratère interdit, où dort le Souverain |
 
+**Les régions froides.** Au nord-est, l'île monte vers la neige : les **Monts Gelés**, et au-dessus,
+dans les nuages, les **Cieux Éternels**. Il y fait si froid qu'on n'y monte pas sans un **vêtement
+chaud**. Il n'y a ni moutons ni bêtes à fourrure sur Ambrelune : seulement des dinos. Rosalie, la
+mercière du Havre, coud donc ses **manteaux de duvet** avec le duvet que les dinos à plumes perdent à
+la mue, ramassé au sol (« pas une plume arrachée ») ; ils tiennent « chaud comme un nid ». Elle en
+confie quelques-uns à Joss, sur la Côte, « pour ceux qui montent ».
+
 ## Ce qu'a fait Hélène
 
 **Hélène Varenne**, paléogénéticienne, a consacré sa vie à une idée : l'ADN de l'ambre n'est pas
@@ -104,6 +111,14 @@ Ses figures :
   Chloé calmer Belladone « sans une goutte » la trouble (« Ce n'est pas dans mes tables. »). Elle sait
   qu'Hélène avait brûlé ses notes « presque toutes » (« Presque. C'est un mot merveilleux. ») et que le
   Masque cherche ce qui dort sous le temple. Elle promet de revoir Chloé « là où il fait plus froid ».
+  Aux Monts Gelés, elle trouve la réserve secrète d'Hélène grâce à une carte « avec des petites fougères
+  partout, dessinée par quelqu'un qui la connaissait très bien », et veut réveiller les dormeurs d'une
+  goutte de sa « formule du Givre », pour l'armée du Masque. Son champion, **Aconit** (un Nanuqsaurus
+  à « quatre gouttes, pour le froid », qui ne dormait plus), s'endort d'un coup une fois apaisé (Chloé
+  l'appelle **Flocon**). Devant les dormeurs « parfaits, sans une goutte », elle enlève pour la première
+  fois ses lunettes fumées : « Il faudra peut-être que je refasse mes tables. » Elle laisse partir Chloé
+  avec un indice, « gratuitement, c'est rare » : le Masque veut tous les Cœurs d'un coup, dans les Cieux.
+  Elle promet de la revoir « là où il fait plus chaud » (le volcan, où elle changera de camp).
 - **Les sbires** : des masques d'os anonymes, souvent des pêcheurs du port payés pour se taire
   (« Il paie. Au port, plus personne ne paie. »). Gustave (la Grotte) a démissionné pour
   retourner pêcher ; son cousin Firmin garde le camp de la Forêt, avec le sbire à la lanterne, qui
@@ -223,7 +238,12 @@ connaît l'emplacement des sanctuaires. Au Marais, Chloé le surprend la nuit av
 ses sorties sans dire où il va (« J'ai promis. À quelqu'un qui n'est plus là pour me délier de ma
 promesse. ») et la supplie de lui faire confiance. **Fausse piste** de la première moitié du jeu : en réalité,
 il surveille le sceau en secret et confisque l'ambre noir qu'il trouve. Il se sent coupable de
-n'avoir pas su retenir Hélène.
+n'avoir pas su retenir Hélène. Au Col des Tempêtes (chapitre 6), perdu dans le blizzard avec sa
+lanterne, il avoue tout : deux ans plus tôt, au même endroit, Hélène lui a fait promettre de surveiller
+le sceau chaque nuit si elle disparaissait, et de n'en parler à personne, « pas même à Chloé » (page
+28) ; il voulait que Chloé se méfie de tout le monde, lui compris (« Ne fais confiance qu'aux dinos »).
+C'est lui qui a surnommé le Cryolophosaure « Toupet ». Il doit un bol de soupe à Bertille « depuis vingt
+ans ».
 
 **Maïa Kerval**, 12 ans, fille de la capitaine du port. Casse-cou, fière, drôle. Connaît l'île mieux
 que personne et devient la **rivale** de Chloé, avec des défis à chaque chapitre. Ses dinos : un
@@ -232,7 +252,12 @@ sur celui de Chloé (Roc le lui confie : « Hélène t'aimait beaucoup, tu sais 
 Dimorphodon (« il pique »), et **Pouce**, un Iguanodon qui dit bonjour avec son pouce en pointe. Elle
 défend Roc quand Chloé doute de lui (« Il est bizarre, pas méchant. Les méchants, ça ne recoud pas les
 doudous. »), et ne voit pas qui pourrait être « I. ». Son arc : découvrir que sa mère est
-le Masque, puis **choisir**, sans renier sa mère.
+le Masque, puis **choisir**, sans renier sa mère. Aux Monts Gelés, après avoir attendu sa mère toute
+une nuit dans la cuisine (elle n'a pas nié ; elle a « reposé sa tasse, très doucement »), elle revient,
+les yeux rouges, dans le manteau trop grand de Joss : « Je veux l'arrêter. Pas la perdre. » Elle garde son
+masque en carton pour le rendre à sa mère « le jour où elle enlèvera le sien », livre son cinquième
+défi pour savoir si elle est prête, puis fait équipe avec Chloé. Sa mère lui a appris tous les chemins
+de la mer : sa barque est à Chloé.
 
 **Capitaine Isaure Kerval**, mère de Maïa, capitaine du port. Chaleureuse, respectée, épuisée par
 un port qui meurt. C'est elle qui amène Chloé sur l'île dans sa barque. Autrefois la **meilleure
@@ -253,6 +278,22 @@ son coup de soleil en forme de fougère ; Roc dit qu'elle lui « doit un chapeau
 ans ». Pour elle, « un os de l'île reste sur l'île » : elle dessine les fossiles dans un grand
 cahier, puis les rend.
 
+**Bertille**, la gardienne des troupeaux des Monts Gelés. La soixantaine (elle ne sait plus au juste :
+« les troupeaux le savent »), 1,60 m, une grosse parka doublée de duvet, un bonnet tricoté, un grand
+bâton de berger. Elle vit sous un rocher en surplomb de la Vallée des Troupeaux, près d'un feu qui ne
+s'éteint jamais, et compte chaque soir ses bêtes à voix haute, le bâton pointé (« Cent douze
+Edmontosaurus, quarante et un Pachyrhinosaurus, et un têtu ») ; tout le monde lui fait perdre le compte.
+Le têtu, c'est **Grelot**, son plus petit Pachyrhinosaurus : elle lui a noué un grelot au cou pour le
+retrouver dans les tempêtes (« ça marche une fois sur deux ; l'autre fois, il fait exprès de ne pas
+bouger »), et il fonce sur tout ce qui sent bizarre, murs de glace compris. Elle dit que ce sont ses
+troupeaux qui la gardent : ils savent où est l'herbe sous la neige. Elle appelle Hélène « la dame aux
+mains abîmées » : Hélène montait chaque hiver compter avec elle et se trompait exprès, pour rester plus
+longtemps au chaud ; Bertille lui tricotait des moufles pour ses vieilles brûlures (elle les perdait ;
+elle en tricotait d'autres) et lui a prêté son traîneau, sans une question, pour mettre la réserve à
+l'abri dans la glace. L'hiver dernier, « personne n'a dérangé son compte ». Chaleureuse, bourrue,
+drôle ; sa soupe est célèbre. Elle a vu les forges s'allumer au pied du volcan, deux ans plus tôt, et
+donne à Chloé les moufles qu'Hélène avait « laissées pour quelqu'un ».
+
 **Les Alphas**, un par région, gardiens des Cœurs et des passages. On ne les « bat » pas vraiment :
 on gagne leur confiance (combat d'honneur, ou apaisement quand l'Ombre Noire les a corrompus).
 Chacun remet un **Sceau**, qui prouve aux autres Alphas que Chloé est digne de passer.
@@ -266,6 +307,16 @@ s'ouvre » ; « la peur n'ouvre rien, ici » (page 18). Brac l'a corrompu à l'a
 fournée « trop forte » de Dame Suie) pour le faire rugir de peur devant la porte : elle n'a pas
 bougé. Apaisé par Chloé, il rentre, rugit, la porte s'ouvre, et il lui remet le Sceau du Désert,
 entre ses dents « grandes comme des bananes », aussi doucement qu'une plume.
+
+**Le Cryolophosaure Titan**, Alpha des Monts Gelés, garde le 4e Cœur au **sanctuaire de Givre**, en haut
+du Col des Tempêtes, derrière une porte de glace à quatre creux que seuls les Cœurs font fondre : une
+salle ronde taillée dans la glace, sous une haute paroi de glace, entre deux statues de Cryolophosaure. Grand comme un arbre, il porte une
+crête dressée en travers de la tête, « comme une coiffure du dimanche » (Anselme l'a surnommé
+« Toupet » ; il ne le lui a jamais pardonné). Il a regardé Hélène trois jours sans bouger avant de
+descendre de sa paroi de glace, et a enfermé le Cœur dans la glace de l'autel en soufflant dessus. Un mois
+après la nuit du feu, il est resté debout près d'elle toute une nuit, face au vent, pendant qu'elle
+posait ses mains brûlées sur le glacier (page 29). Quand les quatre Cœurs s'allument, il ne regarde pas
+le volcan : il regarde le ciel.
 
 **Le Souverain**, l'Apex ancestral du cratère, immense, à la peau veinée d'ambre. Ni bon ni
 mauvais : c'est une force de la nature, qui a peur quand on le réveille de force.

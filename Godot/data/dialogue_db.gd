@@ -360,6 +360,10 @@ static func lines(id: StringName) -> Array:
 				{"flag": &"found_journal_16"},
 				{"who": CHLOE, "text": "(« Je m'entraîne »… Elle s'entraînait déjà pour moi.)"},
 			]
+	# (chapter 6 first: its « monts_bloques » — the warm coat — replaces the Côte's once chapter 5 is over)
+	var monts: Array = DialogueMonts.lines(id)   # chapter 6 (data/dialogue_monts.gd)
+	if not monts.is_empty():
+		return monts
 	var desert: Array = DialogueDesert.lines(id)   # chapter 4 (data/dialogue_desert.gd)
 	if not desert.is_empty():
 		return desert
@@ -596,6 +600,7 @@ static func chatter(who: StringName) -> Array:
 				pool.append("La pluie ? Parfait pour tester l'étanchéité. Enfin, moi, je ne suis pas étanche.")
 	pool = DialogueDesert.chatter(who, pool)   # chapter 4 (data/dialogue_desert.gd)
 	pool = DialogueCote.chatter(who, pool)   # chapter 5 (data/dialogue_cote.gd)
+	pool = DialogueMonts.chatter(who, pool)   # chapter 6 (data/dialogue_monts.gd)
 	if pool.is_empty():
 		return []
 	var n := int(Game.flag(StringName("bavard_%s" % who)))
@@ -619,8 +624,11 @@ static func page_6_text() -> Array:
 
 ## Maïa, about the trunk: Chloé's own dino, or where to find one with claws.
 static func claws_text() -> String:
-	if Game.flag(&"starter") == "velociraptor":
+	var vif: Dino = Foret.vif_dino()
+	if vif and Game.party.has(vif):
 		return "Ton Velociraptor a l'air d'en avoir, des griffes. Et méfie-toi des hautes herbes : les dinos sauvages adorent s'y cacher !"
+	if vif:   # (Vif waits at the Cabinet)
+		return "Ton Velociraptor en a, des griffes… mais il attend au Cabinet. Le Pr Roc peut te l'échanger. Et méfie-toi des hautes herbes : les dinos sauvages adorent s'y cacher !"
 	return "Il te faudrait un raptor : les Velociraptor sauvages rôdent aux lisières, au crépuscule. Et méfie-toi des hautes herbes : les dinos adorent s'y cacher !"
 
 

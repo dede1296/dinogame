@@ -20,6 +20,9 @@ const ZONES := {
 	&"cote": "res://regions/cote/cote.tscn",
 	&"grottes_marines": "res://regions/cote/grottes_marines.tscn",
 	&"recif_sanctuaire": "res://regions/cote/recif_sanctuaire.tscn",
+	&"monts": "res://regions/monts/monts.tscn",
+	&"grottes_glace": "res://regions/monts/grottes_glace.tscn",
+	&"sanctuaire_givre": "res://regions/monts/sanctuaire_givre.tscn",
 	&"clos_blanc": "res://regions/essai/clos_blanc.tscn",   # zone d'essai (maison Blender + ComfyUI)
 }
 const PLAYER := preload("res://actors/player.tscn")
@@ -42,8 +45,11 @@ const RAIN_SOUND := preload("res://assets/audio/ambience/pluie.mp3")
 const RAIN_DB := -7.0   # a light rain, under the zone's ambience
 const STORM_SOUND := preload("res://assets/audio/ambience/orage.mp3")
 const STORM_DB := -4.0
-const SAND_SOUND := preload("res://assets/audio/ambience/rafale.ogg")
+const SAND_SOUND := preload("res://assets/audio/ambience/rafale-grave.ogg")   # (the old gust was 45 % above 4 kHz: too shrill)
 const SAND_DB := -5.0
+## The blizzard's deep howl (gentle snow falls without a sound of its own).
+const BLIZZARD_SOUND := preload("res://assets/audio/ambience/blizzard.ogg")
+const BLIZZARD_DB := -6.0
 ## The map: Chloé sees this far around her (tiles), checked this often (s).
 const EXPLORE_RADIUS := 11.0
 const EXPLORE_EVERY := 0.25
@@ -95,7 +101,7 @@ func _ready() -> void:
 	Game.arrival = &""
 	_view.camera.touch_controls = $TouchControls
 	Game.phase_changed.connect(_on_phase_changed)
-	Game.weather_changed.connect(func(_w: StringName) -> void: _weather_sound())
+	Game.weather_changed.connect(_on_weather_changed)
 	_weather_sound()
 	SettingsMenu.add_open_button(hud)
 	_map_button = MapScreen.add_open_button(hud, _open_map)
@@ -137,7 +143,7 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF, story :=
 	Game.region_id = id
 	Game.zone_level = roundi((region.levels.x + region.levels.y) / 2.0)
 	Game.set_climate({"rain": region.rain_chance, "mist": region.mist_chance, "storm": region.storm_chance,
-		"sandstorm": region.sandstorm_chance})
+		"sandstorm": region.sandstorm_chance, "snow": region.snow_chance, "blizzard": region.blizzard_chance})
 
 	if region.indoor:   # no riding under a roof
 		dismount()
@@ -146,6 +152,9 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF, story :=
 	region.entities.add_child(player)
 	region.entities.add_child(companion)
 	player.surface_at = region.surface_at
+	player.snow_at = region.snow_at
+	player.cold = region.cold
+	player.slippery = region.slippery
 	player.teleport(pos)
 	companion.stand_beside(pos)
 	DIVE.on_zone_entered(self)   # under the water: her diver carries her
@@ -220,15 +229,25 @@ func goto_zone(id: StringName, spawn: StringName = &"Depart", exit: ZoneExit = n
 	_changing_zone = false
 
 
-## The habitats' roaming dinos for the current part of the day.
-func _spawn_roamers() -> void:
+## The habitats' roaming dinos for the current part of the day (`weather_only`: only the
+## habitats whose roamers depend on the weather, as it turns).
+func _spawn_roamers(weather_only := false) -> void:
 	if region == null:
 		return
 	var phase := Game.phase()
 	_reachable = _reachable_tiles()
 	for h in region.habitats():
+		if weather_only and not h.weather_bound():
+			continue
 		for w in h.spawn_roamers(phase, region.entities, _can_stand):
 			w.encountered.connect(_on_encountered)
+
+
+## The weather turned: its sound, and the dinos that come out only in some weathers.
+func _on_weather_changed(_weather: StringName) -> void:
+	_weather_sound()
+	if region and not _changing_zone and region.habitats().any(func(h: Habitat) -> bool: return h.weather_bound()):
+		_spawn_roamers(true)
 
 
 ## Free ground for a dino: ground Chloé can get to, nothing solid there, away from her.
@@ -284,6 +303,8 @@ func _weather_sound() -> void:
 			Audio.play_weather(STORM_SOUND, 3.0, STORM_DB)
 		&"sandstorm":
 			Audio.play_weather(SAND_SOUND, 3.0, SAND_DB)
+		&"blizzard":
+			Audio.play_weather(BLIZZARD_SOUND, 3.0, BLIZZARD_DB)
 		_:
 			Audio.play_weather(null, 3.0)
 

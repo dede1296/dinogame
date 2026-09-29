@@ -46,13 +46,27 @@ const ITEMS := {
 		"desc": "Un disque d'ambre bleu de nuit, une vague qui s'enroule et la fougère d'Hélène : la confiance du Mosasaure Abyssal."},
 	"masque_carton": {"name": "Masque en carton", "icon": "masque_carton", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Le masque noir que Maïa s'était découpé après la Forêt. L'élastique est cassé. Chloé le lui rendra."},
+	# Monts Gelés (chapitre 6).
+	"coeur_4": {"name": "Quatrième Cœur d'ambre", "icon": "coeur_ambre", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Froid comme une boule de neige, il bat tout doucement, comme quelqu'un qui dort. Confié par le Cryolophosaure Titan, au fond du sanctuaire de Givre."},
+	"sceau_monts": {"name": "Sceau des Monts", "icon": "sceau_monts", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Un disque d'ambre bleu pâle, un flocon et la fougère d'Hélène : la confiance du Cryolophosaure Titan."},
+	"moufles_helene": {"name": "Moufles d'Hélène", "icon": "moufles", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Rouges, tricotées main, un peu feutrées, reprisées au pouce. Bertille les avait tricotées pour Hélène. Trop grandes pour Chloé. Parfaites."},
+	# The warm coat: without it, no going up into the cold regions (the Monts, later the Cieux).
+	# Priced for what a player has at the end of chapter 5 (docs/mecaniques.md, « Les régions froides »).
+	"manteau_duvet": {"name": "Manteau de duvet", "icon": "manteau_duvet", "kind": "cle", "price": 300, "sell": 0,
+		"desc": "Cousu par Rosalie avec le duvet que les dinos à plumes perdent à la mue. Une capuche bordée de duvet, des bottes chaudes : de quoi monter là où il neige."},
 }
 
 ## shop id -> {name, keeper, stock: [item ids], sells: can Chloé sell here, tears: buys amber tears}
 const SHOPS := {
 	&"herboristerie": {"name": "Herboristerie Pervenche", "keeper": "Mémé Pervenche", "stock": ["baie", "fougere"], "sells": true},
-	&"mercerie": {"name": "Mercerie « Au Fil d'Ambre »", "keeper": "Rosalie", "stock": ["collier", "bottes"], "sells": true},
+	&"mercerie": {"name": "Mercerie « Au Fil d'Ambre »", "keeper": "Rosalie", "stock": ["collier", "bottes", "manteau_duvet"], "sells": true},
 	&"comptoir": {"name": "Comptoir d'Ambre", "keeper": "Maître Ferréol", "stock": ["boucle"], "sells": true, "tears": true},
+	# Joss on the Côte (chapter 5 on): the coats Rosalie gave him « pour ceux qui montent » (no need
+	# to cross the island back to the Havre); he takes back what Chloé no longer needs.
+	&"joss_cote": {"name": "Sellerie Bastide (en voyage)", "keeper": "Joss", "stock": ["manteau_duvet", "collier"], "sells": true},
 }
 ## What the Comptoir pays for an amber tear (Roc would rather have them…).
 const TEAR_PRICE := 40

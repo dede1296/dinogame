@@ -67,7 +67,7 @@ static func dunk(thief: Node, times: int) -> void:
 
 
 ## Écho for the scene: Chloé's lead dino when he is it, else brought on at her side (a stand-in
-## that goes away with echo_off_stage).
+## that goes away with echo_off_stage). The same for any other dino of her party a line shows.
 static func echo_on_stage(echo: Dino) -> Node2D:
 	var w = S.world()
 	if Game.lead_dino() == echo and lead() != null:

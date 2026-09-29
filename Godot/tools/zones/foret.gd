@@ -13,6 +13,7 @@ extends RefCounted
 
 const PATH := "res://regions/foret/foret.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const BORDERS := preload("res://tools/zones/borders.gd")
 const MAPS := "res://tools/maps/foret_%s.png"
 const PICKUP := "res://world/pickup.gd"
 const MOON_PAGE := "res://regions/foret/moon_page.gd"
@@ -115,6 +116,13 @@ static func build() -> Region:
 	B.hide_pebbles(root, entities, ENTRANCE, 4417, 10, 8,
 		[Vector2(75, 45), Vector2(93, 62), Vector2(34, 40), Vector2(62, 90), Vector2(111, 47), Vector2(20, 58)],
 		[Vector2(95, 91), Vector2(24, 83), Vector2(104, 16), Vector2(6, 22), Vector2(125, 63), Vector2(52, 93)])
+	# The joins (tools/zones/borders.gd; last: nothing placed before moves): the Plaines' grass and
+	# flowers thinning out into the undergrowth by the east edge, the Marais' mud and reeds by the
+	# west edge.
+	var meadow := BORDERS.cover(root, "plaines", "herbe", "terre", "res://regions/foret")
+	BORDERS.plants(root, entities, meadow, ["fleurs_roses", "fleurs_violettes", "fleurs_violettes", "hautes_herbes"], 0.3, 4471, KEEP_CLEAR)
+	var marsh := BORDERS.cover(root, "marais", "vase", "", "res://regions/foret")
+	BORDERS.plants(root, entities, marsh, ["roseaux", "roseaux", "hautes_herbes", "prele"], 0.3, 4473, KEEP_CLEAR)
 	_places(root)
 	_habitats(root)
 	return root

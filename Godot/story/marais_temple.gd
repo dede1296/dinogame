@@ -511,15 +511,19 @@ static func _trust(who: Node) -> void:
 		{"who": CHLOE, "text": "Un sur cinq. Je le garderai mieux que personne. Promis."},
 	]
 	var swimmer := _spino_kin()
+	var cast := {}   # the little fisher out of her party for the line (cast « kin »), when not her lead
 	if swimmer:
 		var at_her_side: bool = Game.lead_dino() == swimmer
 		lines.append(Act.cue({"text": "Avant de replonger, le Spinosaure renifle %s, qui se fait tout petit. Un petit pêcheur dans l'équipe d'une Varenne… Il a l'air de trouver ça très bien." % swimmer.nickname},
 			func() -> void:
-				var c := Act.lead() if at_her_side else null
+				var c: Node2D = Act.lead() if at_her_side else Act.echo_on_stage(swimmer)
+				if not at_her_side:
+					cast["kin"] = c
 				if c and is_instance_valid(who):
 					Act.lean(who, c.global_position, 14.0, 2.0)
 					Stage.bow(c, 1.8)))
 	await S.say(lines)
+	Act.echo_off_stage(cast.get("kin"))
 	Game.give_item("coeur_1")
 	Toast.say(w.get_tree(), "Objet obtenu : le premier Cœur d'ambre")
 	await S.say([Act.cue({"text": "Le Spinosaure Ancestral redescend au fond de son bassin. Il garde le temple, maintenant. Plus le Cœur : sa promesse est tenue."},

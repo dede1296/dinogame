@@ -407,6 +407,8 @@ static func _side(out: Array[Dictionary]) -> void:
 		DesertObjectives.side(out)
 	if Game.flag(&"cote_arrivee"):
 		CoteObjectives.side(out)   # chapter 5 (story/cote_objectives.gd)
+	if Game.flag(&"monts_arrivee"):
+		MontsObjectives.side(out)   # chapter 6 (story/monts_objectives.gd)
 	if Game.flag(&"havre_arrive") and not (Game.flag(&"gaspard_battu") and Game.flag(&"lilou_battu")):
 		_add(out, "relais", "Affronter les dresseurs du Relais : Gaspard (rang Bronze), puis Lilou (rang Argent).", &"havre_dore", RELAIS)
 	if Game.flag(&"boussole_volee") and not Game.flag(&"boussole_trouvee"):

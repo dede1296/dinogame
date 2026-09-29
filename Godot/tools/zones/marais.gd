@@ -13,6 +13,7 @@ extends RefCounted
 
 const PATH := "res://regions/marais/marais.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const BORDERS := preload("res://tools/zones/borders.gd")
 const MAPS := "res://tools/maps/marais_%s.png"
 const PICKUP := "res://world/pickup.gd"
 const MOON_PAGE := "res://regions/foret/moon_page.gd"
@@ -101,6 +102,13 @@ static func build() -> Region:
 			Vector2(62, 62), Vector2(10, 16)],
 		[Vector2(110, 44), Vector2(68, 15), Vector2(106, 86), Vector2(72, 44), Vector2(48, 26), Vector2(8, 44),
 			Vector2(18, 84), Vector2(66, 80)], true)
+	# The joins (tools/zones/borders.gd; last: nothing placed before moves): the Forêt's undergrowth
+	# and ferns by the east edge; by the north edge, the cracked mud the Désert begins with (its
+	# corridor) in patches and its dry scrub (a short band: « le Marais s'arrête d'un coup »).
+	var forest := BORDERS.cover(root, "foret", "sous_bois", "terre", "res://regions/marais")
+	BORDERS.plants(root, entities, forest, ["fougeres", "fougeres", "fougeres", "champignons", "souche"], 0.3, 5131, KEEP_CLEAR)
+	var dry := BORDERS.cover(root, "desert", "vase", "", "res://regions/marais")
+	BORDERS.plants(root, entities, dry, ["buisson_sec", "roseaux_secs", "roseaux_secs"], 0.3, 5133, KEEP_CLEAR)
 	_places(root)
 	_habitats(root)
 	return root

@@ -48,6 +48,13 @@ const PATHS := {
 	&"ichthyosaurus": "res://data/species/ichthyosaurus.tres",
 	&"elasmosaurus": "res://data/species/elasmosaurus.tres",
 	&"mosasaure_abyssal": "res://data/species/mosasaure_abyssal.tres",
+	# Monts Gelés
+	&"pachyrhinosaurus": "res://data/species/pachyrhinosaurus.tres",
+	&"edmontosaurus": "res://data/species/edmontosaurus.tres",
+	&"leaellynasaura": "res://data/species/leaellynasaura.tres",
+	&"minmi": "res://data/species/minmi.tres",
+	&"nanuqsaurus": "res://data/species/nanuqsaurus.tres",
+	&"cryolophosaure_titan": "res://data/species/cryolophosaure_titan.tres",
 }
 
 static var _cache: Dictionary = {}

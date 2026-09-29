@@ -14,6 +14,7 @@ extends RefCounted
 
 const PATH := "res://regions/desert/desert.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const BORDERS := preload("res://tools/zones/borders.gd")
 const MAPS := "res://tools/maps/desert_%s.png"
 const PICKUP := "res://world/pickup.gd"
 const STORY_PROP := "res://world/story_prop.gd"
@@ -110,6 +111,10 @@ static func build() -> Region:
 	_places(root)
 	_habitats(root)
 	_vivants(root, entities)
+	# The join with the Marais (south edge): its mud in patches over the rock and the sand, a few of
+	# its green reeds and ferns (tools/zones/borders.gd; last: nothing placed before moves).
+	var marsh := BORDERS.cover(root, "marais", "vase", "terre", "res://regions/desert")
+	BORDERS.plants(root, entities, marsh, ["roseaux", "roseaux", "fougeres", "hautes_herbes"], 0.25, 5261, KEEP_CLEAR)
 	return root
 
 

@@ -24,6 +24,11 @@ const CHARS := "res://assets/art/characters/%s.png"
 ## The côte's own music and battle picture when they exist; meanwhile the Plaines' (sea, meadows).
 const MUSIC := ["res://assets/audio/music/cote.ogg", "res://assets/audio/music/plaines.ogg"]
 const BACKDROP := ["res://assets/art/battle/cote.jpg", "res://assets/art/battle/plaines.jpg"]
+## A few light patches of snow along the east edge, where the Côte meets the Monts Gelés (the
+## cover layer, Region.cover_*: tools/maps/cote_neige.png, made by gen-monts.mjs, 0.3 at most).
+const SNOW_TEX := "res://assets/art/ground/neige.png"
+const SNOW_MAP := "res://tools/maps/cote_neige.png"
+const SNOW_RES := "res://regions/cote/cote_neige.res"
 const ENTRANCE := Vector2i(19, 98)
 const SEED := 5281
 
@@ -90,6 +95,12 @@ static func build() -> Region:
 	root.mist_chance = 0.12
 	root.storm_chance = 0.05
 	root.sandstorm_chance = 0.0
+	if ResourceLoader.exists(SNOW_TEX) and FileAccess.file_exists(ProjectSettings.globalize_path(SNOW_MAP)):
+		root.cover_tex = load(SNOW_TEX)
+		var dose := Image.load_from_file(ProjectSettings.globalize_path(SNOW_MAP))
+		dose.convert(Image.FORMAT_L8)
+		ResourceSaver.save(dose, SNOW_RES)
+		root.cover_data = load(SNOW_RES)
 	var entities: Node2D = root.get_node("Entities")
 	_scatter(root, entities)
 	_landmarks(root, entities)

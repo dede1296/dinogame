@@ -1,11 +1,12 @@
 class_name Player
 extends CharacterBody2D
 ## Chloé: analog top-down movement (keyboard, gamepad or touch joystick), walk animation,
-## footsteps by ground type, interaction with what is in front of her. She can ride a big
+## footsteps by ground type (in the snow and on the ice too), interaction with what is in front of her. She can ride a big
 ## dino (Monture, with Joss's saddle): faster, sitting on its back (the companion carries her).
 ## With the swimming vest and a grown swimmer, she swims across deep water on its back (Swim):
 ## it starts by itself as she walks into the water, and ends on the shore.
-## She is 1.50 m tall (Heights: her sprite's scale, her shadow).
+## She is 1.50 m tall (Heights: her sprite's scale, her shadow). On slippery ice (Region.slippery)
+## she gets going and stops slowly: she slides a little, and her mount too.
 
 signal stepped(surface: StringName)
 ## Chloé starts (true) or stops swimming, or another dino carries her in the water.
@@ -14,10 +15,18 @@ signal swim_changed(swimming: bool)
 const SPEED := 165.0
 const ACCEL := 1500.0
 const SWIM_ACCEL := 360.0      # under the sea (diving): inertia, soft turns
+## On slippery ice: from full speed to a stop (or back) in this long (s): she slides about a
+## quarter of her speed in px (~0.9 m on foot, ~1.5 m on a mount).
+const ICE_STOP_S := 0.5
 const STEP_DISTANCE := 38.0
-const RIDE_SPEED := 1.8        # × on a mount
+## Speeds (× SPEED), slowest to fastest: walking, in Rosalie's boots, running (B held, Shift),
+## running in the boots; a mount is faster still, and gallops when B is held.
+const BOOTS_SPEED := 1.2
+const RUN_SPEED := 1.45
+const BOOTS_RUN_SPEED := 1.7
+const RIDE_SPEED := 1.9
+const GALLOP_SPEED := 2.2
 const RIDE_STEP := 1.7         # its steps are longer than hers
-const BOOTS_SPEED := 1.2       # × with Rosalie's walking boots
 const INTERACT_REACH := 62.0
 const TRAIL_SPACING := 6.0
 const TRAIL_LENGTH := 48
@@ -31,9 +40,34 @@ const FOOTSTEPS: Array[AudioStream] = [
 	preload("res://assets/audio/footsteps/footstep02.ogg"), preload("res://assets/audio/footsteps/footstep03.ogg"),
 	preload("res://assets/audio/footsteps/footstep04.ogg"), preload("res://assets/audio/footsteps/footstep05.ogg"),
 ]
+## On snowy ground (a cold region, Region.cold): steps crunching softly in the snow; on the ice,
+## the hard step played lower and duller, and every CRACK_EVERY steps or so (at random) a faint
+## groan of the ice.
+const SNOW_STEPS: Array[AudioStream] = [
+	preload("res://assets/audio/footsteps/neige00.ogg"), preload("res://assets/audio/footsteps/neige01.ogg"),
+	preload("res://assets/audio/footsteps/neige02.ogg"), preload("res://assets/audio/footsteps/neige03.ogg"),
+	preload("res://assets/audio/footsteps/neige04.ogg"), preload("res://assets/audio/footsteps/neige05.ogg"),
+]
+const ICE_CRACKS: Array[AudioStream] = [
+	preload("res://assets/audio/footsteps/glace_craque00.ogg"), preload("res://assets/audio/footsteps/glace_craque01.ogg"),
+	preload("res://assets/audio/footsteps/glace_craque02.ogg"),
+]
+const ICE_PITCH := 0.8
+const CRACK_EVERY := Vector2i(4, 6)
+## Step levels (dB) by kind (see step_kind): softer on grass, crisper on the path; the snow's crunch
+## lasts longer, so it is played lower; a crack lower still. On a mount, MOUNT_STEP_DB louder.
+const STEP_DB := {&"grass": -13.0, &"path": -8.0, &"snow": -15.0, &"ice": -11.0, &"crack": -17.0}
+const MOUNT_STEP_DB := 4.0
 
 ## Asked for the ground type under a position (set by the world, from the region).
 var surface_at: Callable
+## Asked how thick the snow lies at a position (Region.snow_at: 0–1, -1 without a snow layer).
+var snow_at: Callable
+## A cold region (Region.cold, set by the world): steps on the ice (and in the snow without a
+## cover layer); her coat (Outfits).
+var cold := false
+## Its ice ("sand" tiles) is slippery (Region.slippery, set by the world).
+var slippery := false
 ## Recent positions, oldest first: the companion walks in Chloé's footsteps.
 var trail: PackedVector2Array = []
 var facing := Vector2.DOWN
@@ -50,6 +84,8 @@ var diving := false
 var _step_travel := 0.0
 var _push_time := 0.0      # walking against water she cannot swim in (s)
 var _water_told := false   # …and told why, in this zone
+var _to_crack := CRACK_EVERY.x   # steps on the ice before the next crack
+var _sliding := false            # gliding on over the ice, feet still (no input)
 
 
 func _ready() -> void:
@@ -72,8 +108,11 @@ func _physics_process(delta: float) -> void:
 	if can_move():
 		input = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	_update_water_mask()
-	# (under the sea her diver glides: slow to start, slow to stop, wide turns)
-	velocity = velocity.move_toward(input * top_speed(), (SWIM_ACCEL if diving else ACCEL) * delta)
+	# (under the sea her diver glides: slow to start, slow to stop, wide turns; on the ice she slides)
+	var on_ice := _on_slippery_ice()
+	var accel := SWIM_ACCEL if diving else top_speed() / ICE_STOP_S if on_ice else ACCEL
+	velocity = velocity.move_toward(input * top_speed(), accel * delta)
+	_sliding = on_ice and input == Vector2.ZERO and velocity.length() > 12.0
 	var before := global_position
 	move_and_slide()
 	var moved := global_position.distance_to(before)
@@ -85,11 +124,25 @@ func _physics_process(delta: float) -> void:
 
 
 func top_speed() -> float:
+	var run := running()
 	if mount:
-		return SPEED * RIDE_SPEED
+		return SPEED * (GALLOP_SPEED if run else RIDE_SPEED)
 	if swimmer:
 		return SPEED * SWIM.SPEED
-	return SPEED * (BOOTS_SPEED if Game.item_count("bottes") > 0 else 1.0)
+	var boots := Game.item_count("bottes") > 0
+	if run:
+		return SPEED * (BOOTS_RUN_SPEED if boots else RUN_SPEED)
+	return SPEED * (BOOTS_SPEED if boots else 1.0)
+
+
+## B held (the touch button, Escape) or Shift: she runs, her mount gallops.
+func running() -> bool:
+	return Input.is_action_pressed(&"run") or Input.is_action_pressed(&"cancel")
+
+
+## On slippery ice (Region.slippery: its "sand" tiles), on foot or on her mount.
+func _on_slippery_ice() -> bool:
+	return slippery and not diving and swimmer == null and surface_at.is_valid() and surface_at.call(global_position) == &"sand"
 
 
 ## The dino carrying Chloé (her mount, or her swimmer in the water), or null: on her feet.
@@ -170,12 +223,13 @@ func _animate(input: Vector2) -> void:
 		return
 	var dir := SheetFrames.direction_name(facing)
 	if has_meta(&"pose"):   # a pose of a scene (Stage.pose), held, turned where she looks
-		sprite.play(Outfits.pose_anim(get_meta(&"pose"), dir))
+		sprite.play(Outfits.pose_anim(get_meta(&"pose"), dir, get_meta(&"pose_look", "")))
 		return
-	var look := Outfits.walk_look()   # (her accessories: Outfits)
-	if speed > 12.0:
+	var look := Outfits.walk_look(self)   # (her accessories: Outfits)
+	if speed > 12.0 and not _sliding:
 		sprite.play(StringName(look + "walk_" + dir))
-		sprite.speed_scale = clampf(speed / top_speed(), 0.5, 1.2)
+		# Quicker steps when faster, but less than the speed (running: longer strides, not a flurry).
+		sprite.speed_scale = clampf(sqrt(speed / SPEED), 0.5, 1.3)
 	else:
 		sprite.play(StringName(look + "idle_" + dir))
 
@@ -191,11 +245,41 @@ func _track(moved: float) -> void:
 	if _step_travel >= STEP_DISTANCE * (RIDE_STEP if mount else SWIM.STROKE if swimmer else 1.0):
 		_step_travel = 0.0
 		var surface: StringName = surface_at.call(global_position) if surface_at.is_valid() else &"grass"
-		# Softer, lower steps on grass; crisper on the dirt path; none while swimming.
-		var on_path := surface == &"path"
-		if not swimmer:
-			Audio.play_sfx(FOOTSTEPS.pick_random(), (-8.0 if on_path else -13.0) + (4.0 if mount else 0.0), 0.08)
+		if not swimmer and not _sliding:   # (none while swimming, nor sliding on)
+			_play_step(step_kind(surface, _on_snow(), cold))
 		stepped.emit(surface)
+
+
+## The kind of step on `surface` (Region.surface_at): &"ice" on the "sand" of a cold zone (`icy`),
+## &"snow" where the snow lies (`on_snow`), else &"path" on the path, &"grass" elsewhere.
+static func step_kind(surface: StringName, on_snow: bool, icy := false) -> StringName:
+	if icy and surface == &"sand":
+		return &"ice"
+	if on_snow:
+		return &"snow"
+	return &"path" if surface == &"path" else &"grass"
+
+
+## Does the snow lie under her feet? Where the zone has a cover layer, where it is thick
+## (Region.snow_at over 0.5); in a cold zone without one, everywhere.
+func _on_snow() -> bool:
+	var cover: float = snow_at.call(global_position) if snow_at.is_valid() else -1.0
+	return cover > 0.5 if cover >= 0.0 else cold
+
+
+func _play_step(kind: StringName) -> void:
+	var lift := MOUNT_STEP_DB if mount else 0.0
+	match kind:
+		&"snow":
+			Audio.play_sfx(SNOW_STEPS.pick_random(), STEP_DB[kind] + lift, 0.08)
+		&"ice":
+			Audio.play_sfx(FOOTSTEPS.pick_random(), STEP_DB[kind] + lift, 0.05, ICE_PITCH)
+			_to_crack -= 1
+			if _to_crack <= 0:
+				_to_crack = randi_range(CRACK_EVERY.x, CRACK_EVERY.y)
+				Audio.play_sfx(ICE_CRACKS.pick_random(), STEP_DB[&"crack"] + lift, 0.08)
+		_:
+			Audio.play_sfx(FOOTSTEPS.pick_random(), STEP_DB[kind] + lift, 0.08)
 
 
 ## Interacts with the closest interactable in front of Chloé (group "interactable",

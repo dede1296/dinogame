@@ -4,9 +4,11 @@ extends RefCounted
 ## an accessory, or in another position than walking. Drawn at the scale of the person's base
 ## sheet (tools/art-jobs/variantes.mjs), so they join the same SpriteFrames and keep its sprite
 ## scale. Which picture is shown:
-## - Chloé on foot: in Rosalie's walking boots once she has them (walk_look);
+## - Chloé on foot: in her down coat in a cold region (Region.cold: the Monts) once she has it,
+##   else in Rosalie's walking boots once she has them (walk_look);
 ## - Chloé carried (Saddle): with Joss's mask under the sea (Player.diving), with the swimming
-##   vest on a swimmer's back in the water, else as she is (saddle_look);
+##   vest on a swimmer's back in the water, in her coat in a cold region, else as she is
+##   (saddle_look);
 ## - a pose of a scene (Stage.pose): crouching, swimming on her own…, held until released,
 ##   turned where the actor looks (Player._animate);
 ## - another look for a scene (Stage.dress): Joss's jar at the lagoon.
@@ -17,11 +19,17 @@ const DIR := "res://assets/art/characters/%s.png"
 const BOOTS := "bottes:"
 const BOOTS_ITEM := "bottes"
 const BOOTS_SHEET := "chloe_bottes"
+## In a cold region: her down coat (hood lined with down, warm boots; the key item), on foot
+## (chloe.png's grid) and in the saddle. Not drawn yet: as she is.
+const COAT := "manteau:"
+const COAT_ITEM := "manteau_duvet"
+const COAT_SHEET := "chloe_manteau"
+const COAT_POSE := "manteau_"   # (her poses of a scene in the coat: see POSES "coat")
 ## In the saddle: prefixes of her ride poses (Saddle.POSES) with an accessory, and their sheets
-## (chloe_selle.png's grid).
+## (chloe_selle.png's grid; one not drawn yet is left out).
 const MASK := "masque:"
 const VEST := "gilet:"
-const SADDLE_SHEETS := {MASK: "chloe_selle_masque", VEST: "chloe_selle_gilet"}
+const SADDLE_SHEETS := {MASK: "chloe_selle_masque", VEST: "chloe_selle_gilet", COAT: "chloe_selle_manteau"}
 ## Poses drawn for a person (base sheet's name): pose -> its sheet, grid, the frames of each
 ## direction (down, left, right, up), fps; `afloat`: share of the drawing under the water line
 ## (on deep water, the picture is set at the surface).
@@ -30,19 +38,28 @@ const SADDLE_SHEETS := {MASK: "chloe_selle_masque", VEST: "chloe_selle_gilet"}
 ## &"main": Chloé reaching one arm forward, palm open (offering her hand). &"grimpe": Chloé
 ## climbing onto a rock just in front of her (knee up, hands pressed down; draw the rock separately,
 ## she is drawn as if it were invisible). Maïa's &"accroupi": kneeling on one knee, like
-## `chloe_accroupie`.
+## `chloe_accroupie`. `coat`: the same pose in her down coat (same grid), shown in a cold region
+## once she has it (when drawn).
 const POSES := {
 	"chloe": {
-		&"accroupi": {"sheet": "chloe_accroupie", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+		&"accroupi": {"sheet": "chloe_accroupie", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]],
+			"coat": "chloe_manteau_accroupie"},
 		&"nage": {"sheet": "chloe_nage", "cols": 4, "rows": 2, "frames": [[0, 4], [1, 5], [2, 6], [3, 7]], "fps": 2.5,
 			"afloat": 0.48},
 		&"assis": {"sheet": "chloe_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
-		&"main": {"sheet": "chloe_main", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+		&"main": {"sheet": "chloe_main", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]],
+			"coat": "chloe_manteau_main"},
 		&"grimpe": {"sheet": "chloe_grimpe", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
 	},
 	"maia": {
 		&"assis": {"sheet": "maia_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
 		&"accroupi": {"sheet": "maia_accroupi", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+	},
+	# Her own coat (AJOUT du 29/09) : once tools/zones/monts.gd gives her the maia_manteau sheet as
+	# her base, Outfits.person() reads that sheet's name ("maia_manteau"), so her poses at the Monts
+	# need their own entry here (same format as "maia").
+	"maia_manteau": {
+		&"assis": {"sheet": "maia_manteau_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
 	},
 	"tante_sirocco": {&"assis": {"sheet": "tante_sirocco_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"roc": {&"assis": {"sheet": "roc_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
@@ -58,17 +75,24 @@ const DIRS := ["down", "left", "right", "up"]
 
 # ------------------------------------------------------------------ Chloé's accessories
 
-## Adds her looks on foot to her frames (bottes:walk_<dir>, bottes:idle_<dir>).
+## Adds her looks on foot to her frames (bottes:walk_<dir>, bottes:idle_<dir>; manteau:… once
+## drawn).
 static func dress_chloe(frames: SpriteFrames, fps: float) -> void:
 	_merge(frames, SheetFrames.character(load(DIR % BOOTS_SHEET), fps), BOOTS)
+	if drawn(COAT_SHEET):
+		_merge(frames, SheetFrames.character(load(DIR % COAT_SHEET), fps), COAT)
 
 
-## The prefix of her walk and idle animations: in the boots once she has them.
-static func walk_look() -> String:
+## The prefix of her walk and idle animations: her coat in a cold region (Player.cold), else the
+## boots once she has them.
+static func walk_look(player: Player = null) -> String:
+	if wears_coat(player) and drawn(COAT_SHEET):
+		return COAT
 	return BOOTS if Game.item_count(BOOTS_ITEM) > 0 else ""
 
 
-## The prefix of her ride poses: the mask under the sea, the vest on a swimmer's back.
+## The prefix of her ride poses: the mask under the sea, the vest on a swimmer's back, the coat in
+## a cold region.
 static func saddle_look(player: Player) -> String:
 	if player == null:
 		return ""
@@ -76,13 +100,27 @@ static func saddle_look(player: Player) -> String:
 		return MASK
 	if player.swimmer and player.mount == null:
 		return VEST
+	if wears_coat(player) and drawn(SADDLE_SHEETS[COAT]):
+		return COAT
 	return ""
+
+
+## In a cold region with her down coat.
+static func wears_coat(player: Player) -> bool:
+	return player != null and player.cold and Game.item_count(COAT_ITEM) > 0
+
+
+## Is that picture of characters/ there (a variant not drawn yet is left out)?
+static func drawn(sheet: String) -> bool:
+	return ResourceLoader.exists(DIR % sheet)
 
 
 ## Adds the ride poses with an accessory to `frames` (masque:<pose>, gilet:<pose>): `poses`
 ## are the columns of the saddle sheets.
 static func add_saddle_looks(frames: SpriteFrames, poses: Array) -> void:
 	for look: String in SADDLE_SHEETS:
+		if not drawn(SADDLE_SHEETS[look]):
+			continue
 		var anims := {}
 		for i in poses.size():
 			anims[StringName(look + String(poses[i]))] = {"frames": [i], "fps": 1.0}
@@ -106,11 +144,13 @@ static func has_pose(actor, pose_name: StringName) -> bool:
 	return (POSES.get(person(actor), {}) as Dictionary).has(pose_name)
 
 
-static func pose_anim(pose_name: StringName, dir: String) -> StringName:
-	return StringName("pose_%s_%s" % [pose_name, dir])
+## The animation of a pose turned `dir`; `look`: in another look (COAT_POSE: her coat).
+static func pose_anim(pose_name: StringName, dir: String, look := "") -> StringName:
+	return StringName("pose_%s%s_%s" % [look, pose_name, dir])
 
 
-## Holds `pose_name` on the actor, turned as it looks; &"" releases it. False when not drawn.
+## Holds `pose_name` on the actor, turned as it looks (Chloé in her coat when she wears it and
+## the pose is drawn so: POSES "coat"); &"" releases it. False when not drawn.
 static func pose(actor, pose_name: StringName) -> bool:
 	var sprite := Stage.sprite_of(actor) as AnimatedSprite2D
 	if sprite == null:
@@ -121,21 +161,24 @@ static func pose(actor, pose_name: StringName) -> bool:
 	var def: Dictionary = (POSES.get(person(actor), {}) as Dictionary).get(pose_name, {})
 	if def.is_empty():
 		return false
-	_add_pose(sprite.sprite_frames, pose_name, def)
+	var look := COAT_POSE if actor is Player and wears_coat(actor) and drawn(def.get("coat", "")) else ""
+	_add_pose(sprite.sprite_frames, pose_name, def, look)
 	var dir := _facing(actor, sprite)
 	(actor as Node).set_meta(&"pose", pose_name)
-	sprite.play(pose_anim(pose_name, dir))
+	(actor as Node).set_meta(&"pose_look", look)
+	sprite.play(pose_anim(pose_name, dir, look))
 	_float(actor, sprite, float(def.get("afloat", -1.0)))
 	return true
 
 
-static func _add_pose(frames: SpriteFrames, pose_name: StringName, def: Dictionary) -> void:
-	if frames.has_animation(pose_anim(pose_name, "down")):
+static func _add_pose(frames: SpriteFrames, pose_name: StringName, def: Dictionary, look := "") -> void:
+	if frames.has_animation(pose_anim(pose_name, "down", look)):
 		return
 	var anims := {}
 	for i in DIRS.size():
-		anims[pose_anim(pose_name, DIRS[i])] = {"frames": def["frames"][i], "fps": def.get("fps", 1.0)}
-	_merge(frames, SheetFrames.build(load(DIR % def["sheet"]), def["cols"], def["rows"], anims), "")
+		anims[pose_anim(pose_name, DIRS[i], look)] = {"frames": def["frames"][i], "fps": def.get("fps", 1.0)}
+	var sheet: String = def["coat"] if look == COAT_POSE else def["sheet"]
+	_merge(frames, SheetFrames.build(load(DIR % sheet), def["cols"], def["rows"], anims), "")
 
 
 static func _facing(actor, sprite: AnimatedSprite2D) -> String:
@@ -174,6 +217,7 @@ static func _release(actor, sprite: AnimatedSprite2D) -> void:
 		return
 	var dir := _facing(actor, sprite)
 	node.remove_meta(&"pose")
+	node.remove_meta(&"pose_look")
 	if node.has_meta(&"pose_afloat"):
 		node.set_meta(&"cut_out", node.get_meta(&"pose_afloat"))
 		node.remove_meta(&"pose_afloat")

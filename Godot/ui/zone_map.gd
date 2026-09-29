@@ -30,6 +30,7 @@ const ZONE_NAMES := {
 	&"temple_englouti": "Temple englouti", &"desert": "Désert Aride",
 	&"sanctuaire_vents": "Sanctuaire des Vents", &"cote": "Côte Préhistorique",
 	&"grottes_marines": "Grottes marines", &"recif_sanctuaire": "Récif du Sanctuaire", &"monts": "Monts Gelés",
+	&"grottes_glace": "Grottes de glace", &"sanctuaire_givre": "Sanctuaire de Givre", &"cieux": "Cieux Éternels",
 }
 
 var region: Region

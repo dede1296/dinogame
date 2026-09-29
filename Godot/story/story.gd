@@ -25,6 +25,7 @@ static func on_zone_entered(zone: StringName) -> void:
 
 
 static func _on_zone_entered(zone: StringName) -> void:
+	Monts.update_access()   # (the way up to the Monts: end of chapter 5 and a warm coat; old saves too)
 	match zone:
 		&"port_ambre":
 			if not Game.flag(&"prologue_arrived") and not Game.flag(&"prologue_done"):
@@ -59,6 +60,13 @@ static func _on_zone_entered(zone: StringName) -> void:
 			await CoteGrottes.arrival()
 		&"recif_sanctuaire":
 			await CoteRecif.arrival()
+		# Chapter 6, the Monts Gelés (story/monts*.gd)
+		&"monts":
+			await Monts.arrival()
+		&"grottes_glace":
+			await MontsGrottes.arrival()
+		&"sanctuaire_givre":
+			await MontsSanctuaire.arrival()
 
 
 ## The time of day changed while in zone `zone` (a scene that only happens at night…).
@@ -78,6 +86,8 @@ static func _on_phase_changed(zone: StringName) -> void:
 		await Desert.on_phase(zone)   # the dusk scene towards the Côte, if it is still to play
 	elif zone == &"cote":
 		await Cote.on_phase(zone)   # the first night: the boat without a lantern
+	elif zone == &"monts":
+		await Monts.on_phase(zone)   # the first night: the forges' red lights (page 30)
 
 
 ## A scene started by talking to someone (`who` = the Npc or DinoNpc).
@@ -100,6 +110,7 @@ static func _run(event: StringName, who: Node) -> void:
 			said = await MaraisSuite.roc() or said
 			said = await Desert.roc() or said
 			said = await Cote.roc() or said
+			said = await MontsFin.roc() or said
 			if not said and not healed and Game.flag(&"prologue_done"):
 				await _roc_chat()
 		&"maia":
@@ -117,11 +128,15 @@ static func _run(event: StringName, who: Node) -> void:
 		&"shop_herboristerie":
 			await Havre.shop(&"herboristerie", who)
 		&"shop_mercerie":
+			await MontsFin.rosalie(who)   # (her warm coat in the window, chapter 6)
 			await Havre.shop(&"mercerie", who)
+			Monts.update_access()
 		&"ferreol":
 			await Havre.ferreol()
 		&"joss":
-			if Game.flag(&"cote_arrivee"):   # chapter 5: he goes back and forth to the Côte
+			if Game.flag(&"monts_arrivee"):   # chapter 6: Maïa at his place, then the flying harness
+				await MontsFin.joss_havre()
+			elif Game.flag(&"cote_arrivee"):   # chapter 5: he goes back and forth to the Côte
 				await CoteLagon.joss_havre()
 			elif Game.flag(&"maia_defi_2"):   # chapter 3: he also has his cabin in the Marais
 				await Marais.joss_havre()
@@ -134,6 +149,9 @@ static func _run(event: StringName, who: Node) -> void:
 		&"dresseur_lilou":
 			await Havre.trainer(&"lilou", who)
 		&"maia_havre":
+			if Game.flag(&"maia_alliee"):   # chapter 6: they are a team now
+				await MontsFin.maia_havre(who)
+				return
 			if Game.flag(&"maia_enfuie"):   # chapter 5: she ran away from the lookout
 				await CoteFin.maia_havre(who)
 				return
@@ -218,7 +236,8 @@ static func _run(event: StringName, who: Node) -> void:
 		&"maia_falaises":
 			await Cote.maia_falaises(who)
 		&"joss_cote":
-			await CoteLagon.joss(who)
+			if not await MontsFin.joss_coat(who):   # (chapter 6: the warm coats Rosalie gave him to sell)
+				await CoteLagon.joss(who)
 		&"nid_tortues":
 			await CoteLagon.tortues(who)
 		&"cache_arrivee":
@@ -237,6 +256,33 @@ static func _run(event: StringName, who: Node) -> void:
 			await CoteFin.maia(who)
 		&"boite_helene":
 			await CoteFin.boite(who)
+		# Chapter 6, the Monts Gelés (story/monts.gd, monts_grottes.gd, monts_col.gd, monts_sanctuaire.gd, monts_fin.gd)
+		&"bertille":
+			await Monts.bertille(who)
+		&"grelot":
+			await Monts.grelot(who)
+		&"glacier_arrivee":
+			await Monts.glacier(who)
+		&"grottes_glace_reserve":
+			await MontsGrottes.reserve_seen(who)
+		&"dame_suie_monts", &"suie_monts":
+			await MontsGrottes.dame_suie(who)
+		&"dormeurs":
+			await MontsGrottes.dormeurs(who)
+		&"oeufs_glace":
+			await MontsGrottes.oeufs(who)
+		&"traineau_suie":
+			await MontsGrottes.traineau(who)
+		&"roc_col", &"blizzard_col":
+			await MontsCol.roc_col(who)
+		&"porte_givre":
+			await MontsCol.porte_givre(who)
+		&"cryolophosaure_titan", &"titan_givre":
+			await MontsSanctuaire.titan(who)
+		&"coeur_givre":
+			await MontsSanctuaire.coeur(who)
+		&"maia_monts":
+			await MontsFin.maia(who)
 		_:
 			push_error("Scène inconnue : %s" % event)
 
@@ -395,7 +441,8 @@ static func ground_near(px: Vector2, max_tiles := 6) -> Vector2:
 ## The name each character's lines are signed with, by picture (so that a character a scene
 ## brings along faces whoever it talks to: the dialogue box finds it by that name).
 const SPEAKERS := {"roc": "Prof. Roc", "maia": "Maïa", "isaure": "Isaure", "brac": "Brac", "joss": "Joss",
-	"dame_suie": "Dame Suie", "masque": "Le Masque", "ferreol": "Maître Ferréol", "tante_sirocco": "Tante Sirocco"}
+	"dame_suie": "Dame Suie", "masque": "Le Masque", "ferreol": "Maître Ferréol", "tante_sirocco": "Tante Sirocco",
+	"bertille": "Bertille"}
 
 
 ## A character only a scene needs (a passer-by, someone at night): added to the zone, not

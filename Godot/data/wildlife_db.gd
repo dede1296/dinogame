@@ -14,7 +14,8 @@ class_name WildlifeDB
 ##           circle (circles over the water), fall (a leaf), swim, drift (under the sea, or
 ##           floating on it with `surface`)
 ##   speed   m/s (run: fleeing);  height [min, max] m above the ground (the water, the sea floor)
-##   when    DAY, NIGHT, DUSK bits;  rain  still out in the rain (or the sandstorm)
+##   when    DAY, NIGHT, DUSK bits;  rain  still out in the rain (or the sandstorm, or the
+##           blizzard; gentle snow sends nobody home)
 ##   on      ground it may be over (Region.surface_at; empty: any);  near / far {surface: m}:
 ##           within / beyond that distance of it (&"land": any ground that is not water)
 ##   flee    m: runs (swims, hops) away when Chloé comes this close;  wait [min, max] s resting
@@ -23,6 +24,7 @@ class_name WildlifeDB
 ##   surface floating on the water (not under it)
 ## EFFECTS — particles, no picture: fireflies, plankton, glow-worms, drops, snow, embers…
 ##   emit    box (around Chloé), water (on the water near her), walls (on the cave's walls)
+##   snowfall false: gives way while snow falls (the weather's own flakes take over: Snowfall)
 ## PLACES — what lives where: {kind: how many} (at the best graphics; Quality.scaled lowers it),
 ## or {kind: {count, and what differs here}}; "effects": {effect: what differs here}.
 
@@ -139,9 +141,20 @@ const PLACES := {
 		"effects": {&"vers_luisants": {"colour": Color(0.4, 0.8, 1.0)}, &"gouttes": {}}},
 	&"recif": {"kinds": {&"banc": 4, &"meduse": 3}},
 	&"cabinet": {},
-	# Places to come (chapters 6 to 9).
+	# The Monts Gelés (the « neige » profile): a small furry beast out in the snow, a pterosaur high
+	# up by day; a few flakes blown about in fine weather (when it snows, the weather's own).
+	&"monts": {"kinds": {&"mammifere": {"count": 2, "when": ALWAYS, "on": LAND, "glow": SNOW_LIGHT}, &"ptero_vol": 1},
+		"effects": {&"flocons": {"amount": 60, "snowfall": false}}},
+	# The ice caves: melt water dripping, the ice glinting on the walls (no glow-worm in the cold).
+	&"grotte_glace": {"effects": {&"gouttes": {"amount": 6},
+		&"vers_luisants": {"colour": Color(0.75, 0.92, 1.0), "amount": 36, "size": 0.07, "blink": true}}},
+	# The frost sanctuary: fine frost drifting down from the vault, glinting.
+	&"sanctuaire_givre": {"effects": {&"flocons": {"amount": 40, "size": 0.04, "speed": [0.05, 0.18], "above": 4.0,
+		"colour": Color(0.85, 0.95, 1.0, 0.8), "glow": true, "blink": true},
+		&"vers_luisants": {"colour": Color(0.75, 0.92, 1.0), "amount": 24, "size": 0.07, "blink": true}}},
+	# Places to come (chapters 7 to 9).
 	&"neige": {"kinds": {&"mammifere": {"count": 2, "when": ALWAYS, "on": LAND, "glow": SNOW_LIGHT}},
-		"effects": {&"flocons": {}}},
+		"effects": {&"flocons": {"snowfall": false}}},
 	&"cieux": {"kinds": {&"ptero_vol": 2}, "effects": {&"duvet": {}}},
 	&"volcan": {"kinds": {&"lezard": 3, &"scarabee": 3}, "effects": {&"braises": {}, &"cendres": {}}},
 	&"apex": {"kinds": {&"libellule": 3, &"moustique": 4, &"feuille": 6},

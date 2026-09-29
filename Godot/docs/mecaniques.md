@@ -193,6 +193,31 @@ depuis leur tête ou leur flanc : leur portée grandit avec leur taille (`DinoNp
   du sable qui vole ; l'horloge montre la brume teintée d'ocre (ou `meteo_sable.png` s'il existe) ;
   le son reprend la rafale (`rafale.ogg`).
 
+### Les régions froides : le manteau de duvet
+
+**Règle du monde** : on n'entre pas dans une région froide (les **Monts Gelés** ; plus tard les **Cieux
+Éternels**) sans un **vêtement chaud**. Il s'achète : le **manteau de duvet** de Rosalie (objet
+`manteau_duvet`, « cle », icône `ui/manteau_duvet.png`), cousu avec le duvet que les dinos à plumes
+perdent à la mue (pas de fourrure : il n'y a pas de mammifères sur l'île).
+- **Où** : à la Mercerie « Au Fil d'Ambre » de Havre-Doré, en vitrine dès le début du jeu (Rosalie en
+  parle avant sa boutique : « pour là-haut, là où il neige » ; et de nouveau quand Chloé en a besoin),
+  et **sur la Côte, par Joss** (Rosalie lui en a confié « pour ceux qui montent » ; sa boutique en
+  voyage, `ItemsDB.SHOPS[&"joss_cote"]`, vend aussi des colliers et reprend ce qui ne sert plus) : même
+  prix, pour ne jamais obliger à retraverser l'île (pas encore de voyage rapide).
+- **Prix : 300 pièces.** Un vrai achat (les bottes coûtent 400), payable sans combats en boucle : en
+  fin de chapitre 5, un joueur a reçu environ 900 pièces (prime de Ferréol 200, Relais 150 et 250,
+  Sirocco 300) et en a dépensé une bonne part (selle et boucle 500, colliers, baies) ; s'il lui en
+  manque, les revanches du Relais, la revente (Joss, Ferréol, Pervenche) et les larmes d'ambre en trop
+  (Ferréol, 40 pièces) suffisent. Le texte de la sortie et l'objectif disent combien il en a.
+- **Accès** : la sortie est de la Côte vers les Monts (`tools/zones/cote.gd`, drapeau `monts_ouverts`)
+  ne s'ouvre qu'une fois le chapitre 5 fini (`maia_enfuie`) **et** le manteau acheté
+  (`Monts.update_access()`, appelé à chaque entrée de zone et après les deux boutiques). Fermée, elle
+  dit ce qui manque (`monts_bloques` : « Brrr… sans vêtement chaud, je ne ferai pas dix pas là-haut »,
+  puis où l'acheter et le prix) ; l'objectif « Un vêtement chaud » mène à Joss. On peut aussi demander à
+  Roc « Où trouver un vêtement chaud ? ». Même règle prévue pour les Cieux.
+- **Apparence** : dans une région froide, Chloé porte son manteau, à pied et en selle (`Outfits`,
+  planches `chloe_manteau*.png`).
+
 ### Capacités d'exploration
 
 Un dino de l'équipe débloque une capacité **grâce à son espèce**, sans configuration. Chaque région
@@ -614,7 +639,9 @@ l'encart ouvre la carte.
   sombres). La carte, elle, est toujours disponible (voir *La carte*).
   ✅ Dans `data/items_db.gd` : `gilet_nage` (Gilet de nage), `coeur_1` et `coeur_2` (Premier et
   Deuxième Cœur d'ambre, icône `coeur_ambre`), `sceau_foret`, `sceau_marais`, `sceau_desert`
-  (objets clés), `fossile` (objet de quête, jamais vendu).
+  (objets clés), `fossile` (objet de quête, jamais vendu). Chapitres 5 et 6 : `coeur_3`, `coeur_4`,
+  `sceau_cote`, `sceau_monts`, `masque_plongee`, `masque_carton`, `moufles_helene` (les moufles d'Hélène,
+  données par Bertille), `manteau_duvet` (acheté : voir « Les régions froides »).
 
 ## Sauvegarde
 

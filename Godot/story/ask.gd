@@ -86,12 +86,16 @@ static func answer(npc: StringName, speaker: String, topic: StringName) -> Array
 			return [{"who": speaker, "text": _lady(npc)}]
 		&"roc_nuit":
 			return [{"who": speaker, "text": _roc_night(npc)}]
+	var monts: Array = MontsAsk.answer(npc, speaker, topic)   # chapter 6 (story/monts_ask.gd)
+	if not monts.is_empty():
+		return monts
 	return DesertAsk.answer(npc, speaker, topic)   # chapter 4 (story/desert_ask.gd)
 
 
 ## A question in Chloé's words, for npc (she does not ask Roc where Roc goes).
 static func label(npc: StringName, topic: StringName) -> String:
-	return TOPICS_FOR.get(npc, {}).get(topic, TOPICS.get(topic, DesertAsk.TOPICS.get(topic, CoteAsk.TOPICS.get(topic, String(topic)))))
+	return TOPICS_FOR.get(npc, {}).get(topic, TOPICS.get(topic, DesertAsk.TOPICS.get(topic, CoteAsk.TOPICS.get(topic,
+		MontsAsk.TOPICS.get(topic, String(topic))))))
 
 
 ## The questions of the moment (chapter 2 on): where to go, the cracked wall, calming the
@@ -128,6 +132,9 @@ static func story_topics() -> Array:
 	# Chapter 5, the Côte: diving, the boat without a lantern, the reef, its guardian.
 	if Game.flag(&"cote_arrivee"):
 		out.append_array(CoteAsk.story_topics())
+	# Chapter 6, the Monts Gelés: the ice walls, the col, the guardian, the forges, the Cieux.
+	if Game.flag(&"monts_arrivee"):
+		out.append_array(MontsAsk.story_topics())
 	return out
 
 

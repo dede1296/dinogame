@@ -3,7 +3,7 @@ class_name AmbienceDB
 ##   beds:  [sound, level (0–1), follows] long recordings looped with a cross-fade;
 ##          `follows` ("sea", "fire"): the level also follows how close Chloé is to it.
 ##   calls: {ids, every: [min, max] s, vol, follows, day} short sounds now and then;
-##          `day`: silent at night and in the rain (the birds sleep, or shelter).
+##          `day`: silent at night, in the rain and the blizzard (the birds sleep, or shelter).
 ## Sounds: assets/audio/ambience/<sound>.ogg, all at the same loudness (tools/prepare-ambience.mjs).
 
 const PATH := "res://assets/audio/ambience/%s.ogg"
@@ -21,7 +21,7 @@ const AMBIENCES := {
 		"beds": [["brise", 0.45, ""], ["vagues", 0.7, "sea"], ["feu", 1.0, "fire"]],
 		"calls": [
 			{"ids": BIRDS, "every": [5.0, 14.0], "vol": 0.4, "day": true},
-			{"ids": ["rafale"], "every": [18.0, 40.0], "vol": 0.4},
+			{"ids": ["rafale-grave"], "every": [18.0, 40.0], "vol": 0.4},
 			{"ids": ["mouettes"], "every": [10.0, 24.0], "vol": 0.4, "follows": "sea"},
 		],
 	},
@@ -59,7 +59,7 @@ const AMBIENCES := {
 	&"desert": {
 		"beds": [["desert", 0.6, ""], ["feu", 1.0, "fire"]],
 		"calls": [
-			{"ids": ["rafale"], "every": [15.0, 35.0], "vol": 0.45},
+			{"ids": ["rafale-grave"], "every": [15.0, 35.0], "vol": 0.45},
 			{"ids": ["oiseau-3"], "every": [30.0, 60.0], "vol": 0.25, "day": true},
 		],
 	},
@@ -70,7 +70,7 @@ const AMBIENCES := {
 		"calls": [
 			{"ids": ["mouettes"], "every": [8.0, 20.0], "vol": 0.5, "follows": "sea"},
 			{"ids": BIRDS, "every": [9.0, 22.0], "vol": 0.3, "day": true},
-			{"ids": ["rafale"], "every": [20.0, 45.0], "vol": 0.35},
+			{"ids": ["rafale-grave"], "every": [20.0, 45.0], "vol": 0.35},
 		],
 	},
 	## The sea caves: the cave's hollow sound, the sea breathing in the tunnel (its pool touches the
@@ -83,6 +83,31 @@ const AMBIENCES := {
 	&"recif": {
 		"beds": [["eau", 0.8, ""], ["grotte", 0.35, ""]],
 		"calls": [],
+	},
+	## Monts Gelés : the cold wind always (the web's monts.mp3: a clean low wind), low gusts now
+	## and then (rafale-grave: rafale.mp3 without its hiss), a bird rarely by day. A blizzard lays
+	## its own howl on top (the world's weather sound: blizzard.ogg). Nothing above 4 kHz.
+	&"monts": {
+		"beds": [["monts", 0.7, ""], ["feu", 1.0, "fire"]],
+		"calls": [
+			{"ids": ["rafale-grave"], "every": [10.0, 24.0], "vol": 0.45},
+			{"ids": ["oiseau-3"], "every": [35.0, 70.0], "vol": 0.2, "day": true},
+		],
+	},
+	## The ice caves: the cave's hollow hum, the wind outside heard dull through the ice, melt
+	## water dripping, the ice groaning now and then (glace).
+	&"grotte_glace": {
+		"beds": [["grotte", 0.6, ""], ["monts", 0.25, ""]],
+		"calls": [
+			{"ids": ["goutte"], "every": [4.0, 11.0], "vol": 0.4},
+			{"ids": ["glace"], "every": [16.0, 36.0], "vol": 0.45},
+		],
+	},
+	## The frost sanctuary: hushed; the hum of the rock, the wind far off, the ice groaning once
+	## in a while.
+	&"sanctuaire_givre": {
+		"beds": [["grotte", 0.5, ""], ["monts", 0.15, ""]],
+		"calls": [{"ids": ["glace"], "every": [25.0, 50.0], "vol": 0.35}],
 	},
 }
 

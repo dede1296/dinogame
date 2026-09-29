@@ -16,6 +16,7 @@ class_name Desert
 const S := preload("res://story/story.gd")
 const P := preload("res://story/desert_places.gd")
 const A := preload("res://story/desert_ask.gd")
+const GESTES := preload("res://story/foret_gestes.gd")   # (stand_in: a dino of her party, out for a scene)
 const CHLOE := "Chloé"
 const SIROCCO := "Tante Sirocco"
 const MAIA := "Maïa"
@@ -123,7 +124,8 @@ static func arrival() -> void:
 	])
 	var bastion: Dino = bastion_dino()
 	if bastion and str(Game.flag(&"starter")) == "ankylosaurus" and Game.flag(&"found_journal_6"):
-		lines.append({"who": CHLOE, "text": "(« Sa mère, le Vieux Rempart, garde un canyon du Désert. » On y est, %s.)" % bastion.nickname})
+		var here := "On y est, %s." if Game.party.has(bastion) else "On y est. Si %s voyait ça."   # (else at the Cabinet)
+		lines.append({"who": CHLOE, "text": ("(« Sa mère, le Vieux Rempart, garde un canyon du Désert. » " + here + ")") % bastion.nickname})
 	lines.append({"flag": &"desert_arrivee"})
 	await S.say(lines)
 	_companion_back()
@@ -223,7 +225,9 @@ static func _sirocco_meeting(who: Node) -> void:
 		{"who": SIROCCO, "text": "Si je la connaissais ! On a déterré la moitié de ce cimetière, elle et moi. Elle cherchait les dinos qui dorment ; moi, ceux qui ne se réveilleront jamais. On n'était jamais d'accord, et on riait tout le temps."},
 		{"who": SIROCCO, "text": "Tout le monde m'appelle Tante Sirocco. Comme le vent chaud : j'arrive sans prévenir, je repars avec tout ce qui traîne, et je mets du sable partout."},
 	])
-	await S.say(_sirocco_rempart(who))
+	var cast := {}   # Bastion out of her party while she looks at him (cast « little »), when not her lead
+	await S.say(_sirocco_rempart(who, cast))
+	await _little_back(cast.get("little"))
 	await S.say(_sirocco_brac())
 	await S.say(_sirocco_fossils())
 	Game.set_flag(&"sirocco_vue")
@@ -232,12 +236,15 @@ static func _sirocco_meeting(who: Node) -> void:
 	S.lock(false)
 
 
-## Sirocco and the Vieux Rempart: she knows Bastion at a glance (his mother's shell).
-static func _sirocco_rempart(who: Node) -> Array:
+## Sirocco and the Vieux Rempart: she knows Bastion at a glance (his mother's shell). Bastion at
+## Chloé's side, or brought out of her party for it (cast « little »).
+static func _sirocco_rempart(who: Node, cast: Dictionary) -> Array:
 	var bastion: Dino = bastion_dino()
 	if bastion and Game.party.has(bastion):
-		var dino := _companion() if Game.lead_dino() == bastion else null
 		var stares := func() -> void:
+			var dino: Node2D = _little_on_stage(bastion)
+			if dino is DinoNpc:
+				cast["little"] = dino
 			if dino:
 				Stage.turn_to(who, dino.global_position)
 			_later(1.2, func() -> void: Stage.emote(who, "…"))
@@ -375,7 +382,10 @@ static func vieux_rempart(who: Node) -> void:
 			Save.save_game()
 			S.lock(false)
 			return
-		await S.say([_rempart_again(who)])
+		var cast := {}   # Bastion out of her party for the line (cast « little »), when not her lead
+		await S.say([_rempart_again(who, cast)])
+		_companion_back()
+		await _little_back(cast.get("little"))
 		return
 	var w = S.world()
 	if w == null:
@@ -420,10 +430,10 @@ static func vieux_rempart(who: Node) -> void:
 
 
 ## How far to one side of the Vieux Rempart (`who`) Chloé stands (px): further when her little one
-## walks at Chloé's side, to leave room for him between them, at his mother's snout (as long as
-## he is, DinoSize).
+## is with her (at her side, or out of her party for the scene), to leave room for him between
+## them, at his mother's snout (as long as he is, DinoSize).
 static func _room(bastion: Dino, who: Node) -> float:
-	if bastion == null or Game.lead_dino() != bastion:
+	if bastion == null or not Game.party.has(bastion):
 		return 96.0
 	var snout := absf(_head_of(who).x - (who as Node2D).global_position.x)
 	return maxf(170.0, snout + _bastion_length(bastion) * 0.8 + 30.0)
@@ -446,11 +456,12 @@ static func _beside(who: Node, dx: float, dy: float) -> Vector2:
 ## Bastion and his mother: nose to nose, the same deep rumble. When he is Chloé's own
 ## hatchling, the Ancien's page (in a tin box she kept warm under her, like an egg); when he is
 ## the stolen one, she lies down to his height until he stops being afraid. +1 heart of Lien.
+## (Bastion at Chloé's side, or brought out of her party for the scene: _little_on_stage.)
 static func _rempart_reunion(bastion: Dino, who: Node) -> void:
 	var w = S.world()
 	var mine := str(Game.flag(&"starter")) == "ankylosaurus"
 	var name := bastion.nickname
-	var dino := _companion() if Game.lead_dino() == bastion else null
+	var dino := _little_on_stage(bastion)
 	await S.say(_reunion_meet(bastion, who, dino))
 	var rumble := func() -> void:
 		cry("cuirasse", "neutre", -4.0, OLD_PITCH)
@@ -478,14 +489,16 @@ static func _rempart_reunion(bastion: Dino, who: Node) -> void:
 		var nestles := func() -> void:
 			if dino == null:
 				return
-			await _companion_walk((who as Node2D).global_position + Vector2(-14.0, 30.0), 40.0)
-			_fresh(dino)
-			_crouch(dino, 0.14, 1.0)
+			await _little_walk(dino, (who as Node2D).global_position + Vector2(-14.0, 30.0), 40.0)
+			if is_instance_valid(dino):
+				_fresh(dino)
+				_crouch(dino, 0.14, 1.0)
 		after.append(_cue({"text": "%s s'installe contre le flanc de sa mère, à l'ombre de sa carapace. Pour une fois, c'est lui qui est protégé." % name}, nestles))
 	else:
 		var nudges := func() -> void:
 			await _reach(who, Stage.chloe().global_position, 14.0, 1.0)
 			_companion_back()
+			_little_back(dino)
 		after.append_array([
 			_cue({"text": "Du bout du museau, le Vieux Rempart pousse doucement %s vers Chloé. Comme on ouvre une porte." % name}, nudges),
 			{"who": CHLOE, "text": "Vous voulez qu'il reste avec moi ? … D'accord. Je veillerai sur lui. Promis."},
@@ -493,14 +506,16 @@ static func _rempart_reunion(bastion: Dino, who: Node) -> void:
 	after.append({"flag": &"rempart_bastion_reconnu"})
 	var page: bool = not Game.flag(&"found_journal_ancien_rempart")
 	await S.say(after)
+	await _little_back(dino)
 	Game.add_bond(bastion, 1)
 	if page:
 		Toast.say(w.get_tree(), "Page de l'Ancien : le Vieux Rempart")
 
 
-## How Bastion and his mother meet, acted out when he walks at Chloé's side (`dino`): her own
-## hatchling goes up to her snout; the stolen one hides first, and she lies down for him.
-static func _reunion_meet(bastion: Dino, who: Node, dino: Companion) -> Array:
+## How Bastion and his mother meet, acted out by `dino` (at Chloé's side, or out of her party for
+## the scene): her own hatchling goes up to her snout; the stolen one hides first, and she lies
+## down for him.
+static func _reunion_meet(bastion: Dino, who: Node, dino: Node2D) -> Array:
 	var name := bastion.nickname
 	var chloe := Stage.chloe()
 	var snout := _head_of(who)
@@ -508,7 +523,7 @@ static func _reunion_meet(bastion: Dino, who: Node, dino: Companion) -> Array:
 	var meet := snout + Vector2(side * maxf(44.0, _bastion_length(bastion) * 0.4), 10.0)   # nose to nose
 	var goes := func() -> void:
 		if dino:
-			await _companion_walk(meet, 38.0)
+			await _little_walk(dino, meet, 38.0)
 			Stage.turn_to(dino, snout)   # (nose to nose, whichever side it came from)
 	if str(Game.flag(&"starter")) == "ankylosaurus":
 		return [
@@ -519,14 +534,14 @@ static func _reunion_meet(bastion: Dino, who: Node, dino: Companion) -> Array:
 	var hides := func() -> void:
 		if dino == null:
 			return
-		await _companion_walk(chloe.global_position + Vector2(-12.0, 16.0), 110.0)
+		await _little_walk(dino, chloe.global_position + Vector2(-12.0, 16.0), 110.0)
 		Stage.tremble(dino, 1.6, 2.0)
 	var steps := func() -> void:
 		if dino == null:
 			return
-		await _companion_walk(chloe.global_position.lerp(meet, 0.45), 35.0)
+		await _little_walk(dino, chloe.global_position.lerp(meet, 0.45), 35.0)
 		await S.wait(0.8)
-		await _companion_walk(meet, 35.0)
+		await _little_walk(dino, meet, 35.0)
 		Stage.turn_to(dino, snout)
 	return [
 		_cue({"text": "Le Vieux Rempart se fige. Elle ne regarde plus Chloé. Elle regarde %s." % name},
@@ -688,8 +703,9 @@ static func _the_north(who: Node) -> void:
 	await S.say(lines)
 
 
-## A short line when Chloé comes back (the next one each time), with what it shows.
-static func _rempart_again(who: Node) -> Dictionary:
+## A short line when Chloé comes back (the next one each time), with what it shows. Bastion,
+## when a line shows him, is brought out of her party for it (cast « little », given back after).
+static func _rempart_again(who: Node, cast: Dictionary) -> Dictionary:
 	var bastion: Dino = bastion_dino()
 	var chloe := Stage.chloe()
 	if Game.flag(&"sceau_desert") and not Game.flag(&"rempart_apres_sceau"):
@@ -703,16 +719,11 @@ static func _rempart_again(who: Node) -> Dictionary:
 	var n := int(Game.flag(&"rempart_n"))
 	Game.set_flag(&"rempart_n", n + 1)
 	if bastion and Game.party.has(bastion) and Game.flag(&"rempart_bastion_reconnu"):
-		var line := {"text": (REMPART_AGAIN_BASTION[n % REMPART_AGAIN_BASTION.size()] as String).replace("%s", bastion.nickname)}
-		var dino := _companion() if Game.lead_dino() == bastion else null
-		match n % REMPART_AGAIN_BASTION.size():
-			2:   # a puff of sand on him: he sneezes
-				return _cue(line, func() -> void:
-					_puff(dino.global_position if dino else _head_of(who), 12, 0.5)
-					_later(0.6, func() -> void: Stage.cry(dino, &"neutre")))
-			3:
-				return _cue(line, func() -> void: _chin_scratch(who))
-		return line
+		var k := n % REMPART_AGAIN_BASTION.size()
+		var line := {"text": (REMPART_AGAIN_BASTION[k] as String).replace("%s", bastion.nickname)}
+		if k == 3:
+			return _cue(line, func() -> void: _chin_scratch(who))
+		return _cue(line, func() -> void: _with_bastion_again(who, k, bastion, cast))
 	if bastion and not Game.party.has(bastion):
 		return _cue({"text": "Le Vieux Rempart renifle les mains de Chloé, puis regarde derrière elle. Elle cherche %s." % bastion.nickname},
 			func() -> void:
@@ -724,6 +735,25 @@ static func _rempart_again(who: Node) -> Dictionary:
 			Stage.cry(who, &"neutre")
 			Stage.rear(who, 2.6))
 	return plain
+
+
+## REMPART_AGAIN_BASTION[k] acted out, Bastion at Chloé's side (her lead) or brought out of her
+## party for the line (cast « little »): seen; asleep against his mother; a puff of sand on him,
+## and he sneezes.
+static func _with_bastion_again(who: Node, k: int, bastion: Dino, cast: Dictionary) -> void:
+	var dino := _little_on_stage(bastion)
+	if dino is DinoNpc:
+		cast["little"] = dino
+	match k:
+		1:   # against his mother, in the shade of her shell
+			if dino and is_instance_valid(who):
+				await _little_walk(dino, (who as Node2D).global_position + Vector2(-14.0, 30.0), 40.0)
+				if is_instance_valid(dino):
+					_fresh(dino)
+					_crouch(dino, 0.14, 1.0)
+		2:   # a puff of sand on him: he sneezes
+			_puff(dino.global_position if dino else _head_of(who), 12, 0.5)
+			_later(0.6, func() -> void: Stage.cry(dino, &"neutre"))
 
 
 # ------------------------------------------------------------------ Maïa at the oasis
@@ -1023,6 +1053,42 @@ static func _companion() -> Companion:
 	var w = S.world()
 	var dino = w.get("companion") if w else null
 	return dino if dino is Companion and (dino as Companion).visible else null
+
+
+## A dino of Chloé's party a scene shows (Bastion before his mother…): her lead dino at her side
+## when it is it (_companion), else brought out of her party beside her (a stand-in, given back
+## with _little_back).
+static func _little_on_stage(d: Dino) -> Node2D:
+	if d == null:
+		return null
+	if Game.lead_dino() == d:
+		return _companion()
+	var actor := GESTES.stand_in(d)
+	var chloe := Stage.chloe()
+	if actor and chloe:   # (a grown one stands clear of her, not over her)
+		var gap := maxf(38.0, DinoSize.length_px(d.species(), DinoSize.world_scale(d)) * 0.55)
+		actor.global_position = S.ground_near(chloe.global_position + Vector2(gap, 8.0), 2)
+	return actor
+
+
+## It walks to `px`: the lead dino (its own walk, until _companion_back) or its stand-in (never
+## in Chloé's way). Awaitable.
+static func _little_walk(actor, px: Vector2, speed := 70.0) -> void:
+	if not is_instance_valid(actor):
+		return
+	if actor is Companion:
+		await _companion_walk(px, speed)
+	elif actor is DinoNpc:
+		await (actor as DinoNpc).walk_to(px, speed)
+		if is_instance_valid(actor):
+			(actor as DinoNpc).collision_layer = 0
+
+
+## A stand-in (_little_on_stage) goes back into her party: it walks up to Chloé and fades away.
+## (The lead dino follows her again with _companion_back.) Awaitable.
+static func _little_back(actor) -> void:
+	if is_instance_valid(actor) and actor is DinoNpc:
+		await GESTES.stand_in_back(actor)
 
 
 ## The companion's picture changes size when the lead changes (Companion.refresh), and Stage

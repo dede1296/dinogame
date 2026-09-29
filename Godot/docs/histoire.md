@@ -746,7 +746,7 @@ finit dans le silence : chaque trouvaille resserre le fil jusqu'au nom écrit en
    soit pas vrai. » Elle s'enfuit. Caillou hésite, regarde Chloé, puis la suit au trot ; Moustique
    s'envole derrière eux. De son sac tombe le **masque en carton** qu'elle s'était fabriqué après la
    Forêt, l'élastique cassé ; le vent l'emporte vers le bord, Chloé le rattrape juste avant le vide. Les
-   Ptéranodons tournent sans un cri. « (Hélène… Tu savais.) » Pas de musique : le vent et la mer.
+   Ptéranodons tournent sans un cri. « (Hélène… Tu savais.) » Pas de musique : le vent et la mer. Puis un vent froid descend de l'est : les montagnes ont blanchi, un flocon fond sur le masque en carton (« J'irai. Même toute seule. ») : l'appel des Monts Gelés (chapitre 6).
 16. **Au Cabinet** (Roc). Avec le Sceau : Hélène appelait le Mosasaure « Minuit » ; la première fois,
    Anselme était dans la barque, malade par-dessus bord, deux fois (« Minuit a trouvé ça très
    intéressant »). Après la page 21, Chloé parle de la passe : Roc va vérifier sa copie de la carte,
@@ -778,8 +778,8 @@ finit dans le silence : chaque trouvaille resserre le fil jusqu'au nom écrit en
 19. **Objectifs** : la piste du nord (Désert) → la Côte → les pêcheurs de la plage → Joss au lagon (le
    filet, Nessie, le masque) → les grottes marines (par la crique, à la nage) → plonger → le Passeur → la
    cache (les caisses, la barque, la page 21, dans l'ordre qu'on veut) → la passe du récif → le
-   Mosasaure Abyssal (astuce : le Vent) → le 3e Cœur → Moustique et le belvédère → « À suivre… (les
-   Monts Gelés, bientôt) » ; Maïa aux falaises dès l'arrivée ; en secondaire, les pages de la Côte, les
+   Mosasaure Abyssal (astuce : le Vent) → le 3e Cœur → Moustique et le belvédère → les Monts Gelés (chapitre 6, avec un
+   manteau de duvet) ; Maïa aux falaises dès l'arrivée ; en secondaire, les pages de la Côte, les
    petites tortues, l'entrepôt du Comptoir, Roc (le Sceau, la carte, « Isaure »). Chaque étape dit où
    aller et ce qui manque (le masque, un plongeur adulte, un plongeur qui attend au Cabinet).
 
@@ -820,6 +820,186 @@ de la Côte (`Story.on_phase_changed`) ; l'entrepôt du Havre (`entrepot`). Dial
 4. **Le Cryolophosaure Titan**, dans le sanctuaire de Givre : Sceau, **4e Cœur**.
 5. **Maïa revient**, les yeux rouges. Elle a questionné sa mère, qui n'a pas nié. « Je veux
    l'arrêter. Pas la perdre. » Défi n° 5, pour se prouver qu'elle est prête. Puis elles font équipe.
+
+### Chapitre 6 — Dans le jeu
+
+Les zones `monts` (la Vallée des Troupeaux, le lac gelé, le glacier et ses deux murs de glace, le Col
+des Tempêtes et la porte de givre ; la sortie des Cieux, fermée), `grottes_glace` (la salle des
+stalactites, la petite pièce d'Hélène derrière un mur de glace, la réserve) et `sanctuaire_givre` (la
+salle ronde, la paroi de glace, les statues, l'autel) ; les scènes dans `story/monts.gd` (l'arrivée, Bertille,
+Grelot, le glacier, la nuit des forges ; le manteau et l'accès), `story/monts_grottes.gd` (les
+dormeurs, Dame Suie, Aconit, le réveil), `story/monts_col.gd` (le blizzard, Roc, la porte de givre),
+`story/monts_sanctuaire.gd` (le Titan, le Sceau, le 4e Cœur) et `story/monts_fin.gd` (Maïa, le défi n°
+5 ; Roc au Cabinet, Maïa et Joss au Havre, Rosalie et Joss et leurs manteaux) ; la mise en scène
+partagée dans `story/monts_stage.gd` ; les dialogues simples dans `data/dialogue_monts.gd`, les
+objectifs dans `story/monts_objectives.gd`, les questions dans `story/monts_ask.gd`, les lieux dans
+`story/monts_places.gd`. Le chapitre commence dans le silence de la fin de la Côte (Chloé seule) et
+finit à deux : le froid, puis la chaleur d'un feu, d'une soupe, de gens qui disent enfin la vérité.
+
+0. **Le chemin.** À la fin du belvédère (ch. 5), un vent froid descend des falaises de l'est : les
+   montagnes ont blanchi pendant la nuit, un flocon se pose sur le masque en carton (« J'irai. Même
+   toute seule. »). La sortie est de la Côte s'ouvre (`monts_ouverts`) **si Chloé a un vêtement
+   chaud** : le **manteau de duvet** de Rosalie (300 pièces), vendu à la Mercerie du Havre et par Joss
+   au bord du lagon (voir [mecaniques.md](mecaniques.md), « Les régions froides »). Sans lui, la sortie
+   dit ce qui manque (« Brrr… »), où l'acheter et combien Chloé a de pièces ; l'objectif aussi.
+1. **L'arrivée** (du haut des falaises, à l'ouest). Le vert s'arrête d'un coup : tout est blanc. Il
+   neige (la scène lance la neige). Le souffle de Chloé fait de petits nuages ; le dino de tête découvre
+   la neige (le raptor happe un flocon et regarde dans sa gueule, vexé ; le cuirassé se couvre de neige
+   jusqu'à ressembler à un rocher — « je ne m'assois pas dessus » — puis s'ébroue sur Chloé ;
+   l'hadrosaure tire la langue et éternue un « tuut » par sa crête). En bas, les troupeaux de la
+   vallée, Edmontosaurus et Pachyrhinosaurus, qui soufflent de la vapeur ; un filet de fumée sous un
+   grand rocher. « Et moi, je n'ai même pas d'écharpe. » Les Cœurs sont tièdes : Chloé y réchauffe
+   ses mains.
+2. **Bertille**, sous son abri de roche, près de son feu : la gardienne des troupeaux (voir
+   [lore.md](lore.md)). Elle compte ses bêtes à voix haute, le bâton pointé ; le « Bonjour ! » de
+   Chloé lui fait perdre le compte (« Cent douze Edmontosaurus, quarante et un Pachyrhinosaurus, et un
+   têtu »). Elle reconnaît « la dame aux mains abîmées » dans les yeux de Chloé : Hélène montait chaque
+   hiver compter avec elle et se trompait exprès pour rester au chaud ; Bertille lui tricotait des
+   moufles pour ses vieilles brûlures ; « l'hiver dernier, personne n'a dérangé mon compte ». Cette
+   semaine, une dame en gris, « polie comme une vitre », est montée au glacier avec un traîneau de
+   caisses qui tintaient, tiré par un grand dino aux griffes comme des faux ; depuis, **Grelot**, son
+   plus petit Pachyrhinosaurus, a disparu. Les murs de glace : ses grands Pachyrhinosaurus cassent la
+   glace du lac chaque matin, d'un coup de nez (la Charge : le texte dit qui en a, ou où en trouver).
+   Ensuite, une réplique (ce qui a changé : la dame en gris redescendue « ailleurs », Anselme « gelé
+   comme une truite », la montagne qui a grondé…) et ses questions.
+3. **Grelot** (quête annexe), au pied du premier mur de glace : il prend son élan et fonce, BONG, il
+   rebondit et s'assoit dans la neige ; il recommence. Chloé s'agenouille ; ses mains sentent la fumée
+   du feu de Bertille ; « la soupe refroidit ». Il repart au petit trot, son grelot tintant jusqu'en
+   bas. Rentré, il pousse la jambe de Chloé du nez, et Bertille donne les **moufles d'Hélène**, « laissées
+   pour quelqu'un » : trop grandes, parfaites.
+4. **Le glacier** (StoryTrigger `DeclencheurGlacier`) : la glace qui craque très loin dessous, les
+   patins du traîneau et les empreintes à griffes, une **fiole vide** (« Givre, n° 3. Deux gouttes. Pas
+   une de plus. »), un mur de glace rayé de griffes dont le trou « a repoussé pendant la nuit ». Deux
+   murs (Charge) barrent le glacier ; derrière, la bouche des grottes. **Page 29** au milieu du glacier.
+5. **La nuit des forges** (la première nuit aux Monts, où que soit Chloé) : au sud-ouest, derrière les
+   crêtes, des lueurs rouges au pied du volcan, « comme des yeux qui ne dorment pas » ; sur une butte
+   de la vallée, un coin de boîte en fer accroche la lumière : la **page 30** apparaît (`forges_vues`).
+6. **Les grottes de glace** (zone `grottes_glace`). La première salle, toute bleue, les stalactites
+   qui gouttent ; au fond, une lueur violette et des fioles qui tintent. Près de la réserve
+   (StoryTrigger `DeclencheurReserve`) : dans la glace des murs, des tout petits dinos endormis debout
+   (un Brachiosaure, un Stégosaure, un Psittacosaure, un Ankylosaure, posés par la scène derrière leurs
+   blocs), et trois œufs dans une niche. « Ne touchez à rien, je vous prie, mademoiselle Varenne. Ils
+   dorment. Pour l'instant. » **Page 26** dans la petite pièce d'Hélène, derrière un mur de glace.
+7. **Dame Suie**, entre les blocs, pipette et thermomètre à la main (« leur température est parfaite.
+   C'est agaçant. »), son traîneau, Mandragore attelé. Le Masque veut une armée ; elle, des résultats :
+   une goutte de sa **formule du Givre** par bloc. Elle a trouvé la réserve grâce à une carte
+   « dessinée à la main, avec des petites fougères partout, par quelqu'un qui connaissait très, très
+   bien votre grand-mère » (Chloé pense : Isaure). Combat : Mandragore (Therizinosaurus 34), Ciguë
+   (Koolasuchus 34), puis **Aconit**, un Nanuqsaurus 35 **corrompu** (« Quatre gouttes, pour
+   résister au froid. Il ne tremble plus jamais. Il ne dort plus, non plus. ») qu'on apaise : il bâille
+   et s'endort sur place, debout, la tête qui dodeline. Elle n'écrit plus. Pour la première fois, **elle enlève ses lunettes fumées**
+   et regarde les dormeurs de près : « Ils sont… parfaits. Sans une goutte. » ; « Votre grand-mère n'a
+   rien dosé du tout. Elle a seulement attendu qu'ils soient prêts. » ; « Il faudra peut-être que je
+   refasse mes tables. » L'indice, « gratuitement, c'est rare » : **le Masque veut tous les Cœurs d'un
+   coup, le même jour, au même endroit : les Cieux** (« Levez les yeux, de temps en temps »). Aconit
+   reste à Chloé, qui l'appelle **Flocon** (ou le laisse rejoindre les siens, au col). Elle range la
+   fiole sans l'ouvrir et s'en va avec son traîneau : « Nous nous reverrons. Là où il fait plus chaud,
+   cette fois, je le crains. » (Le volcan.)
+8. **Les dormeurs** : Chloé pose la main sur la glace (à travers les moufles d'Hélène, si elle les a) ;
+   les Cœurs battent, leur chaleur passe dans la glace, qui pleure. Le petit Brachiosaure ouvre un œil,
+   puis le Stégosaure, puis le Psittacosaure, qui éternue ; ils sortent en titubant « comme on sort du
+   lit un lundi matin » et se serrent contre Chloé. Le quatrième, et les œufs, dorment toujours : ils
+   ne sont pas prêts (« J'ai voulu réveiller ce qui devait dormir », page 19). Les trois petits
+   (niveau 12) partent attendre au Cabinet (Bertille les descend avec son troupeau) : **Roc les échange**
+   contre un dino de l'équipe.
+9. **Le Col des Tempêtes** (StoryTrigger `DeclencheurCol`, après Dame Suie ; ou devant la porte) : le
+   **blizzard** se lève (`Game.set_weather(&"blizzard")`). Une lanterne dans le blanc, qui avance,
+   s'arrête, vacille : **Roc**, qui se laisse tomber assis sur un rocher enneigé (sa pose assise est dessinée pour
+   une chaise : jamais assis dans le vide), la neige aux genoux, les lunettes givrées ; Chloé s'agenouille près de lui ; « je te suivais. Enfin, je me
+   suis perdu ». Le dino de tête se plante face au vent, comme un mur. Il avoue tout : il y a deux ans,
+   ici, Hélène lui a fait promettre de **surveiller le sceau** chaque nuit si elle disparaissait, et de
+   n'en parler à personne ; ses sorties de nuit, c'était ça (Chloé revoit les lanternes : vers le
+   volcan, dans le Marais, au récif) ; l'**ambre noir du tiroir, il le confisquait** ; il voulait que
+   Chloé se méfie de tout le monde, même de lui : « Ne fais confiance qu'aux dinos. » Chloé demande
+   pardon ; « Hélène doutait de tout le monde… sauf des gens qu'elle aimait. Et c'est là qu'elle se
+   trompait. » Elle le serre dans ses bras ; il ne sait pas quoi faire des siens, puis il trouve
+   (`roc_innocente`). Le vent tombe : tout en haut du col, une lueur bleue, la porte. Roc redescend
+   chez Bertille (« elle me doit un bol de soupe depuis vingt ans »). **Page 28** sous une pierre plate
+   du col (elle confirme tout, avant ou après la scène).
+10. **La porte de givre** (StoryProp `PorteGivre`) : avant Dame Suie, une lueur violette vers les
+   grottes détourne Chloé (« D'abord, voir ce qui s'y passe »). Ensuite : les Cœurs battent ; Chloé les pose un par un dans les creux (le Marais en haut à gauche, le Désert en haut à droite, la Côte en bas à gauche : la porte change d'image à chaque fois, `porte_givre_1` à `_3`), chacun s'allume ;
+   le quatrième, en bas à droite, attend son propre Cœur ; la porte devient transparente et
+   s'effondre en neige fondue (`sanctuaire_givre_ouvert`) ; les trois Cœurs roulent aux pieds de Chloé, tièdes.
+11. **Le sanctuaire de Givre** (zone `sanctuaire_givre`, première entrée) : une salle ronde taillée
+   dans la glace, la lumière bleue qui tombe de la voûte, une haute paroi de glace, deux statues de Cryolophosaure de chaque côté de l'autel ; du haut de la paroi
+   descend le **Cryolophosaure Titan**, les griffes plantées dans la glace, sans un bruit, une crête
+   dressée en travers de la tête (« On dirait qu'il s'est coiffé pour me recevoir. »). Il souffle des
+   fleurs de givre sur les manches de Chloé, renifle les Sceaux (au Sceau de la Côte, il fronce les
+   naseaux : ça sent le poisson) et les Cœurs, puis rugit : **combat d'honneur** (niveau 40, ni collier ni
+   fuite ; la leçon dit ce qui le touche fort d'après son type : l'Eau et la Terre ; avant chaque essai,
+   l'équipe croque la neige « au goût de menthe » du sanctuaire et se remet d'aplomb). Gagné, il
+   incline sa crête jusqu'à la neige et souffle sur l'autel, une vasque de pierre pleine de glace, jusqu'à ce qu'elle fonde : le
+   **Sceau des Monts** (ambre bleu pâle, un flocon, la fougère d'Hélène) et le **4e Cœur**, « froid comme
+   une boule de neige, il bat tout doucement, comme quelqu'un qui dort ». Les quatre Cœurs dorent toute
+   la glace ; le volcan gronde plus fort que jamais, une stalactite se brise près de Chloé ; le Titan,
+   lui, **lève la tête vers le ciel**. **Page 27** au pied de la statue (« Toupet »).
+12. **Maïa revient** (en sortant du sanctuaire ; ou en allant lui parler). Assise sur un rocher, dans
+   le manteau trop grand de Joss (« il sent la colle à cuir »), Caillou à côté, Moustique dans sa
+   capuche. Les yeux rouges, « pas à cause du froid ». Elle a attendu sa mère toute la nuit dans la
+   cuisine ; des cendres sur les bottes ; elle a tout demandé. « Elle n'a pas dit non. Elle n'a rien dit
+   du tout. Elle a juste reposé sa tasse. Très doucement. » (La page 11, si Chloé l'a lue.) « Je veux
+   l'arrêter. **Pas la perdre.** » Chloé lui rend le **masque en carton** ; Maïa le plie et le garde :
+   « Le jour où maman enlèvera le sien… je lui rendrai celui-là. » **Défi n° 5**, pas pour gagner : pour
+   savoir si elle est prête. Pouce (Iguanodon 35), Moustique (Dimorphodon 36), son œuf (37), Caillou
+   (Tricératops 38, « Celui-là, c'est pour maman. … Non. Celui-là, c'est pour nous. »). Battue : « Cinq
+   fois. » Elle rit et pleure en même temps, et s'en fiche, pour la première fois ; elle a tenu. Elles
+   font équipe (`maia_alliee`) : une main tendue, Caillou et le dino de tête museau contre museau ;
+   l'indice de Dame Suie ; elles lèvent les yeux : les pitons des Cieux, et quelque chose d'immense qui
+   y tourne. Le harnais de vol de Joss ; « Ma barque est à toi, quand tu veux » (les chemins de la mer
+   que sa mère lui a appris). « À suivre… (les Cieux Éternels) » ; la sortie des Cieux reste fermée
+   (`cieux_bloques` : « il faudrait voler »).
+13. **Autour** : Roc au Cabinet (du thé, « chaud, cette fois » ; les trois petits de la glace — le
+   Brachiosaure a mangé la fougère en pot à qui il parlait sans ses lunettes ; « Toupet », c'est lui qui
+   l'a surnommé ; le câlin de Maïa, « les Kerval reviennent toujours au port ») ; Isaure à Port-Ambre
+   (« Maïa m'a attendue dans la cuisine… Je n'ai pas su répondre » ; puis « Elle m'a dit bonjour. Juste
+   bonjour. C'est déjà ça » ; après le Sceau : « Prends garde aux hauteurs, moussaillon. Plus on monte,
+   plus on tombe de haut. ») ; Maïa et Joss au Havre (le manteau, le harnais de vol « UN HARNAIS DE
+   VOL ») ; Rosalie et son manteau en vitrine ; quatre panneaux (entrée : « Ne pas compter à voix haute :
+   ça déconcentre la bergère. — B. » ; vallée : « Soupe chaude sous le grand rocher. On paie en bois
+   sec. » ; glacier : « Et on ne lèche pas la glace. Même par curiosité. — H. » ; col : « Par vent très
+   fort, derrière deux. »).
+14. **Objectifs** : un vêtement chaud (où, combien) → les Monts Gelés (sortie est de la Côte) → la
+   fumée de la vallée (Bertille) → le glacier → les murs de glace (et un dino qui charge, s'il n'y en a
+   pas : dans l'équipe, au Cabinet, ou les Pachyrhinosaurus de la vallée) → les grottes de glace → la
+   dame en gris → les dormeurs et le Col des Tempêtes (dans l'ordre qu'on veut) → la porte de givre →
+   le gardien du sanctuaire (astuce : l'Eau et la Terre) → le 4e Cœur → Maïa revient → « Vers les Cieux
+   Éternels (bientôt) ». En secondaire : les pages des Monts (avec une direction pour chacune), Grelot,
+   Bertille qui veut remercier Chloé, Roc au Cabinet (le thé, les petits, le Sceau).
+
+Équilibrage (simulations `scratchpad/ch6/sim_monts.gd`, 300 combats par cas, le vrai `BattleEngine`, la
+meilleure attaque à chaque tour, sans changer de dino ; équipe : le dino de départ L (3 cœurs), le
+troisième petit L-1, Nessie L-1, Bouée (Baryonyx) L-2, un 5e L-2 ; on arrive aux Monts vers 31, on est
+vers 33 chez Dame Suie, 34-35 au Titan) : **Dame Suie** à 34/34/35 (sans soin entre ses dinos) : équipe
+au niveau 32, Vif 96 %, Bastion et Écho 100 %, en 16 à 20 tours et 1 à 3 dinos K.O. (en n'apaisant
+qu'Aconit ; en l'attaquant d'abord, un peu moins) : un vrai test, pas un mur (à 33/33/34, 98-100 %).
+**Le Titan** (combat d'honneur, type Feu, équipe reposée) : **à 40**, équipe au niveau 33 : Vif 79 %,
+Bastion 93 %, Écho 76 % avec un Ptéranodon en 5e, 88 / 99 / 89 % avec un Pachyrhinosaurus (Terre) ;
+au niveau 34 : 82 / 97 / 84 % et 93 / 100 / 97 % ; 9 à 13 tours, 2 à 3 dinos K.O. On peut perdre au
+premier essai sans que ce soit injuste (retour à l'entrée du sanctuaire, équipe soignée) ; Bastion
+(Pierre) encaisse le Feu, Vif et Écho y sont sensibles, d'où la leçon (« l'Eau et la Terre le touchent
+fort ») et le Pachyrhinosaurus de la vallée, qu'on attrape pour les murs de glace. À 41 : 70-93 % ; à 39 :
+77-100 %. **Maïa** à 35/36/37/38 : équipe au niveau 35, Vif 80 %, Bastion 99 %, Écho 89 % ; au niveau 34 :
+62 / 100 / 86 % ; au niveau 36 : 92 / 100 / 97 % (24 à 34 tours, 2 à 4 dinos K.O.) : le combat le plus
+long du jeu jusqu'ici. Aconit 35 (Flocon), les petits de la glace 12.
+
+Drapeaux : `monts_ouverts` (fin du ch. 5 + manteau), `monts_arrivee`, `bertille_vue`, `grelot_vu`,
+`grelot_rentre`, `moufles_helene`, `glacier_arrivee`, `forges_vues`, `grottes_glace_arrivee`,
+`suie_monts_vue`, `suie_monts_battue`, `suie_indice`, `aconit_garde`, `suie_monts_partie`,
+`dormeurs_reveilles`, `blizzard_col`, `roc_col_vu`, `roc_innocente`, `porte_givre_vue`,
+`sanctuaire_givre_ouvert`, `sanctuaire_givre_arrivee`, `titan_parle`, `titan_battu`, `sceau_monts`,
+`coeur_4`, `maia_monts_vue`, `masque_rendu`, `maia_defi_5_tente`, `maia_defi_5`, `maia_alliee`,
+`rosalie_manteau`, `rosalie_manteau_monts`, `joss_manteau_vu`, `roc_monts_the`, `roc_dormeurs`,
+`roc_sceau_monts`, `roc_maia_alliee`, `found_journal_26` à `_30` (et `bertille_n`, `bertille_suie`,
+`bertille_roc`, `bertille_coeur`, `bertille_maia`, `grelot_n`, `dormeur_n`, `oeufs_n`, `titan_n`,
+`maia_monts_n`, `joss_monts_n` pour les répliques). Événements : `bertille`, `grelot` (Grelot et
+GrelotVallee), `glacier_arrivee`, `grottes_glace_reserve`, `suie_monts` (ou `dame_suie_monts`),
+`dormeurs` (les blocs et les œufs), `oeufs_glace`, `traineau_suie`, `blizzard_col` (ou `roc_col`),
+`porte_givre`, `titan_givre` (ou `cryolophosaure_titan`), `coeur_givre`, `maia_monts` ; scènes
+d'entrée `monts`, `grottes_glace`, `sanctuaire_givre` ; la première nuit des Monts
+(`Story.on_phase_changed`) ; Rosalie avant sa boutique (`shop_mercerie`), Joss sur la Côte (`joss_cote` :
+ses manteaux, boutique `joss_cote`). Dialogues : `monts_bloques` (remplace celui de la Côte une fois le
+ch. 5 fini : le manteau), `mur_glace_bloque`, `porte_givre_fermee`, `cieux_bloques`, `page_26` à
+`page_30`, `panneau_monts_entree`, `panneau_vallee`, `panneau_glacier`, `panneau_col`.
 
 ## Chapitre 7 — Les Cieux Éternels
 
@@ -893,7 +1073,7 @@ de la Côte (`Story.on_phase_changed`) ; l'entrepôt du Havre (`entrepot`). Dial
 | 3 | Page 14 : il avait la clé du Cabinet ; il sort la nuit (sa lanterne dans le Marais), ne dit pas où, « j'ai promis », de la cendre sur les chaussures ; il supplie | Page 14 : « I. » aussi ; page 13 : « avec mes yeux » (le Masque : « tu as les yeux de ta grand-mère ») ; Dame Suie : le Masque cherche le Cœur « depuis des années » ; Isaure détourne les soupçons (« Roc a toujours été distrait avec ses clés ») |
 | 4 | Page 20 : « Anselme en garde une copie » (la carte des sanctuaires), et il se raidit quand Chloé en parle ; Sirocco l'a vu passer la nuit, avec sa lanterne, demander si le Carnotaurus allait bien ; le mot de « M. » : « d'autres ouvriront les portes pour nous » | Le mot de « M. » sent le sel (« avant la grande marée ») ; la caisse « …ptoir d'Amb… » (Ferréol) ; Maïa : sa mère va sur la Côte « la nuit, en barque » ; la barque sans lanterne vers la Côte ; Sirocco : Isaure jeune, qui gagnait toujours la dernière datte ; Isaure : « Deux Cœurs, déjà ? … On ne sait jamais qui regarde » |
 | 5 | Gustave : « le vieux du Cabinet » est venu une nuit, avec sa lanterne, demander si « le gros du récif » dormait bien ; mais sa copie de la carte est intacte (« personne n'y a touché ») : le Masque n'en avait pas besoin | La barque sans lanterne passe le récif là où personne ne passe (page 21 : seule « I. » connaissait la passe) ; Isaure a conseillé aux pêcheurs de pêcher ailleurs ; Ferréol commande dix masques de plongée « pour ses plongeurs » ; dans la cache, les caisses du Comptoir, le mot de « M. » (« que personne ne la touche ») et la barque qui a amené Chloé, « MAÏA » sur la proue, les nœuds de marin de Maïa, un dessin d'enfant ; Maïa voit la barque de sa mère entrer dans la falaise, une silhouette masquée dedans ; page 23 : « Isaure » en toutes lettres, marraine, les carnets disparus la même semaine ; Roc finit sa phrase du tiroir : « surtout pas à Isaure » |
-| 6 | Innocenté (page 28) | Isaure ne nie pas |
+| 6 | Innocenté : au Col des Tempêtes, il avoue qu'il surveillait le sceau pour Hélène et confisquait l'ambre noir (page 28 : « il ment très mal : c'est pour ça qu'il se tait ») | Dame Suie a trouvé la réserve d'Hélène grâce à une carte « avec des petites fougères partout, dessinée par quelqu'un qui la connaissait très bien » ; Isaure n'a pas nié : elle a reposé sa tasse, très doucement (comme page 11) ; « Prends garde aux hauteurs, moussaillon » |
 | 7 | — | Le masque tombe |
 
 ## Les défis de Maïa
@@ -908,7 +1088,7 @@ tu as Vif), plus Caillou.
 | 3 ✅ | Roselière du nord (ch. 3) | + Iguanodon (Pouce) | Elle défend Roc |
 | 4 ✅ | Oasis (ch. 4) | Pouce (Iguanodon), son œuf, puis Caillou devenu Tricératops (Moustique garde les sacs) | Au sommet de sa forme ; sa mère va sur la Côte « la nuit, en barque » |
 | — | Belvédère des falaises (ch. 5) | — | Elle l'avait fixé là, « avec la mer derrière moi ». Page 23 : Hélène était sa marraine. Refuse le combat, s'enfuit ; son masque en carton reste à Chloé |
-| 5 | Monts Gelés (ch. 6) | équipe de 4 | Se prouver qu'elle peut affronter sa mère |
+| 5 ✅ | Monts Gelés, devant le sanctuaire de Givre (ch. 6) | Pouce (Iguanodon), Moustique (Dimorphodon), son œuf, Caillou (Tricératops) | Elle a questionné sa mère, qui a « reposé sa tasse, très doucement ». « Je veux l'arrêter. Pas la perdre. » Pas pour gagner : pour savoir si elle est prête. Puis elles font équipe ; sa barque est à Chloé |
 | — | Ch. 8 et 9 | — | Alliée |
 
 ---
@@ -947,11 +1127,11 @@ précise, chaleureuse, parfois drôle, de plus en plus inquiète.
 | 23 | Côte · belvédère des falaises (la boîte de fer du poste de guet, avec Maïa) | −12 ans | Marraine | « Isaure a posé son bébé dans mes bras. Maïa » ; marraine « avant qu'elle ait fini sa phrase » ; « Isaure et son bébé » dans la barque qui rentre ; « Cette semaine, mes carnets ont disparu. Je ne veux pas savoir. Pas ce soir. » |
 | 24 | Côte · plage (la cale des anciens) | −18 ans | Le symbole | Les marches taillées d'où les anciens sont partis, leurs masques d'os sculptés ; au port, un homme en porte un « pour rire » et ne rit pas ; « ils ont pris la promesse et en ont fait une menace » ; elle a peur de ce que ça annonce |
 | 25 | Côte · fond du lagon (une bouteille, Plongée) | −19 ans | Ce que j'aurais dû dire | Lettre à Isaure jamais envoyée, jetée à la mer : « Tu n'as pas tort pour le port. Tu as tort sur le moyen. » ; « Je garde ta tasse » |
-| 26 | Monts · grottes de glace | −15 ans | Les dormeurs | Sa réserve d'œufs et de juvéniles, mise à l'abri dans la glace |
-| 27 | Monts · sanctuaire | −25 ans | Le quatrième Cœur | Le Cryolophosaure |
-| 28 | Monts · col | −2 ans | Anselme sait | Elle demande à Roc de surveiller le sceau si elle disparaît |
-| 29 | Monts · glacier | −25 ans | Brûlures | Ses mains marquées par la première éruption |
-| 30 | Monts · vallée (nuit) | −2 ans | Les forges | Elle localise les forges d'ambre noir sur la Plaine Volcanique |
+| 26 ✅ | Monts · grottes de glace (la petite pièce d'Hélène, derrière un mur de glace) | −15 ans | Les dormeurs | Sa réserve d'œufs et de petits, mise à l'abri dans la glace, « sans rien forcer » : ils dormiront jusqu'à ce qu'ils soient prêts, ou que vienne quelqu'un « avec des mains chaudes et un cœur patient » ; le traîneau prêté par Bertille, « as-tu pensé à tes moufles ? » |
+| 27 ✅ | Monts · sanctuaire de Givre (au pied de la statue) | −25 ans | Le quatrième Cœur | Le Cryolophosaure l'a regardée trois jours du haut de sa paroi de glace, puis a soufflé sur l'autel pour y enfermer le Cœur ; sa crête « comme une coiffure du dimanche » : Anselme l'a appelé « Toupet » |
+| 28 ✅ | Monts · col (sous une pierre plate, à l'abri du vent) | −2 ans | Anselme sait | Au col, elle lui a tout dit ; s'il la perd, il surveillera le sceau chaque nuit et n'en parlera à personne, « pas même à Chloé » ; il a boudé jusqu'à la vallée ; « il ment très mal : c'est pour ça qu'il se tait » |
+| 29 ✅ | Monts · glacier (entre deux blocs de glace bleue) | −25 ans | Brûlures | Un mois après la nuit du feu, ses mains brûlent encore : seule la glace les calme ; un Cryolophosaure est resté debout près d'elle toute la nuit, face au vent, « comme un mur » |
+| 30 ✅ | Monts · vallée (une butte ; elle apparaît la première nuit) | −2 ans | Les forges | Depuis l'abri de Bertille, sept feux au pied du volcan (trois l'hiver d'avant) : des forges, où l'on refait « en plus grand » ce qu'elle a brûlé ; « demain, je descends voir » ; une troisième paire de moufles |
 | 31 | Cieux · pitons | −20 ans | D'en haut | L'île entière vue d'en haut, la spirale des régions |
 | 32 | Cieux · nids | −25 ans | Le Souverain | Sa découverte, sa taille, son cœur qui bat avec le volcan |
 | 33 | Cieux · mer de nuages | −25 ans | La nuit du feu | L'éruption, le sceau, la clé brisée en cinq Cœurs |

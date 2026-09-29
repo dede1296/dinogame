@@ -6,7 +6,8 @@ extends Node3D
 ## around Chloé, and everything that moves or changes in 2D (Chloé, dinos, people,
 ## obstacles, pickups, their particles and glows) is mirrored every frame.
 ## Sun, moon and sky follow the game clock; rain and mist dim them, close the horizon, and
-## rain falls around Chloé; a sandstorm veils everything in ochre, sand streaking past.
+## rain falls around Chloé; a sandstorm veils everything in ochre, sand streaking past; snow
+## drifts down, and a blizzard veils everything in white, flakes driven past (Snowfall).
 ## Quality: shadows, render scale, glow, far blur, rain density.
 ## Swimming (Swim), Chloé's dino and Chloé on its back sit half under the water sheet, bobbing,
 ## a wake behind them. Flood water (Flood) stands as a block of water that drains away.
@@ -30,6 +31,9 @@ const ROUNDNESS := {
 	"fleurs_roses": 0.3, "fleurs_violettes": 0.3, "panneau": 0.1, "cloture": 0.1, "ambre": 0.3, "souche": 0.5,
 }
 const TUFT := preload("res://assets/art/props/hautes_herbes.png")
+## Zones whose tall grass is a picture of its own (the Monts: tundra tufts, brown-green and
+## frosted). One not made yet: TUFT.
+const ZONE_TUFT := {&"monts": "res://assets/art/props/herbes_toundra.png"}
 const OUTER_TREES := ["arbre_rond", "araucaria", "fougere_arbre", "arbre_rond"]
 ## On the near side (towards the camera) only low plants: trees there would hide the zone.
 const OUTER_LOW := ["buisson", "fougeres", "buisson", "hautes_herbes"]
@@ -81,32 +85,131 @@ const ZONE_TREES := {
 		"outer": ["palmier_oasis", "araucaria", "fougere_arbre", "buisson"],
 		"low": ["fougeres", "buisson", "fougeres", "hautes_herbes"],
 	},
+	# The Monts Gelés: snowy firs and wind-twisted pines, frosted bushes and snowy rocks low down;
+	# where their snow thins out (Region.cover_at < 0.5, towards the Côte): the Côte's woods ("thin").
+	&"monts": {
+		"thin": &"cote",
+		"forest": ["sapin_neige", "sapin_neige", "pin_tordu", "sapin_neige", "pin_tordu"],
+		"outer": ["sapin_neige", "pin_tordu", "sapin_neige", "rocher_neige"],
+		"low": ["buisson_givre", "rocher_neige", "buisson_givre", "buisson_givre"],
+	},
 }
+## A zone's woods where its cover layer lies thin (ZONE_TREES "thin": another zone's woods), at a
+## point (tiles): those without snow under a dose of THIN_COVER.
+const THIN_COVER := 0.5
+
+
+static func _woods_at(r: Region, t: Vector2) -> Dictionary:
+	var own: Dictionary = ZONE_TREES.get(r.region_id, {})
+	if own.has("thin") and r.cover_data and r.cover_at(t * PX) < THIN_COVER:
+		return ZONE_TREES.get(own["thin"], {})
+	return own
+
+
 ## How far from a zone's south edge (tiles) its woods stay low (ZONE_TREES "low").
 const LOW_SOUTH := 7
-## A zone's cliffs and walls in another picture than the earth wall (the temple's masonry).
-const CLIFF_TEX := {&"temple_englouti": "res://assets/art/ground/dalles_temple.png"}
-## Zones whose walls are paved like their floor (the temple): the tops of the walls darker, so
-## the rooms and passages read at a glance (0: as lit as the floor).
-const WALL_SHADE := {&"temple_englouti": 0.8}
+## A zone's cliffs and walls in another picture than the earth wall (the temple's masonry; the
+## Monts' snowy rock, the ice caves' walls of ice). One not made yet: the earth wall.
+const CLIFF_TEX := {
+	&"temple_englouti": "res://assets/art/ground/dalles_temple.png",
+	&"monts": "res://assets/art/ground/falaise_neige.png", &"grottes_glace": "res://assets/art/ground/glace.png",
+	&"sanctuaire_givre": "res://assets/art/ground/falaise_neige.png",
+}
+## Zones whose walls are paved like their floor (the temple; the ice caves, their floor ice as
+## well): the tops of the walls darker, so the rooms and passages read at a glance (0: as lit as
+## the floor).
+const WALL_SHADE := {&"temple_englouti": 0.8, &"grottes_glace": 0.35}
+## Zones whose raised ground is all walls (the ice caves): their tops in the walls' own picture
+## (CLIFF_TEX, CLIFF_TINT), masses of dark ice apart from the floor.
+const WALL_TOPS := [&"grottes_glace"]
 ## Flood water of a zone in its own shades: [shallow, deep] (the temple: murky, greenish).
 const FLOOD_TINT := {&"temple_englouti": [Color(0.3, 0.52, 0.48), Color(0.05, 0.17, 0.2)]}
 ## The Marais' ground ("mud" tiles).
 const MUD_TEX := "res://assets/art/ground/vase.png"
 ## The Désert's canyon rock ("rock" tiles).
 const ROCK_TEX := "res://assets/art/ground/roche_canyon.png"
-## Zones whose sand ("sand" tiles) is a picture of its own (the dunes); elsewhere the beaches
-## are the path's dirt, lightened.
+## Zones whose sand ("sand" tiles) is a picture of its own (the dunes; in the Monts, the ice of
+## the frozen lake and the glacier); elsewhere the beaches are the path's dirt, lightened.
 const SAND_TEX := {
 	&"desert": "res://assets/art/ground/sable.png", &"sanctuaire_vents": "res://assets/art/ground/sable.png",
 	&"cote": "res://assets/art/ground/sable.png", &"recif_sanctuaire": "res://assets/art/ground/sable.png",
+	&"monts": "res://assets/art/ground/glace.png", &"grottes_glace": "res://assets/art/ground/glace.png",
+	&"sanctuaire_givre": "res://assets/art/ground/glace.png",
 }
+## Zones whose "sand" is ice: their trails are not on it (they keep Region.path_tex: packed snow).
+const ICE := [&"monts", &"grottes_glace", &"sanctuaire_givre"]
 ## Zones whose grass is tinted (the Marais: olive, less bright next to its mud).
 const GRASS_TINT := {&"marais": Color(0.86, 0.92, 0.74)}
 ## Zones whose cliffs are tinted (the Désert: warm canyon rock; 1 = the grey-brown rock).
-const CLIFF_TINT := {&"desert": Color(1.22, 0.98, 0.8), &"sanctuaire_vents": Color(1.22, 0.98, 0.8)}
+## (The ice caves: their walls of ice a deep, darker blue, apart from the pale floor.)
+const CLIFF_TINT := {&"desert": Color(1.22, 0.98, 0.8), &"sanctuaire_vents": Color(1.22, 0.98, 0.8),
+	&"grottes_glace": Color(0.5, 0.66, 0.95)}
 ## Zones whose water is not the clear blue of the coast: [shallow, deep] (a marsh: greener, murkier).
 const WATER_TINT := {&"marais": [Color(0.4, 0.56, 0.42), Color(0.1, 0.2, 0.17)]}
+## The clear blue of the coast (water.gdshader's shallow and deep).
+const WATER_DEFAULT := [Color(0.36, 0.64, 0.62), Color(0.07, 0.22, 0.32)]
+## Near an edge that leads to a zone whose water, grass or cliffs are of another colour
+## (WATER_TINT, GRASS_TINT, CLIFF_TINT), the colours blend towards the neighbour's over this many
+## tiles, half and half at the edge; the neighbour, shown beyond it, does the same towards this
+## one, so the two meet without a seam (ground.gdshader, water.gdshader: tint_edges).
+const TINT_BLEND := 12.0
+
+
+## The edges of zone `r` towards neighbours of other colours (its exits on the map's edge; one per
+## side): [Vector4(axis 0 x / 1 y, the edge's line in tiles, 1 or -1 towards the inside, 0),
+## the neighbour's id].
+static func _tint_edges(r: Region) -> Array:
+	var out := []
+	var size := Vector2(r.map_size())
+	var sides := {}
+	for exit in r.exits():
+		var other: StringName = exit.target_zone
+		if other == r.region_id or not r.exit_on_edge(exit) or not _tints_differ(r.region_id, other):
+			continue
+		var edge := r.exit_edge(exit)
+		if sides.has(edge):
+			continue
+		sides[edge] = true
+		var line := Vector4(0.0, 0.0, 1.0, 0.0)
+		if edge.x > 0.0:
+			line = Vector4(0.0, size.x, -1.0, 0.0)
+		elif edge.y < 0.0:
+			line = Vector4(1.0, 0.0, 1.0, 0.0)
+		elif edge.y > 0.0:
+			line = Vector4(1.0, size.y, -1.0, 0.0)
+		out.append([line, other])
+	return out.slice(0, 4)
+
+
+static func _tints_differ(a: StringName, b: StringName) -> bool:
+	return WATER_TINT.get(a, WATER_DEFAULT) != WATER_TINT.get(b, WATER_DEFAULT) 		or GRASS_TINT.get(a, Color.WHITE) != GRASS_TINT.get(b, Color.WHITE) 		or CLIFF_TINT.get(a, Color.WHITE) != CLIFF_TINT.get(b, Color.WHITE)
+
+
+## Gives a ground or water material of zone `r` its edges towards neighbours of other colours,
+## and their colours (see TINT_BLEND).
+static func _set_edge_tints(mat: ShaderMaterial, r: Region) -> void:
+	var edges := _tint_edges(r)
+	var lines: Array[Vector4] = []
+	var shallow: Array[Color] = []
+	var deep: Array[Color] = []
+	var grass: Array[Color] = []
+	var cliff: Array[Vector3] = []
+	for i in 4:
+		var e: Array = edges[i] if i < edges.size() else [Vector4.ZERO, r.region_id]
+		var water: Array = WATER_TINT.get(e[1], WATER_DEFAULT)
+		var c: Color = CLIFF_TINT.get(e[1], Color.WHITE)
+		lines.append(e[0])
+		shallow.append(water[0])
+		deep.append(water[1])
+		grass.append(GRASS_TINT.get(e[1], Color.WHITE))
+		cliff.append(Vector3(c.r, c.g, c.b))
+	mat.set_shader_parameter("tint_edge_count", edges.size())
+	mat.set_shader_parameter("tint_blend", TINT_BLEND)
+	mat.set_shader_parameter("tint_edges", lines)
+	mat.set_shader_parameter("edge_shallow", shallow)
+	mat.set_shader_parameter("edge_deep", deep)
+	mat.set_shader_parameter("edge_grass", grass)
+	mat.set_shader_parameter("edge_cliff", cliff)
 const CAVE := preload("res://world/view3d/cave_mouth.gdshader")
 const OCCLUDER_HEIGHT := 1.6               # metres: taller scenery may hide Chloé (1.50 m)
 const POLLEN_MOTES := 60
@@ -132,6 +235,7 @@ const SPLASH: Array[Color] = [Color(0.92, 0.97, 1.0), Color(0.72, 0.87, 0.95), C
 const FLOOD := preload("res://world/view3d/flood.gdshader")
 const FLOOD_SHEET := 0.04   # metres: the flood water's sheet, just above the floor
 const UNDERWATER := preload("res://world/view3d/underwater.gd")
+const SNOWFALL := preload("res://world/view3d/snowfall.gd")
 ## Light over the day: [hour, sun elevation°, sun azimuth°, colour, energy, ambient, ambient energy, sky].
 const DAYLIGHT := [
 	[0.0, 48.0, 30.0, Color(0.55, 0.65, 1.0), 0.35, Color(0.24, 0.28, 0.44), 0.6, Color(0.08, 0.1, 0.2)],
@@ -197,12 +301,12 @@ var occlusion_px := Vector2.INF
 var reliefs := true
 ## Their details from normal maps (bricks, planks…); off: without them (to compare).
 var details := true
-## The zone whose water sheet is being built (its tint: WATER_TINT).
-var _water_zone: StringName
 ## The dive (Dive): how far below its place the swimmer and Chloé are shown (m; < 0: above).
 var dive_sink := 0.0
 ## Under the sea (Region.underwater): its light, its shafts and bubbles (null above the water).
 var _underwater: UNDERWATER
+## Snow and the blizzard (the Monts).
+var _snow: SNOWFALL
 
 
 func _ready() -> void:
@@ -241,6 +345,8 @@ func _ready() -> void:
 	add_child(_sand)
 	_dust = _make_dust()
 	add_child(_dust)
+	_snow = SNOWFALL.new()
+	add_child(_snow)
 	_wake = _make_wake()
 	add_child(_wake)
 	_rain_amount = 1.0 if Game.is_raining() else 0.0
@@ -303,8 +409,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	_ground_mat = _build_ground(region, heights)
 	_set_holes(_ground_mat)
 	if heights.has_water:
-		_water_zone = region.region_id
-		_set_holes(_build_water(heights))
+		_set_holes(_build_water(region, heights))
 	for n: Dictionary in neighbours:
 		_build_neighbour(n)
 	_build_scenery()
@@ -348,14 +453,34 @@ func _build_ground(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 	else:
 		mat.set_shader_parameter("dirt_tex", r.path_tex if r.path_tex else dirt)
 	mat.set_shader_parameter("plain", r.indoor)
-	mat.set_shader_parameter("cliff_tex", load(CLIFF_TEX.get(r.region_id, "res://assets/art/ground/falaise.png")))
+	var cliff: String = CLIFF_TEX.get(r.region_id, "")
+	var own_cliff := ResourceLoader.exists(cliff)
+	# Under cover layers (Region.covers()): the zone's own cliffs where the first one lies, the
+	# earth wall elsewhere (the snowy rock of the Monts fades out towards the Côte, like the snow).
+	var covers := r.covers()
+	mat.set_shader_parameter("cover_count", covers.size())
+	if not covers.is_empty():
+		mat.set_shader_parameter("cover_mask", _cover_mask(covers))
+		mat.set_shader_parameter("cover_tex", covers[0]["tex"])
+		mat.set_shader_parameter("cover_path_tex", covers[0].get("path_tex", covers[0]["tex"]))
+		for i in range(1, covers.size()):
+			mat.set_shader_parameter("cover_tex%d" % i, covers[i]["tex"])
+		mat.set_shader_parameter("cover_spares_sand", r.cold)
+		mat.set_shader_parameter("cover_cliff", own_cliff)
+		if own_cliff:
+			mat.set_shader_parameter("cover_cliff_tex", load(cliff))
+			own_cliff = false
+	mat.set_shader_parameter("cliff_tex", load(cliff if own_cliff else "res://assets/art/ground/falaise.png"))
 	mat.set_shader_parameter("mud_tex", load(MUD_TEX))
 	mat.set_shader_parameter("rock_tex", load(ROCK_TEX))
-	if SAND_TEX.has(r.region_id):
+	if SAND_TEX.has(r.region_id) and ResourceLoader.exists(SAND_TEX[r.region_id]):
 		mat.set_shader_parameter("sand_tex", load(SAND_TEX[r.region_id]))
 		mat.set_shader_parameter("sand_picture", true)
+		mat.set_shader_parameter("sand_is_ice", r.region_id in ICE)
+	mat.set_shader_parameter("wall_tops", r.region_id in WALL_TOPS)
 	mat.set_shader_parameter("grass_tint", GRASS_TINT.get(r.region_id, Color.WHITE))
 	mat.set_shader_parameter("cliff_tint", CLIFF_TINT.get(r.region_id, Color.WHITE))
+	_set_edge_tints(mat, r)
 	mat.set_shader_parameter("top_shade", WALL_SHADE.get(r.region_id, 0.0))
 	mat.set_shader_parameter("noise_tex", WorldNoise.texture())
 	mat.set_shader_parameter("water_level", HeightMap.WATER_LEVEL if hm.has_water else -100.0)
@@ -399,13 +524,32 @@ func _build_ground(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 static var _grids: Dictionary = {}
 
 
+## The doses of a zone's cover layers (Region.covers()) packed in one texture: R, G, B = the
+## first, second, third layer (one pixel per tile).
+static func _cover_mask(covers: Array[Dictionary]) -> ImageTexture:
+	var first: Image = covers[0]["data"]
+	if covers.size() == 1:
+		return ImageTexture.create_from_image(first)
+	var packed := Image.create(first.get_width(), first.get_height(), false, Image.FORMAT_RGB8)
+	for y in packed.get_height():
+		for x in packed.get_width():
+			var c := Color(0, 0, 0)
+			for i in covers.size():
+				var data: Image = covers[i]["data"]
+				c[i] = data.get_pixel(mini(x, data.get_width() - 1), mini(y, data.get_height() - 1)).r
+			packed.set_pixel(x, y, c)
+	return ImageTexture.create_from_image(packed)
+
+
 ## What a map of zone `r` is drawn from, when it is not the one shown (MapScreen).
 static func map_layers_for(r: Region) -> Dictionary:
 	var hm := HeightMap.new(r, 2)
 	var masks := _terrain_masks(r, hm)
 	var tex := hm.height_texture()
-	return {"terrain_mask": masks[0], "terrain_mask2": masks[1], "map_tiles": Vector2(hm.size),
-		"height_tex": tex["texture"], "height_origin": tex["origin"], "height_res": tex["res"], "height_texels": tex["texels"]}
+	var layers := {"terrain_mask": masks[0], "terrain_mask2": masks[1], "map_tiles": Vector2(hm.size),
+		"height_tex": tex["texture"], "height_origin": tex["origin"], "height_res": tex["res"], "height_texels": tex["texels"],
+		"icy": r.cold}
+	return layers.merged(_cover_map_layers(r))
 
 
 ## What the map screen draws the current zone from: its ground masks and its relief.
@@ -413,7 +557,27 @@ func map_layers() -> Dictionary:
 	var layers := {}
 	for key in ["terrain_mask", "terrain_mask2", "map_tiles", "height_tex", "height_origin", "height_res", "height_texels"]:
 		layers[key] = _ground_mat.get_shader_parameter(key)
-	return layers
+	layers["icy"] = _region.cold if _region else false
+	return layers.merged(_cover_map_layers(_region)) if _region else layers
+
+
+## The map's cover layers: their doses (cover_mask), how many, and the colour of each (the
+## average of its picture).
+static func _cover_map_layers(r: Region) -> Dictionary:
+	var covers := r.covers()
+	if covers.is_empty():
+		return {"cover_count": 0}
+	var colours := PackedVector3Array()
+	for layer in covers:
+		var img := (layer["tex"] as Texture2D).get_image()
+		if img.is_compressed():
+			img.decompress()
+		img.resize(1, 1, Image.INTERPOLATE_BILINEAR)
+		var c := img.get_pixel(0, 0)
+		colours.append(Vector3(c.r, c.g, c.b))
+	while colours.size() < Region.COVER_MAX:
+		colours.append(Vector3.ONE)
+	return {"cover_count": covers.size(), "cover_mask": _cover_mask(covers), "cover_colours": colours}
 
 
 ## A flat square grid of CHUNK metres, `step` vertices per metre (shared by all chunks).
@@ -428,11 +592,12 @@ static func _chunk_mesh(step: int) -> PlaneMesh:
 
 
 ## Two textures, one pixel per tile: [R path, G tall grass, B water] and
-## [R sand, G forest, B mud, A rock]. In a sandy zone (SAND_TEX) the trails lie on sand.
+## [R sand, G forest, B mud, A rock]. In a sandy zone (SAND_TEX) the trails lie on sand (not on
+## the ice: ICE).
 static func _terrain_masks(r: Region, hm: HeightMap) -> Array[ImageTexture]:
 	var a := Image.create(hm.size.x, hm.size.y, false, Image.FORMAT_RGB8)
 	var b := Image.create(hm.size.x, hm.size.y, false, Image.FORMAT_RGBA8)
-	var sandy := SAND_TEX.has(r.region_id)
+	var sandy := SAND_TEX.has(r.region_id) and not r.region_id in ICE
 	for y in hm.size.y:
 		for x in hm.size.x:
 			var s := r.surface_at(Vector2((x + 0.5) * PX, (y + 0.5) * PX))
@@ -442,7 +607,9 @@ static func _terrain_masks(r: Region, hm: HeightMap) -> Array[ImageTexture]:
 	return [ImageTexture.create_from_image(a), ImageTexture.create_from_image(b)]
 
 
-func _build_water(hm: HeightMap, shift := Vector2.ZERO, keep := Rect2()) -> ShaderMaterial:
+## The water sheet of zone `r` (its relief `hm`), moved by `shift` tiles, drawn only inside `keep`
+## (as _build_ground): its shades (WATER_TINT), blended towards the neighbours' near the edges.
+func _build_water(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect2()) -> ShaderMaterial:
 	var plane := MeshInstance3D.new()
 	var mesh := PlaneMesh.new()
 	mesh.size = Vector2(hm.size) + Vector2.ONE * hm.margin * 2.0
@@ -451,9 +618,10 @@ func _build_water(hm: HeightMap, shift := Vector2.ZERO, keep := Rect2()) -> Shad
 	var mat := ShaderMaterial.new()
 	mat.shader = WATER
 	mat.set_shader_parameter("noise_tex", WorldNoise.texture())
-	if WATER_TINT.has(_water_zone):
-		mat.set_shader_parameter("shallow", WATER_TINT[_water_zone][0])
-		mat.set_shader_parameter("deep", WATER_TINT[_water_zone][1])
+	var own: Array = WATER_TINT.get(r.region_id, WATER_DEFAULT)
+	mat.set_shader_parameter("shallow", own[0])
+	mat.set_shader_parameter("deep", own[1])
+	_set_edge_tints(mat, r)
 	mat.set_shader_parameter("water_level", HeightMap.WATER_LEVEL)
 	var ground := hm.height_texture()
 	mat.set_shader_parameter("ground_height", ground["texture"])
@@ -545,8 +713,7 @@ func _build_neighbour(n: Dictionary) -> void:
 	# Heights meet exactly at the edge (no rolling near edges): the two grounds just touch.
 	_build_ground(r, hm, shift, band)
 	if hm.has_water:
-		_water_zone = r.region_id
-		_build_water(hm, shift, band)
+		_build_water(r, hm, shift, band)
 	var corridors := r.exits().map(func(e: ZoneExit) -> Rect2: return r.exit_corridor(e, Region.CORRIDOR_DEPTH))
 	var groups := {}
 	for p in r.entities.get_children():
@@ -1144,9 +1311,6 @@ func _add_multimesh(mesh: Mesh, items: Array, shadows: bool, range_end := VIEW_R
 ## Trees filling the "forest" tiles of zone `r` (inside `keep`, world tiles, when given).
 func _build_forest(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect2()) -> void:
 	var density: float = Quality.setting(&"forest_density")
-	var own: Dictionary = ZONE_TREES.get(r.region_id, {})
-	var trees: Array = own.get("forest", FOREST_TREES)
-	var low: Array = own.get("low", ["buisson"])
 	var groups := {}
 	for y in hm.size.y:
 		for x in hm.size.x:
@@ -1157,6 +1321,9 @@ func _build_forest(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 			var rng := RandomNumberGenerator.new()
 			rng.seed = hash(Vector2i(x, y) * 7 + Vector2i(3, 11))
 			var count := int(density) + (1 if rng.randf() < fmod(density, 1.0) else 0)
+			var own := _woods_at(r, Vector2(x + 0.5, y + 0.5))
+			var trees: Array = own.get("forest", FOREST_TREES)
+			var low: Array = own.get("low", ["buisson"])
 			for i in count:
 				var t := Vector2(x + rng.randf_range(0.1, 0.9), y + rng.randf_range(0.2, 0.95))
 				var kind: String = trees[rng.randi() % trees.size()]
@@ -1182,6 +1349,9 @@ static func _by_path(r: Region, x: int, y: int) -> bool:
 
 func _build_tall_grass() -> void:
 	var items := []
+	var thin := []   # (where the cover layer lies thin: the usual tufts)
+	var own: String = ZONE_TUFT.get(_region.region_id, "")
+	var split := _region.cover_data != null and ResourceLoader.exists(own)
 	var tufts: int = Quality.setting(&"grass_tufts") + 1
 	for y in heights.size.y:
 		for x in heights.size.x:
@@ -1191,16 +1361,23 @@ func _build_tall_grass() -> void:
 			rng.seed = hash(Vector2i(x, y))
 			for i in tufts:
 				var p := Vector2(x + rng.randf_range(0.1, 0.9), y + (i + 0.5 + rng.randf_range(-0.2, 0.2)) / tufts)
-				items.append([Vector3(p.x, heights.height(p), p.y), rng.randf() < 0.5, rng.randf_range(0.85, 1.12)])
-	if items.is_empty():
-		return
+				var item := [Vector3(p.x, heights.height(p), p.y), rng.randf() < 0.5, rng.randf_range(0.85, 1.12)]
+				(thin if split and _region.cover_at(p * PX) < THIN_COVER else items).append(item)
+	if not items.is_empty():
+		_add_multimesh(_tuft_mesh(load(own) if ResourceLoader.exists(own) else TUFT), items, false, GRASS_RANGE)
+	if not thin.is_empty():
+		_add_multimesh(_tuft_mesh(TUFT), thin, false, GRASS_RANGE)
+
+
+## The quad of a tuft of tall grass (its picture `tuft`), swaying and pushed aside by Chloé.
+static func _tuft_mesh(tuft: Texture2D) -> QuadMesh:
 	var metres := 0.23 / PX
 	var quad := QuadMesh.new()
-	quad.size = Vector2(TUFT.get_width(), TUFT.get_height()) * metres
-	quad.center_offset = Vector3(0, (TUFT.get_height() / 2.0 - TUFT.get_height() * 0.06) * metres, 0)
+	quad.size = Vector2(tuft.get_width(), tuft.get_height()) * metres
+	quad.center_offset = Vector3(0, (tuft.get_height() / 2.0 - tuft.get_height() * 0.06) * metres, 0)
 	var mat := ShaderMaterial.new()
 	mat.shader = BILLBOARD
-	mat.set_shader_parameter("tex", TUFT)
+	mat.set_shader_parameter("tex", tuft)
 	mat.set_shader_parameter("stretch", STRETCH)
 	mat.set_shader_parameter("sway", 3.0 / PX)
 	mat.set_shader_parameter("push", 16.0 / PX)
@@ -1208,7 +1385,7 @@ func _build_tall_grass() -> void:
 	mat.set_shader_parameter("roundness", 0.2)
 	mat.set_shader_parameter("base_shade", 0.35)
 	quad.material = mat
-	_add_multimesh(quad, items, false, GRASS_RANGE)
+	return quad
 
 
 ## Soft dark patches on the ground under standing things: [position, width (m)].
@@ -1268,7 +1445,7 @@ func _build_outer_forest() -> void:
 		if ways_out.any(func(c: Rect2) -> bool: return c.has_point(p * PX)):   # the path goes on
 			continue
 		var near_side := p.y > h - 0.5
-		var own: Dictionary = ZONE_TREES.get(_region.region_id, {})
+		var own := _woods_at(_region, p.clamp(Vector2.ZERO, Vector2(w - 1, h - 1)))
 		var kinds: Array = own.get("low", OUTER_LOW) if near_side else own.get("outer", OUTER_TREES)
 		var kind: String = kinds[rng.randi() % kinds.size()]
 		if not groups.has(kind):
@@ -1470,11 +1647,15 @@ func _process(delta: float) -> void:
 		RenderingServer.global_shader_parameter_set(&"player_world", feet if occlusion_px == Vector2.INF else heights.to_3d(occlusion_px))
 		_pollen.position = camera.target + Vector3(0, 1.5, 0)
 		_wildlife.heights = heights
-		_wildlife.update(delta, camera.target, Game.clock / 60.0, maxf(_rain_amount, _sand_amount), _region, feet)
+		# The little life shelters from the rain, the sand, the blizzard (not from gentle snow).
+		_wildlife.snowing = maxf(_snow.snow, _snow.blizzard)
+		_wildlife.update(delta, camera.target, Game.clock / 60.0, maxf(maxf(_rain_amount, _sand_amount), _snow.blizzard),
+			_region, feet)
 		_rain.position = camera.target + Vector3(0, 9.0, 2.0)
 		# The wind blows from the west: the grains start upwind and cross the view.
 		_sand.position = camera.target + Vector3(-15.0, 1.2, 1.0)
 		_dust.position = camera.target + Vector3(0.0, 1.4, 1.0)
+		_snow.follow(camera.target)
 		_update_wake(at)
 	_update_floods()
 	var blend := 1.0 - exp(-WEATHER_BLEND * delta)
@@ -1483,6 +1664,7 @@ func _process(delta: float) -> void:
 	_lightning(delta)
 	_mist_amount = lerpf(_mist_amount, 1.0 if Game.weather == &"mist" else 0.0, blend)
 	_sand_amount = lerpf(_sand_amount, 1.0 if Game.weather == &"sandstorm" else 0.0, blend)
+	_snow.blend(delta, blend)
 	_update_sky(Game.clock / 60.0)
 	_magic.update(delta, _region, player, _sun, _env)
 	(camera.attributes as CameraAttributesPractical).dof_blur_far_distance = camera.distance() + 13.0
@@ -1877,6 +2059,7 @@ func _indoor_light(hour: float) -> void:
 	_rain.emitting = false
 	_sand.emitting = false
 	_dust.emitting = false
+	_snow.stop()
 	if _ground_mat:
 		_ground_mat.set_shader_parameter("wetness", 0.0)
 	for n in _zone.get_children():
@@ -1903,25 +2086,37 @@ func _update_sky(hour: float) -> void:
 	var rain := _rain_amount
 	var mist := _mist_amount
 	var sand := _sand_amount
+	var snow := _snow.snow
+	var bliz := _snow.veil()   # (thicker in the gusts)
 	_sun.rotation_degrees = Vector3(-lerpf(a[1], b[1], t), lerpf(a[2], b[2], t), 0.0)
-	_sun.light_color = (a[3] as Color).lerp(b[3], t).lerp(Color(1.0, 0.8, 0.55), sand * 0.5)
-	_sun.light_energy = lerpf(a[4], b[4], t) * (1.0 - 0.65 * rain) * (1.0 - 0.4 * mist) * (1.0 - 0.45 * sand)
+	_sun.light_color = (a[3] as Color).lerp(b[3], t).lerp(Color(1.0, 0.8, 0.55), sand * 0.5) \
+		.lerp(Color(0.9, 0.94, 1.0), snow * 0.4 + bliz * 0.5)
+	_sun.light_energy = lerpf(a[4], b[4], t) * (1.0 - 0.65 * rain) * (1.0 - 0.4 * mist) * (1.0 - 0.45 * sand) \
+		* (1.0 - 0.45 * snow) * (1.0 - 0.55 * bliz)
 	var sky := (a[7] as Color).lerp(b[7], t)
 	var bright := clampf(sky.get_luminance() / 0.75, 0.15, 1.0)
 	sky = sky.lerp(Color(0.55, 0.58, 0.62) * bright, rain * 0.8).lerp(Color(0.82, 0.84, 0.86) * bright, mist * 0.85)
 	sky = sky.lerp(SAND_SKY * bright, sand * 0.85)
+	# Snow: an overcast white-grey sky; the blizzard: all white.
+	sky = sky.lerp(Color(0.76, 0.8, 0.86) * bright, snow * 0.7).lerp(SNOWFALL.SKY * bright, bliz * 0.9)
 	_env.ambient_light_color = (a[5] as Color).lerp(b[5], t).lerp(Color(0.62, 0.65, 0.7) * bright, rain * 0.5 + mist * 0.4) \
-		.lerp(Color(0.8, 0.64, 0.45) * bright, sand * 0.5)
-	_env.ambient_light_energy = lerpf(a[6], b[6], t) * (1.0 + 0.2 * mist + 0.15 * sand)
+		.lerp(Color(0.8, 0.64, 0.45) * bright, sand * 0.5).lerp(Color(0.76, 0.8, 0.88) * bright, snow * 0.35 + bliz * 0.5)
+	# (Falling snow greys the day a little, so that the white flakes show against the snow.)
+	_env.ambient_light_energy = lerpf(a[6], b[6], t) * (1.0 + 0.2 * mist + 0.15 * sand - 0.12 * snow + 0.2 * bliz)
 	_env.background_color = sky
 	_env.fog_light_color = sky
-	# Mist (or blowing sand): clear around Chloé (the camera is ~distance away), thick a few
-	# metres beyond.
+	# Mist (or blowing sand, or snow): clear around Chloé (the camera is ~distance away), thick a
+	# few metres beyond; falling snow closes the horizon a little, like rain.
 	var near := camera.distance()
 	var veil := maxf(mist, sand)
-	_env.fog_depth_begin = lerpf(lerpf(near + 8.0, near + 2.0, rain), near - 1.0, veil)
-	_env.fog_depth_end = lerpf(lerpf(near + 46.0, near + 28.0, rain), near + 14.0, veil)
-	_pollen.visible = hour > 6.0 and hour < 20.0 and rain < 0.3 and sand < 0.3
+	var closed := maxf(rain, snow * 0.6)
+	var begin := lerpf(lerpf(near + 8.0, near + 2.0, closed), near - 1.0, veil)
+	var end := lerpf(lerpf(near + 46.0, near + 28.0, closed), near + 14.0, veil)
+	# The blizzard closes in more than the sand, even around Chloé, most in the gusts.
+	_env.fog_depth_begin = lerpf(begin, near - 2.5, bliz)
+	_env.fog_depth_end = lerpf(end, near + 9.0 - 3.0 * _snow.gust, bliz)
+	_pollen.visible = hour > 6.0 and hour < 20.0 and rain < 0.3 and sand < 0.3 and snow < 0.3 and bliz < 0.3
+	_snow.shade(bright)
 	# Sand streaking past, dust drifting, as thick as the storm is.
 	_sand.emitting = sand > 0.05
 	_dust.emitting = sand > 0.05

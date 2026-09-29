@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/pachyrhinosaurus.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/pachyrhinosaurus_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"pachyrhinosaurus"
+display_name = "Pachyrhinosaurus"
+family = &"ceratopsian"
+description = "Un cousin du Tricératops qui vit en grands troupeaux dans les vallées froides. À la place d'une corne, il porte sur le nez une grosse bosse d'os, et il s'en sert pour pousser la neige."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.607
+battle_scale = 0.758
+walk_fps = 7.0
+cry_prefix = "ceratopsien"
+head_size = 8
+head_bite = 5
+teeth_sharp = 3
+teeth_count = 5
+front_power = 7
+front_reach = 4
+back_legs_power = 7
+back_legs_speed = 4
+back_armor = 7
+back_spikes = 5
+tail_power = 5
+tail_length = 4
+rarity = "common"

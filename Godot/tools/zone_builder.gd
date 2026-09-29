@@ -102,6 +102,27 @@ static func region_from_maps(id: StringName, region_name: String, zone_name: Str
 	return root
 
 
+## The zone's cover layer (Region.cover_data: its snow) from a grey image, one pixel per tile
+## (black: none … white: all covered), saved next to the zone like its relief (`cover_res`); its
+## pictures (`path_tex`: on the paths; null: `tex`).
+static func cover(root: Region, cover_png: String, cover_res: String, tex: Texture2D, path_tex: Texture2D = null) -> void:
+	var img := Image.load_from_file(ProjectSettings.globalize_path(cover_png))
+	img.convert(Image.FORMAT_L8)
+	ResourceSaver.save(img, cover_res)
+	root.cover_data = load(cover_res)
+	root.cover_tex = tex
+	root.cover_path_tex = path_tex
+
+
+## One more cover layer over the first (Region.cover_layers: the sand of a neighbour here, its
+## forest floor there), from a grey image like `cover`; `snow`: Chloé's steps crunch in it.
+static func cover_layer(root: Region, cover_png: String, cover_res: String, tex: Texture2D, snow := false) -> void:
+	var img := Image.load_from_file(ProjectSettings.globalize_path(cover_png))
+	img.convert(Image.FORMAT_L8)
+	ResourceSaver.save(img, cover_res)
+	root.cover_layers.append({"tex": tex, "data": load(cover_res), "snow": snow})
+
+
 ## Tileset index of the ground colour closest to `c` (grass when unsure).
 static func _sol_index(c: Color) -> int:
 	var best := 0
@@ -169,7 +190,8 @@ static func spawn(root: Region, spawn_name: String, x: float, y: float) -> void:
 	root.get_node("Spawns").add_child(m)
 
 
-## `rows`: [species, min level, max level, weight, when (see WHEN), hidden].
+## `rows`: [species, min level, max level, weight, when (see WHEN), hidden, and optionally
+## options: {"weather": [&"snow", &"blizzard"]} = out only in those weathers (Encounter.weathers)].
 static func habitat(root: Region, label: String, cells: Rect2, rows: Array, roamers := 0) -> Habitat:
 	var h := Habitat.new()
 	h.name = label.to_pascal_case().replace("'", "")
@@ -185,6 +207,8 @@ static func habitat(root: Region, label: String, cells: Rect2, rows: Array, roam
 		e.weight = r[3]
 		e.when = WHEN[r[4]]
 		e.hidden = r[5]
+		var opts: Dictionary = r[6] if r.size() > 6 else {}
+		e.weathers.assign(opts.get("weather", []))
 		list.append(e)
 	h.encounters = list
 	root.get_node("Habitats").add_child(h)

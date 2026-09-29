@@ -13,6 +13,13 @@ uniform float water_level = -0.42;
 uniform vec4 shallow : source_color = vec4(0.36, 0.64, 0.62, 1.0);
 uniform vec4 deep : source_color = vec4(0.07, 0.22, 0.32, 1.0);
 uniform vec4 foam : source_color = vec4(0.95, 0.97, 0.9, 1.0);
+// Near an edge leading to a zone whose water is of another colour (WorldView.TINT_BLEND): its
+// shades, half and half at the edge (see ground.gdshader's tint_edges).
+uniform int tint_edge_count = 0;
+uniform float tint_blend = 12.0;
+uniform vec4 tint_edges[4];
+uniform vec4 edge_shallow[4] : source_color;
+uniform vec4 edge_deep[4] : source_color;
 
 // A neighbour zone shown beyond this one's edge: its local coordinates are world - zone_offset,
 // and only keep_rect is drawn (x, y, w, h in world tiles; w = 0: everything). Where a
@@ -55,7 +62,16 @@ void fragment() {
 	float n1 = texture(noise_tex, flow).r;
 	float n2 = texture(noise_tex, flow * 2.3 - vec2(TIME * 0.03, 0.0)).r;
 	float d = clamp(depth / 0.45, 0.0, 1.0);
-	vec3 col = mix(shallow.rgb, deep.rgb, smoothstep(0.0, 1.0, d) * (0.85 + 0.3 * (n1 - 0.5)));
+	vec3 light = shallow.rgb;
+	vec3 dark = deep.rgb;
+	vec2 local = world - zone_offset;
+	for (int i = 0; i < tint_edge_count; i++) {
+		vec4 e = tint_edges[i];
+		float k = 0.5 * (1.0 - smoothstep(0.0, tint_blend, ((e.x < 0.5 ? local.x : local.y) - e.y) * e.z));
+		light = mix(light, edge_shallow[i].rgb, k);
+		dark = mix(dark, edge_deep[i].rgb, k);
+	}
+	vec3 col = mix(light, dark, smoothstep(0.0, 1.0, d) * (0.85 + 0.3 * (n1 - 0.5)));
 	// Foam lapping the shore: a thin band where the water is shallowest, breathing slowly.
 	float lap = 0.05 + 0.035 * sin(TIME * 1.4 + (world.x + world.y) * 1.3) + 0.03 * n2;
 	float froth = 1.0 - smoothstep(0.0, lap, depth);

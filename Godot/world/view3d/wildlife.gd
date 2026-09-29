@@ -52,6 +52,9 @@ const SCATTER := 3.0
 const INTO_WATER := {"on": [&"water"]}
 
 var heights: HeightMap
+## How much snow is falling (0–1, set by the view): an effect with "snowfall": false (the few
+## flakes of the snowy places) gives way to the weather's own.
+var snowing := 0.0
 var _region: Region
 var _region_key := 0
 var _underwater := false
@@ -111,8 +114,9 @@ func update(delta: float, focus: Vector3, hour: float, rain: float, region: Regi
 	var wet := 0.0 if region.indoor else rain
 	for b in _beasts:
 		_update_beast(b, delta, now, wet)
+	var snow := 0.0 if region.indoor else snowing
 	for e in _effects:
-		_update_effect(e, now, wet)
+		_update_effect(e, now, wet, snow)
 
 
 func _enter(region: Region) -> void:
@@ -675,10 +679,10 @@ func _make_beast(kind: Dictionary, pic: Texture2D) -> Beast:
 
 # --- Effects: particles ------------------------------------------------------------------------
 
-func _update_effect(e: Dictionary, now: int, wet: float) -> void:
+func _update_effect(e: Dictionary, now: int, wet: float, snow: float) -> void:
 	var def: Dictionary = e["def"]
 	var p: CPUParticles3D = e["node"]
-	var on := DB.is_out(def, now, wet)
+	var on: bool = DB.is_out(def, now, wet) and (snow < 0.3 or def.get("snowfall", true))
 	if def["emit"] == &"box":
 		p.position = _focus + Vector3(0, float(def.get("above", 0.0)), 0)
 	elif on and (e["at"] as Vector3).distance_to(_focus) > SCATTER:

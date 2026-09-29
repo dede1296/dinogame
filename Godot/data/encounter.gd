@@ -1,7 +1,7 @@
 class_name Encounter
 extends Resource
 ## One species living in a habitat (see world/habitat.gd): when, at which levels, how often,
-## and how it is met — roaming in sight, or hidden in the tall grass.
+## in which weather, and how it is met — roaming in sight, or hidden in the tall grass.
 
 @export var species: StringName = &"protoceratops"
 @export var levels := Vector2i(2, 4)
@@ -11,6 +11,8 @@ extends Resource
 @export_enum("toujours", "jour", "nuit", "aube et crépuscule", "jour et crépuscule", "pleine lune") var when := 0
 ## true: met in the tall grass (random encounter); false: roams in sight in the habitat.
 @export var hidden := true
+## Weathers it comes out in (Game.WEATHERS: &"snow", &"blizzard"…); empty: any weather.
+@export var weathers: Array[StringName] = []
 
 const PHASES := [
 	[&"dawn", &"day", &"dusk", &"night"],
@@ -26,6 +28,8 @@ const FULL_MOON := 5
 
 func active(phase: StringName) -> bool:
 	if when == FULL_MOON and not Game.is_full_moon():
+		return false
+	if not weathers.is_empty() and not Game.weather in weathers:
 		return false
 	return phase in PHASES[when]
 

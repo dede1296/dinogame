@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/edmontosaurus.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/edmontosaurus_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"edmontosaurus"
+display_name = "Edmontosaurus"
+family = &"hadrosaur"
+description = "Un grand dinosaure à bec de canard qui broute en troupeau dans la vallée. Il a des centaines de petites dents pour mâcher les aiguilles de sapin, même en hiver."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.591
+battle_scale = 0.635
+walk_fps = 7.0
+cry_prefix = "hadrosaure"
+head_size = 6
+head_bite = 4
+teeth_sharp = 2
+teeth_count = 7
+front_power = 6
+front_reach = 5
+back_legs_power = 7
+back_legs_speed = 6
+back_armor = 3
+back_spikes = 0
+tail_power = 5
+tail_length = 6
+rarity = "common"

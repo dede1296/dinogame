@@ -226,8 +226,8 @@ func _test_weather_views() -> void:
 	var badge: Control = load("res://ui/clock_badge.gd").new()
 	root.add_child(badge)
 	await process_frame
-	var own_icon: bool = ResourceLoader.exists(badge.SANDSTORM_ICON)   # meteo_sable.png, else the mist tinted ochre
-	_check(badge._icon.texture != null and badge._icon.modulate.is_equal_approx(Color.WHITE if own_icon else badge.SAND_TINT),
+	var own_icon: bool = ResourceLoader.exists(badge.LOCAL_ICONS[&"sandstorm"][0])   # meteo_sable.png, else the mist tinted ochre
+	_check(badge._icon.texture != null and badge._icon.modulate.is_equal_approx(Color.WHITE if own_icon else badge.LOCAL_ICONS[&"sandstorm"][1]),
 		"horloge : icône de tempête de sable")
 	badge.free()
 	var v: Node3D = load("res://world/view3d/world_view.gd").new()

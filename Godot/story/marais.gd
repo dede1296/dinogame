@@ -96,7 +96,9 @@ static func arrival() -> void:
 		func() -> void:
 			if singer:
 				Stage.turn_to(Stage.chloe(), (singer as Node2D).global_position))])
-	await S.say(_echo_hears())
+	var cast := {}   # Écho out of her party for his answer (cast « echo »), when he is not her lead
+	await S.say(_echo_hears(cast))
+	Act.echo_off_stage(cast.get("echo"))
 	await S.say([
 		Act.cue({"text": "PLOUF ! Tout près, un grand bruit d'eau. Puis une voix, beaucoup moins jolie :"}, _plouf),
 		Act.cue({"who": "Une voix", "text": "Hé ! HÉ ! Reviens ici, espèce de… de sac à flotteurs ! Rends-moi ça !"}, _joss_shouts),
@@ -138,20 +140,19 @@ static func _joss_shouts() -> void:
 		Stage.hop(sellier, 1, 9.0)
 
 
-## What Chloé's dinos make of the song (Écho knows that voice).
-static func _echo_hears() -> Array:
+## What Chloé's dinos make of the song (Écho knows that voice: at her side, or brought out of
+## her party for his answer, cast « echo »).
+static func _echo_hears(cast: Dictionary) -> Array:
 	var w = S.world()
 	var echo := echo_dino()
 	var lead := Game.lead_dino()
 	var starter_is_echo := str(Game.flag(&"starter")) == "parasaurolophus"
 	if echo and Game.party.has(echo):
-		var at_her_side: bool = lead == echo
+		var little: Node2D = w.companion if lead == echo else Act.echo_on_stage(echo)
+		if lead != echo:
+			cast["echo"] = little
 		var lines: Array = [Act.cue({"text": "%s relève la tête d'un coup. Sa crête vibre. Et il répond : une petite note, toute tremblante, sur le même ton." % echo.nickname},
-			func() -> void:
-				if at_her_side:
-					Act.little_note(w.companion)
-				else:   # (in his collar: only heard)
-					cry("hadrosaure", "neutre", -14.0, 1.25))]
+			func() -> void: Act.little_note(little))]
 		if starter_is_echo:
 			lines.append({"who": CHLOE, "text": "(« Sa mère, la Voix du Marais, chante encore dans les roseaux »… C'est elle ?)"})
 		else:
@@ -493,7 +494,9 @@ static func voix(who: Node) -> void:
 			Save.save_game()
 			S.lock(false)
 			return
-		await S.say([_voix_again(who)])
+		var cast := {}   # Écho out of her party for the line (cast « echo »), when he is not her lead
+		await S.say([_voix_again(who, cast)])
+		Act.echo_off_stage(cast.get("echo"))
 		Act.lead_back()
 		return
 	var w = S.world()
@@ -682,8 +685,9 @@ static func _door_opens(temple: Node) -> void:
 		Stage.shake(1.5, 0.4)
 
 
-## A line at each visit, acted out (a note sung, a sniff, a look towards the temple…).
-static func _voix_again(singer: Node) -> Dictionary:
+## A line at each visit, acted out (a note sung, a sniff, a look towards the temple…). Écho, when
+## a line shows him, is brought out of her party for it (cast « echo »: echo_off_stage after).
+static func _voix_again(singer: Node, cast: Dictionary) -> Dictionary:
 	var echo := echo_dino()
 	if Game.flag(&"coeur_1") and not Game.flag(&"voix_apres_coeur"):
 		Game.set_flag(&"voix_apres_coeur")
@@ -700,7 +704,7 @@ static func _voix_again(singer: Node) -> Dictionary:
 	if echo and Game.party.has(echo) and Game.flag(&"voix_echo_reconnu"):
 		var k := n % VOIX_AGAIN_ECHO.size()
 		return Act.cue({"text": (VOIX_AGAIN_ECHO[k] as String).replace("{de}", French.de(echo.nickname)).replace("%s", echo.nickname)},
-			func() -> void: _with_echo_again(singer, k, Game.lead_dino() == echo))
+			func() -> void: _with_echo_again(singer, k, echo, cast))
 	if echo and not Game.party.has(echo):
 		return Act.cue({"text": "La Voix renifle les mains de Chloé, puis regarde derrière elle. Elle cherche %s." % echo.nickname},
 			func() -> void:
@@ -723,25 +727,32 @@ static func _alone_again(singer: Node, k: int) -> void:
 			Act.sing(singer, -10.0, OLD_PITCH - 0.04)
 
 
-## VOIX_AGAIN_ECHO[k] acted out, when Écho is at Chloé's side (her lead): singing together, a
-## nuzzle, asleep against his mother (he comes back to Chloé after the line: lead_back).
-static func _with_echo_again(singer: Node, k: int, at_her_side: bool) -> void:
+## VOIX_AGAIN_ECHO[k] acted out, Écho at Chloé's side (her lead) or brought out of her party for
+## the line (cast « echo »): singing together, a nuzzle, asleep against his mother (the lead
+## comes back to Chloé after the line: lead_back).
+static func _with_echo_again(singer: Node, k: int, echo: Dino, cast: Dictionary) -> void:
 	var w = S.world()
+	var little: Node2D = w.companion if Game.lead_dino() == echo else Act.echo_on_stage(echo)
+	if not little is Companion:
+		cast["echo"] = little
 	match k:
 		0:
 			Act.sing(singer, -10.0)
-			if at_her_side:
-				await S.wait(0.5)
-				Act.little_note(w.companion)
+			await S.wait(0.5)
+			Act.little_note(little)
 		1:
-			if at_her_side and is_instance_valid(singer):
-				Act.lean(singer, (w.companion as Node2D).global_position, 10.0, 1.4)
+			if is_instance_valid(singer) and is_instance_valid(little):
+				Act.lean(singer, little.global_position, 10.0, 1.4)
 		2:
-			if at_her_side and is_instance_valid(singer):
+			if is_instance_valid(singer) and is_instance_valid(little):
 				var her_at: Vector2 = (singer as Node2D).global_position
-				var side := -44.0 if her_at.x > (w.companion as Node2D).global_position.x else 44.0
-				await Act.walk_lead(her_at + Vector2(side, 18.0), 70.0)
-				Stage.bow(w.companion, 2.4)
+				var side := -44.0 if her_at.x > little.global_position.x else 44.0
+				if little is Companion:
+					await Act.walk_lead(her_at + Vector2(side, 18.0), 70.0)
+				else:
+					await (little as DinoNpc).walk_to(her_at + Vector2(side, 18.0), 70.0)
+				if is_instance_valid(little):
+					Stage.bow(little, 2.4)
 
 
 # ------------------------------------------------------------------ Joss, at Havre-Doré

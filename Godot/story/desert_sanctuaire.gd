@@ -219,7 +219,7 @@ static func _tracks() -> void:
 	if guide == null:
 		guide = Game.lead_dino()
 	var chloe := Stage.chloe()
-	var dino := D._companion() if guide and guide == Game.lead_dino() else null   # the guide, when at her side
+	var dino := D._little_on_stage(guide)   # the guide at her side, or out of her party for the chase
 	var ahead := _towards(P.POURSUITES[1])
 	var gust := func() -> void:
 		Stage.shake(2.0, 0.6)
@@ -236,7 +236,7 @@ static func _tracks() -> void:
 	var pick := await Dialogue.choose("", "Par où aller ?", ["Suivre les traces de roues", nose])
 	var follows := func() -> void:   # the guide first, straight on; Chloé after it
 		if dino:
-			D._companion_walk(chloe.global_position + ahead * 120.0, 90.0)
+			D._little_walk(dino, chloe.global_position + ahead * 120.0, 90.0)
 			await S.wait(0.6)
 		await D._chloe_walk(chloe.global_position + ahead * 80.0, 100.0, 1.6)
 	var circles := func() -> void:   # left, left again, left again… the same rock
@@ -279,6 +279,7 @@ static func _tracks() -> void:
 	await S.say(after)
 	Stage.fade_out(S.actor("RocherParOu"), 1.2, true)   # (lost in the storm again)
 	D._companion_back()
+	await D._little_back(dino)
 	if guide and guide == Game.lead_dino():
 		S.world().companion.rejoice()
 

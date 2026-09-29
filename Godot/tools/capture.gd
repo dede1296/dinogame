@@ -698,6 +698,14 @@ func _run(command: String, arg: Variant) -> void:
 			_held = arg
 			if _held != "":
 				Input.action_press(_held)
+		"hold_also":   # [action, pressed]: a second action held with the one of "hold" (B to run)
+			if arg[1]:
+				Input.action_press(StringName(arg[0]))
+			else:
+				Input.action_release(StringName(arg[0]))
+		"where":   # Chloé's position (tiles), to measure a speed
+			var p: Node2D = current_scene.get("player")
+			print("where ", arg, " : ", p.global_position / 48.0, " t=", Time.get_ticks_msec())
 		"press":
 			for pressed in [true, false]:
 				var ev := InputEventAction.new()

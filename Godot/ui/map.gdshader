@@ -1,7 +1,7 @@
 shader_type canvas_item;
 // The zone map, drawn like an explorer's map: the ground by colour, the relief by shading
 // and contour lines, woods as little crowns; old blank paper where Chloé has not been.
-// It reads the same masks and height texture as the 3D ground.
+// It reads the same masks and height texture as the 3D ground (and its snow: the cover layer).
 
 uniform sampler2D terrain_mask : filter_linear, repeat_disable;    // R path, G tall grass, B water
 uniform sampler2D terrain_mask2 : filter_linear, repeat_disable;   // R sand, G forest, B mud, A rock
@@ -13,6 +13,12 @@ uniform vec2 map_tiles = vec2(40.0, 26.0);
 uniform sampler2D fog : filter_linear, repeat_disable;             // what has been seen
 uniform vec2 fog_scale = vec2(1.0);
 uniform sampler2D noise_tex : repeat_enable, filter_linear;
+// A cold zone's "sand" is ice. Its snow (and other layers: Region.covers()) laid over the ground
+// as on the 3D ground: their doses in cover_mask's R, G, B, each in its own colour.
+uniform bool icy = false;
+uniform int cover_count = 0;
+uniform sampler2D cover_mask : filter_linear, repeat_disable;
+uniform vec3 cover_colours[3];
 
 const vec3 GRASS = vec3(0.62, 0.74, 0.44);
 const vec3 TALL = vec3(0.50, 0.64, 0.33);
@@ -24,6 +30,7 @@ const vec3 CANYON = vec3(0.80, 0.58, 0.42);
 const vec3 WATER = vec3(0.45, 0.66, 0.80);
 const vec3 SHORE = vec3(0.22, 0.36, 0.48);
 const vec3 ROCK = vec3(0.68, 0.59, 0.47);
+const vec3 ICE = vec3(0.72, 0.86, 0.93);
 const vec3 INK = vec3(0.36, 0.27, 0.18);
 const vec3 PAPER = vec3(0.90, 0.83, 0.67);
 const vec3 EDGE = vec3(0.60, 0.46, 0.28);
@@ -48,11 +55,16 @@ void fragment() {
 	float grain = texture(noise_tex, UV * 23.0).r;
 
 	vec3 col = mix(GRASS, TALL, m.g);
-	col = mix(col, SAND, m2.r);
+	col = mix(col, icy ? ICE : SAND, m2.r);
 	col = mix(col, FOREST, m2.g);
 	col = mix(col, MUD, m2.b);
 	col = mix(col, CANYON, m2.a);
 	col = mix(col, PATH, smoothstep(0.3, 0.6, m.r));
+	vec3 doses = texture(cover_mask, UV).rgb;
+	for (int i = 0; i < cover_count; i++) {
+		float laid = smoothstep(0.4, 0.6, doses[i] + (grain - 0.5) * 0.3);
+		col = mix(col, mix(cover_colours[i], PATH * 1.12, smoothstep(0.3, 0.6, m.r) * 0.35), laid * (icy ? 1.0 - m2.r : 1.0));
+	}
 	// Higher ground a little paler; cliffs and steep slopes in bare rock.
 	col += vec3(0.06, 0.05, 0.02) * clamp(h / 8.0, 0.0, 1.0);
 	col = mix(col, ROCK, smoothstep(0.9, 2.2, slope));

@@ -9,6 +9,7 @@ extends RefCounted
 
 const PATH := "res://regions/plaines/plaines.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const BORDERS := preload("res://tools/zones/borders.gd")
 const MAPS := "res://tools/maps/plaines_%s.png"
 const CHARS := "res://assets/art/characters/%s.png"
 const OBSTACLE := "res://world/obstacle.gd"
@@ -49,6 +50,10 @@ static func build() -> Region:
 			Vector2(100, 24), Vector2(15, 33), Vector2(110, 75)],
 		[Vector2(70, 15), Vector2(102, 10), Vector2(24, 71)])
 	_annexes(root, entities)
+	# The join with the Forêt (west edge): its forest floor thinning out into the meadows, its ferns
+	# and mushrooms among the grass (tools/zones/borders.gd; last: nothing placed before moves).
+	var forest := BORDERS.cover(root, "foret", "sous_bois", "terre", "res://regions/plaines")
+	BORDERS.plants(root, entities, forest, ["fougeres", "fougeres", "fougeres", "fougeres", "champignons", "souche"], 0.3, 5171, KEEP_CLEAR)
 	_places(root)
 	_habitats(root)
 	return root

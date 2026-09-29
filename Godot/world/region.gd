@@ -41,6 +41,34 @@ extends Node2D
 @export_range(0.0, 1.0) var storm_chance := 0.03
 ## Chance per game hour of a sandstorm (the Désert). 0: never here (and one blowing stops).
 @export_range(0.0, 1.0) var sandstorm_chance := 0.0
+## Chances per game hour of snow and of a blizzard (the Monts). 0: never here (and one falling,
+## or blowing, stops; a blizzard dies down into snow where snow_chance allows it).
+@export_range(0.0, 1.0) var snow_chance := 0.0
+@export_range(0.0, 1.0) var blizzard_chance := 0.0
+## A cold region (the Monts, their caves): she wears her down coat there once she has it
+## (Outfits); her steps knock on the ice of its "sand" tiles, now and then with a faint crack, and
+## without a cover layer (below) its ground is all snow (Player.step_kind).
+@export var cold := false
+## A layer laid over the ground (the Monts' snow), dosed tile by tile so that a zone passes softly
+## into the next (the snow thins out towards the Côte): cover_data, one pixel per tile, 0 (none)
+## to 1 (all covered), read linearly with an irregular edge (WorldView, ground.gdshader); it lies
+## over grass, paths, earth and rock, not over the water (nor the ice of a cold zone). Its
+## pictures: cover_tex, and cover_path_tex on the paths (a trodden trail; null: cover_tex); where
+## it lies thick, the zone's own cliffs (WorldView.CLIFF_TEX). Chloé's steps crunch in the snow
+## where it is over 0.5 (cover_at), when it is snow (cover_snow).
+@export var cover_tex: Texture2D
+@export var cover_path_tex: Texture2D
+@export var cover_data: Image
+@export var cover_snow := true
+## More layers over it, for a zone that touches several others with other grounds (the sand of
+## the Désert here, the forest floor there): each {"tex": Texture2D, "data": Image (as
+## cover_data), "snow": bool (optional)}, laid in their order over the first. At most COVER_MAX
+## layers in all (the first one included).
+@export var cover_layers: Array[Dictionary] = []
+const COVER_MAX := 3
+## Its ice ("sand" tiles: a frozen lake, a glacier) is slippery: Chloé gets going and stops
+## slowly there, and slides a little (Player.ICE_STOP_S), on foot or on her mount.
+@export var slippery := false
 ## A zone played under the water (the Côte's reef): Chloé swims on her diver's back the whole
 ## time, the view is seen through the water, the battles are fought under it (Dive, Underwater).
 @export var underwater := false
@@ -130,6 +158,47 @@ func surface_at(world_pos: Vector2) -> StringName:
 	if data == null:
 		return &"grass"
 	return StringName(data.get_custom_data("terrain"))
+
+
+## Its cover layers (cover_data, then cover_layers), at most COVER_MAX: each {"tex", "data",
+## "snow"}, the first one also with "path_tex".
+func covers() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if cover_data and cover_tex:
+		out.append({"tex": cover_tex, "path_tex": cover_path_tex if cover_path_tex else cover_tex, "data": cover_data,
+			"snow": cover_snow})
+	for layer in cover_layers:
+		if out.size() < COVER_MAX and layer.get("data") is Image and layer.get("tex") is Texture2D:
+			out.append(layer)
+	return out
+
+
+## How covered the ground is at a world position by the first layer (cover_data), or by the
+## layer `image` (0–1, bilinear between the tiles' centres); -1 when there is none.
+func cover_at(world_pos: Vector2, image: Image = null) -> float:
+	var data := image if image else cover_data
+	if data == null:
+		return -1.0
+	var t := world_pos / tile_size() - Vector2(0.5, 0.5)
+	var c := t.floor()
+	var f := t - c
+	var w := data.get_width() - 1
+	var h := data.get_height() - 1
+	var at := func(x: float, y: float) -> float:
+		return data.get_pixel(clampi(int(x), 0, w), clampi(int(y), 0, h)).r
+	var top := lerpf(at.call(c.x, c.y), at.call(c.x + 1.0, c.y), f.x)
+	var bottom := lerpf(at.call(c.x, c.y + 1.0), at.call(c.x + 1.0, c.y + 1.0), f.x)
+	return lerpf(top, bottom, f.y)
+
+
+## How thick the snow lies at a world position (the highest of its snow layers, "snow"), or -1
+## when the zone has no snow layer.
+func snow_at(world_pos: Vector2) -> float:
+	var most := -1.0
+	for layer in covers():
+		if layer.get("snow", false):
+			most = maxf(most, cover_at(world_pos, layer["data"]))
+	return most
 
 
 func spawn_point(spawn_name: StringName = &"Depart") -> Vector2:

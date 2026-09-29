@@ -260,6 +260,35 @@ const KINDS := {
 	"lanterne_crochet": {"scale": 0.045, "foot": -2.6, "solid": 0.0, "sway": 0.0, "shadow": 0.0, "light": true},
 	"crochet_vide": {"scale": 0.05, "foot": -6.2, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	"bouilloire_poele": {"scale": 0.115, "foot": 0.04, "solid": 10.0, "sway": 0.0, "shadow": 22.0},
+	# Chapitre 6 (Les Monts Gelés), tools/art-jobs/monts.mjs: glacier and ice-cave decor. Sizes
+	# checked against the K≈45 rule (docs/direction-artistique.md « Tailles réelles »).
+	# bloc_glace: interior alpha lowered by the job (~60%) so a sleeping dino behind shows through.
+	"bloc_glace": {"scale": 0.154, "foot": 0.05, "solid": 32.0, "sway": 0.0, "shadow": 64.0},
+	"oeufs_glace": {"scale": 0.087, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 20.0},
+	# mur_glace: an Obstacle to break with Charge (~2 m), like a wall — no shadow, like mur_fissure.
+	"mur_glace": {"scale": 0.206, "foot": 0.05, "solid": Vector2(100, 34), "sway": 0.0, "shadow": 0.0},
+	# Hangs from a cave ceiling: no ground collision, no shadow, negative foot (prop.gd docstring)
+	# floats the whole picture above its ground anchor — map/mécaniques retunes the exact hang
+	# height once placed against the real cave ceiling.
+	"stalactites_glace": {"scale": 0.121, "foot": -1.2, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"cristaux_glace": {"scale": 0.114, "foot": 0.08, "solid": 22.0, "sway": 0.0, "shadow": 45.0, "light": true},
+	# porte_givre: the sanctuary door (4 m high, 3.3 m wide, front-on), flush with the ground like porte_ambre/porte_temple.
+	"porte_givre": {"scale": 0.361, "foot": 0.01, "solid": Vector2(158, 34), "sway": 0.0, "shadow": 0.0},
+	# The same door with 1, 2, 3 Cœurs in its hollows (same picture size: swapped in place, see
+	# story/monts_col.gd); hollows at x ∓0.49 m from its middle, 2.15 m (top) and 1.14 m (bottom) up.
+	"porte_givre_1": {"scale": 0.361, "foot": 0.01, "solid": Vector2(158, 34), "sway": 0.0, "shadow": 0.0},
+	"porte_givre_2": {"scale": 0.361, "foot": 0.01, "solid": Vector2(158, 34), "sway": 0.0, "shadow": 0.0},
+	"porte_givre_3": {"scale": 0.361, "foot": 0.01, "solid": Vector2(158, 34), "sway": 0.0, "shadow": 0.0},
+	"traineau_suie": {"scale": 0.170, "foot": 0.05, "solid": Vector2(72, 26), "sway": 0.0, "shadow": 50.0},
+	"fioles_suie": {"scale": 0.091, "foot": 0.06, "solid": Vector2(25, 10), "sway": 0.0, "shadow": 18.0},
+	# A single empty vial of Dame Suie's (29/09, demande de l'utilisateur), ~15 cm tall: checked
+	# against the K≈45 rule (docs/direction-artistique.md « Tailles réelles » — fiole_vide.png is
+	# 115x415, 415*0.01627/45 ≈ 0.150 m). Rounded glass bottom: sinks a bit into its ground point.
+	"fiole_vide": {"scale": 0.01627, "foot": 0.15, "solid": 0.0, "sway": 0.0, "shadow": 12.0},
+	# abri_roche: a snow-capped rock overhang where Bertille camps, not a building — open
+	# underneath like arche_rocheuse (no blocking collision, no shadow).
+	"abri_roche": {"scale": 0.327, "foot": 0.0, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"statue_cryolophosaure": {"scale": 0.236, "foot": 0.02, "solid": 30.0, "sway": 0.0, "shadow": 85.0},
 }
 
 @export_enum("arbre_rond", "araucaria", "fougere_arbre", "buisson", "rocher", "cailloux", "tronc", "ronces",
@@ -285,7 +314,9 @@ const KINDS := {
 	"magnolia", "prele_geante", "nid_geant", "liane_tronc",
 	"boite_fer_blanc", "piege_machoires", "tube_cuivre", "boite_ronde", "registre", "roue_chariot",
 	"nid_dimorphodon", "buisson_nid", "rocher_oeuf", "frise_masques", "corde_falaise", "nid_tortue_vide",
-	"lanterne_crochet", "crochet_vide", "bouilloire_poele")
+	"lanterne_crochet", "crochet_vide", "bouilloire_poele",
+	"bloc_glace", "oeufs_glace", "mur_glace", "stalactites_glace", "cristaux_glace", "porte_givre", "porte_givre_1", "porte_givre_2", "porte_givre_3",
+	"traineau_suie", "fioles_suie", "abri_roche", "statue_cryolophosaure", "fiole_vide")
 var kind := "arbre_rond":
 	set(value):
 		kind = value
