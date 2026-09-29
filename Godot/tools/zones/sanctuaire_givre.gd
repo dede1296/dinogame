@@ -96,11 +96,10 @@ const RELIEF := [
 	"33333333333333000033333333333333",
 ]
 
-## Ice pillars and crystals round the hall, the corridor's icicles: [kind, stand-in, x, y, flip].
+## Crystals round the hall and the corridor: [kind, stand-in, x, y, flip]. (No icicles: the view has
+## no ceiling to hang them from, they floated — removed 29/09.)
 const DECOR := [
-	["stalactites_glace", "stalagmite", 6.4, 8.4, false], ["stalactites_glace", "stalagmite", 25.6, 8.6, true],
 	["cristaux_glace", "cristaux", 8.2, 4.8, false], ["cristaux_glace", "cristaux", 23.8, 4.2, true],
-	["stalactites_glace", "stalagmite", 5.6, 14.2, false], ["stalactites_glace", "stalagmite", 26.4, 14.6, true],
 	["cristaux_glace", "", 9.0, 18.0, false], ["cristaux_glace", "", 23.0, 18.2, true],
 	["cristaux_glace", "", 13.2, 27.4, false], ["cristaux_glace", "", 18.8, 30.2, true],
 ]

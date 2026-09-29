@@ -333,7 +333,6 @@ static func _landmarks(root: Region, entities: Node2D) -> void:
 	mouth.height = 2.0
 	mouth.position = B.cell(P.ENTREE_GROTTES.x, P.ENTREE_GROTTES.y)
 	entities.add_child(mouth)
-	_put(entities, "stalactites_glace", "", P.ENTREE_GROTTES + Vector2(0.0, 0.03))
 	for p: Array in [["cristaux_glace", "", 63.2, 8.8, false], ["cristaux_glace", "", 69.0, 8.6, true]]:
 		_put(entities, p[0], p[1], Vector2(p[2], p[3]), p[4])
 	# The col: boulders fallen from the peaks, pines bent by the storms.

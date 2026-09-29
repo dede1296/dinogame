@@ -105,15 +105,14 @@ const RELIEF := [
 	"1111111111111111110000111111111111111111",
 ]
 
-## Ice pillars, crystals, fallen blocks round the first hall and the reserve: [kind, stand-in, x, y, flip].
+## Crystals and fallen blocks round the first hall and the reserve: [kind, stand-in, x, y, flip].
+## (No icicles: the view has no ceiling to hang them from, they floated — removed 29/09.)
 const DECOR := [
-	["stalactites_glace", "stalagmite", 7.6, 21.2, false], ["stalactites_glace", "stalagmite", 32.4, 21.8, true],
 	["cristaux_glace", "", 14.4, 18.8, false], ["cristaux_glace", "", 27.0, 18.6, true], ["cristaux_glace", "", 5.6, 24.6, false],
-	["bloc_glace", "rocher_grotte", 33.2, 25.6, true], ["stalactites_glace", "stalagmite", 12.4, 28.0, false],
+	["bloc_glace", "rocher_grotte", 33.2, 25.6, true],
 	["cristaux_glace", "", 28.6, 28.0, true], ["rocher_grotte", "", 16.0, 27.4, false],
 	# the reserve
-	["cristaux_glace", "", 13.2, 8.2, false], ["cristaux_glace", "", 36.2, 8.6, true], ["stalactites_glace", "stalagmite", 17.4, 11.6, false],
-	["stalactites_glace", "stalagmite", 31.8, 12.4, true],
+	["cristaux_glace", "", 13.2, 8.2, false], ["cristaux_glace", "", 36.2, 8.6, true],
 	# Hélène's room
 	["cristaux_glace", "", 7.4, 8.0, true],
 ]
