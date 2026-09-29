@@ -30,6 +30,8 @@ const DUNES_NORD := Vector2(100.0, 83.0)
 const EBOULIS := Vector2(28.5, 57.5)
 ## The dust a snort, a sigh or a fall raises (_puff): pale, to be seen on the sand.
 const SAND_BITS: Array[Color] = [Color(1.0, 0.97, 0.9), Color(0.93, 0.87, 0.76), Color(0.78, 0.68, 0.55)]
+## The wind turning at dusk (chapter 5): puffs of sand streaming from Chloé's feet towards the sea.
+const WIND_TRACK := 8
 ## Amber light, in sparks (_sparkle).
 const AMBER_BITS: Array[Color] = [Color(1.0, 0.86, 0.4), Color(1.0, 0.7, 0.2), Color(1.0, 0.97, 0.8)]
 ## Tante Sirocco's gift for the fossils (and the old brush, when ItemsDB has it).
@@ -84,6 +86,8 @@ static func arrival() -> void:
 	if Game.flag(&"desert_arrivee"):
 		if Game.flag(&"maia_defi_4") and not Game.flag(&"cote_annonce"):
 			await annonce()
+		elif Game.flag(&"cote_annonce") and not Game.flag(&"cote_ouverte"):
+			Game.set_flag(&"cote_ouverte")   # a game saved before chapter 5: the wind has turned
 		return
 	var w = S.world()
 	if w == null:
@@ -197,7 +201,7 @@ static func _sirocco_meeting(who: Node) -> void:
 		return
 	S.lock(true)
 	var chloe := Stage.chloe()
-	_crouch(who, 0.1, 0.4)   # sitting cross-legged
+	_sit(who, 0.1, 0.4)   # sitting cross-legged
 	var dusting := func() -> void:
 		var below: Vector2 = (who as Node2D).global_position + Vector2(0.0, 40.0)
 		for i in 3:
@@ -363,7 +367,7 @@ static func vieux_rempart(who: Node) -> void:
 	if Game.flag(&"rempart_rencontre"):
 		if bastion and Game.party.has(bastion) and not Game.flag(&"rempart_bastion_reconnu"):
 			S.lock(true)
-			await _step_aside(who, _room(bastion))
+			await _step_aside(who, _room(bastion, who))
 			await _rempart_reunion(bastion, who)
 			_get_up(who, 0.6)
 			_companion_back()
@@ -387,9 +391,9 @@ static func vieux_rempart(who: Node) -> void:
 		Stage.emote(chloe, "!")
 	await S.say([
 		_cue({"text": "Au fond du canyon muré, le vent ne souffle plus. Il fait frais, et c'est silencieux comme une église."},
-			func() -> void: _step_aside(who, _room(bastion))),   # round to its side, so it can be seen
+			func() -> void: _step_aside(who, _room(bastion, who))),   # round to its side, so it can be seen
 		_cue({"text": "Contre la paroi dort un énorme rocher couvert de lichen orange. Chloé s'approche pour s'asseoir dessus et vider le sable de sa chaussure…"},
-			func() -> void: _chloe_walk(_beside(who, _room(bastion) - 26.0, 30.0), 60.0, 1.2)),
+			func() -> void: _chloe_walk(_beside(who, _room(bastion, who) - 26.0, 30.0), 60.0, 1.2)),
 		_cue({"text": "Le rocher respire."}, func() -> void: _swell(who, 1.8, 0.06)),
 		_cue({"text": "Le rocher se soulève. Lentement. Très lentement. Des plaques épaisses comme des portes, une queue terminée par une massue grosse comme une brouette et, tout au bout d'un long bâillement… une tête."}, wakes),
 		_cue({"who": CHLOE, "text": "Pardon ! Pardon, madame ! Je vous avais prise pour un rocher !"}, func() -> void: Stage.bow(chloe, 0.6)),
@@ -415,10 +419,19 @@ static func vieux_rempart(who: Node) -> void:
 	S.lock(false)
 
 
-## How far to one side of the Vieux Rempart Chloé stands (px): further when her little one walks at
-## Chloé's side, to leave room for him between them, at his mother's snout.
-static func _room(bastion: Dino) -> float:
-	return 170.0 if bastion and Game.lead_dino() == bastion else 96.0
+## How far to one side of the Vieux Rempart (`who`) Chloé stands (px): further when her little one
+## walks at Chloé's side, to leave room for him between them, at his mother's snout (as long as
+## he is, DinoSize).
+static func _room(bastion: Dino, who: Node) -> float:
+	if bastion == null or Game.lead_dino() != bastion:
+		return 96.0
+	var snout := absf(_head_of(who).x - (who as Node2D).global_position.x)
+	return maxf(170.0, snout + _bastion_length(bastion) * 0.8 + 30.0)
+
+
+## How long Bastion is (px), as he walks at Chloé's side.
+static func _bastion_length(bastion: Dino) -> float:
+	return DinoSize.length_px(bastion.species(), DinoSize.world_scale(bastion))
 
 
 ## A place beside the Vieux Rempart (on Chloé's side of her, `dx` along, `dy` in front), where
@@ -492,10 +505,11 @@ static func _reunion_meet(bastion: Dino, who: Node, dino: Companion) -> Array:
 	var chloe := Stage.chloe()
 	var snout := _head_of(who)
 	var side: float = signf(snout.x - (who as Node2D).global_position.x)
-	var meet := snout + Vector2(side * 44.0, 10.0)   # nose to nose
+	var meet := snout + Vector2(side * maxf(44.0, _bastion_length(bastion) * 0.4), 10.0)   # nose to nose
 	var goes := func() -> void:
 		if dino:
-			_companion_walk(meet, 38.0)
+			await _companion_walk(meet, 38.0)
+			Stage.turn_to(dino, snout)   # (nose to nose, whichever side it came from)
 	if str(Game.flag(&"starter")) == "ankylosaurus":
 		return [
 			_cue({"text": "%s passe devant Chloé. Il ne court pas : un Ankylosaurus ne court jamais. Il avance, pas à pas, jusqu'au museau de la vieille dame." % name}, goes),
@@ -513,6 +527,7 @@ static func _reunion_meet(bastion: Dino, who: Node, dino: Companion) -> Array:
 		await _companion_walk(chloe.global_position.lerp(meet, 0.45), 35.0)
 		await S.wait(0.8)
 		await _companion_walk(meet, 35.0)
+		Stage.turn_to(dino, snout)
 	return [
 		_cue({"text": "Le Vieux Rempart se fige. Elle ne regarde plus Chloé. Elle regarde %s." % name},
 			func() -> void: Stage.turn_to(who, dino.global_position if dino else chloe.global_position)),
@@ -870,7 +885,7 @@ static func annonce() -> void:
 			Game.pass_time_until(19.0)
 		if P.DUNE != Vector2.INF:
 			w.player.teleport(S.at(P.DUNE.x, P.DUNE.y))
-			w.companion.teleport(S.at(P.DUNE.x, P.DUNE.y) + Vector2(-34.0, 8.0))
+			w.companion.stand_beside(S.at(P.DUNE.x, P.DUNE.y))
 		w.player.face_towards(S.at(P.SORTIE_COTE.x, P.SORTIE_COTE.y))
 		await S.wait(0.6)
 	await S.fade_through(to_the_dune, 0.9)
@@ -898,8 +913,18 @@ static func annonce() -> void:
 	lines.append_array([
 		{"text": "La barque disparaît derrière une falaise. Il ne reste que le vent qui fait chanter les dunes."},
 		{"who": CHLOE, "text": "(La Côte. C'est là que j'irai. Dès que le vent aura tourné.)"},
-		{"text": "(La suite de l'aventure arrive bientôt !)"},
+		_cue({"text": "Et le vent tourne. Sous les pieds de Chloé, le sable glisse, glisse… et découvre une piste qui descend vers la mer. Pour une fois, le vent l'a redessinée au bon endroit."},
+			func() -> void:
+				# (Chloé in sight, and the sand streaming away from her feet towards the sea: the track)
+				var from: Vector2 = w.player.global_position
+				Stage.look_at(from.lerp(sea, 0.18), 1.2)
+				Stage.tremble(w.player, 0.6, 1.2)
+				for i in WIND_TRACK:
+					_puff(from.lerp(sea, 0.03 + 0.05 * i) + Vector2(0.0, 10.0), 26, 0.15)
+					await S.wait(0.22)),
+		_cue({"who": CHLOE, "text": "(Le vent a tourné. En route pour la Côte !)"}, func() -> void: Stage.look_back(0.8)),
 		{"flag": &"cote_annonce"},
+		{"flag": &"cote_ouverte"},
 	])
 	await S.say(lines)
 	Game.award_team_xp(XP_ANNONCE)
@@ -1045,10 +1070,18 @@ static func _crouch(actor: Node, depth := 0.18, secs := 0.9) -> void:
 	await t.finished
 
 
+## Sits down: the person's sitting picture (Stage.sit), or a squash of `depth` when it is not
+## drawn for them; _get_up ends both. Awaitable.
+static func _sit(actor: Node, depth := 0.26, secs := 0.5) -> void:
+	if not await Stage.sit(actor):
+		await _crouch(actor, depth, secs)
+
+
 static func _get_up(actor: Node, secs := 0.9) -> void:
 	var sprite := Stage.sprite_of(actor)
 	if sprite == null:
 		return
+	Stage.pose(actor, &"")   # (up from a drawn pose: sitting…)
 	var t := sprite.create_tween()
 	t.tween_property(sprite, "scale", _full_of(sprite), secs).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	await t.finished
@@ -1187,8 +1220,10 @@ static func _step_aside(who: Node, gap := 66.0, prefer := 0.0) -> void:
 	await _chloe_walk(at + Vector2(side * (gap + 50.0), 62.0), 95.0, 1.4)
 	await _chloe_walk(at + Vector2(side * gap, 10.0), 80.0, 1.2)
 	Stage.turn_to(chloe, at)
-	# Her dino beside her, on the outside: the trail it walks in, rewritten to end there.
-	var outer := chloe.global_position + Vector2(side * 54.0, 6.0)
+	# Her dino beside her, on the outside (as far as it is long): the trail it walks in, rewritten
+	# to end there.
+	var dino := _companion()
+	var outer := chloe.global_position + Vector2(side * maxf(54.0, dino.keep_px() if dino else 0.0), 6.0)
 	var trail := PackedVector2Array([outer, outer])
 	for i in 8:
 		trail.append(chloe.global_position)

@@ -3,13 +3,18 @@ extends Camera3D
 ## The exploration camera: tilted perspective following Chloé, kept inside the zone.
 ## Zoom: pinch with two fingers, mouse wheel, or Paramètres → Caméra (remembered).
 ## Shakes when the 2D camera shakes (impacts, boulders…): `shake_source` offset in px.
+## Framed for Chloé 1.50 m tall (Heights): about 15 % of the screen's height by default.
 
 const PITCH_DEG := 40.0
-const DISTANCE_MIN := 11.0
-const DISTANCE_MAX := 24.0
-const DISTANCE_DEFAULT := 16.0
+const DISTANCE_MIN := 8.0
+const DISTANCE_MAX := 20.0
+const DISTANCE_DEFAULT := 12.0
 const FOLLOW := 5.0        # smoothing (higher = tighter)
-const LOOK_HEIGHT := 0.9   # metres above Chloé's feet
+const LOOK_HEIGHT := 0.7   # metres above Chloé's feet
+## A distance remembered before the sizes of 28/09/2026 (people were 1.4× taller) is brought
+## down once, in proportion (settings.cfg: camera/sizes).
+const SIZES_VERSION := 2
+const OLD_DISTANCE_TO_NEW := 0.75
 const EDGE := 3.0          # how far the target may go inside the zone's edges (m)
 
 var target := Vector3.ZERO
@@ -28,7 +33,17 @@ func _ready() -> void:
 	fov = 38.0
 	near = 0.3
 	far = 120.0
-	_distance = clampf(float(Quality.pref("camera", "distance", DISTANCE_DEFAULT)), DISTANCE_MIN, DISTANCE_MAX)
+	_distance = saved_distance()
+
+
+## The distance the player chose (Paramètres, pinch, wheel), or the default.
+static func saved_distance() -> float:
+	if int(Quality.pref("camera", "sizes", 1)) < SIZES_VERSION:
+		var old = Quality.pref("camera", "distance", null)
+		if old != null:
+			Quality.set_pref("camera", "distance", clampf(float(old) * OLD_DISTANCE_TO_NEW, DISTANCE_MIN, DISTANCE_MAX), false)
+		Quality.set_pref("camera", "sizes", SIZES_VERSION)
+	return clampf(float(Quality.pref("camera", "distance", DISTANCE_DEFAULT)), DISTANCE_MIN, DISTANCE_MAX)
 
 
 ## Jumps to the target (entering a zone), no smoothing.
@@ -37,10 +52,10 @@ func snap() -> void:
 	_place()
 
 
+## `remember` false: kept in memory only (a pinch going on), not written to settings.cfg.
 func set_distance(d: float, remember := true) -> void:
 	_distance = clampf(d, DISTANCE_MIN, DISTANCE_MAX)
-	if remember:
-		Quality.set_pref("camera", "distance", _distance)
+	Quality.set_pref("camera", "distance", _distance, remember)   # (_process reads it back)
 
 
 func distance() -> float:

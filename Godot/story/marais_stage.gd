@@ -73,7 +73,7 @@ static func echo_on_stage(echo: Dino) -> Node2D:
 	if Game.lead_dino() == echo and lead() != null:
 		return w.companion
 	var at := S.ground_near(w.player.global_position + Vector2(-46.0, 26.0), 2)
-	var little := stand_in(echo.build[&"head"], at, "EchoScene")
+	var little := stand_in(echo.build[&"head"], at, "EchoScene", false, echo.level)
 	if little:
 		Stage.turn_to(little, w.player.global_position + Vector2(0.0, -60.0))
 		Stage.fade_in(little, 0.5)
@@ -304,14 +304,15 @@ static func lead_back() -> void:
 
 ## A dino brought on for a scene (a party dino that is not the lead, a trainer's dino let
 ## out of its crate): standing at `at_px`, not to be talked to; Stage.fade_out(…, true) ends it.
-static func stand_in(species_id: StringName, at_px: Vector2, node_name: String, corrupted := false) -> DinoNpc:
+## `level`: a young one's (as big as it is, DinoSize.growth); 0: grown.
+static func stand_in(species_id: StringName, at_px: Vector2, node_name: String, corrupted := false, level := 0) -> DinoNpc:
 	var w = S.world()
 	if w == null or w.get("region") == null or not SpeciesDB.PATHS.has(species_id):
 		return null
 	var d := DinoNpc.new()
 	d.name = node_name
 	d.species_id = species_id
-	d.size_scale = 1.0
+	d.level = level
 	d.corrupted = corrupted
 	d.position = at_px
 	d.modulate.a = 0.0

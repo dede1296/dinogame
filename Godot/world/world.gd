@@ -17,6 +17,10 @@ const ZONES := {
 	&"temple_englouti": "res://regions/marais/temple_englouti.tscn",
 	&"desert": "res://regions/desert/desert.tscn",
 	&"sanctuaire_vents": "res://regions/desert/sanctuaire_vents.tscn",
+	&"cote": "res://regions/cote/cote.tscn",
+	&"grottes_marines": "res://regions/cote/grottes_marines.tscn",
+	&"recif_sanctuaire": "res://regions/cote/recif_sanctuaire.tscn",
+	&"clos_blanc": "res://regions/essai/clos_blanc.tscn",   # zone d'essai (maison Blender + ComfyUI)
 }
 const PLAYER := preload("res://actors/player.tscn")
 const COMPANION := preload("res://actors/companion.tscn")
@@ -32,7 +36,6 @@ const OUTLEVELED_BY := 5
 const OUTLEVELED_RATE := 0.25
 ## Experience for the whole party when a species is met for the first time.
 const XP_NEW_SPECIES := 10
-const COMPANION_OFFSET := Vector2(-34, 8)
 const MOUNT_SFX := preload("res://assets/audio/sfx/latch.wav")   # the saddle buckled
 const ZONE_FADE := 0.3
 const RAIN_SOUND := preload("res://assets/audio/ambience/pluie.mp3")
@@ -44,6 +47,9 @@ const SAND_DB := -5.0
 ## The map: Chloé sees this far around her (tiles), checked this often (s).
 const EXPLORE_RADIUS := 11.0
 const EXPLORE_EVERY := 0.25
+## La Plongée (Côte): diving, coming back up, its button.
+const DIVE := preload("res://world/dive.gd")
+const DIVE_BUTTON := preload("res://ui/dive_button.gd")
 var region: Region
 var player: Player
 var companion: Companion
@@ -94,6 +100,7 @@ func _ready() -> void:
 	SettingsMenu.add_open_button(hud)
 	_map_button = MapScreen.add_open_button(hud, _open_map)
 	_ride_button = RideButton.add(hud, toggle_ride)
+	hud.add_child(DIVE_BUTTON.new())
 	hud.add_child(PartyBar.new())
 	hud.add_child(ClockBadge.new())
 	hud.add_child(PurseBadge.new())
@@ -112,8 +119,9 @@ func _exit_tree() -> void:
 
 # ------------------------------------------------------------------ zones
 
-## Shows zone `id` with Chloé at `pos` (Vector2.INF: at the `spawn` marker).
-func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF) -> void:
+## Shows zone `id` with Chloé at `pos` (Vector2.INF: at the `spawn` marker). The story's scene
+## for the zone plays at once, unless `story` is false (the caller starts it: goto_zone).
+func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF, story := true) -> void:
 	if not ZONES.has(id):
 		push_error("Zone inconnue : %s — retour au départ" % id)
 		id = Game.START_REGION
@@ -139,7 +147,8 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF) -> void:
 	region.entities.add_child(companion)
 	player.surface_at = region.surface_at
 	player.teleport(pos)
-	companion.teleport(pos + COMPANION_OFFSET)
+	companion.stand_beside(pos)
+	DIVE.on_zone_entered(self)   # under the water: her diver carries her
 
 	(player.get_node("Camera") as Camera2D).call(&"fit_to", region.bounds())
 
@@ -154,7 +163,8 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF) -> void:
 		_tracker.zone = id
 	_explore()
 	# The story may have something to play here (the prologue…).
-	Story.on_zone_entered.call_deferred(id)
+	if story:
+		Story.on_zone_entered.call_deferred(id)
 
 	Audio.play_music(region.music)
 	_find_sea()
@@ -175,19 +185,37 @@ func _on_exit_taken(exit: ZoneExit) -> void:
 		await Dialogue.run(DialogueDB.lines(exit.blocked_dialogue))
 		player.busy = false
 		return
-	goto_zone(exit.target_zone, exit.target_spawn)
+	goto_zone(exit.target_zone, exit.target_spawn, exit)
 
 
-## Goes to another zone with a fade (an exit, or the debug panel).
-func goto_zone(id: StringName, spawn: StringName = &"Depart") -> void:
+## Goes to another zone with a fade (an exit, or the debug panel). Through a house's door (the
+## `exit` taken starts at it: the Cabinet), Chloé goes in before the fade; arriving at a house's
+## door (back from the Cabinet), she comes out of it after the fade, then the zone's scene plays
+## (Doorway; her dino too tall for the door waits outside meanwhile).
+func goto_zone(id: StringName, spawn: StringName = &"Depart", exit: ZoneExit = null) -> void:
 	if _changing_zone or not ZONES.has(id):
 		return
 	_changing_zone = true
 	player.busy = true
+	var house_in := _view.door_of_exit(exit)
+	var dino_waits := false
+	if house_in:
+		dino_waits = await Doorway.chloe_in(house_in)
 	await Router.fade_out(ZONE_FADE)
-	_enter_zone(id, spawn)
-	Save.save_game()
+	Doorway.settle()
+	_enter_zone(id, spawn, Vector2.INF, false)
+	var house_out := _view.door_near(region.spawn_point(spawn)) if house_in == null else null
+	if house_out:
+		Doorway.place_inside(house_out)
+	else:
+		companion.outside = dino_waits and region.indoor
+		Story.on_zone_entered.call_deferred(id)
+		Save.save_game()
 	await Router.fade_in(ZONE_FADE)
+	if house_out:
+		await Doorway.chloe_out(house_out, region.spawn_point(spawn))
+		Save.save_game()
+		Story.on_zone_entered.call_deferred(id)
 	player.busy = false
 	_changing_zone = false
 
@@ -216,12 +244,13 @@ func _can_stand(p: Vector2) -> bool:
 
 
 ## The tiles Chloé can get to from where she stands: open ground joined without a cliff (a
-## step of at most Region.CLIFF_STEP), and water (swimming, later). Obstacles do not count: what
+## step of at most Region.cliff_step(): higher under the sea), and water (swimming, later). Obstacles do not count: what
 ## lies behind a rock is only « later ».
 func _reachable_tiles() -> Dictionary:
 	var out := {}
 	var size := region.map_size()
 	var start := Vector2i((player.global_position / TILE_PX).floor())
+	var low := region.floor_height()
 	out[start] = true
 	var queue: Array[Vector2i] = [start]
 	while not queue.is_empty():
@@ -235,7 +264,7 @@ func _reachable_tiles() -> Dictionary:
 			var kind := _tile_kind(n)
 			if kind != "water" and not kind in Story.OPEN_GROUND:
 				continue
-			if kind != "water" and here != "water" and absf(region.tile_height(n) - h) > Region.CLIFF_STEP:
+			if kind != "water" and here != "water" and region.cliff_between(region.tile_height(n), h, low):
 				continue
 			out[n] = true
 			queue.append(n)
@@ -389,8 +418,7 @@ func dismount() -> void:
 		return
 	player.mount = null
 	companion.refresh()
-	companion.teleport(player.global_position + COMPANION_OFFSET)
-	player.trail = [player.global_position]
+	companion.stand_beside(player.global_position)
 
 
 ## Why nobody can carry her: too young, or no dino of the kind.
@@ -418,8 +446,7 @@ func _show_banner(title: String, subtitle := "") -> void:
 ## A wild dino touched Chloé.
 func _on_encountered(wild: WildDino) -> void:
 	wild.cry(&"neutre")
-	var level := randi_range(wild.level_range.x, wild.level_range.y)
-	var result := await _battle(Dino.create(wild.species.id, level))
+	var result := await _battle(Dino.create(wild.species.id, wild.level))
 	if not is_instance_valid(wild):
 		return
 	if result in ["win", "catch"]:
@@ -477,6 +504,8 @@ func _battle(wild: Dino, rules := {}) -> String:
 	dismount()
 	if region and region.cave and not rules.has("cave"):
 		rules = rules.merged({"cave": true})
+	if DIVE.underwater(region) and not rules.has("underwater"):
+		rules = rules.merged({"underwater": true})   # under the sea (UnderwaterEngine)
 	if region and region.battle_backdrop and not rules.has("backdrop"):
 		rules = rules.merged({"backdrop": region.battle_backdrop})
 	player.busy = true
@@ -501,7 +530,7 @@ func _battle(wild: Dino, rules := {}) -> String:
 		"lose":
 			Game.heal_party()
 			player.teleport(region.spawn_point(rules.get("lose_spawn", &"Depart")))
-			companion.teleport(player.global_position + COMPANION_OFFSET)
+			companion.stand_beside(player.global_position)
 			await Dialogue.run([{"text": "Chloé ramène son équipe épuisée à l'entrée de la zone. Après un peu de repos, tout le monde va mieux."}])
 	# Discovering a species teaches the whole party something.
 	if first_sighting and result != "lose":

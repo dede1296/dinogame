@@ -73,30 +73,50 @@ const rawImage = (img) => sharp(img.data, { raw: { width: img.w, height: img.h, 
 
 /**
  * Sprite sheet → packed atlas. All frames share the union crop, so the character keeps
- * the same anchor in every frame. `frameHeight`: output height of one frame.
+ * the same anchor in every frame. `frameHeight`: output height of one frame. `pad`: empty px
+ * around the union in each frame (8 for the Côte sheets: a margin of at least 6 px, checked).
+ * `align: "bottom"`: every frame's drawing is moved up or down so its lowest point is on the
+ * same line (a sheet whose poses were drawn at different heights in their cells: without it,
+ * the animal jumps when it goes from its rest to its walk); x stays as drawn.
  */
-async function sheet({ id, rows, cols, frameHeight, out, cell = null }) {
-  if (cell) return sheetInCells({ id, rows, cols, frameHeight, out, cell });
+async function sheet({ id, rows, cols, frameHeight, out, cell = null, pad = 4, align = "union" }) {
+  if (cell) return sheetInCells({ id, rows, cols, frameHeight, out, cell, foot: pad });
   const img = await loadKeyed(find(id));
   const cw = img.w / cols, ch = img.h / rows;
   let u = null;
+  const boxes = [];
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
     const b = alphaBox(img, Math.round(c * cw + INSET), Math.round(r * ch + INSET), Math.round((c + 1) * cw - INSET), Math.round((r + 1) * ch - INSET));
-    if (!b) continue;
+    if (!b) { boxes.push(null); continue; }
     // Union in cell-local coordinates.
     const lb = { minX: b.minX - c * cw, minY: b.minY - r * ch, maxX: b.maxX - c * cw, maxY: b.maxY - r * ch };
+    boxes.push(lb);
     u = u ? { minX: Math.min(u.minX, lb.minX), minY: Math.min(u.minY, lb.minY), maxX: Math.max(u.maxX, lb.maxX), maxY: Math.max(u.maxY, lb.maxY) } : lb;
   }
-  const pad = 4;
-  const srcW = Math.ceil(u.maxX - u.minX) + 1, srcH = Math.ceil(u.maxY - u.minY) + 1;
+  const bottom = align === "bottom";
+  const srcW = Math.ceil(u.maxX - u.minX) + 1;
+  const srcH = bottom ? Math.max(...boxes.filter(Boolean).map((b) => Math.ceil(b.maxY - b.minY) + 1)) : Math.ceil(u.maxY - u.minY) + 1;
   const scale = frameHeight / srcH;
   const fw = Math.round(srcW * scale) + pad * 2, fh = frameHeight + pad * 2;
   const composites = [];
   const base = rawImage(img);
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-    const left = Math.round(c * cw + u.minX), top = Math.round(r * ch + u.minY);
-    const frame = await base.clone().extract({ left, top, width: srcW, height: srcH })
-      .resize(fw - pad * 2, fh - pad * 2).png().toBuffer();
+    const left = Math.round(c * cw + u.minX);
+    const b = boxes[r * cols + c];
+    let frame;
+    if (bottom && b) {
+      // The frame's rectangle ends on its drawing's lowest row; only this cell's pixels are taken.
+      const top = Math.round(r * ch + b.maxY) - srcH + 1;
+      const y0 = Math.max(top, Math.round(r * ch + INSET)), y1 = Math.min(top + srcH, Math.round((r + 1) * ch - INSET));
+      const part = await base.clone().extract({ left, top: y0, width: srcW, height: y1 - y0 }).png().toBuffer();
+      const whole = await sharp({ create: { width: srcW, height: srcH, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+        .composite([{ input: part, left: 0, top: y0 - top }]).png().toBuffer();
+      frame = await sharp(whole).resize(fw - pad * 2, fh - pad * 2).png().toBuffer();
+    } else {
+      const top = Math.round(r * ch + u.minY);
+      frame = await base.clone().extract({ left, top, width: srcW, height: srcH })
+        .resize(fw - pad * 2, fh - pad * 2).png().toBuffer();
+    }
     composites.push({ input: frame, left: c * fw + pad, top: r * fh + pad });
   }
   await sharp({ create: { width: fw * cols, height: fh * rows, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
@@ -109,7 +129,7 @@ async function sheet({ id, rows, cols, frameHeight, out, cell = null }) {
  * centred and standing on the bottom edge. Used for extra views of a dino (front/back),
  * so they share the frame size and foot line of its side-view sheet.
  */
-async function sheetInCells({ id, rows, cols, frameHeight, out, cell: [cw0, ch0] }) {
+async function sheetInCells({ id, rows, cols, frameHeight, out, cell: [cw0, ch0], foot = 4 }) {
   const img = await loadKeyed(find(id));
   const cw = img.w / cols, ch = img.h / rows;
   // Each drawing is found whole (a crest may stick out of its grid cell) and given to the
@@ -134,7 +154,7 @@ async function sheetInCells({ id, rows, cols, frameHeight, out, cell: [cw0, ch0]
     keepLargestBlob(raw, width, height);
     const frame = await sharp(raw, { raw: { width, height, channels: 4 } }).resize(w, h).png().toBuffer();
     const col = i % cols, row = Math.floor(i / cols);
-    composites.push({ input: frame, left: col * cw0 + Math.round((cw0 - w) / 2), top: row * ch0 + ch0 - 4 - h });
+    composites.push({ input: frame, left: col * cw0 + Math.round((cw0 - w) / 2), top: row * ch0 + ch0 - foot - h });
   }
   await sharp({ create: { width: cw0 * cols, height: ch0 * rows, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
     .composite(composites).png({ compressionLevel: 9 }).toFile(out);

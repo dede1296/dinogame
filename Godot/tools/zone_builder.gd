@@ -16,7 +16,7 @@ const WALKABLE := ["grass", "path", "tall_grass", "sand", "mud", "rock"]
 const OPEN_GROUND := ["grass", "tall_grass", "sand", "mud", "rock"]
 const TREES := ["arbre_rond", "araucaria", "arbre_rond", "fougere_arbre"]
 const SMALL := ["fleurs_roses", "fleurs_violettes", "fougeres", "fleurs_roses", "fougeres"]
-const WHEN := {"toujours": 0, "jour": 1, "nuit": 2, "aube et crépuscule": 3, "jour et crépuscule": 4}
+const WHEN := {"toujours": 0, "jour": 1, "nuit": 2, "aube et crépuscule": 3, "jour et crépuscule": 4, "pleine lune": 5}
 
 
 static func cell(x: float, y: float) -> Vector2:
@@ -231,7 +231,8 @@ static func dino_npc(root: Region, node_name: String, species: StringName, x: fl
 	d.flip = opts.get("flip", false)
 	d.show_flag = opts.get("show_flag", &"")
 	d.hide_flag = opts.get("hide_flag", &"")
-	d.size_scale = opts.get("size", 0.8)
+	d.size_scale = opts.get("size", 1.0)   # (share of an adult of its species)
+	d.level = opts.get("level", 0)         # (a young one: as big as a dino of that level)
 	d.lift = opts.get("lift", 0.0)
 	d.corrupted = opts.get("corrupted", false)
 	d.position = cell(x, y)
@@ -409,6 +410,7 @@ static func flat_spot(root: Region, t: Vector2, radius := 1) -> Vector2:
 static func _reachable(root: Region, from: Vector2i, swimming := false) -> Dictionary:
 	var terrain: TileMapLayer = root.get_node("Terrain")
 	var seen := {from: true}
+	var low := root.floor_height()
 	var queue: Array[Vector2i] = [from]
 	var i := 0
 	while i < queue.size():
@@ -423,7 +425,7 @@ static func _reachable(root: Region, from: Vector2i, swimming := false) -> Dicti
 			var kind := String(data.get_custom_data("terrain")) if data else ""
 			if not (kind in WALKABLE or (swimming and kind == "water")):
 				continue
-			if absf(root.tile_height(n) - h) > Region.CLIFF_STEP:
+			if root.cliff_between(root.tile_height(n), h, low):
 				continue
 			seen[n] = true
 			queue.append(n)

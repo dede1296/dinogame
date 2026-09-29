@@ -91,7 +91,7 @@ static func answer(npc: StringName, speaker: String, topic: StringName) -> Array
 
 ## A question in Chloé's words, for npc (she does not ask Roc where Roc goes).
 static func label(npc: StringName, topic: StringName) -> String:
-	return TOPICS_FOR.get(npc, {}).get(topic, TOPICS.get(topic, DesertAsk.TOPICS.get(topic, String(topic))))
+	return TOPICS_FOR.get(npc, {}).get(topic, TOPICS.get(topic, DesertAsk.TOPICS.get(topic, CoteAsk.TOPICS.get(topic, String(topic)))))
 
 
 ## The questions of the moment (chapter 2 on): where to go, the cracked wall, calming the
@@ -125,6 +125,9 @@ static func story_topics() -> Array:
 	# Chapter 4, the Désert Aride: the fossils, the fallen rocks, the storm, the Carnotaurus.
 	if Game.flag(&"desert_arrivee"):
 		out.append_array(DesertAsk.story_topics())
+	# Chapter 5, the Côte: diving, the boat without a lantern, the reef, its guardian.
+	if Game.flag(&"cote_arrivee"):
+		out.append_array(CoteAsk.story_topics())
 	return out
 
 

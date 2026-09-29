@@ -1,7 +1,8 @@
 class_name WildDino
 extends CharacterBody2D
 ## A wild dino roaming around its home spot: walks, stops to graze, cries now and then.
-## Touching Chloé starts an encounter (the world decides what happens).
+## Touching Chloé starts an encounter (the world decides what happens). Its level is drawn
+## when it appears (in `level_range`): a young one is smaller (DinoSize), its body with it.
 
 signal encountered(wild: WildDino)
 
@@ -10,7 +11,11 @@ signal encountered(wild: WildDino)
 @export var roam_radius := 120.0
 @export var speed := 48.0
 
+const TOUCH_EXTRA := 18.0   # px: Chloé meets it this close to its body
+
 var species: DinoSpecies
+## Drawn in `level_range` when it appears; the battle is against a dino of that level.
+var level := 1
 var home := Vector2.ZERO
 
 @onready var sprite: AnimatedSprite2D = $Sprite
@@ -26,11 +31,15 @@ var _idle_anim: StringName = &"idle"
 
 func _ready() -> void:
 	species = SpeciesDB.get_species(species_id)
+	level = randi_range(level_range.x, level_range.y)
+	var size := species.world_scale * DinoSize.growth(species, level)
 	sprite.sprite_frames = SheetFrames.dino(species)
-	sprite.scale = Vector2.ONE * species.world_scale
+	sprite.scale = Vector2.ONE * size
 	var h := species.sheet.get_height() / float(species.sheet_rows)
 	sprite.offset = Vector2(0, -h * 0.46)
-	Shadow.make(self, species.sheet.get_width() / float(species.sheet_columns) * species.world_scale * 0.55)
+	Shadow.make(self, species.sheet.get_width() / float(species.sheet_columns) * size * 0.55)
+	DinoSize.fit_body($Collision, species, size)
+	DinoSize.fit_body($Touch/Shape, species, size, TOUCH_EXTRA)
 	sprite.play(&"idle")
 	home = global_position
 	_target = home

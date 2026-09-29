@@ -29,6 +29,7 @@ const ZONE_NAMES := {
 	&"camp_ombre": "Camp de l'Ombre Noire", &"marais": "Marais Brumeux",
 	&"temple_englouti": "Temple englouti", &"desert": "Désert Aride",
 	&"sanctuaire_vents": "Sanctuaire des Vents", &"cote": "Côte Préhistorique",
+	&"grottes_marines": "Grottes marines", &"recif_sanctuaire": "Récif du Sanctuaire", &"monts": "Monts Gelés",
 }
 
 var region: Region

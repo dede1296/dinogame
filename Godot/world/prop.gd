@@ -9,8 +9,12 @@ const SWAY := preload("res://world/shaders/sway.gdshader")
 const ART := "res://assets/art/props/%s.png"
 
 ## scale: sprite scale; foot: fraction of the sprite height below the ground point;
-## solid: collision radius (float) or box size (Vector2), 0 = walk through;
+## solid: collision radius (float) or box size (Vector2), 0 = walk through; solid_poly (optional):
+## the foot's outline instead (px from the ground point, convex), for a model turned 3/4;
 ## sway: sway strength in px (0 = rigid); shadow: shadow width in px (0 = none).
+## Things made for people (barrels, benches, stalls, lanterns, furniture…) stand at Chloé's
+## scale (1.50 m: ×0.70 on 28/09, docs/direction-artistique.md « Échelle »); nature and houses
+## as drawn.
 const KINDS := {
 	"arbre_rond": {"scale": 0.62, "foot": 0.05, "solid": 16.0, "sway": 1.2, "shadow": 120.0},
 	"araucaria": {"scale": 0.62, "foot": 0.03, "solid": 11.0, "sway": 1.5, "shadow": 80.0},
@@ -24,35 +28,60 @@ const KINDS := {
 	"fougeres": {"scale": 0.26, "foot": 0.06, "solid": 0.0, "sway": 3.0, "shadow": 0.0},
 	"fleurs_roses": {"scale": 0.2, "foot": 0.06, "solid": 0.0, "sway": 2.0, "shadow": 0.0},
 	"fleurs_violettes": {"scale": 0.2, "foot": 0.06, "solid": 0.0, "sway": 2.0, "shadow": 0.0},
-	"panneau": {"scale": 0.3, "foot": 0.04, "solid": 8.0, "sway": 0.0, "shadow": 36.0},
-	"cloture": {"scale": 0.35, "foot": 0.08, "solid": Vector2(70, 12), "sway": 0.0, "shadow": 0.0},
+	"panneau": {"scale": 0.21, "foot": 0.04, "solid": 5.6, "sway": 0.0, "shadow": 25.2},
+	"cloture": {"scale": 0.245, "foot": 0.08, "solid": Vector2(49, 8.4), "sway": 0.0, "shadow": 0.0},
 	"ambre": {"scale": 0.26, "foot": 0.08, "solid": 0.0, "sway": 0.0, "shadow": 22.0},
 	"souche": {"scale": 0.3, "foot": 0.12, "solid": 16.0, "sway": 0.0, "shadow": 56.0},
 	# Port-Ambre (the buildings' origin is the middle of their facade's foot).
-	"maison_blanche": {"scale": 0.62, "foot": 0.02, "solid": Vector2(250, 110), "sway": 0.0, "shadow": 0.0},
-	"maison_jaune": {"scale": 0.62, "foot": 0.02, "solid": Vector2(230, 110), "sway": 0.0, "shadow": 0.0},
-	"maison_port": {"scale": 0.62, "foot": 0.02, "solid": Vector2(250, 110), "sway": 0.0, "shadow": 0.0},
-	"cabinet": {"scale": 0.68, "foot": 0.02, "solid": Vector2(270, 120), "sway": 0.0, "shadow": 0.0},
-	"barque": {"scale": 0.55, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0, "float": true},
-	"caisses": {"scale": 0.36, "foot": 0.08, "solid": Vector2(70, 30), "sway": 0.0, "shadow": 80.0},
-	"tonneau": {"scale": 0.42, "foot": 0.05, "solid": 18.0, "sway": 0.0, "shadow": 46.0},
-	"filet": {"scale": 0.53, "foot": 0.05, "solid": Vector2(100, 16), "sway": 1.0, "shadow": 0.0},
-	"bitte": {"scale": 0.36, "foot": 0.08, "solid": 10.0, "sway": 0.0, "shadow": 30.0},
-	"lanterne": {"scale": 0.65, "foot": 0.03, "solid": 8.0, "sway": 0.0, "shadow": 30.0, "light": true},
-	"casiers": {"scale": 0.45, "foot": 0.08, "solid": Vector2(70, 30), "sway": 0.0, "shadow": 80.0},
-	"cordage": {"scale": 0.39, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 50.0},
-	"banc": {"scale": 0.48, "foot": 0.06, "solid": Vector2(76, 16), "sway": 0.0, "shadow": 70.0},
-	"sechoir": {"scale": 0.6, "foot": 0.04, "solid": Vector2(80, 12), "sway": 0.6, "shadow": 0.0},
-	"ancre": {"scale": 0.42, "foot": 0.08, "solid": 20.0, "sway": 0.0, "shadow": 56.0},
-	"bac_fleurs": {"scale": 0.38, "foot": 0.06, "solid": 14.0, "sway": 1.0, "shadow": 40.0},
+	"maison_blanche": {"model": "res://assets/models/volumes/maison_blanche.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(265, 239), "sway": 0.0, "shadow": 0.0},
+	"maison_jaune": {"model": "res://assets/models/volumes/maison_jaune.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(229, 238), "sway": 0.0, "shadow": 0.0},
+	"maison_port": {"model": "res://assets/models/volumes/maison_port.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(235, 206), "sway": 0.0, "shadow": 0.0},
+	"cabinet": {"model": "res://assets/models/volumes/cabinet.glb",
+		"scale": 0.68, "foot": 0.02, "solid": Vector2(284, 256), "sway": 0.0, "shadow": 0.0},
+	# Havre-Doré: its own shops and houses (tools/modeles3d/maisons.py, like Port-Ambre's).
+	"havre_herboristerie": {"model": "res://assets/models/volumes/havre_herboristerie.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(268, 256), "sway": 0.0, "shadow": 0.0},
+	"havre_mercerie": {"model": "res://assets/models/volumes/havre_mercerie.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(245, 210), "sway": 0.0, "shadow": 0.0},
+	"havre_relais": {"model": "res://assets/models/volumes/havre_relais.glb",
+		"scale": 0.68, "foot": 0.02, "solid": Vector2(274, 289), "sway": 0.0, "shadow": 0.0},
+	"havre_comptoir": {"model": "res://assets/models/volumes/havre_comptoir.glb",
+		"scale": 0.68, "foot": 0.02, "solid": Vector2(298, 272), "sway": 0.0, "shadow": 0.0},
+	"havre_sellerie": {"model": "res://assets/models/volumes/havre_sellerie.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(258, 246), "sway": 0.0, "shadow": 0.0},
+	"havre_entrepot": {"model": "res://assets/models/volumes/havre_entrepot.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(391, 214), "sway": 0.0, "shadow": 0.0},
+	"havre_maison_1": {"model": "res://assets/models/volumes/havre_maison_1.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(272, 236), "sway": 0.0, "shadow": 0.0},
+	"havre_maison_2": {"model": "res://assets/models/volumes/havre_maison_2.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(218, 217), "sway": 0.0, "shadow": 0.0},
+	"havre_maison_3": {"model": "res://assets/models/volumes/havre_maison_3.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(272, 236), "sway": 0.0, "shadow": 0.0},
+	"havre_maison_4": {"model": "res://assets/models/volumes/havre_maison_4.glb",
+		"scale": 0.62, "foot": 0.02, "solid": Vector2(258, 227), "sway": 0.0, "shadow": 0.0},
+	"barque": {"scale": 0.385, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0, "float": true},
+	"caisses": {"scale": 0.252, "foot": 0.08, "solid": Vector2(49, 21), "sway": 0.0, "shadow": 56.0},
+	"tonneau": {"scale": 0.294, "foot": 0.05, "solid": 12.6, "sway": 0.0, "shadow": 32.2},
+	"filet": {"scale": 0.371, "foot": 0.05, "solid": Vector2(70, 11.2), "sway": 0.7, "shadow": 0.0},
+	"bitte": {"scale": 0.252, "foot": 0.08, "solid": 7.0, "sway": 0.0, "shadow": 21.0},
+	"lanterne": {"scale": 0.455, "foot": 0.03, "solid": 5.6, "sway": 0.0, "shadow": 21.0, "light": true},
+	"casiers": {"scale": 0.315, "foot": 0.08, "solid": Vector2(49, 21), "sway": 0.0, "shadow": 56.0},
+	"cordage": {"scale": 0.273, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 35.0},
+	"banc": {"scale": 0.336, "foot": 0.06, "solid": Vector2(53.2, 11.2), "sway": 0.0, "shadow": 49.0},
+	"sechoir": {"scale": 0.42, "foot": 0.04, "solid": Vector2(56, 8.4), "sway": 0.42, "shadow": 0.0},
+	"ancre": {"scale": 0.294, "foot": 0.08, "solid": 14.0, "sway": 0.0, "shadow": 39.2},
+	"bac_fleurs": {"scale": 0.266, "foot": 0.06, "solid": 9.8, "sway": 0.7, "shadow": 28.0},
 	# Inside the Cabinet.
-	"bureau": {"scale": 0.3, "foot": 0.08, "solid": Vector2(110, 36), "sway": 0.0, "shadow": 110.0},
-	"bibliotheque": {"scale": 0.36, "foot": 0.03, "solid": Vector2(90, 24), "sway": 0.0, "shadow": 0.0},
-	"couveuse": {"scale": 0.28, "foot": 0.05, "solid": 22.0, "sway": 0.0, "shadow": 60.0, "light": true},
-	"fougere_pot": {"scale": 0.22, "foot": 0.05, "solid": 14.0, "sway": 1.5, "shadow": 40.0},
-	"lampe": {"scale": 0.3, "foot": 0.03, "solid": 8.0, "sway": 0.0, "shadow": 30.0, "light": true},
-	"fauteuil": {"scale": 0.28, "foot": 0.06, "solid": 22.0, "sway": 0.0, "shadow": 56.0},
-	"etabli": {"scale": 0.3, "foot": 0.06, "solid": Vector2(80, 26), "sway": 0.0, "shadow": 90.0},
+	"bureau": {"scale": 0.21, "foot": 0.08, "solid": Vector2(77, 25.2), "sway": 0.0, "shadow": 77.0},
+	"bibliotheque": {"scale": 0.252, "foot": 0.03, "solid": Vector2(63, 16.8), "sway": 0.0, "shadow": 0.0},
+	"couveuse": {"scale": 0.196, "foot": 0.05, "solid": 15.4, "sway": 0.0, "shadow": 42.0, "light": true},
+	"fougere_pot": {"scale": 0.154, "foot": 0.05, "solid": 9.8, "sway": 1.05, "shadow": 28.0},
+	"lampe": {"scale": 0.21, "foot": 0.03, "solid": 5.6, "sway": 0.0, "shadow": 21.0, "light": true},
+	"fauteuil": {"scale": 0.196, "foot": 0.06, "solid": 15.4, "sway": 0.0, "shadow": 39.2},
+	"etabli": {"scale": 0.21, "foot": 0.06, "solid": Vector2(56, 18.2), "sway": 0.0, "shadow": 63.0},
 	# Plaines: the amber door, the scales and the Grand Crâne; the Grotte des Échos.
 	"porte_ambre": {"scale": 0.33, "foot": 0.01, "solid": Vector2(96, 30), "sway": 0.0, "shadow": 0.0},
 	"ecaille": {"scale": 0.15, "foot": 0.05, "solid": 0.0, "sway": 0.0, "shadow": 26.0},
@@ -61,14 +90,14 @@ const KINDS := {
 	"cristaux": {"scale": 0.18, "foot": 0.08, "solid": 16.0, "sway": 0.0, "shadow": 50.0, "light": true},
 	"rocher_grotte": {"scale": 0.24, "foot": 0.08, "solid": 34.0, "sway": 0.0, "shadow": 80.0},
 	"grand_crane": {"scale": 0.48, "foot": 0.02, "solid": Vector2(192, 30), "sway": 0.0, "shadow": 0.0},
-	"socle": {"scale": 0.32, "foot": 0.06, "solid": 24.0, "sway": 0.0, "shadow": 64.0},
+	"socle": {"scale": 0.224, "foot": 0.06, "solid": 16.8, "sway": 0.0, "shadow": 44.8},
 	"mur_cabinet": {"scale": 0.5, "foot": 0.0, "solid": Vector2(171, 60), "sway": 0.0, "shadow": 0.0},
 	# Searching the island (provisional pictures: tools/draw-placeholders.mjs).
 	"galet": {"scale": 0.11, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 16.0},
 	"monticule": {"scale": 0.26, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
-	"etal_fruits": {"scale": 0.5, "foot": 0.03, "solid": Vector2(120, 30), "sway": 0.0, "shadow": 120.0},
-	"etal_poisson": {"scale": 0.5, "foot": 0.03, "solid": Vector2(120, 30), "sway": 0.0, "shadow": 120.0},
-	"feu_camp": {"scale": 0.25, "foot": 0.07, "solid": 24.0, "sway": 0.0, "shadow": 60.0},
+	"etal_fruits": {"scale": 0.35, "foot": 0.03, "solid": Vector2(84, 21), "sway": 0.0, "shadow": 84.0},
+	"etal_poisson": {"scale": 0.35, "foot": 0.03, "solid": Vector2(84, 21), "sway": 0.0, "shadow": 84.0},
+	"feu_camp": {"scale": 0.175, "foot": 0.07, "solid": 16.8, "sway": 0.0, "shadow": 42.0},
 	# Forêt Jurassique.
 	"fougere_geante": {"scale": 0.5, "foot": 0.04, "solid": 0.0, "sway": 2.0, "shadow": 110.0},
 	"tronc_mousse": {"scale": 0.42, "foot": 0.15, "solid": Vector2(130, 28), "sway": 0.0, "shadow": 140.0},
@@ -79,20 +108,27 @@ const KINDS := {
 	"os_dino": {"scale": 0.27, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	# Le camp de l'Ombre Noire (Forêt, étape 2) : Brac, ses cages, et la brèche du Masque.
 	"mur_fissure": {"scale": 0.19, "foot": 0.0, "solid": Vector2(180, 70), "sway": 0.0, "shadow": 0.0},
-	"tente": {"scale": 0.25, "foot": 0.05, "solid": Vector2(110, 40), "sway": 0.0, "shadow": 130.0},
-	"cage": {"scale": 0.31, "foot": 0.05, "solid": Vector2(90, 40), "sway": 0.0, "shadow": 90.0},
+	# A real 3D model (tools/modeles3d/maisons.py + tentes.py): the picture, seen in 3/4, turned so
+	# that the camera sees it as drawn; its foot a diamond (solid_poly; solid: its bounding box).
+	"tente": {"model": "res://assets/models/volumes/tente.glb",
+		"scale": 0.37, "foot": 0.05, "solid": Vector2(163, 166), "sway": 0.0, "shadow": 130.0,
+		"solid_poly": [Vector2(-82, -68), Vector2(10, 0), Vector2(82, -98), Vector2(-10, -166)]},
+	"cage": {"scale": 0.4185, "foot": 0.05, "solid": Vector2(121.5, 54), "sway": 0.0, "shadow": 121.5},
 	# The front bars of a cage, in front of the dino it holds (the cage picture behind it).
-	"barreaux_cage": {"scale": 0.31, "foot": 0.03, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
-	"caisse_ambre_noir": {"scale": 0.25, "foot": 0.06, "solid": Vector2(50, 22), "sway": 0.0, "shadow": 50.0},
-	"table_papiers": {"scale": 0.25, "foot": 0.05, "solid": Vector2(85, 30), "sway": 0.0, "shadow": 100.0},
-	"palissade": {"scale": 0.42, "foot": 0.05, "solid": Vector2(80, 14), "sway": 0.0, "shadow": 40.0},
+	"barreaux_cage": {"scale": 0.4185, "foot": 0.03, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"caisse_ambre_noir": {"scale": 0.175, "foot": 0.06, "solid": Vector2(35, 15.4), "sway": 0.0, "shadow": 35.0},
+	"table_papiers": {"scale": 0.175, "foot": 0.05, "solid": Vector2(59.5, 21), "sway": 0.0, "shadow": 70.0},
+	# A real 3D model (maisons.py + pieux.py): round stakes, 2.1 m, their rope in volume.
+	"palissade": {"model": "res://assets/models/volumes/palissade.glb",
+		"scale": 0.42, "foot": 0.05, "solid": Vector2(80, 30), "sway": 0.0, "shadow": 40.0},
 	# Suspendue entre deux arbre_geant : pas de collision (on ne marche pas dessus, juste le décor).
 	"passerelle": {"scale": 0.233, "foot": 0.18, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	# Marais Brumeux (chapitre 3).
 	"roseaux": {"scale": 0.32, "foot": 0.04, "solid": 0.0, "sway": 2.5, "shadow": 0.0},
 	"arbre_noye": {"scale": 0.5, "foot": 0.08, "solid": 34.0, "sway": 1.0, "shadow": 200.0},
 	"nenuphars": {"scale": 0.24, "foot": 0.35, "solid": 0.0, "sway": 0.0, "shadow": 0.0, "float": true},
-	"cabane_pilotis": {"scale": 0.42, "foot": 0.06, "solid": Vector2(130, 50), "sway": 0.0, "shadow": 0.0},
+	"cabane_pilotis": {"model": "res://assets/models/volumes/cabane_pilotis.glb",
+		"scale": 0.42, "foot": 0.06, "solid": Vector2(164, 162), "sway": 0.0, "shadow": 0.0},
 	"statue_dino": {"scale": 0.4, "foot": 0.04, "solid": 26.0, "sway": 0.0, "shadow": 80.0},
 	"colonne": {"scale": 0.32, "foot": 0.06, "solid": 16.0, "sway": 0.0, "shadow": 60.0},
 	"vanne": {"scale": 0.3, "foot": 0.06, "solid": 18.0, "sway": 0.0, "shadow": 50.0},
@@ -108,12 +144,87 @@ const KINDS := {
 	"nid_oviraptor": {"scale": 0.22, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 20.0},
 	"totem_vents": {"scale": 0.34, "foot": 0.05, "solid": 18.0, "sway": 0.0, "shadow": 55.0},
 	"buisson_sec": {"scale": 0.32, "foot": 0.08, "solid": 16.0, "sway": 1.0, "shadow": 70.0},
-	"tente_nomade": {"scale": 0.28, "foot": 0.05, "solid": Vector2(100, 38), "sway": 0.0, "shadow": 120.0},
+	"tente_nomade": {"model": "res://assets/models/volumes/tente_nomade.glb",   # (3D, like the camp's tent)
+		"scale": 0.47, "foot": 0.05, "solid": Vector2(158, 166), "sway": 0.0, "shadow": 120.0,
+		"solid_poly": [Vector2(-77, -67), Vector2(16, 0), Vector2(71, -81), Vector2(79, -102),
+			Vector2(-20, -166), Vector2(-79, -78)]},
 	"porte_vents": {"scale": 0.37, "foot": 0.01, "solid": Vector2(150, 34), "sway": 0.0, "shadow": 0.0},
 	"chariot_cage": {"scale": 0.37, "foot": 0.06, "solid": Vector2(140, 55), "sway": 0.0, "shadow": 110.0},
 	"rempart_eboulis": {"scale": 0.29, "foot": 0.0, "solid": Vector2(320, 90), "sway": 0.0, "shadow": 0.0},
 	"squelette_geant": {"scale": 0.52, "foot": 0.08, "solid": Vector2(190, 64), "sway": 0.0, "shadow": 0.0},
-	"puits_oasis": {"scale": 0.34, "foot": 0.06, "solid": Vector2(65, 34), "sway": 0.0, "shadow": 50.0},
+	"puits_oasis": {"scale": 0.238, "foot": 0.06, "solid": Vector2(45.5, 23.8), "sway": 0.0, "shadow": 35.0},
+	# Le Clos Blanc (zone d'essai) : un vrai modèle 3D (Blender), peint par ComfyUI + LoRA
+	# (peintures projetées dessus). "model" : la vue 3D pose ce modèle au lieu d'une image ;
+	# l'image du même nom ne sert qu'à le voir dans l'éditeur 2D. Collision = son emprise au sol.
+	"maison_3d": {"model": "res://assets/models/maison_3d.glb", "scale": 0.64, "foot": 0.02,
+		"solid": Vector2(307, 230), "sway": 0.0, "shadow": 0.0},
+	# Côte Préhistorique : récif du Sanctuaire.
+	"benitier": {"scale": 0.55, "foot": 0.05, "solid": Vector2(110, 44), "sway": 0.0, "shadow": 130.0, "light": true},
+	# The ruined lighthouse on the Pointe aux Ptéranodons (maisons.py: a round tower, its broken top);
+	# its origin at the front foot of the tower, its foot a 12-sided polygon.
+	"phare_ruine": {"model": "res://assets/models/volumes/phare_ruine.glb",
+		"scale": 0.5, "foot": 0.007, "solid": Vector2(182, 188), "sway": 0.0, "shadow": 0.0,
+		"solid_poly": [Vector2(0, 0), Vector2(46, -12), Vector2(79, -46), Vector2(91, -91), Vector2(79, -137),
+			Vector2(46, -170), Vector2(0, -182), Vector2(-46, -170), Vector2(-79, -137), Vector2(-91, -91),
+			Vector2(-79, -46), Vector2(-46, -12)]},
+	# « Détails vivants » (29/09, tools/art-jobs/vivants_decor.mjs): what the texts describe.
+	# The Côte's shore and reef (the kinds tools/zones/cote.gd was waiting for).
+	"coquillages": {"scale": 0.132, "foot": 0.3, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"algues": {"scale": 0.127, "foot": 0.3, "solid": 0.0, "sway": 0.3, "shadow": 0.0},
+	"bois_flotte": {"scale": 0.217, "foot": 0.2, "solid": Vector2(100, 22), "sway": 0.0, "shadow": 100.0},
+	"rocher_cote": {"scale": 0.26, "foot": 0.1, "solid": Vector2(80, 30), "sway": 0.0, "shadow": 90.0},
+	"rocher_recif": {"scale": 0.273, "foot": 0.12, "solid": Vector2(90, 32), "sway": 0.0, "shadow": 90.0},
+	"oyats": {"scale": 0.154, "foot": 0.08, "solid": 0.0, "sway": 2.5, "shadow": 0.0},
+	"nid_pteranodon": {"scale": 0.23, "foot": 0.15, "solid": 0.0, "sway": 0.0, "shadow": 60.0},
+	"nid_tortue": {"scale": 0.166, "foot": 0.3, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"boite_fer": {"scale": 0.16, "foot": 0.1, "solid": 12.0, "sway": 0.0, "shadow": 40.0},
+	"gravure_hi": {"scale": 0.21, "foot": 0.12, "solid": Vector2(60, 14), "sway": 0.0, "shadow": 60.0},
+	"palmier_cote": {"scale": 0.48, "foot": 0.02, "solid": 11.0, "sway": 1.8, "shadow": 90.0},
+	"masque_pierre": {"scale": 0.197, "foot": 0.05, "solid": 18.0, "sway": 0.0, "shadow": 50.0},
+	# Under the sea (Récif du Sanctuaire; Examine.UNDERWATER_LINES has "varech" and "corail").
+	"varech": {"scale": 0.207, "foot": 0.04, "solid": 0.0, "sway": 2.5, "shadow": 0.0},
+	"corail": {"scale": 0.19, "foot": 0.12, "solid": 28.0, "sway": 0.0, "shadow": 70.0},
+	"corail_branches": {"scale": 0.188, "foot": 0.08, "solid": 20.0, "sway": 0.3, "shadow": 50.0},
+	"anemones": {"scale": 0.13, "foot": 0.1, "solid": 0.0, "sway": 1.5, "shadow": 40.0},
+	"eponges": {"scale": 0.144, "foot": 0.08, "solid": 14.0, "sway": 0.0, "shadow": 40.0},
+	"herbier": {"scale": 0.106, "foot": 0.1, "solid": 0.0, "sway": 2.5, "shadow": 0.0},
+	# Relics and traces of the story (the altar of the Cœurs, the temple's statue, the guardians'
+	# carved stones, the Alpha's clearing, the moulted skin).
+	"autel": {"scale": 0.15, "foot": 0.06, "solid": 16.8, "sway": 0.0, "shadow": 44.0},
+	"statue_spinosaure": {"scale": 0.337, "foot": 0.05, "solid": 30.0, "sway": 0.0, "shadow": 90.0},
+	"pierre_gravee": {"scale": 0.195, "foot": 0.15, "solid": Vector2(56, 16), "sway": 0.0, "shadow": 60.0},
+	"pierre_plate": {"scale": 0.208, "foot": 0.12, "solid": Vector2(52, 16), "sway": 0.0, "shadow": 56.0},
+	"pieu_corde": {"scale": 0.229, "foot": 0.03, "solid": 5.6, "sway": 0.0, "shadow": 20.0},
+	"peau_mue": {"scale": 0.18, "foot": 0.2, "solid": 0.0, "sway": 0.3, "shadow": 0.0},
+	"fougeres_ecrasees": {"scale": 0.22, "foot": 0.15, "solid": 0.0, "sway": 1.5, "shadow": 0.0},
+	# People's things, at Chloé's scale (Sirocco's mat, Dame Suie's basket, the henchmen's tools,
+	# Hélène's observation table, the Cabinet's specimen shelf); the Désert's fossils.
+	"natte_fouilles": {"scale": 0.16, "foot": 0.25, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"vertebre": {"scale": 0.135, "foot": 0.1, "solid": 18.0, "sway": 0.0, "shadow": 50.0},
+	"cotes_sable": {"scale": 0.264, "foot": 0.15, "solid": Vector2(80, 18), "sway": 0.0, "shadow": 80.0},
+	"panier_fioles": {"scale": 0.074, "foot": 0.06, "solid": 0.0, "sway": 0.0, "shadow": 16.0},
+	"outils_mine": {"scale": 0.103, "foot": 0.05, "solid": 8.0, "sway": 0.0, "shadow": 30.0, "light": true},
+	"table_observation": {"scale": 0.145, "foot": 0.04, "solid": Vector2(40, 14), "sway": 0.0, "shadow": 45.0},
+	"etagere_bocaux": {"scale": 0.2, "foot": 0.03, "solid": Vector2(70, 16.8), "sway": 0.0, "shadow": 0.0},
+	# Plants of the Mesozoic for each milieu (docs/direction-artistique.md « Détails vivants »).
+	"prele": {"scale": 0.122, "foot": 0.06, "solid": 0.0, "sway": 2.5, "shadow": 0.0},
+	"cycas": {"scale": 0.264, "foot": 0.06, "solid": 12.0, "sway": 1.2, "shadow": 90.0},
+	"ginkgo": {"scale": 0.41, "foot": 0.02, "solid": 11.0, "sway": 1.5, "shadow": 90.0},
+	"roseaux_secs": {"scale": 0.224, "foot": 0.1, "solid": 0.0, "sway": 2.0, "shadow": 0.0},
+	"conifere_sec": {"scale": 0.249, "foot": 0.06, "solid": 14.0, "sway": 0.8, "shadow": 70.0},
+	"rocher_lichen": {"scale": 0.261, "foot": 0.08, "solid": Vector2(84, 30), "sway": 0.0, "shadow": 95.0},
+	# For the zones to come: Monts Gelés, Cieux Éternels, Plaine Volcanique, Terre des Apex.
+	"sapin_neige": {"scale": 0.515, "foot": 0.04, "solid": 14.0, "sway": 0.8, "shadow": 90.0},
+	"buisson_givre": {"scale": 0.183, "foot": 0.12, "solid": 18.0, "sway": 0.6, "shadow": 60.0},
+	"rocher_neige": {"scale": 0.278, "foot": 0.06, "solid": Vector2(84, 30), "sway": 0.0, "shadow": 95.0},
+	"pin_tordu": {"scale": 0.397, "foot": 0.1, "solid": 16.0, "sway": 1.0, "shadow": 80.0},
+	"tronc_calcine": {"scale": 0.31, "foot": 0.08, "solid": 16.0, "sway": 0.0, "shadow": 70.0},
+	"fougere_cendre": {"scale": 0.147, "foot": 0.12, "solid": 0.0, "sway": 2.0, "shadow": 0.0},
+	"bennettitale": {"scale": 0.24, "foot": 0.08, "solid": 12.0, "sway": 1.2, "shadow": 80.0},
+	"magnolia": {"scale": 0.466, "foot": 0.02, "solid": 12.0, "sway": 1.2, "shadow": 100.0},
+	"prele_geante": {"scale": 0.657, "foot": 0.03, "solid": 10.0, "sway": 1.5, "shadow": 60.0},
+	"nid_geant": {"scale": 0.553, "foot": 0.04, "solid": 40.0, "sway": 0.0, "shadow": 0.0},
+	"liane_tronc": {"scale": 0.53, "foot": 0.04, "solid": 24.0, "sway": 0.5, "shadow": 110.0},
 }
 
 @export_enum("arbre_rond", "araucaria", "fougere_arbre", "buisson", "rocher", "cailloux", "tronc", "ronces",
@@ -127,7 +238,16 @@ const KINDS := {
 	"mur_fissure", "tente", "cage", "caisse_ambre_noir", "table_papiers", "palissade", "passerelle",
 	"roseaux", "arbre_noye", "nenuphars", "cabane_pilotis", "statue_dino", "colonne", "vanne", "fresque", "porte_temple", "racines", "os_geant", "crane_geant_desert", "rocher_canyon", "arche_rocheuse", "palmier_oasis", "nid_oviraptor", "totem_vents", "buisson_sec", "tente_nomade",
 	"porte_vents", "chariot_cage", "rempart_eboulis", "squelette_geant", "puits_oasis",
-	"barreaux_cage")
+	"barreaux_cage", "maison_3d",
+	"havre_herboristerie", "havre_mercerie", "havre_relais", "havre_comptoir", "havre_sellerie", "havre_entrepot",
+	"havre_maison_1", "havre_maison_2", "havre_maison_3", "havre_maison_4", "benitier", "phare_ruine",
+	"coquillages", "algues", "bois_flotte", "rocher_cote", "rocher_recif", "oyats", "nid_pteranodon", "nid_tortue",
+	"boite_fer", "gravure_hi", "palmier_cote", "masque_pierre", "varech", "corail", "corail_branches", "anemones",
+	"eponges", "herbier", "autel", "statue_spinosaure", "pierre_gravee", "pierre_plate", "pieu_corde", "peau_mue",
+	"fougeres_ecrasees", "natte_fouilles", "vertebre", "cotes_sable", "panier_fioles", "outils_mine",
+	"table_observation", "etagere_bocaux", "prele", "cycas", "ginkgo", "roseaux_secs", "conifere_sec", "rocher_lichen",
+	"sapin_neige", "buisson_givre", "rocher_neige", "pin_tordu", "tronc_calcine", "fougere_cendre", "bennettitale",
+	"magnolia", "prele_geante", "nid_geant", "liane_tronc")
 var kind := "arbre_rond":
 	set(value):
 		kind = value
@@ -204,7 +324,18 @@ func _build() -> void:
 		sprite.material = null
 	Shadow.fit(_shadow, def["shadow"])
 	var solid: Variant = def["solid"]
-	if solid is Vector2:
+	var outline := PackedVector2Array(def.get("solid_poly", []))
+	if not outline.is_empty():   # a model's foot that is no box (a tent turned 3/4: a diamond)
+		var points := outline
+		if flip:   # mirrored (same winding)
+			points = PackedVector2Array()
+			for i in range(outline.size() - 1, -1, -1):
+				points.append(Vector2(-outline[i].x, outline[i].y))
+		var poly := ConvexPolygonShape2D.new()
+		poly.points = points
+		_shape.shape = poly
+		_shape.position = Vector2.ZERO
+	elif solid is Vector2:
 		var box := RectangleShape2D.new()
 		box.size = solid
 		_shape.shape = box

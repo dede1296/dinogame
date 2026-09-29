@@ -29,6 +29,9 @@ const SELLERIE_FRONT := Vector2(42.0, 10.2)
 ## steps off it there and walks up the pier.
 const PIER_END := Vector2(47.8, 24.0)
 const BOAT_LANDING := Vector2(47.5, 27.2)
+## The shops one goes into (Doorway): shop -> [its house, its keeper] (node names in the zone).
+const SHOP_DOORS := {&"herboristerie": ["Herboristerie", "Pervenche"], &"mercerie": ["Mercerie", "Rosalie"],
+	&"comptoir": ["Comptoir", "Ferreol"]}
 ## The trainers of the Relais: team (species, level), prize, their lines.
 const TRAINERS := {
 	&"gaspard": {"name": "Gaspard", "rank": "Bronze", "flag": &"gaspard_battu", "prize": 150,
@@ -93,9 +96,23 @@ static func shop(id: StringName, who: Node) -> void:
 	Game.set_flag(StringName("vu_%s" % id))
 	if not shopping:
 		return
-	Audio.play_sfx(DOOR_SFX, -6.0)
+	await _visit(id)
+
+
+## Into a shop: its keeper goes in first, the door opens, Chloé follows (Doorway); its screen;
+## then out again, the keeper sees her out and goes back to their place. (No door known: the
+## door's sound only, as before.)
+static func _visit(id: StringName) -> void:
+	var place: Array = SHOP_DOORS.get(id, ["", ""])
+	var house = S.actor(place[0])
+	var keeper = S.actor(place[1])
+	var went_in: bool = await Doorway.shop_in(house, keeper as Npc)
+	if not went_in:
+		Audio.play_sfx(DOOR_SFX, -6.0)
 	var screen := ShopScreen.open(S.world(), id)
 	await screen.closed
+	if went_in:
+		await Doorway.shop_out(house, keeper as Npc)
 
 
 static func ferreol() -> void:
@@ -119,9 +136,7 @@ static func ferreol() -> void:
 			"Votre grand-mère gardait tout pour elle. Moi, je partage. Contre paiement, naturellement."].pick_random()
 		if not await Ask.menu(&"ferreol", FERREOL, prompt, [&"pieces"], "Faire affaire"):
 			return
-	Audio.play_sfx(DOOR_SFX, -6.0)
-	var screen := ShopScreen.open(S.world(), &"comptoir")
-	await screen.closed
+	await _visit(&"comptoir")
 
 
 # ------------------------------------------------------------------ the saddle
@@ -232,6 +247,9 @@ static func night() -> void:
 	# The camera shows the end of the quay: someone steps off the dark boat.
 	var isaure := S.stranger("IsaureNuit", "isaure", S.at(BOAT_LANDING.x, BOAT_LANDING.y), "up")
 	isaure.modulate.a = 0.0
+	# The dark boat she steps off (no lantern), at the end of the pier; gone with her.
+	var boat: Node2D = preload("res://story/cote_stage.gd").prop("barque",
+		S.at(BOAT_LANDING.x - 3.2, BOAT_LANDING.y + 0.6), "BarqueNuitHavre", true)   # (in the water along the pier, B.dock x 46-49)
 	var landed := {"done": false}
 	await S.say([_cue({"text": "Au bout du quai, une barque accoste sans lumière, juste devant l'entrepôt du Comptoir."},
 		func() -> void: _run(func() -> void: await _lands(isaure), landed))])
@@ -239,7 +257,7 @@ static func night() -> void:
 	await S.fade_through(func() -> void:
 		Stage.look_back(0.0)
 		w.player.teleport(S.at(44.3, 21.1))   # behind the crates of the quay
-		w.companion.teleport(S.at(43.4, 21.2))
+		w.companion.stand_beside(S.at(44.3, 21.1))
 		w.player.face_towards(S.at(48.5, 20.0))
 		if is_instance_valid(isaure):
 			isaure.global_position = S.at(47.5, 24.6)
@@ -247,8 +265,13 @@ static func night() -> void:
 		await S.wait(0.3))
 	# She crouches down, out of sight.
 	await S.say([_cue({"text": "Chloé se glisse derrière les caisses, sans un bruit."}, func() -> void: Stage.bow(Stage.chloe(), 1.4))])
+	# Ferréol comes out of the warehouse to meet her (its door opens in the dark), and goes back in.
+	var warehouse = S.actor("Entrepot")
 	var ferreol := S.stranger("FerreolNuit", "ferreol", S.at(48.5, 18.3))
+	var out := {}
+	_run(func() -> void: await Doorway.npc_out(warehouse, ferreol, 90.0), out)
 	await isaure.walk_to(S.at(47.5, 21.4), "up", 110.0)
+	await _finish(out, 4.0)
 	await ferreol.walk_to(S.at(48.5, 20.4), "down", 90.0)
 	await S.say([
 		{"who": FERREOL, "text": "Ponctuelle, Capitaine. Nos amis seront ravis. Même heure, la semaine prochaine ?"},
@@ -258,7 +281,10 @@ static func night() -> void:
 	])
 	await isaure.walk_to(S.at(47.5, 24.6), "down", 110.0)
 	isaure.queue_free()
-	await ferreol.walk_to(S.at(48.5, 18.3), "up", 90.0)
+	if is_instance_valid(boat):
+		Stage.fade_out(boat, 1.2, true)
+	if not await Doorway.npc_in(warehouse, ferreol, 90.0):
+		await ferreol.walk_to(S.at(48.5, 18.3), "up", 90.0)
 	ferreol.queue_free()
 	await S.say([{"who": CHLOE, "text": "Isaure ? Qu'est-ce qu'elle livre au Comptoir… en pleine nuit ?"}, {"flag": &"barque_vue"}])
 	Save.save_game()

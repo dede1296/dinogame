@@ -48,23 +48,23 @@ script = ExtResource("7_6xmav")
 terrain = NodePath("../../Terrain")
 
 [node name="Tente" type="StaticBody2D" parent="Entities" unique_id=1058476044]
-position = Vector2(345.6, 249.6)
+position = Vector2(292.8, 369.6)
 script = ExtResource("8_6i3de")
 kind = "tente"
 
 [node name="Tente2" type="StaticBody2D" parent="Entities" unique_id=932993046]
-position = Vector2(672, 220.8)
+position = Vector2(652.8, 369.6)
 script = ExtResource("8_6i3de")
 kind = "tente"
 flip = true
 
 [node name="Tente3" type="StaticBody2D" parent="Entities" unique_id=1868667972]
-position = Vector2(960, 355.2)
+position = Vector2(926.4, 369.6)
 script = ExtResource("8_6i3de")
 kind = "tente"
 
 [node name="Tente4" type="StaticBody2D" parent="Entities" unique_id=1174415979]
-position = Vector2(220.8, 787.2)
+position = Vector2(259.2, 844.8)
 script = ExtResource("8_6i3de")
 kind = "tente"
 flip = true
@@ -195,16 +195,15 @@ position = Vector2(1224, 278.4)
 script = ExtResource("10_k84gq")
 species_id = &"deinonychus"
 hide_flag = &"sceau_foret"
-size_scale = 0.7
 corrupted = true
 
 [node name="Cage" type="StaticBody2D" parent="Entities" unique_id=1919382763]
-position = Vector2(1212, 272.64)
+position = Vector2(1207.8, 270.624)
 script = ExtResource("8_6i3de")
 kind = "cage"
 
 [node name="BarreauxDeinonychus" type="StaticBody2D" parent="Entities" unique_id=427529418]
-position = Vector2(1224, 285.12)
+position = Vector2(1224, 287.472)
 script = ExtResource("9_s2xlm")
 hide_flag = &"sceau_foret"
 kind = "barreaux_cage"
@@ -214,16 +213,16 @@ position = Vector2(297.6, 590.4)
 script = ExtResource("10_k84gq")
 species_id = &"dilophosaurus"
 hide_flag = &"sceau_foret"
-size_scale = 0.75
+size_scale = 0.8
 corrupted = true
 
 [node name="Cage2" type="StaticBody2D" parent="Entities" unique_id=590688109]
-position = Vector2(285.6, 584.64)
+position = Vector2(281.4, 582.624)
 script = ExtResource("8_6i3de")
 kind = "cage"
 
 [node name="BarreauxDilophosaurus" type="StaticBody2D" parent="Entities" unique_id=1246657754]
-position = Vector2(297.6, 597.12)
+position = Vector2(297.6, 599.472)
 script = ExtResource("9_s2xlm")
 hide_flag = &"sceau_foret"
 kind = "barreaux_cage"
@@ -529,7 +528,7 @@ species_id = &"utahraptor"
 event = &"utahraptor_cage"
 flip = true
 hide_flag = &"sceau_foret"
-size_scale = 1.35
+size_scale = 1.2
 corrupted = true
 
 [node name="Spawns" type="Node2D" parent="." unique_id=426062640]

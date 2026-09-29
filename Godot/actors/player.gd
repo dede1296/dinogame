@@ -5,6 +5,7 @@ extends CharacterBody2D
 ## dino (Monture, with Joss's saddle): faster, sitting on its back (the companion carries her).
 ## With the swimming vest and a grown swimmer, she swims across deep water on its back (Swim):
 ## it starts by itself as she walks into the water, and ends on the shore.
+## She is 1.50 m tall (Heights: her sprite's scale, her shadow).
 
 signal stepped(surface: StringName)
 ## Chloé starts (true) or stops swimming, or another dino carries her in the water.
@@ -12,6 +13,7 @@ signal swim_changed(swimming: bool)
 
 const SPEED := 165.0
 const ACCEL := 1500.0
+const SWIM_ACCEL := 360.0      # under the sea (diving): inertia, soft turns
 const STEP_DISTANCE := 38.0
 const RIDE_SPEED := 1.8        # × on a mount
 const RIDE_STEP := 1.7         # its steps are longer than hers
@@ -40,6 +42,8 @@ var busy := false   # during an interaction
 var mount: Dino = null
 ## The dino carrying her in deep water (null: not swimming). Set here, as she walks in or out.
 var swimmer: Dino = null
+## Under the sea (a zone played under the water): her diver carries her the whole time (Dive).
+var diving := false
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
@@ -50,8 +54,10 @@ var _water_told := false   # …and told why, in this zone
 
 func _ready() -> void:
 	add_to_group(&"player")
-	Shadow.make(self, 44.0)
+	sprite.scale = Vector2.ONE * Heights.sprite_scale(SHEET)
+	Shadow.make(self, Heights.shadow_width(SHEET))
 	sprite.sprite_frames = SheetFrames.character(SHEET, 15.0)
+	Outfits.dress_chloe(sprite.sprite_frames, 15.0)   # in her walking boots, once she has them
 	sprite.play(&"idle_down")
 	trail.append(global_position)
 	collision_mask = SWIM.SOLID_LAYER | SWIM.WATER_LAYER
@@ -66,7 +72,8 @@ func _physics_process(delta: float) -> void:
 	if can_move():
 		input = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	_update_water_mask()
-	velocity = velocity.move_toward(input * top_speed(), ACCEL * delta)
+	# (under the sea her diver glides: slow to start, slow to stop, wide turns)
+	velocity = velocity.move_toward(input * top_speed(), (SWIM_ACCEL if diving else ACCEL) * delta)
 	var before := global_position
 	move_and_slide()
 	var moved := global_position.distance_to(before)
@@ -109,6 +116,8 @@ func on_water() -> bool:
 
 ## In the water, on the back of a swimmer of her party; out of it, on her feet again.
 func _update_swim() -> void:
+	if diving:
+		return   # under the sea, her diver (swimmer, set by Dive) carries her everywhere
 	if not on_water():
 		if swimmer:
 			_set_swimmer(null)
@@ -160,11 +169,15 @@ func _animate(input: Vector2) -> void:
 	if carried_by():   # in the saddle, or swimming on a dino's back: her pose is its (Saddle)
 		return
 	var dir := SheetFrames.direction_name(facing)
+	if has_meta(&"pose"):   # a pose of a scene (Stage.pose), held, turned where she looks
+		sprite.play(Outfits.pose_anim(get_meta(&"pose"), dir))
+		return
+	var look := Outfits.walk_look()   # (her accessories: Outfits)
 	if speed > 12.0:
-		sprite.play(StringName("walk_" + dir))
+		sprite.play(StringName(look + "walk_" + dir))
 		sprite.speed_scale = clampf(speed / top_speed(), 0.5, 1.2)
 	else:
-		sprite.play(StringName("idle_" + dir))
+		sprite.play(StringName(look + "idle_" + dir))
 
 
 func _track(moved: float) -> void:

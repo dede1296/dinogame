@@ -712,7 +712,7 @@ func _run(command: String, arg: Variant) -> void:
 			var world := current_scene
 			var pos: Vector2 = arg * TILE
 			world.get("player").call("teleport", pos)
-			world.get("companion").call("teleport", pos + Vector2(-34, 8))
+			world.get("companion").call("stand_beside", pos)
 		"audio":
 			for bus in ["Music", "Ambience", "SFX"]:
 				print("bus ", bus, " %.1f dB" % AudioServer.get_bus_volume_db(AudioServer.get_bus_index(bus)))
@@ -750,9 +750,33 @@ func _run(command: String, arg: Variant) -> void:
 				print("objectif : ", o["text"])
 		"motion":
 			load("res://world/view3d/sprite_motion.gd").set("enabled", arg)
+		"pose":   # [pose, secs]: Chloé holds a pose drawn for her (Stage.pose; "": back on her feet)
+			print("pose ", arg, " : ", load("res://story/stage.gd").call("pose", current_scene.get("player"), StringName(arg[0]), float(arg[1])))
+		"dress":   # [name, look]: someone of the zone (node name) in another look (Stage.dress; "": as usual)
+			var who: Node = current_scene.get("region").get_node("Entities").find_child(String(arg[0]), true, false)
+			print("tenue ", arg, " : ", load("res://story/stage.gd").call("dress", who, StringName(arg[1])))
+		"static":   # [script, function, args…]: a staging helper called directly (a visual check without playing its scene);
+			# "@Name" = a node of the zone (the last one «static» made, when named so), "@player" = Chloé, a Vector2 = cells
+			var args: Array = []
+			for a in (arg as Array).slice(2):
+				if a is String and (a as String).begins_with("@"):
+					var node_name := (a as String).substr(1)
+					args.append(current_scene.get("player") if node_name == "player" else current_scene.get("region").get_node("Entities").find_child(node_name, true, false))
+				elif a is Vector2:
+					args.append((a as Vector2) * 48.0)   # (Story.CELL)
+				else:
+					args.append(a)
+			print("static ", arg[1], " : ", load(String(arg[0])).callv(String(arg[1]), args))
+		"face":   # a direction (Vector2): Chloé turns that way
+			var p: Node2D = current_scene.get("player")
+			p.call("face_towards", p.global_position + (arg as Vector2) * 10.0)
 		"demo":   # the live demo mode (see _demo): its help line, its pace
 			_demo = arg
 			_demo_help()
+		"no_help":   # the demo's pace without its help line (clean screenshots)
+			var help := root.get_node_or_null("DemoHelp")
+			if help:
+				help.queue_free()
 		"segment":   # a part of the demo: [chapter, title], shown a few seconds
 			_segment(arg[0], arg[1])
 		"wait_idle":   # the demo waits for the scene to be over: [at least, at most] seconds
@@ -808,15 +832,46 @@ func _run(command: String, arg: Variant) -> void:
 			load("res://ui/settings_menu.gd").open(current_scene)
 		"call":
 			current_scene.callv(arg[0], arg[1])
+		"reliefs":   # big scenery as its real 3D models (true) or as pictures (false), the zone rebuilt
+			current_scene.get("_view").set("reliefs", arg)
+			current_scene.get("_view").call("_apply_quality")
+		"details":   # the 3D models' details from normal maps (true) or not (false)
+			current_scene.get("_view").set("details", arg)
+			current_scene.get("_view").call("_apply_quality")
+		"camera_distance":   # the 3D camera's distance (m, CameraRig limits), not remembered
+			current_scene.get("_view").get("camera").call("set_distance", arg, false)
 		"weather":
 			root.get_node("Game").call("set_weather", arg)
 		"moves":
 			for n in current_scene.get_children():
 				if n.has_signal("_action_chosen"):
 					n.call("_show_menu", n.get("_moves_menu"))
+		"dive":   # Chloé dives at the dive spot named `arg` (put in its water first; "": the one she is on)
+			load("res://world/dive.gd").call("debug_plunge", current_scene, String(arg) if arg else "")
+		"surface":   # under the water, she goes back up (the Remonter button)
+			load("res://world/dive.gd").call("surface")
+		"dive_state":
+			print(load("res://world/dive.gd").call("describe", current_scene))
+		"battle_rules":   # [species, level, rules, name?]: a battle with its own rules (underwater, abyss…)
+			current_scene.call("_battle", load("res://game/dino.gd").create(StringName(arg[0]), arg[1], arg[3] if arg.size() > 3 else ""), arg[2])
 		"flags":
 			for f in arg:
 				root.get_node("Game").call("set_flag", StringName(f))
+		"nodes":   # the zone's entities whose name contains `arg`: where (tiles), how shown
+			for n in current_scene.get("region").get_node("Entities").get_children():
+				if n is Node2D and String(n.name).contains(String(arg)):
+					var sprite = n.get("sprite")
+					print("nœud %s à %s alpha %.2f visible %s image %s" % [n.name, ((n as Node2D).global_position / TILE).snapped(Vector2(0.1, 0.1)),
+						(n as CanvasItem).modulate.a, (n as CanvasItem).visible, str((sprite as Node2D).position) if sprite is Node2D else "—"])
+					var view = current_scene.get("_view")
+					for p in (view.get("_proxies") if view else []):
+						if p["src"] == n:
+							var vis: Node3D = p["vis"]
+							print("   3D : visible %s à %s couleur %s taille %s caméra %s" % [vis.visible, vis.global_position.snapped(Vector3(0.1, 0.1, 0.1)),
+								vis.get("modulate"), vis.global_basis.get_scale().snapped(Vector3(0.01, 0.01, 0.01)), view.get("camera").global_position.snapped(Vector3(0.1, 0.1, 0.1))])
+		"unflag":   # story flags cleared (a moment played without them)
+			for f in arg:
+				root.get_node("Game").call("set_flag", StringName(f), false)
 		"level":
 			for d in root.get_node("Game").get("party"):
 				d.level = arg
@@ -877,6 +932,38 @@ func _run(command: String, arg: Variant) -> void:
 					current_scene.get("player").call("teleport", pos)
 					current_scene.get("companion").call("teleport", pos + Vector2(-34, 8))
 					break
+		"door":   # [house (node name), open?]: its door opens or closes (WorldView.open_door)
+			var house: Node = current_scene.get("region").get_node("Entities").get_node_or_null(String(arg[0]))
+			current_scene.get("_view").call("open_door", house, arg[1])
+		"door_peek":   # [house, dx (m)]: Chloé in its doorway, dx aside, not faded (do the jambs hide her?)
+			var house: Node = current_scene.get("region").get_node("Entities").get_node_or_null(String(arg[0]))
+			load("res://story/doorway.gd").place_inside(house)
+			var me: Node2D = current_scene.get("player")
+			me.set("busy", true)   # (as in a scene: the exit in front of the door is not taken)
+			me.modulate = Color.WHITE
+			me.call("teleport", me.global_position + Vector2(float(arg[1]) * TILE, 0.0))
+		"door_out":   # house: Chloé, inside its doorway (door_peek), comes out and the door closes
+			var house: Node = current_scene.get("region").get_node("Entities").get_node_or_null(String(arg))
+			var me: Node2D = current_scene.get("player")
+			var out := func() -> void:
+				await load("res://story/doorway.gd").chloe_out(house)
+				me.set("busy", false)
+			out.call()
+		"doors":   # the zone's houses one goes into, their doors, and who is where
+			var view: Node = current_scene.get("_view")
+			for house in view.get("doors").get("houses"):
+				if is_instance_valid(house):
+					var d: Dictionary = view.call("door", house)
+					print("porte ", house.name, " : seuil=", (d["threshold"] / TILE).snapped(Vector2(0.01, 0.01)), " devant=", (d["front"] / TILE).snapped(Vector2(0.01, 0.01)),
+						" marche=%.2f m, haut=%.2f m, large=%.2f m, ouverte=%s, battants=%d" % [d["sill"], d["height"], d["width"],
+						view.get("doors").call("is_open", house), view.get("doors").get("houses")[house]["pivots"].size()])
+			var me: Node2D = current_scene.get("player")
+			var dino: Node2D = current_scene.get("companion")
+			var lead = dino.get("dino")
+			var tall: float = load("res://actors/dino_size.gd").height_m(lead.species(), absf(dino.get("sprite").scale.y)) if lead else 0.0
+			print("Chloé ", (me.global_position / TILE).snapped(Vector2(0.01, 0.01)), " mod=", me.modulate, " occupée=", me.get("busy"),
+				" | dino ", lead.nickname if lead else "-", " %.2f m " % tall, (dino.global_position / TILE).snapped(Vector2(0.01, 0.01)),
+				" visible=", dino.visible, " dehors=", dino.get("outside"), " mod=", dino.modulate, " physique=", dino.is_physics_processing())
 		"flash":   # a lightning flash now
 			current_scene.get("_view").set("_next_lightning", 0.0)
 		"card":   # the sheet of party dino #arg
@@ -923,6 +1010,10 @@ func _run(command: String, arg: Variant) -> void:
 				if not is_instance_valid(src):
 					continue
 				if src.name in arg or (src.get("kind") != null and String(src.get("kind")).begins_with("maison")):
+					if p["vis"] is MeshInstance3D:   # shown as its real 3D model
+						var m: MeshInstance3D = p["vis"]
+						print(src.name, " 2d=", src.global_position / TILE, " modèle 3d=", m.global_position, " échelle=", m.scale, " aabb=", m.get_aabb(), " vis=", m.visible)
+						continue
 					var v: SpriteBase3D = p["vis"]
 					print(src.name, " 2d=", src.global_position / TILE, " 3d=", v.global_position, " aabb=", v.get_aabb(), " offset=", v.offset, " px=", v.pixel_size, " alpha=", v.alpha_cut, " mod=", v.modulate, " vis=", v.visible)
 		"shop_buy":
@@ -943,8 +1034,8 @@ func _run(command: String, arg: Variant) -> void:
 			root.get_node("Game").call("give_item", arg[0], arg[1])
 		"coins":
 			print("pièces : ", root.get_node("Game").call("coins"), "  objets : ", root.get_node("Game").get("items"))
-		"gset":   # [property, value] on Game
-			root.get_node("Game").set(arg[0], arg[1])
+		"gset":   # [property, value] on Game (a copy: the scenario's STEPS are read-only)
+			root.get_node("Game").set(arg[0], arg[1].duplicate(true) if arg[1] is Dictionary or arg[1] is Array else arg[1])
 		"pebbles":   # the first `arg` amber pebbles of the Plaines found (test flags)
 			for i in arg:
 				root.get_node("Game").call("set_flag", StringName("galet_plaines_t%02d" % i))
@@ -954,6 +1045,25 @@ func _run(command: String, arg: Variant) -> void:
 			root.get_node("Game").get("egg")["steps"] = arg
 		"give":
 			root.get_node("Game").call("add_caught", load("res://game/dino.gd").create(StringName(arg), 6))
+		"npc":   # [sheet, tile Vector2, facing]: someone standing there (Story.stranger), to compare sizes
+			load("res://story/story.gd").stranger("Echelle_" + String(arg[0]), arg[0], arg[1] * TILE, arg[2])
+		"dino_npc":   # [species, tile Vector2, size_scale, level, flip, (lift px)]: a dino of a scene standing there
+			var d: Node2D = load("res://actors/dino_npc.gd").new()   # (by path: no class compiled before the autoloads)
+			d.set("species_id", StringName(arg[0]))
+			d.set("size_scale", arg[2])
+			d.set("level", arg[3])
+			d.set("flip", arg[4])
+			d.set("lift", arg[5] if arg.size() > 5 else 0.0)
+			d.position = arg[1] * TILE
+			current_scene.get("region").get_node("Entities").add_child(d)
+		"wild":   # [species, level, tiles from Chloé]: a wild dino of that level roaming there (calm: no battle)
+			var w: Node2D = load("res://actors/wild_dino.tscn").instantiate()
+			w.set("species_id", StringName(arg[0]))
+			w.set("level_range", Vector2i(arg[1], arg[1]))
+			w.set("roam_radius", 30.0)
+			w.position = (current_scene.get("player") as Node2D).global_position + arg[2] * TILE
+			current_scene.get("region").get_node("Entities").add_child(w)
+			w.call("calm_down", 999.0)
 		"map":
 			current_scene.call("_open_map")
 		"vsync":
@@ -1020,7 +1130,8 @@ func _auto_step() -> void:
 				print("⚔ ", said)
 			if _fast_battles:
 				_shorten(n.get("engine"))
-			if n.get("_menu").visible:
+			var moves_open: bool = n.get("_moves_menu") != null and n.get("_moves_menu").visible   # (opened by "moves")
+			if n.get("_menu").visible or moves_open:
 				if _demo and not fast:   # a moment to see the menu
 					if _menu_at < 0.0:
 						_menu_at = _time

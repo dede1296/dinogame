@@ -9,8 +9,11 @@ extends StaticBody2D
 ## Only there once this flag is set / no longer there once this one is set.
 @export var show_flag: StringName
 @export var hide_flag: StringName
-## Size relative to the species' world scale (hatchlings are smaller).
-@export var size_scale := 0.8
+## Size, share of its species' adult size (DinoSpecies.world_scale): an Alpha, an Ancient, a
+## boss stand bigger (1.2…), a young one of the story smaller.
+@export var size_scale := 1.0
+## A young dino: shown as big as a dino of this level (DinoSize.growth), × size_scale; 0: grown.
+@export var level := 0
 ## Raised above the ground (px), e.g. standing on a pedestal.
 @export var lift := 0.0
 ## Maddened by black amber: its corrupted look and a violet glow (see cleanse).
@@ -30,16 +33,15 @@ func _ready() -> void:
 	species = SpeciesDB.get_species(species_id)
 	collision_layer = 1
 	collision_mask = 0
+	var size := species.world_scale * share()
 	var shape := CollisionShape2D.new()
-	var circle := CircleShape2D.new()
-	circle.radius = 16.0
-	shape.shape = circle
+	DinoSize.fit_body(shape, species, size)
 	add_child(shape)
-	Shadow.make(self, species.sheet.get_width() / float(species.sheet_columns) * species.world_scale * size_scale * 0.55)
+	Shadow.make(self, species.sheet.get_width() / float(species.sheet_columns) * size * 0.55)
 	sprite = AnimatedSprite2D.new()
 	sprite.name = "Sprite"
 	sprite.sprite_frames = SheetFrames.dino(species, corrupted)
-	sprite.scale = Vector2.ONE * species.world_scale * size_scale
+	sprite.scale = Vector2.ONE * size
 	sprite.offset = Vector2(0, -species.sheet.get_height() / float(species.sheet_rows) * 0.46)
 	sprite.position.y = -lift
 	sprite.flip_h = flip
@@ -51,7 +53,7 @@ func _ready() -> void:
 	if event != &"":
 		add_to_group(&"interactable")
 		# A big dino can be talked to from its head or its flank, not only at its feet.
-		var width := species.sheet.get_width() / float(species.sheet_columns) * species.world_scale * size_scale
+		var width := species.sheet.get_width() / float(species.sheet_columns) * size
 		set_meta(&"reach_bonus", clampf(width * 0.3 - 10.0, 0.0, 60.0))
 	if corrupted:
 		var glow := PointLight2D.new()
@@ -69,6 +71,11 @@ func _ready() -> void:
 		glow.texture = tex
 		glow.visible = Quality.setting(&"lights")
 		add_child(glow)
+
+
+## Its size, share of its species' adult size (size_scale, and its growth if young).
+func share() -> float:
+	return size_scale * (DinoSize.growth(species, level) if level > 0 else 1.0)
 
 
 ## The black amber lets go of it (calmed, Apaiser): its own colours come back (a white flash), the glow goes.
@@ -91,7 +98,7 @@ func cry(kind: StringName = &"neutre") -> void:
 	if stream:
 		_cry.stream = stream
 		# A hatchling (a small one) higher; a grown dino (an Alpha, Griffe-Grise) lower.
-		_cry.pitch_scale = randf_range(1.15, 1.3) if size_scale < 0.9 else randf_range(0.82, 0.92)
+		_cry.pitch_scale = randf_range(1.15, 1.3) if share() < 0.9 else randf_range(0.82, 0.92)
 		_cry.play()
 
 

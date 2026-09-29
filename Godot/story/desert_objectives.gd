@@ -31,7 +31,10 @@ static func main(out: Array[Dictionary]) -> void:
 		_add(out, "desert", "Maïa est partie devant, vers le Désert Aride : la route du nord, au bout de la roselière du Marais.", &"marais", P.spot(&"marais", "DepuisDesert", P.MARAIS_NORD), true)
 		return
 	if Game.flag(&"maia_defi_4"):
-		_add(out, "cote", "La Côte Préhistorique, au nord, là où les dunes finissent en plages. (La suite de l'aventure arrive bientôt !)", &"desert", _at("DepuisCote", P.SORTIE_COTE), true)
+		if Game.flag(&"cote_annonce"):
+			CoteObjectives.main(out)   # chapter 5, the Côte Préhistorique (story/cote_objectives.gd)
+		else:
+			_add(out, "cote", "La Côte Préhistorique, au nord, là où les dunes finissent en plages. Le vent tourne au crépuscule : du haut de la grande dune, au nord de l'oasis, on verra où passe la piste.", &"desert", _at("DepuisCote", P.SORTIE_COTE), true)
 		return
 	if Game.flag(&"sceau_desert"):
 		if not Game.flag(&"coeur_2"):

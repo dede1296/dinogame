@@ -43,10 +43,10 @@ const NOYEE := [
 	["tronc_mousse", 0.003], ["cailloux", 0.004],
 ]
 const FIRM := [
-	["fougeres", 0.07], ["fleurs_violettes", 0.012], ["fleurs_roses", 0.006], ["fougere_arbre", 0.014],
+	["fougeres", 0.07], ["fleurs_violettes", 0.012], ["prele", 0.006, "fleurs_roses"], ["fougere_arbre", 0.014],
 	["arbre_rond", 0.005], ["buisson", 0.008], ["cailloux", 0.008], ["roseaux", 0.012],
 ]
-const REEDS := [["roseaux", 0.07], ["fougeres", 0.01]]
+const REEDS := [["roseaux", 0.07], ["prele", 0.01, "fougeres"]]
 const SANDY := [["cailloux", 0.012], ["roseaux", 0.012]]
 ## Just south of a boardwalk or a place (the camera looks north, 40° down: anything taller
 ## than Chloé there would hide them): low plants only.
@@ -239,6 +239,18 @@ static func _landmarks(root: Region, entities: Node2D) -> void:
 			["tonneau", 23.2, 33.6], ["caisses", 28.8, 37.8], ["roseaux", 31.6, 40.0], ["roseaux", 20.6, 40.4],
 			["barque", 28.3, 43.1]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]), int(p[1] * 10.0) % 2 == 1)
+	# (29/09) « Elle les range une à une dans des fioles… et ramasse son panier de fioles »: her
+	# basket by her, gone with her.
+	if Prop.KINDS.has("panier_fioles"):
+		var basket = B.prop(entities, "panier_fioles", B.cell(DAME_SUIE.x + 1.1, DAME_SUIE.y + 0.3), false, load(STORY_PROP))
+		basket.name = "PanierFioles"
+		basket.hide_flag = &"dame_suie_battue"
+	# The Voix's island: « les pierres d'ambre de l'îlot s'allument » (glowing amber), and « sur une
+	# pierre plate, quelqu'un a gravé un nom, avec une petite fougère : La Voix ».
+	for p: Array in [["cristaux", 53.0, 38.6, false], ["cristaux", 59.2, 38.8, true], ["cristaux", 54.4, 35.6, true],
+			["pierre_gravee", 58.4, 40.4, true]]:
+		if Prop.KINDS.has(p[0]):
+			B.prop(entities, p[0], B.cell(p[1], p[2]), p[3])
 	# The temple's island: statues either side of the door, columns round the square (the south
 	# ones broken and low, so they hide nothing), ferns on the rock.
 	for p: Array in [["statue_dino", 26.0, 11.7, false], ["statue_dino", 34.0, 11.7, true],
@@ -286,7 +298,7 @@ static func _story(root: Region, entities: Node2D) -> void:
 			page.show_flag = &"dame_suie_battue"
 	B.npc(root, "Joss", "Joss", CHARS % "joss", JOSS.x, JOSS.y, {"facing": "down", "event": &"joss_marais"})
 	B.dino_npc(root, "BaryonyxGilet", &"baryonyx", BARYONYX.x, BARYONYX.y, {"event": &"baryonyx_gilet",
-		"hide_flag": &"gilet_nage", "size": 0.9})
+		"hide_flag": &"gilet_nage", "size": 0.55})   # (young: Marais.BARYONYX_SIZE)
 	# The Voix's island: the amber door in the notch of her rock (Résonance), she up on it.
 	var door = B.prop(entities, "porte_ambre", B.cell(VOIX_DOOR.x, VOIX_DOOR.y), false, load(OBSTACLE))
 	door.name = "PorteVoix"
@@ -294,7 +306,7 @@ static func _story(root: Region, entities: Node2D) -> void:
 	door.cleared_flag = &"porte_voix_ouverte"
 	door.blocked_dialogue = &"porte_voix_bloquee"
 	door.debris_color = Color(1.0, 0.72, 0.28)
-	B.dino_npc(root, "VoixDuMarais", &"voix_du_marais", VOIX.x, VOIX.y, {"event": &"voix_du_marais", "size": 1.2})
+	B.dino_npc(root, "VoixDuMarais", &"voix_du_marais", VOIX.x, VOIX.y, {"event": &"voix_du_marais", "size": 1.1})
 	B.npc(root, "DameSuie", "Dame Suie", CHARS % "dame_suie", DAME_SUIE.x, DAME_SUIE.y, {"facing": "down",
 		"event": &"dame_suie", "hide_flag": &"dame_suie_battue"})
 	B.npc(root, "RocMarais", "Roc", CHARS % "roc", ROC.x, ROC.y, {"facing": "down", "event": &"roc_marais",

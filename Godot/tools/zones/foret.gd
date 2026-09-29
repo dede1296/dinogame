@@ -26,10 +26,12 @@ const BACKDROP := "res://assets/art/battle/foret.jpg"
 const ENTRANCE := Vector2i(126, 52)
 ## What grows on the open ground (see _table): [kind, chance per tile, stand-in while the kind
 ## is not drawn yet ("" = nothing)]. The first row that wins the roll is placed.
+## (29/09: a few rows of the Plaines' flowers became the jungle's own plants, cycads, ginkgos and
+## horsetails, same chances: the rest of the forest stays where it was.)
 const SOUS_BOIS := [
 	["fougeres", 0.1], ["fougere_geante", 0.012, "fougere_arbre"], ["fougere_arbre", 0.02], ["araucaria", 0.009],
 	["buisson", 0.009], ["champignons", 0.012, ""], ["tronc_mousse", 0.004, "tronc"], ["souche", 0.004],
-	["rocher_mousse", 0.004, "rocher"], ["cailloux", 0.005], ["ronces", 0.004], ["fleurs_violettes", 0.005],
+	["rocher_mousse", 0.004, "rocher"], ["cailloux", 0.005], ["ronces", 0.004], ["cycas", 0.005, "fleurs_violettes"],
 	["arbre_rond", 0.004], ["souche_geante", 0.0012, ""],
 ]
 const LISIERE := [
@@ -43,7 +45,7 @@ const FUTAIE := [
 ]
 const ROCHES := [
 	["cailloux", 0.02], ["rocher", 0.008], ["rocher_mousse", 0.008, "rocher"], ["fougeres", 0.035], ["buisson", 0.008],
-	["araucaria", 0.005], ["os_dino", 0.002, ""], ["fleurs_violettes", 0.006],
+	["araucaria", 0.005], ["os_dino", 0.002, ""], ["ginkgo", 0.006, "fleurs_violettes"],
 ]
 ## Up on the rock nobody reaches, and in and over the ravine (the camera looks into it from
 ## the south): low things only.
@@ -52,7 +54,7 @@ const ROC := [["cailloux", 0.012], ["buisson", 0.012], ["fougeres", 0.03], ["roc
 ## taller than Chloé there would hide them): the undergrowth, nothing tall.
 const LOW := [
 	["fougeres", 0.11], ["champignons", 0.014, ""], ["fleurs_violettes", 0.008], ["buisson", 0.006], ["cailloux", 0.006],
-	["souche", 0.003], ["ronces", 0.003], ["fleurs_roses", 0.004],
+	["souche", 0.003], ["ronces", 0.003], ["prele", 0.004, "fleurs_roses"],
 ]
 ## How far south of what must be seen (tiles) nothing tall stands (as gen-foret.mjs's SHADOW).
 const VIEW_SHADOW := 5
@@ -299,6 +301,18 @@ static func _story(root: Region, entities: Node2D) -> void:
 	posts.event = &"clairiere_vide"
 	for p: Array in [[21.2, 17.2, false], [27.0, 19.8, true]]:
 		B.prop(entities, "cloture", B.cell(p[0], p[1]), p[2])
+	# (29/09) « Au milieu, elles sont couchées, écrasées… Tout autour, un anneau de pieux plantés
+	# dans la terre, reliés par des cordes coupées »: the ring of cut stakes, the flattened ferns.
+	if Prop.KINDS.has("pieu_corde"):
+		for i in 8:
+			var a := TAU * i / 8.0 + 0.35
+			B.prop(entities, "pieu_corde", B.cell(24.0 + cos(a) * 3.4, 18.4 + sin(a) * 2.4), i % 2 == 1)
+	if Prop.KINDS.has("fougeres_ecrasees"):
+		for p: Array in [[22.8, 17.6, false], [25.3, 18.1, true], [24.2, 16.4, false]]:
+			B.prop(entities, "fougeres_ecrasees", B.cell(p[0], p[1]), p[2])
+	# « Au-dessus de sa couche, quelqu'un a gravé un nom dans la roche, avec une petite fougère »
+	if Prop.KINDS.has("pierre_gravee"):
+		B.prop(entities, "pierre_gravee", B.cell(23.8, 78.4))
 	B.sign(entities, B.cell(121.6, 49.6), &"panneau_lisiere")
 	B.sign(entities, B.cell(33.4, 65.2), &"panneau_ravin", true)
 	B.sign(entities, B.cell(83.4, 63.4), &"panneau_futaie")

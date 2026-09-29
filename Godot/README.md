@@ -13,7 +13,7 @@ réglage). Aucun nœud 2D du monde n'est dessiné ; la caméra 2D sert encore au
 
 Contenu actuel (vertical slice) : le prologue (Port-Ambre, le Cabinet du Pr Roc, le choix du
 petit), puis les **Plaines des Fougères** en **une seule grande carte ouverte** (120 × 90 cases :
-route du port, carrefour, étang, anse et sa plage, bosquet d'Hélène derrière le tronc à trancher
+route du port, carrefour, étang, crique et sa plage, bosquet d'Hélène derrière le tronc à trancher
 (**Tranche**), Grotte des Échos dans sa colline derrière le rocher (**Charge**), falaises derrière
 la porte d'ambre (**Résonance**) avec le poste d'observation d'Hélène, Grand Crâne et l'antre de son Alpha),
 bordée de montagnes, de forêt et de mer ; **Havre-Doré**, la ville marchande au bout de la route

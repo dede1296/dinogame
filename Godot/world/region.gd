@@ -41,6 +41,9 @@ extends Node2D
 @export_range(0.0, 1.0) var storm_chance := 0.03
 ## Chance per game hour of a sandstorm (the Désert). 0: never here (and one blowing stops).
 @export_range(0.0, 1.0) var sandstorm_chance := 0.0
+## A zone played under the water (the Côte's reef): Chloé swims on her diver's back the whole
+## time, the view is seen through the water, the battles are fought under it (Dive, Underwater).
+@export var underwater := false
 ## Relief, one text row per tile row: 0–9 = level (1.2 m each), r = ramp between levels,
 ## anything else = 0 (small zones and interiors). Empty = flat zone, or height_data.
 @export var relief: PackedStringArray = []
@@ -51,6 +54,9 @@ extends Node2D
 
 ## Height difference (m) between two neighbouring tiles from which one can't walk between them.
 const CLIFF_STEP := 0.75
+## Under the sea (underwater): one swims over the rocks and the reef's ridges (up to this, m);
+## only the real walls and high cliffs stop the swimmer (cliff_step).
+const SWIM_STEP := 1.3
 ## A basin sunk into the floor (relief "b": a flooded passage of the temple): this deep, less
 ## than CLIFF_STEP so that it can be walked through once dry, and above the zone's water sheet
 ## (HeightMap.WATER_LEVEL), which would fill it for good; dry, its floor looks wet.
@@ -176,8 +182,40 @@ func relief_at(cell: Vector2i) -> int:
 	return int(c) if c.is_valid_int() else 0
 
 
+## The step (m) from which two neighbouring tiles are cut by a cliff: CLIFF_STEP on foot,
+## SWIM_STEP in a zone played under the water (the swimmer passes over what is lower).
+func cliff_step() -> float:
+	return SWIM_STEP if is_underwater() else CLIFF_STEP
+
+
+func is_underwater() -> bool:
+	return underwater or get_meta(&"underwater", false) == true
+
+
+## Is there a cliff between two neighbouring tiles of heights `a` and `b` (m)? A step higher than
+## cliff_step(); under the water, also the foot of what rises above the swimmers (higher than
+## SWIM_STEP over the zone's floor, `floor_m`): the real walls, the arena's rock.
+func cliff_between(a: float, b: float, floor_m: float) -> bool:
+	if absf(a - b) > cliff_step():
+		return true
+	return is_underwater() and (a > floor_m + SWIM_STEP) != (b > floor_m + SWIM_STEP)
+
+
+## The lowest ground of the zone (m).
+func floor_height() -> float:
+	var ground := terrain if terrain else get_node_or_null("Terrain") as TileMapLayer   # (a zone being built: not ready)
+	if ground == null:
+		return 0.0
+	var low := INF
+	var size := ground.get_used_rect().end
+	for y in size.y:
+		for x in size.x:
+			low = minf(low, tile_height(Vector2i(x, y)))
+	return 0.0 if low == INF else low
+
+
 ## Invisible walls along the cliffs: on the shared edge of two tiles whose heights differ by
-## more than CLIFF_STEP. Consecutive edges are merged into one long wall.
+## more than cliff_step(). Consecutive edges are merged into one long wall.
 func _add_cliffs() -> void:
 	if relief.is_empty() and height_data == null:
 		return
@@ -186,6 +224,7 @@ func _add_cliffs() -> void:
 	add_child(body)
 	var tile := tile_size()
 	var size := map_size()
+	var low := floor_height()
 	var h := PackedFloat32Array()
 	h.resize(size.x * size.y)
 	for y in size.y:
@@ -195,7 +234,7 @@ func _add_cliffs() -> void:
 	for x in size.x - 1:
 		var start := -1
 		for y in size.y + 1:
-			var steep := y < size.y and absf(h[y * size.x + x] - h[y * size.x + x + 1]) > CLIFF_STEP
+			var steep := y < size.y and cliff_between(h[y * size.x + x], h[y * size.x + x + 1], low)
 			if steep and start < 0:
 				start = y
 			elif not steep and start >= 0:
@@ -205,7 +244,7 @@ func _add_cliffs() -> void:
 	for y in size.y - 1:
 		var start := -1
 		for x in size.x + 1:
-			var steep := x < size.x and absf(h[y * size.x + x] - h[(y + 1) * size.x + x]) > CLIFF_STEP
+			var steep := x < size.x and cliff_between(h[y * size.x + x], h[(y + 1) * size.x + x], low)
 			if steep and start < 0:
 				start = x
 			elif not steep and start >= 0:

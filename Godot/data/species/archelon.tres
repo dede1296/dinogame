@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/archelon.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/archelon_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"archelon"
+display_name = "Archelon"
+family = &"marine"
+description = "Une tortue de mer gigantesque à la carapace haute et bombée. Elle vient pondre sur la plage aux tortues et nage sans effort dans le ressac."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.636
+battle_scale = 0.511
+walk_fps = 5.0
+cry_prefix = "marin"
+head_size = 6
+head_bite = 6
+teeth_sharp = 2
+teeth_count = 3
+front_power = 6
+front_reach = 4
+back_legs_power = 3
+back_legs_speed = 2
+back_armor = 9
+back_spikes = 1
+tail_power = 2
+tail_length = 2
+rarity = "common"

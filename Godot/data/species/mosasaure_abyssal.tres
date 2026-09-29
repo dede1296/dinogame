@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/mosasaure_abyssal.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/mosasaure_abyssal_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"mosasaure_abyssal"
+display_name = "Mosasaure Abyssal"
+family = &"marine"
+description = "Le géant qui garde le récif du Sanctuaire, tapi dans les eaux profondes. Sa mâchoire immense et son sillage phosphorescent annoncent son passage bien avant qu'il n'attaque."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.510
+battle_scale = 0.554
+walk_fps = 7.0
+cry_prefix = "marin"
+head_size = 8
+head_bite = 9
+teeth_sharp = 9
+teeth_count = 9
+front_power = 5
+front_reach = 4
+back_legs_power = 7
+back_legs_speed = 6
+back_armor = 5
+back_spikes = 2
+tail_power = 9
+tail_length = 8
+rarity = "epic"

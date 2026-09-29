@@ -159,7 +159,8 @@ static func proto(who: Node) -> void:
 	var foe := Dino.create(&"protoceratops", PROTO_LEVEL)
 	foe.corrupted = true
 	var result: String = await S.world().call(&"_battle", foe, {
-		"catch": false, "intro": "Le Protoceratops corrompu charge, fou de peur !",
+		"catch": false, "size": 1.0,   # (grown, as in the cave)
+		"intro": "Le Protoceratops corrompu charge, fou de peur !",
 		"lesson": [] if Game.flag(&"apaiser_appris") else LESSON,
 	})
 	Game.set_flag(&"apaiser_appris")

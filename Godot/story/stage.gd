@@ -120,6 +120,28 @@ static func tremble(actor, secs := 1.2, amount := 2.5) -> void:
 	await t.finished
 
 
+## Sits down in the person's sitting picture (Outfits.POSES &"assis": on the ground, cross-legged,
+## in an armchair…) after a short dip, until Stage.pose(actor, &""). False when it is not drawn
+## for them: nothing changes (then keep a squash: crouch, lie_down…). Awaitable.
+static func sit(actor, secs := 0.3) -> bool:
+	var sprite := sprite_of(actor)
+	if sprite == null or not Outfits.has_pose(actor, &"assis"):
+		return false
+	if not sprite.has_meta(&"stage_scale"):
+		sprite.set_meta(&"stage_scale", sprite.scale)
+	var full: Vector2 = sprite.get_meta(&"stage_scale")
+	var t := sprite.create_tween()
+	t.tween_property(sprite, "scale", full * Vector2(1.04, 0.84), secs * 0.6).set_trans(Tween.TRANS_SINE)
+	await t.finished
+	if not pose(actor, &"assis"):
+		sprite.scale = full
+		return false
+	t = sprite.create_tween()
+	t.tween_property(sprite, "scale", full, secs * 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	await t.finished
+	return true
+
+
 ## Lowers its head (a bow, trust, sadness, sniffing the ground): a slow crouch and back. Awaitable.
 static func bow(actor, secs := 0.9) -> void:
 	var sprite := sprite_of(actor)
@@ -133,6 +155,30 @@ static func bow(actor, secs := 0.9) -> void:
 	t.tween_interval(secs * 0.2)
 	t.tween_property(sprite, "scale", full, secs * 0.4).set_trans(Tween.TRANS_SINE)
 	await t.finished
+
+
+## Holds a pose drawn for the actor (Outfits.POSES: &"accroupi" crouching, &"nage" swimming on
+## her own…), turned where it looks, for `secs` (0: until Stage.pose(actor, &"")). False when
+## that pose is not drawn for it: nothing changes (then crouch, bow… squash the picture instead).
+static func pose(actor, pose_name: StringName, secs := 0.0) -> bool:
+	if actor == null or not is_instance_valid(actor) or not Outfits.pose(actor, pose_name):
+		return false
+	var token := Time.get_ticks_usec()
+	(actor as Node).set_meta(&"pose_token", token)
+	if secs > 0.0 and pose_name != &"":
+		_unpose_later(actor, token, secs)
+	return true
+
+
+static func _unpose_later(actor, token: int, secs: float) -> void:
+	await S.wait(secs)
+	if is_instance_valid(actor) and (actor as Node).get_meta(&"pose_token", -1) == token:
+		Outfits.pose(actor, &"")
+
+
+## Someone in another look for a scene (Outfits.LOOKS: Joss's jar, &"bocal"), or as usual (&"").
+static func dress(actor, look: StringName) -> bool:
+	return Outfits.dress(actor, look)
 
 
 ## Rears up, towering (a roar, a threat, pride): a stretch up and back. Awaitable.

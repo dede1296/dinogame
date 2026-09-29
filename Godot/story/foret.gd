@@ -588,7 +588,7 @@ static func _pushes_back(griffe: Node, small: DinoNpc, chloe: Player) -> void:
 	GESTES.lean(griffe, small.global_position, 12.0, 0.9)
 	await S.wait(0.4)
 	if is_instance_valid(small):
-		small.walk_to(chloe.global_position + Vector2(-30.0, 8.0), 60.0)
+		small.walk_to(GESTES.beside_chloe(small, -1.0, 8.0, 30.0), 60.0)
 
 
 ## He steps closer to her, `steps` times.

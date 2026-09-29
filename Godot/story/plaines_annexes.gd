@@ -20,6 +20,9 @@ const LETTER_AT := 30
 const EGG_STEPS := 300
 const EGG_STIRS := 60   # steps left when it starts moving
 const XP_QUEST := 40
+## Chipie's level when she joins, a hatchling's out of its egg (as big as a dino of that level).
+const CHIPIE_LEVEL := 6
+const HATCH_LEVEL := 3
 const GLASS := preload("res://assets/audio/sfx/glass.wav")
 const RUSTLE := preload("res://assets/audio/sfx/feuillage.mp3")
 const CHIME := preload("res://assets/audio/sfx/galet.mp3")
@@ -39,7 +42,7 @@ const DRAWER := Vector2(4.6, 4.1)
 ## In front of Roc's workbench (tiles), where he makes the lantern.
 const WORKBENCH := Vector2(10.9, 3.0)
 ## Chloé's shoulder, above her feet (px), for Chipie climbing up there.
-const SHOULDER := Vector2(10, -46)
+const SHOULDER := Vector2(7, -32)
 ## The parent of each starter's egg (one of Hélène's Anciens): who, and where.
 const PARENTS := {
 	&"velociraptor": "Griffe-Grise, un grand raptor au museau gris, qui règne sur les sous-bois de la Forêt Jurassique",
@@ -126,7 +129,7 @@ static func nest(bush: Node) -> void:
 	# She springs out of the bush, then looks at the compass, at Chloé, at the compass.
 	var chipie := DinoNpc.new()
 	chipie.species_id = &"compsognathus"
-	chipie.size_scale = 0.8
+	chipie.level = CHIPIE_LEVEL
 	chipie.position = bush.position + Vector2(8, 4)
 	chipie.modulate.a = 0.0
 	bush.get_parent().add_child(chipie)
@@ -145,7 +148,7 @@ static func nest(bush: Node) -> void:
 		Game.set_flag(f)
 	Game.set_flag(&"boussole_trouvee")
 	Game.set_flag(&"lunettes_trouvees")
-	var in_party := Game.add_caught(Dino.create(&"compsognathus", 6, "Chipie"))
+	var in_party := Game.add_caught(Dino.create(&"compsognathus", CHIPIE_LEVEL, "Chipie"))
 	await S.say([
 		{"text": "Chipie rejoint l'équipe !" if in_party else "Chipie rejoint le Cabinet, où elle attend avec impatience."},
 		{"text": "Elle a du Flair : elle sent ce qui est enfoui. La terre remuée des Plaines ne lui échappera pas."},
@@ -361,7 +364,7 @@ static func hatch() -> void:
 		{"flag": &"pepite_nee"},
 	])
 	await Stage.fade_out(baby, 0.4, true)
-	var d := Dino.create(StringName(egg.get("species", "protoceratops")), 3, egg.get("name", "Pépite"))
+	var d := Dino.create(StringName(egg.get("species", "protoceratops")), HATCH_LEVEL, egg.get("name", "Pépite"))
 	var in_party := Game.add_caught(d)
 	Toast.say(S.world().get_tree(), "%s rejoint l'équipe !" % d.nickname if in_party else "%s rejoint le Cabinet." % d.nickname)
 	Save.save_game()
@@ -567,7 +570,7 @@ static func _hatchling(species: StringName) -> DinoNpc:
 		return null
 	var baby := DinoNpc.new()
 	baby.species_id = species
-	baby.size_scale = 0.5
+	baby.level = HATCH_LEVEL
 	baby.position = S.ground_near(chloe.global_position + Vector2(30, 14), 1)
 	baby.modulate.a = 0.0
 	w.region.entities.add_child(baby)

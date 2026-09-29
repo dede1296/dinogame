@@ -69,7 +69,15 @@ const SBIRE_TEAMS := {
 }
 const BRAC_TEAM := [[&"deinonychus", 16, "Tenaille"], [&"allosaurus", 17, "Mastoc"]]
 const CHAMPION_LEVEL := 16
+## The stolen hatchling's own level (Game.STARTER_LEVEL): fed on black amber far from everything,
+## it never grew — « un bébé qui a peur ». It fights like a grown one (CHAMPION_LEVEL, the black
+## amber), but it looks, and joins Chloé, as the little one it is (DinoSize.growth).
+const STOLEN_LEVEL := 5
+# Tallest starter (m) that still reads as "a little one" next to the stolen hatchling.
+const SMALL_BUDDY_M := 1.3
 const UTAH_LEVEL := 18
+## Its size, share of an adult Utahraptor (its DinoNpc in the camp: tools/zones/camp_ombre.gd).
+const UTAH_SIZE := 1.2
 const XP_SBIRE := 40
 const XP_BRAC := 70
 const XP_UTAH := 80
@@ -248,7 +256,8 @@ static func _firmin_goes(firmin: Node, boss: Node, pacing: Dictionary) -> void:
 static func _hide(chloe: Player) -> void:
 	await GESTES.chloe_walk(_px(HIDING_SPOT))
 	chloe.face_towards(_px(VIEW_BRAC))
-	Stage.bow(chloe, 1.8)
+	if not Stage.pose(chloe, &"accroupi", 1.8):   # crouching behind the crates (Outfits)
+		Stage.bow(chloe, 1.8)
 
 
 ## A henchman paces up and down his beat, either side of his post.
@@ -501,7 +510,7 @@ static func _brac_team() -> Array:
 	var id := stolen_species()
 	var name := stolen_name()
 	var champion := [id, CHAMPION_LEVEL, name, {
-		"corrupted": true,
+		"corrupted": true, "size": DinoSize.growth(SpeciesDB.get_species(id), STOLEN_LEVEL),
 		"before": _champion_before(),
 		"intro": "Brac envoie son champion : %s, fou de peur !" % name,
 		"lesson": [
@@ -581,13 +590,17 @@ static func _brac_beaten(who: Node) -> void:
 	])
 	if is_instance_valid(little):
 		await GESTES.halt(little)
-		await little.walk_to(chloe.global_position + Vector2(40.0, 14.0), 90.0)
+		await little.walk_to(GESTES.beside_chloe(little, 1.0, 14.0, 40.0), 90.0)
 	var lines: Array = []
 	var mine: Dino = Foret.starter()
 	var buddy: Node2D = null   # her own hatchling, sniffing the little one
 	if mine and Game.party.has(mine):
 		buddy = w.companion if Game.lead_dino() == mine else GESTES.stand_in(mine)
-		lines.append(GESTES.cue("%s s'avance, et les deux petits se reniflent le bout du museau. Le jour de leur éclosion, ils dormaient côte à côte, sur les socles du Cabinet. Ils s'en souviennent." % mine.nickname,
+		# A grown starter towers over the stolen little one: it bends down to meet it.
+		var small := DinoSize.height_m(mine.species(), DinoSize.world_scale(mine)) <= SMALL_BUDDY_M
+		var meet := "%s s'avance, et les deux petits se reniflent le bout du museau." if small \
+			else "%s s'avance et baisse la tête jusqu'au petit : ils se reniflent le bout du museau."
+		lines.append(GESTES.cue((meet % mine.nickname) + " Le jour de leur éclosion, ils dormaient côte à côte, sur les socles du Cabinet. Ils s'en souviennent.",
 			func() -> void: _noses(buddy, little)))
 	lines.append({"who": CHLOE, "text": "%s. C'est ton nom, tu sais. Tu l'avais avant qu'on te prenne." % name})
 	await S.say(lines)
@@ -679,7 +692,7 @@ static func _over_his_shoulder(who: Node, chloe: Player) -> void:
 ## she wants it; else it waits at the Cabinet, by the incubator).
 static func _little_joins(little: Node) -> void:
 	var id := stolen_species()
-	var d := Dino.create(id, CHAMPION_LEVEL, stolen_name())
+	var d := Dino.create(id, STOLEN_LEVEL, stolen_name())
 	Game.set_flag(&"oeuf_vole_apaise")
 	Toast.say(S.world().get_tree(), "Premier grand apaisement !")
 	var in_party := await make_room_for(d, "%s veut rester avec toi. Mais ton équipe est pleine : qui part attendre au Cabinet ?" % d.nickname)
@@ -703,7 +716,7 @@ static func _joins(little: Node, in_party: bool) -> void:
 	if in_party:
 		await Stage.tremble(little, 1.0, 1.0)
 		if is_instance_valid(little) and chloe:
-			await little.walk_to(chloe.global_position + Vector2(24.0, 6.0), 80.0)
+			await little.walk_to(GESTES.beside_chloe(little, 1.0, 6.0), 80.0)
 	else:
 		little.walk_to(_px(CAMP_EXIT), 110.0)
 	await Stage.fade_out(little, 0.6, true)
@@ -779,7 +792,7 @@ static func utahraptor(who: Node) -> void:
 	Stage.shake(7.0, 0.5)
 	var foe := Dino.create(&"utahraptor", UTAH_LEVEL, "Chef de Meute")
 	foe.corrupted = true
-	var rules := {"catch": false, "run": false, "long_calm": true, "lose_spawn": CAMP_SPAWN,
+	var rules := {"catch": false, "run": false, "long_calm": true, "lose_spawn": CAMP_SPAWN, "size": UTAH_SIZE,
 		"intro": "Le Chef de Meute jaillit de sa cage, fou de rage et de peur !"}
 	if not Game.flag(&"utah_lecon"):
 		rules["lesson"] = LONG_LESSON
@@ -1150,7 +1163,7 @@ static func _spawn_little(id: StringName, at_px: Vector2, corrupted := false) ->
 	var little := DinoNpc.new()
 	little.name = "Champion"
 	little.species_id = id
-	little.size_scale = 0.75
+	little.level = STOLEN_LEVEL   # (it never grew)
 	little.corrupted = corrupted
 	little.position = at_px
 	w.region.entities.add_child(little)

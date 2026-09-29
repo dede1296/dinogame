@@ -21,6 +21,8 @@ const GATES := preload("res://assets/audio/sfx/rock_heavy.wav")
 const TEMPLE_SPAWN := &"DepuisMarais"
 ## The Spinosaure Ancestral: level checked by simulation (scratchpad/sim_marais.gd).
 const SPINO_LEVEL := 22
+## Its size, share of an adult Spinosaurus (its DinoNpc in the temple: tools/zones/temple_englouti.gd).
+const SPINO_SIZE := 1.25
 const SPINO_NAME := "Spinosaure Ancestral"
 ## Its voice: a spinosaurid's call, very deep.
 const SPINO_PITCH := 0.7
@@ -343,7 +345,7 @@ static func spinosaure(who: Node) -> void:
 			return
 		await _drink()
 		var foe := Dino.create(&"spinosaurus", SPINO_LEVEL, SPINO_NAME)
-		var rules := {"catch": false, "run": false, "lose_spawn": TEMPLE_SPAWN,
+		var rules := {"catch": false, "run": false, "lose_spawn": TEMPLE_SPAWN, "size": SPINO_SIZE,
 			"intro": "Le Spinosaure Ancestral se dresse de toute sa hauteur ! (Combat d'honneur : pas de collier, pas de fuite.)",
 			"lesson": ["Le Spinosaure est un dino de l'Eau : les attaques du Vent le touchent fort. Ses crocs brûlants, eux, font mal aux dinos Nature et Vent."]}
 		var theme: AudioStream = ForetCamp.music_at(ALPHA_MUSIC)

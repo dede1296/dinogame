@@ -60,7 +60,7 @@ func update(delta: float, region: Region, chloe: Node2D, sun: DirectionalLight3D
 	_lantern.visible = lantern and Quality.setting(&"lights")
 	var feet := _view.heights.to_3d(chloe.global_position)
 	if lantern:
-		_lantern.position = feet + Vector3(0.3, 1.4, 0.3)
+		_lantern.position = feet + Vector3(0.3, 1.0, 0.3)   # in her hand (she is 1.50 m)
 	var pulse := 0.75 + 0.25 * sin(_time * 3.0)
 	for g in _glints:
 		var glint: Sprite3D = g[1]

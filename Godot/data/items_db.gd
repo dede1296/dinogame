@@ -23,6 +23,8 @@ const ITEMS := {
 	# Marais et Désert (chapitres 3 et 4).
 	"gilet_nage": {"name": "Gilet de nage", "icon": "gilet_nage", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Cuir huilé et flotteurs de liège : avec un dino nageur adulte, Chloé traverse l'eau profonde sur son dos."},
+	"masque_plongee": {"name": "Masque de plongée", "icon": "masque_plongee", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Verre de lagon, joint de cuir huilé et une outre d'air cousue par Joss : avec un dino plongeur adulte, Chloé descend sous l'eau sur son dos."},
 	"fossile": {"name": "Fossile", "icon": "fossile", "kind": "quete", "price": 0, "sell": 0,
 		"desc": "Un os pétrifié, déterré grâce au Flair. Roc saura quoi en faire au Cabinet."},
 	"pinceau_fouille": {"name": "Pinceau de fouille", "icon": "pinceau_fouille", "kind": "cle", "price": 0, "sell": 0,
@@ -37,6 +39,13 @@ const ITEMS := {
 		"desc": "La confiance du Spinosaure Ancestral. Il ouvre la route du Désert."},
 	"sceau_desert": {"name": "Sceau du Désert", "icon": "sceau_desert", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "La confiance du Carnotaurus Rouge. Il ouvre la route de la Côte."},
+	# Côte Préhistorique (chapitre 5).
+	"coeur_3": {"name": "Troisième Cœur d'ambre", "icon": "coeur_ambre", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Frais comme un galet mouillé, il bat au rythme de la houle. Confié par le Mosasaure Abyssal, au fond du récif."},
+	"sceau_cote": {"name": "Sceau de la Côte", "icon": "sceau_cote", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Un disque d'ambre bleu de nuit, une vague qui s'enroule et la fougère d'Hélène : la confiance du Mosasaure Abyssal."},
+	"masque_carton": {"name": "Masque en carton", "icon": "masque_carton", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Le masque noir que Maïa s'était découpé après la Forêt. L'élastique est cassé. Chloé le lui rendra."},
 }
 
 ## shop id -> {name, keeper, stock: [item ids], sells: can Chloé sell here, tears: buys amber tears}

@@ -12,7 +12,7 @@ const REGIONS := [
 	{"id": &"foret", "name": "Forêt Jurassique", "zones": [&"foret", &"camp_ombre"], "levels": Vector2i(10, 18), "label": Vector2(0.339, 0.627), "bounds": Rect2(0.146, 0.464, 0.342, 0.327)},
 	{"id": &"marais", "name": "Marais Brumeux", "zones": [&"marais", &"temple_englouti"], "levels": Vector2i(15, 21), "label": Vector2(0.235, 0.476), "bounds": Rect2(0.115, 0.368, 0.290, 0.239)},
 	{"id": &"desert", "name": "Désert Aride", "zones": [&"desert", &"sanctuaire_vents"], "levels": Vector2i(21, 27), "label": Vector2(0.344, 0.305), "bounds": Rect2(0.156, 0.186, 0.349, 0.221)},
-	{"id": &"cote", "name": "Côte Préhistorique", "zones": [&"cote"], "levels": Vector2i(28, 35), "label": Vector2(0.627, 0.257), "bounds": Rect2(0.459, 0.199, 0.369, 0.123)},
+	{"id": &"cote", "name": "Côte Préhistorique", "zones": [&"cote", &"grottes_marines", &"recif_sanctuaire"], "levels": Vector2i(28, 35), "label": Vector2(0.627, 0.257), "bounds": Rect2(0.459, 0.199, 0.369, 0.123)},
 	{"id": &"monts", "name": "Monts Gelés", "zones": [&"monts"], "levels": Vector2i(33, 40), "label": Vector2(0.747, 0.479), "bounds": Rect2(0.593, 0.259, 0.334, 0.435)},
 	{"id": &"cieux", "name": "Cieux Éternels", "zones": [&"cieux"], "levels": Vector2i(38, 44), "label": Vector2(0.585, 0.348), "bounds": Rect2(0.476, 0.262, 0.251, 0.184)},
 	{"id": &"volcan", "name": "Plaine Volcanique", "zones": [&"volcan"], "levels": Vector2i(42, 48), "label": Vector2(0.500, 0.431), "bounds": Rect2(0.391, 0.362, 0.250, 0.253)},
@@ -26,4 +26,6 @@ const PLACES := [
 	[&"camp_ombre", "Camp de l'Ombre Noire", Vector2(0.183, 0.597)],
 	[&"temple_englouti", "Temple englouti", Vector2(0.188, 0.397)],
 	[&"sanctuaire_vents", "Sanctuaire des Vents", Vector2(0.332, 0.192)],
+	[&"grottes_marines", "Grottes marines", Vector2(0.716, 0.240)],
+	[&"recif_sanctuaire", "Récif du Sanctuaire", Vector2(0.651, 0.231)],
 ]

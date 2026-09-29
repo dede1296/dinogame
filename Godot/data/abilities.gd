@@ -9,7 +9,8 @@ class_name Abilities
 ##     Iguanodon, the ostrich-like Gallimimus, the low and wide Ankylosaurus. Not the raptors
 ##     (too small), not the Stegosaurus (plates), not the giant sauropods (out of reach).
 ##   Vol: only the great pterosaurs (the Dimorphodon is far too small).
-##   Nage: the spinosaurids, at home in rivers; the sea reptiles too.   Plongée: the sea reptiles.
+##   Nage: the spinosaurids, at home in rivers; the sea reptiles too.   Plongée: the sea reptiles
+##     that dive deep (Plesiosaurus, Ichthyosaurus, Elasmosaurus), not the Archelon nor the Koolasuchus.
 
 const ADULT_LEVEL := 12
 
@@ -33,8 +34,9 @@ const DEFS := {
 	&"nage": {"name": "Nage", "icon": "wave", "part": &"tail", "adult": true,
 		"species": [&"baryonyx", &"suchomimus", &"spinosaurus"], "families": [&"marine"],
 		"desc": "Traverse l'eau profonde et les rivières, Chloé sur le dos (avec le gilet de nage)."},
-	&"plongee": {"name": "Plongée", "icon": "bubbles", "part": &"tail", "soon": true, "adult": true, "families": [&"marine"],
-		"desc": "Descend sous l'eau : grottes marines, épaves, récifs."},
+	&"plongee": {"name": "Plongée", "icon": "bubbles", "part": &"tail", "adult": true,
+		"species": [&"plesiosaurus", &"ichthyosaurus", &"elasmosaurus"],
+		"desc": "Descend sous l'eau, Chloé sur le dos (avec le masque de plongée) : grottes marines, épaves, récifs."},
 }
 
 

@@ -52,6 +52,13 @@ static func _on_zone_entered(zone: StringName) -> void:
 			await Desert.arrival()
 		&"sanctuaire_vents":
 			await DesertSanctuaire.arrival()
+		# Chapter 5, the Côte Préhistorique (story/cote*.gd)
+		&"cote":
+			await Cote.arrival()
+		&"grottes_marines":
+			await CoteGrottes.arrival()
+		&"recif_sanctuaire":
+			await CoteRecif.arrival()
 
 
 ## The time of day changed while in zone `zone` (a scene that only happens at night…).
@@ -69,6 +76,8 @@ static func _on_phase_changed(zone: StringName) -> void:
 		await MaraisSuite.night()   # Roc's lantern in the evening mist (after page 14)
 	elif zone == &"desert":
 		await Desert.on_phase(zone)   # the dusk scene towards the Côte, if it is still to play
+	elif zone == &"cote":
+		await Cote.on_phase(zone)   # the first night: the boat without a lantern
 
 
 ## A scene started by talking to someone (`who` = the Npc or DinoNpc).
@@ -90,6 +99,7 @@ static func _run(event: StringName, who: Node) -> void:
 			said = await ForetFin.roc() or said
 			said = await MaraisSuite.roc() or said
 			said = await Desert.roc() or said
+			said = await Cote.roc() or said
 			if not said and not healed and Game.flag(&"prologue_done"):
 				await _roc_chat()
 		&"maia":
@@ -111,7 +121,9 @@ static func _run(event: StringName, who: Node) -> void:
 		&"ferreol":
 			await Havre.ferreol()
 		&"joss":
-			if Game.flag(&"maia_defi_2"):   # chapter 3: he also has his cabin in the Marais
+			if Game.flag(&"cote_arrivee"):   # chapter 5: he goes back and forth to the Côte
+				await CoteLagon.joss_havre()
+			elif Game.flag(&"maia_defi_2"):   # chapter 3: he also has his cabin in the Marais
 				await Marais.joss_havre()
 			else:
 				await Havre.joss()
@@ -122,6 +134,9 @@ static func _run(event: StringName, who: Node) -> void:
 		&"dresseur_lilou":
 			await Havre.trainer(&"lilou", who)
 		&"maia_havre":
+			if Game.flag(&"maia_enfuie"):   # chapter 5: she ran away from the lookout
+				await CoteFin.maia_havre(who)
+				return
 			var topics: Array = [&"pieces", &"monter"] if Game.flag(&"selle") else [&"pieces", &"selle", &"monter"]
 			await Ask.menu(&"maia", "Maïa", DialogueDB.chatter(&"maia_havre")[0]["text"], topics + Ask.story_topics())
 		&"marchande":
@@ -133,7 +148,8 @@ static func _run(event: StringName, who: Node) -> void:
 		&"proto_corrompu":
 			await Grotte.proto(who)
 		&"entrepot":
-			await Dialogue.run(DialogueDB.lines(&"entrepot"))
+			if not await CoteFin.entrepot(who):   # chapter 5: Ferréol, once the cache's crates are read
+				await Dialogue.run(DialogueDB.lines(&"entrepot"))
 		&"griffe_grise":
 			await Foret.griffe_grise(who)
 		&"clairiere_vide":
@@ -196,6 +212,31 @@ static func _run(event: StringName, who: Node) -> void:
 			await DesertSanctuaire.coeur(who)
 		&"carno_gardien":   # optional: the Carnotaurus by the open door (CARTE-C, see § 7)
 			await DesertSanctuaire.gardien(who)
+		# Chapter 5, the Côte Préhistorique (story/cote.gd, cote_lagon.gd, cote_grottes.gd, cote_recif.gd, cote_fin.gd)
+		&"pecheurs_cote":
+			await Cote.pecheurs(who)
+		&"maia_falaises":
+			await Cote.maia_falaises(who)
+		&"joss_cote":
+			await CoteLagon.joss(who)
+		&"nid_tortues":
+			await CoteLagon.tortues(who)
+		&"cache_arrivee":
+			await CoteGrottes.cache_arrivee(who)
+		&"passeur":
+			await CoteGrottes.passeur(who)
+		&"cache_contrebande":
+			await CoteGrottes.caisses(who)
+		&"barque_isaure":
+			await CoteGrottes.barque(who)
+		&"mosasaure_abyssal":
+			await CoteRecif.mosasaure(who)
+		&"coeur_recif":
+			await CoteRecif.coeur(who)
+		&"maia_guet":
+			await CoteFin.maia(who)
+		&"boite_helene":
+			await CoteFin.boite(who)
 		_:
 			push_error("Scène inconnue : %s" % event)
 
@@ -294,7 +335,7 @@ static func wait(seconds: float) -> void:
 ## after the other, [species, level, name?, options?] each; no collar, no running away.
 ## `options`: "corrupted" (fed black amber: it cannot be beaten, only calmed with Apaiser, and
 ## "calmed" then counts as a win), "before" (lines said before it comes out), "intro" (the
-## battle's first line), "lesson" (lines after it), "long_calm", "music".
+## battle's first line), "lesson" (lines after it), "long_calm", "music", "size" (BattleScene.run).
 ## `rules`: added to every battle's rules ("music", "lose_spawn"…).
 ## True if Chloé beats them all (on a defeat, the world has already taken her back to the
 ## zone's entry, or to `rules["lose_spawn"]`).
@@ -312,7 +353,7 @@ static func duel(trainer: String, team: Array, rules := {}) -> bool:
 		var battle := {"catch": false, "run": false, "music": TRAINER_MUSIC, "trainer": trainer,
 			"intro": "%s envoie %s !" % [trainer, foe.nickname]}
 		battle.merge(rules, true)
-		for key: String in ["intro", "lesson", "long_calm", "music"]:
+		for key: String in ["intro", "lesson", "long_calm", "music", "size"]:
 			if options.has(key):
 				battle[key] = options[key]
 		var result: String = await w.call(&"_battle", foe, battle)

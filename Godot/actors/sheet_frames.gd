@@ -54,6 +54,10 @@ static func dino(species: DinoSpecies, corrupted := false) -> SpriteFrames:
 		&"idle": {"frames": species.idle_frames, "fps": 1.6},
 		&"attack": {"frames": [species.attack_frame], "fps": 1.0, "loop": false},
 	})
+	if species.sleep_frame >= 0:   # (lying down: asleep only, never while it waits)
+		var sleep := build(sheet, species.sheet_columns, species.sheet_rows, {&"sleep": {"frames": [species.sleep_frame], "fps": 1.0}})
+		frames.add_animation(&"sleep")
+		frames.add_frame(&"sleep", sleep.get_frame_texture(&"sleep", 0))
 	if species.face_back_sheet:
 		var fb := build(species.face_back_sheet, species.face_back_columns, 2, {
 			&"walk_down": {"frames": species.down_walk_frames, "fps": species.walk_fps},
@@ -76,6 +80,46 @@ static func dino_anims(frames: SpriteFrames, dir: Vector2) -> Array:
 	if absf(dir.y) > absf(dir.x) * 1.2 and frames.has_animation(&"walk_down"):
 		return [&"walk_down", &"idle_down"] if dir.y > 0.0 else [&"walk_up", &"idle_up"]
 	return [&"walk", &"idle"]
+
+
+## Measured frames (see drawn_rect): "sheet path:region" -> Rect2.
+static var _drawn := {}
+
+
+## What is drawn in the frame `region` of `sheet` (not transparent), px from the frame's
+## top-left corner (the whole frame when it cannot be read). Measured once: all the frames of
+## the sheet cut the same way at the same time.
+static func drawn_rect(sheet: Texture2D, region: Rect2) -> Rect2:
+	var name := sheet.resource_path if sheet.resource_path != "" else str(sheet.get_instance_id())
+	var key := "%s:%s" % [name, region]
+	if _drawn.has(key):
+		return _drawn[key]
+	var image := sheet.get_image()
+	if image == null or region.size.x < 1.0 or region.size.y < 1.0:
+		_drawn[key] = Rect2(Vector2.ZERO, region.size)
+		return _drawn[key]
+	if image.is_compressed():
+		image.decompress()
+	# The grid the region belongs to (a sheet of equal frames), from its size and place.
+	var origin := Vector2(fposmod(region.position.x, region.size.x), fposmod(region.position.y, region.size.y))
+	var cells := ((Vector2(image.get_size()) - origin) / region.size).floor()
+	for j in int(cells.y):
+		for i in int(cells.x):
+			var cell := Rect2(origin + Vector2(i, j) * region.size, region.size)
+			var used := image.get_region(Rect2i(cell)).get_used_rect()
+			_drawn["%s:%s" % [name, cell]] = Rect2(used) if used.size.y > 0 else Rect2(Vector2.ZERO, region.size)
+	if not _drawn.has(key):   # (not on the grid after all)
+		var used := image.get_region(Rect2i(region)).get_used_rect()
+		_drawn[key] = Rect2(used) if used.size.y > 0 else Rect2(Vector2.ZERO, region.size)
+	return _drawn[key]
+
+
+## What is drawn in `frame` (a picture of a sheet: an AtlasTexture, or a whole texture).
+static func drawn_in(frame: Texture2D) -> Rect2:
+	var atlas := frame as AtlasTexture
+	if atlas and atlas.atlas:
+		return drawn_rect(atlas.atlas, atlas.region)
+	return drawn_rect(frame, Rect2(Vector2.ZERO, frame.get_size()))
 
 
 static func direction_name(dir: Vector2) -> String:

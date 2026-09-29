@@ -24,6 +24,8 @@ const OLD_PITCH := 0.72
 const MARAIS_SPAWN := &"DepuisForet"
 ## The young thief (wild, it can be caught) and the name Chloé gives it.
 const BARYONYX_LEVEL := 16
+## The young thief's size, share of an adult Baryonyx (its DinoNpc in the zone: tools/zones/marais.gd).
+const BARYONYX_SIZE := 0.55
 const BARYONYX_NAME := "Bouée"
 const XP_JOSS := 20
 const XP_GILET := 40
@@ -277,7 +279,8 @@ static func baryonyx(who: Node) -> void:
 	if pick != 0:
 		return
 	var foe := Dino.create(&"baryonyx", BARYONYX_LEVEL)
-	var rules := {"lose_spawn": MARAIS_SPAWN, "intro": "Le Baryonyx chapardeur lâche le gilet… et fonce sur toi en éclaboussant tout !"}
+	var rules := {"lose_spawn": MARAIS_SPAWN, "size": BARYONYX_SIZE,
+		"intro": "Le Baryonyx chapardeur lâche le gilet… et fonce sur toi en éclaboussant tout !"}
 	if not Game.flag(&"baryonyx_lecon"):
 		rules["lesson"] = ["Ce Baryonyx est jeune et sauvage : tu peux le capturer !",
 			"Affaiblis-le d'abord, puis lance un collier d'ambre. Capturé, il nagera pour toi." if Game.item_count("collier") > 0

@@ -78,6 +78,17 @@ static func lean(actor, toward_px: Vector2, px := 10.0, secs := 0.8) -> void:
 
 ## Lies down (exhausted, curled up, making itself small; `height` 0.9: sits down) and stays so
 ## until it gets up (stand_up, or Stage.rear to rise tall). `secs` 0: at once. Awaitable.
+## Where a dino of the scene (`actor`) stands at Chloé's side: on her right (`side` 1) or left
+## (-1), as far as its length asks (its body never over her feet), `dy` px nearer the camera.
+static func beside_chloe(actor: Node2D, side := 1.0, dy := 8.0, at_least := 24.0) -> Vector2:
+	var chloe := Stage.chloe()
+	var sprite := Stage.sprite_of(actor)
+	var half := at_least
+	if actor is DinoNpc and sprite:
+		half = maxf(at_least, DinoSize.length_px((actor as DinoNpc).species, absf(sprite.scale.x)) * 0.5 + 12.0)
+	return chloe.global_position + Vector2(side * half, dy)
+
+
 static func lie_down(actor, secs := 0.8, height := 0.7) -> void:
 	if not is_instance_valid(actor):
 		return
@@ -101,6 +112,7 @@ static func stand_up(actor, secs := 0.5) -> void:
 	var sprite := Stage.sprite_of(actor)
 	if sprite == null:
 		return
+	Stage.pose(actor, &"")   # (up from a drawn pose: sitting…)
 	var t := sprite.create_tween()
 	t.tween_property(sprite, "scale", _full_scale(sprite), secs).set_trans(Tween.TRANS_SINE)
 	await t.finished
@@ -227,7 +239,7 @@ static func stand_in(d: Dino = null) -> DinoNpc:
 	var actor := DinoNpc.new()
 	actor.name = "Doublure"
 	actor.species_id = d.species().id
-	actor.size_scale = 1.0
+	actor.level = d.level   # as big as it is
 	actor.position = companion.global_position if for_companion else w.player.global_position + Vector2(38.0, 8.0)
 	actor.set_meta(&"for_companion", for_companion)
 	w.region.entities.add_child(actor)

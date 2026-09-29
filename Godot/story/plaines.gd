@@ -9,6 +9,8 @@ class_name Plaines
 
 const S := preload("res://story/story.gd")
 const ALPHA_LEVEL := 9
+## Its size, share of an adult Triceratops (DinoNpc.size_scale; the same in its battle).
+const ALPHA_SIZE := 1.2
 ## Where the Alpha stands once the skull is open (beside its mouth, facing the path).
 const ALPHA_SPOT := Vector2(107.2, 63.8)
 ## The mouth of its cave, at the back of the mound's notch; and just out of the notch.
@@ -150,7 +152,7 @@ static func _spawn_alpha() -> Node:
 	alpha.name = "Alpha"
 	alpha.species_id = &"triceratops"
 	alpha.event = &"alpha_plaines"
-	alpha.size_scale = 1.35
+	alpha.size_scale = ALPHA_SIZE
 	alpha.flip = true
 	alpha.position = S.at(DEN.x, DEN.y)
 	w.region.entities.add_child(alpha)
@@ -167,7 +169,7 @@ static func alpha(who: Node) -> void:
 		return
 	var foe := Dino.create(&"triceratops", ALPHA_LEVEL, "Tricératops Alpha")
 	var result: String = await S.world().call(&"_battle", foe, {
-		"catch": false, "run": false,
+		"catch": false, "run": false, "size": ALPHA_SIZE,
 		"intro": "Le Tricératops Alpha se dresse devant toi ! (Combat d'honneur : pas de collier, pas de fuite.)",
 	})
 	if result != "win":
@@ -306,16 +308,20 @@ static func back_to_port() -> void:
 		if Game.phase() != &"night":
 			Game.pass_time_until(NIGHTFALL)
 		w.player.teleport(S.at(PORT_WATCH.x, PORT_WATCH.y))
-		w.companion.teleport(S.at(PORT_WATCH.x - 0.8, PORT_WATCH.y + 0.2))
+		w.companion.stand_beside(S.at(PORT_WATCH.x, PORT_WATCH.y))
 		w.player.face_towards(S.at(CABINET_DOOR.x, CABINET_DOOR.y))
 		await S.wait(0.4))
 	await S.say([_cue({"text": "Le soir est tombé quand Chloé arrive enfin au village. Les lanternes s'allument une à une."},
 		_light_lanterns)])
 	var roc := S.stranger("RocNuit", "roc", S.at(CABINET_DOOR.x, CABINET_DOOR.y), "down")
 	_lantern(roc)
-	Audio.play_sfx(DOOR_SFX, -8.0)
 	Stage.look_at(S.at(CABINET_DOOR.x - 1.5, CABINET_DOOR.y + 0.8))   # the Cabinet's door, and Chloé
-	await S.wait(0.6)
+	# He comes out of the Cabinet: its door opens (and stays open, Chloé says); unknown: its creak.
+	if await Doorway.npc_out(S.actor("Cabinet"), roc, 90.0):
+		await roc.walk_to(S.at(CABINET_DOOR.x, CABINET_DOOR.y), "down", 90.0)
+	else:
+		Audio.play_sfx(DOOR_SFX, -8.0)
+		await S.wait(0.6)
 	await S.say([
 		_cue({"who": CHLOE, "text": "(Le professeur ? À cette heure-ci ?)"}, func() -> void: Stage.emote(Stage.chloe(), "?")),
 		# He looks up north, towards the volcano.

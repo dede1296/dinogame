@@ -32,8 +32,10 @@ const DUNES := [
 const ROCKY := [["cailloux", 0.02], ["buisson_sec", 0.01], ["rocher_canyon", 0.005], ["os_dino", 0.003]]
 ## Up on the rock nobody reaches (seen from above): boulders and dry scrub.
 const TOPS := [["rocher_canyon", 0.01], ["buisson_sec", 0.012], ["cailloux", 0.012]]
-const OASIS_GRASS := [["fougeres", 0.06], ["hautes_herbes", 0.04], ["fleurs_roses", 0.01], ["fleurs_violettes", 0.008]]
-const MUDDY := [["roseaux", 0.07], ["cailloux", 0.01], ["buisson_sec", 0.008]]
+## (29/09: horsetails and cycads by the oasis, dry reeds in the drying mud, instead of the Plaines'
+## flowers and the Marais' green reeds; same chances, the rest stays where it was.)
+const OASIS_GRASS := [["fougeres", 0.06], ["hautes_herbes", 0.04], ["prele", 0.01], ["cycas", 0.008]]
+const MUDDY := [["roseaux_secs", 0.07], ["cailloux", 0.01], ["buisson_sec", 0.008]]
 const BONES := [["os_dino", 0.02], ["cailloux", 0.012], ["buisson_sec", 0.005]]
 ## Just south of a trail or a place (the camera looks north, 40° down: anything taller than
 ## Chloé there would hide them): low things only.
@@ -107,6 +109,7 @@ static func build() -> Region:
 			Vector2(32, 44), Vector2(58, 50), Vector2(106, 72), Vector2(9, 12)])
 	_places(root)
 	_habitats(root)
+	_vivants(root, entities)
 	return root
 
 
@@ -218,8 +221,8 @@ static func _open_near(root: Region, t: Vector2) -> Vector2:
 ## its palms, the square of the sanctuary, the dead end of the Canyon des Vents.
 static func _landmarks(root: Region, entities: Node2D) -> void:
 	# The way in: the marsh dying out (a drowned tree, dry reeds), rocks along the walls.
-	for p: Array in [["arbre_noye", 97.2, 92.6, false], ["roseaux", 99.0, 96.6, false], ["roseaux", 105.8, 95.4, true],
-			["roseaux", 97.8, 97.8, true], ["roseaux", 106.4, 91.2, false], ["buisson_sec", 106.2, 86.6, true],
+	for p: Array in [["arbre_noye", 97.2, 92.6, false], ["roseaux_secs", 99.0, 96.6, false], ["roseaux_secs", 105.8, 95.4, true],
+			["roseaux_secs", 97.8, 97.8, true], ["roseaux_secs", 106.4, 91.2, false], ["buisson_sec", 106.2, 86.6, true],
 			["rocher_canyon", 96.4, 84.2, false], ["rocher_canyon", 107.0, 81.4, true], ["cailloux", 99.6, 88.4, false]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]), p[3])
 	# The cemetery: the great skull and the long skeleton (their fossils: _story), ribs and
@@ -242,7 +245,7 @@ static func _landmarks(root: Region, entities: Node2D) -> void:
 			["palmier_oasis", 101.6, 23.6, true], ["palmier_oasis", 94.0, 24.2, true], ["palmier_oasis", 108.4, 26.4, false],
 			["fougere_arbre", 97.6, 24.8, false], ["fougere_arbre", 105.0, 24.6, true], ["fougere_arbre", 90.4, 29.2, false],
 			["fougeres", 96.2, 35.4, false], ["fougeres", 101.8, 35.2, true], ["hautes_herbes", 98.6, 36.2, false],
-			["fleurs_roses", 94.0, 34.6, false], ["fleurs_violettes", 104.2, 35.8, true]]:
+			["prele", 94.0, 34.6, false], ["cycas", 104.2, 35.8, true]]:
 		B.prop(entities, p[0], _open_near(root, Vector2(p[1], p[2])), p[3])
 	B.prop(entities, "puits_oasis", B.cell(WELL.x, WELL.y))
 	# The square of the sanctuary: totems of the winds either side of the door and round it.
@@ -308,7 +311,7 @@ static func _story(root: Region, entities: Node2D) -> void:
 	cart.name = "ChariotBrac"
 	cart.event = &"chariot_brac"
 	B.dino_npc(root, "CarnotaurusRouge", &"carnotaurus", CARNO.x, CARNO.y, {"event": &"carnotaurus_rouge",
-		"corrupted": true, "size": 1.3, "show_flag": &"brac_desert_battu", "hide_flag": &"sceau_desert", "flip": true})
+		"corrupted": true, "size": 1.2, "show_flag": &"brac_desert_battu", "hide_flag": &"sceau_desert", "flip": true})   # (DesertSanctuaire.CARNO_SIZE)
 	B.npc(root, "MaiaOasis", "Maïa", CHARS % "maia", MAIA.x, MAIA.y, {"facing": "down", "event": &"maia_defi_4",
 		"show_flag": &"sceau_desert", "hide_flag": &"maia_defi_4"})
 	B.sign(entities, B.cell(104.0, 94.2), &"panneau_desert_entree")
@@ -397,3 +400,44 @@ static func _habitats(root: Region) -> void:
 	B.habitat(root, "Le Sanctuaire des Vents", Rect2(48, 0, 26, 16), [], 0)
 	B.habitat(root, "Le Cul-de-sac", Rect2(4, 2, 20, 16), [], 0)
 	B.habitat(root, "Le Canyon muré", Rect2(12, 24, 22, 36), [], 0)
+
+
+## « Détails vivants » (29/09), after everything else and with its own dice (the rest of the
+## desert, its pebbles included, stays where it was): Tante Sirocco's dig (her mat, the vertebra
+## she dusts, the ribs under Chloé's shoes), the name carved over the Vieux Rempart's bed and the
+## flat stone over page 20, Brac's crate and ropes by his cart; a few squat conifers on the dunes
+## and lichen boulders on the rocks, away from everything already standing.
+static func _vivants(root: Region, entities: Node2D) -> void:
+	for p: Array in [["natte_fouilles", SIROCCO.x - 1.4, SIROCCO.y + 0.7, false], ["vertebre", SIROCCO.x + 1.3, SIROCCO.y + 1.2, true],
+			["cotes_sable", SIROCCO.x - 3.0, SIROCCO.y + 2.8, false], ["pierre_gravee", RAMPART.x + 2.7, RAMPART.y - 1.4, true],
+			["pierre_plate", 16.0, 29.8, false], ["caisse_ambre_noir", CART.x - 2.2, CART.y + 0.8, false],
+			["cordage", CART.x + 2.2, CART.y + 1.0, true], ["rocher_lichen", RAMPART.x - 3.1, RAMPART.y + 0.8, false]]:
+		if Prop.KINDS.has(p[0]):
+			B.prop(entities, p[0], B.cell(p[1], p[2]), p[3])
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 2909
+	var terrain: TileMapLayer = root.get_node("Terrain")
+	var taken: Array[Vector2] = []
+	for n in entities.get_children():
+		if n is Node2D and n.name != "TallGrass":
+			taken.append((n as Node2D).position)
+	var size := terrain.get_used_rect().end
+	for y in size.y:
+		for x in size.x:
+			var c := Vector2i(x, y)
+			var ground := _ground(terrain, c)
+			var middle := Vector2(x + 0.5, y + 0.5)
+			if not ground in ["sand", "rock"] or KEEP_CLEAR.any(func(r: Rect2) -> bool: return r.has_point(middle)):
+				continue
+			if root.tile_height(c) >= TOP or CEMETERY.has_point(middle) or _in_view(terrain, c):
+				continue
+			if _near(terrain, c, "path", 1) or _near(terrain, c, "water", 1) or not _steady(root, c, 0.35):
+				continue
+			var kind := "conifere_sec" if ground == "sand" else "rocher_lichen"
+			if rng.randf() >= (0.0025 if ground == "sand" else 0.012) or not Prop.KINDS.has(kind):
+				continue
+			var at := B.cell(x + rng.randf_range(0.2, 0.8), y + rng.randf_range(0.3, 0.9))
+			if taken.any(func(q: Vector2) -> bool: return q.distance_to(at) < 2.0 * B.TILE):
+				continue
+			B.prop(entities, kind, at, rng.randf() < 0.5)
+			taken.append(at)

@@ -363,6 +363,9 @@ static func lines(id: StringName) -> Array:
 	var desert: Array = DialogueDesert.lines(id)   # chapter 4 (data/dialogue_desert.gd)
 	if not desert.is_empty():
 		return desert
+	var cote: Array = DialogueCote.lines(id)   # chapter 5 (data/dialogue_cote.gd)
+	if not cote.is_empty():
+		return cote
 	push_error("Dialogue inconnu : %s" % id)
 	return []
 
@@ -592,6 +595,7 @@ static func chatter(who: StringName) -> Array:
 			if Game.is_raining():
 				pool.append("La pluie ? Parfait pour tester l'étanchéité. Enfin, moi, je ne suis pas étanche.")
 	pool = DialogueDesert.chatter(who, pool)   # chapter 4 (data/dialogue_desert.gd)
+	pool = DialogueCote.chatter(who, pool)   # chapter 5 (data/dialogue_cote.gd)
 	if pool.is_empty():
 		return []
 	var n := int(Game.flag(StringName("bavard_%s" % who)))

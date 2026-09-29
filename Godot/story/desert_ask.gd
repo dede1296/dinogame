@@ -103,7 +103,7 @@ static func answer(npc: StringName, speaker: String, topic: StringName) -> Array
 				{"who": speaker, "text": "Elle venait souvent avec son amie, la petite marin… Isaure. Pieds nus dans le sable brûlant, toujours à rire. Elles se disputaient la dernière datte, et c'est Isaure qui gagnait."},
 				{"who": speaker, "text": "Et une fois, avec Anselme. Il a attrapé un coup de soleil sur le crâne en forme de fougère. Hélène a ri pendant trois jours. … Ça fait longtemps que je ne les ai pas vus rire ensemble, ces trois-là."},
 			]
-	return []
+	return CoteAsk.answer(npc, speaker, topic)   # chapter 5 (story/cote_ask.gd)
 
 
 ## How to find the fossils: a dino with Flair (in the party, at the Cabinet, or where to find one).

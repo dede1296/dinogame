@@ -9,9 +9,15 @@ extends Node2D
 ## When Chloé rides (Player.mount), it is her mount instead: under her, carrying her (Saddle).
 ## In deep water (Player.swimmer), the swimmer of the party carries her the same way, half
 ## under the water (the view sinks them both: WorldView).
+## Its size: its species', as grown as its level (DinoSize); it keeps behind her as far as it
+## is long. Carrying her, a big one is shown smaller (DinoSize.MOUNT_MAX_M): it shrinks as she
+## climbs on and grows back as she gets down (RESIZE_S), as it grows when it levels up.
+## Through a door (Doorway), it goes in after her if it fits, or waits outside (`outside`).
 
-const FOLLOW_GAP := 8        # trail points behind Chloé (~48 px)
 const CATCH_UP := 7.0        # how fast it closes the gap
+const RESIZE_S := 0.45       # a change of size (mounting, getting down, growing up)
+const BESIDE := Vector2(-34, 8)   # placed beside Chloé: at least this far on her left (px)
+const KEEP_ROOM := 12.0           # px between her feet and its tail end, at the closest
 const IDLE_CRY_CHANCE := 0.12
 const HINT_RANGE := 150.0    # px (about 3 tiles)
 const HINT_CHECK_S := 0.4
@@ -36,6 +42,17 @@ var hint := false
 var _hint_timer := 0.0
 var _last_reaction := {}   # kind -> time (s) of its last reaction
 var _saddle: Saddle   # while Chloé rides
+var _follow_gap := DinoSize.FOLLOW_MIN   # trail points it walks behind Chloé
+var _keep := 24.0     # px: it never stands closer to her feet than this (half its length and a bit)
+var _shown: Dino      # the dino it looks like (its size changes smoothly while it stays)
+var _resize: Tween
+var _shadow_width := 0.0   # its shadow's width at sprite scale 1
+## Waiting outside a door too small for it (Doorway): not in the zone Chloé went into (hidden,
+## not following her) until she comes out again.
+var outside := false:
+	set(value):
+		outside = value
+		visible = dino != null and not outside
 
 
 func _ready() -> void:
@@ -65,23 +82,55 @@ func refresh() -> void:
 	if player and player.swimmer and not Game.party.has(player.swimmer):   # another swimmer, if any
 		player.swimmer = SWIM.swimmer()
 	dino = player.carried_by() if carrying() else Game.lead_dino()
-	visible = dino != null
+	visible = dino != null and not outside
 	if dino == null:
 		return
 	var species := dino.species()
+	var was_carrying := _saddle != null
 	_seat_rider(species)
-	var size := species.world_scale * (Saddle.SCALE if carrying() else 1.0)
+	var walking := DinoSize.world_scale(dino)
+	var size := DinoSize.mount_scale(species, walking, swimming()) if carrying() else walking
+	_follow_gap = DinoSize.follow_gap(species, walking)
+	_keep = DinoSize.length_px(species, walking) * 0.5 + KEEP_ROOM
 	sprite.sprite_frames = SheetFrames.dino(species)
-	sprite.scale = Vector2.ONE * size
 	var h := species.sheet.get_height() / float(species.sheet_rows)
 	sprite.offset = Vector2(0, -h * 0.46)
-	Shadow.fit(_shadow, species.sheet.get_width() / float(species.sheet_columns) * size * 0.55)
+	_shadow_width = species.sheet.get_width() / float(species.sheet_columns) * 0.55
+	if dino != _shown:
+		_set_size(walking)   # another dino (the mount of the party taking her): from its own size
+	_resize_to(size, dino == _shown or carrying() != was_carrying)
+	_shown = dino
 	_shadow.visible = not swimming()   # (under the water, no shadow on the ground)
 	sprite.play(&"idle")
 
 
+## How near Chloé it stands at the closest (px from her feet to its middle: half its length and
+## a bit), for the scenes that place it beside her.
+func keep_px() -> float:
+	return _keep
+
+
+## Takes sprite scale `size`: smoothly (the same dino, mounting or growing), or at once.
+func _resize_to(size: float, smooth: bool) -> void:
+	if _resize and _resize.is_valid():
+		_resize.kill()
+	if not smooth or is_equal_approx(sprite.scale.y, size):
+		_set_size(size)
+		return
+	_resize = create_tween()
+	_resize.tween_method(_set_size, sprite.scale.y, size, RESIZE_S).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _set_size(size: float) -> void:
+	sprite.scale = Vector2.ONE * size
+	Shadow.fit(_shadow, _shadow_width * size)
+	if sprite.has_meta(&"stage_scale"):   # (a scene's move puts it back to this size)
+		sprite.set_meta(&"stage_scale", sprite.scale)
+
+
+
 func _physics_process(delta: float) -> void:
-	if player == null or dino == null:
+	if player == null or dino == null or outside:
 		return
 	_hint_timer -= delta
 	if _hint_timer <= 0.0:
@@ -91,7 +140,12 @@ func _physics_process(delta: float) -> void:
 		_carry(delta)
 		return
 	var trail := player.trail
-	var target := trail[maxi(0, trail.size() - 1 - FOLLOW_GAP)]
+	var target := trail[maxi(0, trail.size() - 1 - _follow_gap)]
+	# Never on top of her (her trail too short: she has not walked yet, or a scene pointed it
+	# right beside her): it stops on its side, as far as its length asks.
+	if target.distance_to(player.global_position) < _keep:
+		var side := global_position - player.global_position
+		target = player.global_position + (side.normalized() if side.length() > 1.0 else Vector2.LEFT) * _keep
 	var before := global_position
 	global_position = global_position.lerp(target, 1.0 - exp(-CATCH_UP * delta))
 	var step := global_position - before
@@ -160,7 +214,7 @@ func _carry(_delta: float) -> void:
 		sprite.play(_idle_anim)
 		sprite.speed_scale = 1.0
 	# Also when it turns to look at something.
-	var seat := _saddle.place(sprite.animation, sprite.flip_h)
+	var seat := _saddle.place(sprite.animation, sprite.flip_h, sprite.scale.y)
 	global_position = player.global_position + Vector2(0, seat["depth"])
 	player.sprite.position = seat["at"]
 	player.sprite.play(seat["pose"])
@@ -234,6 +288,17 @@ func rejoice() -> void:
 func teleport(pos: Vector2) -> void:
 	global_position = pos
 	reset_physics_interpolation()
+
+
+## Placed beside Chloé standing at `chloe_at` (entering a zone, as she gets down, after a lost
+## battle): on her left, as far as its length asks, and it waits there until she walks (her
+## trail starts from it).
+func stand_beside(chloe_at: Vector2) -> void:
+	var half := DinoSize.length_px(dino.species(), DinoSize.world_scale(dino)) * 0.5 if dino else 0.0
+	var gap := maxf(absf(BESIDE.x), half + KEEP_ROOM)
+	teleport(chloe_at + Vector2(-gap, BESIDE.y))
+	if player:
+		player.trail = PackedVector2Array([global_position, chloe_at])
 
 
 func cry(kind: StringName) -> void:

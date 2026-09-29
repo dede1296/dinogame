@@ -92,7 +92,7 @@ static func _caillou() -> DinoNpc:
 	var c := Sleeper.new()
 	c.name = "Caillou"
 	c.species_id = &"protoceratops"
-	c.size_scale = 0.85
+	c.level = Game.STARTER_LEVEL   # Maïa's little one, « grand comme un chien »
 	c.flip = true
 	c.position = S.at(CAILLOU_AT.x, CAILLOU_AT.y)
 	w.region.entities.add_child(c)
@@ -294,7 +294,7 @@ static func _night() -> void:
 	Game.clock = 23.0 * 60.0 + 40.0
 	w.player.teleport(S.at(9.6, 4.3))
 	w.player.face_towards(S.at(12.0, 6.0))
-	w.companion.teleport(S.at(8.9, 4.6))
+	w.companion.stand_beside(S.at(9.6, 4.3))
 	if roc:
 		roc.visible = false
 	var shadow: Npc = load("res://actors/npc.tscn").instantiate()

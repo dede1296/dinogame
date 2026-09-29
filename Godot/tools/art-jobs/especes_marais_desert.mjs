@@ -36,7 +36,8 @@ export default ({ sheet, OUT }) => {
     ["stygimoloch", "jbekdc", 163, [201, 173]],
     ["ouranosaurus", "560y1w", 188, [272, 198]],
     ["velociraptor_sables", "26djsc", 198, [254, 208]],
-    ["majungasaurus", "8mf9ks", 198, [244, 208]],
+    // majungasaurus face/dos: superseded by the corrected redraw in art-jobs/cote.mjs (28/09,
+    // its cells 0 and 3 were 3/4 views instead of pure front/back — see docs/direction-artistique.md).
     ["carnotaurus", "o4onzl", 218, [263, 228]],
     ["voix_du_marais", "342uw2", 168, [251, 178]],
     ["vieux_rempart", "hcef9c", 138, [206, 148]],

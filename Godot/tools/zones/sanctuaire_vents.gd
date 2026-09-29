@@ -95,7 +95,8 @@ static func build() -> Region:
 	root.storm_chance = 0.0
 	root.sandstorm_chance = 0.0
 	var entities: Node2D = root.get_node("Entities")
-	var altar = B.prop(entities, "serrure", B.cell(ALTAR.x, ALTAR.y), false, load(STORY_PROP))
+	# (the stone altar, once drawn: 29/09; before, the amber lock of the old doors)
+	var altar = B.prop(entities, "autel" if Prop.KINDS.has("autel") else "serrure", B.cell(ALTAR.x, ALTAR.y), false, load(STORY_PROP))
 	altar.name = "Autel"
 	altar.event = &"coeur_vents"
 	var page = B.prop(entities, "ambre", B.cell(PAGE_18.x, PAGE_18.y), false, load(PICKUP))

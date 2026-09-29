@@ -10,7 +10,7 @@ const LINES := {
 	"maison_blanche": [
 		"La maison des Le Goff. Volets clos. Ils sont partis sur le continent l'hiver dernier, comme beaucoup.",
 		"Sur la porte, un mot punaisé : « Parti pêcher. Revenu bredouille. Reparti. »",
-		"Personne. Juste un vieux chat sur le rebord, qui fait semblant de ne pas te voir.",
+		"Personne. Juste un vieux Compsognathus roulé en boule sur le rebord, qui fait semblant de ne pas te voir.",
 	],
 	"maison_jaune": [
 		"Ça sent la soupe de poisson. Une voix derrière la porte : « C'est pas le jour des visites ! »",
@@ -287,13 +287,129 @@ const LINES := {
 		"Un vieux puits de pierre, avec un seau qui se balance doucement au bout de sa corde. L'eau, en bas, est fraîche et sombre.",
 		"La poulie grince à chaque coup de vent, comme si elle racontait, très lentement, une histoire à qui veut l'entendre.",
 	],
+	# Havre-Doré : les maisons d'habitation (la ville riche de l'ambre, voir docs/lore.md).
+	"havre_maison_1": [
+		"Des géraniums débordent du rebord de fenêtre, taillés au carré. Ici, même les fleurs ont l'air rangées.",
+		"Par la porte entrebâillée, une odeur de cire d'abeille et d'ambre poli. Personne ne répond.",
+		"Sur le paillasson, une carte de visite du Comptoir d'Ambre : « Ferréol rachète tout, sans poser de questions. » Quelqu'un l'a laissée tomber sans la ramasser.",
+	],
+	"havre_maison_2": [
+		"Un petit garde-corps en fer forgé, juste assez large pour un pot de fleurs et un Compsognathus qui s'y ennuie.",
+		"Volets bleu marine fermés à cette heure. Ici, tout le monde dort tard : l'ambre paie bien, le travail attend.",
+		"Un rideau bouge à l'étage. Puis plus rien. À Havre-Doré, on aime regarder sans qu'on vous voie regarder.",
+	],
+	"havre_maison_3": [
+		"Un œil-de-bœuf sous le toit, comme un hublot de bateau égaré sur la terre ferme.",
+		"La porte vernie sent encore la peinture fraîche. Ici, on refait les façades plus souvent qu'on ne refait les toits à Port-Ambre.",
+		"Une lanterne à l'ancienne, allumée en plein jour. Le luxe, ici, c'est de ne pas compter l'huile.",
+	],
+	"havre_maison_4": [
+		"De la lavande sous la fenêtre, en rangs bien nets. Même les mauvaises herbes n'oseraient pas pousser de travers, ici.",
+		"Les colombages peints imitent le bois ancien à la perfection. Sauf que le bois, ici, a cent ans de moins que la peinture.",
+		"Par la fenêtre entrouverte, une voix compte des pièces d'ambre à voix haute. Encore. Et encore.",
+	],
+	# Le Clos Blanc (zone d'essai) : la maison modelée dans Blender puis peinte.
+	"maison_3d": [
+		"Une maisonnette de pierre blanche, toute pimpante. Les volets bleus sentent encore la peinture fraîche.",
+		"Tu frappes. Personne. Sur le paillasson, brodé en lettres rondes : « Entrez, c'est tout neuf. » La porte, elle, est fermée à clé.",
+		"Par la fenêtre, sur la table : une maquette de la maison en cubes de bois. Exactement la même, en tout petit… sans les pierres.",
+	],
+	# « Détails vivants » (29/09).
+	"coquillages": [
+		"Des coquillages. Et une ammonite, toute enroulée : sa coquille est plus vieille que l'île.",
+		"Chloé en colle un à son oreille. On entend la mer. Évidemment : elle est juste là.",
+	],
+	"algues": [
+		"Des algues échouées, encore mouillées. Ça sent le sel et le poisson.",
+		"Ça glisse ! Chloé fait un pas de côté, très digne, comme si c'était exprès.",
+	],
+	"bois_flotte": [
+		"Un tronc blanchi par la mer, lisse comme un os. Il a dû voyager longtemps.",
+		"Tout le long, des petits trous : des bestioles de la mer l'ont goûté avant la plage.",
+	],
+	"rocher_cote": ["Un rocher couvert de bernacles. Ça pique, et ça fait des bulles quand la vague repart."],
+	"rocher_recif": ["Un rocher noir du récif, plein de coquillages et de petits coraux. L'écume gronde tout autour."],
+	"oyats": ["Des plantes des dunes, dures comme des brosses. Elles tiennent le sable pour que le vent ne l'emporte pas."],
+	"nid_pteranodon": ["Un nid de brindilles et d'algues, avec deux gros œufs tachetés. Mieux vaut ne pas s'attarder."],
+	"palmier_cote": ["Un palmier penché par le vent de la mer. Ses feuilles en éventail claquent comme des drapeaux."],
+	"masque_pierre": [
+		"Une pierre sculptée d'un masque d'os, comme au temple. Les anciens venaient jusqu'ici.",
+		"Hélène aurait écrit : « Ils remerciaient la mer, aussi. »",
+	],
+	"statue_spinosaure": [
+		"Une grande statue de Spinosaure, couverte de coquillages. Même en pierre, il a l'air de monter la garde.",
+		"Sur son visage, un masque d'os sculpté. Les gens du temple lui en avaient fait un, à lui aussi.",
+	],
+	"pierre_gravee": ["Une pierre plate, gravée d'une petite fougère. Celle d'Hélène. Elle signait comme ça."],
+	"pierre_plate": ["Une pierre plate, bien chaude. Parfaite pour s'asseoir… ou pour cacher un secret dessous."],
+	"pieu_corde": ["Un pieu planté dans la terre, sa corde tranchée net. Ça sent la cendre froide."],
+	"fougeres_ecrasees": ["Des fougères géantes écrasées, cassées. Quelque chose d'énorme s'est débattu ici."],
+	"natte_fouilles": ["La natte de Tante Sirocco : des pinceaux, une truelle, un cahier tout gondolé et trois fossiles bien rangés."],
+	"vertebre": ["Une vertèbre géante, à moitié époussetée. Chloé pourrait s'asseoir dedans."],
+	"cotes_sable": ["Des côtes pétrifiées sortent du sable, longues comme des rames. On dirait une barrière très, très ancienne."],
+	"table_observation": ["La table du poste d'observation d'Hélène : une longue-vue, un carnet, un encrier. Tout attend qu'elle revienne."],
+	"etagere_bocaux": [
+		"Des bocaux, un crâne de Compsognathus, une théière et des cartes roulées. La grande étagère de Roc.",
+		"Dans un bocal, une araignée conservée dans l'alcool. Chloé décide de ne pas la regarder trop longtemps.",
+	],
+	"outils_mine": ["Une pioche et un seau plein d'éclats d'ambre. Les sbires ont creusé la grotte comme une carrière."],
+	"prele": ["Des prêles : des tiges vertes creuses, avec des anneaux. Elles poussaient déjà ici avant les dinosaures."],
+	"cycas": ["Un cycas : un tronc comme un ananas géant et une couronne de feuilles raides. Les dinos adorent en grignoter."],
+	"ginkgo": ["Un ginkgo, avec ses feuilles en éventail. Hélène disait que c'est un arbre qui n'a jamais changé d'avis."],
+	"roseaux_secs": ["Des roseaux tout secs, qui craquent sous les doigts. Ici, le Marais a oublié de boire."],
+	"conifere_sec": ["Un petit conifère du désert, tordu et têtu. Il boit une goutte par an, et il ne s'en plaint pas."],
+	"rocher_lichen": ["Un rocher couvert de lichen orange. Chloé vérifie qu'il ne respire pas. Non. Ouf."],
 }
 ## Reach for the big ones (px from their origin, the middle of their foot).
-const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.0, "barque": 40.0, "arbre_geant": 60.0,
+const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.0, "maison_3d": 90.0, "barque": 40.0, "arbre_geant": 60.0,
+	"havre_maison_1": 90.0, "havre_maison_2": 90.0, "havre_maison_3": 90.0, "havre_maison_4": 90.0,
 	"tente": 40.0, "passerelle": 60.0,
 	"arbre_noye": 60.0, "cabane_pilotis": 60.0, "statue_dino": 40.0, "porte_temple": 50.0,
 	"crane_geant_desert": 50.0, "arche_rocheuse": 60.0, "os_geant": 40.0,
-	"porte_vents": 50.0, "chariot_cage": 40.0, "squelette_geant": 45.0}
+	"porte_vents": 50.0, "chariot_cage": 40.0, "squelette_geant": 45.0,
+	"statue_spinosaure": 40.0, "cotes_sable": 30.0, "bois_flotte": 30.0}
+
+## Under the sea (a zone played under the water: the Récif du Sanctuaire), what the things there
+## are really like: no wind, no dragonflies, the reeds are kelp, the rocks coral.
+const UNDERWATER_LINES := {
+	"roseaux": [
+		"De longues algues brunes qui ondulent toutes ensemble, au rythme d'une houle qu'on ne voit pas d'ici.",
+		"Un petit poisson argenté se cache entre les lanières. Il ressort, regarde Chloé, et se recache aussitôt.",
+	],
+	"varech": [
+		"De longues algues brunes qui ondulent toutes ensemble, au rythme d'une houle qu'on ne voit pas d'ici.",
+		"Un petit poisson argenté se cache entre les lanières. Il ressort, regarde Chloé, et se recache aussitôt.",
+	],
+	"rocher_grotte": [
+		"Un bloc de corail, rose et blanc, criblé de petits trous. Dans chacun, quelque chose respire.",
+		"Une crevette transparente fait le ménage sur le corail. Elle ne s'arrête même pas pour regarder Chloé.",
+	],
+	"corail": [
+		"Un bloc de corail, rose et blanc, criblé de petits trous. Dans chacun, quelque chose respire.",
+		"Une crevette transparente fait le ménage sur le corail. Elle ne s'arrête même pas pour regarder Chloé.",
+	],
+	"os_geant": [
+		"Une côte fossile immense, plantée dans le sable comme une arche. Des coquillages se sont collés dessus, par centaines.",
+		"L'eau passe à travers en faisant tourner le sable, tout doucement. Chloé préfère ne pas nager juste dessous.",
+	],
+	"colonne": [
+		"Une colonne des anciens, brisée, couverte d'algues. Des bancs de petits poissons tournent autour, comme autour d'un phare.",
+		"Des vagues sculptées courent le long de la pierre. Sous la mer, elles ont l'air de bouger.",
+	],
+	"cristaux": [
+		"Des cristaux d'ambre pris dans le corail. Sous l'eau, leur lueur fait des taches dorées qui dansent sur le sable.",
+		"En approchant la main, l'eau autour est tiède. L'ambre de l'île n'est jamais tout à fait froid, même au fond de la mer.",
+	],
+	"fresque": [
+		"Une dalle gravée, prise dans le corail : de petites silhouettes aux masques d'os saluent un grand poisson-lézard. Les anciens veillaient ici aussi.",
+		"L'Ombre Noire porte les mêmes masques aujourd'hui. Mais ici, les masques ont l'air de remercier, pas de faire peur.",
+	],
+	"corail_branches": ["Un corail en branches, orange et violet. Un petit poisson s'y cache, puis ressort voir si Chloé est partie."],
+	"anemones": ["Des anémones de mer, toutes molles. Leurs bras bougent tout seuls, comme s'ils disaient bonjour."],
+	"eponges": ["Des éponges en forme de vases. Chloé se demande si on peut s'en servir pour le bain. Sûrement pas."],
+	"herbier": ["Des herbes de la mer qui ondulent. Un petit coquillage s'y promène, très lentement."],
+	"masque_pierre": ["Une pierre des anciens, prise dans le corail : un masque d'os, tourné vers le fond. Ils veillaient ici aussi."],
+}
 
 ## Lines already shown, per thing (zone + position): the next one comes next time.
 static var _seen := {}
@@ -301,12 +417,17 @@ static var _last := {}   # per thing: its last line, so it never says it twice i
 
 
 static func has(kind: String) -> bool:
-	return LINES.has(kind)
+	return LINES.has(kind) or UNDERWATER_LINES.has(kind)
 
 
 static func look(prop: Prop, player: Player) -> void:
 	player.face_towards(prop.global_position)
-	var lines: Array = LINES[prop.kind].filter(_allowed)
+	var region := prop.get_parent().get_parent() if prop.get_parent() else null
+	var under: bool = region != null and (region.get(&"underwater") == true or region.get_meta(&"underwater", false) == true)
+	var table: Dictionary = UNDERWATER_LINES if under and UNDERWATER_LINES.has(prop.kind) else LINES
+	if not table.has(prop.kind):
+		return
+	var lines: Array = (table[prop.kind] as Array).filter(_allowed)
 	if lines.is_empty():
 		return
 	var key := "%s:%d:%d" % [Game.region_id, roundi(prop.position.x), roundi(prop.position.y)]

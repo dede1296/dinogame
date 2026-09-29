@@ -138,6 +138,9 @@ static func _story(root: Region, entities: Node2D) -> void:
 	var scale3 = B.prop(entities, "ecaille", B.cell(100.0, 12.8), false, load(PICKUP))
 	scale3.taken_flag = &"ecaille_falaises"
 	scale3.dialogue_id = &"ecaille_falaises"
+	# « posée sur la table du vieux poste d'observation » (29/09): the table, just behind it.
+	if Prop.KINDS.has("table_observation"):
+		B.prop(entities, "table_observation", B.cell(100.0, 12.1))
 	# The Grand Crâne: the Alpha's cave at the back of its notch, the amber door closing the
 	# notch; the Alpha once it is open.
 	var lair := CaveMouth.new()
@@ -151,7 +154,7 @@ static func _story(root: Region, entities: Node2D) -> void:
 	skull.event = &"grand_crane"
 	skull.hide_flag = &"crane_ouvert"
 	B.sign(entities, B.cell(100.4, 64.8), &"panneau_crane")
-	B.dino_npc(root, "Alpha", &"triceratops", 107.2, 63.8, {"event": &"alpha_plaines", "size": 1.35, "flip": true,
+	B.dino_npc(root, "Alpha", &"triceratops", 107.2, 63.8, {"event": &"alpha_plaines", "size": 1.2, "flip": true,
 		"show_flag": &"crane_ouvert", "hide_flag": &"sceau_plaines"})
 
 
@@ -161,6 +164,7 @@ static func _annexes(root: Region, entities: Node2D) -> void:
 	var chipie = load(FLEEING_DINO).new()
 	chipie.name = "Chipie"
 	chipie.species_id = &"compsognathus"
+	chipie.level = 6   # (PlainesAnnexes.CHIPIE_LEVEL)
 	chipie.flip = true
 	chipie.waypoints = PackedVector2Array(CHIPIE_PATH)
 	chipie.stage_flag = &"chipie_etape"
@@ -184,12 +188,19 @@ static func _annexes(root: Region, entities: Node2D) -> void:
 	page.name = "Page2"
 	page.taken_flag = &"found_journal_2"
 	page.dialogue_id = &"page_2"
+	# « Au milieu de l'îlot, sous une pierre plate, une page du journal » (29/09): the stone, behind it.
+	if Prop.KINDS.has("pierre_plate"):
+		B.prop(entities, "pierre_plate", B.cell(78.9, 47.2))
 	var pebble = B.prop(entities, "galet", B.cell(79.5, 48.4), false, load(PICKUP))
 	pebble.name = "GaletIlot"
 	pebble.taken_flag = &"galet_plaines_ilot"
 	B.sign(entities, B.cell(81.4, 44.3), &"panneau_etang")
+	# Horsetails on the pond's shore, clear of the singers' spots (29/09).
+	if Prop.KINDS.has("prele"):
+		for t: Vector2 in [Vector2(72.4, 45.6), Vector2(86.8, 50.2), Vector2(77.0, 52.8)]:
+			B.prop(entities, "prele", B.flat_spot(root, t, 0), int(t.x) % 2 == 0)
 	# A moulted Parasaurolophus skin on the shore, once Joss has asked for one (Havre-Doré).
-	var skin = B.prop(entities, "cailloux", B.cell(84.4, 50.2), false, load(PICKUP))
+	var skin = B.prop(entities, "peau_mue" if Prop.KINDS.has("peau_mue") else "cailloux", B.cell(84.4, 50.2), false, load(PICKUP))
 	skin.name = "CuirMue"
 	skin.show_flag = &"selle_demandee"
 	skin.taken_flag = &"cuir_trouve"
@@ -254,7 +265,7 @@ static func _habitats(root: Region) -> void:
 		[&"protoceratops", 3, 6, 10, "jour", false], [&"psittacosaurus", 4, 6, 6, "aube et crépuscule", false],
 		[&"velociraptor", 4, 6, 5, "nuit", false],
 	], 3)
-	B.habitat(root, "Rive de l'anse", Rect2(10, 56, 28, 24), [
+	B.habitat(root, "Rive de la crique", Rect2(10, 56, 28, 24), [
 		[&"parasaurolophus", 3, 5, 10, "jour et crépuscule", false], [&"protoceratops", 3, 5, 10, "toujours", true],
 	], 2)
 	B.habitat(root, "L'étang", Rect2(70, 43, 18, 11), [[&"parasaurolophus", 3, 6, 10, "jour et crépuscule", false]], 2)

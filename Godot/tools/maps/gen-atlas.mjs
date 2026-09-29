@@ -54,7 +54,7 @@ const REGIONS = [
   { id: "foret", name: "Forêt Jurassique", zones: ["foret", "camp_ombre"], levels: [10, 18], seeds: [[0.27, 0.7], [0.36, 0.83]], w: 0.0, c: "#3f6d38" },
   { id: "marais", name: "Marais Brumeux", zones: ["marais", "temple_englouti"], levels: [15, 21], seeds: [[0.15, 0.47]], w: 0.0, c: "#6d7f55" },
   { id: "desert", name: "Désert Aride", zones: ["desert", "sanctuaire_vents"], levels: [21, 27], seeds: [[0.28, 0.2], [0.2, 0.3]], w: 0.0, c: "#e2b56c" },
-  { id: "cote", name: "Côte Préhistorique", zones: ["cote"], levels: [28, 35], seeds: [[0.55, 0.1], [0.7, 0.14]], w: -0.01, c: "#a7c98a" },
+  { id: "cote", name: "Côte Préhistorique", zones: ["cote", "grottes_marines", "recif_sanctuaire"], levels: [28, 35], seeds: [[0.55, 0.1], [0.7, 0.14]], w: -0.01, c: "#a7c98a" },
   { id: "monts", name: "Monts Gelés", zones: ["monts"], levels: [33, 40], seeds: [[0.84, 0.36], [0.76, 0.6]], w: 0.02, c: "#9ea08c" },
   { id: "cieux", name: "Cieux Éternels", zones: ["cieux"], levels: [38, 44], seeds: [[0.63, 0.3]], w: -0.035, c: "#dfe8f2" },
   { id: "volcan", name: "Plaine Volcanique", zones: ["volcan"], levels: [42, 48], seeds: [], w: 0, c: "#5f4a42" },
@@ -316,6 +316,8 @@ const places = [
   ["camp_ombre", "Camp de l'Ombre Noire", inRegion("foret", 12 / 130, 39 / 100)],
   ["temple_englouti", "Temple englouti", inRegion("marais", 30 / 120, 11.5 / 96)],
   ["sanctuaire_vents", "Sanctuaire des Vents", inRegion("desert", 60.5 / 120, 3 / 100)],
+  ["grottes_marines", "Grottes marines", inRegion("cote", 93 / 128, 25 / 100)],
+  ["recif_sanctuaire", "Récif du Sanctuaire", inRegion("cote", 68.5 / 128, 20.5 / 100)],
 ];
 
 await sharp(img, { raw: { width: N, height: N, channels: 3 } }).png().toFile(`${OUT_ART}/atlas_ile.png`);

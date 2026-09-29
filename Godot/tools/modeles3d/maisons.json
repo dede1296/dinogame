@@ -1,0 +1,887 @@
+{
+ "_aide": "Réglages de maisons.py, par sorte. Mètres du jeu (1 m = 48 px), axes Blender : X à droite, Y vers le fond, Z en haut ; origine = milieu du pied de façade (y = 0 : plan de la façade). vues.<v> : theta = élévation (degrés) sous laquelle la vue est projetée sur le modèle (null : cherchée, meilleur recouvrement de silhouette) ; effacer = rectangles [x0, y0, x1, y1] (px de la vue) rendus transparents (ce que la vue montre en trop : un bout de façade vu de biais) ; toit_sans / murs_sans = rectangles [x0, y0, x1, y1(, dx(, dy))] remplacés, pour les pans du toit / les murs seulement, par le dessin voisin décalé de dx (défaut : leur largeur, vers la gauche) ou dy (la cheminée peinte par-dessus le toit) ; raccourcir = bandes de colonnes [x0, x1] retirées (vue dessinée trop profonde). parties.<partie> = peinture propre d'une partie tirée de la vue : disque [cx, cy, r] gardé, le reste de la couleur médiane du rectangle fond (devant d'une lucarne à fenêtre ronde). depuis_face.<vue> (commande vues) : cloner, lisser (rectangles remplis d'enduit), egaliser {rangs, sigma} (lumière du dessin retirée), remodeler, miroir. murs : corps aux coins arrondis (coin = rayon, z0 = pied, hauteur = haut des murs, sinon sous le toit). toits : axe du faîte (x ou y), bornes x et y du bord du toit, egout = hauteur du dessus du toit au bord, faitage = hauteur du faîte au-dessus, faite_pos = position du faîte en travers, croupes = recul horizontal du faîte à chaque bout (> 0 : flanc incliné ; 0 : pignon), pignons = plan du mur de pignon à chaque bout sans croupe (ou null), debord_pignon ; toits croisés réunis (noues). cheminees, marches, boites (x, y, z : bornes ; partie ; peintre), cylindres (axe z : x, y, z = [bas, haut] ; axe x : x = [début, fin], y, z), redans (pignon à marches), cristaux (dôme taillé) : chacun peint en « boîte dépliée » depuis la vue de face (sauf peintre). peintres : règle par partie (auto, boite_face, tourne_face, face, cote, dos, tuile:<nom> = motif répété à plat, toiture:<nom> = motif posé sur chaque pan de toit, rangs le long de son égout ; toiture_joues:<nom> = pans en rangs et bouts debout en motif (chien-assis) ; toiture_flancs:<nom> = de même, seulement les pans tournés vers les côtés, les croupes, quand la vue de côté les dessine mal ; facade:<nom> = le devant d'après le dessin, les autres faces en motif : joues d'une lucarne). tuiles.<nom> : vue, rect [x0, y0, x1, y1] (px), sorte (motif pris dans la vue d'une autre sorte : le toit d'une voisine), repete (motif répété tel quel, pas en miroir : rangs d'ardoises, la coupure passe pour un joint), etirement [ex, ey], egaliser (rayon en px : la lumière du dessin retirée du motif, pas de bandes à chaque reprise). dessus : peinture du dessus d'une partie (tuile:<nom>, ou haut/bas). Éléments de façade (jardinière, descente d'eau…) : saillie ≤ 8 cm, dessus peint à part (jamais la projection de la façade). ajuster : le maillage fin suit la silhouette et les lignes (égout, faîtage) des vues calées (ajuste.py, pour toutes les sortes : faîtage et égout affaissés ou bombés, murs pas droits, cheminée penchée, rives irrégulières ; contrôle : ajuste_<vue>.png, commande blender … -- ajuste <sorte> -> ajuste_contour_<vue>.png) ; false pour ne pas ajuster, ou {max (0,2 m), ecart (0,12 m : au-delà, un écart est un choix du modèle, pas suivi), passes, cote (poids de la vue de côté), fixes (parties qui ne bougent pas : le toit ajouté de maison_port, caché par le bandeau du dessin)}. vues.<v>.egaliser : [{rangs, zone, sigma, tol, plan, apres}] lumière du dessin retirée avant « remodeler » (plan : dans les deux sens ; apres : colonne par colonne après « remodeler », coutures de ses reprises effacées). relief : force des détails tirés du dessin ; normales : gain de la carte de normales ; occlusion : part de l'occlusion ambiante. Tentes (clé tente ; tentes.py) : le dessin du jeu, de 3/4, est la seule vue ; vues.face.theta et vues.face.lacet (degrés, null : tirés des coins du pied) ; tente.sol = coins du pied sur le dessin (av_g, av_d, ar_d, px) ; tente.courbes = lignes tracées sur le dessin (px, mode silhouette / trait / libre : recalées sur le bord ou le trait sombre) : faite, rive_av_d, rive_av_g, rive_ar_d, ourlet_d, bord_av_d, mur_bas_d, mur_ar_d, bord_av_g, bas_av ; creux (px du dessin, comme tous les rayons et longueurs des tentes : r_piquet, r_corde, r_mat, doublure ; la toile affaissée entre ses lignes) ; mats [{px : deux bouts, plan x0|y0|yL|sol, r, sym, sol_bas}] ; piquets [{bas, haut (px), corde (point clé A_f, E_fr… ou {ligne, px}), corde_px (la corde dessinée, effacée de la toile), sym : x (côté caché), xy (au fond, de l'autre côté)}] ; dos_x0 (pignon du fond peint par le rabat gauche de la porte) ; vues.face.remplir [{poly, px}] (la porte sombre jusqu'au sol). Le modèle est tourné à l'export (export.json) pour que la caméra du jeu le voie comme le dessin. atlas : taille de l'atlas (2048 ; 1024 pour un petit décor). ouvertures : vraies ouvertures du mur de façade (ouvertures.py) : [{rect [x0, y0, x1, y1] (px de la vue de face), profondeur (m ; avec une pièce : ne règle plus que le seuil des portes), fond (\"vue\" : la vue de face projetée au fond, un étal ; défaut : sombre), embrasure / sol (motifs de l'embrasure et du seuil : nom d'une tuile, défaut dedans / dedans_sol : unis sombres), piece (numéro d'une pièce de « pieces » : l'embrasure va jusqu'à son devant, le fond est la pièce ; plusieurs ouvertures peuvent donner dans la même : la cabane), lumiere, porte {battants 1|2, gonds gauche|droite, ouverture (degrés)}}] : le mur coupé au rectangle, le trou prolongé vers l'intérieur (embrasure, fond, sol si la porte descend au pied du mur) ; une porte pose son battant fermé, peint par la vue : le .glb du jeu reste d'un seul maillage (porte fermée), et la variante du contrat des portes animées va dans assets/models/volumes/portes/<sorte>.glb (corps + battants « porte » ou « porte_g »/« porte_d », origine sur l'axe des gonds, extras « ouverture » (degrés signés autour de Y : vers l'intérieur) et « seuil » (x, z en m, repère glTF de la sorte)) ; rendus porte fermée / ouverte : generated_imgs/captures/portes_<sorte>.png. pieces (interieurs.py) : le début de la pièce derrière une ouverture, vu en biais par la caméra du jeu : [{x, y, z : bornes de la boîte (m, repère du modèle ; y : du bout de l'embrasure au fond ; dans les murs, un avertissement sinon), murs / sol / plafond (motifs, défaut tuile:enduit / tuile:plancher / tuile:plancher), meubles [{x, y, z : boîte sans dessous | x, y, r, z = [bas, haut] : cylindre debout | axe \"x\", x = [début, fin], y, z, r : couché ; cotes ; peintre (motif des côtés, défaut tuile:plancher) ; guide (couleur [r, g, b] dans le guide) ; _ : ce que c'est}], cartes [{image (assets/art/… ou \"vue:face\" = le dessin de la sorte), rect (morceau, px), x = [a, b], y, z (bas), plan \"sol\" : à plat}] : images du jeu posées sur un mur ou un meuble, seulement dans le guide ; guide {partie: couleur} ; decor {prompt, ref (image du jeu voisine pour l'IPAdapter, assets/art/…), denoise, seed, elevation (35°), lacet} : détails peints par ComfyUI (SD 1.5 + LoRA ambrelune_style 0,8 + IPAdapter 0,6, img2img du guide) et posés par le projecteur sur ce qu'il voit des meubles et des cartes ; lumiere {fond, gain, max, ombre} : la lumière qui entre par les ouvertures de la pièce, cuite dans la couleur (plus sombre au fond et dans les coins, ombres un peu chaudes ; l'occlusion ajoute les recoins)}]. Commandes : blender … -- guide <sorte> (guide_<clé>.png, masque, projecteur), python maisons.py peindre <sorte> (peint_<clé>.png, copie dans generated_imgs/interieurs : à refaire avec nano-banana), bake (le dedans compris, moins dense dans l'atlas), blender … -- rendus_interieurs <sorte>, python maisons.py planche_interieurs -> generated_imgs/captures/interieurs_ouvertures.png. tuiles.<nom>.jeu : motif tiré d'une image du jeu (\"ground/plancher.png\", \"props/mur_cabinet.png\"), taille [l, h] en m, origine [x, y, z] (m : le bas d'un lambris), rect, relief. Tentes : courbes.porte = contour de l'entrée (vraie ouverture) ; tente.interieur {sol (motif du jeu), retrait, meubles, cartes, guide, decor, lumiere (fond 0,3 : la toile laisse passer le jour)} : la doublure est peinte par la toile du dessin (côté dedans, assombrie par la lumière cuite), un sol, des meubles. Tour ronde, ruine (phare_ruine) : murs.coin = demi-largeur (tour ronde), murs.segments (côtés par coin arrondi, 3 par défaut), murs.fruit (m de retrait par m de hauteur : tour légèrement conique), murs.ruine {haut [[angle, z]…] (bord cassé, angle en degrés autour de l'axe : -90 devant, 0 droite, 90 fond), cassure (m, gradins pseudo-aléatoires tous les pas_cassure degrés), epaisseur (m), fond (z du fond)} : sans toit (toits vide), parties murs_dedans, murs_arase (le dessus du mur cassé), murs_fond ; tiges [{points [[x, y, z]…], r, cotes}] (fers tordus : tubes le long d'une ligne brisée) ; coupoles [{centre, r, h, angles [a0, a1], pivot, rotation [rx, ry, rz], epaisseur, casse, casse_angle}] (morceau de toit conique tombé) ; cylindres.profil [[r, h]…] (solide de révolution : un nid, une boule) ; cote_gauche false (côté gauche différent du droit : peint par la face et le dos, pas par le côté en miroir) ; peintre face_sinon:<tuile> (la vue de face là où elle voit vraiment la face, rayon vers sa caméra ; le motif ailleurs : le dedans d'une ruine) ; ouvertures.m [x0, x1, z0, z1] (m du modèle, au lieu de rect) ; scale_jeu (échelle de l'image du jeu tant que la sorte n'est pas dans Prop.KINDS). Palissade (clé pieux ; pieux.py) : colonnes [x0, x1] de chaque pieu sur le dessin, rangs_corde, pas, cotes, bosses (px), profondeur (rayon dans la profondeur / demi-largeur), egaliser {sous, force} (l'ombre peinte des côtés retirée), r_corde (px), corde {tours [{pieu, px, vers, ecart}], brins, bout} : tubes peints du motif « tube:corde » ; ronger (px : contour brun rongé plus large).",
+ "maison_blanche": {
+  "vues": {
+   "face": {"theta": 15, "toit_sans": [[336, 0, 414, 106]]},
+   "cote": {"theta": null, "effacer": [[0, 224, 45, 430]], "toit_sans": [[76, 0, 136, 80]]},
+   "dos": {"theta": null, "toit_sans": [[172, 0, 254, 92]]}
+  },
+  "murs": {"largeur": 5.52, "profondeur": 4.85, "hauteur": 2.72, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-2.9, 2.9], "y": [-0.15, 5.0], "egout": 2.835, "faitage": 1.36, "croupes": [0.66, 0.66], "epaisseur": 0.13}
+  ],
+  "cheminees": [
+   {"x": 1.92, "y": 2.3, "l": 0.7, "p": 0.6, "haut": 4.78, "chapeau": 0.1, "pot": 0.24}
+  ],
+  "marches": [
+   {"x": 0.0, "l": 1.2, "p": 0.3, "h": 0.12}
+  ],
+  "relief": 1.0
+ },
+ "cabinet": {
+  "vues": {
+   "face": {"theta": 5, "toit_sans": [[262, 0, 395, 97, -77]]},
+   "cote": {"theta": 5, "effacer": [[0, 0, 57, 441]], "toit_sans": [[300, 0, 440, 100, -60], [57, 0, 240, 125, 60], [57, 0, 548, 30, 0, 38]], "raccourcir": [[295, 368], [436, 462]]},
+   "dos": {"theta": null}
+  },
+  "murs": {"largeur": 5.92, "profondeur": 5.2, "coin": 0.12},
+  "toits": [
+   {"axe": "x", "x": [-2.0, 3.02], "y": [-0.2, 5.4], "egout": 4.515, "faitage": 1.17, "croupes": [0, 0.42], "epaisseur": 0.15},
+   {"axe": "y", "y": [-0.25, 5.2], "x": [-3.28, -0.64], "faite_pos": -1.96, "egout": 4.515, "faitage": 1.66, "croupes": [0, 0], "pignons": [0.0, null], "debord_pignon": 0.3, "pignon_bas": 4.37, "epaisseur": 0.15}
+  ],
+  "redans": [
+   {"x": -1.96, "y": 5.2, "ep": 0.3, "demi": 1.32, "z0": 4.0, "egout": 4.5, "haut": 6.4, "marches": 5}
+  ],
+  "cristaux": [
+   {"x": 1.33, "y": 1.55, "r": 0.84, "h": 0.84}
+  ],
+  "tuiles": {
+   "ambre": {"vue": "face", "rect": [296, 22, 352, 62]},
+   "ardoises": {"vue": "face", "rect": [148, 37, 228, 67], "repete": true, "egaliser": 10},
+   "plancher": {"jeu": "ground/plancher.png", "taille": [3.6, 3.6]},
+   "mur_cabinet": {"jeu": "props/mur_cabinet.png", "taille": [3.1, 2.75], "origine": [0.0, 0.0, 0.37]}
+  },
+  "peintres": {"cristal": "tourne_face", "toit1": "toiture:ardoises"},
+  "dessus": {"cristal": "tuile:ambre"},
+  "marches": [
+   {"x": -0.13, "l": 2.2, "p": 0.45, "h": 0.16},
+   {"x": -0.13, "l": 1.9, "p": 0.25, "h": 0.32}
+  ],
+  "relief": 1.0,
+  "ouvertures": [
+   {"rect": [181, 280, 274, 410], "profondeur": 1.0, "piece": 0, "embrasure": "mur_cabinet", "sol": "plancher", "porte": {"battants": 2, "ouverture": 100}}
+  ],
+  "pieces": [
+   {
+    "x": [-1.75, 1.75],
+    "y": [0.22, 1.95],
+    "z": [0.37, 3.1],
+    "murs": "tuile:mur_cabinet",
+    "sol": "tuile:plancher",
+    "plafond": "tuile:plancher",
+    "meubles": [
+     {"x": [-1.65, -0.45], "y": [1.6, 1.93], "z": [0.37, 1.95], "_": "bibliothèque"},
+     {"x": [-0.3, 0.72], "y": [1.3, 1.75], "z": [0.37, 1.13], "_": "bureau"},
+     {"x": 1.15, "y": 1.36, "r": 0.33, "z": [0.37, 1.3], "cotes": 12, "_": "couveuse"}
+    ],
+    "cartes": [
+     {"image": "props/bibliotheque.png", "x": [-1.65, -0.45], "y": 1.59, "z": 0.37},
+     {"image": "props/bureau.png", "x": [-0.34, 0.76], "y": 1.29, "z": 0.37},
+     {"image": "props/couveuse.png", "x": [0.83, 1.47], "y": 1.02, "z": 0.37}
+    ],
+    "decor": {"prompt": "interior of an old naturalist laboratory, a wooden bookcase with books and jars, a wooden desk with papers and a microscope, a brass incubator with a glass dome and dinosaur eggs, wooden floor, wallpaper and wood paneling", "ref": "props/bibliotheque.png", "denoise": 0.45, "seed": 11}
+   }
+  ]
+ },
+ "maison_jaune": {
+  "vues": {
+   "face": {"theta": 0},
+   "cote": {"theta": null, "effacer": [[0, 170, 32, 456]], "toit_sans": [[336, 0, 423, 172, -86], [0, 0, 42, 172, 42]], "murs_sans": [[32, 150, 58, 456, 26]]},
+   "dos": {"theta": 0}
+  },
+  "murs": {"largeur": 4.78, "profondeur": 4.84, "coin": 0.08},
+  "toits": [
+   {"axe": "y", "y": [-0.3, 5.14], "x": [-2.62, 2.62], "faite_pos": 0.0, "egout": 3.64, "faitage": 1.78, "croupes": [0, 0], "pignons": [0.0, 4.84], "debord_pignon": 0.23, "pignon_bas": 3.5, "epaisseur": 0.14}
+  ],
+  "boites": [
+   {"x": [-0.9, 0.84], "y": [-0.08, 0.02], "z": [2.48, 2.8], "partie": "jardiniere"}
+  ],
+  "cylindres": [
+   {"x": 2.25, "y": -0.035, "r": 0.045, "z": [0.08, 3.52], "partie": "descente"}
+  ],
+  "marches": [
+   {"x": 0.0, "l": 1.45, "p": 0.3, "h": 0.2}
+  ],
+  "tuiles": {
+   "fleurs": {"vue": "face", "rect": [150, 203, 262, 223]}
+  },
+  "dessus": {"jardiniere": "tuile:fleurs"},
+  "peintres": {"jardiniere": "boite_face", "descente": "boite_face"},
+  "decalages": {"marche0": [0, 15]},
+  "relief": 1.0
+ },
+ "maison_port": {
+  "vues": {
+   "face": {"theta": 0, "murs_sans": [[0, 136, 413, 207, 0, -76], [38, 228, 68, 252, -30], [122, 228, 152, 252, -30], [262, 228, 294, 252, -30], [342, 228, 374, 252, -30]]},
+   "cote": {"theta": 0, "effacer": [[0, 135, 97, 452]]},
+   "dos": {"theta": 0}
+  },
+  "murs": {"largeur": 4.9, "profondeur": 4.17, "hauteur": 5.45, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-2.4, 2.37], "y": [0.08, 4.09], "egout": 5.6, "faitage": 0.8, "croupes": [1.9, 1.9], "epaisseur": 0.15}
+  ],
+  "boites": [
+   {"x": [-2.518, -2.378], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [-2.143, -2.003], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [-1.639, -1.499], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [-1.123, -0.983], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [-0.606, -0.466], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [-0.089, 0.051], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [0.427, 0.567], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [0.944, 1.084], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [1.461, 1.601], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [1.977, 2.117], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [2.429, 2.569], "y": [-1.2, -1.1], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [-2.68, 2.62], "y": [-1.23, -1.07], "z": [3.72, 3.88], "partie": "rampe"},
+   {"x": [-2.68, -2.54], "y": [-1.2, -0.02], "z": [3.72, 3.88], "partie": "rampe"},
+   {"x": [2.48, 2.62], "y": [-1.2, -0.02], "z": [3.72, 3.88], "partie": "rampe"},
+   {"x": [-2.67, -2.55], "y": [-0.8600000000000001, -0.74], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [-2.67, -2.55], "y": [-0.46, -0.34], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [2.49, 2.61], "y": [-0.8600000000000001, -0.74], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [2.49, 2.61], "y": [-0.46, -0.34], "z": [3.02, 3.74], "partie": "barreau"},
+   {"x": [-2.68, 2.62], "y": [-1.22, 0.0], "z": [2.74, 3.04], "partie": "balcon"},
+   {"x": [-2.159, -1.859], "y": [-0.75, 0.0], "z": [2.45, 2.75], "partie": "console"},
+   {"x": [-1.061, -0.761], "y": [-0.75, 0.0], "z": [2.45, 2.75], "partie": "console"},
+   {"x": [0.761, 1.061], "y": [-0.75, 0.0], "z": [2.45, 2.75], "partie": "console"},
+   {"x": [1.794, 2.094], "y": [-0.75, 0.0], "z": [2.45, 2.75], "partie": "console"},
+   {"x": [-2.62, 2.59], "y": [-0.16, 0.12], "z": [5.4, 5.68], "partie": "corniche"},
+   {"x": [-2.62, 2.59], "y": [4.05, 4.33], "z": [5.4, 5.68], "partie": "corniche"},
+   {"x": [-2.62, -2.36], "y": [-0.16, 4.33], "z": [5.4, 5.68], "partie": "corniche"},
+   {"x": [2.33, 2.59], "y": [-0.16, 4.33], "z": [5.4, 5.68], "partie": "corniche"},
+   {"x": [-2.55, -2.44], "y": [0.0, 4.17], "z": [2.74, 3.02], "partie": "ceinture"},
+   {"x": [2.44, 2.55], "y": [0.0, 4.17], "z": [2.74, 3.02], "partie": "ceinture"},
+   {"x": [-2.55, 2.55], "y": [4.16, 4.27], "z": [2.74, 3.02], "partie": "ceinture"}
+  ],
+  "marches": [
+   {"x": 0.0, "l": 1.65, "p": 0.35, "h": 0.22}
+  ],
+  "tuiles": {
+   "ardoises": {"sorte": "maison_blanche", "vue": "face", "rect": [80, 82, 330, 158], "repete": true, "egaliser": 14},
+   "planches": {"vue": "face", "rect": [20, 4, 390, 19]}
+  },
+  "peintres": {"toit0": "toiture:ardoises", "balcon": "boite_face", "barreau": "boite_face", "rampe": "boite_face", "console": "boite_face", "corniche": "auto", "ceinture": "auto"},
+  "dessus": {"balcon": "tuile:planches", "corniche": "tuile:planches", "rampe": "tuile:planches"},
+  "decalages": {"marche0": [0, 13]},
+  "ajuster": {"fixes": ["toit0"]},
+  "relief": 1.0
+ },
+ "cabane_pilotis": {
+  "_note": "Vues de 994 px (echelle : largeur totale = largeur du dessin du jeu x scale / 48, soit 281 px/m). Plancher et murs vus sous 18° (face) et 15° (côté), mais le chaume presque de face : peint sous 5° (theta_parties). Toit à croupes (flancs inclinés vus de face) couvert partout du chaume de la vue de face (tourne_face) ; la vue de côté (pignon en planches) ne donne que le mur latéral, le plancher et les pilotis. Porte et fenêtre : de vraies ouvertures (le dessin d'origine montre une embrasure sans battant et une fenêtre sans carreaux ; la vue de face les avait fermées).",
+  "vues": {
+   "face": {"theta": 18, "echelle": 2.455, "effacer": [[0, 862, 994, 891]]},
+   "cote": {"theta": 15, "echelle": 2.455, "effacer": [[0, 862, 975, 891]]},
+   "dos": {"theta": 18, "echelle": 2.455, "effacer": [[0, 862, 991, 891]]}
+  },
+  "murs": {"largeur": 2.46, "profondeur": 2.38, "y0": 0.43, "z0": 0.7, "hauteur": 1.98, "coin": 0.05, "bosses": 0.008},
+  "toits": [
+   {"axe": "x", "x": [-1.44, 1.44], "y": [0.19, 3.05], "egout": 2.05, "faitage": 0.72, "croupes": [0.3, 0.3], "epaisseur": 0.12}
+  ],
+  "boites": [
+   {"x": [-1.71, 1.7], "y": [-0.06, 3.3], "z": [0.58, 0.75], "partie": "plancher"}
+  ],
+  "cylindres": [
+   {"x": -1.51, "y": 0.0, "r": 0.1, "z": [0.0, 0.95], "partie": "poteau"},
+   {"x": 0.0, "y": 0.0, "r": 0.1, "z": [0.0, 0.95], "partie": "poteau"},
+   {"x": 1.51, "y": 0.0, "r": 0.1, "z": [0.0, 0.95], "partie": "poteau"},
+   {"x": -1.51, "y": 1.62, "r": 0.1, "z": [0.0, 0.95], "partie": "poteau"},
+   {"x": 1.51, "y": 1.62, "r": 0.1, "z": [0.0, 0.95], "partie": "poteau"},
+   {"x": -1.51, "y": 3.24, "r": 0.1, "z": [0.0, 0.95], "partie": "poteau"},
+   {"x": 0.0, "y": 3.24, "r": 0.1, "z": [0.0, 0.95], "partie": "poteau"},
+   {"x": 1.51, "y": 3.24, "r": 0.1, "z": [0.0, 0.95], "partie": "poteau"},
+   {"x": -1.12, "y": 1.62, "r": 0.08, "z": [0.0, 0.6], "partie": "poteau"},
+   {"x": 1.12, "y": 1.62, "r": 0.08, "z": [0.0, 0.6], "partie": "poteau"},
+   {"x": 0.0, "y": 1.62, "r": 0.08, "z": [0.0, 0.6], "partie": "poteau"},
+   {"x": -1.27, "y": 0.38, "r": 0.05, "z": [0.5, 1.04], "partie": "poteau"},
+   {"x": 1.27, "y": 0.38, "r": 0.05, "z": [0.5, 1.04], "partie": "poteau"},
+   {"x": -1.27, "y": 2.86, "r": 0.05, "z": [0.5, 1.04], "partie": "poteau"},
+   {"x": 1.27, "y": 2.86, "r": 0.05, "z": [0.5, 1.04], "partie": "poteau"},
+   {"axe": "x", "x": [-1.22, 1.2], "y": 1.62, "z": 2.86, "r": 0.075, "cotes": 12, "partie": "poutre"}
+  ],
+  "tuiles": {
+   "planches": {"vue": "face", "rect": [215, 628, 460, 660], "etirement": [1, 8]},
+   "plancher": {"jeu": "ground/plancher.png", "taille": [2.6, 2.6]},
+   "planches_mur": {"vue": "face", "rect": [170, 330, 260, 540]}
+  },
+  "peintres": {"toit0": "tourne_face", "poutre": "face", "plancher": "auto"},
+  "theta_parties": {"toit0": 5, "poutre": 5},
+  "dessus": {"plancher": "tuile:planches"},
+  "biseau_toit": 0.06,
+  "relief": 1.0,
+  "ouvertures": [
+   {"rect": [578, 378, 727, 648], "profondeur": 0.9, "piece": 0, "embrasure": "planches_mur", "sol": "planches"},
+   {"rect": [298, 388, 422, 512], "profondeur": 0.6, "piece": 0, "embrasure": "planches_mur"}
+  ],
+  "pieces": [
+   {
+    "x": [-1.12, 1.12],
+    "y": [0.6, 2.72],
+    "z": [0.76, 1.92],
+    "murs": "tuile:planches_mur",
+    "plafond": "tuile:planches_mur",
+    "lumiere": {"fond": 0.24, "gain": 3.2},
+    "meubles": [
+     {"x": [-1.05, 0.15], "y": [2.25, 2.7], "z": [0.76, 1.4], "_": "établi"},
+     {"x": [-0.82, -0.52], "y": 1.2, "z": 0.85, "r": 0.09, "axe": "x", "cotes": 8, "guide": [150, 110, 66], "_": "flotteur de liège"},
+     {"x": [-0.5, -0.2], "y": 1.22, "z": 0.85, "r": 0.09, "axe": "x", "cotes": 8, "guide": [140, 102, 62], "_": "flotteur de liège"},
+     {"x": [-0.8, -0.5], "y": 1.42, "z": 0.85, "r": 0.09, "axe": "x", "cotes": 8, "guide": [156, 116, 70], "_": "flotteur de liège"},
+     {"x": [-0.66, -0.36], "y": 1.32, "z": 1.0, "r": 0.09, "axe": "x", "cotes": 8, "guide": [146, 106, 64], "_": "flotteur de liège"},
+     {"x": 0.55, "y": 1.55, "r": 0.28, "z": [0.76, 0.92], "cotes": 12, "_": "corde"}
+    ],
+    "cartes": [
+     {"image": "props/etabli.png", "rect": [0, 100, 399, 315], "x": [-1.1, 0.2], "y": 2.24, "z": 0.76},
+     {"image": "ui/cuir.png", "x": [-0.95, -0.6], "y": 2.23, "z": 1.3},
+     {"image": "ui/boucle.png", "x": [-0.45, -0.2], "y": 2.23, "z": 1.33},
+     {"image": "ui/gilet_nage.png", "x": [0.22, 0.66], "y": 2.71, "z": 1.2},
+     {"image": "ui/gilet_nage.png", "x": [0.64, 1.08], "y": 2.71, "z": 1.16},
+     {"image": "props/cordage.png", "x": [0.27, 0.83], "y": 1.26, "z": 0.76}
+    ],
+    "decor": {"prompt": "interior of a small wooden hut, a workbench with leather straps and tools, leather swimming vests with cork floats hanging on the wall, a pile of round cork floats, a coil of rope, wooden plank walls and floor", "ref": "ui/gilet_nage.png", "denoise": 0.45, "seed": 19}
+   }
+  ]
+ },
+ "havre_herboristerie": {
+  "_note": "Havre-Doré. Toit à croupes (faîte le long de la façade, comme le dessin de face) ; la vue de côté, dessinée trop profonde (6,5 m), raccourcie d'un bout de mur nu.",
+  "vues": {
+   "face": {"theta": null, "toit_sans": [[292, 44, 350, 66]]},
+   "cote": {"theta": null, "effacer": [[0, 165, 80, 440]], "toit_sans": [[350, 40, 405, 85]], "raccourcir": [[82, 182]]},
+   "dos": {"theta": null, "toit_sans": [[145, 40, 200, 85]]}
+  },
+  "murs": {"largeur": 5.58, "profondeur": 5.2, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-3.16, 3.16], "y": [-0.35, 5.45], "egout": 3.7, "faitage": 1.3, "croupes": [1.5, 1.5], "epaisseur": 0.13}
+  ],
+  "cheminees": [
+   {"x": 0.95, "y": 2.55, "l": 0.52, "p": 0.52, "haut": 5.47, "chapeau": 0.15, "pot": 0.16}
+  ],
+  "marches": [
+   {"x": 1.47, "l": 1.3, "p": 0.3, "h": 0.15}
+  ],
+  "boites": [
+   {"x": [-2.51, 0.0], "y": [-0.08, 0.02], "z": [0.0, 0.5], "partie": "jardiniere"}
+  ],
+  "tuiles": {
+   "fleurs": {"vue": "face", "rect": [80, 372, 235, 398]},
+   "ardoises": {"vue": "face", "rect": [130, 62, 290, 122], "repete": true, "egaliser": 12},
+   "plancher": {"jeu": "ground/plancher.png", "taille": [3.6, 3.6]},
+   "enduit": {"vue": "cote", "rect": [220, 185, 380, 240], "egaliser": 20}
+  },
+  "dessus": {"jardiniere": "tuile:fleurs", "cheminee": "bas"},
+  "peintres": {"jardiniere": "boite_face", "toit0": "toiture_flancs:ardoises"},
+  "relief": 1.0,
+  "ouvertures": [
+   {"rect": [321, 240, 404, 415], "profondeur": 1.0, "piece": 0, "embrasure": "enduit", "sol": "plancher", "porte": {"battants": 1, "gonds": "droite", "ouverture": 100}}
+  ],
+  "pieces": [
+   {
+    "x": [0.05, 2.62],
+    "y": [0.2, 1.9],
+    "z": [0.28, 3.3],
+    "meubles": [
+     {"x": [0.15, 1.3], "y": [1.55, 1.88], "z": [0.28, 2.1], "_": "étagère à bocaux"},
+     {"x": [1.15, 2.5], "y": [1.3, 1.75], "z": [0.28, 1.2], "_": "comptoir"},
+     {"x": 0.45, "y": 0.98, "r": 0.26, "z": [0.28, 0.95], "cotes": 12, "_": "tonneau"}
+    ],
+    "cartes": [
+     {"image": "vue:face", "rect": [76, 276, 244, 360], "x": [0.15, 1.3], "y": 1.54, "z": 0.3},
+     {"image": "vue:face", "rect": [76, 276, 244, 360], "x": [0.15, 1.3], "y": 1.54, "z": 0.88},
+     {"image": "vue:face", "rect": [76, 276, 244, 360], "x": [0.15, 1.3], "y": 1.54, "z": 1.46},
+     {"image": "props/etabli.png", "x": [1.12, 2.52], "y": 1.29, "z": 0.28},
+     {"image": "props/tonneau.png", "x": [0.18, 0.72], "y": 0.71, "z": 0.28},
+     {"image": "vue:face", "rect": [270, 150, 455, 225], "x": [0.2, 2.45], "y": 1.89, "z": 2.25}
+    ],
+    "decor": {"prompt": "interior of a cozy herbalist shop, wooden shelves full of glass jars with herbs and berries, a wooden counter with potion flasks, a wooden barrel, bundles of dried herbs hanging, wooden floor, plaster walls", "ref": "props/havre_herboristerie.png", "denoise": 0.5, "seed": 3}
+   }
+  ]
+ },
+ "havre_mercerie": {
+  "_note": "Havre-Doré. Toit à croupes (faîte le long de la façade) et toit croisé : pignon rose en façade et au dos. La vitrine est un étal ouvert (ni vitre ni croisillons) : une vraie ouverture, les marchandises au fond. Porte du contrat (battant à part).",
+  "vues": {
+   "face": {"theta": null},
+   "cote": {"theta": null, "effacer": [[0, 165, 93, 440]]},
+   "dos": {"theta": null}
+  },
+  "murs": {"largeur": 5.1, "profondeur": 4.25, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-2.83, 2.83], "y": [-0.3, 4.55], "egout": 3.45, "faitage": 1.95, "croupes": [0.62, 0.62], "epaisseur": 0.13},
+   {"axe": "y", "y": [-0.3, 4.55], "x": [-1.95, 1.95], "faite_pos": 0.0, "egout": 3.35, "faitage": 2.15, "croupes": [0, 0], "pignons": [0.0, 4.25], "debord_pignon": 0.25, "pignon_bas": 3.2, "epaisseur": 0.13}
+  ],
+  "marches": [
+   {"x": -1.35, "l": 1.35, "p": 0.25, "h": 0.14}
+  ],
+  "relief": 1.0,
+  "ouvertures": [
+   {"rect": [218, 262, 380, 362], "profondeur": 0.45, "fond": "vue", "embrasure": "plancher"},
+   {"rect": [80, 240, 167, 422], "profondeur": 1.0, "piece": 0, "embrasure": "enduit", "sol": "plancher", "porte": {"battants": 1, "gonds": "gauche", "ouverture": 100}}
+  ],
+  "tuiles": {
+   "plancher": {"jeu": "ground/plancher.png", "taille": [3.6, 3.6]},
+   "enduit": {"vue": "cote", "rect": [100, 180, 215, 320], "egaliser": 20}
+  },
+  "pieces": [
+   {
+    "x": [-2.42, -0.2],
+    "y": [0.2, 1.8],
+    "z": [0.2, 3.0],
+    "meubles": [
+     {"x": [-2.35, -1.2], "y": [1.45, 1.78], "z": [0.2, 2.2], "_": "étagère à tissus"},
+     {"x": [-1.1, -0.3], "y": [1.1, 1.6], "z": [0.2, 1.0], "_": "table de coupe"},
+     {"x": [-0.95, -0.35], "y": [0.9, 1.08], "z": [0.2, 0.62], "_": "bottes"}
+    ],
+    "cartes": [
+     {"image": "vue:face", "rect": [218, 278, 306, 362], "x": [-2.35, -1.2], "y": 1.44, "z": 0.22},
+     {"image": "vue:face", "rect": [218, 278, 306, 362], "x": [-2.35, -1.2], "y": 1.44, "z": 1.3},
+     {"image": "ui/cuir.png", "x": [-0.95, -0.45], "y": 1.09, "z": 0.95},
+     {"image": "vue:face", "rect": [306, 270, 382, 362], "x": [-0.97, -0.33], "y": 0.89, "z": 0.2}
+    ],
+    "decor": {"prompt": "interior of a small haberdashery shop, wooden shelves with rolls of colorful patterned fabric, a wooden cutting table with a folded cloth, pairs of leather boots, wooden floor, pink plaster walls", "ref": "props/havre_mercerie.png", "denoise": 0.5, "seed": 5}
+   }
+  ]
+ },
+ "havre_comptoir": {
+  "_note": "Havre-Doré. Maison de maître, pierre sombre, toit d'ardoise à croupes (croupes : ardoises de la façade) ; vue de côté raccourcie (6,3 m -> 5,55 m) d'un bout de mur nu.",
+  "vues": {
+   "face": {"theta": null},
+   "cote": {"theta": null, "effacer": [[0, 205, 32, 440]], "raccourcir": [[320, 370]]},
+   "dos": {"theta": null}
+  },
+  "murs": {"largeur": 6.21, "profondeur": 5.55, "coin": 0.08},
+  "toits": [
+   {"axe": "x", "x": [-3.33, 3.33], "y": [-0.22, 5.77], "egout": 4.92, "faitage": 1.3, "croupes": [1.35, 1.35], "epaisseur": 0.14}
+  ],
+  "marches": [
+   {"x": -1.52, "l": 1.85, "p": 0.3, "h": 0.12}
+  ],
+  "tuiles": {
+   "ardoises": {"vue": "face", "rect": [150, 30, 330, 82], "repete": true, "egaliser": 12},
+   "plancher": {"jeu": "ground/plancher.png", "taille": [3.6, 3.6]},
+   "enduit": {"vue": "cote", "rect": [208, 284, 244, 332]}
+  },
+  "peintres": {"toit0": "toiture_flancs:ardoises"},
+  "relief": 1.0,
+  "ouvertures": [
+   {"rect": [96, 280, 166, 412], "profondeur": 1.0, "piece": 0, "embrasure": "enduit", "sol": "plancher", "porte": {"battants": 1, "gonds": "gauche", "ouverture": 100}}
+  ],
+  "pieces": [
+   {
+    "x": [-3.0, -0.25],
+    "y": [0.22, 1.95],
+    "z": [0.41, 3.3],
+    "meubles": [
+     {"x": [-1.9, -0.55], "y": [1.35, 1.85], "z": [0.41, 1.4], "_": "vitrine d'ambre"},
+     {"x": [-2.95, -2.3], "y": [1.3, 1.75], "z": [0.41, 0.95], "guide": [96, 60, 38], "_": "coffre"}
+    ],
+    "cartes": [
+     {"image": "vue:face", "rect": [228, 262, 405, 385], "x": [-1.92, -0.53], "y": 1.34, "z": 0.41},
+     {"image": "props/ambre.png", "x": [-2.85, -2.65], "y": 1.29, "z": 0.95},
+     {"image": "props/ambre.png", "x": [-2.6, -2.42], "y": 1.29, "z": 0.95}
+    ],
+    "decor": {"prompt": "interior of a luxurious amber merchant shop, a glass display case with glowing orange amber stones on velvet stands, a heavy iron-bound wooden treasure chest, dark green walls, wooden floor", "ref": "props/havre_comptoir.png", "denoise": 0.5, "seed": 7}
+   }
+  ]
+ },
+ "havre_sellerie": {
+  "_note": "Havre-Doré. Échoppe en planches sur soubassement de pierre, toit de tuiles à croupes (faîte le long de la façade comme le dessin de face ; croupes : tuiles de la façade). Harnais, volet de travers : peints. Vue de côté raccourcie (6 m -> 5 m) d'un bout de planches.",
+  "vues": {
+   "face": {"theta": null},
+   "cote": {"theta": null, "effacer": [[0, 150, 118, 440]], "raccourcir": [[330, 405]]},
+   "dos": {"theta": null}
+  },
+  "murs": {"largeur": 5.37, "profondeur": 5.0, "coin": 0.08},
+  "toits": [
+   {"axe": "x", "x": [-3.0, 3.02], "y": [-0.3, 5.3], "egout": 3.8, "faitage": 1.8, "croupes": [1.15, 1.15], "epaisseur": 0.14}
+  ],
+  "marches": [
+   {"x": 0.89, "l": 1.55, "p": 0.25, "h": 0.1}
+  ],
+  "tuiles": {
+   "tuiles": {"vue": "face", "rect": [80, 60, 420, 110], "repete": true, "egaliser": 12},
+   "plancher": {"jeu": "ground/plancher.png", "taille": [3.6, 3.6]},
+   "enduit": {"vue": "cote", "rect": [165, 185, 290, 240]}
+  },
+  "peintres": {"toit0": "toiture_flancs:tuiles"},
+  "relief": 1.0,
+  "ouvertures": [
+   {"rect": [273, 262, 357, 420], "profondeur": 1.0, "piece": 0, "embrasure": "enduit", "sol": "plancher", "porte": {"battants": 1, "gonds": "gauche", "ouverture": 100}}
+  ],
+  "pieces": [
+   {
+    "x": [-0.25, 2.5],
+    "y": [0.2, 1.9],
+    "z": [0.22, 3.2],
+    "meubles": [
+     {"x": [0.65, 1.45], "y": [1.3, 1.7], "z": [0.22, 0.85], "_": "chevalet (selle)"},
+     {"x": [1.6, 2.4], "y": [1.3, 1.7], "z": [0.22, 0.85], "_": "chevalet (selle)"},
+     {"x": -0.1, "y": 1.45, "r": 0.2, "z": [0.22, 0.95], "cotes": 10, "_": "cuir roulé debout"}
+    ],
+    "cartes": [
+     {"image": "ui/selle.png", "x": [0.55, 1.55], "y": 1.29, "z": 0.45},
+     {"image": "ui/selle.png", "x": [1.5, 2.5], "y": 1.29, "z": 0.45},
+     {"image": "ui/cuir.png", "x": [-0.35, 0.15], "y": 1.24, "z": 0.3},
+     {"image": "vue:face", "rect": [78, 155, 205, 250], "x": [-0.15, 1.3], "y": 1.89, "z": 1.35}
+    ],
+    "decor": {"prompt": "interior of a saddler workshop, leather saddles on wooden saddle stands, bridles and harnesses hanging on the wall, rolled leather hides, wooden floor, wooden plank walls", "ref": "props/havre_sellerie.png", "denoise": 0.4, "seed": 9}
+   }
+  ]
+ },
+ "havre_maison_1": {
+  "_note": "Havre-Doré, maison bleue. Pas de dessin de côté ni de dos (crédits nano-banana épuisés) : composés depuis la face (maisons.py vues : porte et lanterne et son halo remplacés par l'enduit lissé, largeur ramenée à la profondeur ; dos en miroir). Toit d'ardoise à croupes (croupes : ardoises de la façade).",
+  "depuis_face": {
+   "cote": {"cloner": [[185, 384, 300, 440, -115]], "lisser": [[128, 204, 159, 267], [159, 204, 300, 384]], "remodeler": [["colonnes", 200, 266, 0]]},
+   "dos": {"cloner": [[185, 384, 300, 440, -115]], "lisser": [[128, 204, 159, 267], [159, 204, 300, 384]], "miroir": true}
+  },
+  "vues": {
+   "face": {"theta": null},
+   "cote": {"theta": null},
+   "dos": {"theta": null}
+  },
+  "murs": {"largeur": 5.66, "profondeur": 4.8, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-3.07, 3.07], "y": [-0.35, 5.15], "egout": 3.29, "faitage": 2.35, "croupes": [1.74, 1.74], "epaisseur": 0.13}
+  ],
+  "marches": [
+   {"x": 0.0, "l": 1.46, "p": 0.25, "h": 0.12}
+  ],
+  "tuiles": {
+   "ardoises": {"vue": "face", "rect": [150, 90, 330, 150], "repete": true, "egaliser": 12}
+  },
+  "peintres": {"toit0": "toiture_flancs:ardoises"},
+  "relief": 1.0
+ },
+ "havre_maison_2": {
+  "_note": "Havre-Doré, maison corail. Côté et dos composés depuis la face (porte, lanterne, et pour le côté la fenêtre du pignon, remplacées par le mur ; dos en miroir, pignon et sa fenêtre gardés). Pignons au nu des murs (la fenêtre du pignon d'un seul tenant). Toit de tuiles à croupes et toit croisé à pignon en façade et au dos (flancs : tuiles de la façade).",
+  "depuis_face": {
+   "cote": {"cloner": [[143, 386, 256, 440, -100]], "lisser": [[145, 262, 278, 386], [126, 104, 274, 228]]},
+   "dos": {"cloner": [[143, 386, 256, 440, -100]], "lisser": [[145, 262, 278, 386]], "miroir": true}
+  },
+  "vues": {
+   "face": {"theta": null},
+   "cote": {"theta": null},
+   "dos": {"theta": null}
+  },
+  "murs": {"largeur": 4.55, "profondeur": 4.4, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-2.55, 2.55], "y": [0.0, 4.7], "egout": 3.7, "faitage": 1.88, "croupes": [0.65, 0.65], "epaisseur": 0.13},
+   {"axe": "y", "y": [0.0, 4.4], "x": [-1.78, 1.78], "faite_pos": 0.0, "egout": 3.55, "faitage": 1.78, "croupes": [0, 0], "epaisseur": 0.13}
+  ],
+  "marches": [
+   {"x": 0.0, "l": 1.45, "p": 0.25, "h": 0.12}
+  ],
+  "tuiles": {
+   "tuiles": {"vue": "face", "rect": [45, 80, 125, 140], "repete": true, "egaliser": 12}
+  },
+  "peintres": {"toit0": "toiture_flancs:tuiles", "toit1": "toiture_flancs:tuiles"},
+  "relief": 1.0
+ },
+ "havre_maison_4": {
+  "_note": "Havre-Doré, maison ivoire à colombages. Côté et dos composés depuis la face (porte et lanterne et son halo remplacés par l'enduit lissé, largeur ramenée à la profondeur ; dos en miroir). Pignons au nu des murs (colombages d'un seul tenant). Toit de tuiles aux flancs raides (croupes) et toit croisé à pignon en façade et au dos ; cheminée.",
+  "depuis_face": {
+   "cote": {"cloner": [[180, 389, 282, 440, -95]], "lisser": [[184, 258, 310, 389]], "remodeler": [["colonnes", 200, 259, 0]]},
+   "dos": {"cloner": [[180, 389, 282, 440, -95]], "lisser": [[184, 258, 310, 389]], "miroir": true}
+  },
+  "vues": {
+   "face": {"theta": null, "toit_sans": [[360, 0, 410, 70, -60]]},
+   "cote": {"theta": null},
+   "dos": {"theta": null, "toit_sans": [[50, 0, 100, 70, 60]]}
+  },
+  "murs": {"largeur": 5.37, "profondeur": 4.6, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-2.87, 2.87], "y": [0.0, 4.9], "egout": 3.59, "faitage": 1.55, "croupes": [0.42, 0.42], "epaisseur": 0.13},
+   {"axe": "y", "y": [0.0, 4.6], "x": [-1.62, 1.62], "faite_pos": 0.0, "egout": 3.5, "faitage": 2.0, "croupes": [0, 0], "epaisseur": 0.13}
+  ],
+  "cheminees": [
+   {"x": 1.99, "y": 2.3, "l": 0.54, "p": 0.5, "haut": 5.59, "chapeau": 0.12, "pot": 0}
+  ],
+  "marches": [
+   {"x": 0.0, "l": 1.3, "p": 0.25, "h": 0.12}
+  ],
+  "tuiles": {
+   "tuiles": {"vue": "face", "rect": [40, 90, 130, 150], "repete": true, "egaliser": 12}
+  },
+  "dessus": {"cheminee": "bas"},
+  "peintres": {"toit0": "toiture_flancs:tuiles", "toit1": "toiture_flancs:tuiles"},
+  "relief": 1.0
+ },
+ "havre_relais": {
+  "_note": "Havre-Doré. Deux étages à pans de bois, grand toit de tuiles à croupes, deux lucarnes en volume (boîte + petit toit à pignon, retirées de la peinture du pan) ; balcon plat (peint). Vue de côté dessinée de 3/4 : seul son grand mur (x 95-510) sert, les croupes prennent les tuiles de la façade (toiture_flancs). Vue de dos plus petite (échelle 0,886).",
+  "vues": {
+   "face": {"theta": 0, "toit_sans": [[115, 40, 195, 125, -80], [262, 40, 345, 125, 80]]},
+   "cote": {"theta": null, "effacer": [[0, 0, 95, 440], [510, 0, 606, 440], [90, 25, 150, 110]]},
+   "dos": {"theta": null, "echelle": 0.886}
+  },
+  "murs": {"largeur": 5.7, "profondeur": 5.9, "coin": 0.08},
+  "toits": [
+   {"axe": "x", "x": [-3.11, 3.11], "y": [-0.3, 6.2], "egout": 4.08, "faitage": 1.75, "croupes": [1.28, 1.28], "epaisseur": 0.14},
+   {"axe": "y", "y": [0.3, 2.45], "x": [-1.56, -0.52], "faite_pos": -1.04, "egout": 4.98, "faitage": 0.54, "croupes": [0, 0], "pignons": [0.42, null], "debord_pignon": 0.08, "pignon_bas": 4.85, "epaisseur": 0.08},
+   {"axe": "y", "y": [0.3, 2.45], "x": [0.54, 1.58], "faite_pos": 1.06, "egout": 4.98, "faitage": 0.54, "croupes": [0, 0], "pignons": [0.42, null], "debord_pignon": 0.08, "pignon_bas": 4.85, "epaisseur": 0.08}
+  ],
+  "boites": [
+   {"x": [-1.44, -0.64], "y": [0.42, 1.8], "z": [4.4, 5.02], "partie": "lucarne"},
+   {"x": [0.66, 1.46], "y": [0.42, 1.8], "z": [4.4, 5.02], "partie": "lucarne"}
+  ],
+  "tuiles": {
+   "tuiles": {"vue": "face", "rect": [60, 128, 400, 152], "repete": true, "egaliser": 12},
+   "plancher": {"jeu": "ground/plancher.png", "taille": [3.6, 3.6]},
+   "enduit": {"vue": "face", "rect": [60, 316, 96, 364]}
+  },
+  "peintres": {"toit0": "toiture_flancs:tuiles", "toit1": "toiture:tuiles", "toit2": "toiture:tuiles", "lucarne": "facade:tuiles"},
+  "relief": 1.0,
+  "ouvertures": [
+   {"rect": [170, 305, 282, 432], "profondeur": 1.0, "piece": 0, "embrasure": "enduit", "sol": "plancher", "porte": {"battants": 2, "ouverture": 100}}
+  ],
+  "pieces": [
+   {
+    "x": [-2.5, 2.4],
+    "y": [0.25, 1.7],
+    "z": [0.04, 2.8],
+    "meubles": [
+     {"x": [-0.72, 0.52], "y": [0.98, 1.45], "z": [0.04, 0.78], "_": "table"},
+     {"x": [-0.7, 0.7], "y": [1.62, 1.69], "z": [0.85, 1.8], "guide": [118, 80, 50], "_": "tableau des duels"},
+     {"x": 1.3, "y": 1.3, "r": 0.28, "z": [0.04, 0.76], "cotes": 12, "_": "tonneau"},
+     {"x": [-1.9, -1.2], "y": [1.1, 1.6], "z": [0.04, 0.95], "_": "caisses"}
+    ],
+    "cartes": [
+     {"image": "props/table_papiers.png", "x": [-0.76, 0.56], "y": 0.97, "z": 0.04},
+     {"image": "ui/papier.webp", "x": [-0.6, -0.2], "y": 1.61, "z": 1.02},
+     {"image": "ui/papier.webp", "x": [-0.16, 0.24], "y": 1.61, "z": 1.2},
+     {"image": "ui/papier.webp", "x": [0.28, 0.66], "y": 1.61, "z": 0.98},
+     {"image": "props/tonneau.png", "x": [1.02, 1.58], "y": 1.01, "z": 0.04},
+     {"image": "props/caisses.png", "x": [-1.95, -1.15], "y": 1.09, "z": 0.04}
+    ],
+    "decor": {"prompt": "interior of a lively tavern hall for dinosaur tamers, a wooden table with maps and papers and a lantern, a wooden notice board with pinned duel posters on the wall, barrels and crates, wooden floor, cream plaster walls with timber beams", "ref": "props/havre_relais.png", "denoise": 0.4, "seed": 13}
+   }
+  ]
+ },
+ "havre_maison_3": {
+  "_note": "Havre-Doré, maison sauge. Côté et dos composés depuis la face (porte et lanterne et son halo remplacés par l'enduit lissé, lumière du dessin égalisée, largeur ramenée à la profondeur ; dos en miroir). Toit d'ardoise à croupes (croupes : ardoises de la façade). L'œil-de-bœuf : un chien-assis bas (corps : devant = la fenêtre ronde du dessin sur l'enduit, joues en ardoise ; toit en appentis couvert d'ardoises), retiré de la peinture des pans.",
+  "depuis_face": {
+   "cote": {
+    "cloner": [[205, 390, 302, 440, -120]],
+    "lisser": [[183, 222, 302, 390]],
+    "egaliser": {"rangs": [216, 264], "sigma": 20},
+    "remodeler": [["colonnes", 215, 281, 0]]
+   },
+   "dos": {
+    "cloner": [[205, 390, 302, 440, -120]],
+    "lisser": [[183, 222, 302, 390]],
+    "egaliser": {"rangs": [216, 264], "sigma": 20},
+    "miroir": true
+   }
+  },
+  "vues": {
+   "face": {
+    "theta": null,
+    "toit_sans": [[208, 78, 302, 162, 95]],
+    "parties": {
+     "lucarne": {"disque": [254.5, 123, 37], "fond": [215, 225, 300, 262]}
+    }
+   },
+   "cote": {"theta": null},
+   "dos": {"theta": null, "toit_sans": [[205, 78, 299, 162, -47]]}
+  },
+  "murs": {"largeur": 5.66, "profondeur": 4.8, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-3.23, 3.23], "y": [-0.4, 5.2], "egout": 3.02, "faitage": 2.6, "croupes": [1.53, 1.53], "epaisseur": 0.13},
+   {"axe": "x", "x": [-0.72, 0.72], "y": [0.1, 2.2], "faite_pos": 2.18, "egout": 4.72, "faitage": 0.62, "croupes": [0, 0], "epaisseur": 0.07}
+  ],
+  "boites": [
+   {"x": [-0.6, 0.6], "y": [0.2, 2.1], "z": [3.5, 4.7], "partie": "lucarne"}
+  ],
+  "marches": [
+   {"x": 0.0, "l": 1.2, "p": 0.25, "h": 0.12}
+  ],
+  "tuiles": {
+   "ardoises": {"vue": "face", "rect": [120, 160, 420, 200], "repete": true, "egaliser": 12}
+  },
+  "peintres": {"toit0": "toiture_flancs:ardoises", "toit1": "toiture_joues:ardoises", "lucarne": "facade:ardoises"},
+  "relief": 1.0
+ },
+ "havre_entrepot": {
+  "_note": "Havre-Doré. Entrepôt large et bas, toit d'ardoise aux flancs inclinés (croupes raides, comme le dessin de face ; la vue de côté dessine un pignon : ses croupes prennent les ardoises de la façade), deux lucarnes en volume (retirées de la peinture du pan). Vue de dos dessinée plus étroite et au toit plus bas : remodelée (lignes de mur retirées, rangs d'ardoises et colonnes de mur répétés : la silhouette), mur égalisé (lumière et reprises), pan arrière couvert du motif d'ardoises. Le faîtage et l'égout creusés du dessin de face : ajuste.py.",
+  "vues": {
+   "face": {"theta": null, "toit_sans": [[125, 20, 205, 118, 90], [498, 20, 578, 118, -90]]},
+   "cote": {"theta": null},
+   "dos": {
+    "theta": null,
+    "remodeler": [["lignes", 150, 204, 0, 14], ["lignes", 68, 86, 3, 6], ["colonnes", 120, 259, 2, 16]],
+    "egaliser": [
+     {"rangs": [92, 330], "plan": true, "sigma": 30, "tol": 0.25},
+     {"rangs": [150, 280], "zone": [140, 330], "sigma": 3, "tol": 0.3, "apres": true}
+    ]
+   }
+  },
+  "murs": {"largeur": 8.14, "profondeur": 4.34, "coin": 0.1},
+  "toits": [
+   {"axe": "x", "x": [-4.38, 4.38], "y": [-0.3, 4.64], "egout": 2.5, "faitage": 1.68, "croupes": [0.88, 0.88], "epaisseur": 0.13},
+   {"axe": "y", "y": [0.22, 1.75], "x": [-2.9, -1.9], "faite_pos": -2.4, "egout": 3.38, "faitage": 0.38, "croupes": [0, 0], "pignons": [0.34, null], "debord_pignon": 0.07, "pignon_bas": 3.27, "epaisseur": 0.07},
+   {"axe": "y", "y": [0.22, 1.75], "x": [1.95, 2.95], "faite_pos": 2.45, "egout": 3.38, "faitage": 0.38, "croupes": [0, 0], "pignons": [0.34, null], "debord_pignon": 0.07, "pignon_bas": 3.27, "epaisseur": 0.07}
+  ],
+  "boites": [
+   {"x": [-2.8, -2.0], "y": [0.34, 1.65], "z": [2.88, 3.4], "partie": "lucarne"},
+   {"x": [2.05, 2.85], "y": [0.34, 1.65], "z": [2.88, 3.4], "partie": "lucarne"}
+  ],
+  "tuiles": {
+   "ardoises": {"vue": "face", "rect": [220, 60, 480, 110], "repete": true, "egaliser": 12},
+   "plancher": {"jeu": "ground/plancher.png", "taille": [3.6, 3.6]},
+   "enduit": {"vue": "face", "rect": [60, 165, 190, 265]}
+  },
+  "peintres": {"toit0": "toiture_arriere:ardoises", "toit1": "toiture:ardoises", "toit2": "toiture:ardoises", "lucarne": "facade:ardoises"},
+  "relief": 1.0,
+  "ouvertures": [
+   {"rect": [210, 205, 340, 326], "profondeur": 1.0, "piece": 0, "embrasure": "enduit", "sol": "plancher", "porte": {"battants": 2, "ouverture": 100}}
+  ],
+  "pieces": [
+   {
+    "x": [-3.8, 0.9],
+    "y": [0.25, 2.4],
+    "z": [0.09, 2.25],
+    "meubles": [
+     {"x": [-3.6, -2.3], "y": [1.4, 2.3], "z": [0.09, 1.2], "_": "caisses"},
+     {"x": [-1.7, -0.6], "y": [1.7, 2.3], "z": [0.09, 1.05], "_": "caisses"},
+     {"x": 0.4, "y": 1.6, "r": 0.3, "z": [0.09, 0.86], "cotes": 12, "_": "tonneau"},
+     {"x": -1.0, "y": 1.3, "r": 0.3, "z": [0.09, 0.3], "cotes": 12, "_": "corde"}
+    ],
+    "cartes": [
+     {"image": "props/caisses.png", "x": [-3.65, -2.25], "y": 1.39, "z": 0.09},
+     {"image": "props/caisses.png", "x": [-1.75, -0.55], "y": 1.69, "z": 0.09},
+     {"image": "props/tonneau.png", "x": [0.1, 0.7], "y": 1.29, "z": 0.09},
+     {"image": "props/cordage.png", "x": [-1.3, -0.7], "y": 0.99, "z": 0.09}
+    ],
+    "decor": {"prompt": "interior of a dim harbor warehouse, stacked wooden crates, barrels, a coil of rope on the floor, stone walls, wooden floor", "ref": "props/caisses.png", "denoise": 0.5, "seed": 17}
+   }
+  ]
+ },
+ "tente": {
+  "_note": "Camp de l'Ombre Noire. Le dessin du jeu (3/4) est la seule vue : calage avec lacet, lignes relevées sur le dessin (faîtage affaissé, ourlet festonné, bas des rabats rongés) ; côté gauche, pignon du fond, cordes et piquets cachés : par symétrie (aucune vue inventée). Cordes et piquets : volumes à part. L'entrée est une vraie ouverture (porte : son contour sur le dessin)  : on voit dedans (tente.interieur : doublure peinte par la toile du dessin, assombrie par la lumière cuite ; sol, meubles, détails ComfyUI).",
+  "vues": {
+   "face": {
+    "theta": null,
+    "lacet": null,
+    "largeur_cordes": 13,
+    "remplir": [
+     {"poly": [[146, 195], [214, 195], [237, 255], [240, 284], [150, 266]], "px": [185, 160]}
+    ]
+   }
+  },
+  "tente": {
+   "sol": {"av_g": [65, 244], "av_d": [313, 306], "ar_d": [509, 216]},
+   "courbes": {
+    "faite": {"mode": "silhouette", "px": [[176, 11], [190, 8], [210, 11], [230, 16], [255, 21], [280, 24], [300, 25], [325, 21], [350, 15], [375, 9], [392, 6], [400, 5]]},
+    "rive_av_d": {"mode": "trait", "px": [[176, 11], [186, 16], [193, 30], [203, 50], [217, 77], [232, 107], [248, 133], [267, 157], [287, 180], [303, 200], [318, 216], [326, 228]]},
+    "rive_av_g": {"mode": "silhouette", "px": [[176, 11], [165, 20], [152, 40], [137, 62], [120, 88], [100, 115], [80, 142], [62, 165], [44, 187]]},
+    "rive_ar_d": {"mode": "silhouette", "px": [[400, 5], [415, 20], [430, 40], [445, 62], [460, 85], [475, 108], [490, 130], [503, 150], [516, 166]]},
+    "ourlet_d": {"mode": "trait", "px": [[326, 229], [340, 233], [360, 222], [380, 213], [400, 203], [423, 193], [445, 186], [470, 178], [495, 171], [516, 166]]},
+    "bord_av_d": {"mode": "trait", "px": [[313, 306], [309, 290], [305, 270], [304, 248], [305, 228]]},
+    "mur_bas_d": {"mode": "silhouette", "px": [[313, 306], [347, 288], [390, 273], [423, 262], [467, 240], [509, 216]]},
+    "mur_ar_d": {"mode": "silhouette", "px": [[509, 216], [508, 200], [503, 185], [498, 172]]},
+    "bord_av_g": {"mode": "silhouette", "px": [[44, 187], [60, 193], [77, 192], [73, 210], [68, 228], [65, 244]]},
+    "bas_av": {"mode": "silhouette", "px": [[65, 244], [80, 246], [88, 244], [93, 238], [97, 250], [110, 254], [125, 258], [140, 262], [150, 265], [190, 275], [238, 288], [245, 284], [260, 290], [272, 289], [276, 284], [280, 296], [295, 303], [313, 306]]},
+    "porte": {"mode": "libre", "px": [[148, 264], [152, 245], [158, 228], [165, 208], [168, 177], [170, 143], [172, 110], [177, 77], [182, 43], [186, 30], [190, 43], [193, 77], [197, 110], [202, 143], [207, 177], [210, 200], [220, 225], [230, 248], [240, 284]]}
+   },
+   "creux": 8,
+   "dos_x0": -23,
+   "mats": [
+    {"px": [[157, 16], [186, 11]], "plan": "x0", "r": 6.7},
+    {"px": [[397, 6], [411, 3]], "plan": "x0", "r": 6.7}
+   ],
+   "piquets": [
+    {"bas": [21, 243], "haut": [8, 210], "corde": "A_f", "corde_px": [[176, 14], [18, 226]], "sym": ["xy"]},
+    {
+     "bas": [375, 330],
+     "haut": [381, 297],
+     "corde": {"ligne": "ourlet_d", "px": [327, 229]},
+     "corde_px": [[327, 229], [376, 312]],
+     "sym": ["x"]
+    },
+    {
+     "bas": [472, 274],
+     "haut": [479, 247],
+     "corde": {"ligne": "ourlet_d", "px": [423, 193]},
+     "corde_px": [[423, 193], [471, 258]],
+     "sym": ["x"]
+    },
+    {
+     "bas": [555, 223],
+     "haut": [562, 198],
+     "corde": {"ligne": "ourlet_d", "px": [507, 163]},
+     "corde_px": [[507, 163], [553, 209]],
+     "sym": ["x"]
+    }
+   ],
+   "interieur": {
+    "sol": "tuile:terre",
+    "guide": {"dedans": [118, 94, 72]},
+    "meubles": [
+     {"x": [-1.05, -0.3], "y": [0.7, 2.35], "z": [0.015, 0.2], "guide": [196, 162, 96], "_": "paillasse"},
+     {"x": [-1.0, -0.35], "y": [1.35, 2.3], "z": [0.2, 0.25], "guide": [84, 88, 72], "_": "couverture"},
+     {"x": [0.05, 0.62], "y": [1.85, 2.35], "z": [0.015, 0.5], "_": "caisse"},
+     {"x": 0.34, "y": 2.1, "r": 0.08, "z": [0.5, 0.78], "cotes": 8, "guide": [60, 56, 54], "_": "lanterne éteinte"}
+    ],
+    "cartes": [
+     {"image": "ui/cuir.png", "x": [-0.92, -0.55], "y": 2.12, "z": 0.2},
+     {"image": "props/caisses.png", "x": [0.02, 0.65], "y": 1.84, "z": 0.015},
+     {"image": "props/lanterne.png", "rect": [0, 40, 78, 150], "x": [0.22, 0.46], "y": 1.83, "z": 0.5}
+    ],
+    "decor": {"prompt": "the floor inside a bandit camp tent, a straw mattress with a rough blanket, a wooden crate, an unlit iron lantern, dirt floor, dim", "ref": "props/caisses.png", "denoise": 0.45, "seed": 23}
+   }
+  },
+  "tuiles": {
+   "bois": {"couleur": [128, 84, 60]},
+   "perche": {"couleur": [176, 124, 90]},
+   "corde": {"couleur": [108, 78, 57]},
+   "dedans": {"couleur": [41, 29, 28]},
+   "terre": {"jeu": "ground/terre.png", "taille": [3.0, 3.0]}
+  },
+  "peintres": {"mat": "tuile:perche"},
+  "ajuster": false,
+  "atlas": 1024,
+  "relief": 1.0
+ },
+ "tente_nomade": {
+  "_note": "Désert, la tente de Tante Sirocco. Même méthode que la tente du camp : le dessin (3/4) seule vue, calage avec lacet, lignes relevées ; côté gauche, pignon du fond, cordes et piquets cachés par symétrie. Mât avant et mâts croisés des deux pignons, piquets d'angle, cordes : volumes à part. L'entrée est une vraie ouverture (porte : son contour sur le dessin)  : on voit dedans (tente.interieur : doublure peinte par la toile du dessin, assombrie par la lumière cuite ; sol, meubles, détails ComfyUI).",
+  "vues": {
+   "face": {
+    "theta": null,
+    "lacet": null,
+    "largeur_cordes": 13,
+    "remplir": [
+     {"poly": [[140, 200], [190, 200], [203, 295], [130, 276]], "px": [160, 195]}
+    ]
+   }
+  },
+  "tente": {
+   "sol": {"av_g": [72, 254], "av_d": [283, 315], "ar_d": [410, 227]},
+   "courbes": {
+    "faite": {"mode": "silhouette", "px": [[180, 79], [200, 74], [225, 68], [250, 58], [275, 48], [300, 38], [318, 30]]},
+    "rive_av_d": {"mode": "trait", "px": [[180, 80], [193, 100], [207, 130], [222, 152], [240, 177], [257, 198], [273, 217]]},
+    "rive_av_g": {"mode": "silhouette", "px": [[180, 80], [160, 98], [140, 118], [120, 138], [100, 153], [83, 165], [66, 173]]},
+    "rive_ar_d": {"mode": "silhouette", "px": [[318, 30], [330, 45], [350, 70], [370, 95], [390, 120], [405, 140], [413, 147]]},
+    "ourlet_d": {"mode": "trait", "px": [[273, 217], [285, 212], [300, 203], [320, 194], [347, 183], [367, 173], [393, 157], [413, 147]]},
+    "bord_av_d": {"mode": "trait", "px": [[283, 315], [280, 290], [278, 260], [277, 232]]},
+    "mur_bas_d": {"mode": "silhouette", "px": [[283, 315], [290, 307], [330, 287], [377, 263], [397, 242], [410, 227]]},
+    "mur_ar_d": {"mode": "silhouette", "px": [[410, 227], [409, 205], [406, 180], [404, 158]]},
+    "bord_av_g": {"mode": "silhouette", "px": [[66, 173], [78, 180], [76, 200], [72, 225], [72, 254]]},
+    "bas_av": {"mode": "silhouette", "px": [[72, 254], [100, 262], [120, 270], [133, 273], [165, 284], [200, 293], [230, 307], [255, 316], [273, 322], [283, 315]]},
+    "porte": {"mode": "libre", "px": [[135, 275], [140, 265], [150, 245], [157, 223], [158, 190], [160, 160], [163, 135], [168, 122], [175, 127], [182, 147], [186, 175], [190, 205], [193, 230], [196, 260], [201, 294]]}
+   },
+   "creux": 7,
+   "dos_x0": -33,
+   "mats": [
+    {"px": [[178, 287], [178, 86]], "plan": "y0", "r": 5, "sol_bas": true},
+    {"px": [[172, 92], [190, 48]], "plan": "y0", "r": 4.5},
+    {"px": [[186, 92], [163, 50]], "plan": "y0", "r": 4.5},
+    {"px": [[312, 40], [331, 2]], "plan": "yL", "r": 4.5},
+    {"px": [[325, 40], [304, 2]], "plan": "yL", "r": 4.5}
+   ],
+   "piquets": [
+    {"bas": [12, 260], "haut": [5, 233], "corde": "E_fl", "corde_px": [[72, 176], [12, 246]]},
+    {"bas": [68, 262], "haut": [60, 238]},
+    {"bas": [80, 342], "haut": [70, 312], "corde": "A_f", "corde_px": [[172, 95], [77, 325]], "sym": ["xy"]},
+    {"bas": [280, 330], "haut": [283, 302]},
+    {"bas": [418, 230], "haut": [423, 203], "sym": ["x"]},
+    {
+     "bas": [467, 238],
+     "haut": [470, 212],
+     "corde": {"ligne": "ourlet_d", "px": [413, 147]},
+     "corde_px": [[413, 150], [465, 226]],
+     "sym": ["x"]
+    },
+    {
+     "bas": [425, 303],
+     "haut": [428, 276],
+     "corde": {"ligne": "ourlet_d", "px": [347, 182]},
+     "corde_px": [[349, 187], [424, 290]],
+     "sym": ["x"]
+    },
+    {
+     "bas": [330, 372],
+     "haut": [332, 345],
+     "corde": {"ligne": "ourlet_d", "px": [273, 217]},
+     "corde_px": [[275, 222], [328, 358]],
+     "sym": ["x"]
+    }
+   ],
+   "interieur": {
+    "sol": "tuile:sable",
+    "guide": {"dedans": [206, 150, 112]},
+    "meubles": [
+     {"x": [-0.95, 0.75], "y": [0.35, 2.0], "z": [0.015, 0.03], "guide": [150, 52, 46], "_": "tapis"},
+     {"x": [-1.02, -0.58], "y": [1.2, 1.6], "z": [0.03, 0.2], "guide": [214, 132, 58], "_": "coussin"},
+     {"x": [-1.02, -0.58], "y": [1.65, 2.05], "z": [0.03, 0.2], "guide": [52, 120, 120], "_": "coussin"},
+     {"x": [-0.2, 0.55], "y": [1.75, 2.15], "z": [0.015, 0.45], "guide": [120, 70, 40], "_": "coffre"}
+    ],
+    "cartes": [],
+    "decor": {"prompt": "the floor inside a desert nomad tent, a patterned red oriental rug on the sand, embroidered orange and teal cushions, a small wooden chest with brass corners", "ref": "props/havre_mercerie.png", "denoise": 0.6, "seed": 29}
+   }
+  },
+  "tuiles": {
+   "bois": {"couleur": [116, 60, 40]},
+   "perche": {"couleur": [149, 80, 44]},
+   "corde": {"couleur": [150, 104, 78]},
+   "dedans": {"couleur": [111, 61, 66]},
+   "sable": {"jeu": "ground/sable.png", "taille": [3.0, 3.0]}
+  },
+  "peintres": {"mat": "tuile:perche"},
+  "ajuster": false,
+  "atlas": 1024,
+  "relief": 1.0
+ },
+ "palissade": {
+  "_note": "Camp de l'Ombre Noire (27 morceaux, tous les 1,9 m). Le dessin (de face) est la seule vue : chaque pieu est un tronc tourné qui suit sa silhouette rang par rang (penchée, pointe taillée), son dos peint par son devant ; la corde (deux tours par pieu, les brins, le bout qui pend) est un tube à part, peint des torons du bout dessiné.",
+  "vues": {
+   "face": {"theta": 10}
+  },
+  "pieux": {
+   "colonnes": [[0, 66], [74, 132], [146, 206]],
+   "rangs_corde": [[112, 153]],
+   "egaliser": {"sous": 60, "force": 0.85},
+   "pas": 4,
+   "cotes": 10,
+   "bosses": 1.2,
+   "profondeur": 1.0,
+   "r_corde": 4.5,
+   "corde": {
+    "tours": [
+     {"pieu": 0, "px": [28, 128], "vers": "bas", "ecart": 15},
+     {"pieu": 1, "px": [103, 125], "vers": "bas", "ecart": 13},
+     {"pieu": 2, "px": [178, 124], "vers": "bas", "ecart": 11}
+    ],
+    "brins": [[[52, 131], [65, 136], [80, 138]], [[127, 137], [140, 138], [153, 134]]],
+    "bout": [[200, 133], [206, 145], [208, 160], [206, 175], [209, 190], [212, 197]]
+   }
+  },
+  "tuiles": {
+   "corde": {"vue": "face", "rect": [202, 150, 209, 186], "brut": true, "tourner": true, "repete": true}
+  },
+  "ronger": 5,
+  "ajuster": false,
+  "atlas": 1024,
+  "relief": 1.0
+ },
+ "phare_ruine": {
+  "_note": "Côte Préhistorique, Pointe aux Ptéranodons : vieux phare de pierre claire en ruine. Tour ronde (coin = demi-largeur, 14 côtés par quart), légèrement conique (fruit), sans toit : le haut suit un bord cassé (murs.ruine : plus haut à gauche et au fond, une brèche devant à droite), mur de 0,45 m d'épaisseur, dedans sombre jusqu'au fond (5 m). Restes de la lanterne : quatre fers tordus (tiges), un morceau du toit conique de cuivre tombé (coupoles), un nid de brindilles et d'algues sur le bord (cylindre à profil). Porte basse peinte (fermée), deux fentes sans vitre : vraies ouvertures. Vues (face, côté droit, dos) : nano-banana repeint des guides rendus depuis ce modèle (scratchpad phare/ : guide_blender.py, compose_guide.py), silhouette tenue (recouvrement 0,96 à 0,99), toutes à 96 px/m ; le côté gauche, différent du droit, est peint par la face et le dos (cote_gauche) ; le dedans caché de la vue de face et le dessous des fers et du nid : motifs (face_sinon).",
+  "scale_jeu": 0.5,
+  "vues": {"face": {"theta": 12},
+           "cote": {"theta": 12, "lumiere_face": {"rangs": [475, 720], "rangs_face": [495, 735], "sigma": 8}},
+           "dos": {"theta": 12, "lumiere_face": {"rangs": [452, 697], "rangs_face": [495, 735], "sigma": 8}}},
+  "cote_gauche": false,
+  "murs": {"largeur": 3.8, "profondeur": 3.8, "coin": 1.9, "segments": 14, "fruit": 0.035, "bosses": 0.012,
+           "ruine": {"haut": [[-180, 7.55], [-160, 7.45], [-140, 7.3], [-122, 7.2], [-108, 6.95], [-95, 6.85], [-82, 6.8],
+                              [-72, 6.55], [-63, 6.1], [-54, 5.6], [-44, 5.45], [-35, 5.7], [-27, 6.2], [-15, 6.35], [0, 6.5],
+                              [20, 6.75], [45, 7.1], [70, 7.45], [90, 7.7], [112, 7.85], [135, 7.8], [158, 7.7]],
+                     "cassure": 0.12, "pas_cassure": 8, "epaisseur": 0.45, "fond": 5.0}},
+  "toits": [],
+  "boites": [{"x": [-0.62, 0.62], "y": [-0.32, 0.35], "z": [0.0, 0.15], "partie": "marche"}],
+  "tiges": [
+   {"points": [[-1.316, 2.379, 7.55], [-1.25, 2.35, 8.2], [-1.05, 2.3, 8.62]], "r": 0.045},
+   {"points": [[-0.479, 3.216, 7.7], [-0.45, 3.15, 8.45], [-0.35, 3.0, 8.9]], "r": 0.045},
+   {"points": [[0.803, 3.047, 7.15], [0.9, 3.0, 7.7], [1.25, 2.9, 8.0]], "r": 0.045},
+   {"points": [[1.316, 1.421, 6.2], [1.35, 1.4, 6.55], [1.5, 1.3, 6.7]], "r": 0.045}
+  ],
+  "coupoles": [{"centre": [-0.2, 2.9, 8.35], "r": 1.3, "h": 0.7, "angles": [-165, -75], "pivot": [-0.2, 2.9, 9.05],
+                "rotation": [8, -14, 0], "epaisseur": 0.05, "casse": 0.18, "casse_angle": 8}],
+  "cylindres": [{"x": -1.088, "y": 0.987, "z": [7.18, 7.57], "cotes": 14, "bosses": 0.05, "partie": "nid",
+                 "profil": [[0.3, 0.0], [0.46, 0.1], [0.56, 0.2], [0.54, 0.33], [0.44, 0.39], [0.36, 0.34], [0.22, 0.3]]},
+                {"x": -0.2, "y": 2.9, "z": [9.0, 9.3], "cotes": 10, "bosses": 0.0, "partie": "boule",
+                 "profil": [[0.03, 0.0], [0.06, 0.05], [0.12, 0.13], [0.13, 0.19], [0.09, 0.27], [0.02, 0.3]]}],
+  "ouvertures": [{"m": [-0.16, 0.16, 2.75, 3.45], "profondeur": 0.42}, {"m": [-0.52, -0.24, 3.95, 4.45], "profondeur": 0.42}],
+  "tuiles": {"dedans_pierre": {"vue": "face", "rect": [137, 197, 219, 235], "repete": true, "egaliser": 12},
+             "marche": {"vue": "face", "rect": [140, 926, 230, 936]},
+             "brindilles": {"vue": "face", "rect": [45, 205, 110, 228]},
+             "rouille": {"couleur": [118, 66, 42]}, "fond": {"couleur": [44, 35, 30]}},
+  "dessus": {"marche": "tuile:marche"},
+  "peintres": {"murs_dedans": "face_sinon:dedans_pierre", "tige": "face_sinon:rouille", "nid": "face_sinon:brindilles",
+               "murs_fond": "tuile:fond"},
+  "ronger": 4,
+  "relief": 1.0
+ }
+}

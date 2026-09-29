@@ -166,10 +166,11 @@ static func build() -> Region:
 ## The great hall: the Spinosaure Ancestral before the altar where the first Heart rests
 ## (gone once the Sceau du Marais is given), statues either side.
 static func _great_hall(root: Region, entities: Node2D) -> void:
-	var altar = B.prop(entities, "serrure", B.cell(ALTAR.x, ALTAR.y), false, load(STORY_PROP))
+	# (the stone altar, once drawn: 29/09; before, the amber lock of the old doors)
+	var altar = B.prop(entities, "autel" if Prop.KINDS.has("autel") else "serrure", B.cell(ALTAR.x, ALTAR.y), false, load(STORY_PROP))
 	altar.name = "Autel"
 	B.dino_npc(root, "Spinosaure", &"spinosaurus", SPINOSAURE.x, SPINOSAURE.y, {"event": &"spinosaure_ancestral",
-		"hide_flag": &"sceau_marais", "size": 1.1})
+		"hide_flag": &"sceau_marais", "size": 1.25})   # (MaraisTemple.SPINO_SIZE)
 	for p: Array in [["statue_dino", 15.4, 3.0, false], ["statue_dino", 23.6, 3.0, true],
 			["colonne", 14.6, 9.4, false], ["colonne", 24.4, 9.4, true], ["cristaux", 16.8, 2.5, false], ["cristaux", 22.2, 2.5, true]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]), p[3])
@@ -185,3 +186,7 @@ static func _decor(entities: Node2D) -> void:
 			["cristaux", 16.4, 15.6, false], ["cailloux", 8.0, 7.2, false], ["cailloux", 35.8, 19.4, true],
 			["cailloux", 22.6, 22.6, false], ["cailloux", 3.6, 20.6, true], ["fougeres", 13.8, 21.8, false]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]), p[3])
+	# « Le hall du temple. Des colonnes couvertes de coquillages, une grande statue de Spinosaure »
+	# (29/09): against the north wall, left of the stairs (the sluice in front of it stays in sight).
+	if Prop.KINDS.has("statue_spinosaure"):
+		B.prop(entities, "statue_spinosaure", B.cell(15.0, 15.7))

@@ -63,6 +63,27 @@ const AMBIENCES := {
 			{"ids": ["oiseau-3"], "every": [30.0, 60.0], "vol": 0.25, "day": true},
 		],
 	},
+	## Côte Préhistorique : the sea everywhere (louder by the water), the wind off it, gulls over
+	## the shore (the Pteranodons' calls are the dinos' own), birds in the palms by day.
+	&"cote": {
+		"beds": [["brise", 0.4, ""], ["vagues", 1.0, "sea"], ["feu", 1.0, "fire"]],
+		"calls": [
+			{"ids": ["mouettes"], "every": [8.0, 20.0], "vol": 0.5, "follows": "sea"},
+			{"ids": BIRDS, "every": [9.0, 22.0], "vol": 0.3, "day": true},
+			{"ids": ["rafale"], "every": [20.0, 45.0], "vol": 0.35},
+		],
+	},
+	## The sea caves: the cave's hollow sound, the sea breathing in the tunnel (its pool touches the
+	## edge: "sea"), drops from the roof.
+	&"grotte_marine": {
+		"beds": [["grotte", 0.6, ""], ["vagues", 0.7, "sea"]],
+		"calls": [{"ids": ["goutte"], "every": [3.0, 9.0], "vol": 0.45}],
+	},
+	## The sanctuary under the sea: the water all round, the deep hum of the rock.
+	&"recif": {
+		"beds": [["eau", 0.8, ""], ["grotte", 0.35, ""]],
+		"calls": [],
+	},
 }
 
 

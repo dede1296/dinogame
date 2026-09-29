@@ -34,6 +34,10 @@ static func build() -> Region:
 			["bibliotheque", 1.6, 1.9], ["bureau", 5.2, 3.0], ["lampe", 7.4, 1.9], ["fauteuil", 9.4, 3.4],
 			["etabli", 11.2, 2.0], ["couveuse", 13.8, 3.2], ["fougere_pot", 0.9, 9.6], ["fougere_pot", 15.1, 9.6]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]))
+	# The great shelf: jars, a Compsognathus skull, the teapot (29/09; Roc's copy of the map
+	# behind them, story/cote.gd).
+	if Prop.KINDS.has("etagere_bocaux"):
+		B.prop(entities, "etagere_bocaux", B.cell(3.3, 1.9))
 	B.npc(root, "Roc", "Prof. Roc", CHARS % "roc", 6.5, 4.6, {"facing": "down", "event": &"roc", "hide_flag": &"roc_dehors"})
 	# The left drawer of Roc's desk (chapter 2: black amber in it; story/foret_camp.gd). Not
 	# drawn: its own spot at the desk's left end, the middle of the desk still shows its notes.
@@ -51,10 +55,11 @@ static func build() -> Region:
 	page.dialogue_id = &"page_6"
 	B.npc(root, "Isaure", "Isaure", CHARS % "isaure", 4.0, 7.0, {"facing": "right", "show_flag": &"prologue_arrived", "hide_flag": &"maia_left"})
 	B.npc(root, "Maia", "Maïa", CHARS % "maia", 5.2, 7.6, {"facing": "right", "show_flag": &"prologue_arrived", "hide_flag": &"maia_left"})
-	# The three hatchlings (story/prologue.gd removes the ones already gone).
+	# The three hatchlings (story/prologue.gd removes the ones already gone): as big as the
+	# dino Chloé takes (Game.STARTER_LEVEL), on their pedestals.
 	for b: Array in [[&"velociraptor", 12.3, 5.8], [&"ankylosaurus", 13.8, 6.5], [&"parasaurolophus", 15.2, 5.8]]:
 		B.prop(entities, "socle", B.cell(b[1], b[2] - 0.08))
-		B.dino_npc(root, "Bebe_" + String(b[0]), b[0], b[1], b[2], {"event": &"choose_starter", "flip": true, "size": 0.6, "lift": 36.0})
+		B.dino_npc(root, "Bebe_" + String(b[0]), b[0], b[1], b[2], {"event": &"choose_starter", "flip": true, "level": 5, "lift": 25.0})
 	B.spawn(root, "Depart", 8.0, 9.4)
 	B.exit(root, Rect2(7.0, 10.45, 2.0, 0.55), &"port_ambre", &"DepuisCabinet", &"prologue_done", &"cabinet_bloque")
 	return root

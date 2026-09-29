@@ -10,6 +10,8 @@ extends Node3D
 ## Quality: shadows, render scale, glow, far blur, rain density.
 ## Swimming (Swim), Chloé's dino and Chloé on its back sit half under the water sheet, bobbing,
 ## a wake behind them. Flood water (Flood) stands as a block of water that drains away.
+## The houses one goes into (the shops, the Cabinet) stand with their door apart, which opens
+## and closes for the scenes (Doors, and « doors » below; Doorway walks people through it).
 
 const PX := HeightMap.PX
 const STRETCH := 1.15                       # same as the billboard shader
@@ -18,6 +20,9 @@ const BILLBOARD := preload("res://world/view3d/billboard.gdshader")
 const GROUND := preload("res://world/view3d/ground.gdshader")
 const WATER := preload("res://world/view3d/water.gdshader")
 const CONTACT := preload("res://world/view3d/contact_shadow.gdshader")
+const RELIEF := preload("res://world/view3d/relief.gdshader")
+## How strongly the real 3D models' details (normal map) catch the sun (relief.gdshader "detail").
+const MODEL_DETAIL := 3.0
 ## How rounded each kind of scenery looks (volume lighting); flat things stay flat.
 const ROUNDNESS := {
 	"arbre_rond": 0.85, "araucaria": 0.6, "fougere_arbre": 0.6, "buisson": 0.8, "rocher": 0.75,
@@ -36,9 +41,12 @@ const VIEW_RANGE := 72.0
 const GRASS_RANGE := 46.0
 ## A campfire's flame (tools/draw-placeholders.mjs, as the web version drew it), metres wide.
 const FLAME := preload("res://assets/art/props/flamme.png")
-const FLAME_WIDTH := 0.7
+const FLAME_WIDTH := 0.5
 ## The colour of a little sign over a dino (emote): a heart is red, the rest dark brown.
 const EMOTE_COLOURS := {"♥": Color(0.86, 0.22, 0.35), "♪": Color(0.3, 0.2, 0.55)}
+## The signs over heads (emote, show_hint): this far above the top of the picture (m).
+const EMOTE_ABOVE := 0.3
+const HINT_ABOVE := 0.45
 ## How far a neighbouring zone is shown beyond an exit (tiles).
 const PREVIEW_DEPTH := 26.0
 ## Trees filling the "forest" tiles (weights by repetition).
@@ -63,6 +71,12 @@ const ZONE_TREES := {
 		"outer": ["rocher_canyon", "buisson_sec"],
 		"low": ["cailloux", "buisson_sec"],
 	},
+	# The Côte: palms and cycads in its grove, araucarias towards the Monts.
+	&"cote": {
+		"forest": ["palmier_oasis", "fougere_arbre", "palmier_oasis", "araucaria", "fougere_arbre"],
+		"outer": ["palmier_oasis", "araucaria", "fougere_arbre", "buisson"],
+		"low": ["fougeres", "buisson", "fougeres", "hautes_herbes"],
+	},
 }
 ## How far from a zone's south edge (tiles) its woods stay low (ZONE_TREES "low").
 const LOW_SOUTH := 7
@@ -81,6 +95,7 @@ const ROCK_TEX := "res://assets/art/ground/roche_canyon.png"
 ## are the path's dirt, lightened.
 const SAND_TEX := {
 	&"desert": "res://assets/art/ground/sable.png", &"sanctuaire_vents": "res://assets/art/ground/sable.png",
+	&"cote": "res://assets/art/ground/sable.png", &"recif_sanctuaire": "res://assets/art/ground/sable.png",
 }
 ## Zones whose grass is tinted (the Marais: olive, less bright next to its mud).
 const GRASS_TINT := {&"marais": Color(0.86, 0.92, 0.74)}
@@ -89,7 +104,7 @@ const CLIFF_TINT := {&"desert": Color(1.22, 0.98, 0.8), &"sanctuaire_vents": Col
 ## Zones whose water is not the clear blue of the coast: [shallow, deep] (a marsh: greener, murkier).
 const WATER_TINT := {&"marais": [Color(0.4, 0.56, 0.42), Color(0.1, 0.2, 0.17)]}
 const CAVE := preload("res://world/view3d/cave_mouth.gdshader")
-const OCCLUDER_HEIGHT := 2.2               # metres: taller scenery may hide Chloé
+const OCCLUDER_HEIGHT := 1.6               # metres: taller scenery may hide Chloé (1.50 m)
 const POLLEN_MOTES := 60
 const RAIN_DROPS := 320
 ## A storm: this much more rain, flashes of lightning every so often (s), thunder after them.
@@ -112,6 +127,7 @@ const WAKE_DOTS := 26
 const SPLASH: Array[Color] = [Color(0.92, 0.97, 1.0), Color(0.72, 0.87, 0.95), Color(0.56, 0.78, 0.86)]
 const FLOOD := preload("res://world/view3d/flood.gdshader")
 const FLOOD_SHEET := 0.04   # metres: the flood water's sheet, just above the floor
+const UNDERWATER := preload("res://world/view3d/underwater.gd")
 ## Light over the day: [hour, sun elevation°, sun azimuth°, colour, energy, ambient, ambient energy, sky].
 const DAYLIGHT := [
 	[0.0, 48.0, 30.0, Color(0.55, 0.65, 1.0), 0.35, Color(0.24, 0.28, 0.44), 0.6, Color(0.08, 0.1, 0.2)],
@@ -144,6 +160,10 @@ var _wildlife: Wildlife
 var _magic: NightMagic
 ## Scenery props drawn in a MultiMesh -> [MultiMesh, index] (to shake or lift one of them).
 var _instances := {}
+## Real 3D models (Prop.KINDS "model"): path -> its mesh painted to be lit like the pictures.
+var _models := {}
+## The zone's houses one goes into, their doors apart and turning (see Doors, and « doors » below).
+var doors := Doors.new()
 ## The "!" over Chloé's dino when it senses something hidden nearby.
 var _hint: Label3D
 var _contact_mesh: PlaneMesh
@@ -166,8 +186,19 @@ var _floods: Array[Array] = []
 ## A scene shows something away from Chloé (Stage.look_at): the camera glides there (world
 ## pixels), then back to her when it is INF again.
 var focus_px := Vector2.INF
+## Someone walks through a door (Doorway): the scenery turns see-through as if Chloé stood here
+## (world pixels: the front of the door), not deep in the doorway behind the facade.
+var occlusion_px := Vector2.INF
+## Big scenery as its real 3D model (with the quality's relief_props); off: pictures (to compare).
+var reliefs := true
+## Their details from normal maps (bricks, planks…); off: without them (to compare).
+var details := true
 ## The zone whose water sheet is being built (its tint: WATER_TINT).
 var _water_zone: StringName
+## The dive (Dive): how far below its place the swimmer and Chloé are shown (m; < 0: above).
+var dive_sink := 0.0
+## Under the sea (Region.underwater): its light, its shafts and bubbles (null above the water).
+var _underwater: UNDERWATER
 
 
 func _ready() -> void:
@@ -244,10 +275,12 @@ func _apply_quality() -> void:
 ## `zones`: every zone id -> scene path, to show the neighbours beyond the exits.
 func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	focus_px = Vector2.INF
+	occlusion_px = Vector2.INF
 	for p in _proxies:
 		_free_proxy(p)
 	_proxies.clear()
 	_instances.clear()
+	doors = Doors.new()
 	if _zone:
 		_zone.queue_free()
 	if _region and _region.entities.child_entered_tree.is_connected(_on_entity_added):
@@ -262,6 +295,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	if not zones.is_empty():
 		_zones = zones
 	var neighbours := [] if region.indoor else _neighbours(_zones)
+	_find_doors(region)
 	_ground_mat = _build_ground(region, heights)
 	_set_holes(_ground_mat)
 	if heights.has_water:
@@ -276,6 +310,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 		if not dock is MoonFord:   # (its stones: NightMagic)
 			_build_dock(dock)
 	_build_floods()
+	_underwater = UNDERWATER.build(self, region, _zone)   # its dive spots; under the water, the water
 	for mouth in region.find_children("*", "CaveMouth", true, false):
 		_build_cave_mouth(mouth)
 	if not region.indoor:
@@ -523,7 +558,7 @@ func _build_neighbour(n: Dictionary) -> void:
 			groups[p.kind] = []
 		groups[p.kind].append([at, p.flip, 1.0])
 	for kind: String in groups:
-		_add_billboards(kind, groups[kind])
+		_add_props(kind, groups[kind])
 	_build_forest(r, hm, shift, band)
 	r.free()
 
@@ -533,10 +568,12 @@ func _build_scenery() -> void:
 	var groups := {}   # kind -> Array of [position (m), flipped]
 	for n in _region.entities.get_children():
 		if n is Prop and n.get_script() == PROP_SCRIPT:
+			var at := heights.to_3d(n.position)
+			if doors.houses.has(n) and _add_door_house(n, at):
+				continue
+			var def: Dictionary = Prop.KINDS.get(n.kind, {})
 			if not groups.has(n.kind):
 				groups[n.kind] = []
-			var at := heights.to_3d(n.position)
-			var def: Dictionary = Prop.KINDS.get(n.kind, {})
 			if def.get("float", false):
 				at.y = maxf(at.y, HeightMap.WATER_LEVEL + 0.06)
 			groups[n.kind].append([at, n.flip, 1.0, n])
@@ -545,7 +582,7 @@ func _build_scenery() -> void:
 			if n.kind == "feu_camp":
 				_add_fire(at)
 	for kind: String in groups:
-		_add_billboards(kind, groups[kind])
+		_add_props(kind, groups[kind])
 
 
 ## Shakes (a tree searched) or lifts (a stone turned over) one scenery prop, for `time` s.
@@ -632,11 +669,11 @@ func emote(who: Node2D, text: String) -> void:
 	label.outline_size = 26
 	label.modulate = EMOTE_COLOURS.get(text, Color(0.26, 0.14, 0.05))
 	label.outline_modulate = Color(1.0, 0.95, 0.85)
-	label.pixel_size = 0.012
+	label.pixel_size = 0.009
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.no_depth_test = true
 	label.render_priority = 10
-	var from := heights.to_3d(who.global_position) + Vector3(0.25, 1.9, 0)
+	var from := heights.to_3d(who.global_position) + Vector3(0.25, head_height(who) + EMOTE_ABOVE, 0)
 	label.position = from
 	_zone.add_child(label)
 	var t := label.create_tween().set_parallel(true)
@@ -655,14 +692,36 @@ func show_hint(dino: Node2D, on: bool) -> void:
 		_hint.outline_size = 34
 		_hint.modulate = Color(0.26, 0.14, 0.05)
 		_hint.outline_modulate = Color(1.0, 0.84, 0.36)
-		_hint.pixel_size = 0.014
+		_hint.pixel_size = 0.0105
 		_hint.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		_hint.no_depth_test = true
 		_hint.render_priority = 10
 		_zone.add_child(_hint)
 	_hint.visible = on
 	if on:
-		_hint.position = heights.to_3d(dino.global_position) + Vector3(0.25, 2.1 + 0.1 * sin(Time.get_ticks_msec() / 150.0), 0)
+		_hint.position = heights.to_3d(dino.global_position) + Vector3(0.25, head_height(dino) + HINT_ABOVE + 0.1 * sin(Time.get_ticks_msec() / 150.0), 0)
+
+
+## Height (m) of the top of `who`'s picture as it is now, above its feet (what is drawn, not
+## its frame; Chloé in the saddle: her head). 1.5 m for a node without a picture.
+static func head_height(who: Node2D) -> float:
+	var sprite: Node2D = who.get("sprite") if "sprite" in who else who.get_node_or_null("Sprite")
+	var frame: Texture2D = null
+	var offset := Vector2.ZERO
+	if sprite == null:
+		return 1.5
+	if sprite is AnimatedSprite2D:
+		var anim := sprite as AnimatedSprite2D
+		offset = anim.offset
+		if anim.sprite_frames and anim.sprite_frames.has_animation(anim.animation):
+			frame = anim.sprite_frames.get_frame_texture(anim.animation, anim.frame)
+	elif sprite is Sprite2D:
+		frame = (sprite as Sprite2D).texture
+		offset = (sprite as Sprite2D).offset
+	if frame == null:
+		return 1.5
+	var top := offset.y - frame.get_height() / 2.0 + SheetFrames.drawn_in(frame).position.y   # px of the picture
+	return -(top * absf(sprite.global_scale.y) + sprite.position.y) / PX * STRETCH
 
 
 ## A campfire's flame (the web version's picture, flickering), a few embers rising, and its
@@ -728,7 +787,7 @@ func _add_lamp(at: Vector3) -> void:
 	light.light_energy = 1.1
 	light.omni_range = 4.0
 	light.shadow_enabled = false
-	light.position = at + Vector3(0, 1.6, 0.3)
+	light.position = at + Vector3(0, 1.2, 0.3)   # (lanterns, lamps: people's size)
 	light.set_meta(&"lamp", true)
 	_zone.add_child(light)
 
@@ -854,6 +913,92 @@ func _update_flood(f: Array) -> void:
 	mat.set_shader_parameter("height", h)
 
 
+## One prop kind standing at `items` ([position, flipped, scale]): as its real 3D model when
+## it has one ("model") and the quality allows it, else as pictures; with its soft shadow on
+## the ground. (Scenery in bas-relief, tried the 27/09, looked warped: dropped.)
+func _add_props(kind: String, items: Array) -> void:
+	var model := _model_mesh(kind)
+	if model:   # its surfaces carry their materials
+		_add_multimesh(model, items, true)
+	else:
+		_add_billboards(kind, items)
+	var foot := float(Prop.KINDS[kind]["shadow"]) / PX
+	if foot > 0.0:
+		_add_contact_shadows(items.map(func(it: Array) -> Array: return [it[0], foot * float(it[2])]))
+
+
+
+## The real 3D model of a prop kind (Prop.KINDS "model": origin at its foot, front towards +z,
+## in metres) when the quality shows the models, else null (its picture). Loaded once, shared
+## by the scenery and the props mirrored as their model.
+func _model_mesh(kind: String) -> Mesh:
+	var path: String = Prop.KINDS.get(kind, {}).get("model", "")
+	if path == "" or not reliefs or not Quality.setting(&"relief_props"):
+		return null
+	var key := path if details else path + "#plain"
+	if not _models.has(key):
+		_models[key] = _load_model(kind, path, details)
+	return _models[key]
+
+
+## A copy of the mesh of the model at `path` (a scene with one MeshInstance3D), each surface
+## lit like the pictures (RELIEF) with its imported painting (and its details: normal map, if
+## `with_details`); null (with a warning) if unusable.
+static func _load_model(kind: String, path: String, with_details := true) -> Mesh:
+	if not ResourceLoader.exists(path):
+		push_warning("%s: model %s not found, shown as its picture" % [kind, path])
+		return null
+	var scene := (load(path) as PackedScene).instantiate()
+	var found := scene.find_children("*", "MeshInstance3D", true, false)
+	var source: Mesh = (found[0] as MeshInstance3D).mesh if not found.is_empty() else null
+	scene.free()
+	if source == null:
+		push_warning("%s: no mesh in %s, shown as its picture" % [kind, path])
+		return null
+	var mesh := source.duplicate() as Mesh
+	paint_model(mesh, kind, mesh.get_aabb(), with_details)
+	return mesh
+
+
+## Paints each surface of `mesh` (a model's) to be lit like the pictures (RELIEF), with its
+## imported painting (and its details: normal map, if `with_details`), measured on `box`.
+## `shared`: imported material -> its RELIEF one, for meshes painted from the same atlas (a
+## house and its door's leaves, Doors).
+static func paint_model(mesh: Mesh, kind: String, box: AABB, with_details := true, shared := {}) -> void:
+	for s in mesh.get_surface_count():
+		var painted := mesh.surface_get_material(s) as BaseMaterial3D
+		if not shared.has(painted):
+			var mat := _relief_material(kind, painted.albedo_texture if painted else null, box)
+			if with_details and painted and painted.normal_enabled and painted.normal_texture:   # (v2)
+				_set_details(mat, painted.normal_texture, 2, MODEL_DETAIL)
+			shared[painted] = mat
+		mesh.surface_set_material(s, shared[painted])
+
+
+## A RELIEF material: painting `tex` on a mesh within `box`, as rounded as `kind`.
+static func _relief_material(kind: String, tex: Texture2D, box: AABB) -> ShaderMaterial:
+	var mat := ShaderMaterial.new()
+	mat.shader = RELIEF
+	mat.set_shader_parameter("tex", tex)
+	mat.set_shader_parameter("occluder", box.size.y > OCCLUDER_HEIGHT)
+	mat.set_shader_parameter("half_width", box.size.x * 0.5)
+	mat.set_shader_parameter("roundness", ROUNDNESS.get(kind, 0.5))
+	# Its foot darker like a picture's, measured on the mesh (its atlas UVs say nothing of height).
+	mat.set_shader_parameter("foot_height", maxf(box.end.y, 0.01))
+	return mat
+
+
+## Details on a RELIEF material: `normals` in the picture's frame (`mode` 1) or the mesh's
+## tangent frame (2), catching the sun this `strength`; the hollows darker (`ao`, optional).
+static func _set_details(mat: ShaderMaterial, normals: Texture2D, mode: int, strength: float, ao: Texture2D = null) -> void:
+	mat.set_shader_parameter("normal_mode", mode)
+	mat.set_shader_parameter("normal_tex", normals)
+	mat.set_shader_parameter("detail", strength)
+	if ao:
+		mat.set_shader_parameter("ao_tex", ao)
+		mat.set_shader_parameter("has_ao", true)
+
+
 ## Pictures of one prop kind standing at `items` ([position, flipped, scale]).
 func _add_billboards(kind: String, items: Array, shadows := true) -> void:
 	var def: Dictionary = Prop.KINDS[kind]
@@ -874,13 +1019,11 @@ func _add_billboards(kind: String, items: Array, shadows := true) -> void:
 	mat.set_shader_parameter("roundness", ROUNDNESS.get(kind, 0.4))
 	quad.material = mat
 	_add_multimesh(quad, items, shadows)
-	var foot := float(def["shadow"]) / PX
-	if foot > 0.0:
-		_add_contact_shadows(items.map(func(it: Array) -> Array: return [it[0], foot * float(it[2])]))
 
 
-## Instances of one picture, split into chunks (each culled and faded alone).
-func _add_multimesh(quad: QuadMesh, items: Array, shadows: bool, range_end := VIEW_RANGE) -> void:
+## Instances of one picture (a QuadMesh with its material), relief (`material` given) or model
+## (materials on its surfaces), split into chunks (each culled and faded alone).
+func _add_multimesh(mesh: Mesh, items: Array, shadows: bool, range_end := VIEW_RANGE, material: Material = null) -> void:
 	var chunks := {}
 	for it: Array in items:
 		var at: Vector3 = it[0]
@@ -888,13 +1031,15 @@ func _add_multimesh(quad: QuadMesh, items: Array, shadows: bool, range_end := VI
 		if not chunks.has(key):
 			chunks[key] = []
 		chunks[key].append(it)
-	var reach := maxf(quad.size.x, quad.size.y) * STRETCH
+	var box := mesh.get_aabb()
+	var reach := maxf(box.size.x, box.size.y) * (STRETCH if mesh is QuadMesh else 1.0)
+	reach = maxf(reach, box.size.z)
 	for key: Vector2i in chunks:
 		var list: Array = chunks[key]
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_custom_data = true
-		mm.mesh = quad
+		mm.mesh = mesh
 		mm.instance_count = list.size()
 		var lo := Vector3(INF, INF, INF)
 		var hi := -lo
@@ -909,6 +1054,7 @@ func _add_multimesh(quad: QuadMesh, items: Array, shadows: bool, range_end := VI
 			hi = hi.max(at)
 		var inst := MultiMeshInstance3D.new()
 		inst.multimesh = mm
+		inst.material_override = material
 		inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if shadows else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		# Pictures stand up and sway in the shader: a box around them all, a bit larger.
 		inst.custom_aabb = AABB(lo - Vector3(reach, 1.0, reach), hi - lo + Vector3(reach * 2.0, reach * 1.6 + 1.0, reach * 2.0))
@@ -947,7 +1093,7 @@ func _build_forest(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 					groups[kind] = []
 				groups[kind].append([Vector3(t.x + shift.x, hm.height(t), t.y + shift.y), rng.randf() < 0.5, rng.randf_range(0.9, 1.3)])
 	for kind: String in groups:
-		_add_billboards(kind, groups[kind])
+		_add_props(kind, groups[kind])
 
 
 static func _by_path(r: Region, x: int, y: int) -> bool:
@@ -1053,7 +1199,94 @@ func _build_outer_forest() -> void:
 			groups[kind] = []
 		groups[kind].append([Vector3(p.x, heights.height(p), p.y), rng.randf() < 0.5, rng.randf_range(0.9, 1.25)])
 	for kind: String in groups:
-		_add_billboards(kind, groups[kind])
+		_add_props(kind, groups[kind])
+
+
+# ------------------------------------------------------------------ doors
+
+## The zone's houses one goes into, with their door apart (Doors): the shops (StoryProp) and
+## the buildings a ZoneExit starts at (the Cabinet), when their kind has such a model.
+func _find_doors(region: Region) -> void:
+	var fronts := region.exits().map(func(e: ZoneExit) -> Rect2:
+		return Rect2(e.global_position, e.size).grow(Doors.EXIT_REACH))
+	for n in region.entities.get_children():
+		if not n is Prop or n.is_queued_for_deletion() or not Doors.has_model(n.kind):
+			continue
+		var front: Vector2 = Doors.door_2d(n)["front"]
+		if n is StoryProp or fronts.any(func(r: Rect2) -> bool: return r.has_point(front)):
+			doors.register(n)
+
+
+## A plain building with its door apart, standing alone (its body, its leaves): false when the
+## quality shows pictures (it stays in its kind's batch).
+func _add_door_house(house: Prop, at: Vector3) -> bool:
+	var meshes := _door_meshes(house)
+	if meshes.is_empty():
+		return false
+	var body := MeshInstance3D.new()
+	body.mesh = meshes["body"]
+	body.position = at
+	body.scale = Vector3(-1.0 if house.flip else 1.0, 1.0, 1.0)
+	body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	if not _region.indoor:
+		body.visibility_range_end = VIEW_RANGE
+		body.visibility_range_end_margin = 6.0
+		body.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+	_zone.add_child(body)
+	doors.attach(house, body, meshes)
+	return true
+
+
+## The painted body and leaves of `house`, if it goes in and out through its door and the
+## quality shows the real models ({}: its picture, or its kind's plain model).
+func _door_meshes(house: Node) -> Dictionary:
+	if not doors.houses.has(house) or not reliefs or not Quality.setting(&"relief_props"):
+		return {}
+	return Doors.painted(String(house.get("kind")), details)
+
+
+## The door of `house` (a building one goes into) in the 2D world, Doors.door_2d: "threshold",
+## "inside", "front" (px), "sill", "height", "width" (m)…; {} when it has none.
+func door(house: Node) -> Dictionary:
+	if house == null or not is_instance_valid(house) or not doors.houses.has(house):
+		return {}
+	return Doors.door_2d(house)
+
+
+## Opens (or closes) the door of `house`, with its sound. Awaitable.
+func open_door(house: Node, open := true, secs: float = Doors.OPEN_S) -> void:
+	if is_instance_valid(house):
+		await doors.open(house, open, secs)
+
+
+## Shows the door of `house` open (or closed) at once, without a sound.
+func set_door(house: Node, open: bool) -> void:
+	if is_instance_valid(house):
+		doors.set_open(house, open)
+
+
+
+## The house whose door front is nearest `px` (2D), within `reach` px; null when none.
+func door_near(px: Vector2, reach := 96.0) -> Node2D:
+	var best: Node2D = null
+	for house in doors.houses:   # (untyped: one may have been freed)
+		if is_instance_valid(house):
+			var dist := (Doors.door_2d(house)["front"] as Vector2).distance_to(px)
+			if dist <= reach:
+				reach = dist
+				best = house
+	return best
+
+
+## The house `exit` starts at (going in through its door), or null (an exit in the open).
+func door_of_exit(exit: ZoneExit) -> Node2D:
+	if exit == null or not is_instance_valid(exit):
+		return null
+	var area := Rect2(exit.global_position, exit.size).grow(Doors.EXIT_REACH)
+	for house in doors.houses:
+		if is_instance_valid(house) and area.has_point(Doors.door_2d(house)["front"]):
+			return house
+	return null
 
 
 # ------------------------------------------------------------------ mirrored 2D nodes
@@ -1074,17 +1307,32 @@ func _track(node: Node) -> void:
 	var sprite: Node2D = node.get("sprite") if "sprite" in node else node.get_node_or_null("Sprite")
 	if sprite == null:
 		return
-	var vis: SpriteBase3D = AnimatedSprite3D.new() if sprite is AnimatedSprite2D else Sprite3D.new()
-	vis.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	vis.shaded = true
-	# Props stand still: cut out like the scenery (see _sync), so they write depth and a
-	# character in front of a big facade is never drawn behind it (the rest is only sorted).
-	vis.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
-	vis.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	var model := _prop_model(node, sprite)
+	# A house one goes into (a shop): its body with a real opening, its door apart (Doors).
+	var with_door: Dictionary = _door_meshes(node) if model else {}
+	if not with_door.is_empty():
+		model = with_door["body"]
+	var vis: GeometryInstance3D
+	if model:   # a prop shown as its real 3D model (_sync_model)
+		vis = MeshInstance3D.new()
+		(vis as MeshInstance3D).mesh = model
+	else:
+		var pic: SpriteBase3D = AnimatedSprite3D.new() if sprite is AnimatedSprite2D else Sprite3D.new()
+		pic.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		pic.shaded = true
+		# Props stand still: cut out like the scenery (_sync_picture), so they write depth and a
+		# character in front of a big facade is never drawn behind it (the rest is only sorted).
+		pic.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
+		pic.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		vis = pic
 	vis.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	_zone.add_child(vis)
+	if not with_door.is_empty():
+		doors.attach(node, vis, with_door)
+	# "tex": the picture its model stands for (another one shown: back to a picture, _process).
 	var proxy := {"src": node, "sprite": sprite, "vis": vis, "light": null, "glow": null,
-		"prev": node.global_position, "cur": node.global_position, "foot": null, "foot_2d": null}
+		"prev": node.global_position, "cur": node.global_position, "foot": null, "foot_2d": null,
+		"tex": (sprite as Sprite2D).texture if model else null}
 	var shadow_2d := node.get_node_or_null("Shadow") as Sprite2D
 	if shadow_2d:
 		var foot := MeshInstance3D.new()
@@ -1105,6 +1353,17 @@ func _track(node: Node) -> void:
 	_sync(proxy)
 
 
+## The real 3D model a mirrored prop is shown as, or null (its picture): its kind has one, the
+## quality shows it (_model_mesh) and the prop shows its kind's own picture, not another one.
+func _prop_model(node: Node, sprite: Node2D) -> Mesh:
+	if not node is Prop or not sprite is Sprite2D:
+		return null
+	var tex := (sprite as Sprite2D).texture
+	if tex == null or tex.resource_path != Prop.ART % (node as Prop).kind:
+		return null
+	return _model_mesh((node as Prop).kind)
+
+
 func _free_proxy(p: Dictionary) -> void:
 	for key in ["vis", "light", "foot"]:
 		if p[key] and is_instance_valid(p[key]):
@@ -1118,17 +1377,24 @@ func _process(delta: float) -> void:
 			_free_proxy(p)
 			_proxies.remove_at(i)
 			continue
+		if p["tex"] and (p["sprite"] as Sprite2D).texture != p["tex"]:   # its model no longer fits
+			_free_proxy(p)
+			_proxies.remove_at(i)
+			_track(p["src"])
+			continue
 		_sync(p)
 	if player and heights:
 		var at := _player_prev.lerp(_player_cur, Engine.get_physics_interpolation_fraction())
 		var feet := heights.to_3d(at)
-		if _swimmer_of(player):   # the camera follows her on the water, not the bottom
+		if _underwater:   # under the sea: the height she swims at, over the rocks
+			feet.y = _underwater.camera_height(feet.y)
+		elif _swimmer_of(player):   # the camera follows her on the water, not the bottom
 			feet.y = maxf(feet.y, HeightMap.WATER_LEVEL)
 		camera.target = feet if focus_px == Vector2.INF else heights.to_3d(focus_px)
-		RenderingServer.global_shader_parameter_set(&"player_world", feet)
+		RenderingServer.global_shader_parameter_set(&"player_world", feet if occlusion_px == Vector2.INF else heights.to_3d(occlusion_px))
 		_pollen.position = camera.target + Vector3(0, 1.5, 0)
 		_wildlife.heights = heights
-		_wildlife.update(delta, camera.target, Game.clock / 60.0, maxf(_rain_amount, _sand_amount), not _region.indoor)
+		_wildlife.update(delta, camera.target, Game.clock / 60.0, maxf(_rain_amount, _sand_amount), _region, feet)
 		_rain.position = camera.target + Vector3(0, 9.0, 2.0)
 		# The wind blows from the west: the grains start upwind and cross the view.
 		_sand.position = camera.target + Vector3(-15.0, 1.2, 1.0)
@@ -1149,13 +1415,60 @@ func _process(delta: float) -> void:
 func _sync(p: Dictionary) -> void:
 	var src: Node2D = p["src"]
 	var sprite: Node2D = p["sprite"]
+	var at: Vector2 = (p["prev"] as Vector2).lerp(p["cur"], Engine.get_physics_interpolation_fraction())
+	var swimmer := _swimmer_of(src)
+	if p["vis"] is MeshInstance3D:
+		_sync_model(p["vis"], src as Prop, sprite as Sprite2D, at)
+	else:
+		_sync_picture(p, at, swimmer)
+	var vis: GeometryInstance3D = p["vis"]
+	if p["foot"]:
+		var foot: MeshInstance3D = p["foot"]
+		var shadow_2d: Sprite2D = p["foot_2d"]
+		# (No foot shadow in the water: it would show on the bottom, through the water sheet.)
+		foot.visible = vis.visible and is_instance_valid(shadow_2d) and shadow_2d.visible and swimmer == null
+		if foot.visible:
+			var w := absf(shadow_2d.global_scale.x) * Shadow.BASE_PX / PX * 1.2
+			foot.transform = Transform3D(Basis.from_scale(Vector3(w, 1.0, w * 0.62)), heights.to_3d(at) + Vector3(0, 0.03, 0))
+			foot.transparency = 1.0 - (src.modulate.a * sprite.modulate.a)
+	if p["light"]:
+		var glow = p["glow"]   # untyped: the light may have been freed (a corrupted dino calmed)
+		var light: OmniLight3D = p["light"]
+		light.visible = is_instance_valid(glow) and _shown(glow)
+		if light.visible:
+			light.light_energy = (glow as PointLight2D).energy * 1.4
+			light.position = vis.position + Vector3(0, 0.5, 0.2)
+
+
+## A prop mirrored as its real 3D model (see _track): standing on its foot (the model's origin,
+## no picture offset), flipped by its node, fading with its sprite (the shader's opacity).
+func _sync_model(model: MeshInstance3D, src: Prop, sprite: Sprite2D, at: Vector2) -> void:
+	var alpha := src.modulate.a * sprite.modulate.a * sprite.self_modulate.a
+	model.visible = _shown(sprite) and alpha > 0.01
+	var local := sprite.position
+	model.position = heights.to_3d(at) + Vector3(local.x / PX, -local.y / PX * STRETCH, 0)
+	# In metres already: only a change of the prop's own scale (in a scene) applies.
+	var size := absf(sprite.global_scale.x) / float(Prop.KINDS[src.kind]["scale"])
+	model.scale = Vector3(-size if sprite.flip_h else size, size, size)
+	model.set_instance_shader_parameter(&"opacity", alpha)
+	if model.get_child_count() > 0:   # its door's leaves (Doors)
+		doors.set_opacity(src, alpha)
+
+
+## A mirrored node's picture (Sprite3D), as its 2D sprite is now (`at`: where it stands).
+func _sync_picture(p: Dictionary, at: Vector2, swimmer: Dino) -> void:
+	var src: Node2D = p["src"]
+	var sprite: Node2D = p["sprite"]
 	var vis: SpriteBase3D = p["vis"]
 	vis.visible = _shown(sprite)
 	var local := sprite.position
-	var at: Vector2 = (p["prev"] as Vector2).lerp(p["cur"], Engine.get_physics_interpolation_fraction())
-	vis.position = heights.to_3d(at) + Vector3(local.x / PX, -local.y / PX * STRETCH, 0)
-	var swimmer := _swimmer_of(src)
-	if swimmer:
+	var foot := heights.to_3d(at)
+	if src is Prop and Prop.KINDS.get((src as Prop).kind, {}).get("float", false):
+		foot.y = maxf(foot.y, HeightMap.WATER_LEVEL + 0.06)   # a boat of a scene rides the water, like the scenery's
+	vis.position = foot + Vector3(local.x / PX, -local.y / PX * STRETCH, 0)
+	if _underwater and not src is Prop:   # under the sea: they swim above the floor, over its rocks (Underwater.swim_lift)
+		vis.position.y += _underwater.hover(src) + _underwater.swim_lift(p, src, at) - (dive_sink if swimmer else 0.0)
+	elif swimmer:
 		vis.position.y += _swim_drop(at, swimmer)
 	var gs := sprite.global_scale
 	if absf(gs.x) > 0.0001:
@@ -1176,29 +1489,15 @@ func _sync(p: Dictionary) -> void:
 			anim.animation = sprite.animation
 		anim.frame = sprite.frame
 		if not src is Prop:   # characters and dinos: a hop at each step, breathing (swimming: the bob)
-			var hop := 0.0 if swimmer else SpriteMotion.apply(p, sprite, vis, get_process_delta_time())
+			var hop := 0.0 if swimmer or _underwater else SpriteMotion.apply(p, sprite, vis, get_process_delta_time())
 			if src is Companion and (src as Companion).carrying():
 				_mount_hop = hop
 			elif src is Player and (src as Player).carried_by():
 				vis.position.y += _mount_hop   # in the saddle: she follows her mount's steps
 	else:
 		(vis as Sprite3D).texture = (sprite as Sprite2D).texture
-	if p["foot"]:
-		var foot: MeshInstance3D = p["foot"]
-		var shadow_2d: Sprite2D = p["foot_2d"]
-		# (No foot shadow in the water: it would show on the bottom, through the water sheet.)
-		foot.visible = vis.visible and is_instance_valid(shadow_2d) and shadow_2d.visible and swimmer == null
-		if foot.visible:
-			var w := absf(shadow_2d.global_scale.x) * Shadow.BASE_PX / PX * 1.2
-			foot.transform = Transform3D(Basis.from_scale(Vector3(w, 1.0, w * 0.62)), heights.to_3d(at) + Vector3(0, 0.03, 0))
-			foot.transparency = 1.0 - (src.modulate.a * sprite.modulate.a)
-	if p["light"]:
-		var glow = p["glow"]   # untyped: the light may have been freed (a corrupted dino calmed)
-		var light: OmniLight3D = p["light"]
-		light.visible = is_instance_valid(glow) and _shown(glow)
-		if light.visible:
-			light.light_energy = (glow as PointLight2D).energy * 1.4
-			light.position = vis.position + Vector3(0, 0.5, 0.2)
+	if _underwater and not src is Prop:   # swimming, never walking: roll, pitch, soft turns
+		_underwater.swim_pose(p, src, vis)
 
 
 ## The dino carrying Chloé in the water, when `node` is Chloé or that dino (else null).
@@ -1218,8 +1517,8 @@ func _swim_drop(at: Vector2, swimmer: Dino) -> float:
 	var ground := heights.to_3d(at).y
 	var wet := clampf((HeightMap.WATER_LEVEL - ground) / (HeightMap.WATER_DEPTH * 0.5), 0.0, 1.0)
 	var bob := sin(Time.get_ticks_msec() / 1000.0 * TAU / SWIM_BOB_S) * SWIM_BOB
-	var afloat := HeightMap.WATER_LEVEL - SWIM.sink(swimmer.species()) + bob
-	return (afloat - ground) * wet
+	var afloat := HeightMap.WATER_LEVEL - SWIM.sink(swimmer) + bob
+	return (afloat - ground) * wet - dive_sink
 
 
 ## Ripples spreading behind the swimmer while it moves (Chloé at `at`, 2D).

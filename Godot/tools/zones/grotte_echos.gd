@@ -66,6 +66,9 @@ static func build() -> Region:
 			["rocher_grotte", 10.5, 2.0], ["stalagmite", 14.0, 1.7], ["cristaux", 6.8, 6.5], ["stalagmite", 13.5, 11.2]]:
 		B.prop(entities, p[0], B.cell(p[1], p[2]))
 	B.sign(entities, B.cell(8.6, 12.8), &"panneau_grotte_int")
+	# « Tac… tac… tac… Des coups de pioche » (29/09): the henchman's pickaxe and his bucket of amber.
+	if Prop.KINDS.has("outils_mine"):
+		B.prop(entities, "outils_mine", B.cell(14.9, 3.1))
 	var page = B.prop(entities, "ambre", B.cell(18.4, 12.6), false, load("res://world/pickup.gd"))
 	page.taken_flag = &"found_journal_4"
 	page.dialogue_id = &"page_4"

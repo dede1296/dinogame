@@ -40,8 +40,8 @@ const BRAC_TEAM := [
 ]
 ## The Carnotaurus Rouge, the Désert's Alpha, corrupted (a long calming: the hardest so far).
 const CARNO_LEVEL := 27
-## Its size in the world (DinoNpc.size_scale), as the zone's own.
-const CARNO_SIZE := 1.3
+## Its size in the world (DinoNpc.size_scale), as the zone's own, and in its battle.
+const CARNO_SIZE := 1.2
 const XP_PORTE := 30
 const XP_POURSUITE := 15
 const XP_BRAC := 80
@@ -855,7 +855,7 @@ static func carnotaurus(who: Node) -> void:
 	await _starter_first(who)
 	var foe := Dino.create(&"carnotaurus", CARNO_LEVEL, "Carnotaurus Rouge")
 	foe.corrupted = true
-	var rules := {"catch": false, "run": false, "long_calm": true, "lose_spawn": P.LOSE_BRAC,
+	var rules := {"catch": false, "run": false, "long_calm": true, "lose_spawn": P.LOSE_BRAC, "size": CARNO_SIZE,
 		"intro": "Le Carnotaurus Rouge se dresse devant toi, fou de peur !"}
 	if not Game.flag(&"carno_lecon"):
 		rules["lesson"] = LONG_LESSON
@@ -1004,7 +1004,7 @@ static func _to_the_door(who: Node) -> void:
 			who.queue_free()   # it went on ahead, through the canyon
 		var front: Vector2 = w.region.spawn_point(P.SPAWN_SANCTUAIRE)
 		w.player.teleport(front)
-		w.companion.teleport(front + Vector2(-34.0, 8.0))
+		w.companion.stand_beside(front)
 		w.player.face_towards(door)
 		made.append(_scene_carno("CarnoGarde", door + P.CARNO_PORTE * S.CELL, false))
 		await S.wait(0.4)

@@ -278,6 +278,160 @@ arrêtée au bord puis nageant sur un Baryonyx et ressortant à pied (dans une v
 avec la physique), l'eau de crue qui bloque, baisse puis remonte sans enfermer Chloé, la tempête de
 sable (tirages, scènes, vue 3D, combat, horloge), les fossiles.
 
+### La Plongée (Côte, chapitre 5)
+
+**Qui** : il faut le **masque de plongée** de Joss (objet `masque_plongee`, ou le drapeau du même nom ;
+Joss le donne sur la Côte, scène `joss_cote`) **et** un **dino plongeur adulte** (niv. 12) dans l'équipe :
+Plesiosaurus, Ichthyosaurus, Elasmosaurus (capacité `plongee`, choisie par espèce : l'Archelon et le
+Koolasuchus nagent, mais ne plongent pas). Pour rejoindre un point de plongée, Chloé nage déjà (gilet et
+nageur, voir Nage) ; en plongeant, c'est le plongeur qui la prend sur son dos, comme le nageur prend la
+place de la monture. La fiche du dino montre Plongée comme les autres capacités (« adulte au niv. 12 »).
+
+**Où** : l'eau profonde où l'on peut descendre est **marquée** : une tache d'eau plus sombre, bleu nuit,
+où des bulles crèvent la surface (`DiveSpot`, `world/dive_spot.gd` : un rectangle de cases sur l'eau,
+posé par `DiveSpot.place(root, Rect2(cases), zone, arrivée, {name, required_flag, blocked_dialogue,
+surface_spawn})`). Chaque point mène quelque part :
+- **une descente** vers une **zone sous-marine** qu'on explore librement (`Region.underwater`) : le Récif
+  du Sanctuaire, depuis le large au-delà de la Passe (`PlongeeRecif`) ou par le tunnel de la grotte (`TunnelMer`) ;
+- **un passage noyé** : on plonge dans un bassin et on ressort dans un autre (même zone ou ailleurs) : le
+  bassin bleu des grottes marines vers la cache (`PlongeeAller`, `PlongeeRetour`).
+Un point peut rester fermé tant qu'un drapeau manque (`required_flag` : `passe_recif`, seule « I. »
+connaissait le passage, page 21) : Chloé dit pourquoi (`blocked_dialogue`).
+
+**Descendre** : en nageant sur la tache, le bouton **Plonger** (des bulles, une flèche vers le bas) prend
+la place du bouton selle (touche R ; A sur la tache marche aussi). Le plongeur s'enfonce avec Chloé sous la
+surface (éclaboussure, bulles, bruit de plongée), l'écran passe au bleu profond, des bulles filent vers le
+haut, puis ils arrivent en bas en descendant du haut de l'écran. Dans un passage noyé, la traversée sous la
+roche dure un instant (le bleu, les bulles), puis ils remontent de l'autre côté. Sans masque ou sans
+plongeur adulte, le bouton dit ce qui manque (`Dive.blocked_reason()`).
+
+**Remonter** : sous l'eau, le bouton **Remonter** (flèche vers le haut) est toujours là : Chloé remonte
+**là où elle a plongé** (retenu dans le drapeau `plongee_retour`, donc sauvegardé ; ou au `surface_spawn`
+du point), et sort de l'eau sur le dos de son plongeur, qui émerge dans une gerbe d'écume. Les sorties de
+la zone sous-marine (ses bords, le tunnel) mènent aussi ailleurs, comme d'habitude.
+
+**Le souffle** : **pas de jauge**. Le masque de Joss (verre de lagon, joint de cuir huilé, une outre d'air
+qu'il a cousue lui-même) et le plongeur suffisent : on reste sous l'eau aussi longtemps qu'on veut. Sur
+téléphone, pour une enfant, la plongée est une balade, pas une course contre la montre ; le défi est
+ailleurs (trouver les passages, le combat du Mosasaure). Des bulles montent du masque de Chloé de temps en
+temps, pour qu'on voie qu'elle respire.
+
+**Sous l'eau** (une zone sous-marine) : **Chloé ne marche jamais sur le fond** (règle de l'utilisateur). Elle
+reste sur le dos de son plongeur tout le temps (`Player.diving`), en exploration comme dans **toutes les
+scènes** : les gestes des scènes (aller quelque part, s'écarter, tendre la main) déplacent le couple à la nage,
+jamais le dino seul (`story/cote_recif.gd` : même « remonter respirer » avant le Mosasaure se fait à deux).
+La nage n'est pas la marche :
+- **par-dessus le relief** : on passe au-dessus des rochers, des crêtes du récif et du décor posé (os,
+  colonnes, coraux : `Dive.on_zone_entered` retire leur blocage) ; la hauteur de nage suit le fond **en
+  douceur** et monte **avant** l'obstacle (le plus haut du fond ou du décor dans un rayon de 1,1 m, lissé :
+  `Underwater.swim_lift`), la caméra suit cette hauteur ; **seuls les vrais murs** arrêtent : une marche de
+  plus de 1,3 m (`Region.SWIM_STEP`, au lieu de 0,75 m à pied) ou le pied de ce qui dépasse la hauteur de
+  nage (plus de 1,3 m au-dessus du fond de la zone : la roche qui ferme l'arène ; `Region.cliff_between`) ;
+- **fluide** : de l'inertie (accélération 360 au lieu de 1 500 : on démarre et on s'arrête en glissant,
+  les virages sont larges) ; vitesse ×1,3 ;
+- **nage, pas marche** : le plongeur joue ses images de nage (pour les reptiles marins, le cycle dessiné est
+  un battement de nageoires ; au repos, une posture de nage calme), sans les petits sauts des pas
+  (`SpriteMotion`) ; un lent **ondoiement**, un léger **roulis** (±3,5°) et **tangage** (±2,5°), Chloé
+  penchée avec lui autour de son corps ; en **demi-tour**, l'image s'amincit puis s'élargit dans l'autre
+  sens (0,35 s) ; des bulles derrière le couple (`Underwater.swim_pose`). Les dinos des scènes sous l'eau
+  (le Mosasaure…) nagent de même.
+Les **herbiers** (hautes herbes) cachent des rencontres, comme les herbes hautes (les coups de nageoire
+comptent comme des pas) ; les dinos marins nagent entre deux eaux. On y trouve des passages (le tunnel
+vers la grotte), des galets d'ambre (dans les coquillages, sous les pierres), des épaves (barques
+coulées, caisses de contrebande), des pages (22). Pas de pluie ni de météo sous la mer.
+
+**Rendu dans la vue 2,5D** (`world/view3d/underwater.gd`) : tout est vu à travers l'eau.
+- La lumière vient d'en haut, pâle et bleu-vert ; le lointain se fond dans le bleu profond (on voit à
+  ~15 m) ; plus sombre la nuit.
+- Des **rayons de lumière** vont et viennent lentement autour de Chloé (`light_shaft.gdshader`) ; la lumière
+  **danse sur le fond** (reflets en résille, qualité moyenne et haute).
+- Des **poussières** dérivent ; des **bulles** montent du masque de Chloé et filent derrière le plongeur
+  quand il nage ; son ombre floue sur le fond.
+- Chloé, son plongeur et les dinos marins **nagent au-dessus du fond** (0,8 m, un lent balancement ;
+  jamais couchés dessus : un dino ne se couche que s'il dort).
+- **Sons étouffés** : musique et ambiance passent sous l'eau (filtre, graves seulement) ; bruits de
+  plongée et de remontée (`sfx/plongee`, `sfx/remontee`) ; en combat, la musique redevient claire.
+- Décor : algues qui ondulent, coraux, anémones, coquillages, épaves (images), sol de la zone.
+
+**Courants, colonnes de bulles, recoins sombres** : trois mécaniques qui donnent à la plongée un
+vrai intérêt de jeu. Chacune est **montrée** la première fois par le plongeur : une courte scène où les
+bulles de texte disent ce qu'on voit au moment où ça se passe (`world/sea_lessons.gd` ; jamais deux scènes
+à la suite, 15 s d'écart au moins).
+- **Courants** (`world/sea_current.gd`, `SeaCurrent.place(root, Rect2(cases), direction, px/s, {name,
+  helps})`) : une bande d'eau qui emporte le couple dans une direction, tant qu'il nage dedans.
+  - **On le voit** : des traînées d'eau et des bulles qui filent dans le sens du courant, entre deux eaux
+    (`current_streak.gdshader`). **On l'entend** : un son de flux qui monte quand on s'approche
+    (`sfx/courant`).
+  - **Il aide** : c'est un raccourci **à sens unique**, plus fort que la nage (qui fait ~215 px/s), donc
+    impossible à remonter. **Il gêne** : il faut le contourner, ou avancer d'abri en abri. Juste en aval d'un
+    rocher, d'une crête ou d'un gros décor (même ceux qu'on survole sous l'eau), l'eau est calme sur 2,5 m.
+  - **Jamais punitif** : pas de dégâts. On est seulement déporté, et le courant vous lâche là où il finit.
+  - La première fois, le plongeur s'arrête au bord et des brins d'algue et des bulles passent. Plus tard, un
+    courant contraire est seulement signalé, une fois (« abrite-toi derrière les rochers »).
+- **Colonnes de bulles** (`world/bubble_column.gd`, `BubbleColumn.place(root, Rect2(faille), Rect2(plateau),
+  arrivée, {name})`) : elles montent d'une faille au pied d'un plateau trop haut pour la nage.
+  - **Monter** : on entre dans la faille. Les bulles portent le couple jusqu'en haut : il dépasse un peu le
+    plateau, puis s'y pose (1,7 s + 0,5 s).
+  - **Redescendre** : on nage par-dessus le bord, là où le fond est en dessous (on pousse vers le vide
+    0,2 s), et le couple descend doucement à côté. On ne redescend pas sur un mur.
+  - **On la voit** : grosses bulles, une lueur pâle le long de la colonne, la faille sombre. **On
+    l'entend** : un grondement doux (`sfx/colonne_bulles`).
+  - La première fois : la faille crache des bulles, la caméra monte jusqu'au plateau, et le plongeur tend
+    le cou vers la colonne.
+- **Recoins sombres** (`world/dark_nook.gd`, `DarkNook.place(root, Rect2(cases), {name})`, et ce qu'on y
+  cache avec `DarkNook.hide_find(entités, recoin, image, case, drapeau, {item, line})`, `world/nook_find.gd`) :
+  - **Le noir** : si noir qu'on n'y voit rien. Une lumière négative retire la lumière, le sol s'assombrit,
+    et les reflets du fond s'éteignent quand Chloé est tout près.
+  - **La lumière des Cœurs** : quand Chloé s'en approche (à 2,5 cases), les **Cœurs d'ambre** de sa sacoche
+    s'allument autour d'elle : une lueur ambrée et quelques poussières dorées.
+  - **Plus de Cœurs, plus de lumière** : 1,7 case avec un Cœur, 0,8 de plus par Cœur, et une lueur plus vive.
+  - **Ce qui est caché** (galet d'ambre, fossile, page) ne se voit et ne se ramasse **que dans cette
+    lumière** : une étincelle et un petit tintement quand il y entre. Sans Cœur, rien.
+  - La première fois, les Cœurs s'illuminent d'un coup, et la caméra montre ce qui brille.
+- **Qualité** : les particules suivent `Quality.scaled`. La lumière des Cœurs et le noir des recoins restent
+  à toutes les qualités, car ils font partie du jeu.
+- **Dans le Récif du Sanctuaire** (`tools/zones/recif_sanctuaire.gd`, patch Mécaniques 2) :
+  - **La page 22** est sur un **piton de roche** près de l'autel (4,8 m, hors de portée à la nage). Seule la
+    **colonne** au pied du piton y mène : c'est le passage obligatoire. Un cristal luit là-haut, pour qu'on
+    remarque le piton.
+  - **Le courant de la Passe** (aide) monte du côté du tunnel des grottes jusqu'à l'estrade de l'autel : un
+    raccourci à sens unique.
+  - **Le courant de l'abîme** (gêne) descend le long du côté est, entre l'arène et le piton. On le contourne
+    par l'estrade, ou on remonte à l'abri des trois rochers posés en ligne dans le courant.
+  - **Deux recoins sombres** : à l'ouest, un galet d'ambre (`galet_recif_sanctuaire_00`, un galet pour la
+    zone) ; près des os géants, à l'est, un fossile (`fossile_recif`, l'objet `fossile`).
+- **Dans les grottes marines** : un recoin sombre au fond de la cache des contrebandiers, avec un galet
+  d'ambre (`galet_grottes_marines_00`).
+
+**Combat sous-marin** (tout combat dans une zone sous l'eau, ou règle `"underwater": true` ;
+`battle/underwater_engine.gd`, `battle/battle_underwater.gd`) :
+- le fond de combat de la zone (`assets/art/battle/sous_marin.jpg`), un voile plus clair vers la surface,
+  des rayons qui ondulent, des bulles et des poussières ; les combattants flottent (balancement lent),
+  leur ombre à peine marquée ; pas de météo ;
+- **trois règles**, dites au premier combat sous l'eau : les attaques **Eau** frappent plus fort (×1,25,
+  « L'eau porte le coup ! »), le **Feu** s'étouffe (×0,5), les dinos **qui ne nagent pas** (ni Nage ni
+  Plongée) sont **plus lents** (vitesse ×0,75). Sur les cartes des attaques : ▲ (Eau), ▼ (Feu).
+
+**Le Mosasaure Abyssal** (Alpha, combat d'honneur, niv. 34, dans le Récif du Sanctuaire) : règle
+`"abyss": true`, un rythme en trois temps, toujours annoncé :
+1. deux tours normaux, puis, à la fin du tour, il **s'enfonce dans le noir de l'abîme** (il disparaît,
+   l'eau s'assombrit) ;
+2. au tour suivant, **les attaques ne l'atteignent pas** (« Trop profond : l'attaque se perd dans le
+   noir… ») ; c'est le moment de se protéger (Blindage, un soin) ; puis il **jaillit** et frappe avec son
+   Plongeon abyssal (sa plus forte attaque Eau, gardée pour ça) ;
+3. emporté par son élan, il reste **à découvert** : au tour suivant, l'attaque de Chloé est un **coup
+   critique assuré**. Et ainsi de suite.
+Stratégie : le **Vent** le frappe fort (le Pteranodon de la Côte, les raptors) ; le Vent et la Nature
+encaissent mieux ses attaques Eau ; un dino qui nage garde sa vitesse. Perdu : retour à l'entrée du récif,
+rien de perdu, il attend. **Niveau 34** (rééquilibré avec sa vraie fiche : à 32, il perdait 40 fois sur 40
+en 6 tours) : simulations `scratchpad/sim_cote.gd` (300 combats par cas, équipe de 5 avec Nessie) : équipe
+au niveau 29, Vif 87 %, Bastion 79 %, Écho 59 % ; au niveau 30, 94 / 95 / 78 % ; 8 à 12 tours, 2 à 4 dinos
+K.O. : on peut perdre au premier essai, surtout sans dino du Vent (d'où la leçon).
+
+Essais : `tools/test_plongee.gd` (headless : conditions, zone sous l'eau, règles du combat, rythme de
+l'abîme, combats simulés) ; `tools/scenarios/plongee_test.gd` (captures : la plongée, le récif, les combats,
+la remontée, le passage noyé).
+
 ## Les dinos
 
 - **Espèces** : environ 60, réparties par région et par habitat ([bestiaire.md](bestiaire.md)).

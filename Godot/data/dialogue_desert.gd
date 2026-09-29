@@ -83,8 +83,7 @@ static func lines(id: StringName) -> Array:
 static func _coast() -> Array:
 	var steps: Array = [{"text": "Au nord, les dunes descendent vers la mer. Mais la piste disparaît sous le sable : chaque nuit, le vent la redessine ailleurs."}]
 	if Game.flag(&"maia_defi_4"):
-		steps.append({"who": CHLOE, "text": "(Il faudra attendre que le vent tourne. La Côte n'est plus très loin…)"})
-		steps.append({"text": "(La suite de l'aventure arrive bientôt !)"})
+		steps.append({"who": CHLOE, "text": "(Il faudra attendre que le vent tourne. Maïa dit qu'il tourne au crépuscule : du haut de la grande dune, au nord de l'oasis, je verrai où passe la piste.)"})
 	elif Game.flag(&"sceau_desert"):
 		steps.append({"who": MAIA, "text": "HÉ ! Pas si vite, championne ! Avant la Côte, il y a moi. Viens me voir à l'oasis !"})
 	else:

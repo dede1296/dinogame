@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/pteranodon.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/pteranodon_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"pteranodon"
+display_name = "Pteranodon"
+family = &"flyer"
+description = "Un grand ptérosaure à la crête osseuse spectaculaire, qui niche sur les falaises et plane au-dessus des vagues en guettant les bancs de poissons."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.266
+battle_scale = 0.494
+walk_fps = 9.0
+cry_prefix = "pterosaure"
+head_size = 5
+head_bite = 4
+teeth_sharp = 1
+teeth_count = 1
+front_power = 3
+front_reach = 8
+back_legs_power = 3
+back_legs_speed = 8
+back_armor = 2
+back_spikes = 0
+tail_power = 2
+tail_length = 3
+rarity = "common"

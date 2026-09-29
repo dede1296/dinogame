@@ -3,7 +3,7 @@ extends StaticBody2D
 ## A character Chloé can talk to. Its lines come from DialogueDB (by `dialogue_id`), which
 ## picks them according to the story flags; or `event` runs a scene of the story instead
 ## (Story.run). `show_flag` / `hide_flag` place it according to the story. Scenes move it
-## with walk_to().
+## with walk_to(). How tall it is comes from its sheet (Heights).
 
 @export var display_name := ""
 @export var sheet: Texture2D
@@ -31,7 +31,8 @@ func _ready() -> void:
 		return
 	add_to_group(&"interactable")
 	add_to_group(&"npc")
-	Shadow.make(self, 44.0)
+	sprite.scale = Vector2.ONE * Heights.sprite_scale(sheet)
+	Shadow.make(self, Heights.shadow_width(sheet))
 	sprite.sprite_frames = SheetFrames.character(sheet)
 	sprite.self_modulate = tint
 	sprite.play(StringName("idle_" + facing))

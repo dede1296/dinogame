@@ -4,7 +4,7 @@ extends RefCounted
 ## the market square in the middle; the shops on the upper street (the herbalist, the
 ## haberdasher, the Relais des Dresseurs, Ferréol's Comptoir d'Ambre, Joss's saddlery), the
 ## Comptoir's warehouse on the quay. See docs/lore.md « Havre-Doré » and story/havre.gd.
-## (Provisional art: the houses of Port-Ambre, tinted characters, drawn market stalls.)
+## (Its own buildings in real 3D, tools/modeles3d/maisons.py; provisional: tinted characters.)
 
 const PATH := "res://regions/havre/havre_dore.tscn"
 const B := preload("res://tools/zone_builder.gd")
@@ -75,20 +75,21 @@ static func build() -> Region:
 ## The shops and the Relais are story props: talking to the facade is talking to the house.
 static func _buildings(entities: Node2D) -> void:
 	for b: Array in [
-			["maison_jaune", 6.0, 8.3, false, &"shop_herboristerie", "Herboristerie"],
-			["maison_blanche", 13.5, 8.3, false, &"shop_mercerie", "Mercerie"],
-			["cabinet", 22.5, 8.3, false, &"relais", "Relais"],
-			["cabinet", 33.0, 8.3, true, &"ferreol", "Comptoir"],
-			["maison_port", 42.0, 8.3, false, &"joss", "Sellerie"],
-			["maison_port", 48.5, 17.3, true, &"entrepot", "Entrepot"]]:
+			["havre_herboristerie", 6.0, 8.3, false, &"shop_herboristerie", "Herboristerie"],
+			["havre_mercerie", 13.5, 8.3, false, &"shop_mercerie", "Mercerie"],
+			["havre_relais", 22.5, 8.3, false, &"relais", "Relais"],
+			["havre_comptoir", 33.0, 8.3, true, &"ferreol", "Comptoir"],
+			["havre_sellerie", 42.0, 8.3, false, &"joss", "Sellerie"],
+			["havre_entrepot", 48.5, 17.3, true, &"entrepot", "Entrepot"]]:
 		var p = B.prop(entities, b[0], B.cell(b[1], b[2]), b[3], load(STORY_PROP))
 		p.name = b[5]
 		p.event = b[4]
-	for h: Array in [["maison_blanche", 49.5, 8.3, true], ["maison_blanche", 6.0, 17.3, true], ["maison_port", 13.5, 17.3, false],
-			["maison_jaune", 40.0, 17.3, true]]:
+	for h: Array in [["havre_maison_1", 49.5, 8.3, true], ["havre_maison_2", 6.0, 17.3, true], ["havre_maison_3", 13.5, 17.3, false],
+			["havre_maison_4", 40.0, 17.3, true]]:
 		B.prop(entities, h[0], B.cell(h[1], h[2]), h[3])
+	# (the Entrepôt is 9 m wide: its sign stands past its right corner)
 	for s: Array in [[9.0, 8.7, &"enseigne_herboristerie"], [16.3, 8.7, &"enseigne_mercerie"], [26.4, 8.7, &"enseigne_relais"],
-			[29.2, 8.7, &"enseigne_comptoir"], [45.0, 8.7, &"enseigne_sellerie"], [51.9, 17.7, &"enseigne_entrepot"]]:
+			[29.2, 8.7, &"enseigne_comptoir"], [45.0, 8.7, &"enseigne_sellerie"], [53.0, 17.7, &"enseigne_entrepot"]]:
 		B.sign(entities, B.cell(s[0], s[1]), s[2])
 
 

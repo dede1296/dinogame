@@ -119,15 +119,16 @@ func _set_looping(stream: AudioStream, loop: bool) -> void:
 		stream.set(&"loop", loop)
 
 
-## One-shot sound. `pitch_jitter`: random pitch spread (0.05 = ±5%), so repeats don't sound identical.
-func play_sfx(stream: AudioStream, volume_db := 0.0, pitch_jitter := 0.0) -> void:
+## One-shot sound. `pitch_jitter`: random pitch spread (0.05 = ±5%), so repeats don't sound identical;
+## `pitch`: lower (< 1) or higher (a door closing: its creak, lower and duller).
+func play_sfx(stream: AudioStream, volume_db := 0.0, pitch_jitter := 0.0, pitch := 1.0) -> void:
 	if stream == null:
 		return
 	var p := _sfx[_sfx_next]
 	_sfx_next = (_sfx_next + 1) % _sfx.size()
 	p.stream = stream
 	p.volume_db = volume_db
-	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
+	p.pitch_scale = pitch + randf_range(-pitch_jitter, pitch_jitter)
 	p.play()
 
 

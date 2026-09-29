@@ -16,8 +16,12 @@ extends Resource
 @export var sheet_columns := 3
 @export var sheet_rows := 2
 @export var walk_frames: PackedInt32Array = [0, 1, 2]
+## Standing still: standing pictures only (a dino lies down only to sleep; the breathing added
+## by world/view3d/sprite_motion.gd keeps a single picture alive).
 @export var idle_frames: PackedInt32Array = [3, 4]
 @export var attack_frame := 5
+## Its picture lying down asleep, if the sheet has one (-1: none): the "sleep" animation only.
+@export var sleep_frame := -1
 ## Front and back views, same frame size as `sheet`: row 1 seen from the front walking
 ## toward the camera, row 2 from behind walking away (4 steps: one foot, together, the other,
 ## together; still = feet together).
@@ -27,8 +31,13 @@ extends Resource
 @export var down_idle_frame := 1
 @export var up_walk_frames: PackedInt32Array = [4, 5, 6, 7]
 @export var up_idle_frame := 5
-## Scale of the sprite in the world (sheets are drawn at 2x the base resolution).
+## Scale of the sprite in the world, an adult (a young one is smaller: DinoSize.growth). Its
+## gabarit √(height × length), as seen in the 3D view, is the real animal's up to 1.5 m, then
+## compressed: 1.5 × (T / 1.5)^0.6 (docs/direction-artistique.md, « Échelle et conventions »).
 @export var world_scale := 0.5
+## Scale of the sprite on the battle screen: the same sizes, their differences softened (the
+## gabarit follows the square root of the world's) so that all fit in the frame.
+@export var battle_scale := 0.5
 @export var walk_fps := 8.0
 
 @export_group("Sound")

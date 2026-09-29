@@ -78,14 +78,15 @@ const RELIEF := [
 const BRAC := Vector2(20.0, 11.0)
 const UTAHRAPTOR := Vector2(31.0, 8.0)
 const PAPERS := Vector2(11.0, 8.0)
-## The caged dinos of the decor: [species, x, y, size, flip] (freed with the Utahraptor). Small
-## enough to stand inside their cage (about 96 px high on screen), just behind its front bars.
-const CAGED := [[&"deinonychus", 25.5, 5.8, 0.7, false], [&"dilophosaurus", 6.2, 12.3, 0.75, false]]
+## The caged dinos of the decor: [species, x, y, size, flip] (freed with the Utahraptor), just
+## behind their cage's front bars. The cages were made bigger for them (Prop.KINDS "cage", ×1.35
+## on 28/09): a grown Deinonychus (1.8 m), a young Dilophosaurus (2.1 m).
+const CAGED := [[&"deinonychus", 25.5, 5.8, 1.0, false], [&"dilophosaurus", 6.2, 12.3, 0.8, false]]
 ## A caged dino stands between its cage (the picture, a little behind it and to the left: its
 ## open door hangs on the left of the barred box) and the cage's front bars (in front of it,
 ## gone once the dinos are freed). Tiles from the dino.
-const CAGE_FROM_DINO := Vector2(-0.25, -0.12)
-const BARS_FROM_DINO := Vector2(0.0, 0.14)
+const CAGE_FROM_DINO := Vector2(-0.3375, -0.162)
+const BARS_FROM_DINO := Vector2(0.0, 0.189)
 
 
 static func build() -> Region:
@@ -128,7 +129,10 @@ static func _put(entities: Node2D, kind: String, stand_in: String, x: float, y: 
 ## The tents (north, where they hide nothing), the crates of black amber, the fire, Brac's
 ## table with its papers (page 11), barrels, lanterns for the night.
 static func _camp(root: Region, entities: Node2D) -> void:
-	for t: Array in [[7.2, 5.2, false], [14.0, 4.6, true], [20.0, 7.4, false], [4.6, 16.4, true]]:
+	# (Tents in real 3D, 2.4 m high, 3.9 m deep with their pegs: in front of the palisade of the
+	# north, clear of the crates, of Brac's way up round the third one (x 21.8), of the west
+	# palisade and of the Dilophosaurus' cage.)
+	for t: Array in [[6.1, 7.7, false], [13.6, 7.7, true], [19.3, 7.7, false], [5.4, 17.6, true]]:
 		_put(entities, "tente", "", t[0], t[1], t[2])
 	for c: Array in [[27.6, 10.4], [28.8, 11.1], [9.4, 10.8], [16.6, 7.9], [23.6, 8.9], [34.2, 17.8]]:
 		_put(entities, "caisse_ambre_noir", "caisses", c[0], c[1], int(c[0]) % 2 == 0)
@@ -191,4 +195,4 @@ static func _people(root: Region) -> void:
 	B.npc(root, "SbireCamp2", "Sbire bougon", CHARS % "sbire", 27.0, 17.0, {"facing": "right",
 		"event": &"sbire_camp_2", "hide_flag": &"sbire_camp_2_battu", "tint": Color(0.86, 0.8, 1.0)})
 	B.dino_npc(root, "Utahraptor", &"utahraptor", UTAHRAPTOR.x, UTAHRAPTOR.y, {"event": &"utahraptor_cage",
-		"corrupted": true, "size": 1.35, "flip": true, "hide_flag": &"sceau_foret"})
+		"corrupted": true, "size": 1.2, "flip": true, "hide_flag": &"sceau_foret"})   # (ForetCamp.UTAH_SIZE)

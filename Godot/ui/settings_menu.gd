@@ -102,7 +102,7 @@ func _build() -> void:
 	zoom.min_value = CameraRig.DISTANCE_MIN
 	zoom.max_value = CameraRig.DISTANCE_MAX
 	zoom.step = 0.5
-	zoom.value = float(Quality.pref("camera", "distance", CameraRig.DISTANCE_DEFAULT))
+	zoom.value = CameraRig.saved_distance()
 	zoom.custom_minimum_size = Vector2(0, 52)
 	zoom.add_theme_icon_override("grabber", _disc_icon(34, Color(0.98, 0.76, 0.35)))
 	zoom.add_theme_icon_override("grabber_highlight", _disc_icon(38, Color(1.0, 0.86, 0.5)))

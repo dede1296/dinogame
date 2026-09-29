@@ -1,0 +1,3177 @@
+{
+ "1": {
+  "class_type": "LoadDA3Model",
+  "inputs": {
+   "model_name": "depth_anything_3_mono_large.safetensors",
+   "weight_dtype": "fp32"
+  }
+ },
+ "10": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_rocher.png"
+  }
+ },
+ "11": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "10",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "12": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "11",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "13": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "12",
+    0
+   ],
+   "filename_prefix": "relief/rocher"
+  }
+ },
+ "20": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_cailloux.png"
+  }
+ },
+ "21": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "20",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "22": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "21",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "23": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "22",
+    0
+   ],
+   "filename_prefix": "relief/cailloux"
+  }
+ },
+ "30": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_tronc.png"
+  }
+ },
+ "31": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "30",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "32": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "31",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "33": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "32",
+    0
+   ],
+   "filename_prefix": "relief/tronc"
+  }
+ },
+ "40": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_panneau.png"
+  }
+ },
+ "41": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "40",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "42": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "41",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "43": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "42",
+    0
+   ],
+   "filename_prefix": "relief/panneau"
+  }
+ },
+ "50": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_cloture.png"
+  }
+ },
+ "51": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "50",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "52": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "51",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "53": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "52",
+    0
+   ],
+   "filename_prefix": "relief/cloture"
+  }
+ },
+ "60": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_ambre.png"
+  }
+ },
+ "61": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "60",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "62": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "61",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "63": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "62",
+    0
+   ],
+   "filename_prefix": "relief/ambre"
+  }
+ },
+ "70": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_souche.png"
+  }
+ },
+ "71": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "70",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "72": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "71",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "73": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "72",
+    0
+   ],
+   "filename_prefix": "relief/souche"
+  }
+ },
+ "80": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_maison_blanche.png"
+  }
+ },
+ "81": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "80",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "82": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "81",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "83": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "82",
+    0
+   ],
+   "filename_prefix": "relief/maison_blanche"
+  }
+ },
+ "90": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_maison_jaune.png"
+  }
+ },
+ "91": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "90",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "92": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "91",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "93": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "92",
+    0
+   ],
+   "filename_prefix": "relief/maison_jaune"
+  }
+ },
+ "100": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_maison_port.png"
+  }
+ },
+ "101": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "100",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "102": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "101",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "103": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "102",
+    0
+   ],
+   "filename_prefix": "relief/maison_port"
+  }
+ },
+ "110": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_cabinet.png"
+  }
+ },
+ "111": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "110",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "112": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "111",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "113": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "112",
+    0
+   ],
+   "filename_prefix": "relief/cabinet"
+  }
+ },
+ "120": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_caisses.png"
+  }
+ },
+ "121": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "120",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "122": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "121",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "123": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "122",
+    0
+   ],
+   "filename_prefix": "relief/caisses"
+  }
+ },
+ "130": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_tonneau.png"
+  }
+ },
+ "131": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "130",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "132": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "131",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "133": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "132",
+    0
+   ],
+   "filename_prefix": "relief/tonneau"
+  }
+ },
+ "140": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_bitte.png"
+  }
+ },
+ "141": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "140",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "142": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "141",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "143": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "142",
+    0
+   ],
+   "filename_prefix": "relief/bitte"
+  }
+ },
+ "150": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_lanterne.png"
+  }
+ },
+ "151": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "150",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "152": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "151",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "153": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "152",
+    0
+   ],
+   "filename_prefix": "relief/lanterne"
+  }
+ },
+ "160": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_casiers.png"
+  }
+ },
+ "161": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "160",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "162": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "161",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "163": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "162",
+    0
+   ],
+   "filename_prefix": "relief/casiers"
+  }
+ },
+ "170": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_cordage.png"
+  }
+ },
+ "171": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "170",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "172": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "171",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "173": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "172",
+    0
+   ],
+   "filename_prefix": "relief/cordage"
+  }
+ },
+ "180": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_banc.png"
+  }
+ },
+ "181": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "180",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "182": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "181",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "183": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "182",
+    0
+   ],
+   "filename_prefix": "relief/banc"
+  }
+ },
+ "190": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_ancre.png"
+  }
+ },
+ "191": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "190",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "192": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "191",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "193": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "192",
+    0
+   ],
+   "filename_prefix": "relief/ancre"
+  }
+ },
+ "200": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_bureau.png"
+  }
+ },
+ "201": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "200",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "202": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "201",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "203": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "202",
+    0
+   ],
+   "filename_prefix": "relief/bureau"
+  }
+ },
+ "210": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_bibliotheque.png"
+  }
+ },
+ "211": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "210",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "212": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "211",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "213": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "212",
+    0
+   ],
+   "filename_prefix": "relief/bibliotheque"
+  }
+ },
+ "220": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_couveuse.png"
+  }
+ },
+ "221": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "220",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "222": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "221",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "223": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "222",
+    0
+   ],
+   "filename_prefix": "relief/couveuse"
+  }
+ },
+ "230": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_lampe.png"
+  }
+ },
+ "231": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "230",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "232": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "231",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "233": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "232",
+    0
+   ],
+   "filename_prefix": "relief/lampe"
+  }
+ },
+ "240": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_fauteuil.png"
+  }
+ },
+ "241": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "240",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "242": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "241",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "243": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "242",
+    0
+   ],
+   "filename_prefix": "relief/fauteuil"
+  }
+ },
+ "250": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_etabli.png"
+  }
+ },
+ "251": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "250",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "252": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "251",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "253": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "252",
+    0
+   ],
+   "filename_prefix": "relief/etabli"
+  }
+ },
+ "260": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_porte_ambre.png"
+  }
+ },
+ "261": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "260",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "262": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "261",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "263": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "262",
+    0
+   ],
+   "filename_prefix": "relief/porte_ambre"
+  }
+ },
+ "270": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_ecaille.png"
+  }
+ },
+ "271": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "270",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "272": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "271",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "273": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "272",
+    0
+   ],
+   "filename_prefix": "relief/ecaille"
+  }
+ },
+ "280": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_serrure.png"
+  }
+ },
+ "281": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "280",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "282": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "281",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "283": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "282",
+    0
+   ],
+   "filename_prefix": "relief/serrure"
+  }
+ },
+ "290": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_stalagmite.png"
+  }
+ },
+ "291": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "290",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "292": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "291",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "293": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "292",
+    0
+   ],
+   "filename_prefix": "relief/stalagmite"
+  }
+ },
+ "300": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_cristaux.png"
+  }
+ },
+ "301": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "300",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "302": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "301",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "303": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "302",
+    0
+   ],
+   "filename_prefix": "relief/cristaux"
+  }
+ },
+ "310": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_rocher_grotte.png"
+  }
+ },
+ "311": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "310",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "312": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "311",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "313": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "312",
+    0
+   ],
+   "filename_prefix": "relief/rocher_grotte"
+  }
+ },
+ "320": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_grand_crane.png"
+  }
+ },
+ "321": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "320",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "322": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "321",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "323": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "322",
+    0
+   ],
+   "filename_prefix": "relief/grand_crane"
+  }
+ },
+ "330": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_socle.png"
+  }
+ },
+ "331": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "330",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "332": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "331",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "333": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "332",
+    0
+   ],
+   "filename_prefix": "relief/socle"
+  }
+ },
+ "340": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_mur_cabinet.png"
+  }
+ },
+ "341": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "340",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "342": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "341",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "343": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "342",
+    0
+   ],
+   "filename_prefix": "relief/mur_cabinet"
+  }
+ },
+ "350": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_galet.png"
+  }
+ },
+ "351": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "350",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "352": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "351",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "353": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "352",
+    0
+   ],
+   "filename_prefix": "relief/galet"
+  }
+ },
+ "360": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_monticule.png"
+  }
+ },
+ "361": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "360",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "362": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "361",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "363": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "362",
+    0
+   ],
+   "filename_prefix": "relief/monticule"
+  }
+ },
+ "370": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_etal_fruits.png"
+  }
+ },
+ "371": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "370",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "372": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "371",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "373": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "372",
+    0
+   ],
+   "filename_prefix": "relief/etal_fruits"
+  }
+ },
+ "380": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_etal_poisson.png"
+  }
+ },
+ "381": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "380",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "382": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "381",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "383": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "382",
+    0
+   ],
+   "filename_prefix": "relief/etal_poisson"
+  }
+ },
+ "390": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_feu_camp.png"
+  }
+ },
+ "391": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "390",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "392": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "391",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "393": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "392",
+    0
+   ],
+   "filename_prefix": "relief/feu_camp"
+  }
+ },
+ "400": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_tronc_mousse.png"
+  }
+ },
+ "401": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "400",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "402": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "401",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "403": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "402",
+    0
+   ],
+   "filename_prefix": "relief/tronc_mousse"
+  }
+ },
+ "410": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_champignons.png"
+  }
+ },
+ "411": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "410",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "412": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "411",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "413": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "412",
+    0
+   ],
+   "filename_prefix": "relief/champignons"
+  }
+ },
+ "420": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_rocher_mousse.png"
+  }
+ },
+ "421": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "420",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "422": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "421",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "423": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "422",
+    0
+   ],
+   "filename_prefix": "relief/rocher_mousse"
+  }
+ },
+ "430": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_souche_geante.png"
+  }
+ },
+ "431": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "430",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "432": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "431",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "433": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "432",
+    0
+   ],
+   "filename_prefix": "relief/souche_geante"
+  }
+ },
+ "440": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_arbre_geant.png"
+  }
+ },
+ "441": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "440",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "442": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "441",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "443": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "442",
+    0
+   ],
+   "filename_prefix": "relief/arbre_geant"
+  }
+ },
+ "450": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_os_dino.png"
+  }
+ },
+ "451": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "450",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "452": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "451",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "453": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "452",
+    0
+   ],
+   "filename_prefix": "relief/os_dino"
+  }
+ },
+ "460": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_mur_fissure.png"
+  }
+ },
+ "461": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "460",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "462": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "461",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "463": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "462",
+    0
+   ],
+   "filename_prefix": "relief/mur_fissure"
+  }
+ },
+ "470": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_tente.png"
+  }
+ },
+ "471": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "470",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "472": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "471",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "473": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "472",
+    0
+   ],
+   "filename_prefix": "relief/tente"
+  }
+ },
+ "480": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_cage.png"
+  }
+ },
+ "481": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "480",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "482": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "481",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "483": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "482",
+    0
+   ],
+   "filename_prefix": "relief/cage"
+  }
+ },
+ "490": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_barreaux_cage.png"
+  }
+ },
+ "491": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "490",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "492": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "491",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "493": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "492",
+    0
+   ],
+   "filename_prefix": "relief/barreaux_cage"
+  }
+ },
+ "500": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_caisse_ambre_noir.png"
+  }
+ },
+ "501": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "500",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "502": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "501",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "503": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "502",
+    0
+   ],
+   "filename_prefix": "relief/caisse_ambre_noir"
+  }
+ },
+ "510": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_table_papiers.png"
+  }
+ },
+ "511": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "510",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "512": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "511",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "513": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "512",
+    0
+   ],
+   "filename_prefix": "relief/table_papiers"
+  }
+ },
+ "520": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_palissade.png"
+  }
+ },
+ "521": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "520",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "522": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "521",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "523": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "522",
+    0
+   ],
+   "filename_prefix": "relief/palissade"
+  }
+ },
+ "530": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_passerelle.png"
+  }
+ },
+ "531": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "530",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "532": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "531",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "533": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "532",
+    0
+   ],
+   "filename_prefix": "relief/passerelle"
+  }
+ },
+ "540": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_cabane_pilotis.png"
+  }
+ },
+ "541": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "540",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "542": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "541",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "543": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "542",
+    0
+   ],
+   "filename_prefix": "relief/cabane_pilotis"
+  }
+ },
+ "550": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_statue_dino.png"
+  }
+ },
+ "551": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "550",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "552": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "551",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "553": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "552",
+    0
+   ],
+   "filename_prefix": "relief/statue_dino"
+  }
+ },
+ "560": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_colonne.png"
+  }
+ },
+ "561": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "560",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "562": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "561",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "563": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "562",
+    0
+   ],
+   "filename_prefix": "relief/colonne"
+  }
+ },
+ "570": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_vanne.png"
+  }
+ },
+ "571": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "570",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "572": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "571",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "573": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "572",
+    0
+   ],
+   "filename_prefix": "relief/vanne"
+  }
+ },
+ "580": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_fresque.png"
+  }
+ },
+ "581": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "580",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "582": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "581",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "583": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "582",
+    0
+   ],
+   "filename_prefix": "relief/fresque"
+  }
+ },
+ "590": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_porte_temple.png"
+  }
+ },
+ "591": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "590",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "592": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "591",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "593": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "592",
+    0
+   ],
+   "filename_prefix": "relief/porte_temple"
+  }
+ },
+ "600": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_racines.png"
+  }
+ },
+ "601": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "600",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "602": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "601",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "603": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "602",
+    0
+   ],
+   "filename_prefix": "relief/racines"
+  }
+ },
+ "610": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_os_geant.png"
+  }
+ },
+ "611": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "610",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "612": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "611",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "613": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "612",
+    0
+   ],
+   "filename_prefix": "relief/os_geant"
+  }
+ },
+ "620": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_crane_geant_desert.png"
+  }
+ },
+ "621": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "620",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "622": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "621",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "623": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "622",
+    0
+   ],
+   "filename_prefix": "relief/crane_geant_desert"
+  }
+ },
+ "630": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_rocher_canyon.png"
+  }
+ },
+ "631": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "630",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "632": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "631",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "633": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "632",
+    0
+   ],
+   "filename_prefix": "relief/rocher_canyon"
+  }
+ },
+ "640": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_arche_rocheuse.png"
+  }
+ },
+ "641": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "640",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "642": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "641",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "643": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "642",
+    0
+   ],
+   "filename_prefix": "relief/arche_rocheuse"
+  }
+ },
+ "650": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_nid_oviraptor.png"
+  }
+ },
+ "651": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "650",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "652": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "651",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "653": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "652",
+    0
+   ],
+   "filename_prefix": "relief/nid_oviraptor"
+  }
+ },
+ "660": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_totem_vents.png"
+  }
+ },
+ "661": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "660",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "662": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "661",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "663": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "662",
+    0
+   ],
+   "filename_prefix": "relief/totem_vents"
+  }
+ },
+ "670": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_tente_nomade.png"
+  }
+ },
+ "671": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "670",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "672": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "671",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "673": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "672",
+    0
+   ],
+   "filename_prefix": "relief/tente_nomade"
+  }
+ },
+ "680": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_porte_vents.png"
+  }
+ },
+ "681": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "680",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "682": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "681",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "683": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "682",
+    0
+   ],
+   "filename_prefix": "relief/porte_vents"
+  }
+ },
+ "690": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_chariot_cage.png"
+  }
+ },
+ "691": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "690",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "692": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "691",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "693": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "692",
+    0
+   ],
+   "filename_prefix": "relief/chariot_cage"
+  }
+ },
+ "700": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_rempart_eboulis.png"
+  }
+ },
+ "701": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "700",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "702": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "701",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "703": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "702",
+    0
+   ],
+   "filename_prefix": "relief/rempart_eboulis"
+  }
+ },
+ "710": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_squelette_geant.png"
+  }
+ },
+ "711": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "710",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "712": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "711",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "713": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "712",
+    0
+   ],
+   "filename_prefix": "relief/squelette_geant"
+  }
+ },
+ "720": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "relief_puits_oasis.png"
+  }
+ },
+ "721": {
+  "class_type": "DA3Inference",
+  "inputs": {
+   "da3_model": [
+    "1",
+    0
+   ],
+   "image": [
+    "720",
+    0
+   ],
+   "resolution": 504,
+   "resize_method": "upper_bound_resize",
+   "mode": "mono"
+  }
+ },
+ "722": {
+  "class_type": "DA3Render",
+  "inputs": {
+   "da3_geometry": [
+    "721",
+    0
+   ],
+   "output": "depth",
+   "output.normalization": "min_max",
+   "output.apply_sky_clip": false
+  }
+ },
+ "723": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "722",
+    0
+   ],
+   "filename_prefix": "relief/puits_oasis"
+  }
+ }
+}

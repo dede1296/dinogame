@@ -43,6 +43,10 @@ const MOVES := {
 	&"criTrompette": {"name": "Cri trompette", "type": "nature", "power": 0, "accuracy": 1.0, "pp": 15, "effect": {"status": "peur", "chance": 1.0}, "fx": "roar"},
 	&"fougeres": {"name": "Festin de fougères", "type": "nature", "power": 0, "accuracy": 1.0, "pp": 5, "effect": {"heal": 0.5}, "fx": "heal"},
 	&"racines": {"name": "Fouet de lianes", "type": "nature", "power": 55, "accuracy": 1.0, "pp": 15, "fx": "wave"},
+	## Côte Préhistorique : attaques manquantes de la famille flyer (vent), déjà prévues dans LEARN
+	## (tête niv. 8, pattes avant niv. 1) mais absentes de MOVES jusqu'ici.
+	&"pique": {"name": "Pique acérée", "type": "vent", "power": 55, "accuracy": 1.0, "pp": 20, "fx": "bite"},
+	&"tornadeAiles": {"name": "Tornade d'ailes", "type": "vent", "power": 50, "accuracy": 0.95, "pp": 15, "fx": "claw"},
 }
 
 const TYPE_NAMES := {"neutre": "Neutre", "feu": "Feu", "eau": "Eau", "terre": "Terre", "vent": "Vent", "pierre": "Pierre", "nature": "Nature"}

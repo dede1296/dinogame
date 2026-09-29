@@ -1,0 +1,247 @@
+{
+ "1": {
+  "class_type": "IPAdapterModelLoader",
+  "inputs": {
+   "ipadapter_file": "ip-adapter-plus_sd15.safetensors"
+  }
+ },
+ "2": {
+  "class_type": "CLIPVisionLoader",
+  "inputs": {
+   "clip_name": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+  }
+ },
+ "3": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "ref_maison_blanche.png"
+  }
+ },
+ "4": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "v1-5-pruned-emaonly-fp16.safetensors"
+  }
+ },
+ "40": {
+  "class_type": "LoraLoader",
+  "inputs": {
+   "model": [
+    "4",
+    0
+   ],
+   "clip": [
+    "4",
+    1
+   ],
+   "lora_name": "ambrelune_style.safetensors",
+   "strength_model": 0.8,
+   "strength_clip": 0.8
+  }
+ },
+ "5": {
+  "class_type": "CLIPSetLastLayer",
+  "inputs": {
+   "clip": [
+    "40",
+    1
+   ],
+   "stop_at_clip_layer": -1
+  }
+ },
+ "6": {
+  "class_type": "IPAdapterAdvanced",
+  "inputs": {
+   "model": [
+    "40",
+    0
+   ],
+   "ipadapter": [
+    "1",
+    0
+   ],
+   "image": [
+    "3",
+    0
+   ],
+   "clip_vision": [
+    "2",
+    0
+   ],
+   "weight": 0.6,
+   "weight_type": "linear",
+   "combine_embeds": "average",
+   "start_at": 0.0,
+   "end_at": 1.0,
+   "embeds_scaling": "V only"
+  }
+ },
+ "7": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "5",
+    0
+   ],
+   "text": "photo, realistic, 3d render, cgi, flat grey shading, sketch, thin lines, pastel, washed out, blurry, low quality, deformed, extra characters, sheet, text, watermark, background scenery"
+  }
+ },
+ "8": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "blender_org40_face.png"
+  }
+ },
+ "9": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "8",
+    0
+   ],
+   "vae": [
+    "4",
+    2
+   ]
+  }
+ },
+ "10": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "5",
+    0
+   ],
+   "text": "ambrelune style, a white stone cottage with a blue slate roof, blue door and blue shutters, stone chimney, front view from above, high angle, cute cartoon building game asset, irregular rounded hand-cut stones, uneven slate tiles, bold thick dark brown outline, clean lineart, cel shading, vibrant saturated colors, mobile game sprite, sticker style, plain white background"
+  }
+ },
+ "11": {
+  "class_type": "KSampler",
+  "inputs": {
+   "seed": 7,
+   "steps": 25,
+   "cfg": 7.0,
+   "sampler_name": "dpmpp_2m",
+   "scheduler": "karras",
+   "denoise": 0.5,
+   "model": [
+    "6",
+    0
+   ],
+   "positive": [
+    "10",
+    0
+   ],
+   "negative": [
+    "7",
+    0
+   ],
+   "latent_image": [
+    "9",
+    0
+   ]
+  }
+ },
+ "12": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "11",
+    0
+   ],
+   "vae": [
+    "4",
+    2
+   ]
+  }
+ },
+ "13": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "12",
+    0
+   ],
+   "filename_prefix": "r10_org_face"
+  }
+ },
+ "18": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "blender_org40_cote.png"
+  }
+ },
+ "19": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "18",
+    0
+   ],
+   "vae": [
+    "4",
+    2
+   ]
+  }
+ },
+ "20": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "5",
+    0
+   ],
+   "text": "ambrelune style, the gable end of a white stone cottage with a blue slate roof, stone wall, one small window, stone chimney, side view from above, high angle, cute cartoon building game asset, irregular rounded hand-cut stones, uneven slate tiles, bold thick dark brown outline, clean lineart, cel shading, vibrant saturated colors, mobile game sprite, sticker style, plain white background"
+  }
+ },
+ "21": {
+  "class_type": "KSampler",
+  "inputs": {
+   "seed": 7,
+   "steps": 25,
+   "cfg": 7.0,
+   "sampler_name": "dpmpp_2m",
+   "scheduler": "karras",
+   "denoise": 0.5,
+   "model": [
+    "6",
+    0
+   ],
+   "positive": [
+    "20",
+    0
+   ],
+   "negative": [
+    "7",
+    0
+   ],
+   "latent_image": [
+    "19",
+    0
+   ]
+  }
+ },
+ "22": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "21",
+    0
+   ],
+   "vae": [
+    "4",
+    2
+   ]
+  }
+ },
+ "23": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "22",
+    0
+   ],
+   "filename_prefix": "r10_org_cote"
+  }
+ }
+}

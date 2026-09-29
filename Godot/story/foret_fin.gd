@@ -590,7 +590,8 @@ static func _sits_down(prof) -> void:
 	await prof.walk_to(S.at(ARMCHAIR_SEAT.x, ARMCHAIR_SEAT.y), "down", 90.0)
 	if not is_instance_valid(prof):
 		return
-	await GESTES.lie_down(prof, 0.3, 0.86)
+	if not await Stage.sit(prof):
+		await GESTES.lie_down(prof, 0.3, 0.86)
 	Stage.shake(1.2, 0.15)
 
 
@@ -619,7 +620,7 @@ static func _sleeper(little: Dino) -> DinoNpc:
 	var actor := DinoNpc.new()
 	actor.name = "PetitCouveuse"
 	actor.species_id = little.species().id
-	actor.size_scale = 0.75
+	actor.level = little.level
 	actor.flip = true
 	actor.position = S.at(INCUBATOR_FRONT.x, INCUBATOR_FRONT.y)
 	w.region.entities.add_child(actor)
@@ -650,7 +651,8 @@ static func _drawer_scent() -> void:
 		return
 	var lead := Game.lead_dino()
 	var w = S.world()
-	if lead == null or w == null:
+	# (a dino too tall for the Cabinet's door waits outside: another time, then)
+	if lead == null or w == null or not w.companion.visible:
 		return
 	S.lock(true)
 	await S.wait(0.3)

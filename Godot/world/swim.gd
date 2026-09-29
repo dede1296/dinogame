@@ -57,7 +57,10 @@ static func blocked_reason() -> String:
 	return "Avec le gilet, il te faut aussi un dino nageur adulte (un Baryonyx, par exemple) pour aller plus loin."
 
 
-## How deep (m) the swimmer of `species` sinks: a share of its picture's height in the view.
-static func sink(species: DinoSpecies) -> float:
+## How deep (m) `swimmer` sinks, Chloé on its back: a share of its picture's height in the view
+## (as big as it is shown carrying her: DinoSize.mount_scale).
+static func sink(swimmer: Dino) -> float:
+	var species := swimmer.species()
 	var h := species.sheet.get_height() / float(species.sheet_rows)
-	return h * species.world_scale / HeightMap.PX * WorldView.STRETCH * SINK
+	var scale := DinoSize.mount_scale(species, DinoSize.world_scale(swimmer), true)
+	return h * scale / HeightMap.PX * WorldView.STRETCH * SINK

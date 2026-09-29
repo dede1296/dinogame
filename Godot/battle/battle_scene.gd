@@ -28,6 +28,9 @@ const CALM := Color(0.98, 0.84, 0.45)     # its calm gauge, golden
 const BOND_PINK := Color(0.96, 0.45, 0.58)   # the Lien (hearts)
 const CALM_SFX := preload("res://assets/audio/sfx/item.wav")
 const BREATHE := preload("res://battle/breathe.gdshader")
+## Under the sea (rule "underwater"): the water's rules and look.
+const UNDERWATER_ENGINE := preload("res://battle/underwater_engine.gd")
+const UNDERWATER_LOOK := preload("res://battle/battle_underwater.gd")
 const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
 const PANEL_BG := Color(0.09, 0.1, 0.13, 0.84)
 const CARD_BG := Color(0.14, 0.16, 0.2, 0.94)
@@ -77,7 +80,10 @@ func _ready() -> void:
 ## "cave": true underground (the cave backdrop, no sky), "backdrop": the picture behind the
 ## fighters (a Texture2D: the region's own, Region.battle_backdrop; the default: the meadow),
 ## "long_calm": true for a deep corruption (a calm gauge twice as long; Chloé's own hatchling
-## helps calm it, see BattleEngine).
+## helps calm it, see BattleEngine), "size": the foe's size, share of its species' adult (a dino
+## of the story shown bigger or smaller in the world, DinoNpc.size_scale; else its level's),
+## "underwater": true under the sea (UnderwaterEngine, BattleUnderwater), "abyss": true the
+## Mosasaure Abyssal's rhythm (it sinks into the dark, surges, stays exposed).
 func run(wild: Dino, rules := {}) -> String:
 	_rules = rules
 	if rules.get("backdrop") is Texture2D:
@@ -85,11 +91,17 @@ func run(wild: Dino, rules := {}) -> String:
 	if rules.get("cave", false):
 		_go_underground()
 	var starter = Game.flag(&"starter")
-	engine = BattleEngine.new(Game.party, wild, {
+	var engine_rules := {
 		"long_calm": rules.get("long_calm", false),
 		"starter": StringName(starter) if starter is String else &"",
 		"trainer": rules.get("trainer", ""),
-	})
+		"abyss": rules.get("abyss", false),
+	}
+	if rules.get("underwater", false):   # under the sea: the water's rules, the water all around
+		engine = UNDERWATER_ENGINE.new(Game.party, wild, engine_rules)
+		UNDERWATER_LOOK.apply(self)
+	else:
+		engine = BattleEngine.new(Game.party, wild, engine_rules)
 	Game.mark_seen(wild.species().id)
 	_setup_dino(_foe_sprite, wild, true)
 	_setup_dino(_player_sprite, engine.player(), false)
@@ -167,7 +179,8 @@ func _fill_moves() -> void:
 	for i in d.moves.size():
 		var slot: Dictionary = d.moves[i]
 		var move := MovesDB.move(slot["id"])
-		var card := _move_card(move["name"], "%s · PP %d/%d" % [MovesDB.TYPE_NAMES[move["type"]], slot["pp"], move["pp"]],
+		var water_mark: String = (engine as UNDERWATER_ENGINE).mark(move["type"]) if engine is UNDERWATER_ENGINE else ""
+		var card := _move_card(move["name"], "%s · PP %d/%d%s" % [MovesDB.TYPE_NAMES[move["type"]], slot["pp"], move["pp"], water_mark],
 			MovesDB.TYPE_COLORS[move["type"]])
 		card.disabled = slot["pp"] <= 0
 		card.modulate.a = 0.45 if card.disabled else 1.0
@@ -243,6 +256,9 @@ func _play(events: Array) -> void:
 				await _say(e["text"])
 			"calmed":
 				await _calmed_anim()
+				await _say(e["text"])
+			"abyss":   # under the sea, the Mosasaure sinks into the dark, surges, is exposed
+				await UNDERWATER_LOOK.abyss(self, e)
 				await _say(e["text"])
 			"bond_hold":   # a full Lien: it holds on at 1 PV
 				_refresh_panel(_player_panel, engine.player())
@@ -393,7 +409,7 @@ func _catch_anim(shakes: int, success: bool) -> void:
 	collar.queue_free()
 	var back := create_tween().set_parallel(true)
 	back.tween_property(_foe_sprite, "modulate", Color.WHITE, 0.3)
-	back.tween_property(_foe_sprite, "scale", Vector2(-FOE_SCALE, FOE_SCALE) * engine.foe.species().world_scale / 0.5, 0.3)
+	back.tween_property(_foe_sprite, "scale", Vector2(-1.0, 1.0) * _size(engine.foe, true), 0.3)
 	await back.finished
 	_cry_of(engine.foe, "neutre")
 
@@ -580,12 +596,23 @@ static func _color_hp(bar: ProgressBar) -> void:
 func _setup_dino(s: AnimatedSprite2D, d: Dino, is_foe: bool) -> void:
 	var species := d.species()
 	s.sprite_frames = SheetFrames.dino(species, d.corrupted)
-	var k := (FOE_SCALE if is_foe else PLAYER_SCALE) * species.world_scale / 0.5
+	var k := _size(d, is_foe)
 	s.scale = Vector2(-k if is_foe else k, k)
 	var h := species.sheet.get_height() / float(species.sheet_rows)
 	s.offset = Vector2(0, -h * 0.46)
 	s.modulate = Color.WHITE
 	s.play(&"idle")
+
+
+## The sprite scale of `d` on its platform: its species' battle size (DinoSpecies.battle_scale),
+## a young one smaller as in the world (the foe: as the rule "size" says, if any), softened the
+## same way (the square root of its size in the world).
+func _size(d: Dino, is_foe: bool) -> float:
+	var species := d.species()
+	var size := DinoSize.growth(species, d.level)
+	if is_foe and _rules.has("size"):
+		size = float(_rules["size"])
+	return (FOE_SCALE if is_foe else PLAYER_SCALE) * species.battle_scale / 0.5 * sqrt(size)
 
 
 ## Places the sprites on the backdrop's platforms, whatever the screen's shape.

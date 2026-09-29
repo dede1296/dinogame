@@ -25,17 +25,21 @@ const PATH := "user://settings.cfg"
 ## render_scale — resolution of the 3D view (the interface stays sharp);
 ## glow, dof    — light bloom, blur far away;
 ## ground_step  — ground mesh vertices per metre (finer slopes and cliffs);
-## forest_density — trees per forest tile.
+## forest_density — trees per forest tile;
+## relief_props — the big scenery that has one (houses) as its real 3D model, not its picture.
 const PROFILES := {
 	Level.LOW: {"particles": 0.35, "sway_props": false, "grass_tufts": 1, "clouds": false,
 		"lights": false, "water_detail": false, "max_fps": 60,
-		"shadows": 0, "render_scale": 0.7, "glow": false, "dof": false, "ground_step": 2, "forest_density": 0.7},
+		"shadows": 0, "render_scale": 0.7, "glow": false, "dof": false, "ground_step": 2, "forest_density": 0.7,
+		"relief_props": false},
 	Level.MEDIUM: {"particles": 0.7, "sway_props": true, "grass_tufts": 2, "clouds": true,
 		"lights": true, "water_detail": true, "max_fps": 60,
-		"shadows": 1, "render_scale": 0.85, "glow": true, "dof": false, "ground_step": 3, "forest_density": 1.0},
+		"shadows": 1, "render_scale": 0.85, "glow": true, "dof": false, "ground_step": 3, "forest_density": 1.0,
+		"relief_props": true},
 	Level.HIGH: {"particles": 1.0, "sway_props": true, "grass_tufts": 3, "clouds": true,
 		"lights": true, "water_detail": true, "max_fps": 0,
-		"shadows": 2, "render_scale": 1.0, "glow": true, "dof": true, "ground_step": 4, "forest_density": 1.4},
+		"shadows": 2, "render_scale": 1.0, "glow": true, "dof": true, "ground_step": 4, "forest_density": 1.4,
+		"relief_props": true},
 }
 
 var level: Level = Level.HIGH

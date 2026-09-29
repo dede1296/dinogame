@@ -40,6 +40,14 @@ const PATHS := {
 	&"majungasaurus": "res://data/species/majungasaurus.tres",
 	&"vieux_rempart": "res://data/species/vieux_rempart.tres",
 	&"carnotaurus": "res://data/species/carnotaurus.tres",
+	# Côte Préhistorique
+	&"archelon": "res://data/species/archelon.tres",
+	&"pteranodon": "res://data/species/pteranodon.tres",
+	&"plesiosaurus": "res://data/species/plesiosaurus.tres",
+	&"masiakasaurus": "res://data/species/masiakasaurus.tres",
+	&"ichthyosaurus": "res://data/species/ichthyosaurus.tres",
+	&"elasmosaurus": "res://data/species/elasmosaurus.tres",
+	&"mosasaure_abyssal": "res://data/species/mosasaure_abyssal.tres",
 }
 
 static var _cache: Dictionary = {}

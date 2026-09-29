@@ -115,7 +115,7 @@ révèle le Masque ; ils préparent le chapitre 2.
    aussi ; la carte indique la prochaine pleine lune.
 
 **Clins d'œil** : le panneau du carrefour (« Paris : 9 874 km. À la nage, compter large. »), celui
-de l'anse (« Baignade déconseillée. — La direction »), signé d'une dent de Mosasaure (le gardien
+de la crique (« Baignade déconseillée. — La direction »), signé d'une dent de Mosasaure (le gardien
 de la Côte), un rocher qui « n'est pas un œuf », un Protoceratops qui ronfle sous un arbre et
 répond différemment chaque fois qu'on le dérange.
 
@@ -614,6 +614,199 @@ Drapeaux : `desert_arrivee`, `sirocco_vue`, `fossile_1` à `_6`, `fossiles_rendu
    parle d'« Isaure et son bébé ». Maïa refuse d'y croire, refuse le défi n° 5, et part en courant.
    C'est le moment le plus triste du jeu.
 
+### Chapitre 5 — Dans le jeu
+
+Les zones `cote` (la plage aux tortues, la Pointe des Palmes, le lagon fermé par le récif, les
+falaises à Ptéranodons, la crique des grottes), `grottes_marines` (la grotte sèche, le passage noyé, la
+cache) et `recif_sanctuaire` (le sanctuaire sous la mer) ; les scènes dans `story/cote.gd` (l'arrivée,
+les pêcheurs, Maïa aux falaises, la nuit, Roc, Isaure), `story/cote_lagon.gd` (Joss, le filet, Nessie,
+le masque ; les petites tortues), `story/cote_grottes.gd` (les grottes, le Passeur, la cache, la
+barque), `story/cote_recif.gd` (le récif, le Mosasaure, le Cœur) et `story/cote_fin.gd` (Moustique, le
+belvédère, la page 23 ; l'entrepôt du Comptoir) ; les dialogues simples dans `data/dialogue_cote.gd`,
+les objectifs dans `story/cote_objectives.gd`, les questions dans `story/cote_ask.gd`, les lieux dans
+`story/cote_places.gd`. Le chapitre commence dans la joie (la mer, Maïa au sommet de sa forme) et
+finit dans le silence : chaque trouvaille resserre le fil jusqu'au nom écrit en toutes lettres.
+
+1. **Le chemin.** Après le défi de l'oasis, du haut de la grande dune, la barque sans lanterne file
+   vers la Côte ; puis le vent tourne : le sable glisse sous les pieds de Chloé et découvre une piste
+   qui descend vers la mer (`cote_ouverte`). La sortie nord du Désert s'ouvre.
+2. **L'arrivée** (du haut de la dernière dune, au-dessus de la baie). Pour la première fois depuis
+   Port-Ambre, Chloé entend la mer. Sur la plage, de gros rochers ronds… qui respirent : des Archelons,
+   des tortues grandes comme des barques, endormies au soleil ; l'une bâille. Au nord, un anneau
+   d'écume ferme le lagon : le récif ; en son milieu, sous l'eau, une lueur bleue bat lentement, et
+   les deux Cœurs lui répondent dans la sacoche. À l'est, les falaises blanches de Ptéranodons ; parmi
+   eux, un tout petit en poursuit un grand pour lui voler son poisson : Moustique. « Maïa est déjà
+   là. » Le dino de tête découvre la mer : le raptor renifle l'écume, éternue et recule (les pattes
+   mouillées, non merci) ; le cuirassé s'enfonce dans le sable mouillé et ne veut plus bouger ;
+   l'hadrosaure lance un appel… et les falaises le lui renvoient : un vrai écho, enfin (il recommence
+   trois fois).
+3. **Gustave et Firmin**, sur la plage, près de leur barque échouée, « La Sardine ». Gustave (le
+   sbire de la Grotte, qui a peur des poules) ravaude un filet ; Firmin vide sa botte : il en coule
+   encore du sable du Désert. « TOI ?! » Ils sont pêcheurs, maintenant (« on essaie ») ; ils ont amené
+   Joss du Havre : malade tout le trajet, bavard quand même ; il est au lagon, « la tête dans un
+   bocal ». Surtout, la nuit, une **barque sans lanterne** passe le récif, là où personne ne passe, et
+   va sous les falaises : la troisième fois, ils ont ramé dans l'autre sens, très vite. Une nuit, « le
+   vieux du Cabinet » est venu avec sa lanterne demander si « le gros du récif » dormait bien. Et la
+   capitaine Kerval leur a conseillé de pêcher ailleurs : « très gentiment. Trop gentiment. » Ensuite,
+   une réplique et des questions à chaque visite.
+4. **Maïa aux falaises** (la colonie de Ptéranodons, au sommet). Des nids de brindilles et d'algues,
+   des ailes de sept mètres. Moustique gonfle le jabot devant un Ptéranodon, qui bâille : son bec est
+   plus long que Moustique tout entier, et Moustique file se cacher dans la capuche de Maïa. Elle est
+   venue par la piste du nord dès que le vent a tourné (« J'ai couru toute la nuit. Enfin, Caillou a
+   couru. Moi, j'étais dessus »). D'ici, on voit tout : la plage, le lagon, la passe, la crique sous la
+   falaise ; plus bas, au belvédère, le vieux **poste de guet d'Hélène**, une niche avec un banc de
+   pierre et une boîte en fer soudée par le sel : « On l'ouvrira ensemble, après notre défi. C'est la
+   tradition. — Quelle tradition ? — Celle que je viens d'inventer. » Le **défi n° 5**, ce sera là,
+   quand Chloé aura le troisième Cœur, « avec la mer derrière moi : ça fera une belle histoire ». Sa
+   mère lui interdit la Côte (« les grottes sont traîtresses ») mais y vient la nuit, en barque : ce
+   soir, Maïa guettera d'ici. Chloé ouvre la bouche… et la referme : Maïa a l'air si contente.
+5. **Le lagon : Joss, le filet et Nessie** (la rive sud, la roche plate). Joss sort de l'eau avec
+   sur la tête un bocal cousu à un col de cuir, son prototype n° 7 ; une ammonite est collée à la vitre
+   et le regarde. Chloé la décolle. Ferréol lui a commandé dix masques de plongée « pour ses
+   plongeurs » (Joss ne sait pas qui sont ses plongeurs) ; le premier, il le voulait pour Chloé. Sous
+   l'eau, il a vu « un monstre » (un long cou, des nageoires comme des rames) pris dans un filet, qui a mordu sa vitre. Au bord de la roche
+   plate, un jeune **Plesiosaurus**, le cou pris dans un vieux filet aux flotteurs marqués d'un masque
+   d'os, se débat, épuisé. Chloé s'agenouille et lui parle tout bas ; son dino ne bouge plus. Avec les
+   ciseaux de sellier de Joss (« ils coupent le cuir, la corde, et parfois mes doigts »), elle coupe
+   les mailles une à une. Libre, il plonge et disparaît… puis ressort juste devant elle, arrose Joss
+   qui venait de se sécher, et pose le menton sur la roche, aux pieds de Chloé. Il ne veut plus
+   partir. « On dirait le monstre du loch Ness ! En plus mignon. — Alors ce sera **Nessie**. » Nessie rejoint
+   l'équipe (niveau 26 ; équipe pleine : Chloé choisit qui part au Cabinet). Joss lui donne le vrai
+   **masque de plongée** (cuir huilé, vitre taillée, joint en gomme de fougère) et explique la
+   **Plongée** : avec le masque et un dino plongeur adulte (niveau 12), on descend là où c'est trop
+   profond pour nager : les passages noyés des grottes, sous les falaises, et plus loin, le récif.
+   « Nessie sait quand tu as besoin d'air. Fais-lui confiance. »
+6. **La nuit : la barque sans lanterne** (la première nuit sur la Côte, tant que la cache n'est pas
+   trouvée). Pas de rames, pas un bruit : une barque noire se glisse par une brèche du récif, là où
+   Gustave jurait qu'on ne passe pas, longe les falaises et disparaît sous la roche de la crique, comme
+   avalée. Une silhouette en cape s'y tient debout, immobile. Tout en haut, au belvédère, une petite
+   lumière s'éteint d'un coup : quelqu'un a caché sa lanterne (après la rencontre : « Maïa… Tu l'as
+   vue, toi aussi ? »).
+7. **Les grottes marines** (zone `grottes_marines`, par la crique, à la nage). Une grotte sèche, des
+   flaques où filent de petits crabes, des cristaux d'ambre bleuté ; sur les galets, des traces de
+   caisses traînées jusqu'au fond, où l'eau monte jusqu'à la voûte. « Quelqu'un passe par là. Sous
+   l'eau. » Il faut plonger.
+8. **La cache** (StoryTrigger après le passage noyé). Nessie remonte, Chloé agrippée à son cou, dans
+   une grande grotte sans lumière : des caisses empilées jusqu'à la voûte, de l'ambre noir qui luit
+   violet, un quai de pierre, une barque amarrée. Adossé à une caisse, un vieil homme, un masque d'os
+   sur le visage, une pipe éteinte entre les dents du masque : **le Passeur** (« Pas de lumière, ici. Jamais.
+   C'est la règle. »). Hélène a soigné son Archelon, autrefois, sans vouloir d'argent : « elle voulait
+   que je lui raconte la mer ». « Le Masque a dit : si la petite vient, laissez-la passer. Il a pas
+   dit : sans voir ce qu'elle vaut. » Combat : Bouline (Archelon 29), Grappin (Masiakasaurus 29), Amarre
+   (Ichthyosaurus 30). Battu : « Tu vaux ce qu'elle valait. » La barque ? « Elle est pas à moi. Et je
+   dirai pas à qui. Mais tu sais lire, non ? » Il détache un petit canot et s'en va par le tunnel de
+   la mer.
+9. **Les caisses** (StoryProp `CacheContrebande`). Le tampon, en entier cette fois : « COMPTOIR D'AMBRE
+   — HAVRE-DORÉ » ; un registre : chaque semaine, « entrepôt du Comptoir : 12 caisses. Reçu : F. », et
+   « masques de plongée : 10 (le sellier) » ; un mot de « M. », papier noir, encre argentée, qui sent
+   le sel : « **La petite ouvrira le récif pour nous. Laissez-la passer. Que personne ne la touche.** »
+   Les « autres » qui ouvrent les portes, c'est elle. Et le Masque la protège. Pourquoi ?
+10. **La barque** (StoryProp `BarqueIsaure`). Une voile rapiécée, une rayure bleue, des cordages noués
+   de nœuds de marin, les mêmes que ceux de Maïa au pont du Marais. C'est la barque qui a amené Chloé
+   sur l'île, dans la brume. Sur la proue, à demi effacé, un nom peint en blanc : « **MAÏA** ». Sous
+   le banc, punaisé, un dessin d'enfant : un dino à trois cornes, « MAMAN + MAÏA + CAILLOU ». « (Maïa
+   ne doit pas l'apprendre comme ça.) »
+11. **Page 21**, sous deux initiales gravées dans la roche, « H. + I. », et une petite fougère : le
+   premier été, I. a mené Hélène par la passe du récif, « là où les Ptéranodons pêchent, la mer est
+   plus sombre ». Chloé sait maintenant où passer (`passe_recif`) : par la passe du lagon, ou par le
+   tunnel de la cache.
+12. **Le récif du Sanctuaire** (zone `recif_sanctuaire`, première entrée). Le bruit du monde s'arrête.
+   Des colonnes de lumière bleue, du corail haut comme une nef d'église et, pris dedans, de vieilles
+   pierres sculptées de masques d'os : les anciens veillaient ici aussi. Les deux Cœurs battent plus
+   fort ; au fond, une lueur leur répond. Une ombre immense passe au-dessus de Chloé et couvre tout.
+13. **Le Mosasaure Abyssal**. Il remonte des profondeurs : plus long que trois barques, des écailles
+   bleu de nuit, des cicatrices, des yeux pâles comme la lune, presque aveugles. Il tourne lentement
+   autour de Chloé ; son œil vient tout contre la vitre du masque. Il ne la voit pas : il écoute les
+   Cœurs battre dans sa sacoche, il sent les Sceaux. Puis il frappe le sable de la queue : un nuage
+   monte, lent, qui cache tout. Une invitation. **Combat d'honneur sous l'eau** (niveau 34, ni collier
+   ni fuite ; « le Vent le touche fort » ; avant chaque essai, il attend que l'équipe ait repris son
+   souffle dans une poche d'air : elle est soignée). Gagné, il incline la tête et fait le tour de
+   l'autel ; sur son passage, les branches de corail s'écartent comme des doigts. Au centre, un bénitier
+   géant : il le touche du museau, la coquille s'ouvre. Dedans, le **Sceau de la Côte** (un disque
+   d'ambre bleu de nuit, une vague qui s'enroule, la fougère d'Hélène) et le **3e Cœur**, frais comme un
+   galet mouillé, qui bat au rythme de la houle. Les trois Cœurs s'allument ensemble ; très loin
+   dessous, le grondement est plus fort que les autres fois, le récif tremble, les poissons s'enfuient,
+   et le Mosasaure tourne la tête vers le volcan. Puis, du bout du museau, il pousse doucement Chloé
+   vers la surface. **Page 22** près de l'autel.
+14. **Moustique** (le retour sur la Côte, avec le 3e Cœur). Le Dimorphodon de Maïa fond sur Chloé en
+   criant, tourne autour d'elle, file vers les falaises, revient, repart. « Maïa ? »
+15. **Maïa a tout vu** (le belvédère). Maïa est assise au bord, le menton sur les genoux ; Caillou,
+   debout près d'elle, la tête basse. Elle ne se retourne pas. Cette nuit, elle a vu la barque de sa
+   mère passer le récif sans lanterne et entrer dans la falaise, avec dedans quelqu'un en cape et en
+   masque noir ; ce matin, Chloé est sortie de l'eau, une lumière dans les mains. « Il l'a volée, hein ?
+   Il a volé la barque de maman. Dis-moi que c'est ça. » Chloé choisit : dire ce qu'elle a vu dans la
+   grotte (le nom sur la proue ; « Tu mens ») ou se taire (« Tu ne dis rien. Tu ne dis RIEN ! »). Maïa
+   va à la boîte : « On avait dit après le défi. On l'ouvre avant. J'ai besoin d'autre chose. » Caillou
+   fait sauter le couvercle rouillé d'un coup de corne. Dans une toile cirée, la **page 23**, qu'elles
+   lisent ensemble : Hélène était la **marraine de Maïa** ; « Isaure et son bébé » ; « Cette semaine,
+   mes carnets ont disparu. Je ne veux pas savoir. Pas ce soir. » Maïa comprend toute seule : « “I.”…
+   Tu cherchais “I.”, depuis le Marais. » Puis elle refuse : sa mère recoud les filets des autres,
+   chante faux exprès pour la faire rire, « elle n'a pas de masque ». Chloé parle du défi ; Maïa recule :
+   « Je ne me bats pas. Pas contre toi. Pas aujourd'hui. Je ne veux plus gagner. Je veux juste que ce
+   soit pas vrai. » Elle s'enfuit. Caillou hésite, regarde Chloé, puis la suit au trot ; Moustique
+   s'envole derrière eux. De son sac tombe le **masque en carton** qu'elle s'était fabriqué après la
+   Forêt, l'élastique cassé ; le vent l'emporte vers le bord, Chloé le rattrape juste avant le vide. Les
+   Ptéranodons tournent sans un cri. « (Hélène… Tu savais.) » Pas de musique : le vent et la mer.
+16. **Au Cabinet** (Roc). Avec le Sceau : Hélène appelait le Mosasaure « Minuit » ; la première fois,
+   Anselme était dans la barque, malade par-dessus bord, deux fois (« Minuit a trouvé ça très
+   intéressant »). Après la page 21, Chloé parle de la passe : Roc va vérifier sa copie de la carte,
+   cachée derrière les bocaux, et revient soulagé : « Personne n'y a touché. » Le Masque n'avait pas
+   besoin de carte : il connaissait le chemin, comme « I. ». Après la page 23, Chloé dit « Isaure ».
+   Roc s'assoit lourdement : « … Surtout pas à Isaure. C'est ce que j'allais dire, devant le tiroir. Je
+   n'avais pas de preuve. Je n'en voulais pas. » Il était au baptême, il tenait le cierge (il l'a fait
+   tomber) : « Laisse du temps à Maïa. Les Kerval reviennent toujours au port. »
+17. **Autour** : Isaure, à Port-Ambre (pendant le chapitre : « Hélène donnait des noms aux tortues.
+   Elles répondaient. Enfin, elle le disait. » ; après la fuite : « Maïa n'est pas rentrée hier soir.
+   Joss dit qu'elle dort chez lui, au Havre. Elle ne veut pas me voir. … Tu sais pourquoi, toi,
+   moussaillon ? ») ; Joss, après la cache, refuse les neuf masques de Ferréol (« Il n'aura rien. Pas
+   une couture. ») ; Gustave et Firmin ; quatre panneaux (entrée : « Baignade déconseillée, bis. — La
+   direction », signé d'une marque de dent grande comme une main ; plage : « Tortues en sieste. Ne pas
+   s'asseoir dessus, même si ça ressemble à un rocher. — H. » ; lagon : « Au-delà du récif : pas calme,
+   pas de fond » ; falaises : « Attention : chutes de poissons »).
+18. **Quêtes annexes.**
+   - **Les petites tortues** (un nid de la plage, au crépuscule) : le sable se soulève, des bébés
+     Archelons sortent et filent vers la mer ; deux Masiakasaurus surgissent des rochers ; le dino de
+     tête se jette entre eux et ils détalent. Le dernier petit est tombé sur le dos : Chloé le retourne,
+     il lui pince le doigt et court à l'eau. Au large, une grande tortue lève la tête.
+   - **Pages 24 et 25** : à la cale des anciens, au bout de la plage (des marches taillées, des masques
+     d'os sculptés) ; au fond du lagon, dans une bouteille (Plongée).
+   - **L'entrepôt du Comptoir** (Havre-Doré, après les caisses) : par une fente, les mêmes caisses, la
+     même lueur violette, un masque d'os pendu à un clou. Ferréol, derrière Chloé, sans hausser le ton :
+     « Le Comptoir achète, le Comptoir vend. Ce que les gens font de ce qu'ils achètent ne regarde
+     personne. Pas même une Varenne. » ; « La capitaine Kerval ? Une excellente cliente. Demandez-lui :
+     elle adore les questions. » ; « Tout le monde finit par vendre, mademoiselle. Même les coutures. »
+19. **Objectifs** : la piste du nord (Désert) → la Côte → les pêcheurs de la plage → Joss au lagon (le
+   filet, Nessie, le masque) → les grottes marines (par la crique, à la nage) → plonger → le Passeur → la
+   cache (les caisses, la barque, la page 21, dans l'ordre qu'on veut) → la passe du récif → le
+   Mosasaure Abyssal (astuce : le Vent) → le 3e Cœur → Moustique et le belvédère → « À suivre… (les
+   Monts Gelés, bientôt) » ; Maïa aux falaises dès l'arrivée ; en secondaire, les pages de la Côte, les
+   petites tortues, l'entrepôt du Comptoir, Roc (le Sceau, la carte, « Isaure »). Chaque étape dit où
+   aller et ce qui manque (le masque, un plongeur adulte, un plongeur qui attend au Cabinet).
+
+Équilibrage (simulations `scratchpad/sim_cote.gd`, 300 combats par cas, la meilleure attaque à chaque tour ;
+équipes : le dino de départ L, le troisième petit et un Baryonyx L-1, un 4e L-2, Nessie) : **le Passeur**
+(Bouline 29, Grappin 29, Amarre 30, sans soin entre eux) est gagné presque toujours (99-100 %, même à 33-34 :
+trois dinos contre cinq), mais coûte 1 à 2 dinos K.O. : un vrai test, pas un mur ; gardé à 29/29/30. **Le
+Mosasaure** (sous l'eau, rythme de l'abîme, équipe reposée) : à 32, trop facile (équipe au niveau 30 : 100 / 99 /
+96 %) ; **à 34** : équipe au niveau 29, Vif 87 %, Bastion 79 %, Écho 59 % (37 % sans Nessie : pas de dino du Vent) ;
+au niveau 30, 94 / 95 / 78 %. On peut perdre au premier essai sans que ce soit injuste (retour à l'entrée du
+récif, équipe soignée) ; même profil que le Spinosaure du Marais (Écho a besoin d'un dino du Vent, d'où le
+conseil « le Vent le touche fort » et le Pteranodon de la Côte). Nessie 26.
+
+Drapeaux : `cote_ouverte`, `cote_arrivee`, `pecheurs_vus`, `maia_falaises_vue`, `joss_cote_vu`,
+`filet_coupe`, `nessie`, `masque_plongee`, `barque_nuit_vue`, `grottes_arrivee`, `cache_vue`,
+`passeur_parle`, `passeur_battu`, `passeur_parti`, `caisses_fouillees`, `barque_isaure_vue`,
+`passe_recif`, `recif_arrivee`, `mosasaure_parle`, `mosasaure_battu`, `sceau_cote`, `coeur_3`,
+`moustique_vu`, `maia_guet_vue`, `maia_enfuie`, `masque_carton`, `tortues_sauvees`,
+`entrepot_ferreol`, `joss_ferreol`, `roc_sceau_cote`, `roc_carte_intacte`, `roc_isaure`,
+`found_journal_21` à `_25` (et `pecheurs_n`, `joss_cote_n`, `mosasaure_n`, `boite_n` pour les
+répliques). Événements : `pecheurs_cote`, `maia_falaises`, `joss_cote`, `nid_tortues`,
+`cache_arrivee`, `passeur`, `cache_contrebande`, `barque_isaure`, `mosasaure_abyssal`, `coeur_recif`,
+`maia_guet`, `boite_helene` ; scènes d'entrée `cote`, `grottes_marines`, `recif_sanctuaire` ; la nuit
+de la Côte (`Story.on_phase_changed`) ; l'entrepôt du Havre (`entrepot`). Dialogues : `recif_bloque`,
+`monts_bloques`, `page_21`, `page_22`, `page_24`, `page_25`, `panneau_cote_entree`,
+`panneau_plage_tortues`, `panneau_lagon`, `panneau_falaises`.
+
 ## Chapitre 6 — Les Monts Gelés · 4e Cœur
 
 1. Vallée des troupeaux, glacier, grottes de glace : des **dinos pris dans les glaces**, la réserve
@@ -699,7 +892,7 @@ Drapeaux : `desert_arrivee`, `sirocco_vue`, `fossile_1` à `_6`, `fossiles_rendu
 | 2 | Ambre noir dans son tiroir (« n'en parle à personne ») ; le piège de la Forêt sent la cendre (ses chaussures) ; page 8 : « s'il se sent coupable… » ; les carnets d'Hélène pris au Cabinet (il a la clé) | Le piège sent la cendre (ses bottes) ; Griffe-Grise lui « a toujours montré les dents » ; le sbire : le Masque vient « par la mer », sait « qui t'a amenée » ; le Masque : « ne fais pas les mêmes erreurs qu'elle », « pas même moi », son boîtier rond (la boussole), « une barque trop petite et un courage trop grand » (page 3) ; il s'arrête devant Maïa ; page 11 : « I. » a demandé de vendre l'ambre ; « H. + I. » sur le pont ; Isaure : « sur les boussoles qu'elle offrait », « même moi » ; elle pâlit devant le masque en carton de Maïa |
 | 3 | Page 14 : il avait la clé du Cabinet ; il sort la nuit (sa lanterne dans le Marais), ne dit pas où, « j'ai promis », de la cendre sur les chaussures ; il supplie | Page 14 : « I. » aussi ; page 13 : « avec mes yeux » (le Masque : « tu as les yeux de ta grand-mère ») ; Dame Suie : le Masque cherche le Cœur « depuis des années » ; Isaure détourne les soupçons (« Roc a toujours été distrait avec ses clés ») |
 | 4 | Page 20 : « Anselme en garde une copie » (la carte des sanctuaires), et il se raidit quand Chloé en parle ; Sirocco l'a vu passer la nuit, avec sa lanterne, demander si le Carnotaurus allait bien ; le mot de « M. » : « d'autres ouvriront les portes pour nous » | Le mot de « M. » sent le sel (« avant la grande marée ») ; la caisse « …ptoir d'Amb… » (Ferréol) ; Maïa : sa mère va sur la Côte « la nuit, en barque » ; la barque sans lanterne vers la Côte ; Sirocco : Isaure jeune, qui gagnait toujours la dernière datte ; Isaure : « Deux Cœurs, déjà ? … On ne sait jamais qui regarde » |
-| 5 | — | La barque d'Isaure à la cache ; page 21 : le passage du récif ; page 23 : « Isaure » en toutes lettres |
+| 5 | Gustave : « le vieux du Cabinet » est venu une nuit, avec sa lanterne, demander si « le gros du récif » dormait bien ; mais sa copie de la carte est intacte (« personne n'y a touché ») : le Masque n'en avait pas besoin | La barque sans lanterne passe le récif là où personne ne passe (page 21 : seule « I. » connaissait la passe) ; Isaure a conseillé aux pêcheurs de pêcher ailleurs ; Ferréol commande dix masques de plongée « pour ses plongeurs » ; dans la cache, les caisses du Comptoir, le mot de « M. » (« que personne ne la touche ») et la barque qui a amené Chloé, « MAÏA » sur la proue, les nœuds de marin de Maïa, un dessin d'enfant ; Maïa voit la barque de sa mère entrer dans la falaise, une silhouette masquée dedans ; page 23 : « Isaure » en toutes lettres, marraine, les carnets disparus la même semaine ; Roc finit sa phrase du tiroir : « surtout pas à Isaure » |
 | 6 | Innocenté (page 28) | Isaure ne nie pas |
 | 7 | — | Le masque tombe |
 
@@ -714,7 +907,7 @@ tu as Vif), plus Caillou.
 | 2 ✅ | Pont du Marais (ch. 2) | + Dimorphodon (Moustique) | Elle admire le Masque ; il l'a regardée |
 | 3 ✅ | Roselière du nord (ch. 3) | + Iguanodon (Pouce) | Elle défend Roc |
 | 4 ✅ | Oasis (ch. 4) | Pouce (Iguanodon), son œuf, puis Caillou devenu Tricératops (Moustique garde les sacs) | Au sommet de sa forme ; sa mère va sur la Côte « la nuit, en barque » |
-| — | Côte (ch. 5) | — | Refuse le combat, s'enfuit |
+| — | Belvédère des falaises (ch. 5) | — | Elle l'avait fixé là, « avec la mer derrière moi ». Page 23 : Hélène était sa marraine. Refuse le combat, s'enfuit ; son masque en carton reste à Chloé |
 | 5 | Monts Gelés (ch. 6) | équipe de 4 | Se prouver qu'elle peut affronter sa mère |
 | — | Ch. 8 et 9 | — | Alliée |
 
@@ -749,11 +942,11 @@ précise, chaleureuse, parfois drôle, de plus en plus inquiète.
 | 18 ✅ | Désert · sanctuaire | −25 ans | Le deuxième Cœur | Le Carnotaurus l'a chargée quatre fois avant de l'accepter ; la porte ne s'ouvre qu'à son vrai rugissement : « la peur n'ouvre rien, ici » |
 | 19 ✅ | Désert · oasis (sous la margelle du puits) | −24 ans | Orgueil | Un an après la nuit du feu, ses mains lui font mal : « J'ai voulu réveiller ce qui devait dormir. » L'orgueil, « croire que pouvoir, c'est devoir » |
 | 20 ✅ | Désert · canyon muré | −25 ans | La carte | Cinq Cœurs, cinq gardiens : le Marais, le Désert, la Côte « là où le récif… », le reste effacé par le sable (une vague, un flocon, une flamme) ; « Anselme en garde une copie » |
-| 21 | Côte · grotte marine | −30 ans | Le passage | Seule « I. » connaît le chemin dans le récif |
-| 22 | Côte · récif | −25 ans | Le troisième Cœur | Le Mosasaure |
-| 23 | Côte · falaises | −12 ans | Marraine | « Isaure et son bébé, Maïa. Je suis sa marraine. » |
-| 24 | Côte · plage | −18 ans | Le symbole | Les masques d'os volés aux anciens ; elle a peur de ce que ça annonce |
-| 25 | Côte · lagon (Plongée) | −19 ans | Ce que j'aurais dû dire | Lettre jamais envoyée : « Tu n'as pas tort pour le port. Tu as tort sur le moyen. » |
+| 21 | Côte · grottes marines (la cache, sous « H. + I. » gravés dans la roche) | −30 ans | Le passage | Le premier été : I. la mène en barque par la passe du récif, « là où les Ptéranodons pêchent, la mer est plus sombre » ; une nuit dans la grotte, leurs initiales ; « personne d'autre ne connaît ce chemin : elle me l'a donné comme on donne un secret » |
+| 22 | Côte · récif (le sanctuaire) | −25 ans | Le troisième Cœur | « Minuit », le Mosasaure presque aveugle, qui écoute les cœurs battre ; I. à la barre, sans trembler ; Anselme malade par-dessus bord ; le Cœur couché dans un bénitier géant |
+| 23 | Côte · belvédère des falaises (la boîte de fer du poste de guet, avec Maïa) | −12 ans | Marraine | « Isaure a posé son bébé dans mes bras. Maïa » ; marraine « avant qu'elle ait fini sa phrase » ; « Isaure et son bébé » dans la barque qui rentre ; « Cette semaine, mes carnets ont disparu. Je ne veux pas savoir. Pas ce soir. » |
+| 24 | Côte · plage (la cale des anciens) | −18 ans | Le symbole | Les marches taillées d'où les anciens sont partis, leurs masques d'os sculptés ; au port, un homme en porte un « pour rire » et ne rit pas ; « ils ont pris la promesse et en ont fait une menace » ; elle a peur de ce que ça annonce |
+| 25 | Côte · fond du lagon (une bouteille, Plongée) | −19 ans | Ce que j'aurais dû dire | Lettre à Isaure jamais envoyée, jetée à la mer : « Tu n'as pas tort pour le port. Tu as tort sur le moyen. » ; « Je garde ta tasse » |
 | 26 | Monts · grottes de glace | −15 ans | Les dormeurs | Sa réserve d'œufs et de juvéniles, mise à l'abri dans la glace |
 | 27 | Monts · sanctuaire | −25 ans | Le quatrième Cœur | Le Cryolophosaure |
 | 28 | Monts · col | −2 ans | Anselme sait | Elle demande à Roc de surveiller le sceau si elle disparaît |

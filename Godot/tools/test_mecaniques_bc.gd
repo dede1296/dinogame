@@ -120,7 +120,7 @@ func _test_swim_rules() -> void:
 	_check(SwimS.can_swim(), "drapeau « gilet_nage » : vaut le gilet")
 	var koola = DinoS.create(&"koolasuchus", 14)
 	_check(abilities.usable(koola, &"nage"), "reptile marin adulte : nage aussi")
-	_check(SwimS.sink(young.species()) > 0.5 and SwimS.sink(young.species()) < 1.5, "enfoncement du Baryonyx : %.2f m" % SwimS.sink(young.species()))
+	_check(SwimS.sink(young) > 0.5 and SwimS.sink(young) < 1.5, "enfoncement du Baryonyx : %.2f m" % SwimS.sink(young))
 
 
 func _test_items() -> void:
@@ -305,7 +305,7 @@ func _test_zone() -> void:
 	var deep := Vector2(8.0, ROW) * TILE
 	var drop: float = view._swim_drop(deep, bary)
 	var floating: float = view.heights.to_3d(deep).y + drop
-	_check(absf(floating - (-0.425 - SwimS.sink(bary.species()))) < 0.06, "vue : à demi dans l'eau (%.2f m)" % floating)
+	_check(absf(floating - (-0.425 - SwimS.sink(bary))) < 0.06, "vue : à demi dans l'eau (%.2f m)" % floating)
 	_check(is_zero_approx(view._swim_drop(Vector2(1.5, 0.5) * TILE, bary)), "vue : rien sur la terre")
 	_check(view._swimmer_of(companion) == bary and view._swimmer_of(player) == bary, "vue : Chloé et son nageur repérés")
 	# Out on the far shore: on her feet again.

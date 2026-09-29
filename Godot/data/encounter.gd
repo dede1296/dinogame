@@ -8,7 +8,7 @@ extends Resource
 ## Relative chance against the habitat's other encounters.
 @export var weight := 10
 ## Part of the day when it comes out.
-@export_enum("toujours", "jour", "nuit", "aube et crépuscule", "jour et crépuscule") var when := 0
+@export_enum("toujours", "jour", "nuit", "aube et crépuscule", "jour et crépuscule", "pleine lune") var when := 0
 ## true: met in the tall grass (random encounter); false: roams in sight in the habitat.
 @export var hidden := true
 
@@ -18,10 +18,15 @@ const PHASES := [
 	[&"night"],
 	[&"dawn", &"dusk"],
 	[&"day", &"dusk"],
+	[&"night"],   # full-moon nights only (see active)
 ]
+## « pleine lune »: out only on the nights the moon is full (Game.is_full_moon).
+const FULL_MOON := 5
 
 
 func active(phase: StringName) -> bool:
+	if when == FULL_MOON and not Game.is_full_moon():
+		return false
 	return phase in PHASES[when]
 
 

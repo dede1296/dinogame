@@ -242,61 +242,61 @@ flip = true
 position = Vector2(288, 398.4)
 script = ExtResource("8_sw05c")
 event = &"shop_herboristerie"
-kind = "maison_jaune"
+kind = "havre_herboristerie"
 
 [node name="Mercerie" type="StaticBody2D" parent="Entities" unique_id=1470365072]
 position = Vector2(648, 398.4)
 script = ExtResource("8_sw05c")
 event = &"shop_mercerie"
-kind = "maison_blanche"
+kind = "havre_mercerie"
 
 [node name="Relais" type="StaticBody2D" parent="Entities" unique_id=34294376]
 position = Vector2(1080, 398.4)
 script = ExtResource("8_sw05c")
 event = &"relais"
-kind = "cabinet"
+kind = "havre_relais"
 
 [node name="Comptoir" type="StaticBody2D" parent="Entities" unique_id=1672982845]
 position = Vector2(1584, 398.4)
 script = ExtResource("8_sw05c")
 event = &"ferreol"
-kind = "cabinet"
+kind = "havre_comptoir"
 flip = true
 
 [node name="Sellerie" type="StaticBody2D" parent="Entities" unique_id=709173279]
 position = Vector2(2016, 398.4)
 script = ExtResource("8_sw05c")
 event = &"joss"
-kind = "maison_port"
+kind = "havre_sellerie"
 
 [node name="Entrepot" type="StaticBody2D" parent="Entities" unique_id=1550005929]
 position = Vector2(2328, 830.4)
 script = ExtResource("8_sw05c")
 event = &"entrepot"
-kind = "maison_port"
+kind = "havre_entrepot"
 flip = true
 
 [node name="MaisonBlanche" type="StaticBody2D" parent="Entities" unique_id=1758646578]
 position = Vector2(2376, 398.4)
 script = ExtResource("7_xenim")
-kind = "maison_blanche"
+kind = "havre_maison_1"
 flip = true
 
 [node name="MaisonBlanche2" type="StaticBody2D" parent="Entities" unique_id=1876312668]
 position = Vector2(288, 830.4)
 script = ExtResource("7_xenim")
-kind = "maison_blanche"
+kind = "havre_maison_2"
 flip = true
 
 [node name="MaisonPort" type="StaticBody2D" parent="Entities" unique_id=1546515831]
 position = Vector2(648, 830.4)
 script = ExtResource("7_xenim")
-kind = "maison_port"
+kind = "havre_maison_3"
 
 [node name="MaisonJaune" type="StaticBody2D" parent="Entities" unique_id=772739477]
 position = Vector2(1920, 830.4)
 script = ExtResource("7_xenim")
-kind = "maison_jaune"
+kind = "havre_maison_4"
 flip = true
 
 [node name="Panneau" type="StaticBody2D" parent="Entities" unique_id=573868621]
@@ -330,7 +330,7 @@ dialogue_id = &"enseigne_sellerie"
 kind = "panneau"
 
 [node name="Panneau6" type="StaticBody2D" parent="Entities" unique_id=1982704314]
-position = Vector2(2491.2, 849.6)
+position = Vector2(2544, 849.6)
 script = ExtResource("9_v4lt2")
 dialogue_id = &"enseigne_entrepot"
 kind = "panneau"
