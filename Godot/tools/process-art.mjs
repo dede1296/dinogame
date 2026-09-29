@@ -55,6 +55,70 @@ async function loadKeyed(file) {
   return { data, w: info.width, h: info.height };
 }
 
+/** Every run of touching pixels of the image (alpha > threshold), as arrays of pixel offsets. */
+function blobs(img, threshold = 24) {
+  const { data, w, h } = img;
+  const seen = new Uint8Array(w * h);
+  const found = [];
+  for (let start = 0; start < w * h; start++) {
+    if (seen[start] || data[start * 4 + 3] <= threshold) continue;
+    const blob = [start];
+    const stack = [start];
+    seen[start] = 1;
+    while (stack.length) {
+      const p = stack.pop();
+      const y = (p / w) | 0, x = p % w;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const q = ny * w + nx;
+        if (seen[q] || data[q * 4 + 3] <= threshold) continue;
+        seen[q] = 1;
+        stack.push(q);
+        blob.push(q);
+      }
+    }
+    found.push(blob);
+  }
+  return found;
+}
+
+/**
+ * Which frame each pixel belongs to, for a sheet whose poses are not cleanly inside their cells
+ * (a reared neck drawn over the cell above, a speck left behind): each run of touching pixels
+ * goes, whole, to the cell holding its middle, and specks (fewer than SPECK pixels) go nowhere.
+ * Returns an Int32Array, cell index (r * cols + c) per pixel, -1 for nobody.
+ */
+const SPECK = 200;
+function ownerOfPixels(img, rows, cols) {
+  const { w, h } = img;
+  const cw = w / cols, ch = h / rows;
+  const owner = new Int32Array(w * h).fill(-1);
+  for (const blob of blobs(img)) {
+    if (blob.length < SPECK) continue;
+    let sx = 0, sy = 0;
+    for (const p of blob) { sx += p % w; sy += (p / w) | 0; }
+    const c = Math.min(cols - 1, Math.floor(sx / blob.length / cw));
+    const r = Math.min(rows - 1, Math.floor(sy / blob.length / ch));
+    const cellIndex = r * cols + c;
+    for (const p of blob) owner[p] = cellIndex;
+  }
+  return owner;
+}
+
+/** The box of frame `index`'s own pixels (ownerOfPixels), in the whole sheet, or null. */
+function ownedBox(img, owner, index) {
+  const { w, h } = img;
+  let minX = Infinity, minY = Infinity, maxX = -1, maxY = -1;
+  for (let p = 0; p < w * h; p++) {
+    if (owner[p] !== index) continue;
+    const x = p % w, y = (p / w) | 0;
+    if (x < minX) minX = x; if (x > maxX) maxX = x;
+    if (y < minY) minY = y; if (y > maxY) maxY = y;
+  }
+  return maxX < 0 ? null : { minX, minY, maxX, maxY };
+}
+
 /** Bounding box of pixels with alpha > threshold inside a rectangle, or null. */
 function alphaBox(img, x0, y0, x1, y1, threshold = 24) {
   let minX = Infinity, minY = Infinity, maxX = -1, maxY = -1;
@@ -77,16 +141,21 @@ const rawImage = (img) => sharp(img.data, { raw: { width: img.w, height: img.h, 
  * around the union in each frame (8 for the Côte sheets: a margin of at least 6 px, checked).
  * `align: "bottom"`: every frame's drawing is moved up or down so its lowest point is on the
  * same line (a sheet whose poses were drawn at different heights in their cells: without it,
- * the animal jumps when it goes from its rest to its walk); x stays as drawn.
+ * the animal jumps when it goes from its rest to its walk); x stays as drawn. `isolate`: each
+ * pose is taken whole and on its own (ownerOfPixels), for a sheet whose poses lean over their
+ * cell's edge into the next one, or that carries specks; it goes with `align: "bottom"`.
  */
-async function sheet({ id, rows, cols, frameHeight, out, cell = null, pad = 4, align = "union" }) {
+async function sheet({ id, rows, cols, frameHeight, out, cell = null, pad = 4, align = "union", isolate = false }) {
   if (cell) return sheetInCells({ id, rows, cols, frameHeight, out, cell, foot: pad });
   const img = await loadKeyed(find(id));
   const cw = img.w / cols, ch = img.h / rows;
+  const owner = isolate ? ownerOfPixels(img, rows, cols) : null;
   let u = null;
   const boxes = [];
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-    const b = alphaBox(img, Math.round(c * cw + INSET), Math.round(r * ch + INSET), Math.round((c + 1) * cw - INSET), Math.round((r + 1) * ch - INSET));
+    const b = isolate
+      ? ownedBox(img, owner, r * cols + c)
+      : alphaBox(img, Math.round(c * cw + INSET), Math.round(r * ch + INSET), Math.round((c + 1) * cw - INSET), Math.round((r + 1) * ch - INSET));
     if (!b) { boxes.push(null); continue; }
     // Union in cell-local coordinates.
     const lb = { minX: b.minX - c * cw, minY: b.minY - r * ch, maxX: b.maxX - c * cw, maxY: b.maxY - r * ch };
@@ -104,7 +173,21 @@ async function sheet({ id, rows, cols, frameHeight, out, cell = null, pad = 4, a
     const left = Math.round(c * cw + u.minX);
     const b = boxes[r * cols + c];
     let frame;
-    if (bottom && b) {
+    if (isolate && b) {
+      // Only this pose's own pixels, standing on the frame's bottom row (nothing of its
+      // neighbours, whatever leans over the cell's edge).
+      const top = Math.round(r * ch + b.maxY) - srcH + 1;
+      const buffer = Buffer.alloc(srcW * srcH * 4);
+      for (let y = 0; y < srcH; y++) for (let x = 0; x < srcW; x++) {
+        const sx = left + x, sy = top + y;
+        if (sx < 0 || sy < 0 || sx >= img.w || sy >= img.h) continue;
+        const p = sy * img.w + sx;
+        if (owner[p] !== r * cols + c) continue;
+        buffer.set(img.data.subarray(p * 4, p * 4 + 4), (y * srcW + x) * 4);
+      }
+      frame = await sharp(buffer, { raw: { width: srcW, height: srcH, channels: 4 } })
+        .resize(fw - pad * 2, fh - pad * 2).png().toBuffer();
+    } else if (bottom && b) {
       // The frame's rectangle ends on its drawing's lowest row; only this cell's pixels are taken.
       const top = Math.round(r * ch + b.maxY) - srcH + 1;
       const y0 = Math.max(top, Math.round(r * ch + INSET)), y1 = Math.min(top + srcH, Math.round((r + 1) * ch - INSET));
@@ -365,12 +448,16 @@ const JOBS = [
   [`${OUT}/ui/objets`, () => icons({ id: "pfo4v8", cols: 3, rows: 1, size: 160, boxes: [[15, 110, 505, 540], [530, 130, 410, 500], [940, 200, 420, 370]], outDir: `${OUT}/ui`, names: ["bottes", "cuir", "boucle"] })],
   [`${OUT}/ground/grotte_sol.png`, (out) => seamless({ id: "zm7vp5", size: 512, out })],
   // Forêt Jurassique and Grotte des Échos (bestiary), with Griffe-Grise, the Ancien of the forest.
-  ...[["stegosaurus", "3snkyi", 180], ["brachiosaurus", "4frcgp", 220], ["dilophosaurus", "yr1f2h", 180], ["pachycephalosaurus", "1sw9u7", 170],
+  // brachiosaurus: align "bottom" + isolate (29/09) — ses trois poses du haut étaient dessinées plus
+  // haut dans leur case que celles du bas, et il flottait au-dessus du sol (règle du projet : les
+  // pattes à 0,46 de case sous le centre, voir actors/dino_npc.gd) ; et le cou dressé de la pose du
+  // bas déborde dans la case du dessus.
+  ...[["stegosaurus", "3snkyi", 180], ["brachiosaurus", "4frcgp", 220, "bottom", true], ["dilophosaurus", "yr1f2h", 180], ["pachycephalosaurus", "1sw9u7", 170],
     ["allosaurus", "bp96w5", 210], ["deinonychus", "7dnkzz", 190], ["microraptor", "qbu8uu", 140], ["utahraptor", "djmzdq", 230],
-    ["griffe_grise", "mvpqcb", 210], ["anurognathus", "914bc7", 120]].map(([name, id, frameHeight]) =>
-    [`${OUT}/dinos/${name}.png`, (out) => sheet({ id, rows: 2, cols: 3, frameHeight, out })]),
+    ["griffe_grise", "mvpqcb", 210], ["anurognathus", "914bc7", 120]].map(([name, id, frameHeight, align = "union", isolate = false]) =>
+    [`${OUT}/dinos/${name}.png`, (out) => sheet({ id, rows: 2, cols: 3, frameHeight, align, isolate, out })]),
   // Their front and back views, in cells the size of their side-view frames.
-  ...[["stegosaurus", "kr51lr", 178, [261, 188]], ["brachiosaurus", "jt1ujf", 218, [226, 228]], ["dilophosaurus", "wcxq3w", 178, [208, 188]],
+  ...[["stegosaurus", "kr51lr", 178, [261, 188]], ["brachiosaurus", "jt1ujf", 218, [255, 228]], ["dilophosaurus", "wcxq3w", 178, [208, 188]],
     ["pachycephalosaurus", "w2wdyv", 168, [207, 178]], ["allosaurus", "c44irg", 208, [262, 218]], ["deinonychus", "rtix92", 188, [216, 198]],
     ["microraptor", "aw17f4", 138, [157, 148]], ["utahraptor", "8g9dhj", 228, [282, 238]], ["griffe_grise", "dlm1oz", 208, [258, 218]],
     ["anurognathus", "fnyct3", 118, [140, 128]]].map(([name, id, frameHeight, cell]) =>
