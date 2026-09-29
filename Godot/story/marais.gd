@@ -586,7 +586,12 @@ static func _ancien_page(singer: Node) -> Array:
 		Act.cue({"text": "La Voix plonge la tête sous les nénuphars et en ressort un petit tube de cuivre, tout vert de vieillesse, bouché à la cire. Elle le laisse tomber aux pieds de Chloé."},
 			func() -> void: Act.fishes_tube(singer)),
 		Act.cue({"text": "Sur la cire, de l'écriture penchée d'Hélène : « Pour Chloé. Elle te la donnera. »"},
-			func() -> void: Stage.bow(Stage.chloe(), 1.0)),
+			func() -> void:
+				var tube = S.actor("TubeVoix")
+				if tube:
+					Stage.take_thing(tube)   # (she picks it up)
+				else:
+					Stage.bow(Stage.chloe(), 1.0)),
 		{"letter": VOIX_PAGE, "sign": "— H."},
 		{"flag": &"found_journal_ancien_voix"},
 	]

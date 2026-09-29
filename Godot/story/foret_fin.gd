@@ -428,7 +428,8 @@ static func _to_the_cut_span(maia, span: Vector2) -> void:
 	if chloe:
 		Stage.look_at(span.lerp(chloe.global_position, 0.5), 0.0)
 	await maia.walk_to(span + Vector2(10.0, 0.0), "left", 130.0)
-	await GESTES.lie_down(maia, 0.35, 0.86)
+	if not Stage.pose(maia, &"accroupi"):   # (kneeling, when drawn; GESTES.stand_up ends it)
+		await GESTES.lie_down(maia, 0.35, 0.86)
 
 
 ## The knots are tied: she stands, gives the rope a last pull (the span tightens) and is proud of it.

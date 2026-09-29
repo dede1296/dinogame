@@ -26,7 +26,12 @@ export default ({ sheet, icons, OUT }) => {
   // Cell sizes filled in after a first `node tools/process-art.mjs archelon pteranodon …` run
   // measured the profile outputs (see the report) — same pattern as especes_marais_desert.mjs.
   const FACE_DOS = [
-    ["archelon", "bw6be7", 168, [227, 178]],
+    // Archelon (29/09): a crawling sea turtle, low and wide, flippers flat on the sand (the first
+    // back views were seen from above, and stood up in the game). Front: lsds2j/mmvcit row 1;
+    // back: pxbkyq (drawn from one cropped front view), scaled to the front views and mirrored
+    // every other frame, assembled in derived-archelon-face-dos.png. 117: 190 px wide from the
+    // front, against 218 px long from the side.
+    ["archelon", "derived-archelon-face-dos", 117, [227, 178]],
     ["pteranodon", "xzmtyz", 188, [220, 198]],
     // (derived-…: cells of two nano-banana outputs, the clean ones of each: wihtis 0, 1, 0 mirrored, mw245j 3-7)
     ["plesiosaurus", "derived-plesiosaurus-face-dos", 188, [301, 206], REDONE],

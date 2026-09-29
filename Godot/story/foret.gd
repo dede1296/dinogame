@@ -291,6 +291,7 @@ static func _reunion(griffe: Node, vif: Dino) -> DinoNpc:
 	else:
 		lines.append({"who": CHLOE, "text": "Je te ramènerai %s. Promis." % name})
 	await S.say(lines)
+	Stage.take_thing(S.actor("BoiteGriffe"))
 	Toast.say(S.world().get_tree(), "Page de l'Ancien : Griffe-Grise")
 	return little
 
@@ -340,6 +341,7 @@ static func _stolen_reunion(griffe: Node, little: Dino) -> void:
 	])
 	var page: bool = not Game.flag(&"found_journal_ancien")
 	await S.say(lines)
+	Stage.take_thing(S.actor("BoiteGriffe"))
 	await GESTES.stand_in_back(small)
 	Game.add_bond(little, 1)
 	if page:
@@ -385,11 +387,14 @@ static func _the_trap(griffe: Node) -> void:
 	var seen_ash: bool = Game.flag(&"maia_defi_1") or Game.flag(&"roc_nuit_niee")
 	await S.say([
 		GESTES.cue("Clang. Un piège à mâchoires d'acier, arraché de sa chaîne. Les dents de fer sont tordues, écartées de force. Il a fallu des griffes terribles pour ouvrir ça.",
-			func() -> void: Audio.play_sfx(LATCH, -2.0); Stage.shake(2.5, 0.2); Stage.emote(chloe, "!")),
+			func() -> void:
+				Audio.play_sfx(LATCH, -2.0); Stage.shake(2.5, 0.2); Stage.emote(chloe, "!")
+				Stage.show_thing("piege_machoires", chloe.global_position + Vector2(18.0, 26.0), "PiegeGriffe")),
 		{"who": CHLOE, "text": "C'est ça, ta blessure… Quelqu'un pose des pièges dans la Forêt. Des braconniers."},
 		{"text": "Le piège sent la cendre froide."},
 		{"who": CHLOE, "text": "(De la cendre. Encore.)" if seen_ash else "(De la cendre ? Il n'y a pas le moindre feu, ici.)"},
 	])
+	Stage.take_thing(S.actor("PiegeGriffe"))
 
 
 ## He calls towards the north-west; the pack answers, and no voice leads it. The clearing.
@@ -534,6 +539,7 @@ static func _digs_out(griffe: Node, chloe: Player) -> void:
 	await Stage.bow(griffe, 0.5)
 	await Stage.tremble(griffe, 1.0, 2.0)
 	if is_instance_valid(griffe):
+		Stage.show_thing("boite_fer_blanc", _px_of(griffe).lerp(chloe.global_position, 0.45), "BoiteGriffe")
 		Stage.turn_to(griffe, chloe.global_position)
 		GESTES.lean(griffe, chloe.global_position, 12.0, 0.9)
 

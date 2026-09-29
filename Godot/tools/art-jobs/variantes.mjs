@@ -65,7 +65,48 @@ async function orderViews(sharp, find, id, views, name) {
   return path.basename(out, ".png");
 }
 
+// Scene poses (29/09, finition B): nano-banana drew each from the character's walking sheet
+// (0wbmww for Chloé, 5fwqyr for Maïa) as a 4-row x 4-col sheet echoing that sheet's own layout
+// (it ignored the "2 rows" instruction), rows 0-1 = the pose duplicated, rows 2-3 = the standing
+// reference duplicated. Only row 0 (pose) and row 2 (standing) are used. `poseViews`: per output
+// column of row 0, [source column, mirrored] — nano-banana sometimes repeats a view (two fronts)
+// or skips one (no right profile): the missing view is then the mirror of its nearest neighbour,
+// same fix as `orderViews` above. Row 2 (standing) is kept as drawn, columns unchanged: it is only
+// used to measure the scale (tallest blob in the sheet), so its own view order does not matter.
+const POSE4 = [
+  // [output, source id, output frame height, poseViews for row 0]. 176: chloe.png's and maia.png's
+  // own frameHeight (Heights' 172.5 / 173.5 is the drawn figure inside that frame, not this
+  // parameter) — same value keeps these poses at the base sheet's sprite scale.
+  ["chloe_main", "9gfztm", 176, [[0], [1], [2], [3]]],
+  ["chloe_grimpe", "2x7afh", 176, [[0], [2], [2, true], [3]]],
+  ["maia_accroupi", "k6ci3a", 176, [[0], [1], [1, true], [3]]],
+];
+
+async function orderPose4(sharp, find, id, poseViews, name) {
+  const src = find(id);
+  const out = path.join(path.dirname(src), `derived-pose4-${name}.png`);
+  if (fs.existsSync(out)) return path.basename(out, ".png");
+  const { width: w, height: h } = await sharp(src).metadata();
+  const cw = w / 4, ch = h / 4;
+  const cell = (c, r, flip = false) => {
+    const img = sharp(src).extract({ left: Math.round(c * cw), top: Math.round(r * ch), width: Math.round(cw), height: Math.round(ch) });
+    return (flip ? img.flop() : img).png().toBuffer();
+  };
+  const composites = [];
+  for (const [i, [c, flip]] of poseViews.entries()) composites.push({ input: await cell(c, 0, flip), left: Math.round(i * cw), top: 0 });
+  for (let i = 0; i < 4; i++) composites.push({ input: await cell(i, 2), left: Math.round(i * cw), top: Math.round(ch) });
+  await sharp({ create: { width: w, height: h / 2, channels: 3, background: { r: 255, g: 0, b: 255 } } })
+    .composite(composites).png().toFile(out);
+  return path.basename(out, ".png");
+}
+
 export default ({ sheet, sharp, find, OUT }) => [
+  // No `cell`: the per-cell union crop (not the global blob search of `sheetInCells`) — the global
+  // search picked up a spurious blob spanning the whole sheet (a faint JPEG seam between cells,
+  // its bounding box bigger than any character's) and let it win column 1 in every one of these
+  // three sheets. The plain per-cell crop only ever looks inside its own cell's rectangle.
+  ...POSE4.map(([name, id, drawn, poseViews]) => [`${OUT}/characters/${name}.png`, async (out) =>
+    sheet({ id: await orderPose4(sharp, find, id, poseViews, name), rows: 2, cols: 4, frameHeight: drawn, out })]),
   // Wide cells (240 px: a net spread on a lap, legs stretched out), 184 px high like the walking
   // frames, feet 4 px above the bottom: the sprite stays centred, its feet stay put.
   ...SITTING.map(([name, id, drawn, views]) => [`${OUT}/characters/${name}.png`, async (out) =>

@@ -54,6 +54,7 @@ static func arrival() -> void:
 	var hall := S.at(P.GROTTES_SALLE.x, P.GROTTES_SALLE.y)
 	var flooded := S.at(P.GROTTES_PLONGEE.x, P.GROTTES_PLONGEE.y)
 	var drips := func() -> void:
+		Stage.pose(chloe, &"grimpe", 0.9)   # (hauling herself up, when drawn)
 		CS.splash(chloe.global_position, 10, 0.4, 0.3)
 		Stage.tremble(chloe, 0.8, 1.2)
 	var cave := func() -> void:
@@ -283,6 +284,7 @@ static func caisses(who: Node) -> void:
 	var reads := func() -> void:
 		Stage.bow(chloe, 1.2)
 	var leafs := func() -> void:
+		Stage.show_thing("registre", at + Vector2(22.0, 16.0), "RegistrePasseur")   # (on the small crate)
 		for i in 3:
 			await CS.reach(chloe, at + Vector2(0.0, 20.0), 6.0, 0.5)
 	var lines: Array = [
@@ -309,6 +311,7 @@ static func caisses(who: Node) -> void:
 		{"flag": &"caisses_fouillees"},
 	])
 	await S.say(lines)
+	Stage.take_thing(S.actor("RegistrePasseur"))
 	Game.award_team_xp(XP_CAISSES)
 	Save.save_game()
 	S.lock(false)

@@ -351,6 +351,7 @@ static func tortues(who: Node) -> void:
 	for b in babies:
 		if is_instance_valid(b):
 			b.queue_free()
+	Stage.repaint(who, "nid_tortue_vide")   # (the zone shows it so from now on: NidTortues after_kind)
 	CS.lead_back()
 	Game.give_item("fougere", TURTLE_FERNS)
 	Toast.say(S.world().get_tree(), "Objets obtenus : %d fougères curatives (dans le nid vide)" % TURTLE_FERNS)

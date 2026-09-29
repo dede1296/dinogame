@@ -77,6 +77,16 @@ const KINDS := {
 		"height": [0.9, 3.0], "when": ALWAYS},
 	&"ptero_vol": {"frames": 4, "fps": 5.0, "width": 1.0, "motion": &"soar", "speed": 4.2,
 		"height": [2.4, 3.6], "when": DAY | DUSK, "wait": [5.0, 14.0]},
+	# A woodland snail: slow, never runs; out in the rain too.
+	&"escargot": {"frames": 4, "fps": 3.0, "width": 0.22, "motion": &"walk", "speed": 0.05, "run": 0.05,
+		"when": ALWAYS, "rain": true, "on": [&"forest", &"grass", &"tall_grass", &"path"], "near": {&"forest": 3.0},
+		"wait": [3.0, 8.0]},
+	# A file of ants crossing the ground (one picture: the whole file).
+	&"fourmis": {"frames": 2, "fps": 6.0, "width": 0.3, "motion": &"walk", "speed": 0.12, "run": 0.12,
+		"when": DAY | DUSK, "on": GREEN, "wait": [0.5, 2.0]},
+	# A small living ammonite, darting about in the shallows by the shore.
+	&"ammonite": {"frames": 4, "fps": 5.0, "width": 0.3, "motion": &"drift", "surface": true, "speed": 0.25,
+		"height": [0.0, 0.0], "when": DAY | DUSK, "rain": true, "on": WATER, "near": {&"land": 2.0}, "seen": true},
 	# Ichthyornis: a sea bird of the time, with teeth.
 	&"ichthyornis": {"frames": 4, "fps": 9.0, "width": 0.6, "motion": &"circle", "speed": 2.6,
 		"height": [1.4, 3.0], "when": DAY | DUSK, "on": WATER, "far": {&"land": 1.0}, "seen": true},
@@ -112,14 +122,14 @@ const EFFECTS := {
 }
 
 const PLACES := {
-	&"plaines": {"kinds": {&"papillon": 6, &"scarabee": 3, &"mammifere": 2,
+	&"plaines": {"kinds": {&"papillon": 6, &"scarabee": 3, &"fourmis": 2, &"mammifere": 2,
 		&"libellule": {"count": 2, "near": {&"water": 5.0}}}, "effects": {&"lucioles": {}}},
-	&"foret": {"kinds": {&"moustique": 4, &"libellule": 2, &"feuille": 7}, "effects": {&"lucioles": {}}},
+	&"foret": {"kinds": {&"moustique": 4, &"libellule": 2, &"feuille": 7, &"escargot": 3, &"fourmis": 3}, "effects": {&"lucioles": {}}},
 	&"marais": {"kinds": {&"moustique": 4, &"libellule": 3, &"grenouille": 4, &"poisson_saut": 1},
 		"effects": {&"lucioles": {"colour": Color(0.55, 1.0, 0.5), "amount": 32}}},
 	&"desert": {"kinds": {&"lezard": 4, &"scorpion": 2, &"scarabee": 3}},
 	# The sea: nothing that flutters. Jellyfish glow on the water at night.
-	&"cote": {"kinds": {&"crabe": 5, &"poisson_saut": 2, &"ichthyornis": 2, &"ptero_vol": 1,
+	&"cote": {"kinds": {&"crabe": 5, &"poisson_saut": 2, &"ammonite": 2, &"ichthyornis": 2, &"ptero_vol": 1,
 		&"meduse": {"count": 2, "when": NIGHT, "surface": true, "on": WATER, "far": {&"land": 2.0},
 			"glow": Color(0.75, 0.9, 1.0)}}, "effects": {&"plancton": {}}},
 	&"port": {"kinds": {&"crabe": 3, &"poisson_saut": 1, &"ichthyornis": 1, &"ptero_vol": 1},

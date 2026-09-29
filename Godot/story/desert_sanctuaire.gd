@@ -27,6 +27,7 @@ const WHEEL_PX := 64
 const WHEEL_SCALE := 0.72
 const WHEEL_IRON := Color(0.36, 0.34, 0.33)
 const WHEEL_WOOD := Color(0.52, 0.32, 0.15)
+const PAINTED_WHEEL := "res://assets/art/props/roue_chariot.png"   # (its painted picture, turned by _turned)
 ## The Cœurs' warm light, on Chloé (her bag) and on the altar.
 const HEART_GLOW := Color(1.8, 1.45, 0.8)
 ## The Carnotaurus's eyes once calm, the colour of embers (a glow).
@@ -389,8 +390,10 @@ static func _make_wheel(at_px: Vector2) -> Node2D:
 	var frames := SpriteFrames.new()
 	frames.add_animation(&"roll")
 	frames.set_animation_speed(&"roll", 16.0)
+	var painted: Image = _painted_wheel()
 	for i in 3:
-		frames.add_frame(&"roll", _wheel_picture(i * TAU / 24.0))
+		var turn := i * TAU / 24.0
+		frames.add_frame(&"roll", _turned(painted, turn) if painted else _wheel_picture(turn))
 	var wheel := Node2D.new()
 	wheel.name = "RoueBrac"
 	wheel.position = at_px
@@ -404,6 +407,33 @@ static func _make_wheel(at_px: Vector2) -> Node2D:
 	S.world().region.entities.add_child(wheel)
 	sprite.play(&"roll")
 	return wheel
+
+
+## The painted wheel (props/roue_chariot.png), squared to WHEEL_PX; null while there is none
+## (then _wheel_picture draws one).
+static func _painted_wheel() -> Image:
+	if not ResourceLoader.exists(PAINTED_WHEEL):
+		return null
+	var img: Image = (load(PAINTED_WHEEL) as Texture2D).get_image()
+	if img.is_compressed():
+		img.decompress()
+	img.convert(Image.FORMAT_RGBA8)
+	img.resize(WHEEL_PX, WHEEL_PX, Image.INTERPOLATE_BILINEAR)
+	return img
+
+
+## `img` turned by `turn` round its centre: the spokes of the rolling wheel.
+static func _turned(img: Image, turn: float) -> ImageTexture:
+	var out := Image.create_empty(WHEEL_PX, WHEEL_PX, false, Image.FORMAT_RGBA8)
+	var centre := Vector2(WHEEL_PX, WHEEL_PX) / 2.0
+	for y in WHEEL_PX:
+		for x in WHEEL_PX:
+			var from := (Vector2(x + 0.5, y + 0.5) - centre).rotated(-turn) + centre
+			var sx := int(from.x)
+			var sy := int(from.y)
+			if sx >= 0 and sy >= 0 and sx < WHEEL_PX and sy < WHEEL_PX:
+				out.set_pixel(x, y, img.get_pixel(sx, sy))
+	return ImageTexture.create_from_image(out)
 
 
 ## The wheel's picture: an iron tyre, a wooden rim, eight spokes turned by `turn`, the hub.
@@ -1071,6 +1101,7 @@ static func _guard_home(guard: DinoNpc, door: Vector2) -> Array:
 	var purrs := func() -> void:
 		while is_instance_valid(guard) and guard.has_meta(&"fetching"):
 			await S.wait(0.1)
+		Stage.pose(chloe, &"main", 2.6)   # (her hand held out, when drawn)
 		D._reach(chloe, guard.global_position, 10.0, 1.4)
 		await S.wait(0.5)
 		Stage.tremble(guard, 2.4, 1.0)

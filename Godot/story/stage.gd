@@ -235,6 +235,45 @@ static func fade_in(actor, secs := 0.6) -> void:
 	await t.finished
 
 
+## A small thing a scene shows (a tin box pushed out of the moss, a trap dropped at Chloé's feet):
+## a story prop of that kind fading in at `at_px`; null while its picture is not in Prop.KINDS.
+## Stage.take_thing puts it away.
+static func show_thing(kind: String, at_px: Vector2, node_name: String) -> Node2D:
+	var w = S.world()
+	if w == null or w.get("region") == null or not Prop.KINDS.has(kind):
+		return null
+	var p := StoryProp.new()
+	p.name = node_name
+	p.set("kind", kind)
+	p.position = at_px
+	p.modulate.a = 0.0
+	w.region.entities.add_child(p)
+	p.collision_layer = 0
+	fade_in(p, 0.35)
+	return p
+
+
+## Chloé takes a thing a scene showed (Stage.show_thing): it fades away, into her bag. Awaitable.
+static func take_thing(thing: Node2D) -> void:
+	if thing == null or not is_instance_valid(thing):
+		return
+	if chloe():
+		turn_to(chloe(), thing.global_position)
+		bow(chloe(), 0.6)
+	await fade_out(thing, 0.5, true)
+
+
+## A piece of scenery changes picture (a nest the hatchlings have left): it fades to `kind`.
+## Awaitable.
+static func repaint(thing, kind: String, secs := 0.8) -> void:
+	if thing == null or not is_instance_valid(thing) or not Prop.KINDS.has(kind):
+		return
+	await fade_out(thing, secs * 0.5)
+	if is_instance_valid(thing):
+		thing.set("kind", kind)
+		await fade_in(thing, secs * 0.5)
+
+
 ## Vanishes (into the mist, the dark…); with `free`, gone for good. Awaitable.
 static func fade_out(actor, secs := 0.6, free := false) -> void:
 	if actor == null or not is_instance_valid(actor):

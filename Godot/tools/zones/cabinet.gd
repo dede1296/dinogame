@@ -4,6 +4,7 @@ extends RefCounted
 
 const PATH := "res://regions/port/cabinet.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const FLAGGED_PROP := preload("res://tools/zones/flagged_prop.gd")
 
 const PLAN := [
 	"................",
@@ -28,8 +29,11 @@ static func build() -> Region:
 	root.music = load("res://assets/audio/music/plaines.ogg")
 	root.ambience_id = &"cabinet"
 	var entities: Node2D = root.get_node("Entities")
-	for x: float in [1.8, 5.3, 8.8, 12.3, 14.4]:
-		B.prop(entities, "mur_cabinet", B.cell(x, 1.3))
+	# The back wall: each panel 4 cm behind the one before, so where two overlap (the last one)
+	# the front one is always drawn (at the same depth they fought, a stepped notch in the wall).
+	var walls: Array[float] = [1.8, 5.3, 8.8, 12.3, 14.4]
+	for i in walls.size():
+		B.prop(entities, "mur_cabinet", B.cell(walls[i], 1.3 - 0.04 * i))
 	for p: Array in [
 			["bibliotheque", 1.6, 1.9], ["bureau", 5.2, 3.0], ["lampe", 7.4, 1.9], ["fauteuil", 9.4, 3.4],
 			["etabli", 11.2, 2.0], ["couveuse", 13.8, 3.2], ["fougere_pot", 0.9, 9.6], ["fougere_pot", 15.1, 9.6]]:
@@ -38,6 +42,25 @@ static func build() -> Region:
 	# behind them, story/cote.gd).
 	if Prop.KINDS.has("etagere_bocaux"):
 		B.prop(entities, "etagere_bocaux", B.cell(3.3, 1.9))
+	# « Sa vieille lanterne a disparu du crochet » (plaines.gd:394, foret_fin.gd:757): the hook by
+	# Roc's armchair, the lantern on it except the night he is out (flag "roc_dehors", cleared by
+	# morning: story/plaines.gd _cabinet_vide). And the kettle he goes to fill (cote.gd:699).
+	if Prop.KINDS.has("lanterne_crochet"):
+		var lantern := FLAGGED_PROP.new()
+		lantern.kind = "lanterne_crochet"
+		lantern.hide_flag = &"roc_dehors"
+		lantern.position = B.cell(9.9, 1.45)   # against the back wall (mur_cabinet row, y 1.3)
+		lantern.name = "LanterneCrochet"
+		entities.add_child(lantern, true)
+		var hook := FLAGGED_PROP.new()
+		hook.kind = "crochet_vide"
+		hook.show_flag = &"roc_dehors"
+		hook.position = B.cell(9.9, 1.45)
+		hook.name = "CrochetVide"
+		entities.add_child(hook, true)
+	if Prop.KINDS.has("bouilloire_poele"):
+		# Against the back wall too, clear of the library (x 1.6) and the great shelf (x 3.3).
+		B.prop(entities, "bouilloire_poele", B.cell(6.2, 2.0))
 	B.npc(root, "Roc", "Prof. Roc", CHARS % "roc", 6.5, 4.6, {"facing": "down", "event": &"roc", "hide_flag": &"roc_dehors"})
 	# The left drawer of Roc's desk (chapter 2: black amber in it; story/foret_camp.gd). Not
 	# drawn: its own spot at the desk's left end, the middle of the desk still shows its notes.

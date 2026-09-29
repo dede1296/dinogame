@@ -225,6 +225,38 @@ const KINDS := {
 	"prele_geante": {"scale": 0.657, "foot": 0.03, "solid": 10.0, "sway": 1.5, "shadow": 60.0},
 	"nid_geant": {"scale": 0.553, "foot": 0.04, "solid": 40.0, "sway": 0.0, "shadow": 0.0},
 	"liane_tronc": {"scale": 0.53, "foot": 0.04, "solid": 24.0, "sway": 0.5, "shadow": 110.0},
+	# Passe de finition (29/09, tools/art-jobs/finition.mjs): objects held during a scene (small,
+	# readable, real size noted here though the integrator spawns them, not a zone), and the
+	# missing fixed scenery of chapters 1-5.
+	"boite_fer_blanc": {"scale": 0.043, "foot": 0.12, "solid": 4.0, "sway": 0.0, "shadow": 11.0},
+	"piege_machoires": {"scale": 0.069, "foot": 0.3, "solid": Vector2(20, 8), "sway": 0.0, "shadow": 15.0},
+	"tube_cuivre": {"scale": 0.049, "foot": 0.4, "solid": 0.0, "sway": 0.0, "shadow": 7.0},
+	"boite_ronde": {"scale": 0.063, "foot": 0.15, "solid": 5.0, "sway": 0.0, "shadow": 14.0},
+	"registre": {"scale": 0.055, "foot": 0.25, "solid": 0.0, "sway": 0.0, "shadow": 8.0},
+	# Not read through Prop.KINDS in play (story/desert_sanctuaire.gd loads the file directly and
+	# rotates it in place of its drawn wheel, PAINTED_WHEEL); kept here only for the record.
+	"roue_chariot": {"scale": 0.5, "foot": 0.5, "solid": 20.0, "sway": 0.0, "shadow": 60.0},
+	# The falaise's small Dimorphodon nest (Plaines) and Chipie's lined bush (replaces the
+	# "buisson"/"rocher" stand-ins of tools/zones/plaines.gd at the same tiles, same collision).
+	"nid_dimorphodon": {"scale": 0.07, "foot": 0.15, "solid": 0.0, "sway": 0.0, "shadow": 16.0},
+	"buisson_nid": {"scale": 0.24, "foot": 0.08, "solid": 15.0, "sway": 0.8, "shadow": 59.0},
+	"rocher_oeuf": {"scale": 0.243, "foot": 0.1, "solid": Vector2(72, 26), "sway": 0.0, "shadow": 58.0},
+	# The frieze of bone masks over the amber door of the Temple (tools/zones/marais.gd), mounted
+	# above the doorway: no ground collision, no shadow.
+	"frise_masques": {"scale": 0.6, "foot": 0.0, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# The rope hanging down the cliff where Brac climbs away (Sanctuaire des Vents), mounted on
+	# the rock face: no ground collision, no shadow.
+	"corde_falaise": {"scale": 0.4, "foot": 0.02, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# The turtles' nest once it is empty (cote_lagon.gd: the integrator swaps it in once
+	# "tortues_sauvees"); same footprint as "nid_tortue".
+	"nid_tortue_vide": {"scale": 0.108, "foot": 0.12, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# The Cabinet's wall lantern and its hook, empty once "sa vieille lanterne a disparu du
+	# crochet" (tools/zones/cabinet.gd, flag "roc_dehors"); the kettle on its little stove.
+	# Wall-mounted (foot negative: prop.gd's offset = -h/2 + h*foot, world_view.gd matches for 3D):
+	# the whole small picture floats above its ground anchor, bottom edge at ~1.3 m up the wall.
+	"lanterne_crochet": {"scale": 0.045, "foot": -2.6, "solid": 0.0, "sway": 0.0, "shadow": 0.0, "light": true},
+	"crochet_vide": {"scale": 0.05, "foot": -6.2, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"bouilloire_poele": {"scale": 0.115, "foot": 0.04, "solid": 10.0, "sway": 0.0, "shadow": 22.0},
 }
 
 @export_enum("arbre_rond", "araucaria", "fougere_arbre", "buisson", "rocher", "cailloux", "tronc", "ronces",
@@ -247,7 +279,10 @@ const KINDS := {
 	"fougeres_ecrasees", "natte_fouilles", "vertebre", "cotes_sable", "panier_fioles", "outils_mine",
 	"table_observation", "etagere_bocaux", "prele", "cycas", "ginkgo", "roseaux_secs", "conifere_sec", "rocher_lichen",
 	"sapin_neige", "buisson_givre", "rocher_neige", "pin_tordu", "tronc_calcine", "fougere_cendre", "bennettitale",
-	"magnolia", "prele_geante", "nid_geant", "liane_tronc")
+	"magnolia", "prele_geante", "nid_geant", "liane_tronc",
+	"boite_fer_blanc", "piege_machoires", "tube_cuivre", "boite_ronde", "registre", "roue_chariot",
+	"nid_dimorphodon", "buisson_nid", "rocher_oeuf", "frise_masques", "corde_falaise", "nid_tortue_vide",
+	"lanterne_crochet", "crochet_vide", "bouilloire_poele")
 var kind := "arbre_rond":
 	set(value):
 		kind = value

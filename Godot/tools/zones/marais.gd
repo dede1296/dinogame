@@ -324,6 +324,10 @@ static func _story(root: Region, entities: Node2D) -> void:
 	var temple = B.prop(entities, "porte_temple", B.cell(TEMPLE_DOOR_AT.x, TEMPLE_DOOR_AT.y), false, load(TEMPLE_DOOR))
 	temple.name = "PorteTemple"
 	temple.hide_flag = &"temple_ouvert"
+	# « Des dizaines de petits masques d'os sculptés » above the temple's entrance (finition,
+	# 29/09): carved in the rock face itself, so it stays once the door is gone.
+	if Prop.KINDS.has("frise_masques"):
+		B.prop(entities, "frise_masques", B.cell(TEMPLE_DOOR_AT.x - 3.6, 10.3))
 	B.sign(entities, B.cell(107.0, 67.6), &"panneau_marais")
 	B.sign(entities, B.cell(32.4, 17.6), &"panneau_temple", true)
 	B.sign(entities, B.cell(89.6, 5.6), &"panneau_desert")

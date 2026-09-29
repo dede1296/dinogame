@@ -542,6 +542,7 @@ static func _reunion_meet(bastion: Dino, who: Node, dino: Companion) -> Array:
 static func _chin_scratch(who: Node) -> void:
 	var chloe := Stage.chloe()
 	await Stage.hop(chloe, 1, 14.0)
+	Stage.pose(chloe, &"grimpe", 2.4)   # (up on a stone, when drawn)
 	await _reach(chloe, _head_of(who), 10.0, 1.4)
 	Stage.emote(who, "♥")
 
@@ -558,8 +559,11 @@ static func _ancien_page(who: Node) -> Array:
 	return [
 		_cue({"text": "Alors la vieille dame fait une chose étonnante : elle se lève. Complètement. Du sable tombe de son ventre, comme d'un sablier."}, stands),
 		_cue({"text": "Là où elle était couchée, dans le sable tiède, il y a une boîte en fer-blanc toute ronde, toute chaude. Elle l'a couvée comme un œuf."},
-			func() -> void: Stage.bow(Stage.chloe(), 1.2)),
-		{"text": "Sur le couvercle, de l'écriture penchée d'Hélène : « Pour Chloé. Elle te la donnera. »"},
+			func() -> void:
+				Stage.show_thing("boite_ronde", (who as Node2D).global_position + Vector2(0.0, 40.0), "BoiteRempart")   # (just out from under her)
+				Stage.bow(Stage.chloe(), 1.2)),
+		_cue({"text": "Sur le couvercle, de l'écriture penchée d'Hélène : « Pour Chloé. Elle te la donnera. »"},
+			func() -> void: Stage.take_thing(S.actor("BoiteRempart"))),
 		{"letter": REMPART_PAGE, "sign": "— H."},
 		{"flag": &"found_journal_ancien_rempart"},
 	]

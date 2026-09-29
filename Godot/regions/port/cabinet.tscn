@@ -1,216 +1,234 @@
 [gd_scene format=4]
 
-[ext_resource type="Script" path="res://world/region.gd" id="1_2sie2"]
-[ext_resource type="AudioStream" path="res://assets/audio/music/plaines.ogg" id="2_gdhfx"]
-[ext_resource type="Texture2D" path="res://assets/art/ground/plancher.png" id="3_w618k"]
-[ext_resource type="TileSet" path="res://regions/terrain_tileset.tres" id="4_osk4j"]
-[ext_resource type="Script" path="res://world/ground.gd" id="5_lcsmi"]
-[ext_resource type="Script" path="res://world/tall_grass.gd" id="6_vkm6t"]
-[ext_resource type="Script" path="res://world/prop.gd" id="7_ct8vd"]
-[ext_resource type="PackedScene" path="res://actors/npc.tscn" id="8_yvwj8"]
-[ext_resource type="Script" path="res://actors/npc.gd" id="9_6yp8w"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/roc.png" id="10_5mdr5"]
-[ext_resource type="Script" path="res://world/story_prop.gd" id="11_tik4p"]
-[ext_resource type="Script" path="res://world/pickup.gd" id="12_dwlnw"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="13_7ey14"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="14_fn66g"]
-[ext_resource type="Script" path="res://actors/dino_npc.gd" id="15_ffmpm"]
-[ext_resource type="Script" path="res://world/zone_exit.gd" id="16_15k7d"]
+[ext_resource type="Script" path="res://world/region.gd" id="1_gdhfx"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/plaines.ogg" id="2_w618k"]
+[ext_resource type="Texture2D" path="res://assets/art/ground/plancher.png" id="3_osk4j"]
+[ext_resource type="TileSet" path="res://regions/terrain_tileset.tres" id="4_lcsmi"]
+[ext_resource type="Script" path="res://world/ground.gd" id="5_vkm6t"]
+[ext_resource type="Script" path="res://world/tall_grass.gd" id="6_ct8vd"]
+[ext_resource type="Script" path="res://world/prop.gd" id="7_yvwj8"]
+[ext_resource type="Script" path="res://tools/zones/flagged_prop.gd" id="8_6yp8w"]
+[ext_resource type="PackedScene" path="res://actors/npc.tscn" id="9_5mdr5"]
+[ext_resource type="Script" path="res://actors/npc.gd" id="10_tik4p"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/roc.png" id="11_dwlnw"]
+[ext_resource type="Script" path="res://world/story_prop.gd" id="12_7ey14"]
+[ext_resource type="Script" path="res://world/pickup.gd" id="13_fn66g"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="14_ffmpm"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="15_15k7d"]
+[ext_resource type="Script" path="res://actors/dino_npc.gd" id="16_f5308"]
+[ext_resource type="Script" path="res://world/zone_exit.gd" id="17_wget7"]
 
-[node name="Cabinet" type="Node2D" unique_id=95176048]
-script = ExtResource("1_2sie2")
+[node name="Cabinet" type="Node2D" unique_id=1558803566]
+script = ExtResource("1_gdhfx")
 region_id = &"cabinet"
 display_name = "Port-Ambre"
 zone_name = "Le Cabinet d'Hélène"
 levels = Vector2i(1, 1)
-music = ExtResource("2_gdhfx")
+music = ExtResource("2_w618k")
 ambience_id = &"cabinet"
 indoor = true
-ground_tex = ExtResource("3_w618k")
+ground_tex = ExtResource("3_osk4j")
 relief = PackedStringArray()
 
-[node name="Terrain" type="TileMapLayer" parent="." unique_id=1960416992]
+[node name="Terrain" type="TileMapLayer" parent="." unique_id=166378561]
 tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAANAAAAAAAAAAAAAAAOAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAEAAAAAAAAAAAAPAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAAAAAAAAAAOAAIAAAAAAAAAAAAPAAIAAAAAAAAAAAAAAAMAAAAAAAAAAAABAAMAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAAJAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAANAAMAAAAAAAAAAAAOAAMAAAAAAAAAAAAPAAMAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAANAAQAAAAAAAAAAAAOAAQAAAAAAAAAAAAPAAQAAAAAAAAAAAAAAAUAAAAAAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAAAAAAAAAAEAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAGAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAJAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAMAAUAAAAAAAAAAAANAAUAAAAAAAAAAAAOAAUAAAAAAAAAAAAPAAUAAAAAAAAAAAAAAAYAAAAAAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAAOAAYAAAAAAAAAAAAPAAYAAAAAAAAAAAAAAAcAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAANAAcAAAAAAAAAAAAOAAcAAAAAAAAAAAAPAAcAAAAAAAAAAAAAAAgAAAAAAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAAAAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAOAAgAAAAAAAAAAAAPAAgAAAAAAAAAAAAAAAkAAAAAAAAAAAABAAkAAAAAAAAAAAACAAkAAAAAAAAAAAADAAkAAAAAAAAAAAAEAAkAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAkAAAAAAAAAAAAHAAkAAAAAAAAAAAAIAAkAAAAAAAAAAAAJAAkAAAAAAAAAAAAKAAkAAAAAAAAAAAALAAkAAAAAAAAAAAAMAAkAAAAAAAAAAAANAAkAAAAAAAAAAAAOAAkAAAAAAAAAAAAPAAkAAAAAAAAAAAAAAAoAAAAAAAAAAAABAAoAAAAAAAAAAAACAAoAAAAAAAAAAAADAAoAAAAAAAAAAAAEAAoAAAAAAAAAAAAFAAoAAAAAAAAAAAAGAAoAAAAAAAAAAAAHAAoAAAAAAAAAAAAIAAoAAAAAAAAAAAAJAAoAAAAAAAAAAAAKAAoAAAAAAAAAAAALAAoAAAAAAAAAAAAMAAoAAAAAAAAAAAANAAoAAAAAAAAAAAAOAAoAAAAAAAAAAAAPAAoAAAAAAAAAAAA=")
-tile_set = ExtResource("4_osk4j")
+tile_set = ExtResource("4_lcsmi")
 
-[node name="Ground" type="ColorRect" parent="." unique_id=470995403 node_paths=PackedStringArray("terrain")]
+[node name="Ground" type="ColorRect" parent="." unique_id=248364251 node_paths=PackedStringArray("terrain")]
 z_index = -10
-script = ExtResource("5_lcsmi")
+script = ExtResource("5_vkm6t")
 terrain = NodePath("../Terrain")
 
-[node name="Entities" type="Node2D" parent="." unique_id=1517555329]
+[node name="Entities" type="Node2D" parent="." unique_id=1859018191]
 y_sort_enabled = true
 
-[node name="TallGrass" type="Node2D" parent="Entities" unique_id=981140111 node_paths=PackedStringArray("terrain")]
-script = ExtResource("6_vkm6t")
+[node name="TallGrass" type="Node2D" parent="Entities" unique_id=1527592668 node_paths=PackedStringArray("terrain")]
+script = ExtResource("6_ct8vd")
 terrain = NodePath("../../Terrain")
 
-[node name="MurCabinet" type="StaticBody2D" parent="Entities" unique_id=826259324]
+[node name="MurCabinet" type="StaticBody2D" parent="Entities" unique_id=1319551956]
 position = Vector2(86.4, 62.4)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "mur_cabinet"
 
-[node name="MurCabinet2" type="StaticBody2D" parent="Entities" unique_id=541382802]
-position = Vector2(254.4, 62.4)
-script = ExtResource("7_ct8vd")
+[node name="MurCabinet2" type="StaticBody2D" parent="Entities" unique_id=2029599387]
+position = Vector2(254.4, 60.48)
+script = ExtResource("7_yvwj8")
 kind = "mur_cabinet"
 
-[node name="MurCabinet3" type="StaticBody2D" parent="Entities" unique_id=2054321052]
-position = Vector2(422.4, 62.4)
-script = ExtResource("7_ct8vd")
+[node name="MurCabinet3" type="StaticBody2D" parent="Entities" unique_id=1630447682]
+position = Vector2(422.4, 58.56)
+script = ExtResource("7_yvwj8")
 kind = "mur_cabinet"
 
-[node name="MurCabinet4" type="StaticBody2D" parent="Entities" unique_id=2060974189]
-position = Vector2(590.4, 62.4)
-script = ExtResource("7_ct8vd")
+[node name="MurCabinet4" type="StaticBody2D" parent="Entities" unique_id=230476153]
+position = Vector2(590.4, 56.64)
+script = ExtResource("7_yvwj8")
 kind = "mur_cabinet"
 
-[node name="MurCabinet5" type="StaticBody2D" parent="Entities" unique_id=1793742312]
-position = Vector2(691.2, 62.4)
-script = ExtResource("7_ct8vd")
+[node name="MurCabinet5" type="StaticBody2D" parent="Entities" unique_id=2086198350]
+position = Vector2(691.2, 54.72)
+script = ExtResource("7_yvwj8")
 kind = "mur_cabinet"
 
-[node name="Bibliotheque" type="StaticBody2D" parent="Entities" unique_id=1217447986]
+[node name="Bibliotheque" type="StaticBody2D" parent="Entities" unique_id=2043830115]
 position = Vector2(76.8, 91.2)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "bibliotheque"
 
-[node name="Bureau" type="StaticBody2D" parent="Entities" unique_id=1464531727]
+[node name="Bureau" type="StaticBody2D" parent="Entities" unique_id=723707356]
 position = Vector2(249.6, 144)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "bureau"
 
-[node name="Lampe" type="StaticBody2D" parent="Entities" unique_id=1059053086]
+[node name="Lampe" type="StaticBody2D" parent="Entities" unique_id=312415383]
 position = Vector2(355.2, 91.2)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "lampe"
 
-[node name="Fauteuil" type="StaticBody2D" parent="Entities" unique_id=1123639414]
+[node name="Fauteuil" type="StaticBody2D" parent="Entities" unique_id=1632970666]
 position = Vector2(451.2, 163.2)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "fauteuil"
 
-[node name="Etabli" type="StaticBody2D" parent="Entities" unique_id=1791993160]
+[node name="Etabli" type="StaticBody2D" parent="Entities" unique_id=300000416]
 position = Vector2(537.6, 96)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "etabli"
 
-[node name="Couveuse" type="StaticBody2D" parent="Entities" unique_id=1244377563]
+[node name="Couveuse" type="StaticBody2D" parent="Entities" unique_id=1396308776]
 position = Vector2(662.4, 153.6)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "couveuse"
 
-[node name="FougerePot" type="StaticBody2D" parent="Entities" unique_id=5874013]
+[node name="FougerePot" type="StaticBody2D" parent="Entities" unique_id=373444846]
 position = Vector2(43.2, 460.8)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "fougere_pot"
 
-[node name="FougerePot2" type="StaticBody2D" parent="Entities" unique_id=595176732]
+[node name="FougerePot2" type="StaticBody2D" parent="Entities" unique_id=285137809]
 position = Vector2(724.8, 460.8)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "fougere_pot"
 
-[node name="EtagereBocaux" type="StaticBody2D" parent="Entities" unique_id=1393960790]
+[node name="EtagereBocaux" type="StaticBody2D" parent="Entities" unique_id=1669583568]
 position = Vector2(158.4, 91.2)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "etagere_bocaux"
 
-[node name="Roc" type="StaticBody2D" parent="Entities" unique_id=428864403 instance=ExtResource("8_yvwj8")]
+[node name="LanterneCrochet" type="StaticBody2D" parent="Entities" unique_id=159373310]
+position = Vector2(475.2, 69.6)
+script = ExtResource("8_6yp8w")
+hide_flag = &"roc_dehors"
+kind = "lanterne_crochet"
+
+[node name="CrochetVide" type="StaticBody2D" parent="Entities" unique_id=681536014]
+position = Vector2(475.2, 69.6)
+script = ExtResource("8_6yp8w")
+show_flag = &"roc_dehors"
+kind = "crochet_vide"
+
+[node name="BouilloirePoele" type="StaticBody2D" parent="Entities" unique_id=1602860104]
+position = Vector2(297.6, 96)
+script = ExtResource("7_yvwj8")
+kind = "bouilloire_poele"
+
+[node name="Roc" type="StaticBody2D" parent="Entities" unique_id=509723781 instance=ExtResource("9_5mdr5")]
 position = Vector2(312, 220.8)
 collision_mask = 0
-script = ExtResource("9_6yp8w")
+script = ExtResource("10_tik4p")
 display_name = "Prof. Roc"
-sheet = ExtResource("10_5mdr5")
+sheet = ExtResource("11_dwlnw")
 event = &"roc"
 hide_flag = &"roc_dehors"
 
-[node name="TiroirRoc" type="StaticBody2D" parent="Entities" unique_id=815053802]
+[node name="TiroirRoc" type="StaticBody2D" parent="Entities" unique_id=2124977430]
 position = Vector2(208.8, 163.2)
-script = ExtResource("11_tik4p")
+script = ExtResource("12_7ey14")
 event = &"tiroir_roc"
 kind = ""
 
-[node name="Page6" type="StaticBody2D" parent="Entities" unique_id=412115707]
+[node name="Page6" type="StaticBody2D" parent="Entities" unique_id=1808174943]
 position = Vector2(662.4, 187.2)
-script = ExtResource("12_dwlnw")
+script = ExtResource("13_fn66g")
 taken_flag = &"found_journal_6"
 dialogue_id = &"page_6"
 show_flag = &"roc_parti_vu"
 kind = "ambre"
 
-[node name="Isaure" type="StaticBody2D" parent="Entities" unique_id=637228469 instance=ExtResource("8_yvwj8")]
+[node name="Isaure" type="StaticBody2D" parent="Entities" unique_id=453121708 instance=ExtResource("9_5mdr5")]
 position = Vector2(192, 336)
 collision_mask = 0
-script = ExtResource("9_6yp8w")
+script = ExtResource("10_tik4p")
 display_name = "Isaure"
-sheet = ExtResource("13_7ey14")
+sheet = ExtResource("14_ffmpm")
 facing = "right"
 show_flag = &"prologue_arrived"
 hide_flag = &"maia_left"
 
-[node name="Maia" type="StaticBody2D" parent="Entities" unique_id=890830174 instance=ExtResource("8_yvwj8")]
+[node name="Maia" type="StaticBody2D" parent="Entities" unique_id=1851246255 instance=ExtResource("9_5mdr5")]
 position = Vector2(249.6, 364.8)
 collision_mask = 0
-script = ExtResource("9_6yp8w")
+script = ExtResource("10_tik4p")
 display_name = "Maïa"
-sheet = ExtResource("14_fn66g")
+sheet = ExtResource("15_15k7d")
 facing = "right"
 show_flag = &"prologue_arrived"
 hide_flag = &"maia_left"
 
-[node name="Socle" type="StaticBody2D" parent="Entities" unique_id=133774770]
+[node name="Socle" type="StaticBody2D" parent="Entities" unique_id=2121133783]
 position = Vector2(590.4, 274.56)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "socle"
 
-[node name="Bebe_velociraptor" type="StaticBody2D" parent="Entities" unique_id=1627139028]
+[node name="Bebe_velociraptor" type="StaticBody2D" parent="Entities" unique_id=1759959018]
 position = Vector2(590.4, 278.4)
-script = ExtResource("15_ffmpm")
+script = ExtResource("16_f5308")
 event = &"choose_starter"
 flip = true
 level = 5
 lift = 25.0
 
-[node name="Socle2" type="StaticBody2D" parent="Entities" unique_id=1955132470]
+[node name="Socle2" type="StaticBody2D" parent="Entities" unique_id=2082217873]
 position = Vector2(662.4, 308.16)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "socle"
 
-[node name="Bebe_ankylosaurus" type="StaticBody2D" parent="Entities" unique_id=1579507375]
+[node name="Bebe_ankylosaurus" type="StaticBody2D" parent="Entities" unique_id=2086197430]
 position = Vector2(662.4, 312)
-script = ExtResource("15_ffmpm")
+script = ExtResource("16_f5308")
 species_id = &"ankylosaurus"
 event = &"choose_starter"
 flip = true
 level = 5
 lift = 25.0
 
-[node name="Socle3" type="StaticBody2D" parent="Entities" unique_id=289007769]
+[node name="Socle3" type="StaticBody2D" parent="Entities" unique_id=2111185785]
 position = Vector2(729.6, 274.56)
-script = ExtResource("7_ct8vd")
+script = ExtResource("7_yvwj8")
 kind = "socle"
 
-[node name="Bebe_parasaurolophus" type="StaticBody2D" parent="Entities" unique_id=1739543595]
+[node name="Bebe_parasaurolophus" type="StaticBody2D" parent="Entities" unique_id=764980246]
 position = Vector2(729.6, 278.4)
-script = ExtResource("15_ffmpm")
+script = ExtResource("16_f5308")
 species_id = &"parasaurolophus"
 event = &"choose_starter"
 flip = true
 level = 5
 lift = 25.0
 
-[node name="Spawns" type="Node2D" parent="." unique_id=978962813]
+[node name="Spawns" type="Node2D" parent="." unique_id=1894403426]
 
-[node name="Depart" type="Marker2D" parent="Spawns" unique_id=411283915]
+[node name="Depart" type="Marker2D" parent="Spawns" unique_id=69020617]
 position = Vector2(384, 451.2)
 
-[node name="Habitats" type="Node2D" parent="." unique_id=1878109495]
+[node name="Habitats" type="Node2D" parent="." unique_id=1818950348]
 
-[node name="Exits" type="Node2D" parent="." unique_id=1169094024]
+[node name="Exits" type="Node2D" parent="." unique_id=252979171]
 
-[node name="VersPortAmbre" type="Area2D" parent="Exits" unique_id=1515646870]
+[node name="VersPortAmbre" type="Area2D" parent="Exits" unique_id=2028304924]
 position = Vector2(336, 501.59998)
-script = ExtResource("16_15k7d")
+script = ExtResource("17_wget7")
 size = Vector2(96, 26.400002)
 target_zone = &"port_ambre"
 target_spawn = &"DepuisCabinet"

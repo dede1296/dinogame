@@ -166,6 +166,7 @@ static func fishes_tube(singer: Node) -> void:
 	await S.wait(1.0)
 	if is_instance_valid(singer):
 		Stage.lunge(singer, Stage.chloe().global_position, 0.7, false)
+		Stage.show_thing("tube_cuivre", Stage.chloe().global_position + Vector2(14.0, 24.0), "TubeVoix")   # (at her feet)
 
 
 ## She stretches her muzzle to Chloé and sniffs, long.

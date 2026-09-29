@@ -373,6 +373,8 @@ static func _story(root: Region, entities: Node2D) -> void:
 	var nest = _put(entities, "nid_tortue", "monticule", P.NIDS[1], false, load(STORY_PROP))
 	nest.name = "NidTortues"
 	nest.event = &"nid_tortues"
+	nest.after_flag = &"tortues_sauvees"   # (empty once the little ones have reached the sea)
+	nest.after_kind = "nid_tortue_vide"
 	# The fishermen of « La Sardine », Joss by the lagoon.
 	B.npc(root, "Gustave", "Gustave", CHARS % "pecheur", P.GUSTAVE.x, P.GUSTAVE.y, {"facing": "up", "event": &"pecheurs_cote"})
 	B.npc(root, "Firmin", "Firmin", CHARS % "sbire", P.FIRMIN.x, P.FIRMIN.y, {"facing": "left", "event": &"pecheurs_cote"})

@@ -94,6 +94,8 @@ chaque nouveau repli ; retirer la ligne une fois refait.
 
 | Élément | Fichiers | Fait aujourd'hui par | À faire avec nano-banana |
 |---|---|---|---|
+| Corde de falaise, nid de tortues vide (29/09) | `generated_imgs/derived-finition-corde-nid.jpg` → `props/corde_falaise.png`, `nid_tortue_vide.png` | nano-banana a peint une ombre portée floue sous les deux objets et a refusé deux fois de l'effacer : bande basse repeinte en magenta à la main | Redemander sans ombre portée (le résultat actuel est propre) |
+| Ptéranodon en vol (29/09) | `dinos/pteranodon_vol.png` (keilcf) | nano-banana : les 4 temps ont tous les ailes plutôt hautes | Redemander un vrai cycle (ailes hautes, à plat, basses) |
 | Maisons de Havre-Doré 1 à 4 (bleue, corail, sauge, ivoire) : côtés et dos | `generated_imgs/vues/havre_maison_{1..4}_cote.png` et `_dos.png` → `assets/models/volumes/havre_maison_*.glb` | Repli : composés depuis la vue de face (`maisons.py vues`, porte et lanterne effacées, mur étiré ; dos = face en miroir). Une repeinte ComfyUI floutait sans rien apporter | Dessiner le côté droit et le dos (même méthode que les boutiques), puis `maisons.py textures` + `tout` |
 | Relais des Dresseurs : vue de côté | `generated_imgs/vues/havre_relais_cote.png` | nano-banana a échoué (3 essais) : vue de 3/4, seul le grand mur est utilisé ; croupes peintes avec les tuiles de la façade | Retenter un vrai profil à 90° |
 | Cabane sur pilotis : vue de côté | `generated_imgs/vues/cabane_pilotis_cote.png` | nano-banana a dessiné un pignon en planches, contraire aux croupes retenues : seul le mur latéral est utilisé | Redessiner le côté avec un toit de chaume à croupes |
@@ -246,12 +248,32 @@ Méthode suivie (29/09) :
   piton, tronc à lianes), Plaine Volcanique (tronc calciné aux braises, fougères pionnières dans
   la cendre), Terre des Apex (bennettitale Williamsonia, magnolia, prêle géante, lianes).
 
-**Reste à faire** : les objets tenus pendant les scènes (boîte en fer-blanc de Griffe-Grise et du
-Vieux Rempart, piège à mâchoires, tube de cuivre de la Voix, registre du Passeur) ; nids de
-Dimorphodons sur les falaises des Plaines (plus petits) ; roue du chariot de Brac peinte (elle est
-dessinée par le code) ; rocher « PAR OÙ ?! » et corde pendante du canyon des Vents ; frise de
-masques d'os au-dessus de l'entrée du temple ; variante « vide » du nid de tortues ; fumée du feu
-du camp ; les lignes « examiner » des nouvelles sortes (proposées dans le patch de l'intégrateur).
+**Passe de finition (29/09, faite)** — `tools/art-jobs/finition.mjs` :
+- objets tenus en scène, montrés par `Stage.show_thing` (fondu) et rangés par `Stage.take_thing`
+  (Chloé se penche, l'objet s'efface) : boîte en fer-blanc de Griffe-Grise, piège à mâchoires,
+  tube de cuivre de la Voix, boîte ronde du Vieux Rempart, registre du Passeur — à ~1,3-1,5 fois
+  leur taille réelle (0,3-0,7 m) pour rester lisibles sur téléphone ;
+- roue du chariot de Brac peinte (`props/roue_chariot.png`, tournée pixel par pixel par
+  `DesertSanctuaire._turned` ; repli sur le dessin du code) ;
+- nids de Dimorphodons (0,7 m), rocher en forme d'œuf (~2 m, comme les rochers voisins),
+  buisson-nid de Chipie, frise de masques au temple (décalée à gauche : la porte cache le centre) ;
+- nid de tortues vide : `StoryProp.after_flag` / `after_kind` au chargement, `Stage.repaint` en
+  direct à la fin de la scène ;
+- Cabinet : lanterne à son crochet (et crochet vide la nuit où Roc sort : `FlaggedProp`), petit
+  poêle à bouilloire contre le mur ;
+- petites bêtes : escargot, fourmis, ammonite (`WildlifeDB`).
+
+**Règles apprises** : un objet mural (applique, lanterne à un crochet) se pose au pied du mur avec
+un `foot` NÉGATIF (prop.gd : l'image monte de −foot × sa hauteur), jamais comme un objet au sol
+(la lanterne de 3 m traversait le mur du Cabinet). Toujours contrôler la taille réelle d'une
+nouvelle sorte (hauteur de l'image × scale, rapportée à la bibliothèque ≈ 2 m) : plusieurs objets
+sortaient 3 à 4 fois trop grands. Deux décors de la même profondeur qui se chevauchent se
+découpent en escalier : décaler l'un de quelques centimètres (murs du Cabinet).
+
+**Reste à faire** : la corde pendante et le rocher « PAR OÙ ?! » du canyon des Vents (à poser
+pendant la scène de Brac, contre une vraie paroi : à (8,5 ; 2,2) le sol est plat, la corde de 8 m
+tenait debout dans le vide, retirée) ; frise du temple centrée (la peindre dans `porte_temple`) ;
+fumée du feu du camp.
 La faune (crabes, moustiques, libellules, poissons, ptérosaures en vol…) a sa propre passe
 (`assets/art/fauna/`, `world/view3d/wildlife.gd`).
 

@@ -27,14 +27,23 @@ const SADDLE_SHEETS := {MASK: "chloe_selle_masque", VEST: "chloe_selle_gilet"}
 ## (on deep water, the picture is set at the surface).
 ## &"assis": sitting on the ground (knees up; Tante Sirocco cross-legged; the fisherman mending his
 ## net, the ex-henchman emptying his boot), Roc in his armchair (the chair is the room's prop).
+## &"main": Chloé reaching one arm forward, palm open (offering her hand). &"grimpe": Chloé
+## climbing onto a rock just in front of her (knee up, hands pressed down; draw the rock separately,
+## she is drawn as if it were invisible). Maïa's &"accroupi": kneeling on one knee, like
+## `chloe_accroupie`.
 const POSES := {
 	"chloe": {
 		&"accroupi": {"sheet": "chloe_accroupie", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
 		&"nage": {"sheet": "chloe_nage", "cols": 4, "rows": 2, "frames": [[0, 4], [1, 5], [2, 6], [3, 7]], "fps": 2.5,
 			"afloat": 0.48},
 		&"assis": {"sheet": "chloe_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+		&"main": {"sheet": "chloe_main", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+		&"grimpe": {"sheet": "chloe_grimpe", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
 	},
-	"maia": {&"assis": {"sheet": "maia_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
+	"maia": {
+		&"assis": {"sheet": "maia_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+		&"accroupi": {"sheet": "maia_accroupi", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+	},
 	"tante_sirocco": {&"assis": {"sheet": "tante_sirocco_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"roc": {&"assis": {"sheet": "roc_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"pecheur": {&"assis": {"sheet": "pecheur_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},

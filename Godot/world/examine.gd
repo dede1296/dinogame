@@ -359,6 +359,14 @@ const LINES := {
 	"roseaux_secs": ["Des roseaux tout secs, qui craquent sous les doigts. Ici, le Marais a oublié de boire."],
 	"conifere_sec": ["Un petit conifère du désert, tordu et têtu. Il boit une goutte par an, et il ne s'en plaint pas."],
 	"rocher_lichen": ["Un rocher couvert de lichen orange. Chloé vérifie qu'il ne respire pas. Non. Ouf."],
+	# Passe de finition (29/09).
+	"nid_dimorphodon": ["Un petit nid de brindilles, deux œufs mouchetés dedans. « Ne pas déranger », dit le panneau. Chloé ne dérange pas."],
+	"rocher_oeuf": ["Un rocher en forme d'œuf. Rien qu'un rocher. Vraiment. Le panneau y tient beaucoup."],
+	"frise_masques": ["Une frise de petits masques d'os, sculptée au-dessus de l'entrée. Ils regardent tous dans la même direction."],
+	"corde_falaise": ["Une vieille corde noueuse qui pend de la falaise. Quelqu'un l'a beaucoup escaladée, et pas toujours dans le calme."],
+	"lanterne_crochet": ["La vieille lanterne de Roc, à son crochet. Elle brûle doucement, même quand il n'est pas là pour la voir."],
+	"crochet_vide": ["Un crochet vide. La lanterne de Roc n'y est plus. (« … disparu du crochet », a pensé Chloé, une fois.)"],
+	"bouilloire_poele": ["Une bouilloire sur un petit poêle. De l'eau chauffe doucement, pour un thé que personne ne vient jamais boire."],
 }
 ## Reach for the big ones (px from their origin, the middle of their foot).
 const REACH := {"maison_blanche": 90.0, "maison_jaune": 90.0, "maison_port": 90.0, "maison_3d": 90.0, "barque": 40.0, "arbre_geant": 60.0,

@@ -141,6 +141,12 @@ static func _story(root: Region, entities: Node2D) -> void:
 	# « posée sur la table du vieux poste d'observation » (29/09): the table, just behind it.
 	if Prop.KINDS.has("table_observation"):
 		B.prop(entities, "table_observation", B.cell(100.0, 12.1))
+	# « Nids de Dimorphodons : ne pas déranger ! » (panneau_falaises, dialogue_db.gd:166) :
+	# petits nids sur la corniche de la falaise, près du panneau (finition, 29/09). Assez loin du
+	# feu de camp (96.0, 10.4, _rest_spots) : il efface tout prop à moins de 2.6 cases de lui.
+	if Prop.KINDS.has("nid_dimorphodon"):
+		for p: Array in [[91.5, 9.0, false], [103.0, 9.5, true]]:
+			B.prop(entities, "nid_dimorphodon", B.cell(p[0], p[1]), p[2])
 	# The Grand Crâne: the Alpha's cave at the back of its notch, the amber door closing the
 	# notch; the Alpha once it is open.
 	var lair := CaveMouth.new()
@@ -173,7 +179,7 @@ static func _annexes(root: Region, entities: Node2D) -> void:
 	chipie.hide_flag = &"chipie_au_nid"
 	chipie.position = B.cell(CHIPIE_PATH[0].x, CHIPIE_PATH[0].y)
 	entities.add_child(chipie)
-	var nest = B.prop(entities, "buisson", B.cell(40.6, 34.1), false, load(STORY_PROP))
+	var nest = B.prop(entities, "buisson_nid" if Prop.KINDS.has("buisson_nid") else "buisson", B.cell(40.6, 34.1), false, load(STORY_PROP))
 	nest.name = "NidChipie"
 	nest.event = &"nid_chipie"
 	# The pond: the ford lights up at full moon, the singers gather; page 2 on the islet.
@@ -218,7 +224,7 @@ static func _annexes(root: Region, entities: Node2D) -> void:
 	entities.add_child(sleeper)
 	# A smile or two.
 	B.sign(entities, B.cell(25.5, 66.5), &"panneau_anse")
-	B.prop(entities, "rocher", B.cell(65.0, 39.6))
+	B.prop(entities, "rocher_oeuf" if Prop.KINDS.has("rocher_oeuf") else "rocher", B.cell(65.0, 39.6))
 	B.sign(entities, B.cell(64.0, 40.3), &"panneau_oeuf")
 
 

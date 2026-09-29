@@ -7,9 +7,14 @@ extends Prop
 @export var event: StringName
 ## Gone once this story flag is set (a door that has been opened).
 @export var hide_flag: StringName
+## Another picture once this story flag is set (the turtles' nest, empty once they are gone).
+@export var after_flag: StringName
+@export var after_kind := ""
 
 
 func _ready() -> void:
+	if not Engine.is_editor_hint() and after_flag != &"" and after_kind != "" and Game.flag(after_flag):
+		kind = after_kind
 	super()
 	if not Engine.is_editor_hint() and hide_flag != &"" and Game.flag(hide_flag):
 		queue_free()

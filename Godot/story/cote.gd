@@ -135,6 +135,7 @@ static func _reef_lines(dark: bool) -> Array:
 ## The cliffs white with Pteranodons; a tiny one chasing a big one for its fish: Moustique.
 static func _cliff_lines(dark: bool) -> Array:
 	var cliffs := S.at(P.FALAISES.x, P.FALAISES.y)
+	var to := cliffs + Vector2(-60.0, 40.0)   # where the little one catches up with the big one
 	var flock := {}
 	var soar := func() -> void:
 		await CS.pan(cliffs + Vector2(-2.0 * S.CELL, 3.0 * S.CELL), 1.6)
@@ -152,7 +153,6 @@ static func _cliff_lines(dark: bool) -> Array:
 		flock["moustique"] = small
 		Stage.fade_in(small, 0.4)
 		small.cry(&"attaque")
-		var to := cliffs + Vector2(-60.0, 40.0)
 		if big:
 			CS.fly(big, to + Vector2(80.0, -20.0), 1.4)
 		await CS.fly(small, to, 1.5)
@@ -166,6 +166,10 @@ static func _cliff_lines(dark: bool) -> Array:
 	]
 	lines.append(CS.cue({"text": "Le poisson tombe. Aucun des deux ne l'attrape. Il fait « ploc » dans le lagon."},
 		func() -> void:
+			var ploc := CS.Act.water_near(to, 8)   # (the water nearest the chase)
+			if ploc != to:
+				CS.splash(ploc, 10)
+				CS.sfx("res://assets/audio/sfx/plongee.mp3", -10.0)
 			for k in flock:
 				var n = flock[k]
 				if is_instance_valid(n):
