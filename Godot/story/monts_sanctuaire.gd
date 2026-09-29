@@ -32,6 +32,11 @@ const XP_ARRIVEE := 20
 ## (tools/zones/sanctuaire_givre.gd), a dull thud (low), every so often (s).
 const PUDDLE_NODE := "FlaqueRonde"
 const PUDDLE_MIDDLE_PX := 8.0
+## Its water in its picture (flaque_ronde): half its width (m), its depth over its width on screen
+## (the ripples over it: Stage.puddle); the close-up on it (m from the camera).
+const PUDDLE_RADIUS_M := 0.37
+const PUDDLE_SQUASH := 0.58
+const PUDDLE_CLOSE_UP_M := 5.0
 const STEP_DB := -5.0
 const STEP_PITCH := 0.55
 const STEP_EVERY := 1.25
@@ -85,15 +90,18 @@ static func arrival() -> void:
 	var steps := {"on": true}
 	var puddle_px: Vector2 = _puddle_px(chloe)
 	var trembles := func() -> void:
-		Stage.look_at(puddle_px + Vector2(0.0, -12.0), 1.0)
+		Stage.close_up(puddle_px, PUDDLE_CLOSE_UP_M, 1.2)
+		var water := Stage.puddle(puddle_px, PUDDLE_RADIUS_M, PUDDLE_SQUASH)
 		await S.wait(0.7)
 		while steps["on"]:
 			Audio.play_sfx(load(MS.RUMBLE), STEP_DB, 0.03, STEP_PITCH)
 			Stage.shake(1.6, 0.18)
-			Stage.ripples(puddle_px, 3, 0.42, 1.0)
+			if is_instance_valid(water):
+				water.impact()
 			await S.wait(STEP_EVERY)
 	var silence := func() -> void:
 		steps["on"] = false
+		Stage.wide()
 		Stage.emote(chloe, "!")
 		await S.wait(0.6)
 		CS.pan(rest + Vector2(0.0, -1.0 * S.CELL), 1.4)

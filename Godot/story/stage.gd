@@ -323,38 +323,19 @@ static func light_at(px: Vector2, colour: Color, reach := 3.2) -> OmniLight3D:
 	return light
 
 
-## Rings on still water at `px` (world pixels: a puddle that trembles at each heavy step, far
-## off): `rings` circles flat on the ground grow from its middle and fade, one after the other, to
-## `radius_m` metres. Awaitable (until the last one has started).
-static func ripples(px: Vector2, rings := 2, radius_m := 0.4, secs := 0.9, colour := Color(0.88, 0.96, 1.0, 0.9)) -> void:
+## The ripples of a puddle at `px` (world pixels), `radius_m` metres (half its width), laid over
+## its picture and ready: call impact() on what it returns at each heavy step (PuddleRipple).
+## `squash`: its depth over its width, as its picture shows it (a picture standing up, squashed to
+## look flat, is flatter than a real disc on the ground). Null without a view.
+static func puddle(px: Vector2, radius_m := 0.55, squash := 1.0) -> PuddleRipple:
 	var view := _view()
 	if view == null or view.heights == null:
-		return
-	var at: Vector3 = view.heights.to_3d(px) + Vector3(0.0, 0.02, 0.0)
-	for i in rings:
-		var mat := StandardMaterial3D.new()
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		mat.albedo_color = colour
-		mat.no_depth_test = true   # (over the puddle's standing picture, which would hide its far half)
-		mat.render_priority = 1
-		var torus := TorusMesh.new()   # (flat on the ground: its axis is up)
-		torus.inner_radius = 0.9
-		torus.outer_radius = 1.0
-		torus.rings = 40
-		torus.ring_segments = 4
-		torus.material = mat
-		var ring := MeshInstance3D.new()
-		ring.mesh = torus
-		ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		view.add_child(ring)
-		ring.position = at
-		ring.scale = Vector3(1.0, 0.25, 1.0) * radius_m * 0.15
-		var t := ring.create_tween().set_parallel(true)
-		t.tween_property(ring, "scale", Vector3(1.0, 0.25, 1.0) * radius_m, secs).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		t.tween_property(mat, "albedo_color:a", 0.0, secs).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		t.chain().tween_callback(ring.queue_free)
-		await S.wait(secs * 0.3)
+		return null
+	var water := PuddleRipple.new()
+	water.setup(radius_m, squash)
+	view.add_child(water)
+	water.position = view.heights.to_3d(px) + Vector3(0.0, 0.03, 0.0)
+	return water
 
 
 ## The whole screen flashes (a burst of amber light, lightning, a great revelation). Awaitable.
@@ -406,11 +387,29 @@ static func look_at_actor(actor, secs := 0.9) -> void:
 		await look_at(actor.global_position, secs)
 
 
+## A close-up on something small at `px` (world pixels: a puddle whose water trembles): the camera
+## glides there and comes down to `metres` away, until wide(), look_back() or the end of the scene.
+## Awaitable: the time for the camera to get there.
+static func close_up(px: Vector2, metres := 5.0, secs := 1.4) -> void:
+	var view := _view()
+	if view:
+		view.close_up = metres
+	await look_at(px, secs)
+
+
+## The camera goes back up to the player's distance (after close_up), wherever it looks.
+static func wide() -> void:
+	var view := _view()
+	if view:
+		view.close_up = 0.0
+
+
 ## The camera comes back to Chloé. Awaitable.
 static func look_back(secs := 0.7) -> void:
 	var view := _view()
 	if view:
 		view.focus_px = Vector2.INF
+		view.close_up = 0.0
 	await S.wait(secs)
 
 

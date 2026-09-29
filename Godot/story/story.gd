@@ -414,6 +414,7 @@ static func lock(on: bool) -> void:
 			var view: Node = w.get_tree().get_first_node_in_group(&"world_view")
 			if view:
 				view.set("focus_px", Vector2.INF)
+				view.set("close_up", 0.0)
 
 
 static func say(steps: Array) -> void:

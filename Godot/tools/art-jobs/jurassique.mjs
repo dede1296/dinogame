@@ -26,7 +26,32 @@ export default ({ sheet, props, icons, sharp, find, OUT }) => [
   [`${OUT}/props/coffre_comptoir`, () => props({ id: "yu5f9h", scale: 0.5, outDir: `${OUT}/props`, names: ["coffre_comptoir"] })],
   [`${OUT}/props/table_cuisine`, () => props({ id: "x6s6qz", scale: 0.5, outDir: `${OUT}/props`, names: ["table_cuisine"] })],
   // Sanctuaire de Givre : la petite flaque de fonte ronde (les cercles qui tremblent, avant le Titan).
-  [`${OUT}/props/flaque_ronde`, () => props({ id: "rqnwww", scale: 0.5, outDir: `${OUT}/props`, names: ["flaque_ronde"] })],
+  // Recadrée sur la flaque et écrasée en 512×246 (debout en billboard, elle se lit « à plat »),
+  // éclaircie de 15 % (elle se perdait sur la glace), puis détourée sur son rebord : le rocher
+  // enneigé autour faisait un rectangle gris au sol. Il ne reste que l'eau et son liseré, sous les
+  // ondes de PuddleRipple.
+  [`${OUT}/props/flaque_ronde`, async () => {
+    const done = await props({ id: "rqnwww", scale: 0.5, outDir: `${OUT}/props`, names: ["flaque_ronde"] });
+    const file = `${OUT}/props/flaque_ronde.png`;
+    const { width, height } = await sharp(file).metadata();
+    const [top, bottom] = [0.15, 0.78];   // the band around the puddle (shares of the height)
+    const flat = await sharp(file)
+      .extract({ left: 0, top: Math.round(height * top), width, height: Math.round(height * (bottom - top)) })
+      .resize(512, 246, { fit: "fill" })
+      .modulate({ brightness: 1.15 }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const { data, info } = flat;
+    // The rim, in shares of the picture (measured on it); `soft`: the last share of the radius fades.
+    const [cx, cy, rx, ry, soft] = [0.497, 0.49, 0.372, 0.447, 0.03];
+    for (let y = 0; y < info.height; y++) {
+      for (let x = 0; x < info.width; x++) {
+        const d = Math.hypot((x / info.width - cx) / rx, (y / info.height - cy) / ry);
+        const i = (y * info.width + x) * 4 + 3;
+        data[i] = Math.round(data[i] * Math.min(1, Math.max(0, (1 - d) / soft)));
+      }
+    }
+    await sharp(data, { raw: info }).png({ compressionLevel: 9 }).toFile(file);
+    return done + ` — écrasée à 55 %, éclaircie, détourée en ellipse (${info.width}×${info.height})`;
+  }],
 
   // === NOUVELLE DIRECTION (29/09, 17h30) : références reconnaissables (allure, jamais logo/titre/visage). ===
 

@@ -16,13 +16,18 @@ const LOOK_HEIGHT := 0.7   # metres above Chloé's feet
 const SIZES_VERSION := 2
 const OLD_DISTANCE_TO_NEW := 0.75
 const EDGE := 3.0          # how far the target may go inside the zone's edges (m)
+const ZOOM_FOLLOW := 2.2   # how fast it comes down to a close-up and back (higher = quicker)
 
 var target := Vector3.ZERO
 var zone_size := Vector2(40, 26)
 var shake_source: Camera2D
+## A scene's close-up (WorldView.close_up): the distance it asks for (m), over the player's; 0: none.
+var close_up := 0.0
 var touch_controls: Node
 
 var _distance := DISTANCE_DEFAULT
+var _shown := DISTANCE_DEFAULT   # where it stands: glides to a close-up and back
+var _gliding := false
 var _focus := Vector3.ZERO
 var _touches := {}
 var _pinch_start := 0.0
@@ -34,6 +39,7 @@ func _ready() -> void:
 	near = 0.3
 	far = 120.0
 	_distance = saved_distance()
+	_shown = _distance
 
 
 ## The distance the player chose (Paramètres, pinch, wheel), or the default.
@@ -49,6 +55,7 @@ static func saved_distance() -> float:
 ## Jumps to the target (entering a zone), no smoothing.
 func snap() -> void:
 	_focus = _clamped(target)
+	_shown = _wanted()
 	_place()
 
 
@@ -66,7 +73,25 @@ func _process(delta: float) -> void:
 	# The Paramètres slider may have changed it.
 	_distance = clampf(float(Quality.pref("camera", "distance", _distance)), DISTANCE_MIN, DISTANCE_MAX)
 	_focus = _focus.lerp(_clamped(target), 1.0 - exp(-FOLLOW * delta))
+	_follow_close_up(delta)
 	_place()
+
+
+## Glides down to a close-up and back up to the player's distance; otherwise follows it at once
+## (a pinch, the wheel).
+func _follow_close_up(delta: float) -> void:
+	if close_up > 0.0:
+		_gliding = true
+	if not _gliding:
+		_shown = _distance
+		return
+	_shown = lerpf(_shown, _wanted(), 1.0 - exp(-ZOOM_FOLLOW * delta))
+	if close_up <= 0.0 and absf(_shown - _distance) < 0.05:
+		_gliding = false
+
+
+func _wanted() -> float:
+	return close_up if close_up > 0.0 else _distance
 
 
 func _clamped(t: Vector3) -> Vector3:
@@ -78,7 +103,7 @@ func _clamped(t: Vector3) -> Vector3:
 func _place() -> void:
 	var pitch := deg_to_rad(PITCH_DEG)
 	var back := Vector3(0.0, sin(pitch), cos(pitch))
-	position = _focus + Vector3(0, LOOK_HEIGHT, 0) + back * _distance
+	position = _focus + Vector3(0, LOOK_HEIGHT, 0) + back * _shown
 	look_at(position - back, Vector3.UP)
 	if shake_source:
 		h_offset = shake_source.offset.x / HeightMap.PX

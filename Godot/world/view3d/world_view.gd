@@ -294,6 +294,9 @@ var _floods: Array[Array] = []
 ## A scene shows something away from Chloé (Stage.look_at): the camera glides there (world
 ## pixels), then back to her when it is INF again.
 var focus_px := Vector2.INF
+## A scene's close-up on something small (Stage.close_up): the camera's distance (m) while it
+## lasts; 0: the player's own.
+var close_up := 0.0
 ## Someone walks through a door (Doorway): the scenery turns see-through as if Chloé stood here
 ## (world pixels: the front of the door), not deep in the doorway behind the facade.
 var occlusion_px := Vector2.INF
@@ -385,6 +388,7 @@ func _apply_quality() -> void:
 ## `zones`: every zone id -> scene path, to show the neighbours beyond the exits.
 func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	focus_px = Vector2.INF
+	close_up = 0.0
 	occlusion_px = Vector2.INF
 	for p in _proxies:
 		_free_proxy(p)
@@ -1644,6 +1648,7 @@ func _process(delta: float) -> void:
 		elif _swimmer_of(player):   # the camera follows her on the water, not the bottom
 			feet.y = maxf(feet.y, HeightMap.WATER_LEVEL)
 		camera.target = feet if focus_px == Vector2.INF else heights.to_3d(focus_px)
+		camera.close_up = close_up
 		RenderingServer.global_shader_parameter_set(&"player_world", feet if occlusion_px == Vector2.INF else heights.to_3d(occlusion_px))
 		_pollen.position = camera.target + Vector3(0, 1.5, 0)
 		_wildlife.heights = heights
