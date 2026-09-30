@@ -15,9 +15,9 @@ dest_files=["res://.godot/imported/sechoir.png-3db8e45e845a4b0c3d011d8038d283c3.
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.85
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

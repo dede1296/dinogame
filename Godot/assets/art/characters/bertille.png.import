@@ -15,9 +15,9 @@ dest_files=["res://.godot/imported/bertille.png-87ea13c93096c94966c17a3139e95e6e
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.85
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
