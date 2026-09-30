@@ -1,28 +1,84 @@
 extends RefCounted
-## Check (29/09, clin d'œil): Mémé Pervenche's goat — she says it was taken (Havre-Doré), Chloé
-## finds it tied to a stake at Brac's camp, and once Brac is beaten only the chewed rope is left;
-## back at Havre-Doré the goat is home and Pervenche thanks her.
+## Check (30/09, clin d'œil): Mémé Pervenche's goat — she says Bardane was taken (Havre-Doré),
+## Chloé finds her tied to a stake at Brac's camp, and once Brac is beaten only the chewed rope
+## is left; back at Havre-Doré the goat is home and Pervenche thanks her (berries).
+## No « auto »: it presses « interact » over and over, which opens Pervenche's shop and buys.
+## Here the lines are stepped through by hand, and her own scene is called straight.
 ## godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario_file=res://tools/scenarios/test_chevre.gd
 
+const H := "res://tools/scenarios/chevre_outils.gd"
 const STEPS := [
 	[0.8, "flags", ["selle", "sceau_plaines", "havre_arrive", "vu_herboristerie", "foret_arrivee",
-		"mur_camp_brise", "camp_arrive", "sbire_camp_1_battu", "sbire_camp_2_battu"]],
-	[0.9, "calm", 900.0], [1.0, "clock", 11.0], [1.1, "dlog", true], [1.12, "no_help", null], [1.14, "auto", true], [1.2, "zone", &"havre_dore"],
-	# Pervenche: her goat is missing
-	[3.2, "tp", Vector2(6.0, 10.6)], [3.4, "face", Vector2(0, -1)], [3.8, "press", "interact"],
-	[5.0, "shot", "c1_pervenche_cherche"], [9.5, "shot", "c2_pourquoi"],
-	# the camp: tied to the stake
-	[12.0, "zone", &"camp_ombre"], [14.0, "tp", Vector2(28.9, 15.3)], [14.2, "face", Vector2(0, -1)],
-	[15.0, "shot", "c3_attachee"], [15.4, "press", "interact"], [16.6, "shot", "c4_parle"],
-	[20.0, "shot", "c5_appat"], [24.0, "shot", "c6_tiens_bon"],
-	# Brac beaten: the empty rope
-	[26.0, "flags", ["brac_battu", "sceau_foret"]], [26.2, "zone", &"foret"], [28.0, "zone", &"camp_ombre"],
-	[30.0, "tp", Vector2(28.0, 16.4)], [30.2, "hold", "move_up"], [31.0, "hold", ""],
-	[32.2, "shot", "c7_corde_rongee"], [35.0, "shot", "c8_plus_la"], [38.0, "shot", "c9_sabots"],
-	# home: Pervenche thanks her
-	[41.0, "zone", &"havre_dore"], [43.0, "tp", Vector2(10.9, 6.8)], [43.2, "face", Vector2(0, -1)],
-	[44.0, "shot", "c10_rentree"],
-	[44.4, "tp", Vector2(6.0, 10.6)], [44.6, "face", Vector2(0, -1)], [45.0, "press", "interact"],
-	[46.2, "shot", "c11_merci"], [50.0, "shot", "c12_bardane"], [55.0, "shot", "c13_baies"],
-	[57.0, "state", null],
+		"mur_camp_brise", "camp_arrive", "sbire_camp_1_vu", "sbire_camp_2_vu",
+		"sbire_camp_1_battu", "sbire_camp_2_battu", "brac_parle"]],
+	[0.9, "calm", 900.0], [1.0, "clock", 11.0], [1.1, "dlog", true], [1.12, "no_help", null],
+	[1.2, "zone", &"havre_dore"],
+	# Havre-Doré, before: no goat in her lane, and she is looking for her (called straight, and
+	# Chloé stands away from her: pressing « interact » beside her would open the shop)
+	[3.2, "static", [H, "here"]], [3.4, "tp", Vector2(9.6, 12.0)], [3.6, "face", Vector2(0, -1)],
+	[4.0, "static", [H, "pervenche"]], [5.4, "shot", "c1_elle_cherche"],
+	[6.20, "press", "interact"],
+	[7.30, "press", "interact"],
+	[8.40, "press", "interact"],
+	[9.50, "press", "interact"],
+	[10.60, "press", "interact"],
+	[11.70, "press", "interact"],
+	[12.80, "press", "interact"],
+	[13.90, "press", "interact"],
+	[15.00, "press", "interact"],
+	[16.10, "press", "interact"],
+	[18.0, "static", [H, "report"]],
+	# the camp: tied to the stake, in the open
+	[18.4, "zone", &"camp_ombre"], [21.0, "tp", Vector2(28.9, 15.4)], [21.2, "face", Vector2(0, -1)],
+	[21.8, "static", [H, "here"]], [22.0, "shot", "c3_attachee"], [22.6, "interact_now", null],
+	[23.8, "shot", "c4_parle"],
+	[24.40, "press", "interact"],
+	[25.50, "press", "interact"],
+	[26.60, "press", "interact"],
+	[27.70, "press", "interact"],
+	[28.80, "press", "interact"],
+	[29.90, "press", "interact"],
+	[31.00, "press", "interact"],
+	[32.10, "press", "interact"],
+	[33.20, "press", "interact"],
+	[34.30, "press", "interact"],
+	[35.40, "press", "interact"],
+	[36.50, "press", "interact"],
+	[38.0, "shot", "c6_tiens_bon"], [38.4, "static", [H, "report"]],
+	# Brac beaten: walking up to the stake, the rope chewed, no goat
+	[38.8, "flags", ["brac_battu", "sceau_foret"]], [39.0, "zone", &"foret"], [41.0, "zone", &"camp_ombre"],
+	[43.6, "static", [H, "here"]], [43.8, "tp", Vector2(28.0, 18.8)],
+	[44.0, "hold", "move_up"], [45.8, "hold", ""], [46.6, "shot", "c7_corde_rongee"],
+	[47.20, "press", "interact"],
+	[48.30, "press", "interact"],
+	[49.40, "press", "interact"],
+	[50.50, "press", "interact"],
+	[51.60, "press", "interact"],
+	[52.70, "press", "interact"],
+	[53.80, "press", "interact"],
+	[54.90, "press", "interact"],
+	[56.00, "press", "interact"],
+	[57.10, "press", "interact"],
+	[58.20, "press", "interact"],
+	[60.0, "shot", "c9_sabots"], [60.4, "static", [H, "report"]],
+	# home: she is back in the lane, and Pervenche thanks Chloé
+	[60.8, "zone", &"havre_dore"], [63.2, "static", [H, "here"]],
+	[63.4, "tp", Vector2(10.9, 6.9)], [63.6, "face", Vector2(0, -1)], [64.4, "shot", "c10_rentree"],
+	[64.8, "tp", Vector2(9.6, 12.0)], [65.0, "face", Vector2(0, -1)], [65.4, "static", [H, "pervenche"]],
+	[66.6, "shot", "c11_merci"],
+	[67.20, "press", "interact"],
+	[68.30, "press", "interact"],
+	[69.40, "press", "interact"],
+	[70.50, "press", "interact"],
+	[71.60, "press", "interact"],
+	[72.70, "press", "interact"],
+	[73.80, "press", "interact"],
+	[74.90, "press", "interact"],
+	[76.00, "press", "interact"],
+	[77.10, "press", "interact"],
+	[78.20, "press", "interact"],
+	[79.30, "press", "interact"],
+	[80.40, "press", "interact"],
+	[81.50, "press", "interact"],
+	[83.5, "shot", "c13_baies"], [84.0, "static", [H, "report"]], [84.5, "state", null],
 ]

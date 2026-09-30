@@ -97,9 +97,11 @@ static func _clins_doeil(root: Region, entities: Node2D) -> void:
 		B.prop(entities, "table_cuisine", B.cell(9.75, 4.9))
 		B.trigger(root, 9.75, 6.6, 1.0, &"cuisine_compsos", {"name": "CuisinePervenche"})
 	# Mémé Pervenche's goat, stolen by Brac's henchmen to bait the forest's Ancien: home again in
-	# her lane, beside the table, once Brac is beaten (she chewed through her rope and walked back).
+	# her lane, below the table, once Brac is beaten (she chewed through her rope and walked back).
+	# At the mouth of the lane, on the street side (deeper in, the houses hide her): between the two
+	# shops (their walls stand at x 8.8 and 11.0), just below them, facing her mistress's door.
 	if Prop.KINDS.has("chevre"):
-		var goat = B.prop(entities, "chevre", B.cell(10.9, 5.6), false, load(FLAGGED_PROP))
+		var goat = B.prop(entities, "chevre", B.cell(9.8, 11.3), true, load(FLAGGED_PROP))
 		goat.name = "ChevrePervenche"
 		goat.show_flag = &"brac_battu"
 	# « Les visiteurs » come by boat (story/visiteurs.gd), once their sheets are drawn: M. Hamon by
