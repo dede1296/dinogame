@@ -286,7 +286,7 @@ static func _elise_meets(elise: Node, tri) -> Array:
 		Stage.wide()   # (back from the sleeper's close-up)
 		Stage.look_at(pile_px.lerp(chloe.global_position, 0.3), 0.8)
 		Stage.turn_to(elise, pile_px)
-		if not Stage.pose(elise, &"accroupi"):
+		if not Stage.pose(elise, &"agenouille"):   # on her knees, arms in the pile
 			for i in 3:
 				await Stage.bow(elise, 0.7)
 	var up := func() -> void:
@@ -294,6 +294,7 @@ static func _elise_meets(elise: Node, tri) -> Array:
 		Stage.turn_to(elise, chloe.global_position)
 		Stage.emote(elise, "!")
 	var finds := func() -> void:   # back in, then up with a little crumpled leaf
+		Stage.pose(elise, &"agenouille")
 		Stage.turn_to(elise, pile_px)
 		await Stage.bow(elise, 0.8)
 		await Stage.rear(elise, 0.7)

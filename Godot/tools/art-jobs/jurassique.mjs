@@ -159,6 +159,15 @@ export default ({ sheet, props, icons, sharp, find, OUT }) => [
     await clearGridLines(out, sharp);
     return done + " — cases de 115×184";
   }],
+  // elise_agenouillee (30/09) : Élise fouille la pile À GENOUX, pas accroupie sur les talons.
+  // Même grille et mêmes cases que elise_accroupie, éditée depuis la même planche source.
+  [`${OUT}/characters/elise_agenouillee.png`, async (out) => {
+    const id = await duplicateCleanRow(sharp, find, "tt5isn", "elise-agenouillee-clean", 2, 4, 1);
+    const done = await sheet({ id, rows: 2, cols: 4, frameHeight: 156, out });
+    await padCells(out, 4, 2, 115, 184, 4, sharp);
+    await clearGridLines(out, sharp);
+    return done + " — cases de 115×184";
+  }],
   // malcombe : même défaut (6 colonnes, 2 essais) — gardé les 4 premières colonnes de w8vnuc.
   [`${OUT}/characters/malcombe.png`, async (out) => {
     const id = await pickColumns(sharp, find, "w8vnuc", "malcombe-4col", 4, 6, [0, 1, 2, 3]);
@@ -313,8 +322,8 @@ async function padCells(file, cols, rows, cellW, cellH, foot, sharp) {
 }
 
 
-// Clears the thin light grid lines a drawing kept between its cells: a pixel column made mostly of
-// light, greyish pixels from top to bottom (a person never is) loses them.
+// Clears the thin light grid lines a drawing kept between its cells: a pixel column (or row) made
+// mostly of light, greyish pixels from end to end (a person never is) loses them.
 async function clearGridLines(file, sharp) {
   const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   // (light greyish, or faint: the lines are often half-keyed, a thin magenta haze)
@@ -324,6 +333,12 @@ async function clearGridLines(file, sharp) {
     for (let y = 0; y < info.height; y++) if (light((y * info.width + x) * 4)) n++;
     if (n < info.height * 0.35) continue;
     for (let y = 0; y < info.height; y++) { const i = (y * info.width + x) * 4; if (light(i)) data[i + 3] = 0; }
+  }
+  for (let y = 0; y < info.height; y++) {
+    let n = 0;
+    for (let x = 0; x < info.width; x++) if (light((y * info.width + x) * 4)) n++;
+    if (n < info.width * 0.35) continue;
+    for (let x = 0; x < info.width; x++) { const i = (y * info.width + x) * 4; if (light(i)) data[i + 3] = 0; }
   }
   const out = await sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } }).png({ compressionLevel: 9 }).toBuffer();
   fs.writeFileSync(file, out);

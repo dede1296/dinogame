@@ -17,10 +17,10 @@ static func crouch() -> String:
 	var elise = _elise()
 	if elise == null:
 		return "Élise absente"
-	var took: bool = Stage.pose(elise, &"accroupi")
+	var took: bool = Stage.pose(elise, &"agenouille")
 	var sprite := Stage.sprite_of(elise) as AnimatedSprite2D
 	return "personne=« %s » pose dessinée=%s prise=%s animation=%s" % [Outfits.person(elise),
-		Outfits.has_pose(elise, &"accroupi"), took, sprite.animation if sprite else "?"]
+		Outfits.has_pose(elise, &"agenouille"), took, sprite.animation if sprite else "?"]
 
 
 static func stand() -> String:
