@@ -42,6 +42,13 @@ const HOME = `<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <title>Ambrelune</title>
+<!-- Le jeu s'installe depuis cette page comme une application : sur Android, le navigateur
+     propose « Installer l'application », et il arrive alors avec son icône, en plein écran,
+     sans le moindre avertissement de sécurité (rien à débloquer, contrairement à un APK). -->
+<link rel="manifest" href="index.manifest.json">
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png">
+<link rel="icon" href="index.icon.png">
+<meta name="theme-color" content="#14120f">
 <!-- Page d'accueil écrite par ${MARK} : le jeu s'ouvre dans sa propre fenêtre. -->
 <style>
   html, body { height: 100%; margin: 0; background: #14120f; color: #fff7ea;
@@ -63,8 +70,14 @@ const HOME = `<!DOCTYPE html>
      Le premier chargement prend un moment : tout le jeu se télécharge d'un coup.</p>
   <button id="jouer" type="button">Jouer</button>
   <p><a href="jeu.html">ou jouer dans cet onglet</a></p>
-  <small>Sur téléphone, le bouton ouvre le jeu ici même.</small>
+  <small>Sur téléphone, le bouton ouvre le jeu ici même.<br>
+    Ton navigateur peut aussi te proposer d'installer Ambrelune comme une application.</small>
 <script>
+  // Le service worker du jeu, déclaré ici aussi : sans lui, le navigateur ne propose pas
+  // l'installation depuis cette page.
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("index.service.worker.js").catch(function () {});
+  }
   document.getElementById("jouer").addEventListener("click", function () {
     var small = window.innerWidth < ${GAME.w} * 0.7;
     if (small) { window.location.href = "jeu.html"; return; }
@@ -88,6 +101,17 @@ if (!file) {
 }
 const dir = path.dirname(file);
 const game = path.join(dir, "jeu.html");
+// L'application installée doit s'ouvrir sur le jeu, pas sur la page d'accueil.
+const manifest = path.join(dir, "index.manifest.json");
+if (fs.existsSync(manifest)) {
+  const wanted = "./jeu.html";
+  const m = JSON.parse(fs.readFileSync(manifest, "utf8"));
+  if (m.start_url !== wanted) {
+    m.start_url = wanted;
+    fs.writeFileSync(manifest, JSON.stringify(m, null, 2));
+    console.log(manifest + " : l'application s'ouvre sur le jeu");
+  }
+}
 let html = fs.readFileSync(file, "utf8");
 if (html.includes('id="jouer"')) {
   // Déjà passé : index.html est la page d'accueil. Le refaire écraserait le jeu avec elle.
