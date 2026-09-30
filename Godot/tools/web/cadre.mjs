@@ -36,7 +36,20 @@ const STYLE = `
 </style>
 `;
 
-const HOME = `<!DOCTYPE html>
+/**
+ * La plus grande icône que l'export a produite (Godot les nomme selon sa version : index.icon.png,
+ * index.144x144.png…). On prend la plus grande plutôt que d'en coder une : la page d'accueil
+ * l'affiche en grand, et une petite, étirée, ferait sale.
+ */
+const bestIcon = (dir) => {
+  const size = (n) => Number((n.match(/(\d+)x\1/) || [])[1]) || (n === "index.apple-touch-icon.png" ? 180 : 0);
+  const sized = fs.readdirSync(dir)
+    .filter((n) => n.startsWith("index.") && n.endsWith(".png") && size(n) > 0)
+    .sort((a, b) => size(b) - size(a));
+  return sized[0] || "index.icon.png";
+};
+
+const home = (logo) => `<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -55,6 +68,8 @@ const HOME = `<!DOCTYPE html>
     font-family: system-ui, "Segoe UI", Roboto, sans-serif; }
   body { display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 18px; text-align: center; padding: 24px; box-sizing: border-box; }
+  img.logo { width: clamp(96px, 22vw, 144px); height: auto; border-radius: 26px;
+    box-shadow: 0 6px 30px #0009; }
   h1 { margin: 0; font-size: clamp(32px, 7vw, 56px); color: #ffdb8a; letter-spacing: 1px; }
   p { margin: 0; max-width: 34rem; line-height: 1.5; color: #d9cdba; }
   button { margin-top: 10px; padding: 18px 42px; font-size: 22px; font-family: inherit;
@@ -65,6 +80,7 @@ const HOME = `<!DOCTYPE html>
 </style>
 </head>
 <body>
+  <img class="logo" src="${logo}" alt="">
   <h1>Ambrelune</h1>
   <p>Le jeu s'ouvre dans sa propre fenêtre, à la taille d'un écran de téléphone.
      Le premier chargement prend un moment : tout le jeu se télécharge d'un coup.</p>
@@ -123,5 +139,5 @@ if (!html.includes(MARK)) {
   html = at < 0 ? html + STYLE : html.slice(0, at) + STYLE + html.slice(at);
 }
 fs.writeFileSync(game, html);
-fs.writeFileSync(file, HOME);
+fs.writeFileSync(file, home(bestIcon(dir)));
 console.log(`${game} : le jeu, encadré ${GAME.w}x${GAME.h} · ${file} : page d'accueil`);
