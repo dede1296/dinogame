@@ -102,13 +102,15 @@ export default ({ sheet, props, icons, sharp, find, OUT }) => [
   // et bout de corde rongé au collier : la même image sert attachée au piquet et rentrée au Havre.
   [`${OUT}/props/chevre`, () => props({ id: "vtqzqm", scale: 0.5, outDir: `${OUT}/props`, names: ["chevre"] })],
 
-  // triceratops_dort (30/09) : le Tricératops malade d'Élise Sablier, couché sur le flanc et
-  // endormi (DinoSpecies.sleep_sheet). Posé dans une case de la taille de celles de sa planche
-  // (305×208), les pattes sur la ligne de sol du projet (0,96 de la case) : le sprite garde ainsi
-  // le même décalage au sol que ses autres images.
-  [`${OUT}/dinos/triceratops_dort.png`, async (out) => {
-    await props({ id: "mc36qj", scale: 1, outDir: `${OUT}/dinos`, names: ["triceratops_dort"] });
-    const [cw, ch, foot] = [305, 208, 0.96];
+  // Les dinos qui dorment couchés (30/09, DinoSpecies.sleep_sheet) : chacun sur le flanc, les yeux
+  // fermés, dans une case de la taille de celles de sa planche, les pattes sur la ligne de sol du
+  // projet (0,96 de la case) — le sprite garde ainsi le même décalage au sol que ses autres images.
+  ...[["triceratops", "mc36qj", 305, 208], ["brachiosaurus", "anl6uc", 255, 228],
+    ["stegosaurus", "kn571s", 261, 188], ["psittacosaurus", "yeu9l8", 205, 143],
+    ["ankylosaurus", "aizn6u", 205, 148], ["protoceratops", "1m0xkz", 237, 158],
+  ].map(([name, id, cw, ch]) => [`${OUT}/dinos/${name}_dort.png`, async (out) => {
+    await props({ id, scale: 1, outDir: `${OUT}/dinos`, names: [`${name}_dort`] });
+    const foot = 0.96;
     const drawn = await sharp(out).metadata();
     const scale = Math.min((cw - 8) / drawn.width, (ch * foot - 4) / drawn.height);
     const w = Math.round(drawn.width * scale), h = Math.round(drawn.height * scale);
@@ -118,7 +120,7 @@ export default ({ sheet, props, icons, sharp, find, OUT }) => [
       .png({ compressionLevel: 9 }).toBuffer();
     fs.writeFileSync(out, laid);
     return `${out} (couché, ${w}x${h} dans une case de ${cw}x${ch})`;
-  }],
+  }]),
 
   // === PERSONNAGES CLINS D'ŒIL (29/09) : planches de marche 4x4, éditées depuis un personnage
   // existant de même gabarit (méthode chloe_manteau/maia_manteau, tools/art-jobs/monts.mjs) pour
