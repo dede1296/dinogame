@@ -54,7 +54,10 @@ static func dino(species: DinoSpecies, corrupted := false) -> SpriteFrames:
 		&"idle": {"frames": species.idle_frames, "fps": 1.6},
 		&"attack": {"frames": [species.attack_frame], "fps": 1.0, "loop": false},
 	})
-	if species.sleep_frame >= 0:   # (lying down: asleep only, never while it waits)
+	if species.sleep_sheet:   # its own picture, lying down (one frame)
+		frames.add_animation(&"sleep")
+		frames.add_frame(&"sleep", species.sleep_sheet)
+	elif species.sleep_frame >= 0:   # (lying down: asleep only, never while it waits)
 		var sleep := build(sheet, species.sheet_columns, species.sheet_rows, {&"sleep": {"frames": [species.sleep_frame], "fps": 1.0}})
 		frames.add_animation(&"sleep")
 		frames.add_frame(&"sleep", sleep.get_frame_texture(&"sleep", 0))

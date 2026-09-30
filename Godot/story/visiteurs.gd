@@ -334,6 +334,8 @@ static func _berry(elise: Node, tri) -> Array:
 	var gets_up := func() -> void:
 		if tri:
 			Stage.emote(tri, "!")
+			if tri.has_method(&"wake"):   # it was lying asleep (Sleeper): back on its feet
+				tri.call(&"wake")
 			await GESTES.stand_up(tri, 1.2)
 			Stage.shake(2.5, 0.4)
 			Stage.rear(tri, 0.9)

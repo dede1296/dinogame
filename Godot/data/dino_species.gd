@@ -22,6 +22,9 @@ extends Resource
 @export var attack_frame := 5
 ## Its picture lying down asleep, if the sheet has one (-1: none): the "sleep" animation only.
 @export var sleep_frame := -1
+## A picture of its own, lying down asleep (a single frame): used before sleep_frame when it is
+## there. A sleeping dino must not play its waiting animation — its head would keep moving.
+@export var sleep_sheet: Texture2D
 ## Front and back views, same frame size as `sheet`: row 1 seen from the front walking
 ## toward the camera, row 2 from behind walking away (4 steps: one foot, together, the other,
 ## together; still = feet together).

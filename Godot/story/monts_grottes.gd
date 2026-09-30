@@ -139,7 +139,7 @@ static func _place_sleepers() -> void:
 		var id: StringName = SLEEPERS[i]
 		if not SpeciesDB.PATHS.has(id):
 			continue
-		var d := DinoNpc.new()
+		var d := Sleeper.new()   # asleep: its picture held, a « z » now and then (world/sleeper.gd)
 		d.name = node_name
 		d.species_id = id
 		d.level = SLEEPER_LEVEL

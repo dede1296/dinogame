@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/art/dinos/triceratops.png" id="2"]
 [ext_resource type="Texture2D" path="res://assets/art/dinos/triceratops_face_dos.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/triceratops_dort.png" id="4"]
 
 [resource]
 script = ExtResource("1")
@@ -12,6 +13,7 @@ family = &"ceratopsian"
 description = "Le géant des Plaines. Son crâne à trois cornes et sa collerette en font le gardien le plus respecté de la prairie."
 sheet = ExtResource("2")
 face_back_sheet = ExtResource("3")
+sleep_sheet = ExtResource("4")
 world_scale = 0.59
 battle_scale = 0.659
 walk_fps = 6.0

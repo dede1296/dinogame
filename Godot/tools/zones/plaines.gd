@@ -18,7 +18,7 @@ const ELISE_PILE := Vector2(79.8, 55.1)
 const ELISE_AT := Vector2(79.1, 56.3)
 ## The scene needs to be seen: the scenery scattered over this patch is taken away (the camera
 ## looks north, so what stands south of them hides them). Tiles.
-const ELISE_SCENE := Rect2(76.5, 52.5, 8.0, 7.5)
+const ELISE_SCENE := Rect2(76.5, 52.5, 8.0, 10.0)
 const OBSTACLE := "res://world/obstacle.gd"
 const PICKUP := "res://world/pickup.gd"
 const STORY_PROP := "res://world/story_prop.gd"
@@ -81,8 +81,17 @@ static func _visiteurs(root: Region, entities: Node2D) -> void:
 	if not ResourceLoader.exists(CHARS % "elise"):
 		return
 	_clear_for_scene(entities, ELISE_SCENE)
-	B.dino_npc(root, "TriceratopsMalade", &"triceratops", ELISE_TRI.x, ELISE_TRI.y, {"event": &"triceratops_malade",
-		"show_flag": &"havre_arrive", "flip": true})
+	# Asleep on its side while it is poorly (Sleeper: its lying picture held, a « z » now and then);
+	# once Élise's little quest is over it is up again, like any other dino.
+	var tri := Sleeper.new()
+	tri.name = "TriceratopsMalade"
+	tri.species_id = &"triceratops"
+	tri.event = &"triceratops_malade"
+	tri.show_flag = &"havre_arrive"
+	tri.awake_flag = &"elise_fini"
+	tri.flip = true
+	tri.position = B.cell(ELISE_TRI.x, ELISE_TRI.y)
+	root.get_node("Entities").add_child(tri)
 	if Prop.KINDS.has("crottes_triceratops"):
 		var pile = B.prop(entities, "crottes_triceratops", B.cell(ELISE_PILE.x, ELISE_PILE.y), false, load("res://world/story_prop.gd"))
 		pile.name = "CrottesTriceratops"

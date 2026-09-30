@@ -102,6 +102,24 @@ export default ({ sheet, props, icons, sharp, find, OUT }) => [
   // et bout de corde rongé au collier : la même image sert attachée au piquet et rentrée au Havre.
   [`${OUT}/props/chevre`, () => props({ id: "vtqzqm", scale: 0.5, outDir: `${OUT}/props`, names: ["chevre"] })],
 
+  // triceratops_dort (30/09) : le Tricératops malade d'Élise Sablier, couché sur le flanc et
+  // endormi (DinoSpecies.sleep_sheet). Posé dans une case de la taille de celles de sa planche
+  // (305×208), les pattes sur la ligne de sol du projet (0,96 de la case) : le sprite garde ainsi
+  // le même décalage au sol que ses autres images.
+  [`${OUT}/dinos/triceratops_dort.png`, async (out) => {
+    await props({ id: "mc36qj", scale: 1, outDir: `${OUT}/dinos`, names: ["triceratops_dort"] });
+    const [cw, ch, foot] = [305, 208, 0.96];
+    const drawn = await sharp(out).metadata();
+    const scale = Math.min((cw - 8) / drawn.width, (ch * foot - 4) / drawn.height);
+    const w = Math.round(drawn.width * scale), h = Math.round(drawn.height * scale);
+    const body = await sharp(out).resize(w, h).png().toBuffer();
+    const laid = await sharp({ create: { width: cw, height: ch, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+      .composite([{ input: body, left: Math.round((cw - w) / 2), top: Math.round(ch * foot) - h }])
+      .png({ compressionLevel: 9 }).toBuffer();
+    fs.writeFileSync(out, laid);
+    return `${out} (couché, ${w}x${h} dans une case de ${cw}x${ch})`;
+  }],
+
   // === PERSONNAGES CLINS D'ŒIL (29/09) : planches de marche 4x4, éditées depuis un personnage
   // existant de même gabarit (méthode chloe_manteau/maia_manteau, tools/art-jobs/monts.mjs) pour
   // garder la grille de pas, puis recalées avec alignWithBase (±3 px) sur ce même personnage source.
