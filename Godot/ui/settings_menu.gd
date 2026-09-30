@@ -1,10 +1,11 @@
 class_name SettingsMenu
 extends CanvasLayer
-## The game's menu, over a paused game: from the ☰ button in game (Reprendre, Sons, Affichage,
-## Retour au titre), or « Paramètres » on the title screen (Sons, Affichage). Sons: a volume for
-## each kind of sound (Audio.CATEGORIES), heard as it is set; Affichage: the graphics level (the
-## one detected for the phone marked « Recommandée ») and the camera's distance. Built for thumbs:
-## big rows, one tap; B, Échap or the back gesture go back a page, then close.
+## The game's menu, over a paused game: from the ☰ button in game (Reprendre, Commandes, Sons,
+## Affichage, Retour au titre), or « Paramètres » on the title screen. Commandes: what every key
+## and every finger does, phone and computer side by side (CONTROLS); Sons: a volume for each kind
+## of sound (Audio.CATEGORIES), heard as it is set; Affichage: the graphics level (the one detected
+## for the phone marked « Recommandée ») and the camera's distance. Built for thumbs: big rows,
+## one tap; B, Échap or the back gesture go back a page, then close.
 
 signal closed
 
@@ -17,6 +18,25 @@ const INK := Color(0.106, 0.122, 0.157, 0.96)
 const CREAM := Color(1, 0.97, 0.9)
 const GOLD := Color(1, 0.86, 0.5)
 const TITLE_SCREEN := "res://scenes/boot/boot.tscn"
+## The Commandes page: how tall its list is, and how wide its three columns are.
+const CONTROLS_HEIGHT := 380.0
+const CONTROL_WHAT_W := 196.0
+const CONTROL_TOUCH_W := 214.0
+const CONTROL_KEYS_W := 150.0
+## What one does, on a phone and on a computer: [what it does, finger, keys]. Kept next to the
+## game's own input map (project.godot [input], DexScreen.ensure_action).
+const CONTROLS := [
+	["Se déplacer", "Le pouce gauche, n'importe où sur la moitié gauche", "Les flèches, ou Z Q S D"],
+	["Courir", "Garder B appuyé en marchant", "Maj (ou Échap) en marchant"],
+	["Parler, ramasser, fouiller", "A", "Espace, Entrée ou E"],
+	["Revenir, fermer, refuser", "B", "Échap ou Retour arrière"],
+	["Monter sur un dino, descendre", "Le bouton de selle, en bas à droite", "R"],
+	["La carte de l'île", "Le bouton carte, en haut à droite", "M"],
+	["Le Dinodex", "Le bouton Dinodex, en haut à droite", "X"],
+	["Ce menu", "Le bouton ☰, en haut à droite", "Échap"],
+	["Voir de plus près, de plus loin", "Pincer l'écran à deux doigts", "La molette de la souris"],
+	["Changer un dino d'équipe", "Glisser son portrait sur un autre", "Le glisser à la souris"],
+]
 const HINTS := [
 	"Pour les téléphones plus anciens : moins d'effets, 60 images/s.",
 	"L'équilibre entre effets et autonomie, 60 images/s.",
@@ -115,6 +135,8 @@ func _show(page: String) -> void:
 	_levels.clear()
 	_page = page
 	match page:
+		"commandes":
+			_controls_page()
 		"sons":
 			_sounds_page()
 		"affichage":
@@ -130,12 +152,56 @@ func _menu_page() -> void:
 	_rows.add_child(_label("Menu" if in_game else "Paramètres", 40, GOLD))
 	if in_game:
 		_rows.add_child(_button("Reprendre", _close))
+	_rows.add_child(_button("Commandes", _show.bind("commandes")))
 	_rows.add_child(_button("Sons", _show.bind("sons")))
 	_rows.add_child(_button("Affichage", _show.bind("affichage")))
 	if in_game:
 		_rows.add_child(_button("Retour au titre", _show.bind("titre")))
 	else:
 		_rows.add_child(_button("Fermer", _close))
+
+
+## What every key and every finger does: one row each, the phone on one side, the computer on the
+## other. It scrolls: there are more rows than a phone screen holds.
+func _controls_page() -> void:
+	_rows.add_child(_label("Commandes", 40, GOLD))
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 12)
+	# (+ the rows' own left margin, so the titles sit over their column)
+	for column: Array in [["", CONTROL_WHAT_W + 10.0], ["Sur le téléphone", CONTROL_TOUCH_W], ["Sur l'ordinateur", CONTROL_KEYS_W]]:
+		var title := _label(column[0], 17, Color(GOLD, 0.85))
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		title.custom_minimum_size = Vector2(column[1], 0)
+		head.add_child(title)
+	_rows.add_child(head)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, CONTROLS_HEIGHT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_rows.add_child(scroll)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation", 6)
+	scroll.add_child(rows)
+	for control: Array in CONTROLS:
+		rows.add_child(_control_row(control[0], control[1], control[2]))
+	_rows.add_child(_button("Retour", _show.bind("menu")))
+
+
+## One line of the Commandes page: what it does, then the finger and the keys for it.
+func _control_row(what: String, touch: String, keys: String) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", _box(Color(0.16, 0.18, 0.22), 12, 1, 10))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	panel.add_child(row)
+	for column: Array in [[what, CONTROL_WHAT_W, CREAM, 19], [touch, CONTROL_TOUCH_W, Color(CREAM, 0.8), 15],
+			[keys, CONTROL_KEYS_W, Color(CREAM, 0.8), 15]]:
+		var text := _label(column[0], column[3], column[2])
+		text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		text.custom_minimum_size = Vector2(column[1], 0)
+		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_child(text)
+	return panel
 
 
 func _sounds_page() -> void:
