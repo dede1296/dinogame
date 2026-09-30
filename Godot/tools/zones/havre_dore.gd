@@ -10,7 +10,7 @@ const PATH := "res://regions/havre/havre_dore.tscn"
 const B := preload("res://tools/zone_builder.gd")
 const CHARS := "res://assets/art/characters/%s.png"
 const STORY_PROP := "res://world/story_prop.gd"
-const FLAGGED_PROP := "res://tools/zones/flagged_prop.gd"
+const FLAGGED_PROP := "res://world/flagged_prop.gd"
 ## The Anurognathus on Ferréol's chest: its picture raised onto the lid (px; the chest ~0.6 m up).
 const ANURO_LIFT := 26.0
 

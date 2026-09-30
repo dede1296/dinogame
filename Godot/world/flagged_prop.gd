@@ -4,7 +4,9 @@ extends Prop
 ## A static Prop shown or hidden by a story flag, checked once at `_ready()` (the zone's scene
 ## is re-instanced each time it is entered, so this re-reads the flag every visit): same idea as
 ## StoryProp's `hide_flag` and Pickup's `show_flag`, combined, for a piece of scenery with no
-## event of its own (the Cabinet's lantern/empty hook: tools/zones/cabinet.gd).
+## event of its own (the Cabinet's lantern/empty hook, Mémé Pervenche's goat once home).
+## It lives here, not under tools/, because the built zones point at it: the exports leave
+## tools/ out (export_presets.cfg exclude_filter), and those scenes would not load.
 
 ## Only there once this story flag is set (absent so long as it is false).
 @export var show_flag: StringName

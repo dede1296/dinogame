@@ -467,7 +467,20 @@ static func save(root: Region, path: String, force: bool) -> Error:
 	if err == OK:
 		DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 		err = ResourceSaver.save(packed, path)
+	if err == OK:
+		_check_no_tools(path)
 	return err
+
+
+## A built zone must never point at anything under tools/: the exports leave that folder out
+## (export_presets.cfg exclude_filter), so the scene would load in the editor and fail in the
+## game on the phone or on the web. It cost an evening once (world/flagged_prop.gd, 30/09).
+static func _check_no_tools(path: String) -> void:
+	var text := FileAccess.get_file_as_string(path)
+	for line in text.split("
+"):
+		if line.begins_with("[ext_resource") and line.contains("res://tools/"):
+			push_error("%s pointe vers tools/ : %s — déplacez ce fichier hors de tools/ (les exports l'excluent)." % [path, line.strip_edges()])
 
 
 static func set_owner_all(node: Node, root_owner: Node) -> void:

@@ -4,7 +4,7 @@ extends RefCounted
 
 const PATH := "res://regions/port/cabinet.tscn"
 const B := preload("res://tools/zone_builder.gd")
-const FLAGGED_PROP := preload("res://tools/zones/flagged_prop.gd")
+const FLAGGED_PROP := preload("res://world/flagged_prop.gd")
 
 const PLAN := [
 	"................",
