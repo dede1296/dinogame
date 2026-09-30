@@ -1,8 +1,10 @@
-name: Déploiement GitHub Pages
+name: Déploiement GitHub Pages (ancien jeu web, à la demande)
+
+# Ancien prototype web ; le jeu est maintenant sous Godot (Godot/, workflow godot-build.yml),
+# qui publie sa version Web sur la même page GitHub Pages. Ce workflow ne part donc plus tout
+# seul : il ne se lance qu'à la main, et il écrase alors la page avec l'ancien jeu.
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
