@@ -283,6 +283,7 @@ static func _elise_meets(elise: Node, tri) -> Array:
 	var pile = S.actor(NODE_PILE)
 	var pile_px: Vector2 = (pile as Node2D).global_position if pile is Node2D else (elise as Node2D).global_position + Vector2(-40.0, -10.0)
 	var digs := func() -> void:   # her arms in the pile up to the elbows
+		Stage.wide()   # (back from the sleeper's close-up)
 		Stage.look_at(pile_px.lerp(chloe.global_position, 0.3), 0.8)
 		Stage.turn_to(elise, pile_px)
 		if not Stage.pose(elise, &"accroupi"):
@@ -301,8 +302,9 @@ static func _elise_meets(elise: Node, tri) -> Array:
 	return [
 		_cue({"text": "Au milieu du pré, un Tricératops dort, couché sur le flanc. Il respire lentement, avec un petit sifflement de théière."},
 			func() -> void:
-				if tri:
-					Stage.look_at((tri as Node2D).global_position, 0.9)
+				if tri:   # close on him: the whole line is about the big sleeper. A little towards
+					# the pile, and not too close: Élise is just below him, and the screen cut her head.
+					Stage.close_up((tri as Node2D).global_position.lerp(pile_px, 0.45), 9.5, 1.0)
 					Stage.emote(tri, "…")),
 		_cue({"text": "À côté, une énorme pile de crottes. Et dedans, jusqu'aux coudes, une dame en short et en bottes."}, digs),
 		_cue({"who": ELISE, "text": "Oh ! Bonjour ! Ne fais pas attention, je travaille. Élise Sablier, botaniste."}, up),

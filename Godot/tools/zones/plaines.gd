@@ -16,6 +16,9 @@ const CHARS := "res://assets/art/characters/%s.png"
 const ELISE_TRI := Vector2(82.0, 54.4)
 const ELISE_PILE := Vector2(79.8, 55.1)
 const ELISE_AT := Vector2(79.1, 56.3)
+## The scene needs to be seen: the scenery scattered over this patch is taken away (the camera
+## looks north, so what stands south of them hides them). Tiles.
+const ELISE_SCENE := Rect2(76.5, 52.5, 8.0, 7.5)
 const OBSTACLE := "res://world/obstacle.gd"
 const PICKUP := "res://world/pickup.gd"
 const STORY_PROP := "res://world/story_prop.gd"
@@ -77,6 +80,7 @@ static func build() -> Region:
 static func _visiteurs(root: Region, entities: Node2D) -> void:
 	if not ResourceLoader.exists(CHARS % "elise"):
 		return
+	_clear_for_scene(entities, ELISE_SCENE)
 	B.dino_npc(root, "TriceratopsMalade", &"triceratops", ELISE_TRI.x, ELISE_TRI.y, {"event": &"triceratops_malade",
 		"show_flag": &"havre_arrive", "flip": true})
 	if Prop.KINDS.has("crottes_triceratops"):
@@ -85,6 +89,17 @@ static func _visiteurs(root: Region, entities: Node2D) -> void:
 		pile.event = &"crottes_triceratops"
 	B.npc(root, "Elise", "Élise Sablier", CHARS % "elise", ELISE_AT.x, ELISE_AT.y, {"facing": "left", "event": &"elise",
 		"show_flag": &"havre_arrive"})
+
+
+## Takes away the scenery already scattered over `cells` (tiles), so a scene placed there is
+## seen whole. Called before the scene is put down; the scattering itself is untouched (its
+## random draw stays the same everywhere else).
+static func _clear_for_scene(entities: Node2D, cells: Rect2) -> void:
+	var area := Rect2(cells.position * 48.0, cells.size * 48.0)
+	for node in entities.get_children():
+		if node is Prop and area.has_point((node as Node2D).position):
+			entities.remove_child(node)
+			node.queue_free()
 
 
 static func _scatter(root: Region, entities: Node2D) -> void:
