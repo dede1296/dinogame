@@ -19,6 +19,12 @@ const STRETCH := 1.15                       # same as the billboard shader
 const PROP_SCRIPT := preload("res://world/prop.gd")
 const BILLBOARD := preload("res://world/view3d/billboard.gdshader")
 const GROUND := preload("res://world/view3d/ground.gdshader")
+## The layers of the ground's stack of materials, in the shader's own order (ground.gdshader
+## MAT_*): every material that tiles lives there, so the ground needs one texture unit instead
+## of twelve — the web only promises sixteen per shader, engine included.
+enum MAT { GRASS, DIRT, PAVED, CLIFF, MUD, ROCK, SAND, COVER, COVER_PATH, COVER1, COVER2, COVER_CLIFF }
+## Every layer is that wide and tall (the ground pictures are drawn 512 × 512).
+const MAT_SIZE := 512
 const WATER := preload("res://world/view3d/water.gdshader")
 const CONTACT := preload("res://world/view3d/contact_shadow.gdshader")
 const RELIEF := preload("res://world/view3d/relief.gdshader")
@@ -291,6 +297,8 @@ var _dust: CPUParticles3D
 var _wake: CPUParticles3D
 ## Flood water of the zone: [Flood (2D), its block of water, floor height (m)].
 var _floods: Array[Array] = []
+## The stacks of ground materials already built, by the pictures they hold (_ground_materials).
+var _material_stacks := {}
 ## A scene shows something away from Chloé (Stage.look_at): the camera glides there (world
 ## pixels), then back to her when it is INF again.
 var focus_px := Vector2.INF
@@ -447,15 +455,17 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 func _build_ground(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect2()) -> ShaderMaterial:
 	var mat := ShaderMaterial.new()
 	mat.shader = GROUND
-	mat.set_shader_parameter("grass_tex", r.ground_tex if r.ground_tex else load("res://assets/art/ground/herbe.png"))
+	# The tiling materials go in one stack, in the shader's own order (MAT_*).
+	var skin := {}
+	skin[MAT.GRASS] = r.ground_tex if r.ground_tex else load("res://assets/art/ground/herbe.png")
 	var dirt: Texture2D = load("res://assets/art/ground/terre.png")
 	if r.path_tex and r.paved_rect.has_area():
-		mat.set_shader_parameter("dirt_tex", dirt)
-		mat.set_shader_parameter("paved_tex", r.path_tex)
+		skin[MAT.DIRT] = dirt
+		skin[MAT.PAVED] = r.path_tex
 		var pr := r.paved_rect
 		mat.set_shader_parameter("paved_rect", Vector4(pr.position.x, pr.position.y, pr.size.x, pr.size.y))
 	else:
-		mat.set_shader_parameter("dirt_tex", r.path_tex if r.path_tex else dirt)
+		skin[MAT.DIRT] = r.path_tex if r.path_tex else dirt
 	mat.set_shader_parameter("plain", r.indoor)
 	var cliff: String = CLIFF_TEX.get(r.region_id, "")
 	var own_cliff := ResourceLoader.exists(cliff)
@@ -465,22 +475,23 @@ func _build_ground(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 	mat.set_shader_parameter("cover_count", covers.size())
 	if not covers.is_empty():
 		mat.set_shader_parameter("cover_mask", _cover_mask(covers))
-		mat.set_shader_parameter("cover_tex", covers[0]["tex"])
-		mat.set_shader_parameter("cover_path_tex", covers[0].get("path_tex", covers[0]["tex"]))
+		skin[MAT.COVER] = covers[0]["tex"]
+		skin[MAT.COVER_PATH] = covers[0].get("path_tex", covers[0]["tex"])
 		for i in range(1, covers.size()):
-			mat.set_shader_parameter("cover_tex%d" % i, covers[i]["tex"])
+			skin[MAT.COVER1 + i - 1] = covers[i]["tex"]
 		mat.set_shader_parameter("cover_spares_sand", r.cold)
 		mat.set_shader_parameter("cover_cliff", own_cliff)
 		if own_cliff:
-			mat.set_shader_parameter("cover_cliff_tex", load(cliff))
+			skin[MAT.COVER_CLIFF] = load(cliff)
 			own_cliff = false
-	mat.set_shader_parameter("cliff_tex", load(cliff if own_cliff else "res://assets/art/ground/falaise.png"))
-	mat.set_shader_parameter("mud_tex", load(MUD_TEX))
-	mat.set_shader_parameter("rock_tex", load(ROCK_TEX))
+	skin[MAT.CLIFF] = load(cliff if own_cliff else "res://assets/art/ground/falaise.png")
+	skin[MAT.MUD] = load(MUD_TEX)
+	skin[MAT.ROCK] = load(ROCK_TEX)
 	if SAND_TEX.has(r.region_id) and ResourceLoader.exists(SAND_TEX[r.region_id]):
-		mat.set_shader_parameter("sand_tex", load(SAND_TEX[r.region_id]))
+		skin[MAT.SAND] = load(SAND_TEX[r.region_id])
 		mat.set_shader_parameter("sand_picture", true)
 		mat.set_shader_parameter("sand_is_ice", r.region_id in ICE)
+	mat.set_shader_parameter("materials", _ground_materials(skin))
 	mat.set_shader_parameter("wall_tops", r.region_id in WALL_TOPS)
 	mat.set_shader_parameter("grass_tint", GRASS_TINT.get(r.region_id, Color.WHITE))
 	mat.set_shader_parameter("cliff_tint", CLIFF_TINT.get(r.region_id, Color.WHITE))
@@ -582,6 +593,37 @@ static func _cover_map_layers(r: Region) -> Dictionary:
 	while colours.size() < Region.COVER_MAX:
 		colours.append(Vector3.ONE)
 	return {"cover_count": covers.size(), "cover_mask": _cover_mask(covers), "cover_colours": colours}
+
+
+## The ground's stack of materials from `skin` (MAT layer -> Texture2D): every layer at
+## MAT_SIZE, with its mipmaps; a layer nobody filled repeats the grass, so the stack is always
+## whole. Kept per set of pictures: two zones with the same ground share theirs.
+func _ground_materials(skin: Dictionary) -> Texture2DArray:
+	var key := ""
+	for layer in MAT.size():
+		var tex: Texture2D = skin.get(layer)
+		key += (tex.resource_path if tex else "") + "|"
+	if _material_stacks.has(key):
+		return _material_stacks[key]
+	var images: Array[Image] = []
+	for layer in MAT.size():
+		var tex: Texture2D = skin.get(layer, skin.get(MAT.GRASS))
+		var img := tex.get_image() if tex else null
+		if img == null:
+			img = Image.create_empty(MAT_SIZE, MAT_SIZE, false, Image.FORMAT_RGBA8)
+		else:
+			img = img.duplicate()
+			if img.is_compressed():
+				img.decompress()
+			if img.get_width() != MAT_SIZE or img.get_height() != MAT_SIZE:
+				img.resize(MAT_SIZE, MAT_SIZE, Image.INTERPOLATE_LANCZOS)
+			img.convert(Image.FORMAT_RGBA8)
+		img.generate_mipmaps()
+		images.append(img)
+	var stack := Texture2DArray.new()
+	stack.create_from_images(images)
+	_material_stacks[key] = stack
+	return stack
 
 
 ## A flat square grid of CHUNK metres, `step` vertices per metre (shared by all chunks).
