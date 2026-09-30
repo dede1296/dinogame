@@ -13,9 +13,10 @@ const STYLE = `
   body { margin: 0; display: flex; align-items: center; justify-content: center; }
   #canvas {
     display: block;
-    /* Un écran de téléphone en paysage (20:9), jamais plus large que la fenêtre ni que 1000 px. */
-    aspect-ratio: 20 / 9;
-    width: min(100vw, 1000px, calc(100vh * 20 / 9));
+    /* Deux fois un écran de téléphone en paysage (844 x 390 : le format le plus courant),
+       et jamais plus grand que la fenêtre. */
+    aspect-ratio: 844 / 390;
+    width: min(100vw, 1688px, calc(100vh * 844 / 390));
     height: auto;
     max-height: 100vh;
     outline: none;
@@ -23,7 +24,7 @@ const STYLE = `
     box-shadow: 0 0 40px #0008;
     touch-action: none;
   }
-  #status, #status-splash, #status-progress { max-width: min(100vw, 1000px); }
+  #status, #status-splash, #status-progress { max-width: min(100vw, 1688px); }
 </style>
 `;
 

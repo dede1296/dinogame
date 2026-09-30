@@ -6,6 +6,7 @@ extends RefCounted
 
 static func as_web() -> String:
 	Quality.WEB = true
+	Quality.changed.emit()   # (the view re-reads the quality: glow and exposure follow)
 	return "mode web : décors 3D = %s" % Quality.setting(&"relief_props")
 
 

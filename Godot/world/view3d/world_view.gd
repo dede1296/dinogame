@@ -30,6 +30,8 @@ const CONTACT := preload("res://world/view3d/contact_shadow.gdshader")
 const RELIEF := preload("res://world/view3d/relief.gdshader")
 ## How strongly the real 3D models' details (normal map) catch the sun (relief.gdshader "detail").
 const MODEL_DETAIL := 3.0
+## How much light the browser gets, over the phone's (see the compatibility renderer, _ready).
+const WEB_EXPOSURE := 0.82
 ## How rounded each kind of scenery looks (volume lighting); flat things stay flat.
 const ROUNDNESS := {
 	"arbre_rond": 0.85, "araucaria": 0.6, "fougere_arbre": 0.6, "buisson": 0.8, "rocher": 0.75,
@@ -374,7 +376,11 @@ func _apply_quality() -> void:
 	_sun.shadow_enabled = shadows > 0
 	_sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS if shadows > 1 else DirectionalLight3D.SHADOW_ORTHOGONAL
 	_sun.directional_shadow_max_distance = 45.0 if shadows > 1 else 28.0
-	_env.glow_enabled = Quality.setting(&"glow")
+	# In the browser the game runs on the compatibility renderer (a browser has no Vulkan): its
+	# glow and its tone mapping do not behave like the phone's, and the pictures came out washed
+	# out. No glow there, and a touch less light (raise WEB_EXPOSURE towards 1.0 if it looks dull).
+	_env.glow_enabled = Quality.setting(&"glow") and not Quality.WEB
+	_env.tonemap_exposure = WEB_EXPOSURE if Quality.WEB else 1.0
 	var attributes := camera.attributes as CameraAttributesPractical
 	attributes.dof_blur_far_enabled = Quality.setting(&"dof")
 	attributes.dof_blur_far_transition = 14.0
