@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b5p5n61u1wlrd"
-path="res://.godot/imported/coffre_comptoir.png-4be4721305c8dd9f0f2d6b276335aed7.ctex"
+path.s3tc="res://.godot/imported/coffre_comptoir.png-4be4721305c8dd9f0f2d6b276335aed7.s3tc.ctex"
+path.etc2="res://.godot/imported/coffre_comptoir.png-4be4721305c8dd9f0f2d6b276335aed7.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/coffre_comptoir.png"
-dest_files=["res://.godot/imported/coffre_comptoir.png-4be4721305c8dd9f0f2d6b276335aed7.ctex"]
+dest_files=["res://.godot/imported/coffre_comptoir.png-4be4721305c8dd9f0f2d6b276335aed7.s3tc.ctex", "res://.godot/imported/coffre_comptoir.png-4be4721305c8dd9f0f2d6b276335aed7.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

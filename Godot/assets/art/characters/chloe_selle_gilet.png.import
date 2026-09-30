@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://q6kssj6n0vm1"
-path="res://.godot/imported/chloe_selle_gilet.png-5f8ef0d6fb8a99192573a49891f3216c.ctex"
+path.s3tc="res://.godot/imported/chloe_selle_gilet.png-5f8ef0d6fb8a99192573a49891f3216c.s3tc.ctex"
+path.etc2="res://.godot/imported/chloe_selle_gilet.png-5f8ef0d6fb8a99192573a49891f3216c.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/characters/chloe_selle_gilet.png"
-dest_files=["res://.godot/imported/chloe_selle_gilet.png-5f8ef0d6fb8a99192573a49891f3216c.ctex"]
+dest_files=["res://.godot/imported/chloe_selle_gilet.png-5f8ef0d6fb8a99192573a49891f3216c.s3tc.ctex", "res://.godot/imported/chloe_selle_gilet.png-5f8ef0d6fb8a99192573a49891f3216c.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c2rlyoy0xw6bb"
-path="res://.godot/imported/meduse.png-41e907b931f92f815e7d38ccd0ca473c.ctex"
+path.s3tc="res://.godot/imported/meduse.png-41e907b931f92f815e7d38ccd0ca473c.s3tc.ctex"
+path.etc2="res://.godot/imported/meduse.png-41e907b931f92f815e7d38ccd0ca473c.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/fauna/meduse.png"
-dest_files=["res://.godot/imported/meduse.png-41e907b931f92f815e7d38ccd0ca473c.ctex"]
+dest_files=["res://.godot/imported/meduse.png-41e907b931f92f815e7d38ccd0ca473c.s3tc.ctex", "res://.godot/imported/meduse.png-41e907b931f92f815e7d38ccd0ca473c.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

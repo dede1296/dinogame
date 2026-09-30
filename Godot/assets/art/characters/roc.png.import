@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bw0cox16blq5s"
-path="res://.godot/imported/roc.png-d67ba7886a83e12f8a7da24a5dc79a8b.ctex"
+path.s3tc="res://.godot/imported/roc.png-d67ba7886a83e12f8a7da24a5dc79a8b.s3tc.ctex"
+path.etc2="res://.godot/imported/roc.png-d67ba7886a83e12f8a7da24a5dc79a8b.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/characters/roc.png"
-dest_files=["res://.godot/imported/roc.png-d67ba7886a83e12f8a7da24a5dc79a8b.ctex"]
+dest_files=["res://.godot/imported/roc.png-d67ba7886a83e12f8a7da24a5dc79a8b.s3tc.ctex", "res://.godot/imported/roc.png-d67ba7886a83e12f8a7da24a5dc79a8b.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

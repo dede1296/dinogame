@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://po2j1stg34b4"
-path="res://.godot/imported/fauteuil.png-f144d7c41e176bc5bd441ca1607e9c01.ctex"
+path.s3tc="res://.godot/imported/fauteuil.png-f144d7c41e176bc5bd441ca1607e9c01.s3tc.ctex"
+path.etc2="res://.godot/imported/fauteuil.png-f144d7c41e176bc5bd441ca1607e9c01.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/fauteuil.png"
-dest_files=["res://.godot/imported/fauteuil.png-f144d7c41e176bc5bd441ca1607e9c01.ctex"]
+dest_files=["res://.godot/imported/fauteuil.png-f144d7c41e176bc5bd441ca1607e9c01.s3tc.ctex", "res://.godot/imported/fauteuil.png-f144d7c41e176bc5bd441ca1607e9c01.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

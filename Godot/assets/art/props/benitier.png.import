@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8g8q5sst6v7t"
-path="res://.godot/imported/benitier.png-a02031f963af6faf434e5d875597ea9b.ctex"
+path.s3tc="res://.godot/imported/benitier.png-a02031f963af6faf434e5d875597ea9b.s3tc.ctex"
+path.etc2="res://.godot/imported/benitier.png-a02031f963af6faf434e5d875597ea9b.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/benitier.png"
-dest_files=["res://.godot/imported/benitier.png-a02031f963af6faf434e5d875597ea9b.ctex"]
+dest_files=["res://.godot/imported/benitier.png-a02031f963af6faf434e5d875597ea9b.s3tc.ctex", "res://.godot/imported/benitier.png-a02031f963af6faf434e5d875597ea9b.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

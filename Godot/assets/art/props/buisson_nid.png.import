@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://batevdiijacet"
-path="res://.godot/imported/buisson_nid.png-1a0115c6dccef92cd831f5104f9ee04e.ctex"
+path.s3tc="res://.godot/imported/buisson_nid.png-1a0115c6dccef92cd831f5104f9ee04e.s3tc.ctex"
+path.etc2="res://.godot/imported/buisson_nid.png-1a0115c6dccef92cd831f5104f9ee04e.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/buisson_nid.png"
-dest_files=["res://.godot/imported/buisson_nid.png-1a0115c6dccef92cd831f5104f9ee04e.ctex"]
+dest_files=["res://.godot/imported/buisson_nid.png-1a0115c6dccef92cd831f5104f9ee04e.s3tc.ctex", "res://.godot/imported/buisson_nid.png-1a0115c6dccef92cd831f5104f9ee04e.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

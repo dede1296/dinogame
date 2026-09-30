@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b6gyim85vsh1r"
-path="res://.godot/imported/fourmis.png-b621f3dbd0fe8bf8d4f550c916de76cf.ctex"
+path.s3tc="res://.godot/imported/fourmis.png-b621f3dbd0fe8bf8d4f550c916de76cf.s3tc.ctex"
+path.etc2="res://.godot/imported/fourmis.png-b621f3dbd0fe8bf8d4f550c916de76cf.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/fauna/fourmis.png"
-dest_files=["res://.godot/imported/fourmis.png-b621f3dbd0fe8bf8d4f550c916de76cf.ctex"]
+dest_files=["res://.godot/imported/fourmis.png-b621f3dbd0fe8bf8d4f550c916de76cf.s3tc.ctex", "res://.godot/imported/fourmis.png-b621f3dbd0fe8bf8d4f550c916de76cf.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

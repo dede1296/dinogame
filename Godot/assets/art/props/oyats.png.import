@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1m3e58ncbmh1"
-path="res://.godot/imported/oyats.png-f2b20335638f9bb766f4d13f9578ea17.ctex"
+path.s3tc="res://.godot/imported/oyats.png-f2b20335638f9bb766f4d13f9578ea17.s3tc.ctex"
+path.etc2="res://.godot/imported/oyats.png-f2b20335638f9bb766f4d13f9578ea17.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/oyats.png"
-dest_files=["res://.godot/imported/oyats.png-f2b20335638f9bb766f4d13f9578ea17.ctex"]
+dest_files=["res://.godot/imported/oyats.png-f2b20335638f9bb766f4d13f9578ea17.s3tc.ctex", "res://.godot/imported/oyats.png-f2b20335638f9bb766f4d13f9578ea17.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

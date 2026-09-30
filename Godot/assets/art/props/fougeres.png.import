@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dl2yo2eox7bvw"
-path="res://.godot/imported/fougeres.png-4279de7f7051c18d339b73ffba440fda.ctex"
+path.s3tc="res://.godot/imported/fougeres.png-4279de7f7051c18d339b73ffba440fda.s3tc.ctex"
+path.etc2="res://.godot/imported/fougeres.png-4279de7f7051c18d339b73ffba440fda.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/fougeres.png"
-dest_files=["res://.godot/imported/fougeres.png-4279de7f7051c18d339b73ffba440fda.ctex"]
+dest_files=["res://.godot/imported/fougeres.png-4279de7f7051c18d339b73ffba440fda.s3tc.ctex", "res://.godot/imported/fougeres.png-4279de7f7051c18d339b73ffba440fda.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

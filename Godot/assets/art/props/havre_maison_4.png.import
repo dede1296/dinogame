@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcjh0w21tse6h"
-path="res://.godot/imported/havre_maison_4.png-b8a9703179a090b1fd1270c2330b4cbf.ctex"
+path.s3tc="res://.godot/imported/havre_maison_4.png-b8a9703179a090b1fd1270c2330b4cbf.s3tc.ctex"
+path.etc2="res://.godot/imported/havre_maison_4.png-b8a9703179a090b1fd1270c2330b4cbf.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/havre_maison_4.png"
-dest_files=["res://.godot/imported/havre_maison_4.png-b8a9703179a090b1fd1270c2330b4cbf.ctex"]
+dest_files=["res://.godot/imported/havre_maison_4.png-b8a9703179a090b1fd1270c2330b4cbf.s3tc.ctex", "res://.godot/imported/havre_maison_4.png-b8a9703179a090b1fd1270c2330b4cbf.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

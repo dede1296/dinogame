@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bmuonco3u45u1"
-path="res://.godot/imported/boite_ronde.png-8c4b91de0c783a8bb1f7c72c8b538a13.ctex"
+path.s3tc="res://.godot/imported/boite_ronde.png-8c4b91de0c783a8bb1f7c72c8b538a13.s3tc.ctex"
+path.etc2="res://.godot/imported/boite_ronde.png-8c4b91de0c783a8bb1f7c72c8b538a13.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/boite_ronde.png"
-dest_files=["res://.godot/imported/boite_ronde.png-8c4b91de0c783a8bb1f7c72c8b538a13.ctex"]
+dest_files=["res://.godot/imported/boite_ronde.png-8c4b91de0c783a8bb1f7c72c8b538a13.s3tc.ctex", "res://.godot/imported/boite_ronde.png-8c4b91de0c783a8bb1f7c72c8b538a13.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

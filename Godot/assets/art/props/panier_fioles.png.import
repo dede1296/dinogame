@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://g7gwv4xjnlhu"
-path="res://.godot/imported/panier_fioles.png-adb25922eb2464c9968400d2a79aeb3e.ctex"
+path.s3tc="res://.godot/imported/panier_fioles.png-adb25922eb2464c9968400d2a79aeb3e.s3tc.ctex"
+path.etc2="res://.godot/imported/panier_fioles.png-adb25922eb2464c9968400d2a79aeb3e.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/panier_fioles.png"
-dest_files=["res://.godot/imported/panier_fioles.png-adb25922eb2464c9968400d2a79aeb3e.ctex"]
+dest_files=["res://.godot/imported/panier_fioles.png-adb25922eb2464c9968400d2a79aeb3e.s3tc.ctex", "res://.godot/imported/panier_fioles.png-adb25922eb2464c9968400d2a79aeb3e.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

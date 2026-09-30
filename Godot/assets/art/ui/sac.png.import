@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://csvnbmbl4vbv3"
-path="res://.godot/imported/sac.png-337377795cf7384aa1ee89396fc7676b.ctex"
+path.s3tc="res://.godot/imported/sac.png-337377795cf7384aa1ee89396fc7676b.s3tc.ctex"
+path.etc2="res://.godot/imported/sac.png-337377795cf7384aa1ee89396fc7676b.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/ui/sac.png"
-dest_files=["res://.godot/imported/sac.png-337377795cf7384aa1ee89396fc7676b.ctex"]
+dest_files=["res://.godot/imported/sac.png-337377795cf7384aa1ee89396fc7676b.s3tc.ctex", "res://.godot/imported/sac.png-337377795cf7384aa1ee89396fc7676b.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

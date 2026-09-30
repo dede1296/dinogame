@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://js74ylrw164p"
-path="res://.godot/imported/roue_chariot.png-36e522ebdb4093335d38f924f5b653ca.ctex"
+path.s3tc="res://.godot/imported/roue_chariot.png-36e522ebdb4093335d38f924f5b653ca.s3tc.ctex"
+path.etc2="res://.godot/imported/roue_chariot.png-36e522ebdb4093335d38f924f5b653ca.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/roue_chariot.png"
-dest_files=["res://.godot/imported/roue_chariot.png-36e522ebdb4093335d38f924f5b653ca.ctex"]
+dest_files=["res://.godot/imported/roue_chariot.png-36e522ebdb4093335d38f924f5b653ca.s3tc.ctex", "res://.godot/imported/roue_chariot.png-36e522ebdb4093335d38f924f5b653ca.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

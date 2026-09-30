@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c6wt43q4g4832"
-path="res://.godot/imported/fougeres_ecrasees.png-b6a2a73013c51ff32d5ff12654981580.ctex"
+path.s3tc="res://.godot/imported/fougeres_ecrasees.png-b6a2a73013c51ff32d5ff12654981580.s3tc.ctex"
+path.etc2="res://.godot/imported/fougeres_ecrasees.png-b6a2a73013c51ff32d5ff12654981580.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/fougeres_ecrasees.png"
-dest_files=["res://.godot/imported/fougeres_ecrasees.png-b6a2a73013c51ff32d5ff12654981580.ctex"]
+dest_files=["res://.godot/imported/fougeres_ecrasees.png-b6a2a73013c51ff32d5ff12654981580.s3tc.ctex", "res://.godot/imported/fougeres_ecrasees.png-b6a2a73013c51ff32d5ff12654981580.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

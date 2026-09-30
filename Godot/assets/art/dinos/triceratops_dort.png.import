@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://betuc6soe4xux"
-path="res://.godot/imported/triceratops_dort.png-f04a0c2aa92977d362d86e83da00a969.ctex"
+path.s3tc="res://.godot/imported/triceratops_dort.png-f04a0c2aa92977d362d86e83da00a969.s3tc.ctex"
+path.etc2="res://.godot/imported/triceratops_dort.png-f04a0c2aa92977d362d86e83da00a969.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/dinos/triceratops_dort.png"
-dest_files=["res://.godot/imported/triceratops_dort.png-f04a0c2aa92977d362d86e83da00a969.ctex"]
+dest_files=["res://.godot/imported/triceratops_dort.png-f04a0c2aa92977d362d86e83da00a969.s3tc.ctex", "res://.godot/imported/triceratops_dort.png-f04a0c2aa92977d362d86e83da00a969.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

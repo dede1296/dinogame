@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1q63gh4i4k6u"
-path="res://.godot/imported/boutique.png-bd7b56c9ab82a4d1a3bf0ef8a08fe639.ctex"
+path.s3tc="res://.godot/imported/boutique.png-bd7b56c9ab82a4d1a3bf0ef8a08fe639.s3tc.ctex"
+path.etc2="res://.godot/imported/boutique.png-bd7b56c9ab82a4d1a3bf0ef8a08fe639.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/ui/boutique.png"
-dest_files=["res://.godot/imported/boutique.png-bd7b56c9ab82a4d1a3bf0ef8a08fe639.ctex"]
+dest_files=["res://.godot/imported/boutique.png-bd7b56c9ab82a4d1a3bf0ef8a08fe639.s3tc.ctex", "res://.godot/imported/boutique.png-bd7b56c9ab82a4d1a3bf0ef8a08fe639.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

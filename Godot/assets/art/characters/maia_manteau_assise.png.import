@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://blxo3182eoldn"
-path="res://.godot/imported/maia_manteau_assise.png-f0a58ea409093ed4c9e1cd35a5ad93a4.ctex"
+path.s3tc="res://.godot/imported/maia_manteau_assise.png-f0a58ea409093ed4c9e1cd35a5ad93a4.s3tc.ctex"
+path.etc2="res://.godot/imported/maia_manteau_assise.png-f0a58ea409093ed4c9e1cd35a5ad93a4.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/characters/maia_manteau_assise.png"
-dest_files=["res://.godot/imported/maia_manteau_assise.png-f0a58ea409093ed4c9e1cd35a5ad93a4.ctex"]
+dest_files=["res://.godot/imported/maia_manteau_assise.png-f0a58ea409093ed4c9e1cd35a5ad93a4.s3tc.ctex", "res://.godot/imported/maia_manteau_assise.png-f0a58ea409093ed4c9e1cd35a5ad93a4.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b027bu67y2bh4"
-path="res://.godot/imported/meteo_neige.png-01dbf2dd6cd705786037dbe051050dd0.ctex"
+path.s3tc="res://.godot/imported/meteo_neige.png-01dbf2dd6cd705786037dbe051050dd0.s3tc.ctex"
+path.etc2="res://.godot/imported/meteo_neige.png-01dbf2dd6cd705786037dbe051050dd0.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/ui/meteo_neige.png"
-dest_files=["res://.godot/imported/meteo_neige.png-01dbf2dd6cd705786037dbe051050dd0.ctex"]
+dest_files=["res://.godot/imported/meteo_neige.png-01dbf2dd6cd705786037dbe051050dd0.s3tc.ctex", "res://.godot/imported/meteo_neige.png-01dbf2dd6cd705786037dbe051050dd0.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

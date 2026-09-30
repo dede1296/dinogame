@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bid2nfho4aqw5"
-path="res://.godot/imported/vieux_rempart.png-baa116c19dab9f43a3aad7180ee7718b.ctex"
+path.s3tc="res://.godot/imported/vieux_rempart.png-baa116c19dab9f43a3aad7180ee7718b.s3tc.ctex"
+path.etc2="res://.godot/imported/vieux_rempart.png-baa116c19dab9f43a3aad7180ee7718b.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/dinos/vieux_rempart.png"
-dest_files=["res://.godot/imported/vieux_rempart.png-baa116c19dab9f43a3aad7180ee7718b.ctex"]
+dest_files=["res://.godot/imported/vieux_rempart.png-baa116c19dab9f43a3aad7180ee7718b.s3tc.ctex", "res://.godot/imported/vieux_rempart.png-baa116c19dab9f43a3aad7180ee7718b.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

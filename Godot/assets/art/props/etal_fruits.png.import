@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cgla83wobseed"
-path="res://.godot/imported/etal_fruits.png-b5337d20a10da49aa9a087ac93801dbc.ctex"
+path.s3tc="res://.godot/imported/etal_fruits.png-b5337d20a10da49aa9a087ac93801dbc.s3tc.ctex"
+path.etc2="res://.godot/imported/etal_fruits.png-b5337d20a10da49aa9a087ac93801dbc.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/etal_fruits.png"
-dest_files=["res://.godot/imported/etal_fruits.png-b5337d20a10da49aa9a087ac93801dbc.ctex"]
+dest_files=["res://.godot/imported/etal_fruits.png-b5337d20a10da49aa9a087ac93801dbc.s3tc.ctex", "res://.godot/imported/etal_fruits.png-b5337d20a10da49aa9a087ac93801dbc.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

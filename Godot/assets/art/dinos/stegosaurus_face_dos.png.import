@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://fc860tniohd3"
-path="res://.godot/imported/stegosaurus_face_dos.png-c40369c7a203a8c41b3f87536065c45a.ctex"
+path.s3tc="res://.godot/imported/stegosaurus_face_dos.png-c40369c7a203a8c41b3f87536065c45a.s3tc.ctex"
+path.etc2="res://.godot/imported/stegosaurus_face_dos.png-c40369c7a203a8c41b3f87536065c45a.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/dinos/stegosaurus_face_dos.png"
-dest_files=["res://.godot/imported/stegosaurus_face_dos.png-c40369c7a203a8c41b3f87536065c45a.ctex"]
+dest_files=["res://.godot/imported/stegosaurus_face_dos.png-c40369c7a203a8c41b3f87536065c45a.s3tc.ctex", "res://.godot/imported/stegosaurus_face_dos.png-c40369c7a203a8c41b3f87536065c45a.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

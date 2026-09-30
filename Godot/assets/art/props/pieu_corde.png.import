@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://450cy4cctuo2"
-path="res://.godot/imported/pieu_corde.png-2d1a67fb66a2eb4346b32de16e8bafad.ctex"
+path.s3tc="res://.godot/imported/pieu_corde.png-2d1a67fb66a2eb4346b32de16e8bafad.s3tc.ctex"
+path.etc2="res://.godot/imported/pieu_corde.png-2d1a67fb66a2eb4346b32de16e8bafad.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/pieu_corde.png"
-dest_files=["res://.godot/imported/pieu_corde.png-2d1a67fb66a2eb4346b32de16e8bafad.ctex"]
+dest_files=["res://.godot/imported/pieu_corde.png-2d1a67fb66a2eb4346b32de16e8bafad.s3tc.ctex", "res://.godot/imported/pieu_corde.png-2d1a67fb66a2eb4346b32de16e8bafad.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://wmmf3honyi7k"
-path="res://.godot/imported/fiole_vide.png-14a8d077446db35b2efd6b4cb1a1207b.ctex"
+path.s3tc="res://.godot/imported/fiole_vide.png-14a8d077446db35b2efd6b4cb1a1207b.s3tc.ctex"
+path.etc2="res://.godot/imported/fiole_vide.png-14a8d077446db35b2efd6b4cb1a1207b.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/fiole_vide.png"
-dest_files=["res://.godot/imported/fiole_vide.png-14a8d077446db35b2efd6b4cb1a1207b.ctex"]
+dest_files=["res://.godot/imported/fiole_vide.png-14a8d077446db35b2efd6b4cb1a1207b.s3tc.ctex", "res://.godot/imported/fiole_vide.png-14a8d077446db35b2efd6b4cb1a1207b.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

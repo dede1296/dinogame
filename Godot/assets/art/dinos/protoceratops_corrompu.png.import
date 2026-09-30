@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bkepvqsjnn5ik"
-path="res://.godot/imported/protoceratops_corrompu.png-f9bdb3a4b4493aedda34f0c926c156aa.ctex"
+path.s3tc="res://.godot/imported/protoceratops_corrompu.png-f9bdb3a4b4493aedda34f0c926c156aa.s3tc.ctex"
+path.etc2="res://.godot/imported/protoceratops_corrompu.png-f9bdb3a4b4493aedda34f0c926c156aa.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/dinos/protoceratops_corrompu.png"
-dest_files=["res://.godot/imported/protoceratops_corrompu.png-f9bdb3a4b4493aedda34f0c926c156aa.ctex"]
+dest_files=["res://.godot/imported/protoceratops_corrompu.png-f9bdb3a4b4493aedda34f0c926c156aa.s3tc.ctex", "res://.godot/imported/protoceratops_corrompu.png-f9bdb3a4b4493aedda34f0c926c156aa.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

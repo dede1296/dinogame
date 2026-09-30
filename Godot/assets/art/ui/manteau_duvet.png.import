@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dmki1rxptpl7"
-path="res://.godot/imported/manteau_duvet.png-9381753280f88d738423c98b5d38d4ec.ctex"
+path.s3tc="res://.godot/imported/manteau_duvet.png-9381753280f88d738423c98b5d38d4ec.s3tc.ctex"
+path.etc2="res://.godot/imported/manteau_duvet.png-9381753280f88d738423c98b5d38d4ec.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/ui/manteau_duvet.png"
-dest_files=["res://.godot/imported/manteau_duvet.png-9381753280f88d738423c98b5d38d4ec.ctex"]
+dest_files=["res://.godot/imported/manteau_duvet.png-9381753280f88d738423c98b5d38d4ec.s3tc.ctex", "res://.godot/imported/manteau_duvet.png-9381753280f88d738423c98b5d38d4ec.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ba8vctcc6cix6"
-path="res://.godot/imported/bois_flotte.png-c22e3fde2df0b4301b611bd10edc904f.ctex"
+path.s3tc="res://.godot/imported/bois_flotte.png-c22e3fde2df0b4301b611bd10edc904f.s3tc.ctex"
+path.etc2="res://.godot/imported/bois_flotte.png-c22e3fde2df0b4301b611bd10edc904f.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/bois_flotte.png"
-dest_files=["res://.godot/imported/bois_flotte.png-c22e3fde2df0b4301b611bd10edc904f.ctex"]
+dest_files=["res://.godot/imported/bois_flotte.png-c22e3fde2df0b4301b611bd10edc904f.s3tc.ctex", "res://.godot/imported/bois_flotte.png-c22e3fde2df0b4301b611bd10edc904f.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

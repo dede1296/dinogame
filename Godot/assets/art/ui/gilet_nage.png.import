@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://duglyiex31xvu"
-path="res://.godot/imported/gilet_nage.png-47c949f63560f3853df9fb39866a7129.ctex"
+path.s3tc="res://.godot/imported/gilet_nage.png-47c949f63560f3853df9fb39866a7129.s3tc.ctex"
+path.etc2="res://.godot/imported/gilet_nage.png-47c949f63560f3853df9fb39866a7129.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/ui/gilet_nage.png"
-dest_files=["res://.godot/imported/gilet_nage.png-47c949f63560f3853df9fb39866a7129.ctex"]
+dest_files=["res://.godot/imported/gilet_nage.png-47c949f63560f3853df9fb39866a7129.s3tc.ctex", "res://.godot/imported/gilet_nage.png-47c949f63560f3853df9fb39866a7129.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

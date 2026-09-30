@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://tp2t4usvdps1"
-path="res://.godot/imported/casiers.png-7e29895308e6c9e8bbd60038e890cdef.ctex"
+path.s3tc="res://.godot/imported/casiers.png-7e29895308e6c9e8bbd60038e890cdef.s3tc.ctex"
+path.etc2="res://.godot/imported/casiers.png-7e29895308e6c9e8bbd60038e890cdef.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/casiers.png"
-dest_files=["res://.godot/imported/casiers.png-7e29895308e6c9e8bbd60038e890cdef.ctex"]
+dest_files=["res://.godot/imported/casiers.png-7e29895308e6c9e8bbd60038e890cdef.s3tc.ctex", "res://.godot/imported/casiers.png-7e29895308e6c9e8bbd60038e890cdef.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

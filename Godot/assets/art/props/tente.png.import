@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bhqefbxfghvin"
-path="res://.godot/imported/tente.png-6c5d83402b947d61b77d9cdb373429dc.ctex"
+path.s3tc="res://.godot/imported/tente.png-6c5d83402b947d61b77d9cdb373429dc.s3tc.ctex"
+path.etc2="res://.godot/imported/tente.png-6c5d83402b947d61b77d9cdb373429dc.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/tente.png"
-dest_files=["res://.godot/imported/tente.png-6c5d83402b947d61b77d9cdb373429dc.ctex"]
+dest_files=["res://.godot/imported/tente.png-6c5d83402b947d61b77d9cdb373429dc.s3tc.ctex", "res://.godot/imported/tente.png-6c5d83402b947d61b77d9cdb373429dc.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

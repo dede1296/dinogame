@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://n75u4fb78vk7"
-path="res://.godot/imported/porte_vents.png-439f54d07cb437df8c7f2282522c6821.ctex"
+path.s3tc="res://.godot/imported/porte_vents.png-439f54d07cb437df8c7f2282522c6821.s3tc.ctex"
+path.etc2="res://.godot/imported/porte_vents.png-439f54d07cb437df8c7f2282522c6821.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/props/porte_vents.png"
-dest_files=["res://.godot/imported/porte_vents.png-439f54d07cb437df8c7f2282522c6821.ctex"]
+dest_files=["res://.godot/imported/porte_vents.png-439f54d07cb437df8c7f2282522c6821.s3tc.ctex", "res://.godot/imported/porte_vents.png-439f54d07cb437df8c7f2282522c6821.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

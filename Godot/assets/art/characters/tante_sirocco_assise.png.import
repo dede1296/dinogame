@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5lmoqdw6cs50"
-path="res://.godot/imported/tante_sirocco_assise.png-cefbfa8283a0f492e8afe327f09185db.ctex"
+path.s3tc="res://.godot/imported/tante_sirocco_assise.png-cefbfa8283a0f492e8afe327f09185db.s3tc.ctex"
+path.etc2="res://.godot/imported/tante_sirocco_assise.png-cefbfa8283a0f492e8afe327f09185db.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/characters/tante_sirocco_assise.png"
-dest_files=["res://.godot/imported/tante_sirocco_assise.png-cefbfa8283a0f492e8afe327f09185db.ctex"]
+dest_files=["res://.godot/imported/tante_sirocco_assise.png-cefbfa8283a0f492e8afe327f09185db.s3tc.ctex", "res://.godot/imported/tante_sirocco_assise.png-cefbfa8283a0f492e8afe327f09185db.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0

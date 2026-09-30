@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jaxaunx1ejph"
-path="res://.godot/imported/leaellynasaura_face_dos.png-b6a8c455d0859c5463c57421ae9bb62c.ctex"
+path.s3tc="res://.godot/imported/leaellynasaura_face_dos.png-b6a8c455d0859c5463c57421ae9bb62c.s3tc.ctex"
+path.etc2="res://.godot/imported/leaellynasaura_face_dos.png-b6a8c455d0859c5463c57421ae9bb62c.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/art/dinos/leaellynasaura_face_dos.png"
-dest_files=["res://.godot/imported/leaellynasaura_face_dos.png-b6a8c455d0859c5463c57421ae9bb62c.ctex"]
+dest_files=["res://.godot/imported/leaellynasaura_face_dos.png-b6a8c455d0859c5463c57421ae9bb62c.s3tc.ctex", "res://.godot/imported/leaellynasaura_face_dos.png-b6a8c455d0859c5463c57421ae9bb62c.etc2.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.85
 compress/uastc_level=0
