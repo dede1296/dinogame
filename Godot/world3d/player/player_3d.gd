@@ -99,12 +99,14 @@ func facing() -> Vector3:
 
 
 ## Puts her there (arrival, a teleport) and the camera with her.
-func place_at(where: Vector3, facing_yaw := NAN) -> void:
+## `facing_yaw` (radians): which way she then faces; null: as she was. (Not NAN as a default: the
+## editor's language server sends the defaults as JSON, which has no NaN — a warning each time.)
+func place_at(where: Vector3, facing_yaw: Variant = null) -> void:
 	global_position = where
 	velocity = Vector3.ZERO
 	_last_ground = where
-	if not is_nan(facing_yaw):
-		model.rotation.y = facing_yaw
+	if facing_yaw != null:
+		model.rotation.y = float(facing_yaw)
 	reset_physics_interpolation()
 	pivot.snap()
 
