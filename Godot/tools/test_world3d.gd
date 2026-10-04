@@ -29,7 +29,8 @@ func _initialize() -> void:
 			_only = int(arg.substr(5))
 	DirAccess.make_dir_recursive_absolute(_out)
 	root.get_node("Save").set("path", "user://capture_save.json")   # never the player's save
-	change_scene_to_file(ZONE if _only == 4 else DEMO)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://capture_save.json"))   # a new game each time
+	change_scene_to_file(ZONE if _only in [4, 5] else DEMO)
 	_run()
 
 
@@ -42,6 +43,8 @@ func _run() -> void:
 		await _phase1()
 	if _only in [0, 2]:
 		await _phase2()
+	if _only == 5:   # (the Prairie too)
+		await _phase5()
 	if _only == 4:   # (its own scene: only with only=4)
 		await _phase4()
 	if _only in [0, 3]:
@@ -298,6 +301,7 @@ func _phase3() -> void:
 ## stop her as in the 2.5D; its raptors are out; frames per second; pictures of the zone.
 func _phase4() -> void:
 	var zone := _demo
+	_quiet(zone)
 	var src: RefCounted = zone.get("source")
 	var terrain: Node3D = zone.get("terrain")
 	var build_ms: int = zone.get("build_ms")
@@ -344,6 +348,102 @@ func _phase4() -> void:
 		frames += 1
 	var fps := frames / 3.0
 	_check("smooth on this PC (GTX 1650 Ti)", fps > 60.0, "%.0f im/s" % fps)
+
+
+## No battle while the zone's ground is tested: no hidden dinos in the tall grass, the others calm.
+func _quiet(zone: Node) -> void:
+	var enc: Node = zone.get("session").get("encounters")
+	enc.set_physics_process(false)
+	for d in zone.get("dinos"):
+		d.call("calm_down", 9999.0)
+
+
+## Phase 5: the game in the 3D Prairie — a new game (Vif), the game's HUD, Vif walking with Chloé,
+## the day and the night (the 2.5D's light), the dinos of the time of day (Parasaurolophus by day),
+## a raptor met at night starting the game's own battle (left by running away), the save keeping
+## Chloé's place in the 2.5D's units.
+func _phase5() -> void:
+	var zone := _demo
+	var session: Node = zone.get("session")
+	var enc: Node = session.get("encounters")
+	var game := root.get_node("Game")
+	var party: Array = game.get("party")
+	_check("a new game, with Vif", party.size() == 1 and party[0].call("species").get("id") == &"velociraptor", "%d dino(s)" % party.size())
+	var hud: CanvasLayer = session.get("hud")
+	var bars := hud.find_children("*", "PartyBar", true, false).size() + hud.find_children("*", "ClockBadge", true, false).size()
+	_check("the game's HUD (party, clock…)", bars == 2, "%d" % bars)
+	enc.set_physics_process(false)   # (no hidden dino while Vif's walk is looked at)
+	var companion: Node3D = session.get("companion")
+	_check("Vif walks with Chloé", companion != null, "%s" % [companion])
+	if companion:
+		zone.call("place", &"DepuisPort")
+		await create_timer(1.0).timeout
+		await _hold_up(4.0)
+		await create_timer(0.8).timeout
+		var gap := companion.global_position.distance_to(_player.global_position)
+		_check("…keeping up with her", gap < 4.0, "%.1f m" % gap)
+		await _shot("30_vif_suit_chloe")
+	var sun: DirectionalLight3D = zone.get("sky").get("sun")
+	game.set("clock", 13.0 * 60.0)
+	await create_timer(0.6).timeout
+	var day: float = sun.light_energy
+	var day_dinos: Array = zone.get("dinos").map(func(d: Node) -> StringName: return d.get("species").get("id"))
+	_check("by day, the Parasaurolophus are out (the 2.5D's habitats)", &"parasaurolophus" in day_dinos and not &"velociraptor" in day_dinos, "%s" % [day_dinos])
+	_player.call("place_at", _player.global_position, PI)
+	_pivot.call("set_view", 200.0, -20.0, 9.0)
+	await _shot("31_jour")
+	game.set("clock", 22.5 * 60.0)
+	await create_timer(1.0).timeout
+	var night: float = sun.light_energy
+	_check("the night falls (the 2.5D's light over the day)", night < day * 0.5, "soleil %.2f → %.2f" % [day, night])
+	await _shot("32_nuit")
+	var raptor: Node3D = null
+	for d in zone.get("dinos"):
+		if d.get("species").get("id") == &"velociraptor":
+			raptor = d
+			break
+	_check("at night, the raptors are out", raptor != null, "")
+	if raptor == null:
+		return
+	raptor.set_physics_process(false)   # held still, so Chloé walks into it
+	enc.set_physics_process(true)
+	var to := raptor.global_position + Vector3(0, 0, -3.5)
+	zone.call("place_at", to, 0.0)
+	await create_timer(0.5).timeout
+	Input.action_press(&"move_up")
+	var battle: Node = null
+	var t0 := Time.get_ticks_msec()
+	while battle == null and Time.get_ticks_msec() < t0 + 5000:
+		await process_frame
+		for n in enc.get_children():
+			if n.has_signal("_action_chosen"):
+				battle = n
+	Input.action_release(&"move_up")
+	_check("walking into a raptor starts the game's battle", battle != null and paused, "en pause : %s" % paused)
+	if battle == null:
+		return
+	await create_timer(2.5).timeout
+	await _shot("33_combat")
+	t0 = Time.get_ticks_msec()
+	while is_instance_valid(battle) and battle.is_inside_tree() and Time.get_ticks_msec() < t0 + 40000:
+		var hud_open: bool = battle.get("_hud") != null and battle.get("_hud").call("is_open")
+		if battle.get("_menu").visible or hud_open:
+			battle.emit_signal("_action_chosen", {"type": "run"})
+		else:
+			_press(&"interact")
+		await create_timer(0.4).timeout
+	while root.get_node("Dialogue").get("active"):
+		_press(&"interact")
+		await create_timer(0.4).timeout
+	await create_timer(0.5).timeout
+	_check("…left by running away, the zone goes on", not paused and enc.get("last_result") == "run", "résultat « %s »" % enc.get("last_result"))
+	_check("…and that raptor keeps away a while", is_instance_valid(raptor) and raptor.call("is_calm"), "")
+	var save := root.get_node("Save")
+	_check("the save writes", save.call("save_game"), "")
+	var at := _player.global_position
+	var px: Vector2 = game.get("player_position")
+	var s: float = zone.get("source").get("scale")
+	_check("…Chloé's place, in the 2.5D's units", px.distance_to(Vector2(at.x, at.z) / s * 48.0) < 2.0 and game.get("has_position"), "%s" % px)
 
 
 ## The first tile of `surface` whose south neighbour is open grass on the same level: that neighbour.

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="Species3D" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://world3d/creatures/species_3d.gd" id="1_species"]
+[ext_resource type="Script" path="res://world3d/animation/anim_set.gd" id="2_animset"]
+[ext_resource type="PackedScene" path="res://assets/models3d/dinos/parasaurolophus/parasaurolophus.glb" id="3_model"]
+
+[sub_resource type="Resource" id="Resource_anims"]
+script = ExtResource("2_animset")
+clips = Dictionary[StringName, StringName]({
+&"attack": &"Armature|Parasaurolophus_Attack",
+&"death": &"Armature|Parasaurolophus_Death",
+&"idle": &"Armature|Parasaurolophus_Idle",
+&"rear": &"Armature|Parasaurolophus_Jump",
+&"run": &"Armature|Parasaurolophus_Run",
+&"walk": &"Armature|Parasaurolophus_Walk"
+})
+walk_clip_speed = 3.49
+run_clip_speed = 11.0
+
+[resource]
+script = ExtResource("1_species")
+id = &"parasaurolophus"
+model = ExtResource("3_model")
+anim_set = SubResource("Resource_anims")
+length_m = 9.5
+mass_kg = 2500.0
+diet = &"herbivore"
+biomes = Array[StringName]([&"plaines", &"marais"])
+temperament = &"calm"
+walk_speed = 2.2
+run_speed = 7.0
+perception_m = 12.0
+flee_m = 6.0
+roam_m = 12.0

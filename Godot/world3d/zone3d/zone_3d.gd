@@ -1,10 +1,12 @@
 class_name Zone3D
 extends Node3D
-## A zone of the 3D version (docs/migration-3d.md, phase 4), built when it starts from the 2.5D
-## zone `zone_id` (ZoneSource): its relief, ground and water (Terrain3D), what stops Chloé
-## (Blockers3D: the 2.5D's rules), its scenery and woods (Scatter3D), a navigation mesh for the
-## dinos, Chloé at her arrival point, and the wild dinos of its habitats that have a 3D sheet.
-## Its map is `zone_scale` times wider than the 2.5D's. Not saved yet (phase 5).
+## A zone of the 3D version (docs/migration-3d.md, phases 4 and 5), built when it starts from the
+## 2.5D zone `zone_id` (ZoneSource): its relief, ground and water (Terrain3D), what stops Chloé
+## (Blockers3D: the 2.5D's rules), its scenery and woods (Scatter3D), its sky over the day (Sky3D),
+## a navigation mesh for the dinos, Chloé (where the save left her, else at her arrival point), and
+## the wild dinos of its habitats that have a 3D sheet, those of the time of day.
+## The game around it (save, HUD, companion, battles): Session3D. Its map is `zone_scale` times wider
+## than the 2.5D's.
 
 const PLAYER := preload("res://world3d/player/player_3d.tscn")
 const WALKABLE: Array[StringName] = [&"grass", &"path", &"tall_grass", &"sand"]
@@ -15,6 +17,8 @@ const WALKABLE: Array[StringName] = [&"grass", &"path", &"tall_grass", &"sand"]
 @export var zone_scale := ZoneSource.DEFAULT_SCALE
 
 var source: ZoneSource
+var session: Session3D
+var sky: Sky3D
 var terrain: Terrain3D
 var blockers: Blockers3D
 var scatter: Scatter3D
@@ -28,11 +32,18 @@ var build_ms := 0
 func _ready() -> void:
 	var t0 := Time.get_ticks_msec()
 	var steps := {}
+	session = Session3D.new()
+	session.name = "Session"
+	session.zone = self
+	add_child(session)
+	session.begin()
 	source = ZoneSource.open(zone_id, zone_scale)
 	if source == null:
 		return
 	steps["lecture"] = Time.get_ticks_msec() - t0
-	_add_environment()
+	sky = Sky3D.new()
+	sky.name = "Sky"
+	add_child(sky)
 	terrain = Terrain3D.new()
 	terrain.name = "Terrain"
 	add_child(terrain)
@@ -51,6 +62,7 @@ func _ready() -> void:
 	_add_navigation()
 	_add_player()
 	_add_dinos()
+	session.after_build()
 	build_ms = Time.get_ticks_msec() - t0
 	print("Zone3D %s : %d × %d m, construite en %d ms (cumul %s), %d dinos, décors %s" % [zone_id, source.size_m().x, source.size_m().y,
 		build_ms, steps, dinos.size(), scatter.counts()])
@@ -63,7 +75,11 @@ func _exit_tree() -> void:
 
 ## Puts Chloé at a 2.5D arrival point (a Spawns marker), the camera behind her.
 func place(spawn_name: StringName, yaw_deg := 180.0) -> void:
-	var at := source.spawn(spawn_name)
+	place_at(source.spawn(spawn_name), yaw_deg)
+
+
+## Puts Chloé at a point of the zone (on the ground there), the camera behind her.
+func place_at(at: Vector3, yaw_deg := 180.0) -> void:
 	at.y = terrain.height_at(at.x, at.z) + 0.3
 	player.place_at(at, deg_to_rad(yaw_deg))
 	player.pivot.set_view(yaw_deg + 180.0, CameraPivot.PITCH_DEFAULT)
@@ -73,7 +89,11 @@ func place(spawn_name: StringName, yaw_deg := 180.0) -> void:
 func _add_player() -> void:
 	player = PLAYER.instantiate()
 	add_child(player)
-	place(arrival)
+	var saved := session.saved_spot()
+	if saved != Vector3.INF:
+		place_at(saved)
+	else:
+		place(arrival)
 
 
 ## The navigation mesh, from the ground and the blockers (their group nav_source), baked on a thread:
@@ -97,15 +117,17 @@ func _add_navigation() -> void:
 	navigation.bake_navigation_mesh(true)
 
 
-## The wild dinos of the zone's habitats (those seen out in the open; the time of day: phase 5) whose
-## species has a 3D sheet: so many per habitat (Habitat.roamers), on open ground inside it.
+## The wild dinos out now: for each habitat, its dinos seen in the open at this time of day
+## (Encounter.active, the weather too) whose species has a 3D sheet, so many per habitat
+## (Habitat.roamers), on open ground inside it.
 func _add_dinos() -> void:
+	var phase := Game.phase()
 	for habitat in source.habitats():
 		var area: Rect2 = habitat["area"]
 		var rng := RandomNumberGenerator.new()
-		rng.seed = hash(area.position)
+		rng.seed = hash(area.position) + hash(phase)
 		for enc: Encounter in habitat["encounters"]:
-			if enc.hidden:   # (the time of day comes with phase 5: every dino seen in the open is out)
+			if enc.hidden or not enc.active(phase):
 				continue
 			var species := Species3D.of(enc.species)
 			if species == null:
@@ -121,6 +143,15 @@ func _add_dinos() -> void:
 				dinos.append(dino)
 
 
+## The wild dinos of another time of day: those out now go, the ones of this time come.
+func respawn_dinos() -> void:
+	for d in dinos:
+		if is_instance_valid(d):
+			d.queue_free()
+	dinos.clear()
+	_add_dinos()
+
+
 func _open_spot(area: Rect2, rng: RandomNumberGenerator) -> Vector3:
 	for attempt in 20:
 		var x := rng.randf_range(area.position.x, area.end.x)
@@ -128,39 +159,3 @@ func _open_spot(area: Rect2, rng: RandomNumberGenerator) -> Vector3:
 		if source.surface(source.tile_at(x, z)) in WALKABLE:
 			return Vector3(x, terrain.height_at(x, z), z)
 	return Vector3.INF
-
-
-## A warm afternoon (the 2.5D's golden light, from the upper left): sky, sun with shadows, haze far
-## off. (The time of day and the weather of the 2.5D come with phase 5.)
-func _add_environment() -> void:
-	var sky_mat := ProceduralSkyMaterial.new()
-	sky_mat.sky_top_color = Color(0.34, 0.54, 0.82)
-	sky_mat.sky_horizon_color = Color(0.86, 0.82, 0.70)
-	sky_mat.ground_horizon_color = Color(0.72, 0.68, 0.56)
-	sky_mat.ground_bottom_color = Color(0.32, 0.30, 0.25)
-	sky_mat.sun_angle_max = 20.0
-	var sky := Sky.new()
-	sky.sky_material = sky_mat
-	var env := Environment.new()
-	env.background_mode = Environment.BG_SKY
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.75
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.fog_enabled = true
-	env.fog_mode = Environment.FOG_MODE_DEPTH
-	env.fog_light_color = Color(0.84, 0.82, 0.74)
-	env.fog_depth_begin = 70.0
-	env.fog_depth_end = 260.0
-	var world_env := WorldEnvironment.new()
-	world_env.environment = env
-	add_child(world_env)
-	var sun := DirectionalLight3D.new()
-	sun.name = "Sun"
-	sun.rotation_degrees = Vector3(-42.0, -40.0, 0.0)
-	sun.light_color = Color(1.0, 0.92, 0.78)
-	sun.light_energy = 1.15
-	sun.shadow_enabled = true
-	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 60.0
-	add_child(sun)

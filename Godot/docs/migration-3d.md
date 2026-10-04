@@ -112,7 +112,7 @@ d'animation) — budget GTX 1650 Ti.
 | 2 | Chloé 3D (modèle riggé, Idle/Walk/Run/Jump/Interact), collisions, gravité | ☑ fait le 04/10 : modèle `chloe.glb` (23 clips), saut, interaction (panneau → dialogue du jeu), fondu près de la caméra, animateur générique ; test 26/26, 0 erreur ni avertissement |
 | 3 | Premier dino 3D générique depuis `DinoSpecies` (modèle, anims, navmesh, états) | ☑ fait le 04/10 : deux Velociraptors dans la démo (un adulte niv. 14, un jeune niv. 5) ; `test_world3d.gd only=3`, 16 vérifications sur 16 |
 | 4 | Petite zone 3D : terrain, végétation, rochers, eau, lumière — idéalement le coin de la Prairie du Grand Crâne chargé par `ZoneLoader` | ☑ fait le 04/10 : la **Prairie du Grand Crâne entière**, bâtie depuis la zone 2,5D, ×2 (240 × 180 m) ; `test_world3d.gd only=4`, 8 sur 8, ~320 im/s sur GTX 1650 Ti, construite en ~1,6 s |
-| 5 | Reconnexion gameplay : rencontre → `BattleScene`, Dinodex, sauvegarde, dialogue, Game | boucle rencontre → combat → capture jouable |
+| 5 | Reconnexion gameplay : rencontre → `BattleScene`, Dinodex, sauvegarde, dialogue, Game | ◐ boucle de jeu faite le 04/10 : partie, sauvegarde 3D, interface du jeu, compagnon, jour et nuit, rencontres, combat, capture, Dinodex ; `test_world3d.gd only=5`, 12 sur 12. Reste : PNJ, panneaux, histoire, objets, sorties |
 | 6 | Population : spawn par biome, densité, simulation LOD | N dinos actifs, coût mesuré |
 | 7 | Nouvelles espèces et biomes, POI | ≥ 10 espèces par données seules |
 | 8 | Grand monde : chunks/streaming, World-origin | traversée sans chargement bloquant |
@@ -252,6 +252,34 @@ Modèle : Quaternius, *Animated Dinosaur Bundle* (poly.pizza) : 1 248 triangles,
 - décors d'histoire (`StoryProp`), PNJ, panneaux, galets, sorties ;
 - forêts des bords lointains ;
 - rendu cartoon des décors.
+
+### Phase 5 : le jeu dans la Prairie 3D (`world3d/game/`, `world3d/zone3d/sky_3d.gd`)
+Les systèmes du 2,5D sont **réutilisés tels quels** (`Game`, `Save`, `BattleScene`, `Dialogue`, l'interface, `DexScreen`, `MapScreen`). On ne réécrit que le pont avec la 3D, qui fait ce que `world.gd` fait pour le 2,5D.
+
+- **`Session3D`** :
+  - **Partie** : la 3D a sa propre sauvegarde, `user://save_3d.json`, au format du 2,5D. La sauvegarde du 2,5D n'est jamais écrasée. Si elle n'existe pas, une nouvelle partie démarre avec Vif.
+  - **Position** : celle de Chloé est gardée **dans les unités du 2,5D** (pixels de la zone), donc la sauvegarde se lit pareil.
+  - **Interface** : bannière de zone, barre d'équipe, horloge, bourse, boutons réglages, carte (M) et Dinodex (X).
+  - **Compagnon** : le dino de tête suit Chloé (`Dinosaur3D.companion`), et change avec l'équipe.
+  - **Ambiance** : musique et sons de la zone.
+  - **Dinos selon l'heure** : ils changent quand le moment de la journée change.
+- **`Encounters3D`** : les règles de `world.gd`, transposées.
+  - **Contact** : marcher sur un dino sauvage lance le combat du jeu (le monde en pause). Gagné ou capturé, il disparaît ; sinon il se calme 5 s. Perdu : l'équipe est soignée et Chloé revient à l'entrée.
+  - **Approche** : en marchant calmement, on peut approcher un dino farouche jusqu'au contact ; en courant vers lui, il détale.
+  - **Hautes herbes** : les pas dans les hautes herbes d'un habitat peuvent lancer un dino caché, avec les mêmes taux et les mêmes pas que le 2,5D, rapportés à l'échelle de la carte.
+  - **Repos et Dinodex** : l'équipe récupère un peu à chaque pas, et une espèce vue de près entre au Dinodex, avec de l'expérience.
+- **`Sky3D`** : l'horloge du jeu et la lumière du jour du 2,5D (`WorldView.DAYLIGHT`), assombries par la pluie, l'orage et la brume.
+- **Les dinos de l'heure** : par habitat, ceux qu'on voit à découvert à ce moment (`Encounter.active`). Le jour, des Parasaurolophus ; la nuit et au crépuscule, des Velociraptors.
+- **Nouvelle espèce sans code** : le **Parasaurolophus** (modèle Quaternius, une fiche `species/parasaurolophus.tres`). Herbivore calme, 9,5 m réels, montré à environ 5,2 m une fois adulte (compression du 2,5D).
+- **Cris** : les dinos crient tous les 10 à 22 s, en son 3D.
+
+**Reste pour finir la Phase 5** :
+- les PNJ (modèles 3D à trouver), les panneaux, les objets à ramasser et les galets d'ambre ;
+- les décors d'histoire (`StoryProp`) et les scènes (`Stage` en 3D) ;
+- les sorties vers les autres zones ;
+- la pluie visible ;
+- les hautes herbes en 3D ;
+- l'œuf à porter.
 
 ### Chloé : reste à améliorer (Greg, 04/10 : « on affinera plus tard » ; ne pas faire maintenant)
 1. **Visage** : encore un peu long et adulte (base adulte) ; resculpter mâchoire et menton. Le sourire est fermé : il le faudrait ouvert, comme sur la planche. Nez et oreilles un peu grands, sourcils un peu taillés en bloc.

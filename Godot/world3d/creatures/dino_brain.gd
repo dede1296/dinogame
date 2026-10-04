@@ -14,6 +14,10 @@ const CALM_AFTER_S := 2.5               # runs at least this long once scared
 const RUNNING := 1.0                    # Chloé faster than this × Player3D.SPEED (a jog): she runs at it
 const FLEE_SPREAD_DEG := 35.0
 const CORNERED_TURNS_DEG: Array[float] = [60.0, -60.0, 110.0, -110.0, 180.0]
+## A shy one lets a calm Chloé come this close (share of its flee_m: closer than she meets it).
+const WALKED_UP_TO := 0.25
+const FOLLOW_ROOM_M := 0.6      # a companion keeps this far behind its length's half
+const FOLLOW_JOIN_M := 30.0     # left further behind than this, it joins Chloé at once
 const STATE_NAMES := {State.IDLE: &"idle", State.WANDER: &"wander", State.ALERT: &"alert", State.FLEE: &"flee"}
 
 var body: Dinosaur3D
@@ -21,6 +25,7 @@ var state := State.IDLE
 
 var _timer := 0.0
 var _rng := RandomNumberGenerator.new()
+var _moving_to := Vector3.INF   # a companion's last target near Chloé
 
 
 func _init(owner_body: Dinosaur3D) -> void:
@@ -35,6 +40,9 @@ func state_name() -> StringName:
 
 func update(delta: float) -> void:
 	_timer -= delta
+	if body.companion_of:
+		_follow(body.companion_of as CharacterBody3D)
+		return
 	var chloe := body.get_tree().get_first_node_in_group(&"player3d") as CharacterBody3D
 	var d := INF
 	var running := false
@@ -67,16 +75,44 @@ func update(delta: float) -> void:
 					_run_from(chloe)
 
 
-## Chloé is close enough to make it run: how close depends on its temperament.
+## Chloé is close enough to make it run: how close depends on its temperament, and on her: walking
+## calmly, she can come right up to it (and meet it: a battle); running at it, it is off well before.
 func _scared(d: float, running: bool) -> bool:
 	var flee := body.species.flee_m
 	match body.species.temperament:
 		&"calm":
-			return d < flee * 0.4
+			return running and d < flee * 0.4
 		&"curious":
-			return d < flee * 0.6 or (running and d < flee)
+			return running and d < flee
 		_:
-			return d < flee or (running and d < body.species.perception_m * 0.8)
+			return d < flee * WALKED_UP_TO or (running and d < body.species.perception_m * 0.8)
+
+
+## A companion: keeps beside Chloé (half its length behind her and a little), as fast as she goes,
+## faster when left behind; too far (a fall, a teleport): it joins her at once.
+func _follow(chloe: CharacterBody3D) -> void:
+	if chloe == null:
+		return
+	var to := (chloe.global_position - body.global_position).slide(Vector3.UP)
+	var d := to.length()
+	var keep := body.length_m * 0.5 + FOLLOW_ROOM_M
+	if d > FOLLOW_JOIN_M:
+		body.global_position = chloe.global_position - to.normalized() * keep
+		body.stop()
+		return
+	if d > keep + 0.8:
+		var her_speed := Vector2(chloe.velocity.x, chloe.velocity.z).length()
+		var speed := clampf(maxf(her_speed, body.walk_speed()) + (d - keep) * 0.6, 0.0, body.run_speed() * 1.1)
+		var target := chloe.global_position - to.normalized() * keep
+		if _moving_to == Vector3.INF or (_moving_to - target).length() > 0.4 or body.arrived():
+			_moving_to = target   # (a new path only when she has moved on)
+			body.go_to(_moving_to, speed)
+		else:
+			body.set_speed(speed)
+	elif d < keep + 0.3:
+		body.stop()
+		_moving_to = Vector3.INF
+		body.look_toward(chloe.global_position + chloe.velocity * 0.5)
 
 
 func _notices(d: float) -> bool:

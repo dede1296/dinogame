@@ -126,7 +126,7 @@ func habitats() -> Array[Dictionary]:
 	for h in region.habitats():
 		var at := _zone_position(h)
 		var rect := Rect2(at / PX * scale, h.size / PX * scale)   # (its position: the top left corner)
-		out.append({"area": rect, "encounters": h.encounters, "roamers": h.roamers, "label": h.label})
+		out.append({"area": rect, "encounters": h.encounters, "roamers": h.roamers, "label": h.label, "node": h})
 	return out
 
 
