@@ -243,7 +243,11 @@ Modèle : Quaternius, *Animated Dinosaur Bundle* (poly.pizza) : 1 248 triangles,
 - Coût : environ +0,03 ms par image ; la Prairie tourne à environ 275 im/s.
 - **Correction au passage** : le fondu de Chloé près de la caméra ne s'affichait pas. Le renderer Mobile ignore `GeometryInstance3D.transparency`, et le test ne lisait que la valeur. Les matériaux cartoon font maintenant ce fondu par tramage.
 
-**Lancer** : `tools/lancer-3d.cmd` (la Prairie) ; `tools/lancer-3d-essai.cmd` (le terrain d'essai).
+**Lancer** :
+- `tools/lancer-3d.cmd` lance la Prairie ; `tools/lancer-3d-essai.cmd` le terrain d'essai.
+- **Depuis Godot (F5)** : un écran de choix (`world3d/launcher/`) propose « Version 3D (PC) — Continuer / Nouvelle partie » ou « Version mobile (2,5D) ». La scène principale est surchargée pour les seules versions éditeur, avec `run/main_scene.editor_runtime` dans `project.godot`. L'APK et le web démarrent toujours sur l'écran titre mobile.
+- **En ligne de commande** : `-- --3d` va droit dans la 3D, `-- --mobile` dans le 2,5D. Les outils lancés avec `--script` passent comme avant par l'écran titre mobile.
+- **Attention** : en GDScript, `ProjectSettings.get_setting` ignore les surcharges ; c'est `get_setting_with_override` qui les applique.
 
 **Reste à faire (Phase 4 → 5)** :
 - tracé des falaises plus naturel (aujourd'hui en marches carrées) ;
