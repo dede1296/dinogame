@@ -1,7 +1,8 @@
 @echo off
-rem Ambrelune 3D (version PC, en construction) : la zone de démonstration de la migration 3D
-rem (docs/migration-3d.md). ZQSD / stick gauche : marcher. Maj / B : courir.
+rem Ambrelune 3D (version PC, en construction) : la Prairie du Grand Crâne en 3D, bâtie depuis la
+rem zone du jeu 2,5D, deux fois plus grande (docs/migration-3d.md, phase 4).
+rem ZQSD / stick gauche : marcher. Maj / B : courir. Espace / X : sauter. E / A : observer.
 rem Souris (clic droit) / stick droit : tourner la caméra. Molette : zoom.
-rem Ne touche pas à la sauvegarde du jeu 2,5D.
+rem Le terrain d'essai : lancer-3d-essai.cmd. Ne touche pas à la sauvegarde du jeu 2,5D.
 cd /d "%~dp0.."
-"C:\Program Files\Godot\Godot_v4.7.2-stable_win64.exe" --path . res://world3d/demo/demo_3d.tscn
+"C:\Program Files\Godot\Godot_v4.7.2-stable_win64.exe" --path . res://world3d/zone3d/zone_3d.tscn

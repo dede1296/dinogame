@@ -17,6 +17,7 @@ const TURN := 7.0
 const LOOK_TURN := 4.0
 const OBSERVE_REACH := 6.0  # Chloé can observe it from this far (m)
 const FALL_LIMIT := -30.0
+const TOON := preload("res://world3d/render/toon_style.gd")
 
 var species: Species3D
 var dino: Dino
@@ -151,6 +152,7 @@ func _build() -> void:
 	add_child(_holder)
 	model = species.model.instantiate() as Node3D
 	_holder.add_child(model)
+	TOON.apply(model)   # Ambrelune's cartoon look: soft steps, brown outline
 	var drawn := ModelSize.posed_box(model, species.model.resource_path).size
 	growth = DinoSize.growth(species.sheet(), dino.level)
 	var scale_by := species.adult_scale(drawn) * growth

@@ -111,7 +111,7 @@ d'animation) — budget GTX 1650 Ti.
 | 1 | Squelette `world3d/`, scène de démo, `Player3D` capsule + caméra orbitale | ☑ fait le 04/10 : `tools/test_world3d.gd` 11/11, 0 erreur console, aucun fichier du 2,5D modifié |
 | 2 | Chloé 3D (modèle riggé, Idle/Walk/Run/Jump/Interact), collisions, gravité | ☑ fait le 04/10 : modèle `chloe.glb` (23 clips), saut, interaction (panneau → dialogue du jeu), fondu près de la caméra, animateur générique ; test 26/26, 0 erreur ni avertissement |
 | 3 | Premier dino 3D générique depuis `DinoSpecies` (modèle, anims, navmesh, états) | ☑ fait le 04/10 : deux Velociraptors dans la démo (un adulte niv. 14, un jeune niv. 5) ; `test_world3d.gd only=3`, 16 vérifications sur 16 |
-| 4 | Petite zone 3D : terrain, végétation, rochers, eau, lumière — idéalement le coin de la Prairie du Grand Crâne chargé par `ZoneLoader` | scène lisible, perf mesurée |
+| 4 | Petite zone 3D : terrain, végétation, rochers, eau, lumière — idéalement le coin de la Prairie du Grand Crâne chargé par `ZoneLoader` | ☑ fait le 04/10 : la **Prairie du Grand Crâne entière**, bâtie depuis la zone 2,5D, ×2 (240 × 180 m) ; `test_world3d.gd only=4`, 8 sur 8, ~320 im/s sur GTX 1650 Ti, construite en ~1,6 s |
 | 5 | Reconnexion gameplay : rencontre → `BattleScene`, Dinodex, sauvegarde, dialogue, Game | boucle rencontre → combat → capture jouable |
 | 6 | Population : spawn par biome, densité, simulation LOD | N dinos actifs, coût mesuré |
 | 7 | Nouvelles espèces et biomes, POI | ≥ 10 espèces par données seules |
@@ -212,6 +212,46 @@ Modèle : Quaternius, *Animated Dinosaur Bundle* (poly.pizza) : 1 248 triangles,
 - **Style** : le raptor est bien plus simple que Chloé (1 248 triangles contre 19 500) et d'un gris-brun uni. Le recolorer comme Vif (2,5D) et unifier le rendu avec un shader cartoon commun (Phase 4).
 - **Animations** : il n'a pas de clips manger, dormir ni crier : à créer pour les états brouter et dormir.
 - **Comportement** : le clip « Jump » (bond) est déclaré comme `pounce` pour la chasse, qui viendra plus tard.
+
+### Phase 4 : la Prairie du Grand Crâne en 3D (`world3d/zone3d/`)
+**Principe** : une zone 3D est **bâtie au lancement depuis la zone 2,5D**, qui sert de plan. On ne redessine rien : le même tracé (chemins, étang, falaises, bosquets, mer), les mêmes décors aux mêmes endroits, les mêmes habitats.
+
+**Plus grande** (demande de Greg, 04/10 : « les régions plus étendues, la progression sera plus rapide en 3D ») : `zone_scale` = 2 m par case (réglable par zone).
+- **Ce qui s'agrandit** : les lieux. La Prairie passe de 120 × 90 à 240 × 180 m, quatre fois plus de surface.
+- **Ce qui garde sa taille réelle** : arbres, rochers, personnes, dinos. La hauteur du relief est conservée (un niveau = 1,2 m).
+
+**Les briques** :
+- `ZoneSource` (données) : ouvre la zone 2,5D hors de l'arbre (`Region.open_for_preview`, aucun de ses scripts ne tourne) et la lit. Relief `HeightMap` du 2,5D, sols par case, décors (`Prop` : kind, place, collision), habitats, points d'arrivée. Hauteurs et plancher lus une fois (`Region.floor_height` reparcourt la zone à chaque appel : 120 s → 1,6 s).
+- `Terrain3D` : maillage du relief, découpé en blocs de 32 m. Collision `HeightMapShape3D` à 1 m. L'eau est une nappe au niveau d'eau du 2,5D.
+  - Au bord d'une falaise, la hauteur de la case tient (règle `STAND_SNAP` du 2,5D) : la falaise reste une paroi raide et non une pente.
+  - `terrain.gdshader` reprend le sol peint du 2,5D : mêmes images, mêmes répétitions au mètre, bords déchirés, taches, sable, sous-bois, vase, roche, berges mouillées, ombres de nuages. Les falaises prennent les strates peintes selon la pente vraie de la face.
+- `water.gdshader` : teinte selon la profondeur du fond (relief du 2,5D), rides, liseré clair au rivage.
+- `Blockers3D` reprend les règles du 2,5D, pour que les passages s'ouvrent et se ferment pareil :
+  - la forêt arrête Chloé, et l'eau profonde aussi (couche eau) ;
+  - une falaise (`Region.cliff_between`) est un mur des deux côtés, plus haut qu'un saut ;
+  - les bords de la zone sont fermés ; les sorties viennent en Phase 8 ;
+  - les décors solides ont leur taille réelle (`Prop.KINDS["solid"]`).
+- `Scatter3D` : les décors du 2,5D à leur place, les bois des cases forêt (même choix d'espèces que le 2,5D, avec des buissons le long des chemins, 1 arbre pour 6 m²) et un semis de fougères et de fleurs (1 pour 14 m²). Rendu par lots (`MultiMesh` par sorte et par carré de 32 m), avec des modèles 3D (`nature_models.gd`, orientés au hasard) ou, à défaut, l'image du 2,5D debout.
+- **Modèles de végétation** : 13 sortes, 21 modèles low-poly faits dans Blender aux couleurs des images du jeu (`assets/models3d/nature/`, scripts dans `assets3d_src/nature/scripts`).
+- `Zone3D` (`zone_3d.tscn`) : assemble ciel et soleil doré, brume lointaine, maillage de navigation calculé en tâche de fond, Chloé à son point d'arrivée (`DepuisPort`), et les dinos des habitats qui ont une fiche 3D (7 Velociraptors). L'heure du jour viendra en Phase 5 : pour l'instant, tous ceux qu'on voit à découvert sont dehors.
+
+**Rendu cartoon commun** (`world3d/render/`, agent du 04/10) : les modèles de Chloé, des dinos et de la végétation, quelle que soit leur source, reçoivent le même rendu.
+- `toon.gdshader` : trois paliers d'ombrage doux, ombres du soleil, reflet chaud dans l'ombre, liseré de lumière côté soleil, sans reflets métalliques, saturation légèrement relevée.
+- `outline.gdshader` : contour brun `#2a180c` comme les images du 2,5D, d'environ 2 px à l'écran, plus fin au loin, qui suit les animations.
+- `toon_style.gd` : `TOON.apply(modèle, options)` remplace les matériaux importés, mis en cache, et corrige les normales des maillages à facettes pour éviter les trous dans le contour.
+- Où il s'applique : Chloé, les dinos et `Scatter3D`. Pas de contour sur les fleurs, les champignons ni les prêles : trop fines, elles devenaient des bâtons sombres au loin.
+- Coût : environ +0,03 ms par image ; la Prairie tourne à environ 275 im/s.
+- **Correction au passage** : le fondu de Chloé près de la caméra ne s'affichait pas. Le renderer Mobile ignore `GeometryInstance3D.transparency`, et le test ne lisait que la valeur. Les matériaux cartoon font maintenant ce fondu par tramage.
+
+**Lancer** : `tools/lancer-3d.cmd` (la Prairie) ; `tools/lancer-3d-essai.cmd` (le terrain d'essai).
+
+**Reste à faire (Phase 4 → 5)** :
+- tracé des falaises plus naturel (aujourd'hui en marches carrées) ;
+- heure du jour, météo et nuages du 2,5D ;
+- herbes hautes ;
+- décors d'histoire (`StoryProp`), PNJ, panneaux, galets, sorties ;
+- forêts des bords lointains ;
+- rendu cartoon des décors.
 
 ### Chloé : reste à améliorer (Greg, 04/10 : « on affinera plus tard » ; ne pas faire maintenant)
 1. **Visage** : encore un peu long et adulte (base adulte) ; resculpter mâchoire et menton. Le sourire est fermé : il le faudrait ouvert, comme sur la planche. Nez et oreilles un peu grands, sourcils un peu taillés en bloc.

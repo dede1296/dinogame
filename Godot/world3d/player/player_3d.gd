@@ -41,6 +41,7 @@ const FADE_NEAR := 1.4        # the camera closer than this to her head (m): she
 const FADE_GONE := 0.6        # …to FADE_MAX at this
 const FADE_MAX := 0.85
 const FALL_LIMIT := -50.0     # fell out of the world: back to where she last stood
+const TOON := preload("res://world3d/render/toon_style.gd")
 
 ## Her 3D model (an imported glb). None: the stand-in capsule of the scene.
 @export var model_scene: PackedScene
@@ -254,6 +255,7 @@ func _set_up_model() -> void:
 			child.free()
 		var shown := model_scene.instantiate() as Node3D
 		model.add_child(shown)
+		TOON.apply(shown)   # Ambrelune's cartoon look: soft steps, brown outline
 		animator = CharacterAnimator.new()
 		animator.name = "Animator"
 		animator.body = self
