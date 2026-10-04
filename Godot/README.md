@@ -157,16 +157,16 @@ décor, densité des herbes, ombres de nuages, lumières, détail de l'eau, imag
 | `node Godot/tools/maps/gen-atlas.mjs` | L'atlas de l'île : l'image de la carte, les régions (pour les clics et la brume) et `data/atlas_db.gd` (noms, zones, niveaux) |
 | `node Godot/tools/maps/gen-plaines.mjs` | Redessine les images de sol et de relief des Plaines (`tools/maps/`), à regénérer ensuite avec `build_zone.gd` |
 
-## Builds (Android, Web)
+## Builds (Android)
 
-Les APK et builds Web sont des **artefacts**, jamais versionnés (`build/` est ignoré).
+Les APK sont des **artefacts**, jamais versionnés (`build/` est ignoré). Il n'y a plus de version Web (retirée le 2026-10-04).
 Le workflow `.github/workflows/godot-build.yml` les produit sur GitHub :
 
 - **chaque push sur `godot-prototype`** touchant `Godot/` publie une Release
   « Ambrelune Godot — build N » avec `Ambrelune.apk`, à télécharger directement depuis le
   téléphone : https://github.com/dede1296/dinogame/releases ;
 - tag `godot-v0.1.0` (par ex.) → Release nommée, pour marquer une version ;
-- les artefacts `Ambrelune-android` et `Ambrelune-web` restent aussi sur chaque run (onglet *Actions*).
+- l'artefact `Ambrelune-android` reste aussi sur chaque run (onglet *Actions*).
 
 **Signature** : les APK sont signés avec une clé fixe (secret GitHub
 `ANDROID_DEBUG_KEYSTORE_BASE64`), donc une nouvelle version s'installe par-dessus l'ancienne.

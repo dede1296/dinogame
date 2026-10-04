@@ -1,14 +1,17 @@
 class_name DinoBrain
 extends RefCounted
-## What a wild dino does, moment to moment (docs/migration-3d.md, phase 3): it rests, ambles about
-## its home, notices Chloé and watches her, runs off when she comes too close (sooner if she runs
-## at it), and calms down once she is far. A small state machine, one method per state; the
-## species' temperament and distances (Species3D) tune it. States to add later the same way:
-## graze, drink, sleep, herd, hunt, follow (a companion), fight back (a territorial one).
+## What a wild dino does, moment to moment (docs/migration-3d.md, phases 3 and 7): it rests, ambles
+## about its home, grazes (the plant-eaters), sleeps in its part of the day lying down, notices
+## Chloé and watches her, runs off when she comes too close (sooner if she runs at it), and calms
+## down once she is far. A herd (Species3D.herd) keeps together and runs off together. A companion
+## follows Chloé. A small state machine, one method per state; the species' sheet (Species3D) tunes
+## it. States still to add the same way: drink, hunt, fight back (a territorial one).
 
-enum State { IDLE, WANDER, ALERT, FLEE }
+enum State { IDLE, WANDER, ALERT, FLEE, GRAZE, SLEEP }
 
 const IDLE_S := Vector2(2.0, 5.0)       # rests this long (s, at random)
+const GRAZE_S := Vector2(4.0, 10.0)     # grazes this long
+const GRAZE_CHANCE := 0.45              # after resting, a plant-eater grazes rather than ambles
 const WATCH_BORED_S := 7.0              # a curious one stops watching a Chloé who stays still
 const CALM_AFTER_S := 2.5               # runs at least this long once scared
 const RUNNING := 1.0                    # Chloé faster than this × Player3D.SPEED (a jog): she runs at it
@@ -16,9 +19,14 @@ const FLEE_SPREAD_DEG := 35.0
 const CORNERED_TURNS_DEG: Array[float] = [60.0, -60.0, 110.0, -110.0, 180.0]
 ## A shy one lets a calm Chloé come this close (share of its flee_m: closer than she meets it).
 const WALKED_UP_TO := 0.25
-const FOLLOW_ROOM_M := 0.6      # a companion keeps this far behind its length's half
-const FOLLOW_JOIN_M := 30.0     # left further behind than this, it joins Chloé at once
-const STATE_NAMES := {State.IDLE: &"idle", State.WANDER: &"wander", State.ALERT: &"alert", State.FLEE: &"flee"}
+## Asleep: it notices Chloé only this much closer, and wakes up if she runs nearby.
+const ASLEEP_SENSE := 0.35
+const HERD_SPREAD := 0.4                # a herd ambles within this share of its roam about its middle
+const HERD_ALARM_M := 20.0              # one running off sets off the others this close
+const FOLLOW_ROOM_M := 0.6              # a companion keeps this far behind its length's half
+const FOLLOW_JOIN_M := 30.0             # left further behind than this, it joins Chloé at once
+const STATE_NAMES := {State.IDLE: &"idle", State.WANDER: &"wander", State.ALERT: &"alert", State.FLEE: &"flee",
+	State.GRAZE: &"graze", State.SLEEP: &"sleep"}
 
 var body: Dinosaur3D
 var state := State.IDLE
@@ -38,6 +46,12 @@ func state_name() -> StringName:
 	return STATE_NAMES[state]
 
 
+## Another of its herd runs off: it runs too, away from Chloé.
+func alarm(chloe: Node3D) -> void:
+	if state != State.FLEE:
+		_enter(State.FLEE, chloe)
+
+
 func update(delta: float) -> void:
 	_timer -= delta
 	if body.companion_of:
@@ -49,20 +63,31 @@ func update(delta: float) -> void:
 	if chloe:
 		d = (chloe.global_position - body.global_position).slide(Vector3.UP).length()
 		running = Vector2(chloe.velocity.x, chloe.velocity.z).length() > Player3D.SPEED * RUNNING
-	if state != State.FLEE and _scared(d, running):
+	var sensed := d / ASLEEP_SENSE if state == State.SLEEP else d   # asleep: as if she were further
+	if state != State.FLEE and _scared(sensed, running):
 		_enter(State.FLEE, chloe)
 		return
 	match state:
 		State.IDLE:
 			if _notices(d):
 				_enter(State.ALERT, chloe)
+			elif _sleepy():
+				_enter(State.SLEEP)
 			elif _timer <= 0.0:
-				_enter(State.WANDER)
+				_enter(State.GRAZE if _grazes() and _rng.randf() < GRAZE_CHANCE else State.WANDER)
 		State.WANDER:
 			if _notices(d):
 				_enter(State.ALERT, chloe)
 			elif body.arrived():
 				_enter(State.IDLE)
+		State.GRAZE:
+			if _notices(d):
+				_enter(State.ALERT, chloe)
+			elif _timer <= 0.0:
+				_enter(State.IDLE)
+		State.SLEEP:
+			if not _sleepy():
+				_enter(State.IDLE)   # its part of the day is over: it gets up
 		State.ALERT:
 			body.look_toward(chloe.global_position if chloe else body.global_position)
 			if d > body.species.perception_m * 1.2 or _timer <= 0.0:
@@ -86,6 +111,19 @@ func _scared(d: float, running: bool) -> bool:
 			return running and d < flee
 		_:
 			return d < flee * WALKED_UP_TO or (running and d < body.species.perception_m * 0.8)
+
+
+func _notices(d: float) -> bool:
+	return body.species.temperament != &"calm" and d < body.species.perception_m
+
+
+func _grazes() -> bool:
+	return body.species.grazes and body.animator and body.animator.has_move(&"eat")
+
+
+func _sleepy() -> bool:
+	return body.species.sleeps_at != &"" and Game.phase() == body.species.sleeps_at \
+		and body.animator and body.animator.has_move(&"sleep")
 
 
 ## A companion: keeps beside Chloé (half its length behind her and a little), as fast as she goes,
@@ -115,27 +153,56 @@ func _follow(chloe: CharacterBody3D) -> void:
 		body.look_toward(chloe.global_position + chloe.velocity * 0.5)
 
 
-func _notices(d: float) -> bool:
-	return body.species.temperament != &"calm" and d < body.species.perception_m
-
-
 func _enter(next: State, chloe: Node3D = null) -> void:
+	var was := state
 	state = next
+	if (was == State.GRAZE or was == State.SLEEP) and body.animator:
+		body.animator.release()
 	match next:
 		State.IDLE:
 			body.stop()
 			_timer = _rng.randf_range(IDLE_S.x, IDLE_S.y)
 		State.WANDER:
-			var angle := _rng.randf() * TAU
-			var reach := _rng.randf_range(0.3, 1.0) * body.species.roam_m
-			body.go_to(body.home + Vector3(cos(angle), 0.0, sin(angle)) * reach, body.walk_speed())
+			body.go_to(_wander_target(), body.walk_speed())
+		State.GRAZE:
+			body.stop()
+			body.animator.hold(&"eat")
+			_timer = _rng.randf_range(GRAZE_S.x, GRAZE_S.y)
+		State.SLEEP:
+			body.stop()
+			body.animator.hold(&"sleep")
 		State.ALERT:
 			body.stop()
 			_timer = WATCH_BORED_S if body.species.temperament == &"curious" else INF
 		State.FLEE:
 			_timer = CALM_AFTER_S
 			_run_from(chloe)
+			_alarm_herd(chloe)
 	body.state_changed.emit(STATE_NAMES[next])
+
+
+## Where it ambles to: about its home; a herd, about the middle of the herd (so it keeps together).
+func _wander_target() -> Vector3:
+	var angle := _rng.randf() * TAU
+	var centre := body.home
+	var reach := _rng.randf_range(0.3, 1.0) * body.species.roam_m
+	if body.herd.size() > 1:
+		centre = Vector3.ZERO
+		var n := 0
+		for m in body.herd:
+			if is_instance_valid(m):
+				centre += m.global_position
+				n += 1
+		centre = centre / maxi(n, 1)
+		centre = centre.lerp(body.home, 0.3)   # (the herd drifts back home over time)
+		reach *= HERD_SPREAD
+	return centre + Vector3(cos(angle), 0.0, sin(angle)) * reach
+
+
+func _alarm_herd(chloe: Node3D) -> void:
+	for m in body.herd:
+		if is_instance_valid(m) and m != body and m.brain and m.global_position.distance_to(body.global_position) < HERD_ALARM_M:
+			m.brain.alarm(chloe)
 
 
 ## Runs off away from Chloé (a little to one side, at random), as far as it notices her, to ground

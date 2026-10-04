@@ -8,7 +8,7 @@ extends Resource
 
 ## Loop by themselves (glTF does not say which clips loop).
 const LOOPING: Array[StringName] = [
-	&"idle", &"walk", &"run", &"sprint", &"jump_air", &"fall", &"swim", &"swim_idle", &"sleep",
+	&"idle", &"walk", &"run", &"sprint", &"jump_air", &"fall", &"swim", &"swim_idle", &"sleep", &"eat",
 	&"crouch", &"crouch_walk", &"sit", &"push", &"talk",
 ]
 ## A move whose clip is missing plays this one instead ("" = left out).

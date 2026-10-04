@@ -2,7 +2,7 @@ extends Control
 ## Which Ambrelune to play, when the game is run from Godot on the PC (F5): the mobile version
 ## (2.5D, its own title screen, unchanged) or the 3D version (PC) — go on with its save, or a new
 ## game. Only there: the project's main scene is overridden for the editor's builds
-## (project.godot run/main_scene.editor); the phones and the web start straight on the 2.5D's title.
+## (project.godot run/main_scene.editor); the phones start straight on the 2.5D's title.
 ## Command line: `-- --3d` goes straight into the 3D version, `-- --mobile` into the 2.5D; a tool
 ## run with --script (the tests) goes on to the 2.5D's title, as before.
 

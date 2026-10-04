@@ -30,7 +30,7 @@ func _ready() -> void:
 
 
 func _touch_screen() -> bool:
-	return DisplayServer.is_touchscreen_available() or OS.has_feature("mobile") or OS.has_feature("web_android") or OS.has_feature("web_ios")
+	return DisplayServer.is_touchscreen_available() or OS.has_feature("mobile")
 
 
 func _add_button(label: String, action: StringName, corner_offset: Vector2, color: Color) -> void:

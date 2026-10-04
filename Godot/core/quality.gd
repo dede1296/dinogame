@@ -42,12 +42,6 @@ const PROFILES := {
 		"relief_props": true},
 }
 
-## In the browser, the big scenery keeps its picture whatever the level: the web game is exported
-## without assets/models (export_presets.cfg « Web » exclude_filter), because their atlases and
-## normal maps weighed 416 Mo of the 570 Mo of textures — far too much to download, and the
-## browser choked on them. The phone (APK) keeps them.
-static var WEB := OS.has_feature("web")
-
 var level: Level = Level.HIGH
 ## What the device detection suggested (shown as « Recommandée » in the settings).
 var recommended: Level = Level.HIGH
@@ -67,8 +61,6 @@ func _ready() -> void:
 
 ## A setting of the current profile (see PROFILES).
 func setting(key: StringName) -> Variant:
-	if key == &"relief_props" and WEB:
-		return false   # (see WEB: the web game ships without the models)
 	return PROFILES[level][key]
 
 
@@ -118,7 +110,7 @@ func _apply_engine() -> void:
 ## (Adreno / Mali / Immortalis / Xclipse / PowerVR), capped by the memory.
 func detect() -> Level:
 	if not OS.has_feature("mobile"):
-		return Level.MEDIUM if OS.has_feature("web") else Level.HIGH
+		return Level.HIGH
 	var by_gpu := level_for_gpu(RenderingServer.get_video_adapter_name())
 	var ram_gb := float(OS.get_memory_info().get("physical", 0)) / 1073741824.0
 	if ram_gb > 0.0 and ram_gb < 3.5:

@@ -17,6 +17,7 @@ const WALK_IN := 0.6
 ## Past the speed halfway (geometric mean) between two gaits, the faster one takes over within
 ## this share of that speed.
 const GAIT_BAND := 0.15
+const POSE_BLEND := 0.45   # into and out of a held move (lying down to sleep, head down to eat)
 const PACE_MIN := 0.6
 const PACE_MAX := 2.0
 const MOVES: Array[StringName] = [&"idle", &"walk", &"run", &"sprint", &"jump_start", &"jump_air", &"jump_land", &"fall"]
@@ -36,6 +37,7 @@ var _playback: AnimationNodeStateMachinePlayback
 var _clips := {}                       # move → clip name, after the fallbacks
 var _gait_speeds: Array[float] = []    # 0 (idle), then the natural speed of each gait in the blend
 var _top_step := 0.0                   # stride mode: the longest step in the blend (m)
+var _pose_node: AnimationNodeAnimation  # the looping move held (hold): eat, sleep…
 var _air_time := 0.0
 
 
@@ -72,6 +74,28 @@ func jump() -> void:
 		return
 	_air_time = AIR_DELAY
 	_playback.travel(&"jump_start" if _clips[&"jump_start"] != &"" else &"air")
+
+
+## Holds a looping move (eat, sleep, sit…) instead of standing and walking, until release(). Returns
+## false if it has no such clip.
+func hold(move: StringName) -> bool:
+	var clip := _clip(move)
+	if clip == &"" or _playback == null:
+		return false
+	_player.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
+	(_pose_node as AnimationNodeAnimation).animation = clip
+	_playback.travel(&"pose")
+	return true
+
+
+## Back to standing and walking after hold().
+func release() -> void:
+	if _playback and _playback.get_current_node() == &"pose":
+		_playback.travel(&"move")
+
+
+func holding() -> bool:
+	return _playback != null and _playback.get_current_node() == &"pose"
 
 
 ## Plays a one-off move over the rest (interact, wave…). Returns its length (s), 0 if none.
@@ -143,6 +167,11 @@ func _build_tree() -> void:
 	sm.add_transition(&"Start", &"move", _go(0.0, true))
 	sm.add_transition(&"move", &"air", _go(0.2))
 	sm.add_transition(&"air", &"move", _go(0.12))
+	_pose_node = _anim(&"idle")   # (its clip is set by hold())
+	sm.add_node(&"pose", _pose_node)
+	sm.add_transition(&"move", &"pose", _go(POSE_BLEND))
+	sm.add_transition(&"pose", &"move", _go(POSE_BLEND))
+	sm.add_transition(&"pose", &"air", _go(0.15))
 	if _clips[&"jump_start"] != &"":
 		sm.add_node(&"jump_start", _anim(&"jump_start"))
 		sm.add_transition(&"move", &"jump_start", _go(0.08))

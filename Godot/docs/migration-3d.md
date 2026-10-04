@@ -4,12 +4,12 @@ Document vivant. Créé le 2026-10-04 après l'audit de la Phase 0. Règle absol
 reste la source de vérité du gameplay ; il continue de tourner pendant toute la migration.
 
 **Trois versions coexistent** (décision de Greg, 04/10) :
-- **2,5D mobile** (ce projet, Android/web) : le modèle de base. Il n'est ni transformé ni cassé.
+- **2,5D mobile** (ce projet, Android) : le modèle de base. Il n'est ni transformé ni cassé.
 - **3D PC sous Godot** : ce document. Code additif dans `world3d/`, qui réutilise le gameplay et les
   données du 2,5D.
 - **3D PC sous Unreal 5.8** (`Unreal/`, chantier parallèle) : il part lui aussi du 2,5D.
   Les deux versions 3D ciblent le **PC** (clavier/souris et manette d'abord ; le tactile reste
-  possible mais n'est pas prioritaire ; le web n'est pas visé). Machine de référence : GTX 1650 Ti.
+  possible mais n'est pas prioritaire ; le web a été retiré). Machine de référence : GTX 1650 Ti.
 
 ## 1. Point de départ réel (audit)
 
@@ -56,7 +56,7 @@ Statuts : ☐ à faire · ◐ en cours · ☑ fait.
 | `story/` ~20 k lignes de chorégraphies (2 483 appels Stage/CS/Act, px) | idem | **gros risque** : passer par la couche de conversion plutôt que réécrire | ADAPTER (progressif) | ☐ |
 | Sorties de zone, déclencheurs, ramassages (Area2D) | `Area3D` | masques de collision reprise 1:1 | RÉÉCRIRE (petit) | ☐ |
 | Nage / plongée / monture / selle | idem 3D | poses ancrées sur sprites → os/sockets | RÉÉCRIRE | ☐ |
-| Modèles : 39 `.glb` bâtiments | déjà 3D | web : exclus (poids) | CONSERVER | ☑ |
+| Modèles : 39 `.glb` bâtiments | déjà 3D | exclus de l'APK (poids) | CONSERVER | ☑ |
 | Personnages/dinos : planches de sprites | modèles `.glb` riggés | **pipeline d'assets complet** | CRÉER | ☐ |
 | Métabolisme, population, évolution, croissance | `Dinosaur3D` composants | à concevoir ; l'existant n'a rien | CRÉER | ☐ |
 
@@ -92,8 +92,8 @@ d'animation) — budget GTX 1650 Ti.
 2. **`story/` en pixels** : ne pas réécrire. API `Stage` conservée, conversion px→m centralisée.
 3. **Double vérité spatiale** pendant la transition (2D invisible + 3D) : la 3D native lit les mêmes
    données de zone, jamais l'inverse. Sauvegarde : position convertie, ancienne sauvegarde toujours lisible.
-4. **Poids/mémoire** : le web gèle déjà (VRAM 1,1 Go à 8 zones). La 3D vise uniquement le PC : un
-   preset d'export PC à part, qui exclut `world3d/` des exports mobile/web et inversement les planches
+4. **Poids/mémoire** : l'ancien web gelait déjà (VRAM 1,1 Go à 8 zones ; le Web est retiré depuis le 2026-10-04). La 3D vise uniquement le PC : un
+   preset d'export PC à part, qui exclut `world3d/` des exports mobile et inversement les planches
    2D inutiles (à faire avant la 1re livraison 3D).
 5. **Régression du 2,5D mobile** : `world3d/` est additif. On reste sur la branche courante, sans changer
    de branche, parce qu'une autre session travaille sur Unreal dans le même dépôt. Les tests existants
@@ -113,8 +113,8 @@ d'animation) — budget GTX 1650 Ti.
 | 3 | Premier dino 3D générique depuis `DinoSpecies` (modèle, anims, navmesh, états) | ☑ fait le 04/10 : deux Velociraptors dans la démo (un adulte niv. 14, un jeune niv. 5) ; `test_world3d.gd only=3`, 16 vérifications sur 16 |
 | 4 | Petite zone 3D : terrain, végétation, rochers, eau, lumière — idéalement le coin de la Prairie du Grand Crâne chargé par `ZoneLoader` | ☑ fait le 04/10 : la **Prairie du Grand Crâne entière**, bâtie depuis la zone 2,5D, ×2 (240 × 180 m) ; `test_world3d.gd only=4`, 8 sur 8, ~320 im/s sur GTX 1650 Ti, construite en ~1,6 s |
 | 5 | Reconnexion gameplay : rencontre → `BattleScene`, Dinodex, sauvegarde, dialogue, Game | ◐ boucle de jeu faite le 04/10 : partie, sauvegarde 3D, interface du jeu, compagnon, jour et nuit, rencontres, combat, capture, Dinodex ; `test_world3d.gd only=5`, 12 sur 12. Reste : PNJ, panneaux, histoire, objets, sorties |
-| 6 | Population : spawn par biome, densité, simulation LOD | N dinos actifs, coût mesuré |
-| 7 | Nouvelles espèces et biomes, POI | ≥ 10 espèces par données seules |
+| 6 | Population : spawn par biome, densité, simulation LOD | ◐ 04/10 : dinos par habitat et par moment du jour (règles du 2,5D), troupeaux groupés qui broutent et fuient ensemble ; `test_world3d.gd only=7`, 6 sur 6. Reste : densité, simulation LOD, coût mesuré |
+| 7 | Nouvelles espèces et biomes, POI | ◐ 04/10 : les **6 espèces de la Prairie** (velociraptor, parasaurolophus, compsognathus, psittacosaurus, dimorphodon, ankylosaurus), ajoutées par fiche seule ; ≥ 10 à venir |
 | 8 | Grand monde : chunks/streaming, World-origin | traversée sans chargement bloquant |
 
 ## 7. Ce qui existe (au fil des phases)
@@ -222,7 +222,7 @@ Modèle : Quaternius, *Animated Dinosaur Bundle* (poly.pizza) : 1 248 triangles,
 
 **Les briques** :
 - `ZoneSource` (données) : ouvre la zone 2,5D hors de l'arbre (`Region.open_for_preview`, aucun de ses scripts ne tourne) et la lit. Relief `HeightMap` du 2,5D, sols par case, décors (`Prop` : kind, place, collision), habitats, points d'arrivée. Hauteurs et plancher lus une fois (`Region.floor_height` reparcourt la zone à chaque appel : 120 s → 1,6 s).
-- `Terrain3D` : maillage du relief, découpé en blocs de 32 m. Collision `HeightMapShape3D` à 1 m. L'eau est une nappe au niveau d'eau du 2,5D.
+- `ZoneTerrain` : maillage du relief, découpé en blocs de 32 m. Collision `HeightMapShape3D` à 1 m. L'eau est une nappe au niveau d'eau du 2,5D.
   - Au bord d'une falaise, la hauteur de la case tient (règle `STAND_SNAP` du 2,5D) : la falaise reste une paroi raide et non une pente.
   - `terrain.gdshader` reprend le sol peint du 2,5D : mêmes images, mêmes répétitions au mètre, bords déchirés, taches, sable, sous-bois, vase, roche, berges mouillées, ombres de nuages. Les falaises prennent les strates peintes selon la pente vraie de la face.
 - `water.gdshader` : teinte selon la profondeur du fond (relief du 2,5D), rides, liseré clair au rivage.
@@ -257,7 +257,7 @@ Modèle : Quaternius, *Animated Dinosaur Bundle* (poly.pizza) : 1 248 triangles,
 - forêts des bords lointains ;
 - rendu cartoon des décors.
 
-### Phase 5 : le jeu dans la Prairie 3D (`world3d/game/`, `world3d/zone3d/sky_3d.gd`)
+### Phase 5 : le jeu dans la Prairie 3D (`world3d/game/`, `world3d/zone3d/zone_sky.gd`)
 Les systèmes du 2,5D sont **réutilisés tels quels** (`Game`, `Save`, `BattleScene`, `Dialogue`, l'interface, `DexScreen`, `MapScreen`). On ne réécrit que le pont avec la 3D, qui fait ce que `world.gd` fait pour le 2,5D.
 
 - **`Session3D`** :
@@ -272,7 +272,7 @@ Les systèmes du 2,5D sont **réutilisés tels quels** (`Game`, `Save`, `BattleS
   - **Approche** : en marchant calmement, on peut approcher un dino farouche jusqu'au contact ; en courant vers lui, il détale.
   - **Hautes herbes** : les pas dans les hautes herbes d'un habitat peuvent lancer un dino caché, avec les mêmes taux et les mêmes pas que le 2,5D, rapportés à l'échelle de la carte.
   - **Repos et Dinodex** : l'équipe récupère un peu à chaque pas, et une espèce vue de près entre au Dinodex, avec de l'expérience.
-- **`Sky3D`** : l'horloge du jeu et la lumière du jour du 2,5D (`WorldView.DAYLIGHT`), assombries par la pluie, l'orage et la brume.
+- **`ZoneSky`** : l'horloge du jeu et la lumière du jour du 2,5D (`WorldView.DAYLIGHT`), assombries par la pluie, l'orage et la brume.
 - **Les dinos de l'heure** : par habitat, ceux qu'on voit à découvert à ce moment (`Encounter.active`). Le jour, des Parasaurolophus ; la nuit et au crépuscule, des Velociraptors.
 - **Nouvelle espèce sans code** : le **Parasaurolophus** (modèle Quaternius, une fiche `species/parasaurolophus.tres`). Herbivore calme, 9,5 m réels, montré à environ 5,2 m une fois adulte (compression du 2,5D).
 - **Cris** : les dinos crient tous les 10 à 22 s, en son 3D.
@@ -285,6 +285,73 @@ Les systèmes du 2,5D sont **réutilisés tels quels** (`Game`, `Save`, `BattleS
 - les hautes herbes en 3D ;
 - l'œuf à porter.
 
+### Phases 6 et 7 : la Prairie peuplée (04/10)
+- **Les 6 espèces de la Prairie** ont leur fiche (`world3d/creatures/species/<id>.tres`) et leur modèle (`assets/models3d/dinos/<id>/<id>.glb`). Sources Blender et aperçus : `assets3d_src/dinos/travail/` et `assets3d_src/dinos/apercus/`.
+- **Qualité** : comme Chloé. Formes lisses, 11 000 à 17 000 triangles, peau peinte 2048², yeux avec paupières, narines, dents. Plumes pour le velociraptor et le compsognathus, piquants sur la queue du psittacosaurus.
+- **Clips aux mêmes noms** : idle, walk, run, attack, death, jump, eat (tête au sol, mâchoire qui mâche), sleep (couché, yeux fermés).
+- **Vitesses des clips** mesurées sur le modèle à sa taille adulte du jeu. La foulée est la même pour les 4 nouveaux.
+
+  | Espèce | Taille réelle | Montré adulte | Marche du clip | Course du clip | Marche | Course |
+  |---|---|---|---|---|---|---|
+  | velociraptor | 2 m | 2,00 m | 0,60 m/s | 2,35 m/s | 1,0 | 6,0 |
+  | parasaurolophus | 9,5 m | 5,22 m | 1,76 | 6,89 | 2,2 | 7,0 |
+  | compsognathus | 1 m | 1,00 m | 0,29 | 1,14 | 0,6 | 4,0 |
+  | psittacosaurus | 2 m | 2,00 m | 0,76 | 2,96 | 0,9 | 3,5 |
+
+  Marche et course (en m/s) gardent l'animation sous environ 2,5 fois sa cadence, sauf la course du compsognathus, rapide et petit.
+- Les dinos de la Prairie sont des jeunes (niveaux 4 à 7), donc plus petits que l'adulte, comme dans le 2,5D (`DinoSize.growth`).
+- **Défaut connu** : un dino peut apparaître dans un buisson (il en sort en marchant).
+
+### Rendu PC et plugins (04/10)
+- **Une seule peau de dino** : peinte pour la 3D, avec le contour cartoon. La peau reprise des dessins 2,5D a été essayée puis abandonnée (Greg : « les rendus sont mieux sans »). Les fichiers sont gardés hors du projet, dans `assets3d_src/dinos_peau_2d_abandonnee/`.
+- **Forward+ essayé** (lancé avec `--rendering-method forward_plus`, même vue à 17 h 30, GTX 1650 Ti) :
+
+  | Rendu | Images/s |
+  |---|---|
+  | Mobile (le projet) | 375 |
+  | Forward+ sans effet | 278 |
+  | + SSAO, glow, AgX | 264 |
+  | + brouillard volumétrique | 252 |
+  | + SSIL | 235 |
+  | + SDFGI | gel de plus de 4 s |
+
+  Avec le style cartoon, le SSAO se voit à peine. L'AgX et le brouillard volumétrique ternissent les couleurs (ciel gris, herbe terne).
+- **Décision révisée le même jour** (Greg : « la technique doit au max être améliorée dans la version PC 3D », et « ne garde pas le 2,5D, utilise ce qui est de meilleure qualité ») : **la 3D PC passe en Forward+.**
+  - Réglage du projet : `rendering/renderer/rendering_method.pc="forward_plus"`. Il touche tous les PC, éditeur compris. Android garde Mobile.
+  - Le 2,5D lancé sur PC tourne donc aussi en Forward+. Il démarre sans erreur et son écran titre est identique.
+  - Réglages appliqués par `ZoneSky` en Forward+ seulement :
+    - effets : SSAO, SSIL, glow, et l'exposition automatique, c'est-à-dire l'œil qui s'habitue au noir (plancher de sensibilité 170 ISO ; 100 changeait la nuit en jour, 300 la rendait trop noire) ;
+    - image : MSAA ×4, ombres douces en qualité haute, atlas d'ombres 4096, ombres jusqu'à 90 m.
+  - Pas d'AgX et pas de brouillard volumétrique, pour les raisons ci-dessus.
+- **Ciel Sky3D complet** (`ZoneSky`) : atmosphère, nuages qui défilent, soleil, lune et sa lumière, Voie lactée.
+  - L'horloge (`Game.clock`) et la météo du jeu le pilotent. Pluie ou brume : nuages plus épais, lumière plus faible, brouillard gris proche.
+  - Lieu et date : 40° N, 4° E, 9 août 2025. Le soleil se lève à 5 h 55 et se couche à 19 h 45, dans l'aube (5 h-7 h) et le crépuscule (18 h-20 h 30) du jeu. La lune est pleine, levée de 20 h à 5 h 45.
+  - La nuit doit rester jouable : lune à 0,45, part du ciel dans la lumière ambiante 0,85 le jour et 0,3 la nuit, lumière ambiante renforcée quand le soleil descend.
+  - La table `WorldView.DAYLIGHT` du 2,5D ne sert plus qu'en secours, si le plugin manque.
+
+  | Moment (Forward+, tous effets) | Images/s |
+  |---|---|
+  | aube 6 h 06 | 130 |
+  | midi | 228 |
+  | coucher 19 h 36 | 192 |
+  | nuit 23 h | 216 |
+  | pluie 15 h | 222 |
+
+  Encore à faire : la mer reste bleu marine foncé, voire noire au crépuscule (shader d'eau à refaire) ; la pluie ne se voit pas encore.
+- **Plugins** dans `addons/` (sources et zips d'origine : `assets3d_src/plugins/`). Ils sont activés dans l'éditeur seulement : aucun autoload, exclus de l'export Android.
+
+  | Plugin | Version | Rôle | Remarque |
+  |---|---|---|---|
+  | Terrain3D (GDExtension) | 1.0.2 | terrain du monde ouvert | ne compile pas en Mobile + D3D12, mais marche en Forward+ (le rendu de la 3D PC depuis le 04/10) et en Mobile + Vulkan |
+  | Sky3D | 2.1.0 | ciel, nuages, soleil, lune | **utilisé** par `ZoneSky` ; notre ancien `Sky3D` renommé `ZoneSky` (et `Terrain3D` → `ZoneTerrain`) pour éviter le conflit de noms |
+  | ProtonScatter | 4.2.0 (main) | semis procédural | dossier `demos/` retiré |
+  | Spatial Gardener | 1.4.1 | peinture de végétation | corrigé pour 4.7 : `Logger` → `SgLogger`, retours manquants, styles vides du thème (`theme_adapter.gd`, `_flat()`) |
+  | Waterways | 0.3 (`godot4_5_1`) | rivières, courant, écume | corrigé pour 4.7 (retours manquants) |
+  | Debug Menu | 1.2.0 | images/s, CPU, GPU (F3) | créé par `Session3D` en 3D seulement |
+
+  Phantom Camera (0.11) est téléchargé mais pas installé : notre caméra suffit, et il exige un autoload, qui serait chargé dans le jeu mobile.
+- **Exports** : `addons/`, `world3d/` et `assets/models3d/` sont exclus du preset Android.
+
 ### Chloé : reste à améliorer (Greg, 04/10 : « on affinera plus tard » ; ne pas faire maintenant)
 1. **Visage** : encore un peu long et adulte (base adulte) ; resculpter mâchoire et menton. Le sourire est fermé : il le faudrait ouvert, comme sur la planche. Nez et oreilles un peu grands, sourcils un peu taillés en bloc.
 2. **Cheveux** : la lisière peinte ne suit pas le bord de la calotte (un trait sombre aux tempes, de 3/4 et de profil). Le bord de la nuque est dentelé. Pas de mèches folles.
@@ -292,4 +359,4 @@ Les systèmes du 2,5D sont **réutilisés tels quels** (`Game`, `Save`, `BattleS
 4. **Animations** : poings serrés dans plusieurs clips ; pieds environ 5 mm sous le sol en idle ; correction de +9,9° sur `Head` dans tous les clips ; pas de `wave` ni de `fall` (la chute réutilise `jump_air`).
 5. **Bottes** : longues et plates, sans revers.
 6. **Rendu** : pas encore de contour brun ni d'ombrage cartoon (shader commun à prévoir avec le décor, Phase 4). La peau passerait en 1024 sans perte visible.
-7. **Exports** : `chloe.glb` (5,4 Mo) part aussi dans les exports mobile et web du 2,5D. Il faudra exclure `assets/models3d/` et `world3d/` des presets mobile et web.
+7. ~~**Exports**~~ : fait le 04/10, `world3d/`, `assets/models3d/` et `addons/` sont exclus du preset Android.

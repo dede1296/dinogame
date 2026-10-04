@@ -1,8 +1,9 @@
 extends RefCounted
 ## 3D models of the zone's scenery, by Prop `kind` (phase 4 of docs/migration-3d.md).
-## Every model: origin at the foot (y = 0), real metres, front towards +Z, flat-shaded
-## colour-only materials (no texture), palette taken from the painted props.
-## Made procedurally in Blender 5.2 (scripts: assets3d_src/nature/scripts/build.py, lib.py);
+## Every model: origin at the foot (y = 0), real metres, front towards +Z. v2 (x2 detail):
+## smooth trunks/branches/rocks, faceted foliage, painted textures (bark, foliage, rock) embedded
+## in the .glb, palette taken from the painted props.
+## Made procedurally in Blender 5.2 (scripts: assets3d_src/nature/scripts/build_v2.py, lib2.py, tex2.py; v1 = build.py);
 ## the 1st entry of each list is the main one, the next ones are variants.
 ## Source of the inspiration/style survey: Kenney Nature Kit
 ## (https://kenney.nl/assets/nature-kit, downloaded to assets3d_src/nature/kenney, not used

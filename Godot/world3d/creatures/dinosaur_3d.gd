@@ -41,6 +41,8 @@ var length_m := 0.0
 var height_m := 0.0
 ## Whom it follows as a companion (Chloé), null: a wild dino.
 var companion_of: Node3D = null
+## Its herd (the same array for all of them, itself included), when its species lives in groups.
+var herd: Array[Dinosaur3D] = []
 
 var _calm := 0.0   # (s) not met again so soon after a battle it was left out of (calm_down)
 var _voice: AudioStreamPlayer3D
@@ -207,7 +209,7 @@ func _build() -> void:
 	add_child(_holder)
 	model = species.model.instantiate() as Node3D
 	_holder.add_child(model)
-	TOON.apply(model)   # Ambrelune's cartoon look: soft steps, brown outline
+	TOON.apply(model)   # the cartoon look: soft steps, brown outline
 	var drawn := ModelSize.posed_box(model, species.model.resource_path).size
 	growth = DinoSize.growth(species.sheet(), dino.level)
 	var scale_by := species.adult_scale(drawn) * growth

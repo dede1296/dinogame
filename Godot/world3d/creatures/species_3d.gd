@@ -14,6 +14,8 @@ const GABARIT_POWER := 0.6
 
 ## The species' id, as in SpeciesDB (velociraptor, triceratops…).
 @export var id: StringName
+## Its model, with a skin painted for 3D (the cartoon outline added by the game; Greg, 04/10: not
+## the 2.5D's drawing projected on it — it looked worse).
 @export var model: PackedScene
 @export var anim_set: AnimSet
 ## Real adult length, nose to tail (m) and mass (kg) — DexFacts' "size".
@@ -35,6 +37,12 @@ const GABARIT_POWER := 0.6
 @export var perception_m := 10.0
 @export var flee_m := 4.0
 @export var roam_m := 8.0
+## Lives in a group: those of a habitat stay together, and one running off sets the others off.
+@export var herd := false
+## The part of the day it sleeps in (Game.phase: night, dawn, day, dusk), lying down; "" never.
+@export var sleeps_at: StringName = &""
+## Grazes now and then (head down to the plants, its "eat" clip); by default the plant-eaters.
+@export var grazes := false
 
 static var _loaded := {}
 

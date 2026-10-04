@@ -37,6 +37,10 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=4
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/terrain_3d/plugin.cfg", "res://addons/sky_3d/plugin.cfg", "res://addons/proton_scatter/plugin.cfg", "res://addons/dreadpon.spatial_gardener/plugin.cfg", "res://addons/waterways/plugin.cfg")
+
 [importer_defaults]
 
 texture={
@@ -134,6 +138,7 @@ textures/canvas_textures/default_texture_filter=3
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
+renderer/rendering_method.pc="forward_plus"
 
 [shader_globals]
 

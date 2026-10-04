@@ -1,10 +1,10 @@
 extends SceneTree
 ## Phases 1 to 3 of docs/migration-3d.md, checked in the real engine (it needs a window to render,
 ## so not --headless):
-##   godot --path Godot --script res://tools/test_world3d.gd -- out=<folder> [only=1|2|3|4]
+##   godot --path Godot --script res://tools/test_world3d.gd -- out=<folder> [only=1|2|3|4|5|7]
 ## `only=`: just that phase (test what a change touches, not everything: the whole run is for a big
 ## change). Phase 1: Chloé's body and the camera; 2: jump, sign, her animations; 3: the dinos;
-## 4: the Prairie in 3D (its own scene, only with only=4).
+## 4: the Prairie in 3D (its own scene, only with only=4); 5: the game in it; 7: its species.
 ## Prints PASS / FAIL for each check, saves screenshots, quits with 1 on any failure.
 ## (Game classes are used through the nodes only: this script is compiled before the autoloads.)
 
@@ -30,7 +30,7 @@ func _initialize() -> void:
 	DirAccess.make_dir_recursive_absolute(_out)
 	root.get_node("Save").set("path", "user://capture_save.json")   # never the player's save
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://capture_save.json"))   # a new game each time
-	change_scene_to_file(ZONE if _only in [4, 5] else DEMO)
+	change_scene_to_file(ZONE if _only in [4, 5, 7] else DEMO)
 	_run()
 
 
@@ -43,6 +43,8 @@ func _run() -> void:
 		await _phase1()
 	if _only in [0, 2]:
 		await _phase2()
+	if _only == 7:   # (the Prairie: its species)
+		await _phase7()
 	if _only == 5:   # (the Prairie too)
 		await _phase5()
 	if _only == 4:   # (its own scene: only with only=4)
@@ -395,7 +397,7 @@ func _phase5() -> void:
 	game.set("clock", 22.5 * 60.0)
 	await create_timer(1.0).timeout
 	var night: float = sun.light_energy
-	_check("the night falls (the 2.5D's light over the day)", night < day * 0.5, "soleil %.2f → %.2f" % [day, night])
+	_check("the night falls (Sky3D, at the game's hour)", night < day * 0.5, "soleil %.2f → %.2f" % [day, night])
 	await _shot("32_nuit")
 	var raptor: Node3D = null
 	for d in zone.get("dinos"):
@@ -444,6 +446,94 @@ func _phase5() -> void:
 	var px: Vector2 = game.get("player_position")
 	var s: float = zone.get("source").get("scale")
 	_check("…Chloé's place, in the 2.5D's units", px.distance_to(Vector2(at.x, at.z) / s * 48.0) < 2.0 and game.get("has_position"), "%s" % px)
+
+
+## Phase 7 (the Prairie's species): every species of its habitats has a 3D sheet; each is out at its
+## time of day as in the 2.5D (Encounter.when); a herd keeps together; the plant-eaters graze; one
+## of a herd run at sets the others off; a picture of each species close up.
+const PRAIRIE := [&"velociraptor", &"parasaurolophus", &"compsognathus", &"psittacosaurus", &"dimorphodon", &"ankylosaurus"]
+
+
+func _phase7() -> void:
+	var zone := _demo
+	var game := root.get_node("Game")
+	_quiet(zone)
+	var sheets := PRAIRIE.filter(func(id: StringName) -> bool: return ResourceLoader.exists("res://world3d/creatures/species/%s.tres" % id))
+	_check("every species of the Prairie has its 3D sheet", sheets.size() == PRAIRIE.size(), "%s" % [sheets])
+	var seen := {}
+	for hour in [13.0, 6.2, 22.5]:   # day, dawn, night
+		game.set("clock", hour * 60.0)
+		await create_timer(0.8).timeout
+		zone.call("respawn_dinos")
+		_quiet(zone)
+		await create_timer(0.5).timeout
+		var out := {}
+		for d in zone.get("dinos"):
+			out[d.get("species").get("id")] = true
+		print("     %02d h (%s) : %s" % [int(hour), game.call("phase"), out.keys()])
+		for id in out:
+			seen[id] = true
+	_check("each is out at some time of day (the 2.5D's habitats)", seen.size() == sheets.size(), "%s" % [seen.keys()])
+	# by day: a herd of Parasaurolophus
+	game.set("clock", 13.0 * 60.0)
+	await create_timer(0.8).timeout
+	zone.call("respawn_dinos")
+	_quiet(zone)
+	var herd: Array = []
+	for d in zone.get("dinos"):
+		if d.get("species").get("id") == &"parasaurolophus" and (d.get("herd") as Array).size() > 1:
+			herd = d.get("herd")
+			break
+	_check("the Parasaurolophus live in herds", herd.size() > 1, "%d" % herd.size())
+	if herd.size() > 1:
+		var grazed := false
+		var spread := 0.0
+		var t0 := Time.get_ticks_msec()
+		while Time.get_ticks_msec() < t0 + 25000:
+			await create_timer(0.25).timeout
+			for m in herd:
+				grazed = grazed or m.call("state") == &"graze"
+			spread = maxf(spread, (herd[0] as Node3D).global_position.distance_to((herd[1] as Node3D).global_position))
+		_check("…they graze now and then", grazed, "")
+		_check("…and keep together", spread < 20.0, "jusqu'à %.1f m l'un de l'autre" % spread)
+		var lead: Node3D = herd[0]
+		_player.call("place_at", lead.global_position + Vector3(0, 0.3, -9.0), 0.0)
+		_pivot.call("set_view", 180.0, -18.0, 8.0)
+		await create_timer(0.5).timeout
+		Input.action_press(&"run")
+		Input.action_press(&"move_up")
+		var all_ran := false
+		t0 = Time.get_ticks_msec()
+		while Time.get_ticks_msec() < t0 + 4000 and not all_ran:
+			await physics_frame
+			all_ran = herd.all(func(m: Node) -> bool: return m.call("state") == &"flee")
+		Input.action_release(&"move_up")
+		Input.action_release(&"run")
+		_check("run at one, the whole herd runs off", all_ran, "%s" % [herd.map(func(m: Node) -> StringName: return m.call("state"))])
+		await _shot("50_troupeau_fuit")
+	# a picture of each species, close up, by its time of day
+	for hour in [13.0, 6.2, 22.5]:
+		game.set("clock", hour * 60.0)
+		await create_timer(0.8).timeout
+		zone.call("respawn_dinos")
+		_quiet(zone)
+		await create_timer(0.6).timeout
+		var shown := {}
+		for d in zone.get("dinos"):
+			var id: StringName = d.get("species").get("id")
+			if shown.has(id) or FileAccess.file_exists(_out.path_join("51_%s.png" % id)):
+				continue
+			shown[id] = true
+			d.set_physics_process(false)
+			var size: float = maxf(float(d.get("length_m")), 1.0)
+			_player.call("place_at", d.global_position + Vector3(size * 0.6 + 1.0, 0.3, -1.5), -PI * 0.5)
+			_pivot.set("target", d)
+			_pivot.call("set_view", 70.0, -10.0, clampf(size * 1.4 + 2.0, 3.5, 12.0))
+			_pivot.call("snap")
+			await create_timer(0.7).timeout
+			await _shot("51_%s" % id)
+			_pivot.set("target", _player)
+			d.set_physics_process(true)
 
 
 ## The first tile of `surface` whose south neighbour is open grass on the same level: that neighbour.

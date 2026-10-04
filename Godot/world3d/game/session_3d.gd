@@ -9,11 +9,14 @@ extends Node
 ##   the map and the Dinodex (M, X), the game's own screens;
 ## - Chloé's lead dino walking with her (Dinosaur3D.companion), changed when the party changes;
 ## - the zone's music and sounds; new wild dinos when the part of the day changes;
-## - the meetings with the wild dinos (Encounters3D).
+## - the meetings with the wild dinos (Encounters3D);
+## - the frames/s, CPU and GPU times on screen, F3 (the Debug Menu plugin: here, not an autoload,
+##   so the mobile game never has it).
 
 const SAVE_PATH := "user://save_3d.json"
 const PX := 48.0
 const STARTER := &"velociraptor"
+const DEBUG_MENU := "res://addons/debug_menu/debug_menu.tscn"
 
 var zone: Zone3D
 var hud: CanvasLayer
@@ -92,6 +95,8 @@ func _build_hud(region: Region) -> void:
 	hud.add_child(PartyBar.new())
 	hud.add_child(ClockBadge.new())
 	hud.add_child(PurseBadge.new())
+	if ResourceLoader.exists(DEBUG_MENU):
+		add_child(load(DEBUG_MENU).instantiate())
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -6,16 +6,8 @@
 
 [sub_resource type="Resource" id="Resource_anims"]
 script = ExtResource("2_animset")
-clips = Dictionary[StringName, StringName]({
-&"attack": &"Armature|Parasaurolophus_Attack",
-&"death": &"Armature|Parasaurolophus_Death",
-&"idle": &"Armature|Parasaurolophus_Idle",
-&"rear": &"Armature|Parasaurolophus_Jump",
-&"run": &"Armature|Parasaurolophus_Run",
-&"walk": &"Armature|Parasaurolophus_Walk"
-})
-walk_clip_speed = 3.49
-run_clip_speed = 11.0
+walk_clip_speed = 1.76
+run_clip_speed = 6.89
 
 [resource]
 script = ExtResource("1_species")
@@ -32,3 +24,5 @@ run_speed = 7.0
 perception_m = 12.0
 flee_m = 6.0
 roam_m = 12.0
+herd = true
+grazes = true

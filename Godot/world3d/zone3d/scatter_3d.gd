@@ -18,20 +18,23 @@ const CHUNK_M := 32.0
 const WOODS_M2 := 6.0            # square metres of woods per tree
 const FILL_M2 := 14.0            # square metres of open grass per fern or flower
 const FILL := {"fougeres": 4, "fleurs_roses": 2, "fleurs_violettes": 2, "cailloux": 1, "buisson": 1}
-const SMALL_RANGE_M := 70.0
-const TREE_RANGE_M := 230.0
+const SMALL_RANGE_M := 50.0     # (measured: halving the ranges doubles the frame rate; the haze hides the rest)
+const TREE_RANGE_M := 150.0
 const TREES := ["arbre_rond", "araucaria", "fougere_arbre"]
 ## Too thin for an outline: far off, their stems turn into dark sticks.
 const NO_OUTLINE := ["fleurs_roses", "fleurs_violettes", "champignons", "prele"]
+const LOD_MERGE_DEG := 25.0   # normals this close are merged when simplifying (ImporterMesh.generate_lods)
+const LOD_SPLIT_DEG := 60.0
+const LOD_BIAS := 0.3   # the scenery's simpler versions sooner than the people's (1: Godot's own threshold)
 
 var source: ZoneSource
-var terrain: Terrain3D
+var terrain: ZoneTerrain
 
 var _models := {}       # kind → Array[Mesh] (3D models) — or [] (picture)
 var _items := {}        # kind → Array of [Vector3 position, float yaw, float scale]
 
 
-func build(src: ZoneSource, ground: Terrain3D) -> void:
+func build(src: ZoneSource, ground: ZoneTerrain) -> void:
 	source = src
 	terrain = ground
 	_load_models()
@@ -72,7 +75,7 @@ func _merged_mesh(scene: PackedScene, outline := true) -> Mesh:
 		return null
 	var root := scene.instantiate() as Node3D
 	TOON.apply(root, {"fade": false, "outline": outline})   # the cartoon look, as Chloé and the dinos
-	var out := ArrayMesh.new()
+	var out := ImporterMesh.new()   # (to give the merged model its levels of detail, as an import does)
 	for node in root.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
 		if mi.mesh == null:
@@ -105,11 +108,13 @@ func _merged_mesh(scene: PackedScene, outline := true) -> Mesh:
 				arrays[Mesh.ARRAY_TANGENT] = tangents
 			arrays[Mesh.ARRAY_BONES] = null
 			arrays[Mesh.ARRAY_WEIGHTS] = null
-			out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-			var mat := mi.get_active_material(s)
-			out.surface_set_material(out.get_surface_count() - 1, mat)
+			out.add_surface(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, mi.get_active_material(s))
 	root.free()
-	return out if out.get_surface_count() > 0 else null
+	if out.get_surface_count() == 0:
+		return null
+	# simpler versions of it, drawn further off (each batch of 32 m picks one by its distance)
+	out.generate_lods(LOD_MERGE_DEG, LOD_SPLIT_DEG, [])
+	return out.get_mesh()
 
 
 func _place(kind: String, at: Vector3, yaw: float, size: float) -> void:
@@ -214,7 +219,9 @@ func _batches(mesh: Mesh, items: Array, range_end: float, shadows: bool, picture
 		inst.multimesh = mm
 		inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if shadows else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		inst.visibility_range_end = range_end
-		inst.visibility_range_end_margin = 8.0
+		inst.visibility_range_end_margin = 12.0
+		inst.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF   # fades out, no popping
+		inst.lod_bias = LOD_BIAS
 		add_child(inst)
 
 

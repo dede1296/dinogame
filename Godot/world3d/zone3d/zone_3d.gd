@@ -1,8 +1,8 @@
 class_name Zone3D
 extends Node3D
 ## A zone of the 3D version (docs/migration-3d.md, phases 4 and 5), built when it starts from the
-## 2.5D zone `zone_id` (ZoneSource): its relief, ground and water (Terrain3D), what stops Chloé
-## (Blockers3D: the 2.5D's rules), its scenery and woods (Scatter3D), its sky over the day (Sky3D),
+## 2.5D zone `zone_id` (ZoneSource): its relief, ground and water (ZoneTerrain), what stops Chloé
+## (Blockers3D: the 2.5D's rules), its scenery and woods (Scatter3D), its sky over the day (ZoneSky),
 ## a navigation mesh for the dinos, Chloé (where the save left her, else at her arrival point), and
 ## the wild dinos of its habitats that have a 3D sheet, those of the time of day.
 ## The game around it (save, HUD, companion, battles): Session3D. Its map is `zone_scale` times wider
@@ -10,6 +10,7 @@ extends Node3D
 
 const PLAYER := preload("res://world3d/player/player_3d.tscn")
 const WALKABLE: Array[StringName] = [&"grass", &"path", &"tall_grass", &"sand"]
+const HERD_GATHER_M := 6.0   # a herd's members start this close to one another
 
 @export var zone_id: StringName = &"plaines"
 ## Where Chloé comes in (a Spawns marker of the 2.5D zone).
@@ -18,8 +19,8 @@ const WALKABLE: Array[StringName] = [&"grass", &"path", &"tall_grass", &"sand"]
 
 var source: ZoneSource
 var session: Session3D
-var sky: Sky3D
-var terrain: Terrain3D
+var sky: ZoneSky
+var terrain: ZoneTerrain
 var blockers: Blockers3D
 var scatter: Scatter3D
 var navigation: NavigationRegion3D
@@ -41,10 +42,10 @@ func _ready() -> void:
 	if source == null:
 		return
 	steps["lecture"] = Time.get_ticks_msec() - t0
-	sky = Sky3D.new()
+	sky = ZoneSky.new()
 	sky.name = "Sky"
 	add_child(sky)
-	terrain = Terrain3D.new()
+	terrain = ZoneTerrain.new()
 	terrain.name = "Terrain"
 	add_child(terrain)
 	terrain.build(source)
@@ -132,13 +133,19 @@ func _add_dinos() -> void:
 			var species := Species3D.of(enc.species)
 			if species == null:
 				continue
+			var herd: Array[Dinosaur3D] = []
+			var gathering := Vector3.INF   # a herd starts together, about one spot
 			for i in int(habitat["roamers"]):
-				var spot := _open_spot(area, rng)
+				var spot := _open_spot(area, rng) if gathering == Vector3.INF else _open_spot_near(gathering, area, rng)
 				if spot == Vector3.INF:
 					continue
 				var dino := Dinosaur3D.create(species, enc.roll_level())
 				dino.position = spot + Vector3(0, 0.3, 0)
 				dino.home = spot
+				if species.herd:
+					gathering = spot
+					herd.append(dino)
+					dino.herd = herd
 				add_child(dino)
 				dinos.append(dino)
 
@@ -150,6 +157,16 @@ func respawn_dinos() -> void:
 			d.queue_free()
 	dinos.clear()
 	_add_dinos()
+
+
+## Open ground within HERD_GATHER_M of `near` (inside the habitat), else anywhere in it.
+func _open_spot_near(near: Vector3, area: Rect2, rng: RandomNumberGenerator) -> Vector3:
+	for attempt in 12:
+		var x := clampf(near.x + rng.randf_range(-HERD_GATHER_M, HERD_GATHER_M), area.position.x, area.end.x)
+		var z := clampf(near.z + rng.randf_range(-HERD_GATHER_M, HERD_GATHER_M), area.position.y, area.end.y)
+		if source.surface(source.tile_at(x, z)) in WALKABLE:
+			return Vector3(x, terrain.height_at(x, z), z)
+	return _open_spot(area, rng)
 
 
 func _open_spot(area: Rect2, rng: RandomNumberGenerator) -> Vector3:
