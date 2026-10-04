@@ -14,3 +14,6 @@ Unity/
 generated_imgs/
 .everything-claude-code/
 .vscode/
+
+# Sources 3D de travail (téléchargements, .blend) : hors du jeu, trop lourdes pour git
+assets3d_src/

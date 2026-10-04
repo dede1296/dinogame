@@ -1,0 +1,54 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://world3d/player/player_3d.gd" id="1_player"]
+[ext_resource type="Script" path="res://world3d/camera/camera_pivot.gd" id="2_pivot"]
+[ext_resource type="PackedScene" path="res://assets/models3d/characters/chloe/chloe.glb" id="3_chloe"]
+[ext_resource type="Resource" path="res://world3d/player/chloe_anims.tres" id="4_anims"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
+radius = 0.17
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_coat"]
+albedo_color = Color(0.82, 0.42, 0.24, 1)
+roughness = 0.85
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
+material = SubResource("StandardMaterial3D_coat")
+radius = 0.17
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_face"]
+albedo_color = Color(0.96, 0.82, 0.66, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_face"]
+material = SubResource("StandardMaterial3D_face")
+size = Vector3(0.16, 0.14, 0.1)
+
+[node name="Player3D" type="CharacterBody3D"]
+script = ExtResource("1_player")
+model_scene = ExtResource("3_chloe")
+anim_set = ExtResource("4_anims")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("CapsuleShape3D_body")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+mesh = SubResource("CapsuleMesh_body")
+
+[node name="Face" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0.14)
+mesh = SubResource("BoxMesh_face")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+script = ExtResource("2_pivot")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
+current = true
