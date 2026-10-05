@@ -17,3 +17,16 @@ generated_imgs/
 
 # Sources 3D de travail (téléchargements, .blend) : hors du jeu, trop lourdes pour git
 assets3d_src/
+
+# Plugins tiers installés à part (liste et installation dans Godot/README.md) : pas dans le dépôt
+Godot/addons/
+
+# Unreal : fichiers générés par la compilation (pas les sources)
+Unreal/**/Intermediate/
+Unreal/**/Binaries/
+Unreal/**/Saved/
+Unreal/**/DerivedDataCache/
+*.pdb
+*.pch
+*.obj
+*.TMP
