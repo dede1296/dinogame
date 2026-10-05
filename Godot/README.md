@@ -179,3 +179,27 @@ base64 -w0 ambrelune.keystore   # → valeur du secret
 ```
 Export local possible aussi (SDK Android + Java 17 + modèles d'export 4.7.2 requis, non
 installés sur ce PC pour l'instant).
+
+## Plugins à installer (non versionnés)
+
+Le dossier `addons/` n'est pas dans le dépôt : il faut le remplir avant de lancer le projet.
+Versions utilisées (Godot 4.7.2) :
+
+| Dossier | Plugin | Version |
+|---|---|---|
+| `addons/terrain_3d` | Terrain3D | 1.0.2 |
+| `addons/sky_3d` | Sky3D | 2.1 |
+| `addons/waterways` | Waterways | 0.3 |
+| `addons/proton_scatter` | Proton Scatter | 4.2.0 |
+| `addons/dreadpon.spatial_gardener` | Spatial Gardener | 1.4.1 |
+| `addons/simplegrasstextured` | SimpleGrassTextured | 2.1.0 |
+| `addons/PlantGenerator` | PlantGenerator | 1.0.0 |
+| `addons/modular_builder_en` | Modular Builder | 0.2.0 |
+| `addons/lens_effects` | Lens Effects | 1.0 |
+| `addons/ragdoll_generator` | Ragdoll Generator | 1.0 |
+| `addons/blendkit` | BlenderKit | 0.6.1 |
+| `addons/debug_menu` | Debug Menu | 1.2.0 |
+| `addons/guideCS` | Guide (C#) | 0.5.7 |
+| `addons/gaussian-blur`, `addons/tressfx` | (effets) | — |
+
+Les sources Blender (`assets3d_src/`) et les packs d'assets tiers ne sont pas non plus dans le dépôt.
