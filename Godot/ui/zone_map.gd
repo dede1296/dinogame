@@ -140,6 +140,14 @@ func zoom_by(factor: float, at := Vector2.INF) -> void:
 	_place()
 
 
+## Moves the view by `tiles` (the gamepad's stick), slower when zoomed in.
+func pan(tiles: Vector2) -> void:
+	if tiles == Vector2.ZERO:
+		return
+	centre += tiles / zoom
+	_place()
+
+
 ## Moves the view to a tile (an objective picked in the list), zooming in a little.
 func focus(tile: Vector2) -> void:
 	zoom = maxf(zoom, 2.0)

@@ -392,16 +392,62 @@ static func visiteurs():
 	return load("res://story/visiteurs.gd")
 
 
-## The exploration screen (world.gd), untyped for its player, companion, region.
+## The 3D version's stand-in for world.gd (StoryWorld3D), named by path only: world3d/ is left out
+## of the mobile export, so the 2.5D must not even mention its classes (docs/migration-3d.md).
+const WORLD_3D := "res://world3d/story/story_world_3d.gd"
+
+static var _world_3d: Node = null
+static var _has_world_3d := -1   # -1: not looked for yet; 0: no (the mobile game); 1: yes
+
+
+## The exploration screen the scenes play on, untyped for its player, companion, region: world.gd
+## in the 2.5D, StoryWorld3D in the 3D version. Both answer the same questions — Chloé, her lead
+## dino, an actor by name, the zone's data, the camera, the pixel ↔ metre conversion, a battle —
+## so the scenes of story/ never ask which version runs.
 static func world():
-	return Engine.get_main_loop().current_scene
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	if is_instance_valid(_world_3d) and _world_3d.is_inside_tree():
+		return _world_3d
+	var zone := _zone_3d(tree)
+	if zone == null:
+		return tree.current_scene
+	_world_3d = load(WORLD_3D).new()
+	_world_3d.set("zone", zone)
+	zone.add_child(_world_3d)
+	return _world_3d
+
+
+## True while the 3D version plays its scenes (the 2.5D's world.gd has no such method).
+static func in_3d() -> bool:
+	var w = world()
+	return w != null and w.has_method(&"is_3d")
+
+
+## The 3D zone playing, when the 3D version is the one running: by its group, else Chloé's parent
+## (Player3D puts itself in `player3d`). Null in the 2.5D mobile game.
+static func _zone_3d(tree: SceneTree) -> Node:
+	if _has_world_3d < 0:
+		_has_world_3d = 1 if ResourceLoader.exists(WORLD_3D) else 0
+	if _has_world_3d == 0:
+		return null
+	var zone := tree.get_first_node_in_group(&"zone3d")
+	if zone == null:
+		var chloe := tree.get_first_node_in_group(&"player3d")
+		zone = chloe.get_parent() if chloe else null
+	return zone
 
 
 ## A character or dino of the current zone, by node name (null when absent). Untyped, so
 ## scenes can call its own methods (walk_to, face, cry…).
 static func actor(node_name: String):
 	var w = world()
-	if w == null or w.get("region") == null:
+	if w == null:
+		return null
+	if w.has_method(&"is_3d"):
+		return w.actor(node_name)
+	if w.get("region") == null:
 		return null
 	return w.region.entities.get_node_or_null(node_name)
 
@@ -413,7 +459,12 @@ static func at(x: float, y: float) -> Vector2:
 ## Takes control away from the player during a scene (or gives it back).
 static func lock(on: bool) -> void:
 	var w = world()
-	if w and w.get("player"):
+	if w == null:
+		return
+	if w.has_method(&"is_3d"):
+		w.lock_player(on)
+		return
+	if w.get("player"):
 		if on:
 			w.dismount()   # a scene plays: Chloé on her feet
 		w.player.busy = on
@@ -507,15 +558,22 @@ const SPEAKERS := {"roc": "Prof. Roc", "maia": "Maïa", "isaure": "Isaure", "bra
 
 ## A character only a scene needs (a passer-by, someone at night): added to the zone, not
 ## to be talked to. `display`: the name its lines are signed with (else SPEAKERS).
+## In 3D nobody has a model yet (docs/migration-3d.md, phase 5 « Reste : les PNJ ») : it is put
+## where the scene asks, unseen, so its moves and its lines go on instead of failing.
 static func stranger(node_name: String, sheet: String, at_px: Vector2, facing := "down", display := "") -> Npc:
 	var w = world()
+	if w == null:
+		return null
 	var n: Npc = load("res://actors/npc.tscn").instantiate()
 	n.name = node_name
 	n.sheet = load("res://assets/art/characters/%s.png" % sheet)
 	n.display_name = display if display != "" else SPEAKERS.get(sheet, "")
 	n.facing = facing
 	n.position = at_px
-	w.region.entities.add_child(n)
+	if w.has_method(&"is_3d"):
+		w.add_actor(n)
+	else:
+		w.region.entities.add_child(n)
 	n.remove_from_group(&"interactable")
 	return n
 

@@ -8,6 +8,12 @@ extends Node3D
 ## A kind with a 3D model (nature_models.gd) is shown as that model, turned at random; else as its
 ## 2.5D picture standing up (a billboard), until its model comes. Drawn in batches (one MultiMesh
 ## per kind and per 32 m square), small plants not drawn far away.
+## Everything stands on the ground the zone is drawn with (ZoneTerrain.height_at), not the 2.5D's.
+## In a REMODELLED zone (its plan's relief) the 2.5D's scenery keeps its places but where the plan
+## wants the ground clear (ZoneTerrain.plan_allows: its water, its paths and their clearance, its
+## clearings); its woods are walked through, between trunks that stop her (`trunks`: the woods are
+## no longer walls); and what the plan says stops her is seen (`plan`, Blockers3D's): its hedges and
+## banks are rows of brambles, bushes and blocks along their lines, its dense edges thick woods.
 
 const NATURE := "res://world3d/zone3d/nature_models.gd"
 const TOON := preload("res://world3d/render/toon_style.gd")
@@ -18,35 +24,79 @@ const CHUNK_M := 32.0
 const WOODS_M2 := 6.0            # square metres of woods per tree
 const FILL_M2 := 14.0            # square metres of open grass per fern or flower
 const FILL := {"fougeres": 4, "fleurs_roses": 2, "fleurs_violettes": 2, "cailloux": 1, "buisson": 1}
-const SMALL_RANGE_M := 50.0     # (measured: halving the ranges doubles the frame rate; the haze hides the rest)
-const TREE_RANGE_M := 150.0
+## How far each kind is still drawn (m). Beyond, the sky's far haze takes over (ZoneSky): raised
+## on 04/10 because the trees stopping in plain sight was visible (measured: halving the ranges
+## doubles the frame rate).
+const SMALL_RANGE_M := 120.0
+const TREE_RANGE_M := 240.0
 const TREES := ["arbre_rond", "araucaria", "fougere_arbre"]
 ## Too thin for an outline: far off, their stems turn into dark sticks.
 const NO_OUTLINE := ["fleurs_roses", "fleurs_violettes", "champignons", "prele"]
 const LOD_MERGE_DEG := 25.0   # normals this close are merged when simplifying (ImporterMesh.generate_lods)
 const LOD_SPLIT_DEG := 60.0
 const LOD_BIAS := 0.3   # the scenery's simpler versions sooner than the people's (1: Godot's own threshold)
+## A remodelled zone's hedges and banks, as they are drawn: so many plants per metre of their line,
+## across their width; each kind's share and size (× its model: bushes 1 m, brambles 0.85 m, rocks
+## 1 m; brambles larger than that grow berries the size of apples).
+const HEDGE_PER_M := 3.0
+const HEDGE_KINDS := [["buisson", 0.45, 1.4, 1.8], ["ronces", 0.35, 1.1, 1.4], ["souche", 0.08, 1.2, 1.6]]
+const TRUNK_HEIGHT_M := 2.5
 
 var source: ZoneSource
 var terrain: ZoneTerrain
+var blockers: Blockers3D
+## A remodelled zone: the trunks of the trees it sowed, what stops Chloé in its woods (null elsewhere).
+var trunks: StaticBody3D
 
 var _models := {}       # kind → Array[Mesh] (3D models) — or [] (picture)
 var _items := {}        # kind → Array of [Vector3 position, float yaw, float scale]
+var _trunk_spots: Array = []   # [Vector3, radius (m)] of the sown trees (a remodelled zone)
 
 
-func build(src: ZoneSource, ground: ZoneTerrain) -> void:
+## Sows the zone's scenery. `walls`: what stops Chloé (Blockers3D): a remodelled zone's plan blockers
+## are made visible, and its scenery stands where they let it (Blockers3D.allows: the same rule).
+func build(src: ZoneSource, ground: ZoneTerrain, walls: Blockers3D = null) -> void:
 	source = src
 	terrain = ground
+	blockers = walls
+	var plan: Array = walls.plan if walls else []
 	_load_models()
 	for prop in src.props():
-		_place(prop["kind"], prop["at"], PI if prop["flip"] else 0.0, 1.0)
+		var at: Vector3 = prop["at"]
+		if not _allows(at.x, at.z, _big(prop["kind"])):
+			continue
+		at.y = ground.height_at(at.x, at.z)   # (the 2.5D's height is not the ground's)
+		_place(prop["kind"], at, PI if prop["flip"] else 0.0, 1.0)
 	_woods()
 	_fill()
+	if ground.is_remodelled():
+		_show_plan(plan)
+		_build_trunks()
 	for kind: String in _items:
 		_draw(kind, _items[kind])
 
 
+func _allows(x: float, z: float, big: bool) -> bool:
+	return blockers.allows(x, z, big) if blockers else terrain.plan_allows(x, z, big)
+
+
+## Something big: a tree, or anything that stops Chloé (Prop.KINDS "solid").
+static func _big(kind: String) -> bool:
+	var solid: Variant = Prop.KINDS.get(kind, {}).get("solid", 0.0)
+	return kind in TREES or solid is Vector2 or (solid is float and solid > 0.0)
+
+
 ## How many of each kind were placed (for the tests and the log).
+## Where a kind was sown: an Array of [position (Vector3), yaw, size]. Empty if it has none.
+func placed(kind: String) -> Array:
+	return _items.get(kind, [])
+
+
+## The meshes a kind is drawn with (several variants), or [] when it is drawn as a picture.
+func meshes_of(kind: String) -> Array:
+	return _models.get(kind, [])
+
+
 func counts() -> Dictionary:
 	var out := {}
 	for kind: String in _items:
@@ -145,7 +195,39 @@ func _woods() -> void:
 					kind = low[rng.randi() % low.size()]
 				var px := (x + rng.randf_range(0.1, 0.9)) * source.scale
 				var pz := (y + rng.randf_range(0.1, 0.9)) * source.scale
-				_place(kind, Vector3(px, terrain.height_at(px, pz), pz), rng.randf() * TAU, rng.randf_range(0.85, 1.25))
+				var yaw := rng.randf() * TAU
+				var size := rng.randf_range(0.85, 1.25)
+				if not _allows(px, pz, _big(kind)):
+					continue
+				_place(kind, Vector3(px, terrain.height_at(px, pz), pz), yaw, size)
+				_trunk(kind, px, pz, size)
+
+
+## A remodelled zone's woods are walked through: each tree sown there has its trunk (its Prop.KINDS
+## radius), what stops her between them.
+func _trunk(kind: String, x: float, z: float, size: float) -> void:
+	if not terrain.is_remodelled() or not kind in TREES:
+		return
+	_trunk_spots.append([Vector3(x, terrain.height_at(x, z), z), float(Prop.KINDS[kind]["solid"]) / PX * size])
+
+
+func _build_trunks() -> void:
+	if _trunk_spots.is_empty():
+		return
+	trunks = StaticBody3D.new()
+	trunks.name = "Troncs"
+	trunks.collision_layer = Layers3D.WORLD
+	trunks.collision_mask = 0
+	trunks.add_to_group(&"nav_source")
+	for spot: Array in _trunk_spots:
+		var cyl := CylinderShape3D.new()
+		cyl.radius = spot[1]
+		cyl.height = TRUNK_HEIGHT_M
+		var shape := CollisionShape3D.new()
+		shape.shape = cyl
+		shape.position = (spot[0] as Vector3) + Vector3(0, TRUNK_HEIGHT_M * 0.5 - 0.3, 0)
+		trunks.add_child(shape)
+	add_child(trunks)
 
 
 ## A few ferns and flowers on the open grass, away from the trails, the water and the slopes.
@@ -168,7 +250,80 @@ func _fill() -> void:
 			var h := terrain.height_at(px, pz)
 			if absf(terrain.height_at(px + 0.5, pz) - h) > 0.2 or absf(terrain.height_at(px, pz + 0.5) - h) > 0.2:
 				continue   # a slope: a cliff's face
-			_place(kinds[rng.randi() % kinds.size()], Vector3(px, h, pz), rng.randf() * TAU, rng.randf_range(0.8, 1.2))
+			var kind := kinds[rng.randi() % kinds.size()]
+			if not _allows(px, pz, _big(kind)):
+				continue
+			_place(kind, Vector3(px, h, pz), rng.randf() * TAU, rng.randf_range(0.8, 1.2))
+
+
+## What a remodelled zone's plan says stops Chloé, made visible (Blockers3D holds the walls): its
+## hedges and banks, rows of brambles, bushes, blocks and stumps along their lines, open where their
+## walls are (the gap, the plan's paths: Blockers3D._wall_spans' rule); its dense edges, thick woods
+## (but where the 2.5D's woods already stand).
+func _show_plan(plan: Array) -> void:
+	for b: Dictionary in plan:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = hash(String(b.get("id", "")))
+		match String(b.get("kind", "")):
+			"hedge", "bank":
+				var half := float(b["width_m"]) * 0.5
+				var gap: Dictionary = b.get("gap", {})
+				var gap_at := Vector2(float(gap["at"][0]), float(gap["at"][1])) if gap.has("at") else Vector2.INF
+				var gap_r := float(gap.get("width_m", 0.0)) * 0.5
+				var lines := []
+				if b.has("polyline"):
+					lines.append([b["polyline"], bool(b.get("closed", false))])
+				if b.has("polyline2"):
+					lines.append([b["polyline2"], false])
+				for line: Array in lines:
+					_hedge(line[0], line[1], half, gap_at, gap_r, rng)
+			"forest_edge":
+				for key in ["polygon", "polygon2"]:
+					if b.has(key):
+						_thicket(b[key], rng)
+
+
+func _hedge(points: Array, closed: bool, half: float, gap_at: Vector2, gap_r: float, rng: RandomNumberGenerator) -> void:
+	var line: PackedVector2Array = TerrainRelief.SHAPES._points(points)
+	if closed:
+		line.append(line[0])
+	var total := 0.0
+	for k in HEDGE_KINDS:
+		total += float(k[1])
+	for i in line.size() - 1:
+		var a := line[i]
+		var b := line[i + 1]
+		var dir := (b - a).normalized()
+		var side := Vector2(-dir.y, dir.x)
+		var count := int(a.distance_to(b) * HEDGE_PER_M)
+		for n in count:
+			var on_line := a.lerp(b, (n + rng.randf()) / count)
+			var p := on_line + side * rng.randf_range(-half, half) * 0.85
+			if on_line.distance_to(gap_at) < gap_r or terrain.near_path(on_line.x, on_line.y, half, gap_at, gap_r):
+				continue   # (where its wall is left open)
+			var pick := rng.randf() * total
+			for k: Array in HEDGE_KINDS:
+				pick -= float(k[1])
+				if pick <= 0.0:
+					_place(k[0], Vector3(p.x, terrain.height_at(p.x, p.y), p.y), rng.randf() * TAU, rng.randf_range(k[2], k[3]))
+					break
+
+
+## Thick woods over a polygon: a tree every WOODS_M2 m², a bush or a tree fern between, the 2.5D's
+## woods (its forest tiles, sown already) left as they are.
+func _thicket(points: Array, rng: RandomNumberGenerator) -> void:
+	var poly: PackedVector2Array = TerrainRelief.SHAPES._points(points)
+	var box: Rect2 = TerrainRelief.SHAPES._bounds(poly)
+	var count := int(box.get_area() / WOODS_M2)
+	for n in count:
+		var p := Vector2(rng.randf_range(box.position.x, box.end.x), rng.randf_range(box.position.y, box.end.y))
+		if not Geometry2D.is_point_in_polygon(p, poly) or source.surface(source.tile_at(p.x, p.y)) == &"forest":
+			continue
+		var kind: String = TREES[rng.randi() % TREES.size()] if rng.randf() < 0.65 else ["buisson", "fougere_arbre", "ronces"][rng.randi() % 3]
+		if not _allows(p.x, p.y, true):
+			continue
+		var size := rng.randf_range(0.9, 1.3)
+		_place(kind, Vector3(p.x, terrain.height_at(p.x, p.y), p.y), rng.randf() * TAU, size)
 
 
 func _draw(kind: String, items: Array) -> void:
@@ -219,9 +374,11 @@ func _batches(mesh: Mesh, items: Array, range_end: float, shadows: bool, picture
 		inst.multimesh = mm
 		inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if shadows else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		inst.visibility_range_end = range_end
-		inst.visibility_range_end_margin = 12.0
+		inst.visibility_range_end_margin = 24.0 if shadows else 12.0
 		inst.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF   # fades out, no popping
 		inst.lod_bias = LOD_BIAS
+		if not shadows:   # the small plants: left out of the water's mirror (the trees stay in it)
+			inst.layers = 1 | (1 << (ZoneWater.NOT_IN_MIRROR_LAYER - 1))
 		add_child(inst)
 
 

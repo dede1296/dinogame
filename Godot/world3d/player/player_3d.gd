@@ -33,6 +33,7 @@ const JUMP_HEIGHT := 0.65
 const JUMP_CUT := 0.45        # letting go while rising keeps this share of the rising speed
 const COYOTE := 0.12          # can still jump this long after walking off an edge (s)
 const JUMP_BUFFER := 0.15     # a press this long before landing jumps on landing (s)
+const STILL := 0.15           # below this the stick counts as let go (the latched run ends)
 const AIR_CONTROL := 0.4      # share of the ground acceleration in the air
 const INTERACT_REACH := Player.INTERACT_REACH / PX_PER_M   # ~1.3 m, as in the 2.5D
 const INTERACT_CONE := 0.3    # what is in front of her: cos of about 70°
@@ -56,6 +57,7 @@ var _last_ground := Vector3.ZERO
 var _coyote := 0.0
 var _jump_buffer := 0.0
 var _rising := false          # going up from a jump, the button still held
+var _run_latched := false     # the left stick was pressed: she runs while she moves
 var _was_on_floor := true
 var _fall_speed := 0.0
 var _hinted: Interactable3D
@@ -81,9 +83,11 @@ func can_move() -> bool:
 	return not busy and not Dialogue.active and not Router.is_busy()
 
 
-## B held (the touch button, Escape) or Shift: she runs. Same rule as the 2.5D Player.
+## B held (the touch button, Escape) or Shift: she runs, as in the 2.5D Player. A press of the
+## gamepad's left stick (Input3D.RUN_TOGGLE) also starts her running, and she keeps it up as long
+## as she moves (_run_latched, dropped in _physics_process when she stands still).
 func running() -> bool:
-	return Input.is_action_pressed(&"run") or Input.is_action_pressed(&"cancel")
+	return _run_latched or Input.is_action_pressed(&"run") or Input.is_action_pressed(&"cancel")
 
 
 func top_speed() -> float:
@@ -135,6 +139,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(Input3D.JUMP):
 		get_viewport().set_input_as_handled()
 		_jump_buffer = JUMP_BUFFER
+	elif event.is_action_pressed(Input3D.RUN_TOGGLE):
+		get_viewport().set_input_as_handled()
+		_run_latched = true
 	elif event.is_action_pressed(&"interact") and is_on_floor():
 		var it := nearest_interactable()
 		if it:
@@ -146,6 +153,8 @@ func _physics_process(delta: float) -> void:
 	var input := Vector2.ZERO
 	if can_move():
 		input = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
+	if input.length() < STILL:
+		_run_latched = false   # she stopped: the stick's run is over
 	_coyote = COYOTE if is_on_floor() else maxf(_coyote - delta, 0.0)
 	_jump_buffer = maxf(_jump_buffer - delta, 0.0)
 	var wish := pivot.flat_direction(input) * top_speed()

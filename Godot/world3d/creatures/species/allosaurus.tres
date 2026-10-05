@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Species3D" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://world3d/creatures/species_3d.gd" id="1_species"]
+[ext_resource type="Script" path="res://world3d/animation/anim_set.gd" id="2_animset"]
+[ext_resource type="PackedScene" path="res://assets/models3d/dinos/allosaurus/allosaurus.glb" id="3_model"]
+
+[sub_resource type="Resource" id="Resource_anims"]
+script = ExtResource("2_animset")
+walk_clip_speed = 1.62
+run_clip_speed = 4.47
+
+[resource]
+script = ExtResource("1_species")
+id = &"allosaurus"
+model = ExtResource("3_model")
+anim_set = SubResource("Resource_anims")
+length_m = 8.5
+mass_kg = 2000.0
+diet = &"carnivore"
+biomes = Array[StringName]([&"foret"])
+temperament = &"shy"
+walk_speed = 1.4
+run_speed = 7.0
+perception_m = 10.0
+flee_m = 5.0
+roam_m = 10.0

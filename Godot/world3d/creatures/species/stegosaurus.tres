@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="Species3D" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://world3d/creatures/species_3d.gd" id="1_species"]
+[ext_resource type="Script" path="res://world3d/animation/anim_set.gd" id="2_animset"]
+[ext_resource type="PackedScene" path="res://assets/models3d/dinos/stegosaurus/stegosaurus.glb" id="3_model"]
+
+[sub_resource type="Resource" id="Resource_anims"]
+script = ExtResource("2_animset")
+walk_clip_speed = 0.90
+run_clip_speed = 3.50
+
+[resource]
+script = ExtResource("1_species")
+id = &"stegosaurus"
+model = ExtResource("3_model")
+anim_set = SubResource("Resource_anims")
+length_m = 9.0
+mass_kg = 5000.0
+diet = &"herbivore"
+biomes = Array[StringName]([&"foret"])
+temperament = &"calm"
+walk_speed = 0.9
+run_speed = 3.0
+perception_m = 10.0
+flee_m = 4.0
+roam_m = 10.0
+herd = true
+grazes = true

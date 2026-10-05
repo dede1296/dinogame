@@ -16,6 +16,12 @@ const SIDE_WIDTH := 300.0
 ## The zones with a detailed map (outdoors).
 const DETAILED := [&"plaines", &"port_ambre", &"havre_dore", &"foret", &"camp_ombre", &"marais", &"desert",
 	&"sanctuaire_vents"]
+## The gamepad: the stick pans the zone map (tiles a second, at zoom 1) and moves from region to
+## region on the island; the triggers zoom (a factor a second, at full pull); the stick's dead zone.
+const PAD_PAN_TILES_S := 40.0
+const PAD_ZOOM_S := 1.6
+const STICK_DEAD := 0.25
+const STICK_CYCLE := 0.6
 
 var _zones := {}            # zone id -> scene path (world.gd ZONES)
 var _here: Region           # Chloé's zone (the one being played)
@@ -31,6 +37,7 @@ var _body: Control
 var _map: Control
 var _list: VBoxContainer
 var _zoom_buttons: VBoxContainer
+var _stick_latched := false   # the island's stick moved a region on: it waits for the stick's return
 
 
 ## Opens the map over `parent`'s scene: the detailed map of `region` (Chloé at `chloe_tile`,
@@ -91,6 +98,56 @@ func _ready() -> void:
 		_show_zone(_here.region_id)
 	else:
 		_show_island()
+
+
+## The gamepad's stick and triggers, while no objective button has the focus (the list has it
+## once the D-pad went to it: then the stick moves that focus, as the menus do).
+func _process(delta: float) -> void:
+	if get_viewport().gui_get_focus_owner() != null:
+		return
+	var stick := Vector2(Input.get_joy_axis(0, JOY_AXIS_LEFT_X), Input.get_joy_axis(0, JOY_AXIS_LEFT_Y))
+	if stick.length() < STICK_DEAD:
+		stick = Vector2.ZERO
+	if _map is ZoneMap:
+		_pad_zone(_map as ZoneMap, stick, delta)
+	elif _map is IslandMap:
+		_pad_island(_map as IslandMap, stick.x)
+
+
+func _pad_zone(m: ZoneMap, stick: Vector2, delta: float) -> void:
+	m.pan(stick * PAD_PAN_TILES_S * delta)
+	var pull := Input.get_joy_axis(0, JOY_AXIS_TRIGGER_RIGHT) - Input.get_joy_axis(0, JOY_AXIS_TRIGGER_LEFT)
+	if absf(pull) > STICK_DEAD:
+		m.zoom_by(pow(PAD_ZOOM_S, pull * delta))
+
+
+## One region per push of the stick: it must come back to the middle before the next one.
+func _pad_island(m: IslandMap, x: float) -> void:
+	if absf(x) < STICK_CYCLE:
+		_stick_latched = false
+		return
+	if _stick_latched:
+		return
+	_stick_latched = true
+	m.pad_step(1 if x > 0.0 else -1)
+
+
+## The D-pad gives the list its focus (the first objective); then the D-pad and A do as in menus.
+func _pad_goals() -> void:
+	var buttons := _goal_buttons()
+	if buttons.is_empty():
+		return
+	for b in buttons:
+		b.focus_mode = Control.FOCUS_ALL
+	buttons[0].grab_focus()
+
+
+func _goal_buttons() -> Array[Button]:
+	var buttons: Array[Button] = []
+	for child in _list.get_children():
+		if child is Button:
+			buttons.append(child)
+	return buttons
 
 
 func _exit_tree() -> void:
@@ -164,6 +221,9 @@ func _side_panel() -> Control:
 	legend.custom_minimum_size = Vector2(SIDE_WIDTH, 92)
 	legend.draw.connect(_draw_legend.bind(legend))
 	side.add_child(legend)
+	side.add_child(_wrapped("Souris : glisser pour se déplacer, molette pour zoomer, clic sur un objectif. "
+		+ "Manette : stick pour se déplacer, gâchettes pour zoomer, X pour revenir sur Chloé, croix pour "
+		+ "choisir un objectif, A pour l'ouvrir, B pour fermer.", 14, Color(CREAM, 0.8)))
 	return side
 
 
@@ -190,8 +250,7 @@ func _fill_objectives() -> void:
 		var followed: bool = o["id"] == String(Game.flag(&"suivi")) if Game.flag(&"suivi") else false
 		# The title; the details only for the one picked (followed on screen).
 		var head := "%d. %s" % [i, o["title"]] if o["tile"] != Vector2.INF else "• %s" % o["title"]
-		b.text = ("▶ " + head + "
-" + String(o["text"])) if followed else head
+		b.text = ("▶ " + head + "\n" + String(o["text"])) if followed else head
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.focus_mode = Control.FOCUS_NONE
@@ -323,6 +382,22 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"cancel") or event.is_action_pressed(&"map"):
 		get_viewport().set_input_as_handled()
 		_close()
+		return
+	var pad := event as InputEventJoypadButton
+	if pad == null or not pad.pressed:
+		return
+	match pad.button_index:
+		JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN:
+			get_viewport().set_input_as_handled()
+			_pad_goals()
+		JOY_BUTTON_X:   # back to Chloé, on the zone's map
+			if _map is ZoneMap and (_map as ZoneMap).chloe != Vector2.INF:
+				get_viewport().set_input_as_handled()
+				(_map as ZoneMap).focus((_map as ZoneMap).chloe)
+		JOY_BUTTON_A:   # the highlighted region of the island
+			if _map is IslandMap:
+				get_viewport().set_input_as_handled()
+				(_map as IslandMap).pad_open()
 
 
 ## Android back gesture / button.

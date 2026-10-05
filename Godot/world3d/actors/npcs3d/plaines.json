@@ -1,0 +1,10 @@
+{
+	"_doc": "Où se tiennent les PNJ de la Prairie remodelée (Npcs3D, zone remodelée) : copie des ancres « npc » et « npc_dino » du plan (docs/zones-3d/plaines-layout.json, non exporté avec le jeu), par nom de nœud de la zone 2,5D (tools/zones/plaines.gd). « old » : leur place du 2,5D (cases × 2 m), « at » : celle du plan (mètres de la zone, [x, z]), « group » : le groupe de scène qui a bougé en bloc (plaines-plan.md § 8). Qui est là, ce qu'ils disent et dans quel ordre restent ceux du 2,5D (show_flag, hide_flag, dialogue, scène). À régénérer si le plan change.",
+	"people": {
+		"Maia": {"group": "G_carrefour", "old": [125.2, 88.8], "at": [117.2, 96.8]},
+		"GrandVoyageur": {"group": "G_carrefour", "old": [106.8, 98.0], "at": [98.8, 106.0]},
+		"MaiaDefi": {"group": "G_crane", "old": [201.6, 130.4], "at": [165.6, 106.4]},
+		"Alpha": {"group": "G_crane", "old": [214.4, 127.6], "at": [178.4, 110.0], "note": "hors de la collision du Crâne modélisé : (0, +6,4) m de plus que son groupe (plan, 05/10)"},
+		"Elise": {"group": "G_elise", "old": [158.2, 112.6], "at": [131.2, 134.6]}
+	}
+}

@@ -1,0 +1,1176 @@
+{
+ "source": "Kenney Nature Kit 2.1 (CC0)",
+ "unit": "1 unite = 1 m (verifie: fence_simple = 1,00 m)",
+ "rocks": [
+  {
+   "id": "rock_largeA",
+   "file": "rock_largeA.glb",
+   "width_m": 0.785,
+   "depth_m": 1.016,
+   "height_m": 0.26,
+   "tris": 80,
+   "family": "MOYEN",
+   "shape": "arrondi",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_largeB",
+   "file": "rock_largeB.glb",
+   "width_m": 0.767,
+   "depth_m": 1.016,
+   "height_m": 0.43,
+   "tris": 85,
+   "family": "MOYEN",
+   "shape": "arrondi",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_largeC",
+   "file": "rock_largeC.glb",
+   "width_m": 1.064,
+   "depth_m": 1.016,
+   "height_m": 0.321,
+   "tris": 72,
+   "family": "MOYEN",
+   "shape": "massif",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_largeD",
+   "file": "rock_largeD.glb",
+   "width_m": 1.069,
+   "depth_m": 1.03,
+   "height_m": 0.568,
+   "tris": 80,
+   "family": "MOYEN",
+   "shape": "massif",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_largeE",
+   "file": "rock_largeE.glb",
+   "width_m": 1.095,
+   "depth_m": 0.92,
+   "height_m": 0.292,
+   "tris": 64,
+   "family": "MOYEN",
+   "shape": "massif",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_largeF",
+   "file": "rock_largeF.glb",
+   "width_m": 1.095,
+   "depth_m": 0.899,
+   "height_m": 0.479,
+   "tris": 73,
+   "family": "MOYEN",
+   "shape": "massif",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallA",
+   "file": "rock_smallA.glb",
+   "width_m": 0.361,
+   "depth_m": 0.361,
+   "height_m": 0.191,
+   "tris": 16,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallB",
+   "file": "rock_smallB.glb",
+   "width_m": 0.361,
+   "depth_m": 0.361,
+   "height_m": 0.177,
+   "tris": 24,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallC",
+   "file": "rock_smallC.glb",
+   "width_m": 0.361,
+   "depth_m": 0.361,
+   "height_m": 0.123,
+   "tris": 16,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallD",
+   "file": "rock_smallD.glb",
+   "width_m": 0.426,
+   "depth_m": 0.369,
+   "height_m": 0.231,
+   "tris": 32,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallE",
+   "file": "rock_smallE.glb",
+   "width_m": 0.361,
+   "depth_m": 0.312,
+   "height_m": 0.256,
+   "tris": 64,
+   "family": "PETIT",
+   "shape": "massif",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallF",
+   "file": "rock_smallF.glb",
+   "width_m": 0.354,
+   "depth_m": 0.306,
+   "height_m": 0.245,
+   "tris": 60,
+   "family": "PETIT",
+   "shape": "massif",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallFlatA",
+   "file": "rock_smallFlatA.glb",
+   "width_m": 0.496,
+   "depth_m": 0.43,
+   "height_m": 0.065,
+   "tris": 20,
+   "family": "PETIT",
+   "shape": "plat",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallFlatB",
+   "file": "rock_smallFlatB.glb",
+   "width_m": 0.429,
+   "depth_m": 0.402,
+   "height_m": 0.065,
+   "tris": 16,
+   "family": "PETIT",
+   "shape": "plat",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallFlatC",
+   "file": "rock_smallFlatC.glb",
+   "width_m": 0.47,
+   "depth_m": 0.36,
+   "height_m": 0.065,
+   "tris": 40,
+   "family": "PETIT",
+   "shape": "plat",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallG",
+   "file": "rock_smallG.glb",
+   "width_m": 0.594,
+   "depth_m": 0.685,
+   "height_m": 0.245,
+   "tris": 32,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallH",
+   "file": "rock_smallH.glb",
+   "width_m": 0.462,
+   "depth_m": 0.462,
+   "height_m": 0.407,
+   "tris": 60,
+   "family": "PETIT",
+   "shape": "massif",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallI",
+   "file": "rock_smallI.glb",
+   "width_m": 0.358,
+   "depth_m": 0.414,
+   "height_m": 0.278,
+   "tris": 44,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallTopA",
+   "file": "rock_smallTopA.glb",
+   "width_m": 0.488,
+   "depth_m": 0.489,
+   "height_m": 0.22,
+   "tris": 52,
+   "family": "PETIT",
+   "shape": "en gradin",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_smallTopB",
+   "file": "rock_smallTopB.glb",
+   "width_m": 0.622,
+   "depth_m": 0.646,
+   "height_m": 0.28,
+   "tris": 76,
+   "family": "PETIT",
+   "shape": "en gradin",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallA",
+   "file": "rock_tallA.glb",
+   "width_m": 0.983,
+   "depth_m": 0.683,
+   "height_m": 0.996,
+   "tris": 136,
+   "family": "PETIT",
+   "shape": "en gradin",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallB",
+   "file": "rock_tallB.glb",
+   "width_m": 0.765,
+   "depth_m": 0.77,
+   "height_m": 0.884,
+   "tris": 172,
+   "family": "PETIT",
+   "shape": "en gradin",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallC",
+   "file": "rock_tallC.glb",
+   "width_m": 0.456,
+   "depth_m": 0.436,
+   "height_m": 0.783,
+   "tris": 37,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallD",
+   "file": "rock_tallD.glb",
+   "width_m": 0.443,
+   "depth_m": 0.462,
+   "height_m": 0.772,
+   "tris": 38,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallE",
+   "file": "rock_tallE.glb",
+   "width_m": 0.456,
+   "depth_m": 0.527,
+   "height_m": 0.444,
+   "tris": 38,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallF",
+   "file": "rock_tallF.glb",
+   "width_m": 0.444,
+   "depth_m": 0.512,
+   "height_m": 0.574,
+   "tris": 46,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallG",
+   "file": "rock_tallG.glb",
+   "width_m": 0.425,
+   "depth_m": 0.491,
+   "height_m": 0.783,
+   "tris": 62,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallH",
+   "file": "rock_tallH.glb",
+   "width_m": 0.575,
+   "depth_m": 0.664,
+   "height_m": 0.711,
+   "tris": 78,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallI",
+   "file": "rock_tallI.glb",
+   "width_m": 0.456,
+   "depth_m": 0.464,
+   "height_m": 0.812,
+   "tris": 44,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "rock_tallJ",
+   "file": "rock_tallJ.glb",
+   "width_m": 0.488,
+   "depth_m": 0.538,
+   "height_m": 0.62,
+   "tris": 42,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": null,
+   "material": "herbe (dessus) + terre (flancs)"
+  },
+  {
+   "id": "stone_largeA",
+   "file": "stone_largeA.glb",
+   "width_m": 0.785,
+   "depth_m": 1.016,
+   "height_m": 0.26,
+   "tris": 80,
+   "family": "MOYEN",
+   "shape": "arrondi",
+   "same_geometry_as": "rock_largeA.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_largeB",
+   "file": "stone_largeB.glb",
+   "width_m": 0.767,
+   "depth_m": 1.016,
+   "height_m": 0.43,
+   "tris": 85,
+   "family": "MOYEN",
+   "shape": "arrondi",
+   "same_geometry_as": "rock_largeB.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_largeC",
+   "file": "stone_largeC.glb",
+   "width_m": 1.064,
+   "depth_m": 1.016,
+   "height_m": 0.321,
+   "tris": 72,
+   "family": "MOYEN",
+   "shape": "massif",
+   "same_geometry_as": "rock_largeC.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_largeD",
+   "file": "stone_largeD.glb",
+   "width_m": 1.069,
+   "depth_m": 1.03,
+   "height_m": 0.568,
+   "tris": 80,
+   "family": "MOYEN",
+   "shape": "massif",
+   "same_geometry_as": "rock_largeD.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_largeE",
+   "file": "stone_largeE.glb",
+   "width_m": 1.095,
+   "depth_m": 0.92,
+   "height_m": 0.292,
+   "tris": 64,
+   "family": "MOYEN",
+   "shape": "massif",
+   "same_geometry_as": "rock_largeE.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_largeF",
+   "file": "stone_largeF.glb",
+   "width_m": 1.095,
+   "depth_m": 0.899,
+   "height_m": 0.479,
+   "tris": 73,
+   "family": "MOYEN",
+   "shape": "massif",
+   "same_geometry_as": "rock_largeF.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallA",
+   "file": "stone_smallA.glb",
+   "width_m": 0.361,
+   "depth_m": 0.361,
+   "height_m": 0.191,
+   "tris": 16,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": "rock_smallA.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallB",
+   "file": "stone_smallB.glb",
+   "width_m": 0.361,
+   "depth_m": 0.361,
+   "height_m": 0.177,
+   "tris": 24,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": "rock_smallB.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallC",
+   "file": "stone_smallC.glb",
+   "width_m": 0.361,
+   "depth_m": 0.361,
+   "height_m": 0.123,
+   "tris": 16,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": "rock_smallC.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallD",
+   "file": "stone_smallD.glb",
+   "width_m": 0.426,
+   "depth_m": 0.369,
+   "height_m": 0.231,
+   "tris": 32,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": "rock_smallD.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallE",
+   "file": "stone_smallE.glb",
+   "width_m": 0.361,
+   "depth_m": 0.312,
+   "height_m": 0.256,
+   "tris": 64,
+   "family": "PETIT",
+   "shape": "massif",
+   "same_geometry_as": "rock_smallE.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallF",
+   "file": "stone_smallF.glb",
+   "width_m": 0.354,
+   "depth_m": 0.306,
+   "height_m": 0.245,
+   "tris": 60,
+   "family": "PETIT",
+   "shape": "massif",
+   "same_geometry_as": "rock_smallF.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallFlatA",
+   "file": "stone_smallFlatA.glb",
+   "width_m": 0.496,
+   "depth_m": 0.43,
+   "height_m": 0.065,
+   "tris": 20,
+   "family": "PETIT",
+   "shape": "plat",
+   "same_geometry_as": "rock_smallFlatA.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallFlatB",
+   "file": "stone_smallFlatB.glb",
+   "width_m": 0.429,
+   "depth_m": 0.402,
+   "height_m": 0.065,
+   "tris": 16,
+   "family": "PETIT",
+   "shape": "plat",
+   "same_geometry_as": "rock_smallFlatB.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallFlatC",
+   "file": "stone_smallFlatC.glb",
+   "width_m": 0.47,
+   "depth_m": 0.36,
+   "height_m": 0.065,
+   "tris": 40,
+   "family": "PETIT",
+   "shape": "plat",
+   "same_geometry_as": "rock_smallFlatC.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallG",
+   "file": "stone_smallG.glb",
+   "width_m": 0.594,
+   "depth_m": 0.685,
+   "height_m": 0.245,
+   "tris": 32,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_smallG.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallH",
+   "file": "stone_smallH.glb",
+   "width_m": 0.462,
+   "depth_m": 0.462,
+   "height_m": 0.407,
+   "tris": 60,
+   "family": "PETIT",
+   "shape": "massif",
+   "same_geometry_as": "rock_smallH.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallI",
+   "file": "stone_smallI.glb",
+   "width_m": 0.358,
+   "depth_m": 0.414,
+   "height_m": 0.278,
+   "tris": 44,
+   "family": "PETIT",
+   "shape": "arrondi",
+   "same_geometry_as": "rock_smallI.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallTopA",
+   "file": "stone_smallTopA.glb",
+   "width_m": 0.488,
+   "depth_m": 0.489,
+   "height_m": 0.22,
+   "tris": 52,
+   "family": "PETIT",
+   "shape": "en gradin",
+   "same_geometry_as": "rock_smallTopA.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_smallTopB",
+   "file": "stone_smallTopB.glb",
+   "width_m": 0.622,
+   "depth_m": 0.646,
+   "height_m": 0.28,
+   "tris": 76,
+   "family": "PETIT",
+   "shape": "en gradin",
+   "same_geometry_as": "rock_smallTopB.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallA",
+   "file": "stone_tallA.glb",
+   "width_m": 0.983,
+   "depth_m": 0.683,
+   "height_m": 0.996,
+   "tris": 136,
+   "family": "PETIT",
+   "shape": "en gradin",
+   "same_geometry_as": "rock_tallA.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallB",
+   "file": "stone_tallB.glb",
+   "width_m": 0.765,
+   "depth_m": 0.77,
+   "height_m": 0.884,
+   "tris": 172,
+   "family": "PETIT",
+   "shape": "en gradin",
+   "same_geometry_as": "rock_tallB.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallC",
+   "file": "stone_tallC.glb",
+   "width_m": 0.456,
+   "depth_m": 0.436,
+   "height_m": 0.783,
+   "tris": 37,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_tallC.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallD",
+   "file": "stone_tallD.glb",
+   "width_m": 0.443,
+   "depth_m": 0.462,
+   "height_m": 0.772,
+   "tris": 38,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_tallD.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallE",
+   "file": "stone_tallE.glb",
+   "width_m": 0.456,
+   "depth_m": 0.527,
+   "height_m": 0.444,
+   "tris": 38,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_tallE.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallF",
+   "file": "stone_tallF.glb",
+   "width_m": 0.444,
+   "depth_m": 0.512,
+   "height_m": 0.574,
+   "tris": 46,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_tallF.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallG",
+   "file": "stone_tallG.glb",
+   "width_m": 0.425,
+   "depth_m": 0.491,
+   "height_m": 0.783,
+   "tris": 62,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_tallG.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallH",
+   "file": "stone_tallH.glb",
+   "width_m": 0.575,
+   "depth_m": 0.664,
+   "height_m": 0.711,
+   "tris": 78,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_tallH.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallI",
+   "file": "stone_tallI.glb",
+   "width_m": 0.456,
+   "depth_m": 0.464,
+   "height_m": 0.812,
+   "tris": 44,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_tallI.glb",
+   "material": "pierre nue"
+  },
+  {
+   "id": "stone_tallJ",
+   "file": "stone_tallJ.glb",
+   "width_m": 0.488,
+   "depth_m": 0.538,
+   "height_m": 0.62,
+   "tris": 42,
+   "family": "PETIT",
+   "shape": "haut/elance",
+   "same_geometry_as": "rock_tallJ.glb",
+   "material": "pierre nue"
+  }
+ ],
+ "cliffs": [
+  {
+   "id": "cliff_blockCave_rock",
+   "file": "cliff_blockCave_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 56
+  },
+  {
+   "id": "cliff_blockCave_stone",
+   "file": "cliff_blockCave_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 56
+  },
+  {
+   "id": "cliff_blockDiagonal_rock",
+   "file": "cliff_blockDiagonal_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 8
+  },
+  {
+   "id": "cliff_blockDiagonal_stone",
+   "file": "cliff_blockDiagonal_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 8
+  },
+  {
+   "id": "cliff_blockHalf_rock",
+   "file": "cliff_blockHalf_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 0.5,
+   "tris": 12
+  },
+  {
+   "id": "cliff_blockHalf_stone",
+   "file": "cliff_blockHalf_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 0.5,
+   "tris": 12
+  },
+  {
+   "id": "cliff_blockQuarter_rock",
+   "file": "cliff_blockQuarter_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 0.25,
+   "tris": 12
+  },
+  {
+   "id": "cliff_blockQuarter_stone",
+   "file": "cliff_blockQuarter_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 0.25,
+   "tris": 12
+  },
+  {
+   "id": "cliff_blockSlopeHalfWalls_rock",
+   "file": "cliff_blockSlopeHalfWalls_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 0.5,
+   "tris": 106
+  },
+  {
+   "id": "cliff_blockSlopeHalfWalls_stone",
+   "file": "cliff_blockSlopeHalfWalls_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 0.5,
+   "tris": 106
+  },
+  {
+   "id": "cliff_blockSlopeWalls_rock",
+   "file": "cliff_blockSlopeWalls_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 106
+  },
+  {
+   "id": "cliff_blockSlopeWalls_stone",
+   "file": "cliff_blockSlopeWalls_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 106
+  },
+  {
+   "id": "cliff_blockSlope_rock",
+   "file": "cliff_blockSlope_rock.glb",
+   "width_m": 1.2,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 70
+  },
+  {
+   "id": "cliff_blockSlope_stone",
+   "file": "cliff_blockSlope_stone.glb",
+   "width_m": 1.2,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 70
+  },
+  {
+   "id": "cliff_block_rock",
+   "file": "cliff_block_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 12
+  },
+  {
+   "id": "cliff_block_stone",
+   "file": "cliff_block_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 12
+  },
+  {
+   "id": "cliff_cave_rock",
+   "file": "cliff_cave_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 0.169,
+   "height_m": 1.0,
+   "tris": 64
+  },
+  {
+   "id": "cliff_cave_stone",
+   "file": "cliff_cave_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 0.169,
+   "height_m": 1.0,
+   "tris": 64
+  },
+  {
+   "id": "cliff_cornerInnerLarge_rock",
+   "file": "cliff_cornerInnerLarge_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 44
+  },
+  {
+   "id": "cliff_cornerInnerLarge_stone",
+   "file": "cliff_cornerInnerLarge_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 44
+  },
+  {
+   "id": "cliff_cornerInnerTop_rock",
+   "file": "cliff_cornerInnerTop_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 89
+  },
+  {
+   "id": "cliff_cornerInnerTop_stone",
+   "file": "cliff_cornerInnerTop_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 89
+  },
+  {
+   "id": "cliff_cornerInner_rock",
+   "file": "cliff_cornerInner_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 56
+  },
+  {
+   "id": "cliff_cornerInner_stone",
+   "file": "cliff_cornerInner_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 112
+  },
+  {
+   "id": "cliff_cornerLarge_rock",
+   "file": "cliff_cornerLarge_rock.glb",
+   "width_m": 0.418,
+   "depth_m": 0.418,
+   "height_m": 1.0,
+   "tris": 12
+  },
+  {
+   "id": "cliff_cornerLarge_stone",
+   "file": "cliff_cornerLarge_stone.glb",
+   "width_m": 0.418,
+   "depth_m": 0.418,
+   "height_m": 1.0,
+   "tris": 24
+  },
+  {
+   "id": "cliff_cornerTop_rock",
+   "file": "cliff_cornerTop_rock.glb",
+   "width_m": 0.269,
+   "depth_m": 0.269,
+   "height_m": 1.0,
+   "tris": 16
+  },
+  {
+   "id": "cliff_cornerTop_stone",
+   "file": "cliff_cornerTop_stone.glb",
+   "width_m": 0.269,
+   "depth_m": 0.269,
+   "height_m": 1.0,
+   "tris": 16
+  },
+  {
+   "id": "cliff_corner_rock",
+   "file": "cliff_corner_rock.glb",
+   "width_m": 0.169,
+   "depth_m": 0.169,
+   "height_m": 1.0,
+   "tris": 12
+  },
+  {
+   "id": "cliff_corner_stone",
+   "file": "cliff_corner_stone.glb",
+   "width_m": 0.169,
+   "depth_m": 0.169,
+   "height_m": 1.0,
+   "tris": 12
+  },
+  {
+   "id": "cliff_diagonal_rock",
+   "file": "cliff_diagonal_rock.glb",
+   "width_m": 1.169,
+   "depth_m": 1.169,
+   "height_m": 1.0,
+   "tris": 44
+  },
+  {
+   "id": "cliff_diagonal_stone",
+   "file": "cliff_diagonal_stone.glb",
+   "width_m": 1.169,
+   "depth_m": 1.169,
+   "height_m": 1.0,
+   "tris": 44
+  },
+  {
+   "id": "cliff_halfCornerInner_rock",
+   "file": "cliff_halfCornerInner_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 0.5,
+   "tris": 89
+  },
+  {
+   "id": "cliff_halfCornerInner_stone",
+   "file": "cliff_halfCornerInner_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 0.5,
+   "tris": 89
+  },
+  {
+   "id": "cliff_halfCorner_rock",
+   "file": "cliff_halfCorner_rock.glb",
+   "width_m": 0.418,
+   "depth_m": 0.418,
+   "height_m": 0.5,
+   "tris": 16
+  },
+  {
+   "id": "cliff_halfCorner_stone",
+   "file": "cliff_halfCorner_stone.glb",
+   "width_m": 0.418,
+   "depth_m": 0.418,
+   "height_m": 0.5,
+   "tris": 16
+  },
+  {
+   "id": "cliff_half_rock",
+   "file": "cliff_half_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 0.418,
+   "height_m": 0.5,
+   "tris": 53
+  },
+  {
+   "id": "cliff_half_stone",
+   "file": "cliff_half_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 0.418,
+   "height_m": 0.5,
+   "tris": 53
+  },
+  {
+   "id": "cliff_large_rock",
+   "file": "cliff_large_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 0.418,
+   "height_m": 1.0,
+   "tris": 32
+  },
+  {
+   "id": "cliff_large_stone",
+   "file": "cliff_large_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 0.418,
+   "height_m": 1.0,
+   "tris": 32
+  },
+  {
+   "id": "cliff_rock",
+   "file": "cliff_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 0.169,
+   "height_m": 1.0,
+   "tris": 32
+  },
+  {
+   "id": "cliff_stepsCornerInner_rock",
+   "file": "cliff_stepsCornerInner_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 213
+  },
+  {
+   "id": "cliff_stepsCornerInner_stone",
+   "file": "cliff_stepsCornerInner_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.0,
+   "height_m": 1.0,
+   "tris": 213
+  },
+  {
+   "id": "cliff_stepsCorner_rock",
+   "file": "cliff_stepsCorner_rock.glb",
+   "width_m": 1.05,
+   "depth_m": 1.05,
+   "height_m": 1.0,
+   "tris": 245
+  },
+  {
+   "id": "cliff_stepsCorner_stone",
+   "file": "cliff_stepsCorner_stone.glb",
+   "width_m": 1.05,
+   "depth_m": 1.05,
+   "height_m": 1.0,
+   "tris": 245
+  },
+  {
+   "id": "cliff_steps_rock",
+   "file": "cliff_steps_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 1.05,
+   "height_m": 1.0,
+   "tris": 219
+  },
+  {
+   "id": "cliff_steps_stone",
+   "file": "cliff_steps_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 1.05,
+   "height_m": 1.0,
+   "tris": 219
+  },
+  {
+   "id": "cliff_stone",
+   "file": "cliff_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 0.169,
+   "height_m": 1.0,
+   "tris": 32
+  },
+  {
+   "id": "cliff_topDiagonal_rock",
+   "file": "cliff_topDiagonal_rock.glb",
+   "width_m": 1.268,
+   "depth_m": 1.268,
+   "height_m": 1.0,
+   "tris": 66
+  },
+  {
+   "id": "cliff_topDiagonal_stone",
+   "file": "cliff_topDiagonal_stone.glb",
+   "width_m": 1.268,
+   "depth_m": 1.268,
+   "height_m": 1.0,
+   "tris": 132
+  },
+  {
+   "id": "cliff_top_rock",
+   "file": "cliff_top_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 0.269,
+   "height_m": 1.0,
+   "tris": 53
+  },
+  {
+   "id": "cliff_top_stone",
+   "file": "cliff_top_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 0.269,
+   "height_m": 1.0,
+   "tris": 53
+  },
+  {
+   "id": "cliff_waterfallTop_rock",
+   "file": "cliff_waterfallTop_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 0.269,
+   "height_m": 1.0,
+   "tris": 60
+  },
+  {
+   "id": "cliff_waterfallTop_stone",
+   "file": "cliff_waterfallTop_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 0.269,
+   "height_m": 1.0,
+   "tris": 60
+  },
+  {
+   "id": "cliff_waterfall_rock",
+   "file": "cliff_waterfall_rock.glb",
+   "width_m": 1.0,
+   "depth_m": 0.169,
+   "height_m": 1.0,
+   "tris": 34
+  },
+  {
+   "id": "cliff_waterfall_stone",
+   "file": "cliff_waterfall_stone.glb",
+   "width_m": 1.0,
+   "depth_m": 0.169,
+   "height_m": 1.0,
+   "tris": 68
+  }
+ ]
+}

@@ -111,6 +111,7 @@ func _ready() -> void:
 	SettingsMenu.add_open_button(hud)
 	_map_button = MapScreen.add_open_button(hud, _open_map)
 	DexScreen.ensure_action()
+	KeyRemap.apply_saved()
 	DexScreen.add_open_button(hud, _open_dex)
 	Game.party_changed.connect(_on_party_changed)
 	_ride_button = RideButton.add(hud, toggle_ride)

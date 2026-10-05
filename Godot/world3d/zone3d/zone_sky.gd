@@ -20,6 +20,13 @@ const MOON_ENERGY := 0.45
 const SKY_SHARE_DAY := 0.85
 const SKY_SHARE_NIGHT := 0.3
 const AMBIENT_NIGHT := 1.0
+## In fair weather, a far haze of the sky's own colour (aerial perspective): it hides where the
+## distant scenery stops being drawn (Scatter3D's ranges), as the real air does. Metres.
+const HAZE_BEGIN_M := 110.0
+const HAZE_END_M := 330.0
+const HAZE_SKY_SHARE := 0.9
+## What Sky3D paints under the horizon (its own default is a grey that cuts against the sea).
+const GROUND_UNDER_SKY := Color(0.17, 0.42, 0.56)
 ## The weather closing in (rain, mist: 0–1): clouds (cumulus cover, 0–1), the fog's depths (m).
 const CLOUDS_FAIR := 0.45
 const CLOUDS_OVERCAST := 0.92
@@ -94,6 +101,9 @@ func _build_sky3d() -> void:
 		tod.set(key, deg_to_rad(PLACE[key]) if key in ["latitude", "longitude"] else PLACE[key])
 	_sky3d.set("sky_contribution", SKY_SHARE_DAY)
 	_sky3d.set("night_sky_contribution", SKY_SHARE_NIGHT)
+	# Under the horizon, past the water, Sky3D paints its own ground: a dark band over the sea.
+	# Given the sea's own colour, the two blend into each other.
+	(_sky3d.get("sky") as Node).set("ground_color", GROUND_UNDER_SKY)
 
 
 func _build_plain() -> void:
@@ -163,12 +173,16 @@ func update_light(hour: float) -> void:
 		_update_sky3d(hour, closed, dim)
 	else:
 		_update_plain(hour, dim)
-	# The weather closing in: a grey fog, near, that hides the sky too.
-	env.fog_enabled = closed > 0.01 or _plain_sky != null
-	if closed > 0.01:
+	# Fair weather: a far haze of the sky's colour. Closing in (rain, mist): a grey fog, near,
+	# that hides the sky too.
+	if _sky3d:
+		env.fog_enabled = true
+		env.fog_mode = Environment.FOG_MODE_DEPTH
+		env.fog_aerial_perspective = HAZE_SKY_SHARE
 		env.fog_light_color = FOG_CLOSED * clampf(dim + 0.3, 0.3, 1.0)
-		env.fog_depth_begin = lerpf(200.0, FOG_CLOSED_BEGIN_M, closed)
-		env.fog_depth_end = lerpf(400.0, FOG_CLOSED_END_M, closed)
+		env.fog_depth_begin = lerpf(HAZE_BEGIN_M, FOG_CLOSED_BEGIN_M, closed)
+		env.fog_depth_end = lerpf(HAZE_END_M, FOG_CLOSED_END_M, closed)
+		env.fog_depth_curve = 1.4
 		env.fog_sky_affect = 0.85 * closed
 
 

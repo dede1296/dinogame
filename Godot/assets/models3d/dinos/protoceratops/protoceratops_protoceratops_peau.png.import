@@ -2,21 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://g0er141dy1bc"
-path.s3tc="res://.godot/imported/chloe_chloe_skin.png-f9881eaea9372a563662e286dddcb81d.s3tc.ctex"
-path.etc2="res://.godot/imported/chloe_chloe_skin.png-f9881eaea9372a563662e286dddcb81d.etc2.ctex"
+uid="uid://b56h6r1wc7ws5"
+path.s3tc="res://.godot/imported/protoceratops_protoceratops_peau.png-12227d972e47e8f37c491444a6450bc5.s3tc.ctex"
+path.etc2="res://.godot/imported/protoceratops_protoceratops_peau.png-12227d972e47e8f37c491444a6450bc5.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "da1ff89d2a741f2e8f556ee130019298"
+"md5": "19c0029752719c6b71a6fef8749a25ee"
 }
 
 [deps]
 
-source_file="res://assets/models3d/characters/chloe/chloe_chloe_skin.png"
-dest_files=["res://.godot/imported/chloe_chloe_skin.png-f9881eaea9372a563662e286dddcb81d.s3tc.ctex", "res://.godot/imported/chloe_chloe_skin.png-f9881eaea9372a563662e286dddcb81d.etc2.ctex"]
+source_file="res://assets/models3d/dinos/protoceratops/protoceratops_protoceratops_peau.png"
+dest_files=["res://.godot/imported/protoceratops_protoceratops_peau.png-12227d972e47e8f37c491444a6450bc5.s3tc.ctex", "res://.godot/imported/protoceratops_protoceratops_peau.png-12227d972e47e8f37c491444a6450bc5.etc2.ctex"]
 
 [params]
 

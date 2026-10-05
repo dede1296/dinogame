@@ -16,8 +16,10 @@ const DISTANCE_MAX := 14.0
 const DISTANCE_DEFAULT := 4.5      # Chloé (1.50 m) about a third of the screen high
 const ZOOM_STEP := 0.8          # metres per notch of the wheel
 const ZOOM_FOLLOW := 8.0        # how fast the arm reaches the distance asked for
-const PITCH_MIN := -70.0        # degrees: looking down steeply…
-const PITCH_MAX := 8.0          # …to slightly from below
+## How far the camera may tilt (degrees). Greg (04/10): keep it away from the top-down view and
+## from ground level — between the two the picture changes far too much.
+const PITCH_MIN := -52.0        # degrees: looking down from above her shoulder…
+const PITCH_MAX := -6.0         # …to nearly level with her
 const PITCH_DEFAULT := -22.0
 const DRAG_DEG_PER_PX := 0.25
 const STICK_DEG_PER_S := 140.0
@@ -115,9 +117,32 @@ func _turn(dx_deg: float, dy_deg: float) -> void:
 	pitch = clampf(pitch - deg_to_rad(dy_deg), deg_to_rad(PITCH_MIN), deg_to_rad(PITCH_MAX))
 
 
+## Gamepad triggers zoom (Greg, 05/10): RT zooms in, LT zooms out, the further pressed the faster.
+## Held, the zoom is not saved each frame: it is remembered once the trigger is let go.
+const ZOOM_PAD_M_PER_S := 7.0
+const TRIGGER_DEAD_ZONE := 0.12
+var _zooming := false
+
+
+func _zoom_pad(delta: float) -> void:
+	var rt := Input.get_joy_axis(0, JOY_AXIS_TRIGGER_RIGHT)
+	var lt := Input.get_joy_axis(0, JOY_AXIS_TRIGGER_LEFT)
+	rt = 0.0 if rt < TRIGGER_DEAD_ZONE else rt
+	lt = 0.0 if lt < TRIGGER_DEAD_ZONE else lt
+	var step := (lt - rt) * ZOOM_PAD_M_PER_S * delta   # LT: out (+), RT: in (−)
+	if step == 0.0:
+		if _zooming:
+			_zooming = false
+			set_distance(_distance)   # remember the distance at last
+		return
+	_zooming = true
+	_distance = clampf(_distance + step, DISTANCE_MIN, DISTANCE_MAX)
+
+
 func _stick(delta: float) -> void:
 	if Input.get_connected_joypads().is_empty():
 		return
+	_zoom_pad(delta)
 	var v := Vector2(Input.get_joy_axis(0, JOY_AXIS_RIGHT_X), Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y))
 	if v.length() < STICK_DEAD_ZONE:
 		return

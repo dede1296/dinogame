@@ -181,6 +181,30 @@ func _text(font: Font, at: Vector2, text: String, font_size: int, colour: Color,
 
 
 ## Which region is at a point of this control (index in AtlasDB.REGIONS, -1: the sea).
+## The gamepad's choice on the island: the visited region the stick points to (-1: none yet).
+var _pad_region := -1
+
+
+## The next (step 1) or previous (-1) visited region, highlighted as the mouse hover would.
+func pad_step(step: int) -> void:
+	var count := _visited.size()
+	if count == 0:
+		return
+	var i := _pad_region
+	for _n in count:
+		i = posmod(i + step, count)
+		if _visited[i]:
+			_pad_region = i
+			break
+	(_paper.material as ShaderMaterial).set_shader_parameter("hover", _pad_region)
+
+
+## Opens the highlighted region, as a click on it does.
+func pad_open() -> void:
+	if _pad_region >= 0 and _visited[_pad_region]:
+		zone_picked.emit(AtlasDB.REGIONS[_pad_region]["zones"][0])
+
+
 func _region_at(p: Vector2) -> int:
 	var f := _frame()
 	var uv := (p - f.position) / f.size

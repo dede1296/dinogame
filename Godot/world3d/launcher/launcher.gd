@@ -1,12 +1,8 @@
 extends Control
-## Which Ambrelune to play, when the game is run from Godot on the PC (F5): the mobile version
-## (2.5D, its own title screen, unchanged) or the 3D version (PC) — go on with its save, or a new
-## game. Only there: the project's main scene is overridden for the editor's builds
-## (project.godot run/main_scene.editor); the phones start straight on the 2.5D's title.
-## Command line: `-- --3d` goes straight into the 3D version, `-- --mobile` into the 2.5D; a tool
-## run with --script (the tests) goes on to the 2.5D's title, as before.
+## The PC game's first screen: the 3D version — go on with its save, or a new game. It is the main
+## scene of the PC build (project.godot run/main_scene.pc) and of the editor's runs (F5).
+## Command line: `-- --3d` goes straight into the 3D version.
 
-const MOBILE := "res://scenes/boot/boot.tscn"
 const ZONE_3D := "res://world3d/zone3d/zone_3d.tscn"
 const INK := Color(0.105882, 0.121569, 0.156863)
 const GOLD := Color(0.98, 0.76, 0.35)
@@ -15,9 +11,6 @@ const CREAM := Color(0.97, 0.94, 0.87)
 
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
-	if (get_tree().get_script() != null and not "--show-launcher" in args) or "--mobile" in args:
-		_go.call_deferred(MOBILE)
-		return
 	if "--3d" in args:
 		_continue_3d.call_deferred()
 		return
@@ -37,19 +30,14 @@ func _build() -> void:
 	column.add_theme_constant_override(&"separation", 14)
 	add_child(column)
 	column.add_child(_label("Ambrelune", 46, GOLD))
-	column.add_child(_label("Quelle version lancer ?", 20, CREAM))
 	column.add_child(_spacer(10))
 	var has_save := FileAccess.file_exists(Session3D.SAVE_PATH)
 	var first: Button = null
 	if has_save:
-		first = _button(column, "Version 3D (PC) — Continuer", _continue_3d)
-	var fresh := _button(column, "Version 3D (PC) — Nouvelle partie", _new_3d)
+		first = _button(column, "Continuer", _continue_3d)
+	var fresh := _button(column, "Nouvelle partie", _new_3d)
 	if first == null:
 		first = fresh
-	column.add_child(_spacer(6))
-	_button(column, "Version mobile (2,5D)", func() -> void: _go(MOBILE))
-	column.add_child(_spacer(10))
-	column.add_child(_label("(Ce choix n'apparaît que quand le jeu est lancé depuis Godot.)", 14, Color(CREAM, 0.55)))
 	first.grab_focus()
 
 

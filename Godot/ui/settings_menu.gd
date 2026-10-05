@@ -59,6 +59,9 @@ var _rows: VBoxContainer
 var _levels: Array[Button] = []
 var _sample: AudioStreamPlayer
 var _sample_ticket := 0
+## Touches: the action waiting for a new key ("key") or gamepad button ("pad"); &"" when none.
+var _capture_action := &""
+var _capture_kind := ""
 
 
 ## Opens the menu over `parent`'s scene and pauses the game until it is closed.
@@ -137,6 +140,8 @@ func _show(page: String) -> void:
 	match page:
 		"commandes":
 			_controls_page()
+		"touches":
+			_keys_page()
 		"sons":
 			_sounds_page()
 		"affichage":
@@ -153,6 +158,7 @@ func _menu_page() -> void:
 	if in_game:
 		_rows.add_child(_button("Reprendre", _close))
 	_rows.add_child(_button("Commandes", _show.bind("commandes")))
+	_rows.add_child(_button("Touches", _show.bind("touches")))
 	_rows.add_child(_button("Sons", _show.bind("sons")))
 	_rows.add_child(_button("Affichage", _show.bind("affichage")))
 	if in_game:
@@ -185,6 +191,105 @@ func _controls_page() -> void:
 	for control: Array in CONTROLS:
 		rows.add_child(_control_row(control[0], control[1], control[2]))
 	_rows.add_child(_button("Retour", _show.bind("menu")))
+
+
+## Touches: the gamepad drawn, each button with the action it does (tap it, then press the new
+## button), and the keyboard keys in a list (tap one, then press the new key). Échap cancels.
+func _keys_page() -> void:
+	_rows.add_child(_label("Touches", 40, GOLD))
+	var hint := _label(_capture_text(), 20, GOLD if _capture_action != &"" else Color(CREAM, 0.8))
+	hint.name = "Hint"
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_rows.add_child(hint)
+	var pad := GamepadView.new()
+	pad.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	pad.set_labels(_pad_labels())
+	pad.button_tapped.connect(func(button: int) -> void:
+		var action := _action_on_pad(button)
+		if action != &"":
+			_start_capture(action, "pad"))
+	_rows.add_child(pad)
+	for entry: Array in KeyRemap.actions():
+		_rows.add_child(_key_row(entry[0], entry[1]))
+	_rows.add_child(_button("Rétablir les commandes par défaut", _reset_keys))
+	_rows.add_child(_button("Retour", _show.bind("menu")))
+
+
+## One action of the list: its name, then the keyboard key it uses (tap it to change).
+func _key_row(action: StringName, title: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	var name_label := _label(title, 22, CREAM)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	name_label.custom_minimum_size = Vector2(230, 0)
+	row.add_child(name_label)
+	var key := _button(KeyRemap.label(action, "key"), _start_capture.bind(action, "key"))
+	key.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(key)
+	return row
+
+
+func _pad_labels() -> Dictionary:
+	var labels := {}
+	for entry: Array in KeyRemap.actions():
+		var button := KeyRemap.current(entry[0], "pad")
+		if button != KeyRemap.UNBOUND:
+			labels[button] = entry[1]
+	return labels
+
+
+func _action_on_pad(button: int) -> StringName:
+	for entry: Array in KeyRemap.actions():
+		if KeyRemap.current(entry[0], "pad") == button:
+			return entry[0]
+	return &""
+
+
+func _start_capture(action: StringName, kind: String) -> void:
+	_capture_action = action
+	_capture_kind = kind
+	_show("touches")
+
+
+func _end_capture() -> void:
+	_capture_action = &""
+	_show("touches")
+
+
+func _capture_text() -> String:
+	if _capture_action == &"":
+		return "Touchez un bouton du dessin ou une touche de la liste, puis appuyez sur la nouvelle commande."
+	var what := "une touche" if _capture_kind == "key" else "un bouton de la manette"
+	return "Appuyez sur %s pour « %s »… (Échap annule)" % [what, _entry_name(_capture_action)]
+
+
+func _entry_name(action: StringName) -> String:
+	for entry: Array in KeyRemap.actions():
+		if entry[0] == action:
+			return entry[1]
+	return String(action)
+
+
+func _reset_keys() -> void:
+	KeyRemap.reset()
+	_show("touches")
+
+
+## While a new key or button is awaited, it is taken here (before the menu's buttons see it).
+func _input(event: InputEvent) -> void:
+	if _capture_action == &"":
+		return
+	var key := event as InputEventKey
+	var pad := event as InputEventJoypadButton
+	var pressed := (key != null and key.pressed and not key.echo) or (pad != null and pad.pressed)
+	if not pressed or (key != null and _capture_kind != "key") or (pad != null and _capture_kind != "pad"):
+		return
+	get_viewport().set_input_as_handled()
+	if key != null and key.physical_keycode == KeyRemap.ESCAPE_KEY:
+		_end_capture()
+		return
+	KeyRemap.bind(_capture_action, event)
+	_end_capture()
 
 
 ## One line of the Commandes page: what it does, then the finger and the keys for it.

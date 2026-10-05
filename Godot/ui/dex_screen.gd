@@ -57,7 +57,8 @@ static func open(parent: Node, lock_reason := "") -> DexScreen:
 	return dex
 
 
-## The Dinodex's key: X on a keyboard, the right shoulder on a gamepad (added here, not in the
+## The Dinodex's key: X on a keyboard, the gamepad's up arrow (Greg, 05/10: the shoulders stay free
+## for the future fight-by-selection mechanic; added here, not in the
 ## project settings, so that it is there wherever the Dinodex can open).
 static func ensure_action() -> void:
 	if InputMap.has_action(ACTION):
@@ -67,7 +68,7 @@ static func ensure_action() -> void:
 	key.physical_keycode = KEY_X
 	InputMap.action_add_event(ACTION, key)
 	var pad := InputEventJoypadButton.new()
-	pad.button_index = JOY_BUTTON_RIGHT_SHOULDER
+	pad.button_index = JOY_BUTTON_DPAD_UP
 	InputMap.action_add_event(ACTION, pad)
 
 

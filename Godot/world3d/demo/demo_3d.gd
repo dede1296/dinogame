@@ -225,7 +225,7 @@ func _add_caption() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 10
 	var label := Label.new()
-	label.text = "Ambrelune 3D — démo (phase 3) · ZQSD / stick gauche : marcher · Maj / B : courir · Espace / X : sauter · E / A : examiner · souris (clic droit) / stick droit : caméra · molette : zoom"
+	label.text = "Ambrelune 3D — démo · ZQSD / stick gauche : marcher · Maj / B / appui du stick gauche : courir · Espace / A : sauter · E / X : examiner · souris (clic droit) / stick droit : caméra · molette : zoom"
 	label.position = Vector2(16, 12)
 	label.add_theme_font_size_override(&"font_size", 15)
 	label.add_theme_color_override(&"font_outline_color", Color(0, 0, 0, 0.8))

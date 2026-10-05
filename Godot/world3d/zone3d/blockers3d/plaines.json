@@ -1,0 +1,279 @@
+{
+	"_doc": "Ce qui arrête Chloé dans la Prairie remodelée, hors relief (Blockers3D, zone remodelée) : copie des `blockers` du plan (docs/zones-3d/plaines-layout.json, non exporté avec le jeu), sans les parois ni l'eau profonde (lues sur le relief). `node` : le nœud du 2,5D dont l'obstacle d'histoire suit la règle (son cleared_flag, hide_flag ; le gué : la pleine lune). À régénérer si le plan change (même copie, champ `node` en plus). `sightlines` : les cônes de vue des repères du plan, où rien de grand ne pousse (Blockers3D.allows).",
+	"blockers": [
+		{
+			"id": "haie_bosquet",
+			"kind": "hedge",
+			"height_m": 1.6,
+			"width_m": 3.5,
+			"closed": true,
+			"polyline": [
+				[
+					58,
+					86
+				],
+				[
+					66,
+					78
+				],
+				[
+					70,
+					60
+				],
+				[
+					62,
+					40
+				],
+				[
+					36,
+					36
+				],
+				[
+					12,
+					42
+				],
+				[
+					4,
+					62
+				],
+				[
+					10,
+					80
+				],
+				[
+					34,
+					90
+				],
+				[
+					50,
+					92
+				]
+			],
+			"gap": {
+				"at": [
+					58,
+					86.0
+				],
+				"width_m": 4.5,
+				"closed_by": "tronc_tranche"
+			},
+			"reason": "la haie de ronces et de blocs qui ferme le bosquet : visiblement infranchissable (1,6 m d'épines, troncs couchés), seule ouverture : le chemin creux barré par le tronc"
+		},
+		{
+			"id": "talus_chemin_creux",
+			"kind": "bank",
+			"height_m": 1.8,
+			"width_m": 2.0,
+			"polyline": [
+				[
+					72,
+					96
+				],
+				[
+					66,
+					90
+				],
+				[
+					61,
+					84
+				]
+			],
+			"polyline2": [
+				[
+					66,
+					101
+				],
+				[
+					60,
+					95
+				],
+				[
+					55,
+					89
+				]
+			],
+			"reason": "les deux talus du chemin creux : terre + ronces (1,8 m > saut 0,65 m)"
+		},
+		{
+			"id": "tronc_tranche",
+			"kind": "trunk",
+			"at": [
+				58,
+				86.0
+			],
+			"length_m": 5.0,
+			"diameter_m": 1.1,
+			"ability": "tranche",
+			"reason": "obstacle d'histoire (Tranche)",
+			"node": "TroncBosquet"
+		},
+		{
+			"id": "rocher_charge",
+			"kind": "boulder",
+			"at": [
+				116,
+				49.2
+			],
+			"diameter_m": 3.0,
+			"eboulis_m": 3.0,
+			"ability": "charge",
+			"reason": "obstacle d'histoire (Charge) : bouche l'encoche de 7 m avec des éboulis solides de part et d'autre",
+			"node": "RocherGrotte"
+		},
+		{
+			"id": "porte_ambre",
+			"kind": "door",
+			"at": [
+				190,
+				64
+			],
+			"width_m": 5.0,
+			"height_m": 4.0,
+			"ability": "resonance",
+			"reason": "obstacle d'histoire (Résonance) : remplit la gorge",
+			"node": "PorteAmbre"
+		},
+		{
+			"id": "grand_crane",
+			"kind": "door",
+			"at": [
+				172,
+				100
+			],
+			"width_m": 8.0,
+			"height_m": 9.0,
+			"ability": "trois écailles (crane_ouvert)",
+			"reason": "le crâne remplit l'encoche ; sa gueule est scellée d'ambre jusqu'à `crane_ouvert`",
+			"node": "PorteCrane",
+			"model": "res://assets/models3d/monuments/grand_crane/grand_crane.glb",
+			"seal": "res://assets/models3d/monuments/grand_crane/grand_crane_sceau.glb",
+			"solid_meshes": [
+				"Crane",
+				"Machoire"
+			],
+			"_model_doc": "le modèle (16 × 8,9 × 11,1 m, origine au sol de l'encoche, face au sud, sans rotation) ; son os solide (trimesh de solid_meshes, OsAutour traversé) ; le sceau d'ambre sur la gueule, vu et solide jusqu'au hide_flag"
+		},
+		{
+			"id": "gue_de_lune",
+			"kind": "moon_ford",
+			"rect": [
+				131,
+				116,
+				6,
+				6
+			],
+			"reason": "haut-fond à 0,5 m sous l'eau : bloqué par la logique du jeu sauf à la pleine lune (MoonFord)",
+			"node": "GueDeLune",
+			"islet": {
+				"center": [
+					134,
+					124
+				],
+				"radii": [
+					2.6,
+					2.4
+				],
+				"edge_m": 1.8,
+				"_doc": "l'îlot où mène le gué (relief : opération islet) : le gué ne se referme pas tant que Chloé y est (MoonFord.islet du 2,5D)"
+			}
+		},
+		{
+			"id": "lisiere_dense",
+			"kind": "forest_edge",
+			"polygon": [
+				[
+					0,
+					0
+				],
+				[
+					14,
+					0
+				],
+				[
+					14,
+					96
+				],
+				[
+					0,
+					96
+				]
+			],
+			"polygon2": [
+				[
+					0,
+					112
+				],
+				[
+					14,
+					112
+				],
+				[
+					14,
+					120
+				],
+				[
+					0,
+					120
+				]
+			],
+			"reason": "bord ouest : troncs à 4 m, troncs couchés et fougères géantes entre eux ; la piste (z 100-108) reste ouverte"
+		},
+		{
+			"id": "bois_port_dense",
+			"kind": "forest_edge",
+			"polygon": [
+				[
+					84,
+					174
+				],
+				[
+					110,
+					174
+				],
+				[
+					110,
+					180
+				],
+				[
+					84,
+					180
+				]
+			],
+			"polygon2": [
+				[
+					130,
+					174
+				],
+				[
+					184,
+					174
+				],
+				[
+					184,
+					180
+				],
+				[
+					130,
+					180
+				]
+			],
+			"reason": "bord sud hors route : haie de ronces + troncs couchés"
+		}
+	],
+	"sightlines": [
+		{
+			"id": "carrefour_crane",
+			"from": [
+				117,
+				97
+			],
+			"to": [
+				172,
+				100
+			],
+			"from_half_m": 1.0,
+			"to_half_m": 8.0,
+			"reason": "le Grand Crâne se voit du carrefour (plan : landmarks.grand_crane, « visible depuis le carrefour (62 m) ») : rien de grand (arbre, rocher, décor solide) dans ce cône ; un araucaria du 2,5D se trouvait pile sur l'axe (146,6, 101)"
+		}
+	]
+}

@@ -225,7 +225,15 @@ Modèle : Quaternius, *Animated Dinosaur Bundle* (poly.pizza) : 1 248 triangles,
 - `ZoneTerrain` : maillage du relief, découpé en blocs de 32 m. Collision `HeightMapShape3D` à 1 m. L'eau est une nappe au niveau d'eau du 2,5D.
   - Au bord d'une falaise, la hauteur de la case tient (règle `STAND_SNAP` du 2,5D) : la falaise reste une paroi raide et non une pente.
   - `terrain.gdshader` reprend le sol peint du 2,5D : mêmes images, mêmes répétitions au mètre, bords déchirés, taches, sable, sous-bois, vase, roche, berges mouillées, ombres de nuages. Les falaises prennent les strates peintes selon la pente vraie de la face.
-- `water.gdshader` : teinte selon la profondeur du fond (relief du 2,5D), rides, liseré clair au rivage.
+    - **Le fond sous l'eau** (refait le 04/10) : il garde son sable et ses galets, l'eau ne fait que lui prêter sa couleur et l'assombrir (`bed_tint`, `bed_shade`, `bed_depth_m`). `ZoneTerrain.bed_look()` les règle **par zone** : la teinte suit l'eau de la zone dans le 2,5D (`WorldView.WATER_TINT` : bleu-vert clair sur la côte, vert trouble au marais), et `ZoneTerrain.BED` permet de donner à une zone sa propre couleur (marais, monts gelés). Avant, le lit était peint presque noir et on ne voyait rien en eau peu profonde.
+- `water.gdshader` + `zone_water.gd` (`ZoneWater`, refaits le 04/10) : eau cartoon qui **suit le ciel**. Le shader ne prend aucune lumière du moteur (`unshaded`) ; `ZoneWater` lui donne à chaque changement de lumière la couleur du ciel de l'heure, prise sur le vrai soleil et la vraie lune de `ZoneSky` (hauteur, couleur) : bleu pâle à midi, orange et violet au crépuscule et à l'aube, indigo la nuit. L'eau mélange cette couleur à son corps et la reflète (Fresnel), d'où : elle n'est **jamais noire**.
+  - trois bandes franches selon la profondeur du fond (relief du 2,5D), chemin du soleil (ou de la lune) sur l'eau, écume au rivage **et** autour de ce qui perce la surface (lecture du tampon de profondeur, gratuite en Forward+), fond visible en eau peu profonde.
+  - trois trains de vagues doux qui se croisent, plus une houle longue qui soulève la nappe au large.
+  - **reflets** (`ZoneWater.Reflections`) : **`MIRROR` par défaut** — une caméra miroir sous l'eau dans une `SubViewport` (0,3 × la fenêtre, 55 m de portée, une image sur deux, sans SSAO/SSIL/glow, sans la nappe elle-même, seule sur la couche visuelle 20, éteinte quand la caméra plonge à la verticale). On y voit les arbres, les falaises, Chloé. `SKY` revient au ciel calculé, pour une machine modeste. Essayé le 04/10 à pleine définition et toutes les images : 1,7 ms sur la mer et jusqu'à 12,5 ms au bord de la mare, pour un gain qui ne le valait pas — gardé en 0,3 / une image sur deux.
+  - **pas de crêtes pâles** : quelle que soit la manière de les dessiner, elles se lisaient comme des lignes claires en travers de l'eau. Retirées le 04/10 (Greg : « retire juste les lignes »). Le relief des vagues reste lisible par l'ombrage du corps de l'eau et par ce que le reflet en fait.
+  - Une version plus savante (houle venant du large d'après une carte du rivage, rides courtes sur les mares) a été écrite puis écartée : Greg a préféré l'eau d'avant. Elle est gardée hors du projet, dans le dossier de travail de l'agent (`water_version_savante_houle_et_mare.gdshader`).
+  - la nappe déborde de 260 m autour de la zone pour que la mer aille loin vers l'horizon.
+  - coût mesuré sur GTX 1650 Ti : la nappe 0,1 à 0,5 ms par image, tout compris.
 - `Blockers3D` reprend les règles du 2,5D, pour que les passages s'ouvrent et se ferment pareil :
   - la forêt arrête Chloé, et l'eau profonde aussi (couche eau) ;
   - une falaise (`Region.cliff_between`) est un mur des deux côtés, plus haut qu'un saut ;
@@ -285,6 +293,16 @@ Les systèmes du 2,5D sont **réutilisés tels quels** (`Game`, `Save`, `BattleS
 - les hautes herbes en 3D ;
 - l'œuf à porter.
 
+### Terrain3D, base du relief (04/10)
+Le sol de la Prairie est maintenant fait par le plugin **Terrain3D** (rendu validé visuellement par Greg), pour préparer l'open world. Les règles du jeu continuent de lire les données du 2,5D (`ZoneSource`).
+- `ZoneTerrain` choisit le sol : `DEFAULT_KIND = TERRAIN3D` ; retour en arrière : `MESH` (l'ancien maillage, entièrement fonctionnel), ou lancer avec `-- --terrain=mesh`.
+- `ZoneGroundTerrain3D` (`terrain3d_ground.gd`) : régions de 64 m, sommets tous les 0,5 m, collision zone entière, navigation des dinos construite avec nos propres triangles (la fonction du plugin ignorait la moitié du sol).
+- `TerrainRelief` (`terrain3d_relief.gd`) fabrique le relief par script : les hauteurs du 2,5D, puis des modifications décrites en données dans `terrain3d_relief/<zone>.json` : `hill`, `valley`, `flatten`, `ramp`, `smooth`, `dig_sea`, `paint`. Le garde-fou `protect` annule toute modification à moins de 2 cases d'une falaise ou de l'eau, là où les règles du jeu tiennent. La peinture ne change que l'aspect.
+- **Retouche à la main dans l'éditeur** : `terrain3d_bake.gd -- zone=<id>` écrit les régions et une scène `edit_<id>.tscn` dans `terrain3d_data/<id>/`, que le jeu relit ensuite. Une nouvelle cuisson écrase les retouches.
+- La peinture du sol est commune aux deux sols (`terrain_paint.gdshaderinc`).
+- **Open world** : la position de la zone est un paramètre du sol. Pour relier les zones, il faudra un seul nœud Terrain3D pour tout le monde, des zones sur des multiples de 64 m, le chargement des régions par morceaux, et un paramètre de position pour l'eau, la pluie et la brume, qui supposent encore la zone à l'origine.
+- Test : `tools/test_terrain3d.gd` (24 vérifications).
+
 ### Phases 6 et 7 : la Prairie peuplée (04/10)
 - **Les 6 espèces de la Prairie** ont leur fiche (`world3d/creatures/species/<id>.tres`) et leur modèle (`assets/models3d/dinos/<id>/<id>.glb`). Sources Blender et aperçus : `assets3d_src/dinos/travail/` et `assets3d_src/dinos/apercus/`.
 - **Qualité** : comme Chloé. Formes lisses, 11 000 à 17 000 triangles, peau peinte 2048², yeux avec paupières, narines, dents. Plumes pour le velociraptor et le compsognathus, piquants sur la queue du psittacosaurus.
@@ -337,7 +355,8 @@ Les systèmes du 2,5D sont **réutilisés tels quels** (`Game`, `Save`, `BattleS
   | nuit 23 h | 216 |
   | pluie 15 h | 222 |
 
-  Encore à faire : la mer reste bleu marine foncé, voire noire au crépuscule (shader d'eau à refaire) ; la pluie ne se voit pas encore.
+  L'eau a été refaite le 04/10 (`ZoneWater`, voir la phase 4) : elle prend la couleur du ciel de l'heure et ne redevient plus noire au crépuscule. Essai : `tools/test_eau_3d.gd`.
+  Reste : sous la ligne d'horizon, au-delà de la nappe, la couleur de sol de Sky3D fait une bande sombre (`SkyDome.ground_color`, à régler dans `ZoneSky`).
 - **Plugins** dans `addons/` (sources et zips d'origine : `assets3d_src/plugins/`). Ils sont activés dans l'éditeur seulement : aucun autoload, exclus de l'export Android.
 
   | Plugin | Version | Rôle | Remarque |
@@ -352,11 +371,17 @@ Les systèmes du 2,5D sont **réutilisés tels quels** (`Game`, `Save`, `BattleS
   Phantom Camera (0.11) est téléchargé mais pas installé : notre caméra suffit, et il exige un autoload, qui serait chargé dans le jeu mobile.
 - **Exports** : `addons/`, `world3d/` et `assets/models3d/` sont exclus du preset Android.
 
-### Chloé : reste à améliorer (Greg, 04/10 : « on affinera plus tard » ; ne pas faire maintenant)
-1. **Visage** : encore un peu long et adulte (base adulte) ; resculpter mâchoire et menton. Le sourire est fermé : il le faudrait ouvert, comme sur la planche. Nez et oreilles un peu grands, sourcils un peu taillés en bloc.
-2. **Cheveux** : la lisière peinte ne suit pas le bord de la calotte (un trait sombre aux tempes, de 3/4 et de profil). Le bord de la nuque est dentelé. Pas de mèches folles.
-3. **Queue de cheval et sac** : rigides, sans physique ; ils peuvent se toucher pendant `jump_air`.
+### Chloé : reste à améliorer (Greg, 05/10 : modèle figé après la passe du 05/10)
+
+Passe du 05/10 (étape D, `assets3d_src/chloe/scripts/stage_d.py`, ancien modèle gardé en
+`assets3d_src/chloe/chloe_avant.glb`) : visage d'enfant au sourire ouvert, 19 482 → 13 838
+triangles, 16 → 11 matériaux, 21 → 12 surfaces, barrette retirée (Greg), cheveux et sac animés.
+Captures avant/après : `assets3d_src/chloe/captures/`.
+
+1. ~~**Visage**~~ : fait le 05/10. Bas du visage plus court et plus rond (menton relevé de 13 mm), sourire ouvert avec dents (vrai maillage), nez et oreilles plus petits, sourcils refaits en ruban effilé (8,5 mm), trait de cils aminci sans « eye-liner », peau repeinte. Reste : lèvre du bas un peu charnue de profil ; dents en bande unie (pas de dents du bas) ; ressemble aux photos par ses traits, pas comme un portrait.
+2. ~~**Cheveux**~~ : fait le 05/10. Calotte refaite par une découpe le long de la ligne d'implantation (plus d'escalier sur la nuque), lisière peinte calée sur son bord, une mèche devant (lisible de face) et une mèche folle à la tempe gauche. Reste : pas d'autres mèches folles sur le sommet.
+3. ~~**Queue de cheval et sac**~~ : fait le 05/10. Os dédiés (`hair_pony_01-05`, `hair_lock_01-03`, `pack_hang`) et `SpringBoneSimulator3D` ajouté au modèle par son script d'import (`world3d/player/chloe_hair_import.gd`, réglages dans `world3d/player/chloe_hair.gd`), avec obstacles tête, dos, épaules et sac ; détail et mesures dans `assets3d_src/chloe/cheveux.md`, contrôle `tools/test_chloe_hair.gd`. Les cheveux suivent ses mouvements animés, pas son déplacement : en repère monde, la queue flottait à l'horizontale en course. Reste : lors d'un virage serré, la queue touche l'obstacle du haut du dos (1,1 cm dedans, invisible ; le contrôle le signale).
 4. **Animations** : poings serrés dans plusieurs clips ; pieds environ 5 mm sous le sol en idle ; correction de +9,9° sur `Head` dans tous les clips ; pas de `wave` ni de `fall` (la chute réutilise `jump_air`).
 5. **Bottes** : longues et plates, sans revers.
-6. **Rendu** : pas encore de contour brun ni d'ombrage cartoon (shader commun à prévoir avec le décor, Phase 4). La peau passerait en 1024 sans perte visible.
+6. ~~**Rendu**~~ : contour brun et ombrage cartoon en place (`world3d/render/toon_style.gd`). Peau gardée en 2048 (Greg, 05/10 : pour les gros plans).
 7. ~~**Exports**~~ : fait le 04/10, `world3d/`, `assets/models3d/` et `addons/` sont exclus du preset Android.

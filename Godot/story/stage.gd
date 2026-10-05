@@ -10,12 +10,23 @@ class_name Stage
 ## it stands, and put it back as it was: the physics and the story's positions stay right.
 ## Most helpers start and return at once (the lines go on while they play); those marked
 ## « awaitable » can be awaited to wait for their end.
+## Two versions, the same moves (docs/migration-3d.md): the 2.5D mobile game acts them out on the
+## sprites below; the 3D PC version hands each one over to Stage3D (world3d/story/), which plays it
+## on the 3D models, animators and camera. The scenes themselves never choose: they call Stage.
 
 const S := preload("res://story/story.gd")
 const CRY := &"attaque"
 
 
-## The picture of an actor (null when there is none).
+## The moves of the version playing when it is the 3D one (Stage3D), null while the 2.5D plays:
+## each move below hands over to it, so the scenes of story/ act out in both, unchanged.
+static func _in_3d():
+	var w = S.world()
+	return w.moves if w != null and w.has_method(&"is_3d") else null
+
+
+## The picture of an actor (null when there is none — in 3D there never is: a model is not a sprite,
+## and the moves that only work on a picture then do nothing).
 static func sprite_of(actor) -> Node2D:
 	if actor == null or not is_instance_valid(actor):
 		return null
@@ -32,6 +43,10 @@ static func _rest(sprite: Node2D) -> Vector2:
 
 ## The camera shakes (a blow, a roar, a door of stone…).
 static func shake(strength := 4.0, secs := 0.3) -> void:
+	var moves = _in_3d()
+	if moves:
+		moves.shake(strength, secs)
+		return
 	var w = S.world()
 	if w and w.get("player"):
 		w.player.get_node("Camera").call(&"shake", strength, secs)
@@ -40,6 +55,10 @@ static func shake(strength := 4.0, secs := 0.3) -> void:
 ## The actor throws itself at `toward_px` (world pixels) and comes back: a blow, a charge
 ## against bars, a threat. `strength` 1: a jolt; 2: bursting out. With its cry. Awaitable.
 static func lunge(actor, toward_px: Vector2, strength := 1.0, with_cry := true) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.lunge(actor, toward_px, strength, with_cry)
+		return
 	var sprite := sprite_of(actor)
 	if sprite == null:
 		return
@@ -57,6 +76,9 @@ static func lunge(actor, toward_px: Vector2, strength := 1.0, with_cry := true) 
 ## Throws itself at `toward_px` again and again (a caged, maddened dino) until stop(). Returns
 ## the looping tween (null without an actor).
 static func rage(actor, toward_px: Vector2, every := 1.0) -> Tween:
+	var moves = _in_3d()
+	if moves:
+		return moves.rage(actor, toward_px, every)
 	var sprite := sprite_of(actor)
 	if sprite == null:
 		return null
@@ -73,6 +95,10 @@ static func rage(actor, toward_px: Vector2, every := 1.0) -> Tween:
 
 ## Ends a looping move (rage, tremble…) and puts the picture back as it was.
 static func stop(actor, loop: Tween) -> void:
+	var moves = _in_3d()
+	if moves:
+		moves.stop(actor, loop)
+		return
 	if loop and loop.is_valid():
 		loop.kill()
 	var sprite := sprite_of(actor)
@@ -85,6 +111,10 @@ static func stop(actor, loop: Tween) -> void:
 ## Someone steps back from `from_px`, startled (Chloé before a roar…). Moves the node itself
 ## (a small step, `px` pixels). Awaitable.
 static func recoil(node, from_px: Vector2, px := 14.0) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.recoil(node, from_px, px)
+		return
 	if node == null or not is_instance_valid(node):
 		return
 	turn_to(node, from_px)
@@ -96,6 +126,10 @@ static func recoil(node, from_px: Vector2, px := 14.0) -> void:
 
 ## Little jumps: joy, surprise, impatience (`times` hops of `height` pixels). Awaitable.
 static func hop(actor, times := 2, height := 10.0) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.hop(actor, times, height)
+		return
 	var sprite := sprite_of(actor)
 	if sprite == null:
 		return
@@ -109,6 +143,10 @@ static func hop(actor, times := 2, height := 10.0) -> void:
 
 ## Shivers with fear or cold, `secs` seconds (quick small shakes sideways). Awaitable.
 static func tremble(actor, secs := 1.2, amount := 2.5) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.tremble(actor, secs, amount)
+		return
 	var sprite := sprite_of(actor)
 	if sprite == null:
 		return
@@ -124,6 +162,9 @@ static func tremble(actor, secs := 1.2, amount := 2.5) -> void:
 ## in an armchair…) after a short dip, until Stage.pose(actor, &""). False when it is not drawn
 ## for them: nothing changes (then keep a squash: crouch, lie_down…). Awaitable.
 static func sit(actor, secs := 0.3) -> bool:
+	var moves = _in_3d()
+	if moves:
+		return await moves.sit(actor, secs)
 	var sprite := sprite_of(actor)
 	if sprite == null or not Outfits.has_pose(actor, &"assis"):
 		return false
@@ -144,6 +185,10 @@ static func sit(actor, secs := 0.3) -> bool:
 
 ## Lowers its head (a bow, trust, sadness, sniffing the ground): a slow crouch and back. Awaitable.
 static func bow(actor, secs := 0.9) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.bow(actor, secs)
+		return
 	var sprite := sprite_of(actor)
 	if sprite == null:
 		return
@@ -161,6 +206,9 @@ static func bow(actor, secs := 0.9) -> void:
 ## her own…), turned where it looks, for `secs` (0: until Stage.pose(actor, &"")). False when
 ## that pose is not drawn for it: nothing changes (then crouch, bow… squash the picture instead).
 static func pose(actor, pose_name: StringName, secs := 0.0) -> bool:
+	var moves = _in_3d()
+	if moves:
+		return moves.pose(actor, pose_name, secs)
 	if actor == null or not is_instance_valid(actor) or not Outfits.pose(actor, pose_name):
 		return false
 	var token := Time.get_ticks_usec()
@@ -177,12 +225,19 @@ static func _unpose_later(actor, token: int, secs: float) -> void:
 
 
 ## Someone in another look for a scene (Outfits.LOOKS: Joss's jar, &"bocal"), or as usual (&"").
+## Pictures only: in 3D there is no second sheet to put on, and nothing changes.
 static func dress(actor, look: StringName) -> bool:
+	if _in_3d():
+		return false
 	return Outfits.dress(actor, look)
 
 
 ## Rears up, towering (a roar, a threat, pride): a stretch up and back. Awaitable.
 static func rear(actor, secs := 0.8) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.rear(actor, secs)
+		return
 	var sprite := sprite_of(actor)
 	if sprite == null:
 		return
@@ -204,6 +259,10 @@ static func cry(actor, kind: StringName = CRY) -> void:
 
 ## A little sign over someone's head: "!" (surprise), "?" (doubt), "♥", "…", "~".
 static func emote(actor, text: String) -> void:
+	var moves = _in_3d()
+	if moves:
+		moves.emote(actor, text)
+		return
 	var view := (Engine.get_main_loop() as SceneTree).get_first_node_in_group(&"world_view") as WorldView
 	if view and actor and is_instance_valid(actor):
 		view.emote(actor, text)
@@ -227,6 +286,10 @@ static func turn_to(actor, px: Vector2) -> void:
 
 ## Appears (someone stepping out of the mist, of the dark…). Awaitable.
 static func fade_in(actor, secs := 0.6) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.fade_in(actor, secs)
+		return
 	if actor == null or not is_instance_valid(actor):
 		return
 	actor.modulate.a = 0.0
@@ -237,8 +300,11 @@ static func fade_in(actor, secs := 0.6) -> void:
 
 ## A small thing a scene shows (a tin box pushed out of the moss, a trap dropped at Chloé's feet):
 ## a story prop of that kind fading in at `at_px`; null while its picture is not in Prop.KINDS.
-## Stage.take_thing puts it away.
+## Stage.take_thing puts it away. Null in 3D: the story props are not built there yet
+## (docs/migration-3d.md, phase 5 « Reste »), and a scene must not get a prop it cannot show.
 static func show_thing(kind: String, at_px: Vector2, node_name: String) -> Node2D:
+	if _in_3d():
+		return null
 	var w = S.world()
 	if w == null or w.get("region") == null or not Prop.KINDS.has(kind):
 		return null
@@ -276,6 +342,10 @@ static func repaint(thing, kind: String, secs := 0.8) -> void:
 
 ## Vanishes (into the mist, the dark…); with `free`, gone for good. Awaitable.
 static func fade_out(actor, secs := 0.6, free := false) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.fade_out(actor, secs, free)
+		return
 	if actor == null or not is_instance_valid(actor):
 		return
 	var t: Tween = actor.create_tween()
@@ -290,6 +360,10 @@ static func fade_out(actor, secs := 0.6, free := false) -> void:
 ## the 3D view (the billboards clamp colours at white: without the light, a glow hardly shows).
 ## Awaitable.
 static func glow(actor, colour := Color(1.8, 1.45, 0.8), times := 1, secs := 0.7, energy := 2.5) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.glow(actor, colour, times, secs, energy)
+		return
 	if actor == null or not is_instance_valid(actor):
 		return
 	var hue := colour / maxf(maxf(colour.r, colour.g), maxf(colour.b, 0.001))
@@ -310,6 +384,9 @@ static func glow(actor, colour := Color(1.8, 1.45, 0.8), times := 1, secs := 0.7
 ## A light of the 3D view at `px` (world pixels), a little above the ground, off (energy 0):
 ## the caller brightens it, then frees it. Null without the view.
 static func light_at(px: Vector2, colour: Color, reach := 3.2) -> OmniLight3D:
+	var moves = _in_3d()
+	if moves:
+		return moves.light_at(px, colour, reach)
 	var view := _view()
 	if view == null or view.heights == null:
 		return null
@@ -339,6 +416,7 @@ static func puddle(px: Vector2, radius_m := 0.55, squash := 1.0) -> PuddleRipple
 
 
 ## The whole screen flashes (a burst of amber light, lightning, a great revelation). Awaitable.
+## The same in both versions: it is drawn over everything, whatever is below.
 static func flash(colour := Color(1.0, 0.85, 0.45, 0.8), secs := 0.6) -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	var layer := CanvasLayer.new()
@@ -375,6 +453,10 @@ static func companion_joy() -> void:
 ## of — the henchmen by the tents, Brac by the fire, a cage), until look_back() or the end of
 ## the scene (Story.lock(false)). Awaitable: the time for the camera to get there.
 static func look_at(px: Vector2, secs := 0.9) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.look_at(px, secs)
+		return
 	var view := _view()
 	if view:
 		view.focus_px = px
@@ -391,6 +473,10 @@ static func look_at_actor(actor, secs := 0.9) -> void:
 ## glides there and comes down to `metres` away, until wide(), look_back() or the end of the scene.
 ## Awaitable: the time for the camera to get there.
 static func close_up(px: Vector2, metres := 5.0, secs := 1.4) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.close_up(px, metres, secs)
+		return
 	var view := _view()
 	if view:
 		view.close_up = metres
@@ -399,6 +485,10 @@ static func close_up(px: Vector2, metres := 5.0, secs := 1.4) -> void:
 
 ## The camera goes back up to the player's distance (after close_up), wherever it looks.
 static func wide() -> void:
+	var moves = _in_3d()
+	if moves:
+		moves.wide()
+		return
 	var view := _view()
 	if view:
 		view.close_up = 0.0
@@ -406,6 +496,10 @@ static func wide() -> void:
 
 ## The camera comes back to Chloé. Awaitable.
 static func look_back(secs := 0.7) -> void:
+	var moves = _in_3d()
+	if moves:
+		await moves.look_back(secs)
+		return
 	var view := _view()
 	if view:
 		view.focus_px = Vector2.INF
@@ -430,6 +524,8 @@ static func _pace(actor, a_px: Vector2, b_px: Vector2, speed: float, token: Dict
 				await (actor as Npc).walk_to(to, "", speed)
 			elif actor is DinoNpc:
 				await (actor as DinoNpc).walk_to(to, speed)
+			elif actor.has_method(&"walk_to"):   # a 3D actor, through its handle (StoryActor3D)
+				await actor.call(&"walk_to", to, speed)
 			else:
 				return
 			await S.wait(randf_range(0.2, 0.8))
@@ -443,7 +539,9 @@ static func _view() -> WorldView:
 	return (Engine.get_main_loop() as SceneTree).get_first_node_in_group(&"world_view") as WorldView
 
 
-## Chloé herself (for recoil, turn_to, emote…).
-static func chloe() -> Player:
+## Chloé herself (for recoil, turn_to, emote…): the Player in the 2.5D, the handle on Player3D in
+## 3D (a StoryActor3D, whose `global_position` is in the same pixels of the zone). Node2D, the type
+## both share, so the scenes can hold her the same way in either version.
+static func chloe() -> Node2D:
 	var w = S.world()
 	return w.player if w and w.get("player") else null

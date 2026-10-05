@@ -2,21 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://callerdptoahy"
-path.s3tc="res://.godot/imported/chloe_T_Eye_Brown.png-5ff0133513cafd198ced7449fdbfff10.s3tc.ctex"
-path.etc2="res://.godot/imported/chloe_T_Eye_Brown.png-5ff0133513cafd198ced7449fdbfff10.etc2.ctex"
+uid="uid://dkwsy8tskqq3w"
+path.s3tc="res://.godot/imported/pachycephalosaurus_pachycephalosaurus_peau.png-260998e495cb08038aaa54f2d3a57cda.s3tc.ctex"
+path.etc2="res://.godot/imported/pachycephalosaurus_pachycephalosaurus_peau.png-260998e495cb08038aaa54f2d3a57cda.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "830da396e71092b8bf809e8c522e8638"
+"md5": "61e27c02c45ca24c4eb5a9f8515c8a71"
 }
 
 [deps]
 
-source_file="res://assets/models3d/characters/chloe/chloe_T_Eye_Brown.png"
-dest_files=["res://.godot/imported/chloe_T_Eye_Brown.png-5ff0133513cafd198ced7449fdbfff10.s3tc.ctex", "res://.godot/imported/chloe_T_Eye_Brown.png-5ff0133513cafd198ced7449fdbfff10.etc2.ctex"]
+source_file="res://assets/models3d/dinos/pachycephalosaurus/pachycephalosaurus_pachycephalosaurus_peau.png"
+dest_files=["res://.godot/imported/pachycephalosaurus_pachycephalosaurus_peau.png-260998e495cb08038aaa54f2d3a57cda.s3tc.ctex", "res://.godot/imported/pachycephalosaurus_pachycephalosaurus_peau.png-260998e495cb08038aaa54f2d3a57cda.etc2.ctex"]
 
 [params]
 

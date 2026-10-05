@@ -15,10 +15,12 @@ const RUN_SPEED := 165.0 / 48.0 * 1.45   # Player.SPEED × Player.RUN_SPEED (m/s
 
 var _out := "user://test_world3d"
 var _failed := 0
+var _caption_layer: CanvasLayer   # what this run tests, written on the view for the whole test
 var _demo: Node
 var _player: Node3D
 var _pivot: Node3D
 var _only := 0   # 0: every phase
+var _views_only: PackedStringArray = []   # vues=02,03: only these views of the remodelled Prairie
 
 
 func _initialize() -> void:
@@ -27,6 +29,8 @@ func _initialize() -> void:
 			_out = arg.substr(4)
 		elif arg.begins_with("only="):
 			_only = int(arg.substr(5))
+		elif arg.begins_with("vues="):
+			_views_only = arg.substr(5).split(",")
 	DirAccess.make_dir_recursive_absolute(_out)
 	root.get_node("Save").set("path", "user://capture_save.json")   # never the player's save
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://capture_save.json"))   # a new game each time
@@ -60,6 +64,7 @@ func _run() -> void:
 ## and the gentle ramp onto the terrace, not the steep slope; the camera comes in against the wall
 ## instead of going through it (and she fades); the zoom reaches the distance asked for.
 func _phase1() -> void:
+	_caption("Phase 1 — Chloé en 3D : sol, relief, caméra orbitale")
 	_check("lands on the ground", _player.is_on_floor() and absf(_player.global_position.y) < 0.05,
 		"y = %.3f, on floor %s" % [_player.global_position.y, _player.is_on_floor()])
 	await _shot("00_depart")
@@ -108,6 +113,7 @@ func _phase1() -> void:
 ## Phase 2: the jump (held, tapped, onto a low crate, not onto a high one), the sign read out in the
 ## game's dialogue box, and — once her model is in — the animation states.
 func _phase2() -> void:
+	_caption("Phase 2 — saut, interaction (panneau, dialogue) et foulées de Chloé")
 	var apex := await _jump_from(&"start", 1.2, false)
 	_check("a held jump goes up about 0.65 m, under a cliff step (0.75)", apex > 0.6 and apex < 0.72, "apex %.2f m" % apex)
 	var tap := await _jump_from(&"start", 0.06, false)
@@ -194,6 +200,7 @@ func _phase2() -> void:
 ## amble about their homes; one watches Chloé coming, runs off (running) when she comes too close,
 ## calms down once she is far; Chloé observes one (its name and level in the dialogue).
 func _phase3() -> void:
+	_caption("Phase 3 — premier dino 3D : taille, états, fuite, observation")
 	var raptors: Array = _demo.get("raptors")
 	_check("two Velociraptors in the meadow", raptors.size() == 2, "%d" % raptors.size())
 	if raptors.is_empty():
@@ -301,19 +308,32 @@ func _phase3() -> void:
 ## Phase 4: the Prairie du Grand Crâne in 3D (world3d/zone3d), built from the 2.5D zone. It builds
 ## quickly; Chloé arrives on the ground and walks over the relief; the woods, deep water and a cliff
 ## stop her as in the 2.5D; its raptors are out; frames per second; pictures of the zone.
+## Once the zone is remodelled (its plan's relief), the 2.5D's tiles no longer say where its woods,
+## water and cliffs are: those three checks are skipped, said so, and the remodelled zone is checked
+## instead (_remodelled): its scenery and the story's actors on the new ground, its water, what stops
+## Chloé walked over on the game's own collisions (passages closed, then open), four views.
 func _phase4() -> void:
 	var zone := _demo
+	var terrain: Node3D = zone.get("terrain")
+	var remodelled: bool = terrain.call("is_remodelled")
+	_caption(REMODELLED_CAPTION if remodelled else "Phase 4 — la Prairie bâtie en 3D : terrain, eau, falaises, décors, habitants")
 	_quiet(zone)
 	var src: RefCounted = zone.get("source")
-	var terrain: Node3D = zone.get("terrain")
 	var build_ms: int = zone.get("build_ms")
 	_check("the zone builds in a few seconds", build_ms < 8000, "%d ms, %s m" % [build_ms, src.call("size_m")])
 	var at := _player.global_position
 	_check("Chloé arrives on the ground", _player.is_on_floor() and absf(at.y - float(terrain.call("height_at", at.x, at.z))) < 0.15,
 		"y %.2f, sol %.2f" % [at.y, terrain.call("height_at", at.x, at.z)])
-	await _shot("20_prairie_arrivee")
+	if not remodelled:
+		await _shot("20_prairie_arrivee")
 	var moved := await _hold_up(3.0)
 	_check("she walks over the relief", moved > 3.0 and _player.is_on_floor(), "%.1f m, au sol %s" % [moved, _player.is_on_floor()])
+	if remodelled:
+		for rule in ["the woods stop her", "deep water stops her", "a cliff stops her (no climbing, no jumping up)"]:
+			print("SKIP  %s (règle des cases du 2,5D : la zone est remodelée, ses bois, son eau et ses falaises ne sont plus ceux des cases ; ce qui l'arrête suit le relief et le plan, vérifié plus bas)" % rule)
+		await _remodelled(zone)
+		await _fps_check(zone)
+		return
 	_pivot.call("set_view", 200.0, -48.0, 14.0)
 	await create_timer(0.6).timeout
 	await _shot("21_prairie_vue_haute")
@@ -340,6 +360,11 @@ func _phase4() -> void:
 		_pivot.call("set_view", 160.0, -15.0, 5.0)
 		await create_timer(1.2).timeout
 		await _shot("24_raptor_prairie")
+	await _fps_check(zone)
+
+
+## The frames per second at the arrival, vsync off (the threshold is said, not tuned here).
+func _fps_check(zone: Node) -> void:
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	zone.call("place", &"DepuisPort")
 	await create_timer(1.0).timeout
@@ -360,11 +385,657 @@ func _quiet(zone: Node) -> void:
 		d.call("calm_down", 9999.0)
 
 
+# --- phase 4 on a remodelled zone ---------------------------------------------------------------------
+
+const REMODELLED_CAPTION := "Prairie remodelée — relief, obstacles et acteurs sur le nouveau sol"
+const LAYOUT := "res://docs/zones-3d/plaines-layout.json"
+const RELIEF_TEST := "res://tools/test_relief_plaines.gd"   # its BEHIND: what lies behind a passage
+const STORY_WORLD := "res://world3d/story/story_world_3d.gd"
+const GRID := 0.5             # the walk's grid (Terrain3D's vertices)
+## The walk's body: Chloé's (0.17 m), widened so a mesh's thin face between two vertices of the grid
+## (the Crâne's) is always met (half a cell's diagonal: 0.35 m).
+const BODY_R := 0.38
+const PASSAGE_R := 0.6        # a passage the plan wants open: 1.2 m wide at the least…
+const DOOR_M := 4.0           # …its doors 4 m
+const STAND_DEG := 46.0       # Player3D.floor_max_angle: steeper, she slides
+const KNEE_M := 0.4           # what stops her stands between a step (0.35 m) and her head
+const HEAD_M := 1.5
+const WORLD_AND_WATER := 1 | 16   # Layers3D.WORLD | Layers3D.WATER (what stops Chloé)
+## In the Crâne's mouth, behind its seal as the model has it (the plan's tool drew a rectangle there):
+## reached once it opens, not before (the story's scene walks the Alpha out through them).
+const BEHIND_SEAL := ["scene_crane[1]", "scene_crane[2]"]
+## The obstacles themselves (the plan's tool counted them behind, under its masks): she walks up to
+## them, to use her dino's ability (not checked either way).
+const OBSTACLE_ANCHORS := ["RocherGrotte", "PorteCrane"]
+const BEHIND_NEAR := 2        # an anchor behind a passage counts as reached within 1 m (2 vertices)
+## What opens the passages: the 2.5D's Obstacles' flags, the Crâne's (and the full moon, the ford's).
+const PASSAGE_FLAGS: Array[StringName] = [&"tronc_bosquet_tranche", &"rocher_grotte_brise", &"porte_ambre_ouverte", &"crane_ouvert"]
+const PROVISIONAL := "passage_provisoire_3d_%s"   # StoryObstacles3D.PROVISIONAL_FLAG
+const FULL_MOON_DAY := 2      # GameState.FULL_MOON_FIRST
+## The passages, where to measure their width once open, and the way across them (ZERO: square to
+## the path through them).
+const DOORS := [["le tronc (haie du bosquet)", Vector2(58, 86), Vector2.ZERO], ["l'encoche du rocher", Vector2(116, 50.5), Vector2.ZERO],
+	["la porte d'ambre (gorge)", Vector2(190, 64), Vector2.ZERO], ["la gueule du Crâne", Vector2(172, 100), Vector2.RIGHT],
+	["le gué de lune", Vector2(134, 119), Vector2.RIGHT]]
+## Each closed obstacle, run into by Chloé herself (her own body, 0.17 m: the walk's grid uses a wider
+## one): [what, from, to, the obstacle's middle] — she stays on her side of it.
+const HELD := [
+	["the tronc", Vector2(64, 93), Vector2(52, 77), Vector2(58, 86)], ["…beside it", Vector2(65.2, 92.1), Vector2(53.2, 76.1), Vector2(59.2, 85.1)],
+	["the rocher", Vector2(116, 55), Vector2(116, 44), Vector2(116, 49.2)], ["…its rubble", Vector2(113.5, 55), Vector2(113.5, 44), Vector2(113.5, 49.2)],
+	["the porte d'ambre", Vector2(190, 71), Vector2(190, 57), Vector2(190, 64)], ["…by the gorge's wall", Vector2(191.8, 71), Vector2(191.8, 57), Vector2(191.8, 64)],
+	["the Crâne's seal", Vector2(172, 108), Vector2(172, 94), Vector2(172, 103.7)], ["…by the jaw", Vector2(173.6, 108), Vector2(173.6, 94), Vector2(173.6, 103.7)],
+	["the gué de lune (by day)", Vector2(134, 114.5), Vector2(134, 123.5), Vector2(134, 116)], ["…along its side", Vector2(136.2, 114.5), Vector2(136.2, 123.5), Vector2(136.2, 116)],
+]
+## Round the Crâne's jaw, under its cheeks (the model leaves room there, at the parvis' level), and
+## on into its mouth behind the seal: [what, the way she tries, where she must not get to].
+const CHEEKS := [["east", [Vector2(177, 108), Vector2(177, 99), Vector2(174.5, 96), Vector2(172, 94)], Vector2(172, 94)],
+	["west", [Vector2(167, 108), Vector2(167, 99), Vector2(169.5, 96), Vector2(172, 94)], Vector2(172, 94)]]
+## The places the 2.5D's rules had cut off once the relief was remodelled (its report): walked.
+const CUT_OFF := {"le corridor du passage 3": "route_corridor", "la sente de la rive sud": "sente_rive_sud",
+	"l'est (la grande boucle)": "sente_est", "les éboulis": "sente_eboulis", "la cascade": "sente_cascade"}
+const VIEWS := [
+	{"name": "01_seuil_revelation", "at": Vector2(120, 162), "look": Vector2(0.15, -1), "pitch": -26.0, "dist": 18.0},
+	# (from the carrefour where the route du Crâne leaves it, the camera over the parvis' edge: 6.5 m, above
+	# the eye at the carrefour's 3.3 m, it hides the skull's foot from lower down)
+	{"name": "02_carrefour_vers_crane", "at": Vector2(121, 103), "look": Vector2(51, -3), "pitch": -16.0, "dist": 9.0},
+	{"name": "03_parvis_vers_etang", "at": Vector2(155, 112), "look": Vector2(-0.89, 0.45), "pitch": -32.0, "dist": 11.0},
+	{"name": "04_porte_ambre", "at": Vector2(190, 70), "look": Vector2(0, -1), "pitch": -10.0, "dist": 7.0},
+]
+
+var _layout := {}
+var _nx := 0
+var _nz := 0
+var _hv := PackedFloat32Array()      # the ground at the grid's vertices
+var _slope := PackedFloat32Array()   # its slope (degrees)
+var _was := {}                       # the day and the hour before the passages were opened
+
+
+## The remodelled Prairie: on its new ground (scenery, story obstacles, the story's actors), its water,
+## then what stops Chloé walked over on the game's own collisions — passages closed (nothing behind
+## them reached, everything before), Chloé running where the 2.5D's rules had cut her off, passages
+## open (everything reached, the paths 1.2 m clear, the doors' widths) — and four views.
+func _remodelled(zone: Node) -> void:
+	_layout = JSON.parse_string(FileAccess.get_file_as_string(LAYOUT))
+	var terrain: Node3D = zone.get("terrain")
+	_grid(terrain)
+	_on_new_ground(zone, terrain)
+	_water_check(zone, terrain)
+	await physics_frame
+	await physics_frame
+	var space := (zone as Node3D).get_world_3d().direct_space_state
+	var ground: RID = _ground_rid(terrain)
+	if not ground.is_valid():
+		print("SIGNALÉ  collision de Terrain3D introuvable : la marche compte le sol sous le genou (pentes > 46° comptées fermées)")
+	var t0 := Time.get_ticks_msec()
+	var closed := _free_grid(space, ground, BODY_R)
+	var port := _anchor("spawn_DepuisPort")
+	var seen := _reach(closed, port)
+	var behind: Array = load(RELIEF_TEST).get_script_constant_map()["BEHIND"]
+	var bypass: Array[String] = []
+	var before: Array[String] = []
+	for a in _anchors():
+		if a["id"] in OBSTACLE_ANCHORS:
+			continue
+		var back: bool = a["id"] in behind or a["id"] in BEHIND_SEAL
+		if back and _reached(seen, a["at"], BEHIND_NEAR):
+			bypass.append(a["id"])
+		elif not back and not _reached(seen, a["at"]):
+			before.append(a["id"])
+	print("MESURE  marche sur les collisions du jeu (%d sommets, corps de %.1f m) : %d ms" % [_nx * _nz, BODY_R * 2.0, Time.get_ticks_msec() - t0])
+	print("SIGNALÉ  ancres dans la gueule du Crâne, derrière le sceau du modèle (atteintes une fois ouvert) : %s ; les obstacles eux-mêmes, approchés : %s" % [BEHIND_SEAL, OBSTACLE_ANCHORS])
+	_check("passages closed (tronc, rocher, porte, sceau du Crâne, gué de lune, haie), nothing behind them is reached", bypass.is_empty(), "%s" % [bypass])
+	_check("…and every anchor before them is", before.is_empty(), "%s" % [before])
+	var missed: Array[String] = []
+	for place: String in CUT_OFF:
+		for p in _path(CUT_OFF[place]):
+			if not _reached(seen, p):
+				missed.append("%s %s" % [place, p])
+				break
+	_check("the places the 2.5D's rules cut off are reached (corridor, rive sud, est, éboulis, cascade)", missed.is_empty(), "%s" % [missed])
+	var from_crane := _reach(closed, Vector2(172, 105))
+	missed.clear()
+	for leg in [["le tronc", Vector2(58, 89)], ["le rocher de Charge", Vector2(116, 54)], ["la porte d'ambre", Vector2(190, 67)]]:
+		if not _reached(from_crane, leg[1]):
+			missed.append(leg[0])
+	_check("…from the porte du Crâne she walks to each passage", missed.is_empty(), "manque %s" % [missed])
+	await _walks(zone)
+	await _held_back(zone)
+	await _provisional_use(zone)
+	await _passages(true)
+	var opened := _free_grid(space, ground, BODY_R, closed)
+	seen = _reach(opened, port)
+	var unreachable: Array[String] = []
+	for a in _anchors():
+		if not _reached(seen, a["at"]):
+			unreachable.append(a["id"])
+	_check("passages open (flags set, full moon), every anchor is reached", unreachable.is_empty(), "%s" % [unreachable])
+	var count := 0
+	for k in seen.size():
+		count += seen[k]
+	print("MESURE  sol praticable depuis le port, passages ouverts, sur les collisions du jeu : %.0f %% de la zone" % (100.0 * count / seen.size()))
+	_path_clearance(space, ground)
+	_door_widths(space, ground)
+	await _passages(false)
+	await _views(zone)
+
+
+## The relief at the grid's vertices, and its slopes.
+func _grid(terrain: Node3D) -> void:
+	var size: Vector2 = _demo.get("source").call("size_m")
+	_nx = int(size.x / GRID) + 1
+	_nz = int(size.y / GRID) + 1
+	_hv.resize(_nx * _nz)
+	for j in _nz:
+		for i in _nx:
+			_hv[j * _nx + i] = float(terrain.call("height_at", i * GRID, j * GRID))
+	_slope.resize(_hv.size())
+	for j in range(1, _nz - 1):
+		for i in range(1, _nx - 1):
+			var gx := (_hv[j * _nx + i + 1] - _hv[j * _nx + i - 1]) / (2.0 * GRID)
+			var gz := (_hv[(j + 1) * _nx + i] - _hv[(j - 1) * _nx + i]) / (2.0 * GRID)
+			_slope[j * _nx + i] = rad_to_deg(atan(Vector2(gx, gz).length()))
+
+
+## The 2.5D's scenery, the story's obstacles and the story's actors stand on the new ground.
+func _on_new_ground(zone: Node, terrain: Node3D) -> void:
+	var scatter: Node = zone.get("scatter")
+	var worst := 0.0
+	var placed := 0
+	for kind: String in scatter.call("counts"):
+		for it: Array in scatter.call("placed", kind):
+			var at: Vector3 = it[0]
+			worst = maxf(worst, absf(at.y - float(terrain.call("height_at", at.x, at.z))))
+			placed += 1
+	_check("the scenery stands on the new ground (none buried, none floating)", worst < 0.01, "%d objets, écart max %.3f m" % [placed, worst])
+	var story: Node = zone.get("blockers").get("story")
+	var obstacles: Dictionary = story.get("obstacles") if story else {}
+	worst = 0.0
+	for id: String in obstacles:
+		var at: Vector3 = obstacles[id]["at"]
+		worst = maxf(worst, absf(at.y - float(terrain.call("height_at", at.x, at.z))))
+	_check("…the story's obstacles too (tronc, rocher, porte, Crâne, gué)", obstacles.size() == 5 and worst < 0.01, "%s, écart max %.3f m" % [obstacles.keys(), worst])
+	var world: Node = load(STORY_WORLD).new()
+	world.set("zone", zone)
+	zone.add_child(world)
+	var src: RefCounted = zone.get("source")
+	var s: float = src.get("scale")
+	worst = 0.0
+	var deepest := 0.0
+	var actors := 0
+	for a: Dictionary in _layout["anchors"]:
+		var olds: Array = [a["old"]] if a.has("old") else []
+		olds.append_array(a.get("old_points", []))
+		for old: Array in olds:
+			var px := Vector2(float(old[0]), float(old[1])) / s * 48.0
+			var at: Vector3 = world.call("to_3d", px)
+			var ground := float(terrain.call("height_at", at.x, at.z))
+			worst = maxf(worst, absf(at.y - ground))
+			deepest = minf(deepest, float((src.call("to_3d", px) as Vector3).y) - ground)
+			actors += 1
+	world.queue_free()
+	_check("the story's actors are put on the new ground (StoryWorld3D.to_3d), at their places", actors > 60 and worst < 0.001,
+		"%d places, écart max %.4f m (la hauteur du 2,5D les mettait jusqu'à %.1f m sous le sol)" % [actors, worst, -deepest])
+
+
+## The relief's water: its sea at 0 m and its pond at 2.4 m, each its own sheet; the ru and the
+## source's rill as Waterways rivers; no water left of the 2.5D's pond (now under the parvis); deep
+## water stops her, the ford's shoal and the islet as the plan has them.
+func _water_check(zone: Node, terrain: Node3D) -> void:
+	var levels: Array = (terrain.get("waters") as Array).map(func(w: Node3D) -> float: return snappedf(w.position.y, 0.01))
+	levels.sort()
+	_check("the water of the relief: the sea's sheet at 0 m, the pond's at 2.4 m", levels == [0.0, 2.4], "%s" % [levels])
+	var brooks: Array = terrain.get("brooks")
+	var meshed := brooks.filter(func(r: Node) -> bool:
+		var m: MeshInstance3D = r.get("mesh_instance")
+		return m != null and m.mesh != null and m.mesh.get_surface_count() > 0)
+	_check("…the ru and the source's rill as Waterways rivers", brooks.size() == 2 and meshed.size() == 2, "%d rivières, %d maillées" % [brooks.size(), meshed.size()])
+	var ghost := 0
+	for shape: Node3D in zone.get("blockers").get("water").get_children():
+		if Vector2(shape.position.x, shape.position.z).distance_to(Vector2(158, 96)) < 12.0:
+			ghost += 1
+	var dry := float(terrain.call("water_depth_at", 158.0, 96.0))
+	_check("…no water left of the 2.5D's pond (158, 96: the parvis now)", ghost == 0 and dry <= 0.0, "%d mur(s) d'eau, eau %.2f m" % [ghost, maxf(dry, 0.0)])
+	var space := (zone as Node3D).get_world_3d().direct_space_state
+	var deep := []
+	for p: Vector2 in [Vector2(128, 123), Vector2(20, 170)]:
+		var q := PhysicsPointQueryParameters3D.new()
+		q.position = Vector3(p.x, float(terrain.call("height_at", p.x, p.y)) + 1.0, p.y)
+		q.collision_mask = 16
+		deep.append(not space.intersect_point(q, 1).is_empty())
+	_check("…deep water stops her (the pond's middle, the crique)", deep == [true, true], "%s" % [deep])
+	var ford := float(terrain.call("water_depth_at", 134.0, 119.0))
+	var islet := float(terrain.call("water_depth_at", 134.0, 124.0))
+	_check("…the ford's shoal shallow (walked once it opens), the islet dry", ford > 0.0 and ford < 0.3 and islet <= 0.0, "gué %.2f m d'eau, îlot %.2f" % [ford, islet])
+
+
+## The Terrain3D ground's collision (left out of the walk's queries: the slopes are the relief's).
+func _ground_rid(terrain: Node3D) -> RID:
+	var ground: Node = terrain.get("ground3d")
+	var t3d: Object = ground.get("terrain") if ground else null
+	var col: Object = t3d.get("collision") if t3d else null
+	if col and col.has_method("get_rid"):
+		return col.call("get_rid")
+	return RID()
+
+
+## 1 where nothing of the game's collisions (the world and the water, the ground left out) stands
+## within `radius` between her knee and her head; the zone's rim closed. `known`: vertices known free.
+func _free_grid(space: PhysicsDirectSpaceState3D, ground: RID, radius: float, known := PackedByteArray()) -> PackedByteArray:
+	var params := PhysicsShapeQueryParameters3D.new()
+	var cyl := CylinderShape3D.new()
+	cyl.radius = radius
+	cyl.height = HEAD_M - KNEE_M
+	params.shape = cyl
+	params.collision_mask = WORLD_AND_WATER
+	if ground.is_valid():
+		params.exclude = [ground]
+	var free := PackedByteArray()
+	free.resize(_nx * _nz)
+	for j in _nz:
+		for i in _nx:
+			var k := j * _nx + i
+			if i == 0 or j == 0 or i == _nx - 1 or j == _nz - 1:
+				continue
+			if not known.is_empty() and known[k]:
+				free[k] = 1
+				continue
+			params.transform = Transform3D(Basis.IDENTITY, Vector3(i * GRID, _hv[k] + (KNEE_M + HEAD_M) * 0.5, j * GRID))
+			free[k] = 1 if space.intersect_shape(params, 1).is_empty() else 0
+	return free
+
+
+## Reachable vertices from `start` (tools/test_relief_plaines.gd's walk): between free vertices, up
+## what she can stand on (46°), and down anything (she steps off an edge, slides to its foot).
+func _reach(free: PackedByteArray, start: Vector2) -> PackedByteArray:
+	var seen := PackedByteArray()
+	seen.resize(free.size())
+	var s := _nearest_free(free, start)
+	if s < 0:
+		return seen
+	var climb := tan(deg_to_rad(STAND_DEG))
+	var queue := PackedInt32Array([s])
+	seen[s] = 1
+	var head := 0
+	var steps := [[1, 0, GRID], [-1, 0, GRID], [0, 1, GRID], [0, -1, GRID], [1, 1, GRID * 1.4142], [1, -1, GRID * 1.4142], [-1, 1, GRID * 1.4142], [-1, -1, GRID * 1.4142]]
+	while head < queue.size():
+		var k := queue[head]
+		head += 1
+		var i := k % _nx
+		@warning_ignore("integer_division")
+		var j := k / _nx
+		var steep_here := _slope[k] > STAND_DEG
+		for st: Array in steps:
+			var ii: int = i + st[0]
+			var jj: int = j + st[1]
+			if ii < 0 or jj < 0 or ii >= _nx or jj >= _nz:
+				continue
+			var n := jj * _nx + ii
+			if seen[n] or not free[n]:
+				continue
+			var rise := _hv[n] - _hv[k]
+			var fine := rise < 0.0 if (steep_here or _slope[n] > STAND_DEG) else rise <= climb * float(st[2])
+			if fine:
+				seen[n] = 1
+				queue.append(n)
+	return seen
+
+
+## Reached near `at`: a vertex within `near` vertices (3 m) on about its own level (not the rim of a
+## wall above it).
+func _reached(seen: PackedByteArray, at: Vector2, near := 6) -> bool:
+	var i0 := roundi(at.x / GRID)
+	var j0 := roundi(at.y / GRID)
+	var own := _hv[clampi(j0, 0, _nz - 1) * _nx + clampi(i0, 0, _nx - 1)]
+	for j in range(maxi(j0 - near, 0), mini(j0 + near, _nz - 1) + 1):
+		for i in range(maxi(i0 - near, 0), mini(i0 + near, _nx - 1) + 1):
+			if seen[j * _nx + i] and absf(_hv[j * _nx + i] - own) < 1.0 and Vector2(i - i0, j - j0).length() <= near:
+				return true
+	return false
+
+
+func _nearest_free(free: PackedByteArray, at: Vector2) -> int:
+	var i0 := roundi(at.x / GRID)
+	var j0 := roundi(at.y / GRID)
+	for r in 12:
+		for j in range(j0 - r, j0 + r + 1):
+			for i in range(i0 - r, i0 + r + 1):
+				if i >= 0 and j >= 0 and i < _nx and j < _nz and free[j * _nx + i] and _slope[j * _nx + i] <= STAND_DEG:
+					return j * _nx + i
+	return -1
+
+
+## Every path of the plan, passages open: 1.2 m clear all along — at each point, room for a body
+## 1.2 m wide (PASSAGE_R) somewhere across the path's own width, nothing of the game's collisions in it
+## between her knee and her head.
+func _path_clearance(space: PhysicsDirectSpaceState3D, ground: RID) -> void:
+	var params := PhysicsShapeQueryParameters3D.new()
+	var cyl := CylinderShape3D.new()
+	cyl.radius = PASSAGE_R
+	cyl.height = HEAD_M - KNEE_M
+	params.shape = cyl
+	params.collision_mask = WORLD_AND_WATER
+	if ground.is_valid():
+		params.exclude = [ground]
+	var narrow: Array[String] = []
+	var samples := 0
+	for p: Dictionary in _layout["paths"]:
+		var line: Array = _path(p["id"])
+		var first := Vector2.INF
+		var n := 0
+		for i in line.size() - 1:
+			var a: Vector2 = line[i]
+			var b: Vector2 = line[i + 1]
+			var steps := maxi(1, ceili(a.distance_to(b) / GRID))
+			for k in steps:
+				var q := a.lerp(b, float(k) / steps)
+				if q.x <= 1.0 or q.y <= 1.0 or q.x >= (_nx - 1) * GRID - 1.0 or q.y >= (_nz - 1) * GRID - 1.0:
+					continue   # (the zone's edges: its ways out come later)
+				samples += 1
+				if not _room_across(space, params, q, (b - a).normalized(), float(p["width_m"]) * 0.5):
+					n += 1
+					if first == Vector2.INF:
+						first = q
+		if n > 0:
+			narrow.append("%s (%d, vers %s)" % [p["id"], n, first])
+	_check("passages open, every path of the plan is 1.2 m clear all along", narrow.is_empty(), "%d points, étroits : %s" % [samples, narrow])
+
+
+## Room for the query's body at `q` or across the path from it (up to `half` either side).
+func _room_across(space: PhysicsDirectSpaceState3D, params: PhysicsShapeQueryParameters3D, q: Vector2, way: Vector2, half: float) -> bool:
+	var across := Vector2(-way.y, way.x)
+	var terrain: Node3D = _demo.get("terrain")
+	var offset := 0.0
+	while offset <= half + 0.001:
+		for side in ([0.0] if offset == 0.0 else [-1.0, 1.0]):
+			var c: Vector2 = q + across * offset * float(side)
+			params.transform = Transform3D(Basis.IDENTITY, Vector3(c.x, float(terrain.call("height_at", c.x, c.y)) + (KNEE_M + HEAD_M) * 0.5, c.y))
+			if space.intersect_shape(params, 1).is_empty():
+				return true
+		offset += 0.25
+	return false
+
+
+## The width of each passage once open: from its middle, across its way, until something of the game
+## stops her or the ground rises or falls away (a wall of the relief). 1.2 m at the least; the plan's 4 m said.
+func _door_widths(space: PhysicsDirectSpaceState3D, ground: RID) -> void:
+	var terrain: Node3D = _demo.get("terrain")
+	var params := PhysicsShapeQueryParameters3D.new()
+	var cyl := CylinderShape3D.new()
+	cyl.radius = 0.05
+	cyl.height = HEAD_M - KNEE_M
+	params.shape = cyl
+	params.collision_mask = WORLD_AND_WATER
+	if ground.is_valid():
+		params.exclude = [ground]
+	var widths: Array[String] = []
+	var narrow: Array[String] = []
+	var tight: Array[String] = []
+	for door: Array in DOORS:
+		var at: Vector2 = door[1]
+		var way: Vector2 = terrain.call("path_way_at", at.x, at.y)
+		var across: Vector2 = door[2] if door[2] != Vector2.ZERO else (Vector2(-way.y, way.x) if way != Vector2.ZERO else Vector2.RIGHT)
+		var own := float(terrain.call("height_at", at.x, at.y))
+		var width := 0.0
+		for side in [-1.0, 1.0]:
+			var d := 0.0
+			while d < 12.0:
+				var p: Vector2 = at + across * float(side) * (d + 0.1)
+				var h := float(terrain.call("height_at", p.x, p.y))
+				params.transform = Transform3D(Basis.IDENTITY, Vector3(p.x, h + (KNEE_M + HEAD_M) * 0.5, p.y))
+				if absf(h - own) > 1.0 or _slope_at(p) > STAND_DEG or not space.intersect_shape(params, 1).is_empty():
+					break
+				d += 0.1
+			width += d
+		widths.append("%s %.1f m" % [door[0], width])
+		if width < PASSAGE_R * 2.0:
+			narrow.append(door[0])
+		elif width < DOOR_M - 0.25:
+			tight.append("%s %.1f m" % [door[0], width])
+	print("MESURE  largeur des passages ouverts : %s" % ", ".join(widths))
+	_check("…each passage at least 1.2 m wide once open", narrow.is_empty(), "%s" % [narrow])
+	if not tight.is_empty():
+		print("SIGNALÉ  passages sous les 4 m du plan : %s" % ", ".join(tight))
+
+
+func _slope_at(p: Vector2) -> float:
+	return _slope[clampi(roundi(p.y / GRID), 0, _nz - 1) * _nx + clampi(roundi(p.x / GRID), 0, _nx - 1)]
+
+
+## Opens (or closes again) every passage as the game would: the flags set, the night of a full moon.
+func _passages(open: bool) -> void:
+	var game := root.get_node("Game")
+	_demo.call("place", &"DepuisPort")   # (off the ford: it never closes under her)
+	if open:
+		_was = {"day": game.get("day"), "clock": game.get("clock")}
+		game.set("day", FULL_MOON_DAY)
+		game.set("clock", 22.0 * 60.0)
+	else:
+		game.set("day", _was.get("day", 1))
+		game.set("clock", _was.get("clock", 10.0 * 60.0))
+	for f in PASSAGE_FLAGS:
+		game.call("set_flag", f, open)
+	for u: Array in USES:   # (the provisional rule's own flags: off again)
+		game.call("set_flag", StringName(PROVISIONAL % u[0]), false)
+	await create_timer(0.8).timeout   # (the moon is looked at twice a second)
+	await physics_frame
+	await physics_frame
+	var story: Node = _demo.get("blockers").get("story")
+	var states := {}
+	for id: String in story.get("obstacles"):
+		states[id] = story.call("is_open", id)
+	_check("the passages %s (%s)" % ["open" if open else "close again", "drapeaux posés, pleine lune" if open else "drapeaux ôtés, jour"],
+		states.values().all(func(v: bool) -> bool: return v == open), "%s" % [states])
+
+
+## Chloé runs where the 2.5D's rules had cut her off (the dinos out of her way for it).
+func _walks(zone: Node) -> void:
+	var layers := {}
+	for d: Node in zone.get("dinos"):
+		if is_instance_valid(d):
+			layers[d] = d.get("collision_layer")
+			d.set("collision_layer", 0)
+	await _run_along("Chloé runs the corridor of passage 3, from the carrefour to the gorge", _path("route_corridor"))
+	await _run_along("…the sente of the pond's south shore", _path("sente_rive_sud"))
+	var east: Array = _path("sente_est").slice(0, 7)
+	east.append_array(_path("sente_eboulis").slice(1))
+	await _run_along("…the east: the foot of the rempart, the éboulis", east)
+	await _run_along("…the spur to the cascade", _path("sente_cascade"))
+	for d: Node in layers:
+		if is_instance_valid(d):
+			d.set("collision_layer", layers[d])
+
+
+## Chloé runs into each closed obstacle (HELD): she stays on her side of it.
+func _held_back(zone: Node) -> void:
+	var terrain: Node3D = zone.get("terrain")
+	var through: Array[String] = []
+	var report: Array[String] = []
+	for h: Array in HELD:
+		var from: Vector2 = h[1]
+		var to: Vector2 = h[2]
+		var at: Vector2 = h[3]
+		var dir := (to - from).normalized()
+		_player.call("place_at", Vector3(from.x, float(terrain.call("height_at", from.x, from.y)) + 0.3, from.y), 0.0)
+		_pivot.call("set_view", rad_to_deg(atan2(-dir.x, -dir.y)), -18.0, 5.0)
+		await create_timer(0.3).timeout
+		Input.action_press(&"run")
+		Input.action_press(&"move_up")
+		var t0 := Time.get_ticks_msec()
+		var furthest := -INF
+		while Time.get_ticks_msec() - t0 < int((from.distance_to(to) / 5.0 + 1.5) * 1000.0):
+			var here := _player.global_position
+			var aim := to - Vector2(here.x, here.z)
+			_pivot.call("set_view", rad_to_deg(atan2(-aim.x, -aim.y)), -18.0, 5.0)
+			await physics_frame
+			furthest = maxf(furthest, (Vector2(_player.global_position.x, _player.global_position.z) - at).dot(dir))
+		Input.action_release(&"move_up")
+		Input.action_release(&"run")
+		await create_timer(0.2).timeout
+		report.append("%s %+.1f m" % [h[0], furthest])
+		if furthest > 0.0:
+			through.append(h[0])
+	_check("passages closed, Chloé herself runs into each obstacle and stays on her side (tronc, rocher, porte, sceau, gué)", through.is_empty(),
+		"passée : %s ; au plus loin, par rapport au milieu de l'obstacle : %s" % [through, ", ".join(report)])
+	var inside: Array[String] = []
+	var stops: Array[String] = []
+	for c: Array in CHEEKS:
+		var end: Vector3 = await _try_route(c[1], 4.0)
+		var goal: Vector2 = c[2]
+		stops.append("%s (%.1f, %.1f)" % [c[0], end.x, end.z])
+		if Vector2(end.x, end.z).distance_to(goal) < 2.5:
+			inside.append(c[0])
+	_check("…nor gets round the jaw, under the Crâne's cheeks, into its mouth", inside.is_empty(), "arrêtée en %s" % ", ".join(stops))
+
+
+## The provisional rule (StoryObstacles3D, RÈGLE PROVISOIRE): Chloé, in front of each closed obstacle,
+## uses it (E) and it opens — by the 2.5D's rule if her team can, else provisionally.
+const USES := [["tronc_tranche", Vector2(58, 86), Vector2(-0.6, -0.8), 1.7], ["rocher_charge", Vector2(116, 49.2), Vector2(0, -1), 2.4],
+	["porte_ambre", Vector2(190, 64), Vector2(0, -1), 1.6], ["grand_crane", Vector2(172, 103.9), Vector2(0, -1), 1.3]]
+
+func _provisional_use(zone: Node) -> void:
+	var terrain: Node3D = zone.get("terrain")
+	var story: Node = zone.get("blockers").get("story")
+	var dialogue := root.get_node("Dialogue")
+	var game := root.get_node("Game")
+	var report: Array[String] = []
+	var shut: Array[String] = []
+	for u: Array in USES:
+		var id: String = u[0]
+		var dir: Vector2 = u[2]
+		var at: Vector2 = (u[1] as Vector2) - dir.normalized() * float(u[3])
+		_player.call("place_at", Vector3(at.x, float(terrain.call("height_at", at.x, at.y)) + 0.1, at.y), atan2(dir.x, dir.y))
+		_pivot.call("set_view", rad_to_deg(atan2(-dir.x, -dir.y)), -18.0, 5.0)
+		await create_timer(0.6).timeout
+		var it: Node = _player.call("nearest_interactable")
+		var found := it != null and String(it.name) == "Utiliser_%s" % id
+		_press(&"interact")
+		await create_timer(0.6).timeout
+		var presses := 0
+		while dialogue.get("active") and presses < 15:
+			_press(&"interact")
+			presses += 1
+			await create_timer(0.5).timeout
+		await create_timer(0.4).timeout
+		var how := "provisoire" if game.call("flag", StringName(PROVISIONAL % id)) else ("règle du 2,5D" if story.call("is_open", id) else "fermé")
+		report.append("%s : %s%s" % [id, how, "" if found else " (pas à portée)"])
+		if not story.call("is_open", id) or not found:
+			shut.append(id)
+	_check("the provisional rule: Chloé uses each closed passage (E) and it opens (tronc, rocher, porte, Crâne)", shut.is_empty(), ", ".join(report))
+
+
+## Chloé runs along `points` (giving up on a leg after `leg_s`); where she ends.
+func _try_route(points: Array, leg_s: float) -> Vector3:
+	var terrain: Node3D = _demo.get("terrain")
+	var start: Vector2 = points[0]
+	_player.call("place_at", Vector3(start.x, float(terrain.call("height_at", start.x, start.y)) + 0.3, start.y), 0.0)
+	await create_timer(0.3).timeout
+	Input.action_press(&"move_up")
+	for target: Vector2 in points.slice(1):
+		var t0 := Time.get_ticks_msec()
+		while Time.get_ticks_msec() - t0 < int(leg_s * 1000.0):
+			var here := _player.global_position
+			var to := target - Vector2(here.x, here.z)
+			if to.length() < 0.6:
+				break
+			_pivot.call("set_view", rad_to_deg(atan2(-to.x, -to.y)), -18.0, 5.0)
+			await physics_frame
+	Input.action_release(&"move_up")
+	await create_timer(0.2).timeout
+	return _player.global_position
+
+
+## Chloé runs along `points` from the first (the camera turned towards the next one): she gets to
+## each, on the ground (tools/test_relief_plaines.gd's walk).
+func _run_along(what: String, points: Array) -> void:
+	var terrain: Node3D = _demo.get("terrain")
+	var start: Vector2 = points[0]
+	_player.call("place_at", Vector3(start.x, float(terrain.call("height_at", start.x, start.y)) + 0.3, start.y), 0.0)
+	await create_timer(0.4).timeout
+	Input.action_press(&"run")
+	Input.action_press(&"move_up")
+	var reached := 0
+	var stuck_at := Vector3.INF
+	var t0 := Time.get_ticks_msec()
+	for target: Vector2 in points.slice(1):
+		var leg_t0 := Time.get_ticks_msec()
+		while Time.get_ticks_msec() - leg_t0 < 25000:
+			var here := _player.global_position
+			var to := target - Vector2(here.x, here.z)
+			if to.length() < 1.6:
+				break
+			_pivot.call("set_view", rad_to_deg(atan2(-to.x, -to.y)), -18.0, 5.0)
+			await physics_frame
+		var at := _player.global_position
+		if (target - Vector2(at.x, at.z)).length() >= 1.6:
+			stuck_at = at
+			break
+		reached += 1
+	Input.action_release(&"move_up")
+	Input.action_release(&"run")
+	await create_timer(0.3).timeout
+	var feet := absf(_player.global_position.y - float(terrain.call("height_at", _player.global_position.x, _player.global_position.z)))
+	_check(what, reached == points.size() - 1 and feet < 0.2, "%d points sur %d en %.1f s%s" % [reached, points.size() - 1, (Time.get_ticks_msec() - t0) / 1000.0,
+		"" if stuck_at == Vector3.INF else ", arrêtée en (%.1f, %.1f)" % [stuck_at.x, stuck_at.z]])
+
+
+## The four views of the remodelled Prairie, at 10 h in clear weather, passages closed.
+func _views(zone: Node) -> void:
+	var game := root.get_node("Game")
+	game.set("clock", 10.0 * 60.0)
+	game.call("set_weather", &"clear")
+	var weather: Node = zone.get("weather")
+	var t0 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() < t0 + 12000 and not (float(weather.get("rain_amount")) < 0.01 and float(weather.get("mist_amount")) < 0.01 and float(weather.get("storm_amount")) < 0.01):
+		await process_frame
+	await create_timer(2.0).timeout
+	var terrain: Node3D = zone.get("terrain")
+	for v: Dictionary in VIEWS:
+		if not _views_only.is_empty() and not String(v["name"]).left(2) in _views_only:
+			continue
+		var at: Vector2 = v["at"]
+		var look: Vector2 = (v["look"] as Vector2).normalized()
+		var yaw := rad_to_deg(atan2(-look.x, -look.y))
+		_player.call("place_at", Vector3(at.x, float(terrain.call("height_at", at.x, at.y)) + 0.05, at.y), deg_to_rad(yaw + 180.0))
+		_pivot.call("set_view", yaw, v["pitch"], v["dist"])
+		_pivot.call("snap")
+		await create_timer(1.2).timeout
+		await _shot(v["name"])
+		print("IMAGE  %s" % ProjectSettings.globalize_path(_out.path_join("%s.png" % v["name"])))
+
+
+## The plan's anchors at their new places: [{id, at}] (a group's points as id[k]).
+func _anchors() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for a: Dictionary in _layout["anchors"]:
+		if a.has("new"):
+			out.append({"id": a["id"], "at": Vector2(float(a["new"][0]), float(a["new"][1]))})
+		elif a.has("new_points"):
+			for k in (a["new_points"] as Array).size():
+				out.append({"id": "%s[%d]" % [a["id"], k], "at": Vector2(float(a["new_points"][k][0]), float(a["new_points"][k][1]))})
+	return out
+
+
+func _anchor(id: String) -> Vector2:
+	for a in _anchors():
+		if a["id"] == id:
+			return a["at"]
+	return Vector2(120, 176.4)
+
+
+## A path of the plan, its points (Vector2).
+func _path(id: String) -> Array:
+	for p: Dictionary in _layout["paths"]:
+		if p["id"] == id:
+			return (p["points"] as Array).map(func(q: Array) -> Vector2: return Vector2(float(q[0]), float(q[1])))
+	return []
+
+
 ## Phase 5: the game in the 3D Prairie — a new game (Vif), the game's HUD, Vif walking with Chloé,
 ## the day and the night (the 2.5D's light), the dinos of the time of day (Parasaurolophus by day),
 ## a raptor met at night starting the game's own battle (left by running away), the save keeping
 ## Chloé's place in the 2.5D's units.
 func _phase5() -> void:
+	_caption("Phase 5 — la boucle de jeu : partie, HUD, compagnon, jour/nuit, rencontre, combat, sauvegarde")
 	var zone := _demo
 	var session: Node = zone.get("session")
 	var enc: Node = session.get("encounters")
@@ -455,6 +1126,7 @@ const PRAIRIE := [&"velociraptor", &"parasaurolophus", &"compsognathus", &"psitt
 
 
 func _phase7() -> void:
+	_caption("Phases 6-7 — la Prairie peuplée : espèces du moment, troupeaux qui broutent, fuite groupée")
 	var zone := _demo
 	var game := root.get_node("Game")
 	_quiet(zone)
@@ -714,3 +1386,11 @@ func _check(what: String, ok: bool, detail: String) -> void:
 func _shot(name: String) -> void:
 	await process_frame
 	root.get_viewport().get_texture().get_image().save_png(_out.path_join(name + ".png"))
+
+
+## What this run tests, written on the view and left there (Greg, 04/10): one caption for the
+## whole phase, not one per shot — those went by too fast to read.
+func _caption(text: String) -> void:
+	if _caption_layer:
+		_caption_layer.queue_free()
+	_caption_layer = ShotCaption.show_on(self, text)

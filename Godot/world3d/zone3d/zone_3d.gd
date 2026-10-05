@@ -2,7 +2,8 @@ class_name Zone3D
 extends Node3D
 ## A zone of the 3D version (docs/migration-3d.md, phases 4 and 5), built when it starts from the
 ## 2.5D zone `zone_id` (ZoneSource): its relief, ground and water (ZoneTerrain), what stops Chloé
-## (Blockers3D: the 2.5D's rules), its scenery and woods (Scatter3D), its sky over the day (ZoneSky),
+## (Blockers3D: the 2.5D's rules, or a remodelled zone's plan and relief, its story's obstacles too),
+## its scenery and woods (Scatter3D), its sky over the day (ZoneSky),
 ## a navigation mesh for the dinos, Chloé (where the save left her, else at her arrival point), and
 ## the wild dinos of its habitats that have a 3D sheet, those of the time of day.
 ## The game around it (save, HUD, companion, battles): Session3D. Its map is `zone_scale` times wider
@@ -23,6 +24,9 @@ var sky: ZoneSky
 var terrain: ZoneTerrain
 var blockers: Blockers3D
 var scatter: Scatter3D
+var npcs: Npcs3D
+var weather: Weather3D
+var grass: TallGrass3D
 var navigation: NavigationRegion3D
 var player: Player3D
 var dinos: Array[Dinosaur3D] = []
@@ -31,6 +35,7 @@ var build_ms := 0
 
 
 func _ready() -> void:
+	add_to_group(&"zone3d")   # the story's staging finds the zone from here (story/story.gd)
 	var t0 := Time.get_ticks_msec()
 	var steps := {}
 	session = Session3D.new()
@@ -53,16 +58,31 @@ func _ready() -> void:
 	blockers = Blockers3D.new()
 	blockers.name = "Blockers"
 	add_child(blockers)
-	blockers.build(source)
+	blockers.build(source, terrain)
 	steps["obstacles"] = Time.get_ticks_msec() - t0
 	scatter = Scatter3D.new()
 	scatter.name = "Scatter"
 	add_child(scatter)
-	scatter.build(source, terrain)
+	scatter.build(source, terrain, blockers)
 	steps["décors"] = Time.get_ticks_msec() - t0
+	npcs = Npcs3D.new()
+	npcs.name = "Npcs"
+	add_child(npcs)
+	npcs.build(source, terrain)
+	steps["pnj"] = Time.get_ticks_msec() - t0
 	_add_navigation()
 	_add_player()
 	_add_dinos()
+	weather = Weather3D.new()
+	weather.name = "Weather"
+	add_child(weather)
+	weather.build(self)   # after the sky: the lightning adds to its light
+	grass = TallGrass3D.new()
+	grass.name = "TallGrass"
+	add_child(grass)
+	grass.build(source, terrain)
+	Wildlife3D.make(self, source, terrain)   # the little life (butterflies, mosquitoes, lizards…): a child « Wildlife »
+	steps["météo et herbes"] = Time.get_ticks_msec() - t0
 	session.after_build()
 	build_ms = Time.get_ticks_msec() - t0
 	print("Zone3D %s : %d × %d m, construite en %d ms (cumul %s), %d dinos, décors %s" % [zone_id, source.size_m().x, source.size_m().y,
@@ -164,7 +184,7 @@ func _open_spot_near(near: Vector3, area: Rect2, rng: RandomNumberGenerator) -> 
 	for attempt in 12:
 		var x := clampf(near.x + rng.randf_range(-HERD_GATHER_M, HERD_GATHER_M), area.position.x, area.end.x)
 		var z := clampf(near.z + rng.randf_range(-HERD_GATHER_M, HERD_GATHER_M), area.position.y, area.end.y)
-		if source.surface(source.tile_at(x, z)) in WALKABLE:
+		if _open_ground(x, z):
 			return Vector3(x, terrain.height_at(x, z), z)
 	return _open_spot(area, rng)
 
@@ -173,6 +193,12 @@ func _open_spot(area: Rect2, rng: RandomNumberGenerator) -> Vector3:
 	for attempt in 20:
 		var x := rng.randf_range(area.position.x, area.end.x)
 		var z := rng.randf_range(area.position.y, area.end.y)
-		if source.surface(source.tile_at(x, z)) in WALKABLE:
+		if _open_ground(x, z):
 			return Vector3(x, terrain.height_at(x, z), z)
 	return Vector3.INF
+
+
+## Ground a dino may stand on: walkable for the 2.5D's rules, and out of the water the zone has (a
+## remodelled zone's pond and sea are not the 2.5D's).
+func _open_ground(x: float, z: float) -> bool:
+	return source.surface(source.tile_at(x, z)) in WALKABLE and terrain.water_depth_at(x, z) <= 0.0

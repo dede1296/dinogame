@@ -1,0 +1,144 @@
+=== Vérification du plan : Prairie du Grand Crâne (240 x 180 m, grille 0.5 m) ===
+pente maxi praticable 42°, eau bloquante > 0,6 m, largeur de passage >= 1,2 m (érosion 3x3)
+  spawn_DepuisPort             ( 120.0,  176.4) h= 3.97  avant:oui après:oui  ok
+  exit_port_ambre              ( 120.0,  179.5) h= 3.33  avant:oui après:oui  ok
+  panneau_debarcadere          ( 123.2,  169.2) h= 5.78  avant:oui après:oui  ok
+  spawn_Debarcadere            ( 120.0,  156.0) h= 5.65  avant:oui après:oui  ok
+  Maia                         ( 117.2,   96.8) h= 2.99  avant:oui après:oui  ok
+  panneau_carrefour            ( 106.8,   97.6) h= 3.61  avant:oui après:oui  ok
+  spawn_Carrefour              ( 112.0,  104.0) h= 2.97  avant:oui après:oui  ok
+  feu_camp_carrefour           ( 104.0,  110.0) h= 2.57  avant:oui après:oui  ok
+  GrandVoyageur                (  98.8,  106.0) h= 2.66  avant:oui après:oui  ok
+  spawn_Voyageur               ( 104.4,  104.8) h= 2.76  avant:oui après:oui  ok
+  panneau_escale               ( 106.0,  108.0) h= 2.55  avant:oui après:oui  ok
+  CHIPIE_HIDE                  ( 110.4,  102.4) h= 3.20  avant:oui après:oui  ok
+  Chipie_path[0]               ( 107.0,   93.0) h= 3.02  avant:oui après:oui  ok
+  Chipie_path[1]               (  97.0,   89.0) h= 2.86  avant:oui après:oui  ok
+  Chipie_path[2]               (  89.0,   83.0) h= 2.99  avant:oui après:oui  ok
+  Chipie_path[3]               (  81.0,   79.2) h= 3.00  avant:oui après:oui  ok
+  Chipie_path[4]               (  75.2,   77.6) h= 3.00  avant:oui après:oui  ok
+  NidChipie                    (  73.2,   76.2) h= 3.00  avant:oui après:oui  ok
+  rocher_oeuf                  ( 126.0,   84.0) h= 2.78  avant:oui après:oui  ok
+  panneau_oeuf                 ( 124.0,   85.4) h= 2.75  avant:oui après:oui  ok
+  TroncBosquet                 (  58.0,   86.0) h= 3.00  avant:oui après:oui  ok
+  AmbreProtoceratops           (  31.2,   55.2) h= 5.00  avant:non après:oui  ok
+  props_bosquet[0]             (  29.0,   53.0) h= 5.00  avant:non après:oui  ok
+  props_bosquet[1]             (  35.6,   50.4) h= 5.00  avant:non après:oui  ok
+  props_bosquet[2]             (  26.4,   60.8) h= 5.00  avant:non après:oui  ok
+  props_bosquet[3]             (  42.8,   58.0) h= 5.05  avant:non après:oui  ok
+  props_bosquet[4]             (  44.0,   52.4) h= 5.03  avant:non après:oui  ok
+  EntreeGrotte                 ( 116.0,   46.0) h= 3.77  avant:non après:oui  ok
+  exit_grotte_echos            ( 116.0,   46.4) h= 3.77  avant:non après:oui  ok
+  spawn_DepuisGrotte           ( 116.0,   48.6) h= 3.73  avant:non après:oui  ok
+  RocherGrotte                 ( 116.0,   49.2) h= 3.71  avant:non après:oui  ok
+  panneau_grotte               ( 122.4,   54.8) h= 3.00  avant:oui après:oui  ok
+  props_grotte[0]              ( 111.2,   51.6) h= 3.22  avant:oui après:oui  ok
+  props_grotte[1]              ( 121.6,   51.6) h= 3.00  avant:oui après:oui  ok
+  props_grotte[2]              ( 108.8,   52.0) h= 3.00  avant:oui après:oui  ok
+  PorteAmbre                   ( 190.0,   64.0) h= 4.33  avant:oui après:oui  ok
+  spawn_Falaises               ( 190.0,   54.0) h= 6.04  avant:non après:oui  ok
+  poste_banc                   ( 192.0,   20.8) h=13.42  avant:non après:oui  ok
+  panneau_falaises             ( 188.4,   21.2) h=12.87  avant:non après:oui  ok
+  page3                        ( 196.0,   21.2) h=13.95  avant:non après:oui  ok
+  ecaille_falaises             ( 200.0,   21.6) h=14.00  avant:non après:oui  ok
+  table_observation            ( 200.0,   20.2) h=14.00  avant:non après:oui  ok
+  feu_camp_poste               ( 192.0,   16.8) h=14.00  avant:non après:oui  ok
+  nids_dimorphodon[0]          ( 183.0,   14.0) h=14.00  avant:non après:oui  ok
+  nids_dimorphodon[1]          ( 206.0,   15.0) h=14.00  avant:non après:oui  ok
+  AntreCrane                   ( 172.0,   92.0) h= 6.50  avant:non après:oui  ok
+  exit_antre_crane             ( 172.0,   92.6) h= 6.50  avant:non après:oui  ok
+  spawn_DepuisAntre            ( 172.0,   96.0) h= 6.50  avant:non après:oui  ok
+  PorteCrane                   ( 172.0,  100.0) h= 6.50  avant:oui après:oui  ok
+  panneau_crane                ( 164.8,  105.6) h= 6.50  avant:oui après:oui  ok
+  Alpha                        ( 178.4,  110.0) h= 6.50  avant:oui après:oui  ok
+  MaiaDefi                     ( 165.6,  106.4) h= 6.50  avant:oui après:oui  ok
+  spawn_Crane                  ( 164.0,  109.0) h= 6.50  avant:oui après:oui  ok
+  scene_crane[0]               ( 172.0,   93.0) h= 6.50  avant:non après:oui  ok
+  scene_crane[1]               ( 172.0,  102.4) h= 6.50  avant:oui après:oui  ok
+  scene_crane[2]               ( 173.8,  100.6) h= 6.50  avant:oui après:oui  ok
+  scene_crane[3]               ( 150.0,  107.0) h= 6.46  avant:oui après:oui  ok
+  GueDeLune                    ( 134.0,  119.0) h= 2.30  avant:non après:oui  ok
+  ilot                         ( 134.0,  124.0) h= 2.90  avant:non après:oui  ok
+  Page2                        ( 133.0,  123.4) h= 2.90  avant:non après:oui  ok
+  pierre_plate                 ( 133.8,  122.4) h= 2.90  avant:non après:oui  ok
+  GaletIlot                    ( 135.0,  124.8) h= 2.90  avant:non après:oui  ok
+  panneau_etang                ( 138.8,  116.6) h= 2.35  avant:oui après:oui  ok
+  singer_spots[0]              ( 122.8,  123.0) h= 2.37  avant:oui après:oui  ok
+  singer_spots[1]              ( 147.0,  123.2) h= 2.64  avant:oui après:oui  ok
+  singer_spots[2]              ( 124.4,  129.0) h= 2.47  avant:oui après:oui  ok
+  singer_spots[3]              ( 137.0,  130.8) h= 2.47  avant:oui après:oui  ok
+  preles_etang[0]              ( 120.8,  119.2) h= 2.42  avant:oui après:oui  ok
+  preles_etang[1]              ( 149.6,  128.4) h= 2.67  avant:oui après:oui  ok
+  preles_etang[2]              ( 130.0,  133.6) h= 2.67  avant:oui après:oui  ok
+  CuirMue                      ( 144.8,  128.4) h= 2.55  avant:oui après:oui  ok
+  banc_etang                   ( 126.8,  116.8) h= 2.42  avant:oui après:oui  ok
+  props_etang[0]               ( 123.0,  120.4) h= 2.41  avant:oui après:oui  ok
+  props_etang[1]               ( 146.4,  118.6) h= 2.45  avant:oui après:oui  ok
+  props_etang[2]               ( 145.2,  127.0) h= 2.51  avant:oui après:oui  ok
+  props_etang[3]               ( 128.4,  130.8) h= 2.51  avant:oui après:oui  ok
+  props_etang[4]               ( 138.0,  131.2) h= 2.60  avant:oui après:oui  ok
+  TriceratopsMalade            ( 137.0,  130.8) h= 2.47  avant:oui après:oui  ok
+  CrottesTriceratops           ( 132.6,  132.2) h= 2.63  avant:oui après:oui  ok
+  Elise                        ( 131.2,  134.6) h= 2.68  avant:oui après:oui  ok
+  arbre_dormeur                ( 110.8,  132.8) h= 2.74  avant:oui après:oui  ok
+  Dormeur                      ( 112.8,  134.8) h= 2.80  avant:oui après:oui  ok
+  banc_dormeur                 ( 125.6,  132.0) h= 2.63  avant:oui après:oui  ok
+  panneau_anse                 (  51.0,  133.0) h= 2.76  avant:oui après:oui  ok
+  feu_camp_crique              (  63.0,  128.0) h= 3.00  avant:oui après:oui  ok
+  spawn_DepuisForet            (   5.0,  104.0) h= 3.52  avant:oui après:oui  ok
+  exit_foret                   (   0.6,  104.0) h= 3.64  avant:oui après:oui  ok
+  galets_arbres[0]             (  90.0,  128.0) h= 3.14  avant:oui après:oui  ok
+  galets_arbres[1]             ( 140.0,  144.0) h= 2.97  avant:oui après:oui  ok
+  galets_arbres[2]             (  60.0,  104.0) h= 2.98  avant:oui après:oui  ok
+  galets_arbres[3]             ( 104.0,   72.0) h= 3.09  avant:oui après:oui  ok
+  galets_arbres[4]             ( 180.0,  124.0) h= 2.80  avant:oui après:oui  ok
+  galets_arbres[5]             ( 200.0,   40.0) h= 7.22  avant:non après:oui  ok
+  galets_arbres[6]             (  30.0,   66.0) h= 4.93  avant:non après:oui  ok
+  galets_arbres[7]             ( 220.0,  150.0) h= 3.00  avant:oui après:oui  ok
+  galets_recoins[0]            ( 138.0,   30.0) h= 4.89  avant:oui après:oui  ok
+  galets_recoins[1]            ( 204.0,   16.0) h=14.00  avant:non après:oui  ok
+  galets_recoins[2]            (  48.0,  142.0) h= 1.61  avant:oui après:oui  ok
+ancres en défaut : 0
+
+=== Temps de trajet (plus court chemin praticable, passages ouverts) : marche 1,6 m/s / course 5 m/s ===
+  port -> Maïa (carrefour)                   :    77 m  marche  48 s  course  15 s
+  port -> gué du ru                          :    47 m  marche  29 s  course   9 s
+  carrefour -> tronc de Tranche              :    60 m  marche  38 s  course  12 s
+  tronc -> fragment d'ambre (clairière)      :    38 m  marche  24 s  course   8 s
+  carrefour -> rocher de Charge              :    45 m  marche  28 s  course   9 s
+  carrefour -> porte d'ambre                 :    83 m  marche  52 s  course  17 s
+  porte d'ambre -> poste d'observation       :    46 m  marche  29 s  course   9 s
+  carrefour -> Grand Crâne (panneau)         :    48 m  marche  30 s  course  10 s
+  étang (panneau) -> Grand Crâne             :    35 m  marche  22 s  course   7 s
+  carrefour -> nid de Chipie                 :    48 m  marche  30 s  course  10 s
+  carrefour -> sortie Forêt                  :   112 m  marche  70 s  course  22 s
+  gué du ru -> crique (panneau)              :    65 m  marche  41 s  course  13 s
+  carrefour -> parvis du Crâne               :    49 m  marche  30 s  course  10 s
+  carrefour -> poste (tout le passage 3)     :   133 m  marche  83 s  course  27 s
+  carrefour -> cascade                       :   122 m  marche  76 s  course  24 s
+  carrefour -> fragment (tout le passage 1)  :   101 m  marche  63 s  course  20 s
+  carrefour -> belvédère                     :    77 m  marche  48 s  course  15 s
+  Grand Crâne -> port (retour)               :   101 m  marche  63 s  course  20 s
+  carrefour -> dormeur                       :    36 m  marche  22 s  course   7 s
+
+=== Pentes des sentiers (profil lissé) ===
+  route_port           main       long.   80 m  de  3.33 à  3.41 m  pente maxi 12.0°
+  route_grotte         main       long.   46 m  de  3.53 à  3.67 m  pente maxi  5.5°
+  route_bosquet        main       long.   92 m  de  3.43 à  5.00 m  pente maxi  9.7°
+  route_crane          main       long.   59 m  de  3.17 à  6.50 m  pente maxi  7.7°
+  route_corridor       main       long.   86 m  de  3.21 à  4.39 m  pente maxi 10.0°
+  sentier_gorge        secondary  long.   61 m  de  4.22 à 13.73 m  pente maxi 13.4°
+  sentier_vallon       trail      long.   35 m  de  6.04 à  7.00 m  pente maxi  7.7°
+  sente_belvedere      secondary  long.   68 m  de  3.14 à  9.50 m  pente maxi 12.0°
+  sente_chipie         trail      long.   36 m  de  3.02 à  3.00 m  pente maxi  2.2°
+  sente_crique         secondary  long.   75 m  de  2.72 à  2.38 m  pente maxi  5.9°
+  sente_foret          secondary  long.   71 m  de  3.00 à  3.65 m  pente maxi  2.7°
+  sente_sud            trail      long.   32 m  de  3.00 à  3.00 m  pente maxi  0.0°
+  sente_dormeur        trail      long.   45 m  de  2.80 à  5.80 m  pente maxi  8.0°
+  sente_rive_sud       trail      long.   53 m  de  2.43 à  4.01 m  pente maxi  6.0°
+  sente_est            secondary  long.  145 m  de  5.57 à  5.80 m  pente maxi 12.0°
+  sente_cascade        trail      long.    8 m  de  3.00 à  3.00 m  pente maxi  0.0°
+  sente_eboulis        trail      long.   40 m  de  3.00 à  3.00 m  pente maxi  0.0°
+
+cellules de sentier non praticables (pente/eau/haie) : 31 sur 8916
+surface praticable : 74 % de la zone ; parois (> 50°) : 11.9 % ; eau profonde : 6.8 %

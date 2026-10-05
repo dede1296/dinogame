@@ -88,7 +88,6 @@ func _build_hud(region: Region) -> void:
 	hud.add_child(banner)
 	banner.show_zone(region.zone_name if region.zone_name != "" else region.display_name,
 		region.display_name if region.zone_name != "" else "")
-	SettingsMenu.add_open_button(hud)
 	MapScreen.add_open_button(hud, _open_map)
 	DexScreen.ensure_action()
 	DexScreen.add_open_button(hud, _open_dex)
@@ -106,6 +105,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed(DexScreen.ACTION):
 		get_viewport().set_input_as_handled()
 		_open_dex()
+	elif event.is_action_pressed(Input3D.MENU) and _free_to_open():
+		get_viewport().set_input_as_handled()
+		SettingsMenu.open(self, true)   # Start on the gamepad (Greg, 05/10): the settings, as the menu button
 
 
 func _free_to_open() -> bool:

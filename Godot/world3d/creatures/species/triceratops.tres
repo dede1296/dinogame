@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="Species3D" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://world3d/creatures/species_3d.gd" id="1_species"]
+[ext_resource type="Script" path="res://world3d/animation/anim_set.gd" id="2_animset"]
+[ext_resource type="PackedScene" path="res://assets/models3d/dinos/triceratops/triceratops.glb" id="3_model"]
+
+[sub_resource type="Resource" id="Resource_anims"]
+script = ExtResource("2_animset")
+walk_clip_speed = 0.92
+run_clip_speed = 3.39
+
+[resource]
+script = ExtResource("1_species")
+id = &"triceratops"
+model = ExtResource("3_model")
+anim_set = SubResource("Resource_anims")
+length_m = 9.0
+mass_kg = 8000.0
+diet = &"herbivore"
+biomes = Array[StringName]([&"plaines", &"foret"])
+temperament = &"calm"
+walk_speed = 1.2
+run_speed = 5.0
+perception_m = 12.0
+flee_m = 5.0
+roam_m = 12.0
+herd = true
+grazes = true
