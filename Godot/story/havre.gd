@@ -228,7 +228,7 @@ static func joss() -> void:
 	Game.set_flag(&"selle")
 	await S.say([
 		{"who": JOSS, "text": "Voilà. Taillée pour toi. Le cuir de l'étang est le plus souple de l'île."},
-		{"text": "Chloé reçoit la selle de Joss ! Un grand dino adulte de l'équipe peut maintenant la porter : touche le bouton selle, à droite de l'écran (ou R)."},
+		{"text": "Chloé reçoit la selle de Joss ! Un grand dino adulte de l'équipe peut maintenant la porter : " + Prompts.say("touche le bouton selle, à droite de l'écran (ou R).", "appuie sur {ride}, ou clique le bouton selle, à droite de l'écran.")},
 		{"who": JOSS, "text": "Sur une monture, tu vas presque deux fois plus vite, et les dinos des herbes hautes ne te voient même pas passer. La Forêt est immense : tu en auras besoin."},
 	])
 	Toast.say(S.world().get_tree(), "Objet obtenu : la selle")

@@ -51,6 +51,16 @@ const PAD_FILES := {
 	},
 }
 
+## Les noms de boutons de manette qui ne sont pas leur fichier en majuscules.
+const PAD_NAMES := {
+	"view": "Vue", "menu": "Menu", "options": "Options", "share": "Partage", "cross": "Croix",
+	"circle": "Rond", "square": "Carré", "triangle": "Triangle", "minus": "−", "plus": "+",
+	"l_stick_click": "clic du stick gauche", "r_stick_click": "clic du stick droit",
+	"dpad_up": "croix ↑", "dpad_down": "croix ↓", "dpad_left": "croix ←", "dpad_right": "croix →",
+}
+## Un jeton d'indication : {interact}.
+static var TOKEN := _token_regex()
+
 ## Ce que le joueur a touché en dernier : le clavier (&"key"), ou la famille de sa manette.
 var family: StringName = KEYBOARD
 ## Vrai tant que le dernier geste est une touche ou la manette (pas la souris) : les écrans mettent
@@ -100,6 +110,12 @@ static func ensure_pad_for_menus() -> void:
 		InputMap.action_add_event(action, event)
 
 
+static func _token_regex() -> RegEx:
+	var regex := RegEx.new()
+	regex.compile(r"\{(\w+)\}")
+	return regex
+
+
 ## La famille d'une manette d'après le nom que Godot lui lit.
 static func pad_family(device: int) -> StringName:
 	return pad_family_of_name(Input.get_joy_name(device))
@@ -144,10 +160,44 @@ func label(action: StringName, kind := "") -> String:
 	var wants_pad := (kind == "pad") or (kind == "" and family != KEYBOARD)
 	for event in InputMap.action_get_events(action):
 		if wants_pad and event is InputEventJoypadButton:
-			return event.as_text()
+			return pad_button_name(event.button_index, family if family != KEYBOARD else pad_family(_first_pad()))
 		if not wants_pad and event is InputEventKey:
 			return OS.get_keycode_string(_label_keycode(event))
 	return ""
+
+
+## Le nom d'un bouton de manette dans la famille donnée (« A », « Croix », « Y »…), pour un texte.
+static func pad_button_name(button: int, pad: StringName) -> String:
+	var file: String = PAD_FILES.get(pad, PAD_FILES[&"xbox"]).get(button, "")
+	if file == "":
+		return "Bouton %d" % button if button >= 0 else ""
+	return PAD_NAMES.get(file, file.to_upper().replace("_", " "))
+
+
+## Une indication d'interface qui cite une touche : sur téléphone `phone_text` tel quel ; sur
+## ordinateur `computer_text`, où chaque jeton {action} (interact, ride, map, dex, menu, run,
+## cancel, team) devient la vraie touche ou le vrai bouton, à jour des touches redéfinies et de la
+## manette branchée. Ex. : Prompts.say("Touche l'écran", "Clique ou appuie sur {interact}").
+func say(phone_text: String, computer_text: String) -> String:
+	return fill(computer_text) if Screen.on_computer() else phone_text
+
+
+## Remplace les jetons {action} d'un texte par le nom de la touche ou du bouton. Un jeton qui n'est
+## pas une action connue reste tel quel.
+func fill(text: String) -> String:
+	var out := text
+	for hit in TOKEN.search_all(text):
+		var action := StringName(hit.get_string(1))
+		if not InputMap.has_action(action):
+			continue
+		var shown := label(action)
+		if shown == "":
+			shown = label(action, "key")
+		if shown == "":
+			shown = label(action, "pad")
+		if shown != "":
+			out = out.replace(hit.get_string(), shown)
+	return out
 
 
 ## L'icône de la touche : parmi celles de l'action, une lettre de préférence (« E » parle mieux

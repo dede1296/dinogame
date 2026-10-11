@@ -40,6 +40,7 @@ func _ready() -> void:
 	add_child(row)
 	row.add_child(_identity())
 	row.add_child(_details())
+	PadFocus.prepare(self)   # (the ✕ takes the focus for a pad or a keyboard: A closes, like B)
 
 
 # ------------------------------------------------------------------ left: who it is

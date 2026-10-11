@@ -13,7 +13,10 @@ extends Control
 ## The round buttons are stacked down the right edge: the phone's step, and the computer's — wider,
 ## to leave room for the small key written under each button (_key_tag).
 const STACK_STEP_PHONE := 86.0
-const STACK_STEP_PC := 104.0
+const STACK_STEP_PC := 88.0
+## On a computer the HUD is drawn this much smaller than for thumbs (round buttons, badges, the
+## party's portraits). Never on a phone. The one place to change it.
+const SCALE_PC := 0.8
 const TAG_PX := 26.0
 const DELAY_S := 0.28        # on ne montre rien tant que la souris ne s'arrête pas
 const FADE_PER_S := 10.0
@@ -31,6 +34,23 @@ var _icon: TextureRect
 var _target: Control
 var _since := 0.0
 var _wanted := false
+
+
+## The HUD's scale: SCALE_PC on a computer, 1 on a phone.
+static func scale_pc() -> float:
+	return SCALE_PC if Screen.on_computer() else 1.0
+
+
+## Shrinks `control` (from its top-left corner) to the HUD's scale; its `size` stays the drawn one.
+static func fit(control: Control) -> void:
+	control.pivot_offset = Vector2.ZERO
+	control.scale = Vector2.ONE * scale_pc()
+
+
+## What `control` really covers on screen (its rectangle, with the HUD's scale).
+static func shown_rect(control: Control) -> Rect2:
+	var box := control.get_global_rect()
+	return Rect2(box.position, box.size * control.get_global_transform().get_scale())
 
 
 ## Where the n-th round button of the right edge starts (0: the menu button), under the safe area.
@@ -169,11 +189,11 @@ func _process(delta: float) -> void:
 
 ## À gauche d'un bouton du bord droit, en dessous de ce qui est à gauche de l'écran ; toujours dans l'écran.
 func _place() -> void:
-	var area := _target.get_global_rect()
+	var area := shown_rect(_target)
 	var screen := get_viewport().get_visible_rect().size
 	var size := _plate.size
 	var at := Vector2.ZERO
-	var beside: Variant = _target.get_meta(&"hint_beside", null)
+	var beside: Variant = _target.get_meta(&"hint_beside") if _target.has_meta(&"hint_beside") else null
 	if beside is Callable:
 		var row: Rect2 = (beside as Callable).call()
 		at = Vector2(row.end.x + GAP, row.position.y)

@@ -56,6 +56,7 @@ func _ready() -> void:
 	_label.add_theme_color_override("font_color", Color(1, 0.97, 0.9))
 	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(_label)
+	HudHint.fit(self)
 	_refresh()
 	get_viewport().size_changed.connect(_place)
 	_place.call_deferred()
@@ -65,7 +66,8 @@ func _place() -> void:
 	var inset := SafeArea.insets(get_viewport())
 	var screen := get_viewport().get_visible_rect().size
 	reset_size()
-	position = Vector2(screen.x - inset.x - RIGHT_OF_MENU - size.x, inset.y + 14.0)
+	var k := HudHint.scale_pc()
+	position = Vector2(screen.x - inset.x - (RIGHT_OF_MENU + size.x) * k, inset.y + 14.0 * k)
 
 
 func _process(delta: float) -> void:

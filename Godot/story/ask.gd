@@ -293,7 +293,8 @@ static func _coins(npc: StringName) -> String:
 ## The next thing Chloé must do for her saddle (the same steps as the quest helper).
 static func saddle_step() -> String:
 	if Game.flag(&"selle"):
-		return "Mais tu en as déjà une ! Touche le bouton selle, avec un grand dino adulte dans ton équipe."
+		return Prompts.say("Mais tu en as déjà une ! Touche le bouton selle, avec un grand dino adulte dans ton équipe.",
+			"Mais tu en as déjà une ! Appuie sur {ride}, avec un grand dino adulte dans ton équipe.")
 	if not Game.flag(&"selle_demandee"):
 		return "Va voir Joss, le sellier : la grande maison à l'est de la rue, avec l'ancre sur l'enseigne."
 	var todo: Array[String] = []

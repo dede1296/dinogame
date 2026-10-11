@@ -6,7 +6,7 @@ extends SceneTree
 ## Écrit PASS / FAIL, enregistre les captures, sort en 1 au moindre échec. Il faut une fenêtre.
 
 const WORLD := "res://world/world.tscn"
-const CAPTION := "Manette seule : équipe (changer de dino de tête), Dinodex, carte, menu — sans clavier ni souris"
+const CAPTION := "Manette seule : équipe, Dinodex, carte, menu, boutique, combat, dialogue à choix, lettre, fiche d'un dino, page Touches — sans clavier ni souris"
 const DPAD_LEFT := 13
 const DPAD_RIGHT := 14
 const DPAD_UP := 11
@@ -62,6 +62,14 @@ func _run() -> void:
 		await _voyage()
 	if _only in ["", "combat"]:
 		await _battle()
+	if _only in ["", "dialogue"]:
+		await _dialogue()
+	if _only in ["", "lettre"]:
+		await _lettre()
+	if _only in ["", "fiche"]:
+		await _fiche()
+	if _only in ["", "touches"]:
+		await _touches()
 	banner.queue_free()
 	print("TEST manette : %s (%d échec(s))" % ["OK" if _failed == 0 else "ÉCHEC", _failed])
 	quit(1 if _failed else 0)
@@ -306,7 +314,255 @@ func _battle() -> void:
 	_check("le jeu repart", not paused)
 
 
+# ------------------------------------------------------------------ un dialogue à choix
+
+func _dialogue() -> void:
+	var box := root.get_node("Dialogue")
+	_tap(DPAD_DOWN)   # (le joueur est à la manette : c'est ce qui lui donne le premier focus)
+	await _wait(0.2)
+	var answer := [-1]
+	var ask := func(options: Array) -> void:
+		answer[0] = await box.call("choose", "Pervenche", "Que fait-on de la chèvre ?", options)
+	ask.call(["Oui", "Peut-être", "Non"])
+	await _wait(1.8)
+	var focus := root.gui_get_focus_owner()
+	_check("un choix a le focus d'emblée (le premier)", focus is Button and (focus as Button).text == "Oui",
+		(focus as Button).text if focus is Button else str(focus))
+	await _shot("manette_09_dialogue_choix")
+	_tap(DPAD_DOWN)
+	await _wait(0.3)
+	var moved := root.gui_get_focus_owner()
+	_check("la croix change de choix", moved is Button and (moved as Button).text == "Peut-être",
+		(moved as Button).text if moved is Button else str(moved))
+	_tap(BUTTON_A)
+	await _wait(0.4)
+	_check("A valide le choix sur lequel on est", answer[0] == 1, str(answer[0]))
+	_check("le dialogue se referme", not box.get("active"))
+	answer[0] = -1
+	ask.call(["Oui", "Peut-être", "Non"])
+	await _wait(1.8)
+	_tap(BUTTON_B)
+	await _wait(0.4)
+	_check("B choisit le dernier choix (« Non »)", answer[0] == 2, str(answer[0]))
+	await _dialogue_lines(box)
+
+
+## Deux répliques : A termine la frappe puis passe à la suivante.
+func _dialogue_lines(box: Node) -> void:
+	var done := [false]
+	var steps := [{"who": "Chloé", "text": "Première réplique, assez courte."}, {"who": "Chloé", "text": "Et la seconde."}]
+	var go := func() -> void:
+		await box.call("run", steps)
+		done[0] = true
+	go.call()
+	await _wait(0.6)
+	_check("le dialogue est à l'écran", box.get("active"))
+	await _shot("manette_10_dialogue_ligne")
+	var presses := 0
+	while not done[0] and presses < 12:
+		_tap(BUTTON_A)
+		presses += 1
+		await _wait(0.5)
+	_check("A seul fait avancer le dialogue jusqu'au bout", done[0], "%d pressions" % presses)
+	_check("le jeu repart", not paused)
+
+
+# ------------------------------------------------------------------ une lettre
+
+func _lettre() -> void:
+	for button in [BUTTON_A, BUTTON_B]:
+		var name := "A" if button == BUTTON_A else "B"
+		var open := func() -> void:
+			await load("res://ui/letter_view.gd").call("open", self, ["Ma chère Chloé,", "La clé est sous la pierre plate."], "— H.")
+		open.call()
+		await _wait(0.8)
+		var letter := _node_with("_hand_label")
+		_check("la lettre s'ouvre (%s)" % name, letter != null)
+		if letter == null:
+			return
+		if button == BUTTON_A:
+			await _shot("manette_11_lettre")
+		_tap(button)
+		await _wait(0.8)
+		_check("%s range la lettre" % name, not is_instance_valid(letter) or letter.is_queued_for_deletion())
+
+
+# ------------------------------------------------------------------ la fiche d'un dino
+
+func _fiche() -> void:
+	var bar := _find("party_bar")
+	if bar == null:
+		_check("la barre d'équipe est là", false)
+		return
+	await _open_card_with_pad()
+	var card := _node_with("_bond_row")
+	_check("« Fiche » (menu d'un portrait) ouvre la fiche du dino", card != null)
+	if card == null:
+		return
+	var focus := root.gui_get_focus_owner()
+	_check("un bouton a le focus (le ✕)", focus is Button and (focus as Button).text == "✕", str(focus))
+	await _shot("manette_12_fiche")
+	_tap(DPAD_DOWN)
+	await _wait(0.3)
+	_check("la croix ne perd pas le focus", root.gui_get_focus_owner() is Button, str(root.gui_get_focus_owner()))
+	_tap(BUTTON_B)
+	await _wait(0.5)
+	_check("B ferme la fiche", not is_instance_valid(card) or card.is_queued_for_deletion())
+	_check("le jeu repart", not paused)
+	await _open_card_with_pad()
+	card = _node_with("_bond_row")
+	var reopened := card != null
+	_tap(BUTTON_A)
+	await _wait(0.5)
+	_check("A sur le ✕ ferme la fiche", reopened and (not is_instance_valid(card) or card.is_queued_for_deletion()))
+	_check("le jeu repart", not paused)
+	await _fiche_souris(bar)
+
+
+## ◀, ▶, A (menu du deuxième portrait), puis la croix jusqu'à « Fiche » et A.
+func _open_card_with_pad() -> void:
+	_tap(DPAD_LEFT)
+	await _wait(0.3)
+	_tap(DPAD_RIGHT)
+	await _wait(0.3)
+	_tap(BUTTON_A)
+	await _wait(0.5)
+	for i in 5:
+		var f := root.gui_get_focus_owner()
+		if f is Button and (f as Button).text == "Fiche":
+			break
+		_tap(DPAD_DOWN)
+		await _wait(0.25)
+	_tap(BUTTON_A)
+	await _wait(0.6)
+
+
+## Non-régression : à la souris, le portrait ouvre son menu, « Fiche » la fiche, le ✕ la ferme.
+func _fiche_souris(bar: Node) -> void:
+	_mouse_move(Vector2(5, 5))
+	await _wait(0.2)
+	_check("le dernier geste est à la souris", not root.get_node("Prompts").get("navigating"))
+	var slot: Control = bar.get("_slots")[1]
+	await _click(slot.get_global_rect().get_center())
+	_check("clic sur un portrait : son menu s'ouvre", bar.get("_menu") != null)
+	var fiche := _button_named(bar, "Fiche")
+	_check("le menu a son bouton « Fiche »", fiche != null)
+	if fiche == null:
+		return
+	await _click(fiche.get_global_rect().get_center())
+	var card := _node_with("_bond_row")
+	_check("clic sur « Fiche » : la fiche s'ouvre", card != null)
+	if card == null:
+		return
+	await _shot("manette_13_fiche_souris")
+	var close := _button_named(card, "✕")
+	await _click(close.get_global_rect().get_center())
+	_check("clic sur le ✕ : la fiche se ferme", not is_instance_valid(card) or card.is_queued_for_deletion())
+	_check("le jeu repart", not paused)
+
+
+# ------------------------------------------------------------------ Paramètres → Touches
+
+func _touches() -> void:
+	var keymap := load("res://ui/key_remap.gd")
+	# (keybinds.json est le fichier du JOUEUR : on le garde tel quel et on le remet à la fin)
+	var binds_path: String = keymap.get("PATH")
+	var binds_before := FileAccess.get_file_as_string(binds_path) if FileAccess.file_exists(binds_path) else ""
+	_tap(DPAD_DOWN)
+	await _wait(0.2)
+	load("res://ui/settings_menu.gd").call("open", current_scene, true)
+	await _wait(0.6)
+	var menu := _node_with("_keys_page")
+	_check("le menu s'ouvre", menu != null)
+	if menu == null:
+		return
+	for i in 4:
+		var f := root.gui_get_focus_owner()
+		if f is Button and (f as Button).text == "Touches":
+			break
+		_tap(DPAD_DOWN)
+		await _wait(0.2)
+	_tap(BUTTON_A)
+	await _wait(0.5)
+	_check("A sur « Touches » : la page Touches", menu.get("_page") == "touches", str(menu.get("_page")))
+	var focus := root.gui_get_focus_owner()
+	_check("une ligne d'action a le focus", focus is Button, str(focus))
+	await _shot("manette_14_touches")
+	_tap(DPAD_RIGHT)
+	await _wait(0.3)
+	var pad_button := root.gui_get_focus_owner()
+	_check("▶ : le bouton de la manette de l'action", pad_button is Button and pad_button != focus, str(pad_button))
+	var before: int = keymap.call("current", &"interact", "pad")
+	_tap(BUTTON_A)
+	await _wait(0.4)
+	_check("A : l'écran attend un nouveau bouton", menu.get("_capture_action") == &"interact" and menu.get("_capture_kind") == "pad")
+	await _shot("manette_15_touches_capture")
+	_tap(BUTTON_B)
+	await _wait(0.4)
+	_check("B annule sans rien changer", menu.get("_capture_action") == &"" and keymap.call("current", &"interact", "pad") == before)
+	_check("la page Touches reste ouverte", menu.get("_page") == "touches")
+	_check("le focus est resté sur la ligne", root.gui_get_focus_owner() is Button, str(root.gui_get_focus_owner()))
+	_tap(BUTTON_A)
+	await _wait(0.4)
+	_tap(SHOULDER_L)
+	await _wait(0.5)
+	_check("appuyer LB redéfinit « Parler »", keymap.call("current", &"interact", "pad") == SHOULDER_L,
+		str(keymap.call("current", &"interact", "pad")))
+	_check("la capture est finie", menu.get("_capture_action") == &"")
+	var back := root.gui_get_focus_owner()
+	_check("le focus est resté sur ce bouton, qui dit « LB »", back is Button and (back as Button).text == "LB",
+		(back as Button).text if back is Button else str(back))
+	await _shot("manette_16_touches_redefini")
+	menu.call("_reset_keys")   # (on remet les commandes par défaut : le fichier keybinds.json est celui du jeu)
+	await _wait(0.4)
+	_check("« Rétablir » remet A à « Parler »", keymap.call("current", &"interact", "pad") == before)
+	_tap(BUTTON_B)
+	await _wait(0.4)
+	_check("B : retour au menu", menu.get("_page") == "menu")
+	_tap(BUTTON_B)
+	await _wait(0.5)
+	_check("B : le menu se ferme", not is_instance_valid(menu) or menu.is_queued_for_deletion())
+	_check("le jeu repart", not paused)
+	if binds_before != "":   # ses commandes redéfinies reviennent, comme avant le test
+		var file := FileAccess.open(binds_path, FileAccess.WRITE)
+		file.store_string(binds_before)
+		file.close()
+	elif FileAccess.file_exists(binds_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(binds_path))
+
+
 # ------------------------------------------------------------------ outils
+
+func _button_named(under: Node, text: String) -> Button:
+	for b in under.find_children("*", "Button", true, false):
+		if (b as Button).text == text and not b.is_queued_for_deletion():
+			return b
+	return null
+
+
+func _mouse_move(at: Vector2) -> void:
+	var motion := InputEventMouseMotion.new()
+	motion.position = at
+	motion.global_position = at
+	motion.relative = Vector2(20, 20)
+	Input.parse_input_event(motion)
+	Input.flush_buffered_events()
+
+
+func _click(at: Vector2) -> void:
+	_mouse_move(at)
+	await _wait(0.1)
+	for pressed in [true, false]:
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = pressed
+		event.position = at
+		event.global_position = at
+		Input.parse_input_event(event)
+		Input.flush_buffered_events()
+		await _wait(0.1)
+	await _wait(0.4)
+
 
 func _node_with(method: String) -> Node:
 	for parent in [current_scene, root]:

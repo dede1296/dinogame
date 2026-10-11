@@ -85,7 +85,7 @@ func _ready() -> void:
 
 func _place() -> void:
 	var inset := SafeArea.insets(get_viewport())
-	position = Vector2(inset.x, inset.y + TOP)
+	position = Vector2(inset.x, inset.y + TOP * HudHint.scale_pc())
 
 
 func _process(delta: float) -> void:

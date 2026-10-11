@@ -97,9 +97,9 @@ func _rebuild() -> void:
 		var slot := Slot.new()
 		slot.dino = d
 		slot.lead = i == 0
-		var size := LEAD_SIZE if i == 0 else SIZE
+		var size := lead_size() if i == 0 else slot_size()
 		slot.size = Vector2(size, size + 10.0)
-		slot.position = Vector2(x, inset.y + (0.0 if i == 0 else (LEAD_SIZE - SIZE) * 0.5))
+		slot.position = Vector2(x, inset.y + (0.0 if i == 0 else (lead_size() - slot_size()) * 0.5))
 		slot.add_to_group(&"touch_blockers")
 		slot.tapped.connect(_open_menu.bind(i))
 		slot.draggable = true
@@ -116,6 +116,15 @@ func _rebuild() -> void:
 		_slots.append(slot)
 		_drag.add_target(slot, func(p: Dictionary) -> bool: return p.get("index", -1) != i, _dropped_on.bind(i))
 		x += size + GAP
+
+
+## The portraits' sizes: smaller on a computer (HudHint.scale_pc).
+static func lead_size() -> float:
+	return LEAD_SIZE * HudHint.scale_pc()
+
+
+static func slot_size() -> float:
+	return SIZE * HudHint.scale_pc()
 
 
 ## The row of portraits, on screen.

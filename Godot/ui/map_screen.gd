@@ -66,11 +66,12 @@ static func add_open_button(hud: CanvasLayer, on_pressed: Callable) -> Button:
 	icon.set_anchors_preset(Control.PRESET_FULL_RECT)
 	icon.draw.connect(_draw_icon.bind(icon))
 	button.add_child(icon)
+	HudHint.fit(button)
 	hud.add_child(button)
 	var place := func() -> void:
 		var inset := SafeArea.insets(button.get_viewport())
 		var screen := button.get_viewport().get_visible_rect().size
-		button.position = Vector2(screen.x - inset.x - button.custom_minimum_size.x, inset.y + HudHint.stack_y(1))
+		button.position = Vector2(screen.x - inset.x - button.custom_minimum_size.x * HudHint.scale_pc(), inset.y + HudHint.stack_y(1))
 	place.call()
 	button.get_viewport().size_changed.connect(place)
 	button.pressed.connect(on_pressed)

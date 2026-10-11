@@ -22,6 +22,7 @@ static func add(hud: CanvasLayer, on_pressed: Callable) -> RideButton:
 func _ready() -> void:
 	custom_minimum_size = Vector2(SIZE, SIZE)
 	focus_mode = Control.FOCUS_NONE
+	HudHint.fit(self)
 	tooltip_text = "Monture (R)"
 	visible = false
 	var icon := TextureRect.new()
@@ -57,4 +58,4 @@ func _style() -> void:
 func _place() -> void:
 	var inset := SafeArea.insets(get_viewport())
 	var screen := get_viewport().get_visible_rect().size
-	position = Vector2(screen.x - inset.x - SIZE, inset.y + HudHint.stack_y(3))
+	position = Vector2(screen.x - inset.x - SIZE * HudHint.scale_pc(), inset.y + HudHint.stack_y(3))

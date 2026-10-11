@@ -51,6 +51,7 @@ func _ready() -> void:
 		chip.add_child(label)
 		row.add_child(chip)
 		_labels[id] = label
+	HudHint.fit(self)
 	tooltip_text = "Pièces · larmes d'ambre · colliers · baies"
 	_refresh(false)
 	get_viewport().size_changed.connect(_place)
@@ -62,11 +63,12 @@ func _place() -> void:
 	var inset := SafeArea.insets(get_viewport())
 	var screen := get_viewport().get_visible_rect().size
 	reset_size()
+	var k := HudHint.scale_pc()
 	var clock := get_parent().find_children("*", "ClockBadge", false, false)
-	var top := inset.y + 14.0 + 48.0
+	var top := inset.y + (14.0 + 48.0) * k
 	if not clock.is_empty():
-		top = (clock[0] as Control).position.y + (clock[0] as Control).size.y
-	position = Vector2(screen.x - inset.x - ClockBadge.RIGHT_OF_MENU - size.x, top + GAP_UNDER_CLOCK)
+		top = (clock[0] as Control).position.y + (clock[0] as Control).size.y * k
+	position = Vector2(screen.x - inset.x - (ClockBadge.RIGHT_OF_MENU + size.x) * k, top + GAP_UNDER_CLOCK * k)
 
 
 func _process(_delta: float) -> void:

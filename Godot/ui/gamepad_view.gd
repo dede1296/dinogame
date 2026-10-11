@@ -40,6 +40,14 @@ func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
 
+## The short name written on a button of the drawing (« A », « LB », « Vue »…), « — » for none.
+static func name_of(button: int) -> String:
+	for spot: Array in SPOTS:
+		if spot[0] == button:
+			return spot[2]
+	return "—"
+
+
 func set_labels(labels: Dictionary) -> void:
 	_labels = labels
 	queue_redraw()

@@ -22,6 +22,7 @@ const RETURN_FLAG := &"plongee_retour"
 ## Said once, the first time under the water.
 const TOLD_FLAG := &"plongee_expliquee"
 const FIRST_TIME := "Sous l'eau ! Nage où tu veux : le bouton de la surface te ramène en haut quand tu veux."
+const FIRST_TIME_COMPUTER := "Sous l'eau ! Nage où tu veux : {ride}, ou le bouton de la surface, te ramène en haut quand tu veux."
 ## The dive in the view (WorldView.dive_sink, m): the pair sinks this deep under the surface, in
 ## this long; arriving under the water, they come down from this high above their place.
 const SINK_M := 1.6
@@ -173,7 +174,7 @@ static func plunge(spot: Node2D) -> void:
 	await _arrive(w, underwater(w.region))
 	if underwater(w.region) and not Game.flag(TOLD_FLAG):
 		Game.set_flag(TOLD_FLAG)
-		Toast.say(w.get_tree(), FIRST_TIME, Color(0.55, 0.9, 1.0))
+		Toast.say(w.get_tree(), Prompts.say(FIRST_TIME, FIRST_TIME_COMPUTER), Color(0.55, 0.9, 1.0))
 
 
 ## Under the water, Chloé goes back up (the Remonter button): where she dived, or else by the

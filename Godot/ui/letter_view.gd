@@ -61,7 +61,8 @@ func _setup(paragraphs: Array, sign: String, voice: String) -> void:
 	_paper.set_meta(&"text", text)
 
 	var hint := Label.new()
-	hint.text = "Touche l'écran ou appuie sur A pour ranger la lettre"
+	hint.text = Prompts.say("Touche l'écran ou appuie sur A pour ranger la lettre",
+		"Clique ou appuie sur {interact} pour ranger la lettre")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", 16)
 	hint.add_theme_color_override("font_color", Color(0.95, 0.94, 0.92, 0.7))

@@ -20,6 +20,8 @@ const GOLD := Color(1, 0.86, 0.5)
 const TITLE_SCREEN := "res://scenes/boot/boot.tscn"
 ## The Commandes page: how tall its list is, and how wide its three columns are.
 const CONTROLS_HEIGHT := 380.0
+const CANCEL_PAD_BUTTON := JOY_BUTTON_B   # while a new button is awaited, B cancels (it cannot be given)
+const KEY_NAME_W := 170.0    # the Touches page: the action's name before its key and its pad button
 const CONTROL_WHAT_W := 196.0
 const CONTROL_TOUCH_W := 214.0
 const CONTROL_KEYS_W := 150.0
@@ -70,6 +72,10 @@ var _sample_ticket := 0
 ## Touches: the action waiting for a new key ("key") or gamepad button ("pad"); &"" when none.
 var _capture_action := &""
 var _capture_kind := ""
+## Touches: the button to give the focus back to once the page is redrawn (the one just used).
+var _capture_focus: Button = null
+var _last_capture_action := &""
+var _last_capture_kind := ""
 
 
 ## Opens the menu over `parent`'s scene and pauses the game until it is closed.
@@ -96,11 +102,12 @@ static func add_open_button(hud: CanvasLayer) -> Button:
 		for i in 3:
 			icon.draw_rect(Rect2(24, 26 + i * 11, 28, 4), CREAM))
 	button.add_child(icon)
+	HudHint.fit(button)
 	hud.add_child(button)
 	var place := func() -> void:
 		var inset := SafeArea.insets(button.get_viewport())
 		var screen := button.get_viewport().get_visible_rect().size
-		button.position = Vector2(screen.x - inset.x - button.custom_minimum_size.x, inset.y)
+		button.position = Vector2(screen.x - inset.x - button.custom_minimum_size.x * HudHint.scale_pc(), inset.y)
 	place.call()
 	button.get_viewport().size_changed.connect(place)
 	button.pressed.connect(func() -> void: SettingsMenu.open(hud, true))
@@ -144,6 +151,9 @@ func _show(page: String) -> void:
 		_rows.remove_child(child)
 		child.queue_free()
 	_levels.clear()
+	if page != "touches":
+		_capture_focus = null
+		_last_capture_action = &""
 	_page = page
 	match page:
 		"commandes":
@@ -233,9 +243,25 @@ func _keys_page() -> void:
 		var action := _action_on_pad(button)
 		if action != &"":
 			_start_capture(action, "pad"))
-	_rows.add_child(pad)
+	# The drawing and the list scroll (the focus brings the line it is on into view); the hint above
+	# and the two buttons below stay on screen.
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, CONTROLS_HEIGHT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	_rows.add_child(scroll)
+	var list := VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 8)
+	scroll.add_child(list)
+	var first_key: Button = null
 	for entry: Array in KeyRemap.actions():
-		_rows.add_child(_key_row(entry[0], entry[1]))
+		var row := _key_row(entry[0], entry[1])
+		list.add_child(row)
+		first_key = first_key if first_key else row.get_child(1) as Button
+	list.add_child(pad)   # (the list first: it is what the pad uses; the drawing is below it)
+	if _capture_focus == null:
+		_capture_focus = first_key
 	_rows.add_child(_button("Rétablir les commandes par défaut", _reset_keys))
 	_rows.add_child(_button("Retour", _show.bind("menu")))
 
@@ -246,11 +272,17 @@ func _key_row(action: StringName, title: String) -> HBoxContainer:
 	row.add_theme_constant_override("separation", 12)
 	var name_label := _label(title, 22, CREAM)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	name_label.custom_minimum_size = Vector2(230, 0)
+	name_label.custom_minimum_size = Vector2(KEY_NAME_W, 0)
 	row.add_child(name_label)
 	var key := _button(KeyRemap.label(action, "key"), _start_capture.bind(action, "key"))
 	key.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(key)
+	# Le bouton de la manette de l'action : on le redéfinit à la manette seule, sans passer par le dessin.
+	var pad_button := _button(GamepadView.name_of(KeyRemap.current(action, "pad")), _start_capture.bind(action, "pad"))
+	pad_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(pad_button)
+	if action == _last_capture_action:
+		_capture_focus = key if _last_capture_kind == "key" else pad_button
 	return row
 
 
@@ -273,6 +305,8 @@ func _action_on_pad(button: int) -> StringName:
 func _start_capture(action: StringName, kind: String) -> void:
 	_capture_action = action
 	_capture_kind = kind
+	_last_capture_action = action
+	_last_capture_kind = kind
 	_show("touches")
 
 
@@ -283,9 +317,9 @@ func _end_capture() -> void:
 
 func _capture_text() -> String:
 	if _capture_action == &"":
-		return "Touchez un bouton du dessin ou une touche de la liste, puis appuyez sur la nouvelle commande."
+		return "Choisissez une touche ou un bouton de la manette dans la liste (ou touchez le dessin), puis appuyez sur la nouvelle commande."
 	var what := "une touche" if _capture_kind == "key" else "un bouton de la manette"
-	return "Appuyez sur %s pour « %s »… (Échap annule)" % [what, _entry_name(_capture_action)]
+	return "Appuyez sur %s pour « %s »… (Échap ou B annule)" % [what, _entry_name(_capture_action)]
 
 
 func _entry_name(action: StringName) -> String:
@@ -307,10 +341,15 @@ func _input(event: InputEvent) -> void:
 	var key := event as InputEventKey
 	var pad := event as InputEventJoypadButton
 	var pressed := (key != null and key.pressed and not key.echo) or (pad != null and pad.pressed)
-	if not pressed or (key != null and _capture_kind != "key") or (pad != null and _capture_kind != "pad"):
+	if not pressed or (key != null and _capture_kind != "key"):
+		return
+	# (a pad button during a key capture is only good to cancel it: B, so the pad alone can get out)
+	var cancels := (key != null and key.physical_keycode == KeyRemap.ESCAPE_KEY) \
+		or (pad != null and pad.button_index == CANCEL_PAD_BUTTON)
+	if pad != null and _capture_kind != "pad" and not cancels:
 		return
 	get_viewport().set_input_as_handled()
-	if key != null and key.physical_keycode == KeyRemap.ESCAPE_KEY:
+	if cancels:
 		_end_capture()
 		return
 	KeyRemap.bind(_capture_action, event)
@@ -530,6 +569,9 @@ func _close() -> void:
 # ------------------------------------------------------------------ widgets
 
 func _focus_first() -> void:
+	if _page == "touches" and is_instance_valid(_capture_focus) and _capture_focus.is_inside_tree():
+		_capture_focus.grab_focus()   # (back on the line just used, not on the first one)
+		return
 	if not _levels.is_empty():
 		_levels[Quality.level].grab_focus()
 		return

@@ -84,9 +84,18 @@ func _run() -> void:
 	var after: Texture2D = prompts.call("texture", &"interact")
 	_check("une touche redéfinie change l'icône", after != null and after.resource_path != before,
 		"%s -> %s" % [before.get_file(), after.resource_path.get_file() if after else "aucune"])
+	var said: String = prompts.call("say", "sur téléphone", "appuie sur {interact}")
+	_check("sur ordinateur, {interact} devient la touche redéfinie", said == "appuie sur G", said)
 	InputMap.action_erase_events(&"interact")
 	for e in old:
 		InputMap.action_add_event(&"interact", e)
+	prompts.set("family", &"xbox")
+	said = prompts.call("say", "sur téléphone", "{interact} ou {ride}, puis {inconnu}")
+	_check("à la manette : le bouton de la manette, et un jeton inconnu reste", said == "A ou Y, puis {inconnu}", said)
+	prompts.set("family", &"ps5")
+	said = prompts.call("say", "sur téléphone", "{interact}")
+	_check("PlayStation : A s'appelle la Croix", said == "Croix", said)
+	prompts.set("family", &"key")
 
 	# 4 bis. la page Commandes des Paramètres montre de vraies icônes
 	prompts.set("family", &"key")

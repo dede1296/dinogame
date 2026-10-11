@@ -66,7 +66,7 @@ static func reset() -> void:
 static func current(action: StringName, kind: String) -> int:
 	for event in InputMap.action_get_events(action):
 		if kind == "key" and event is InputEventKey:
-			return event.physical_keycode
+			return event.physical_keycode if event.physical_keycode != KEY_NONE else event.keycode
 		if kind == "pad" and event is InputEventJoypadButton:
 			return event.button_index
 	return UNBOUND
@@ -78,7 +78,9 @@ static func label(action: StringName, kind: String) -> String:
 	if code == UNBOUND:
 		return "—"
 	if kind == "key":
-		return OS.get_keycode_string(code)
+		# What is written on THEIR key (an AZERTY keyboard has « Z » where a QWERTY one has « W »).
+		var shown := DisplayServer.keyboard_get_keycode_from_physical(code as Key)
+		return OS.get_keycode_string(shown if shown != KEY_NONE else code as Key)
 	var pad := InputEventJoypadButton.new()
 	pad.button_index = code as JoyButton
 	return pad.as_text()
@@ -126,7 +128,7 @@ static func _pad_event(button: int) -> InputEventJoypadButton:
 
 static func _code_of(event: InputEvent) -> int:
 	if event is InputEventKey:
-		return event.physical_keycode
+		return event.physical_keycode if event.physical_keycode != KEY_NONE else event.keycode
 	return (event as InputEventJoypadButton).button_index
 
 

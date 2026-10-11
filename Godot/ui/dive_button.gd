@@ -12,7 +12,8 @@ const CYAN := Color(0.62, 0.92, 1.0)
 const DEEP := Color(0.04, 0.2, 0.3)
 ## Said once, the first time the button shows over deep water.
 const HINT_FLAG := &"plongee_bouton_vu"
-const HINT := "De l'eau profonde : touche le bouton aux bulles pour plonger."
+const HINT_PHONE := "De l'eau profonde : touche le bouton aux bulles pour plonger."
+const HINT_COMPUTER := "De l'eau profonde : appuie sur {ride}, ou clique le bouton aux bulles, pour plonger."
 
 var _mode := ""   # "", "down" (Plonger), "up" (Remonter)
 var _icon: Control
@@ -22,6 +23,7 @@ func _ready() -> void:
 	name = "DiveButton"
 	custom_minimum_size = Vector2(SIZE, SIZE)
 	focus_mode = Control.FOCUS_NONE
+	HudHint.fit(self)
 	visible = false
 	_icon = Control.new()
 	_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -46,7 +48,7 @@ func _process(_delta: float) -> void:
 	_icon.queue_redraw()
 	if mode == "down" and not Game.flag(HINT_FLAG) and DIVE.can_dive():
 		Game.set_flag(HINT_FLAG)
-		Toast.say(get_tree(), HINT, CYAN)
+		Toast.say(get_tree(), Prompts.say(HINT_PHONE, HINT_COMPUTER), CYAN)
 
 
 ## What the button offers now ("" : nothing).
@@ -93,4 +95,4 @@ func _draw_icon() -> void:
 func _place() -> void:
 	var inset := SafeArea.insets(get_viewport())
 	var screen := get_viewport().get_visible_rect().size
-	position = Vector2(screen.x - inset.x - SIZE, inset.y + HudHint.stack_y(3))
+	position = Vector2(screen.x - inset.x - SIZE * HudHint.scale_pc(), inset.y + HudHint.stack_y(3))
