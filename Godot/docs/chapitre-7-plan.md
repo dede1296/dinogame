@@ -8,11 +8,19 @@
 ## Décisions de Greg (11/10)
 1. **La scène du masque** (Isaure retire son masque, Maïa « Maman. Arrête. ») est écrite par l'agent
    histoire (modèle Fable), avec plusieurs passes et autocritique ; Greg la relira.
-2. **Le Vol = un voyage où elle veut** : Chloé, sur un grand ptérosaure muni du harnais de vol, choisit
-   sa destination **n'importe où sur la carte des régions déjà visitées** (pas seulement des escales
-   fixes) ; elle s'y rend par une courte scène de vol, et atterrit au point praticable le plus proche.
-   Ce n'est PAS un déplacement libre (pas de contrôle manuel en vol). Même famille que le Grand Voyageur
-   (`story/voyage.gd`) et la barque (`story/barque.gd`) mais avec une carte pour choisir le point.
+2. **Le Vol = un déplacement LIBRE, piloté par le joueur** (correction de Greg, 11/10 : « je veux un contrôle
+   en vol »). Chloé, sur un grand ptérosaure muni du harnais de vol, **décolle, se déplace dans les huit
+   directions avec le stick / les flèches / ZQSD, plus vite qu'à pied, au-dessus de TOUT (eau, falaises,
+   vide entre les pitons, ponts), et se pose** là où le sol est praticable (action « voler » / « se poser »,
+   avec une aide à l'écran). La caméra monte (un peu de recul), l'ombre du ptérosaure glisse au sol, les
+   sprites suivent la règle des mouvements (profil / face / dos). Le vol reste dans la zone courante ; pour
+   changer de zone, on traverse les sorties comme à pied (en vol, une sortie est une bordure à franchir) ou
+   on se pose. Restrictions : pas à l'intérieur, pas pendant une scène, atterrissage refusé sur l'eau profonde
+   et dans le vide (message clair). Un **voyage rapide en vol** (carte de choix de destination) est un
+   ajout facultatif, à faire SEULEMENT si le vol libre est fini et solide : l'agent MÉCANIQUES le signale
+   dans son rapport plutôt que de le faire sans accord. Le vol est utile dès qu'il est obtenu (ch. 7) :
+   les zones des chapitres précédents doivent rester jouables et sans faille de collision en vol (l'agent
+   MÉCANIQUES vérifie sur 3 zones : une ouverte, une avec eau, une avec falaises).
 3. **Les sprites suivent la règle des mouvements** (`docs/sprites-mouvements.md`) : tout ce qui vole
    a profil + face + dos ; Chloé en vol aussi. Images par nano-banana : **si les crédits sont épuisés,
    s'arrêter sur la tâche d'image, finir tout le reste, et le dire clairement dans le rapport** (pas de repli
@@ -32,7 +40,7 @@
 | Drapeaux | `cieux_ouverts`, `quetzal_roi_confiance`, `sceau_cieux`, `vol_obtenu`, `arche_piege`, `coeurs_voles`, `masque_tombe`, `page_34`, plus `vol_<zone>` (point de départ connu) si besoin |
 | Capacité | `Vol` (déjà dans `data/abilities.gd` ? sinon à ajouter), famille `ptérosaure` |
 | Fichiers d'histoire | `story/cieux.gd` (arrivée, ascension), `story/cieux_nids.gd` (le Roi, le Sceau, le Vol), `story/cieux_arche.gd` (le piège, le masque), `story/cieux_places.gd` (positions), `story/cieux_objectives.gd`, `data/dialogue_cieux.gd` |
-| Voyage en vol | `story/vol.gd` (classe `Vol`), écran `ui/vol_screen.gd` (carte de choix) |
+| Vol libre | `actors/` (l'état « vol » de Chloé et de sa monture), `story/vol.gd` (décollage/atterrissage, scènes), `ui/` (aide à l'écran) ; la carte de choix `ui/vol_screen.gd` n'est qu'un ajout facultatif |
 | Ambiances/musiques | `cieux`, `nids_geants`, `arche_du_vent` dans `data/ambience_db.gd` ; musiques `assets/audio/music/cieux.ogg` (si possible ; les crédits ElevenLabs sont épuisés : réutiliser/mixer les pistes existantes) |
 | Images | `assets/art/dinos/<id>.png` (+ `<id>_face_dos.png` selon la convention existante des autres espèces : la lire sur `pteranodon` et `dimorphodon`), `assets/art/ground/` (`nuages`, `pierre_cieux`, `nid`, `pont_lianes`), `assets/art/props/` (nids géants, pitons, ponts de lianes, harnais), `assets/art/ui/` (`sceau_cieux.png`, `harnais_vol.png`, `meteo_vent.png`), `assets/art/battle/cieux.jpg`, personnages `isaure_sans_masque.png` (4 directions + assise) et `maia_arche.png` si nécessaire, `chloe_vol.png` (en selle sur un ptérosaure, profil/face/dos) |
 
