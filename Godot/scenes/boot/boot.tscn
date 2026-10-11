@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://m64hisg0ig88"]
+[gd_scene format=3 uid="uid://m64hisg0ig88"]
 
-[ext_resource type="Script" path="res://scenes/boot/boot.gd" id="1_boot"]
-[ext_resource type="Texture2D" path="res://assets/art/title/accueil-paysage.webp" id="2_bg"]
+[ext_resource type="Script" uid="uid://ua2b4thrqycd" path="res://scenes/boot/boot.gd" id="1_boot"]
+[ext_resource type="Texture2D" uid="uid://bu3p0as2cewkx" path="res://assets/art/title/accueil-paysage.webp" id="2_bg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
 content_margin_left = 28.0
@@ -35,7 +35,7 @@ corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 corner_radius_bottom_left = 14
 
-[node name="Boot" type="Control"]
+[node name="Boot" type="Control" unique_id=355779231]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,7 +44,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_boot")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=1883862991]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,7 +55,7 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Shade" type="ColorRect" parent="."]
+[node name="Shade" type="ColorRect" parent="." unique_id=257372038]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -65,7 +65,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.05, 0.04, 0.03, 0.25)
 
-[node name="Menu" type="VBoxContainer" parent="."]
+[node name="Menu" type="VBoxContainer" parent="." unique_id=928560852]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -81,7 +81,7 @@ grow_vertical = 2
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="Title" type="Label" parent="Menu"]
+[node name="Title" type="Label" parent="Menu" unique_id=1359065824]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.86, 0.5, 1)
 theme_override_colors/font_outline_color = Color(0.22, 0.12, 0.04, 1)
@@ -90,7 +90,7 @@ theme_override_font_sizes/font_size = 84
 text = "Ambrelune"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="Menu"]
+[node name="Subtitle" type="Label" parent="Menu" unique_id=652152015]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.97, 0.9, 1)
 theme_override_colors/font_outline_color = Color(0.1, 0.07, 0.04, 0.9)
@@ -99,44 +99,44 @@ theme_override_font_sizes/font_size = 24
 text = "La Prairie du Grand Crâne"
 horizontal_alignment = 1
 
-[node name="Spacer" type="Control" parent="Menu"]
+[node name="Spacer" type="Control" parent="Menu" unique_id=1175751591]
 custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
 
-[node name="Continue" type="Button" parent="Menu"]
+[node name="Continue" type="Button" parent="Menu" unique_id=197388827]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
-theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_hover")
 text = "Continuer"
 
-[node name="NewGame" type="Button" parent="Menu"]
+[node name="NewGame" type="Button" parent="Menu" unique_id=1001825317]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
-theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_hover")
 text = "Nouvelle partie"
 
-[node name="Settings" type="Button" parent="Menu"]
+[node name="Settings" type="Button" parent="Menu" unique_id=639484279]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
-theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_hover")
 text = "Paramètres"
 
-[node name="Version" type="Label" parent="."]
+[node name="Version" type="Label" parent="." unique_id=560292898]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 3
