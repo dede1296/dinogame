@@ -113,6 +113,38 @@ chaque nouveau repli ; retirer la ligne une fois refait.
 | Chapitre 6, statue_cryolophosaure | `assets/art/props/statue_cryolophosaure.png` | nano-banana, gardé : la crête se lit un peu comme une crête simple verticale plutôt que clairement transversale (c'est une statue patinée, moins critique que sur l'espèce jouable) | Vérifier une fois la vraie espèce en jeu ; redemander si la crête ne se lit pas comme un éventail transversal |
 | Chapitre 6, neige_chemin.png | `assets/art/ground/neige_chemin.png` | nano-banana, 2 essais : se lit plus comme des cailloux dans la neige que comme un chemin tassé net (les bords ocre du chemin d'origine ont disparu) | Redemander avec des bords bien plus sombres/gris que le terrain autour, sans cailloux apparents |
 | Chapitre 6, sol_grotte_glace.png | `assets/art/ground/sol_grotte_glace.png` | nano-banana a gardé des éclats d'ambre orangés hérités de `grotte_sol.png` (texture d'origine) au lieu d'un sol de glace uni | Redemander sans les éclats d'ambre si on les trouve trop présents en jeu (actuellement jugé passable, cohérent avec le thème de l'ambre) |
+| Chapitre 7, Isaure sans masque (2e version, 11/10) | `characters/isaure_sans_masque.png` (ancienne : `isaure_sans_masque_v1.png`), `_assise.png` | nano-banana : visage de la mi-quarantaine (cernes fins, rides aux yeux, mèches grises) mais encore doux (proportions chibi du jeu) ; un essai plus poussé faisait 65 ans, écarté. **Greg à valider** | Plus de fatigue si Greg le veut, sans vieillir au-delà de 50 ans |
+| Chapitre 7, vol de profil : 2 images sur 4 identiques | `dinos/{quetzalcoatlus,hatzegopteryx,tupandactylus,tapejara}_vol.png` | nano-banana : 4 poses demandées, mais la pose « mi-haute » sortait à chaque essai avec un filé rose flou (3 essais) : cycle haut / plané / bas / plané (3 poses distinctes) | Redemander la pose mi-haute seule, nette |
+| Chapitre 7, vol face/dos : pose « ailes basses » | `dinos/*_vol_face_dos.png` | nano-banana : la 3e colonne est parfois très repliée (ailes en U) ; tupandactylus de face : 4e pose avec la tête tournée de 3/4 | Redemander ces cases |
+| Chapitre 7, Rhamphorhynchus, Hatzegopteryx, Tapejara : détails | `dinos/{rhamphorhynchus,hatzegopteryx,tapejara}*.png` | nano-banana : Rhamphorhynchus a les dents bien visibles mais la bouche toujours ouverte (air féroce), queue de dos très courte ; Hatzegopteryx de dos : crâne rond un peu aplati ; Tapejara de face : crête encore un peu plus haute que de profil | Retouches mineures si on les voit de près |
+| Chapitre 7, `chloe_vol*.png` (3e version, 11/10) | `characters/chloe_vol.png`, `chloe_vol_manteau.png` (anciennes : `_v2.png`) | Assise à califourchon : cuisse en avant, genou plié à environ 90°, une seule jambe de profil, jambes écartées de face et de dos, mains sur les poignées ; réduite à 75 % autour du point d'assise (bassin à ±2 px de la 2e version) ; de profil gauche la jambe pend presque droite ; face de `chloe_vol` : yeux fermés (rire) | Si le calage ne plaît pas : `SHRINK` dans `cieux_persos.mjs` |
+
+## Cieux Éternels (art, chapitre 7, 11/10)
+
+Images du chapitre 7 (agent IMAGES, tout dans des jobs `tools/art-jobs/cieux_especes.mjs`, `cieux_persos.mjs`,
+`cieux_decors.mjs`, sorties par `node Godot/tools/process-art.mjs <nom>` depuis la racine du dépôt ; `npm install` à la
+racine d'abord si `node_modules` manque). Aucune image existante n'a été touchée. **Les crédits nano-banana se sont épuisés
+brièvement le 11/10 à 13 h 34, puis rechargés : tout a été refait avec nano-banana (aucun repli). Reste : voir « À refaire » (lignes « Chapitre 7 »).
+
+| Quoi | Fichiers | Format |
+|---|---|---|
+| Espèces (profil + face/dos) | `dinos/{rhamphorhynchus,tapejara,tupandactylus,hatzegopteryx,quetzalcoatlus}.png` + `_face_dos.png` | profil 3×2, cellules 184×158, 214×188, 225×198, 275×223, 280×228 ; face/dos 4×2, même cellule (specs_planches.md) |
+| Vol de profil et de face/dos | `dinos/{quetzalcoatlus,hatzegopteryx,tupandactylus,tapejara}_vol.png` ; `_vol_face_dos.png` + `pteranodon_vol_face_dos.png` | profil 4×1 cellule 380×230 ; face/dos 4×2 (ailes en V, plané, basses, plané), cellule minimale par espèce, plané calé sur celui du profil (±1 %) |
+| Chloé en vol | `characters/chloe_vol.png`, `chloe_vol_manteau.png` | 4×1, cellule 150×228 (ordre de `chloe_selle.png` : face, gauche, droite, dos) |
+| Isaure sans masque, Maïa des Cieux | `characters/isaure_sans_masque.png` (+ `_assise.png` 2×4 cases 240×184, `_v1.png` première version), `maia_arche.png` | 4×4, cellule 135-137×184 (Isaure 1,70 m comme le Masque, Maïa 1,50 m) |
+| Sols | `ground/{nuages,pierre_cieux,nid,pont_lianes}.png` | 512×512 raccordables |
+| Décors | `props/{nid_cieux,nid_cieux_vide,piton_haut,piton_bas,rochers_cieux,plume_geante_1..3,drapeau_vent_1,2,pont_lianes_h,pont_lianes_v,pilier_pont_1,2,pont_lianes_rompu,arche_vent}.png` | PNG détourés (arche_vent 1200×890 : un seul morceau, deux piliers + voûte, ouverture transparente) |
+| Interface | `ui/{sceau_cieux,harnais_vol,meteo_vent}.png` | 160×160 |
+| Fond de combat | `battle/cieux.jpg` | 1920×1072, cadrage de `monts.jpg` (deux plateaux de pierre, mer de nuages) |
+
+Méthode : nano-banana édite une planche du jeu (Ptéranodon pour les espèces, `chloe_selle*.png`, `masque.png` avec
+`isaure.png` en référence du visage, `maia.png`, `monts.jpg`…) ; l'anatomie réelle est dans chaque prompt ; fond magenta ;
+`sheet({ align: "bottom", isolate: true })` pour les profils (les ailes de la pose d'attaque débordaient de leur case) ;
+`composeFourColumns` quand une planche face/dos sort à 6 colonnes ; `alignWithBase` recale les pas des personnages.
+Pièges : un format 8:1 donne des images floues (la planche de vol est à demander en 2×2 ou 4:1) ; nano-banana garde la mise
+en page de la planche de départ (3×2) même quand on en demande une autre ; un magenta terne (non #FF00FF) laisse un halo
+rose (`flattenBackground`). Les ombres ne sont pas peintes. Le Quetzalcoatlus « Roi » est la même planche (cicatrices sur
+la membrane, bec et crête ambre, duvet gris-blanc).
 
 ## Échelle et conventions
 
