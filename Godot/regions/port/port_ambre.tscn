@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="12_n28m7"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/garde.png" id="13_o56jy"]
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="14_w7ifx"]
+[ext_resource type="Script" path="res://world/story_prop.gd" id="15_lc2tk"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="15_8mw0v"]
 [ext_resource type="Script" path="res://world/dock.gd" id="16_lc2tk"]
 
@@ -790,6 +791,13 @@ script = ExtResource("8_f4v4p")
 dialogue_id = &"panneau_escale"
 kind = "panneau"
 
+[node name="BarqueMaia" type="StaticBody2D" parent="Entities" unique_id=2081185815]
+position = Vector2(1060.8, 1104)
+script = ExtResource("15_lc2tk")
+event = &"barque_maia"
+show_flag = &"maia_alliee"
+kind = "barque"
+
 [node name="Spawns" type="Node2D" parent="." unique_id=185849788]
 
 [node name="Depart" type="Marker2D" parent="Spawns" unique_id=531425845]
@@ -806,6 +814,9 @@ position = Vector2(1814.4, 504)
 
 [node name="Voyageur" type="Marker2D" parent="Spawns" unique_id=745985480]
 position = Vector2(1142.4, 763.2)
+
+[node name="Embarcadere" type="Marker2D" parent="Spawns" unique_id=663588310]
+position = Vector2(984, 1084.8)
 
 [node name="Habitats" type="Node2D" parent="." unique_id=1476533917]
 

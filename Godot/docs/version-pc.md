@@ -57,6 +57,9 @@ manette). Ce que l'audit a trouvé et corrigé :
   réécrire (contour doré, premier focus) — et rien ne change tant qu'on est à la souris.
 - Déjà bons, désormais testés : carte (stick, gâchettes, A), menu (Start), Grand Voyageur, combat
   entier avec A seulement.
+- La barque de Maïa (11/10) reprend l'écran du Grand Voyageur : focus d'emblée sur la première
+  destination, croix, A, B ; à la souris, un clic sur la barque y mène Chloé, un clic sur une ligne
+  choisit (`tools/test_barque.gd`).
 
 Croix de la manette : ↑ Dinodex, ◀ équipe ; Retour (Select) la carte ; Start le menu ; Y monter.
 

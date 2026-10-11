@@ -1,9 +1,11 @@
 class_name VoyageScreen
 extends CanvasLayer
-## Where to? The Grand Voyageur's stops (Voyage.STOPS): one row per stop already found, with its
-## region and what one sees from there; the one Chloé stands at is marked and cannot be picked.
-## Opened by talking to a Grand Voyageur (story/voyage.gd), the game paused meanwhile. Built for
-## thumbs: big rows, one tap. B, Échap or the back gesture leave without going anywhere.
+## Where to? The places a fast travel knows: one row per place already found, with its region and
+## what one sees from there; the one Chloé stands at is marked and cannot be picked. Opened by
+## talking to a Grand Voyageur (story/voyage.gd, its stops) or by using Maïa's boat (story/barque.gd,
+## its landings: same screen, its own title), the game paused meanwhile. Built for thumbs: big
+## rows, one tap; the first place that can be picked has the focus (A, Entrée). B, Échap or the
+## back gesture leave without going anywhere.
 
 signal picked(zone: StringName)
 
@@ -14,20 +16,28 @@ const LIST_HEIGHT := 380.0
 const TEXT_INSET := 18.0   # a row's text away from its edge
 const GOLD := Color(1, 0.86, 0.5)
 const CREAM := Color(1, 0.97, 0.9)
+## The Grand Voyageur's words (the default title and line under it).
+const TITLE := "Où allons-nous ?"
+const SUBTITLE := "Le Grand Voyageur connaît les vieux chemins de l'île."
 
-## The stops to show: [zone, region name, what one sees from there]; `here`: Chloé's own zone.
+## The places to show: [zone, region name, what one sees from there]; `here`: Chloé's own zone.
 var stops: Array = []
 var here: StringName
+var heading_text := TITLE
+var under_text := SUBTITLE
 
 var _was_paused := false
 var _answered := false
 
 
-## Asks where to go; returns the zone picked, or &"" if Chloé stays. Awaitable.
-static func ask(parent: Node, to_show: Array, standing_at: StringName) -> StringName:
+## Asks where to go; returns the zone picked, or &"" if Chloé stays. Awaitable. `heading` and
+## `under` replace the Grand Voyageur's title and line (Maïa's boat).
+static func ask(parent: Node, to_show: Array, standing_at: StringName, heading := TITLE, under := SUBTITLE) -> StringName:
 	var screen := VoyageScreen.new()
 	screen.stops = to_show
 	screen.here = standing_at
+	screen.heading_text = heading
+	screen.under_text = under
 	parent.get_tree().root.add_child(screen)
 	return await screen.picked
 
@@ -57,8 +67,8 @@ func _build() -> void:
 	col.add_theme_constant_override("separation", 10)
 	panel.add_child(col)
 
-	col.add_child(_label("Où allons-nous ?", 34, GOLD))
-	col.add_child(_label("Le Grand Voyageur connaît les vieux chemins de l'île.", 18, Color(CREAM, 0.75)))
+	col.add_child(_label(heading_text, 34, GOLD))
+	col.add_child(_label(under_text, 18, Color(CREAM, 0.75)))
 
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(0, minf(LIST_HEIGHT, stops.size() * (ROW_HEIGHT + 8)))

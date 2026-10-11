@@ -26,6 +26,7 @@ static func on_zone_entered(zone: StringName) -> void:
 
 static func _on_zone_entered(zone: StringName) -> void:
 	Monts.update_access()   # (the way up to the Monts: end of chapter 5 and a warm coat; old saves too)
+	Barque.landing(zone)    # (coming in by Maïa's boat: it waits out at sea, before the picture shows)
 	match zone:
 		&"port_ambre":
 			if not Game.flag(&"prologue_arrived") and not Game.flag(&"prologue_done"):
@@ -302,9 +303,11 @@ static func _run(event: StringName, who: Node) -> void:
 			await clins().chevre(who)
 		&"chevre_partie":
 			await clins().chevre_partie()
-		# Le voyage rapide (story/voyage.gd)
+		# Le voyage rapide (story/voyage.gd), la barque de Maïa (story/barque.gd)
 		&"grand_voyageur":
 			await Voyage.talk(who)
+		&"barque_maia":
+			await Barque.use(who)
 		# « Les visiteurs » (story/visiteurs.gd)
 		&"hamon":
 			await visiteurs().hamon(who)

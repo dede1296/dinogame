@@ -39,7 +39,8 @@ au bon niveau pour son Alpha.
 8. **Un réglage de difficulté** (Paramètres) : *Découverte* (adversaires plus faibles, plus
    d'expérience) et *Normal*.
 9. **Pas de trajets à vide** : soins au Cabinet et à des **feux de camp** dans chaque région (un par
-   zone environ), retour rapide vers les zones déjà visitées (barque de Maïa, puis Vol).
+   zone environ), retour rapide vers les zones déjà visitées (✅ Grand Voyageur, ✅ barque de Maïa,
+   puis Vol : voir « Voyage rapide »).
 
 **Critère de conception, vérifié sur chaque région** : environ **20 à 30 combats** du début à
 l'Alpha en jouant normalement, et **au moins la moitié du temps passée à autre chose** (explorer,
@@ -111,6 +112,23 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
 - **Dézoomer** au-delà de la zone (ou « ◂ Île ») montre **l'île entière** : les régions en spirale
   vers le volcan, celles déjà visitées en couleur et nommées (un toucher ouvre leur carte), les
   autres dans la brume (« ??? »), Chloé et les régions où il y a quelque chose à faire.
+
+### Voyage rapide ✅
+
+Deux façons de revenir vite là où Chloé est déjà allée ; le temps passe pendant le trajet, et la
+scène d'arrivée habituelle du lieu se joue comme si elle y venait à pied.
+- **Le Grand Voyageur** (dès le début) : un vieux Brachiosaure à l'escale de chaque région ; on lui
+  parle, l'escale est notée, on choisit une escale déjà notée ; 1 h 30 de trajet
+  (`story/voyage.gd`, voir [histoire.md](histoire.md) « Le Grand Voyageur »).
+- **La barque de Maïa** (dès la fin du chapitre 6, `maia_alliee`) : amarrée à l'embarcadère des
+  quatre lieux au bord de l'eau (Port-Ambre, Havre-Doré, Côte Préhistorique, Marais Brumeux). On
+  l'utilise (touche d'interaction, clic, A) : l'embarcadère est noté (`quai_<zone>`), puis on
+  choisit un autre embarcadère noté ; 1 h de traversée, Chloé assise dans la barque qui s'éloigne,
+  puis accoste (`story/barque.gd`, voir [histoire.md](histoire.md) « La barque de Maïa »).
+- Le même écran de choix (`ui/voyage_screen.gd`, un titre par moyen de voyage) : l'endroit où l'on
+  est est grisé (« Tu es ici »), la première destination a le focus (croix, A, Entrée), B, Échap ou
+  « Rester ici » ne changent rien.
+- Le Vol (chapitre 7) viendra en plus.
 
 ### Parler, regarder ✅
 

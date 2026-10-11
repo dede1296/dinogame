@@ -946,7 +946,7 @@ finit à deux : le froid, puis la chaleur d'un feu, d'une soupe, de gens qui dis
    font équipe (`maia_alliee`) : une main tendue, Caillou et le dino de tête museau contre museau ;
    l'indice de Dame Suie ; elles lèvent les yeux : les pitons des Cieux, et quelque chose d'immense qui
    y tourne. Le harnais de vol de Joss ; « Ma barque est à toi, quand tu veux » (les chemins de la mer
-   que sa mère lui a appris). « À suivre… (les Cieux Éternels) » ; la sortie des Cieux reste fermée
+   que sa mère lui a appris : voir « La barque de Maïa »). « À suivre… (les Cieux Éternels) » ; la sortie des Cieux reste fermée
    (`cieux_bloques` : « il faudrait voler »).
 13. **Autour** : Roc au Cabinet (du thé, « chaud, cette fois » ; les trois petits de la glace — le
    Brachiosaure a mangé la fougère en pot à qui il parlait sans ses lunettes ; « Toupet », c'est lui qui
@@ -1080,6 +1080,44 @@ déjà trouvée, et il l'y porte sur son dos (le trajet fait passer 1 h 30 dans 
 Code : `story/voyage.gd` (les escales, la rencontre, le trajet), `ui/voyage_screen.gd` (le choix de
 la destination) ; posés par `tools/zones/*.gd` (le dino « GrandVoyageur », l'arrivée « Voyageur »,
 l'écriteau `panneau_escale`). Tests : `tools/scenarios/test_voyage.gd` et `test_voyage_jeu.gd`.
+
+## La barque de Maïa (voyage rapide, fin du chapitre 6)
+
+Quand elles font équipe (`maia_alliee`), Maïa dit : « Ma barque est à toi, quand tu veux. Le port,
+le Havre, la Côte, le Marais. » Dès lors, sa barque attend Chloé à l'**embarcadère** de ces quatre
+lieux au bord de l'eau (avant l'alliance, elle n'y est pas) :
+- **Port-Ambre** : au bout du vieux ponton où Chloé a débarqué au prologue, côté est ;
+- **Havre-Doré** : le long du ponton des pêcheurs (à l'ouest), loin du ponton de l'entrepôt où la
+  barque d'Isaure accoste, la nuit ;
+- **Côte Préhistorique** : au pied de la Cale des Anciens, sur la plage aux tortues ;
+- **Marais Brumeux** : au débarcadère de Joss, le long du ponton, côté nord.
+
+Comme pour le Grand Voyageur, un embarcadère est noté **en utilisant la barque** (`quai_<zone>`) ;
+tant qu'elle n'en connaît qu'un, Chloé reste à quai. Sinon : « Où met-on le cap ? » (les
+embarcadères connus, celui où elle est, grisé). Une courte traversée (1 h de jeu) : Chloé saute dans
+la barque et s'éloigne à la rame (on la voit assise dedans), une réplique selon le temps (la pluie ;
+la brume, où elle chante comme Maïa l'a dit ; la nuit ; le beau temps) et une pensée de Chloé, à tour
+de rôle ; à l'arrivée, la barque accoste et Chloé saute à terre. Si la scène d'arrivée habituelle du
+lieu doit se jouer, elle passe d'abord, puis Chloé amarre la barque.
+
+**La première fois** (quel que soit l'embarcadère), un mot de Maïa est coincé sous la rame : où
+trouver la barque, « ne t'éloigne jamais de la côte », chanter si la brume tombe (« maman dit que la
+mer aime ça. Elle chante faux, maman. La mer aime quand même »), et Moustique qui a mangé la corde de
+rechange. Plutôt qu'une scène juste après l'alliance (la promesse y est déjà, aux Monts, loin de la
+mer, au bout de la plus longue scène du chapitre) ou qu'une scène au Havre (Chloé peut arriver
+d'abord au port, par le Grand Voyageur) : le mot attend là où est la barque, quel que soit
+l'embarcadère trouvé en premier. Au Havre, tant que Chloé ne l'a pas trouvée, Maïa rappelle où est
+sa barque (« Comment elle fait pour être partout à la fois ? Secret de famille. »).
+
+Ce n'est ni la barque d'Isaure (la voile rapiécée à la rayure bleue, ch. 5) ni « La Sardine » de
+Gustave et Firmin. Le Grand Voyageur va partout, lentement ; la barque seulement au bord de l'eau,
+mais dès la fin du ch. 6 ; le Vol (ch. 7) viendra en plus.
+
+Code : `story/barque.gd` (les embarcadères, le mot, la traversée), `ui/voyage_screen.gd` (le même
+écran, avec son propre titre) ; posée par `tools/zones/*.gd` (`ZoneBuilder.maias_boat` : la
+StoryProp « BarqueMaia », `show_flag` `maia_alliee`, et l'arrivée « Embarcadere »). Drapeaux :
+`barque_maia_prete`, `quai_port_ambre`, `quai_havre_dore`, `quai_cote`, `quai_marais`, `barque_n`
+(les pensées). Test : `tools/test_barque.gd`.
 
 ## Clins d'œil (hommages à un grand film de dinosaures)
 

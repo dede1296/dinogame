@@ -124,6 +124,12 @@ static func build() -> Region:
 	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 13.6, 91.2, {"event": &"grand_voyageur", "size": 1.6})
 	B.spawn(root, "Voyageur", 16.6, 91.4)
 	B.sign(entities, B.cell(15.6, 93.2), &"panneau_escale")
+	# Maïa's boat (fast travel by sea, story/barque.gd), once she and Chloé are a team: at the
+	# Cale des Anciens, the old landing of the bay — in the water just east of its stone steps,
+	# clear of the pillar in front (it would hide the boat from the camera) and of the weed and
+	# the nests one can look at (« interact » there means the boat); Chloé lands on the sand of the
+	# beach below it.
+	B.maias_boat(root, Vector2(11.4, 73.0), Vector2(12.2, 74.6))
 	return root
 
 

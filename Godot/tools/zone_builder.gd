@@ -311,6 +311,19 @@ static func buried_item(root: Node, x: float, y: float, item_id: String, flag: S
 	return spot
 
 
+## Maïa's boat (story/barque.gd: StoryProp « BarqueMaia », event barque_maia), moored at tile
+## point `moored` on the water, there once she and Chloé are a team (show_flag maia_alliee);
+## `landing`: where Chloé steps ashore beside it (spawn « Embarcadere »). The story finds both by
+## these names.
+static func maias_boat(root: Region, moored: Vector2, landing: Vector2, flip := false) -> Node2D:
+	var boat: Node2D = prop(root.get_node("Entities"), "barque", cell(moored.x, moored.y), flip, load("res://world/story_prop.gd"))
+	boat.name = "BarqueMaia"
+	boat.event = &"barque_maia"
+	boat.show_flag = &"maia_alliee"
+	spawn(root, "Embarcadere", landing.x, landing.y)
+	return boat
+
+
 ## A wooden pier over the water: its cells must be painted as path (walkable).
 static func dock(root: Region, cells: Rect2) -> Dock:
 	var d := Dock.new()

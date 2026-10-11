@@ -79,6 +79,12 @@ static func build() -> Region:
 	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 4.8, 21.2, {"event": &"grand_voyageur", "size": 1.6})
 	B.spawn(root, "Voyageur", 7.4, 20.6)
 	B.sign(entities, B.cell(3.0, 22.4), &"panneau_escale")
+	# Maïa's boat (fast travel by sea, story/barque.gd), once she and Chloé are a team: alongside
+	# the west pier, near its end, on its east side (Chloé on the planks beside it, her dino on her
+	# left, still on the pier) — away from the east pier, where Isaure's dark boat comes in one night
+	# (story/havre.gd), and from the fisherman, the nets and the Grand Voyageur's stop, so that
+	# « interact » there means the boat.
+	B.maias_boat(root, Vector2(14.2, 27.4), Vector2(12.5, 27.4))
 	return root
 
 

@@ -217,9 +217,15 @@ static func chatter(who: StringName, pool: Array) -> Array:
 				out.insert(0, "Quatre Cœurs dans la même sacoche… Garde-la contre toi, Chloé. Même quand tu dors. Surtout quand tu dors.")
 		&"maia_havre":
 			if Game.flag(&"maia_alliee"):
-				return [
+				var allied: Array = [
 					"Je repars aux Monts. Joss m'a cousu un manteau à ma taille. Il dit que c'est son meilleur. Il dit ça à chaque fois.",
 					"Caillou a mangé mon bonnet. Le deuxième. Je crois qu'il a froid aux cornes.",
 					"Toi et moi, dans les Cieux. Ça va être le défi le plus stylé de toute l'histoire. Sauf que ce n'est pas un défi. C'est mieux.",
 				]
+				# Her boat (story/barque.gd): where it waits, until Chloé has found it; then how she rows.
+				if not Game.flag(&"barque_maia_prete"):
+					allied.insert(0, "Ma barque t'attend au port, au Havre, sur la Côte et au Marais. Comment elle fait pour être partout à la fois ? Secret de famille.")
+				else:
+					allied.append("Tu rames de travers, il paraît. C'est Moustique qui me l'a dit. Moustique ne rame jamais, lui.")
+				return allied
 	return out

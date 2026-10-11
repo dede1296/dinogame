@@ -118,6 +118,10 @@ static func build() -> Region:
 	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 99.5, 73.6, {"event": &"grand_voyageur", "size": 1.6})
 	B.spawn(root, "Voyageur", 102.2, 72.4)
 	B.sign(entities, B.cell(101.8, 74.4), &"panneau_escale")
+	# Maïa's boat (fast travel by sea, story/barque.gd), once she and Chloé are a team: at the
+	# Débarcadère, along the north side of its boardwalk, east of the lantern (Joss's own boat
+	# is on the south side); Chloé lands on the planks beside it.
+	B.maias_boat(root, Vector2(114.2, 67.9), Vector2(114.8, 69.6))
 	return root
 
 

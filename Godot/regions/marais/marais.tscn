@@ -4284,6 +4284,13 @@ script = ExtResource("28_lgwp5")
 dialogue_id = &"panneau_escale"
 kind = "panneau"
 
+[node name="BarqueMaia" type="StaticBody2D" parent="Entities" unique_id=397760819]
+position = Vector2(5481.5996, 3259.2002)
+script = ExtResource("15_fqu1m")
+event = &"barque_maia"
+show_flag = &"maia_alliee"
+kind = "barque"
+
 [node name="Spawns" type="Node2D" parent="." unique_id=1979539497]
 
 [node name="Depart" type="Marker2D" parent="Spawns" unique_id=2020916210]
@@ -4300,6 +4307,9 @@ position = Vector2(1440, 643.2)
 
 [node name="Voyageur" type="Marker2D" parent="Spawns" unique_id=934453240]
 position = Vector2(4905.6, 3475.2)
+
+[node name="Embarcadere" type="Marker2D" parent="Spawns" unique_id=1381563954]
+position = Vector2(5510.4004, 3340.7998)
 
 [node name="Habitats" type="Node2D" parent="." unique_id=1741458081]
 
