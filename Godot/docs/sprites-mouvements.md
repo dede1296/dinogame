@@ -3,6 +3,8 @@
 > Demande de Greg, 11/10 : « prévoir des sprites adaptés aux mouvements (barques dans le sens du
 > mouvement, etc.) pour tous les sprites du jeu ; une cohérence graphique, artistique et technique. »
 > Ce document fixe la règle et le plan. Rien n'est encore dessiné pour lui : c'est l'étape 0.
+> **Calendrier : en fin de développement** (décision de Greg, 11/10). D'ici là, seule la règle
+> s'applique : tout NOUVEAU sprite la suit, pour que le travail de reprise n'augmente pas.
 
 ## Le principe
 
