@@ -274,7 +274,11 @@ une nuit dans la cuisine (elle n'a pas nié ; elle a « reposé sa tasse, très 
 les yeux rouges, dans le manteau trop grand de Joss : « Je veux l'arrêter. Pas la perdre. » Elle garde son
 masque en carton pour le rendre à sa mère « le jour où elle enlèvera le sien », livre son cinquième
 défi pour savoir si elle est prête, puis fait équipe avec Chloé. Sa mère lui a appris tous les chemins
-de la mer : sa barque est à Chloé.
+de la mer : sa barque est à Chloé. À l'Arche du Vent (chapitre 7), elle se met entre sa mère et Chloé
+(« Maman. Arrête. »), devine ce que sa mère ne dit pas (elle va chercher Hélène), lui tend le masque en
+carton (« Pas aujourd'hui »)… et, quand Isaure s'en va, descend avec elle : « Je ne peux pas t'arrêter.
+Alors je ne te perds pas. » Elle confie Moustique et son masque en carton à Chloé (« fais-moi confiance.
+Comme avec les dinos »). Elle ne pleure pas : elle décide. Au chapitre 9, c'est elle qui protège sa mère.
 
 **Capitaine Isaure Kerval**, mère de Maïa, capitaine du port. Chaleureuse, respectée, épuisée par
 un port qui meurt. C'est elle qui amène Chloé sur l'île dans sa barque. Autrefois la **meilleure

@@ -5,10 +5,13 @@ class_name CieuxArche
 ## pterosaurs bear sailors' names for the winds (Noroît, Suroît, Grain); calmed, all three. While
 ## Chloé calmed the last one, two shadows dived on her bag: the four Cœurs are in the Masque's
 ## hands. A cry: the Roi lands with Maïa on its neck. « Maman. Arrête. » The mask falls. Isaure
-## explains without raising her voice, and leaves with the Cœurs, down towards the volcano, on
-## foot. The mask stays in the grass. No music: the wind, then no wind.
+## explains without raising her voice (the port, twenty years); Maïa guesses what she does not say
+## (she goes to fetch Hélène: never confirmed, she « puts her cup down » once more); Isaure leaves
+## with the Cœurs, down towards the volcano, on foot… and Maïa goes with her (« Je ne peux pas
+## t'arrêter. Alors je ne te perds pas. »), leaving Chloé Moustique and her cardboard mask. Greg's
+## choice (11/10, scratchpad ch7/masque_v2_scene.md). The mask stays in the grass. No music.
 ## Flags: arche_arrivee, arche_piege, masque_arche_battu, coeurs_voles, masque_tombe,
-## roc_sceau_cieux, roc_masque_tombe.
+## moustique_confie, masque_carton_confie, roc_sceau_cieux, roc_masque_tombe.
 
 const S := preload("res://story/story.gd")
 const CS := preload("res://story/cote_stage.gd")
@@ -52,6 +55,14 @@ const CLIMB_SPEED := 150.0
 const CLIMB_MAX_S := 7.0
 ## The music is held back for the mask scene (dB), and comes back after.
 const HUSH_DB := -40.0
+## Moustique, Maïa's Dimorphodon, left to Chloé (his level at her fifth challenge, MontsFin), and
+## where he perches on her shoulder (px from her feet); how far Isaure walks before « Attends »
+## (tiles), how far the two of them walk down before the ash hides them (tiles).
+const MOUSTIQUE_LEVEL := 36
+const SHOULDER := Vector2(14.0, 2.0)
+const SHOULDER_UP := 34.0
+const ISAURE_STEPS := 2.2
+const TOGETHER_WALK := 9.0
 const ROC_CIEUX := [
 	"Hélène décollait de nuit. Elle disait que les étoiles sont plus près. Je lui disais que le sol aussi.",
 	"Le Roi des Cieux… Elle l'appelait « le Roi », tout court. Comme s'il n'y en avait qu'un. Il n'y en a qu'un.",
@@ -176,6 +187,7 @@ static func _after_the_battle(who: Node) -> void:
 	await S.say(_maia_comes(who, cast))
 	await S.say(_unmasked(who, cast))
 	await S.say(_leaves(cast))
+	await S.say(_with_her(cast))
 	await S.say(_after(cast))
 	Audio.duck(0.0, 2.5)
 	_clean_up(who, cast)
@@ -369,6 +381,10 @@ static func _unmasked(who: Node, cast: Dictionary) -> Array:
 			CS.Act.pop((maia as Node2D).global_position, "masque_carton", 0.9)
 		if maia:
 			CS.reach(maia, at, 14.0, 2.4)
+	var counts := func() -> void:
+		var maia = cast.get("maia")
+		if maia:
+			Stage.emote(maia, "…")
 	var lines: Array = [
 		CS.cue({"text": "Le Masque ne bouge pas. Puis une main monte vers le visage. Le masque d'obsidienne glisse, et tombe dans l'herbe rase, sans bruit."}, falls),
 		{"text": "Isaure. Les cheveux défaits par le vent. Les yeux de Maïa."},
@@ -382,11 +398,19 @@ static func _unmasked(who: Node, cast: Dictionary) -> Array:
 		{"who": ISAURE, "text": "Je n'ai pas claqué la porte. Je suis rentrée au port, et j'ai regardé les volets se fermer. Pendant vingt ans. Et puis j'ai fait sans elle. Avec ses notes, puisqu'elle n'en voulait plus. Avec ceux qui payaient. Avec ceux qui avaient faim."},
 		{"who": CHLOE, "text": "Avec des dinos qui ont peur."},
 		{"who": ISAURE, "text": "Oui. … Oui, moussaillon. Je ne vais pas te dire que non."},
-		{"who": ISAURE, "text": "Cette île pourrait tout changer. Pour le port. Pour tous les ports qui meurent. Elle le savait mieux que moi, et elle a préféré l'enfermer. Ce qui dort là-dessous n'est pas un monstre, Chloé : c'est une force. Il suffirait que quelqu'un ait le courage de la tenir."},
+		{"who": ISAURE, "text": "Ce qui dort là-dessous n'est pas un monstre, Chloé : c'est une force. Il suffirait que quelqu'un ait le courage de la tenir."},
 		{"who": ISAURE, "text": "Elle a eu peur."},
-		{"who": MAIA, "text": "Toi aussi. Tu as reposé ta tasse."},
-		CS.cue({"text": "Silence. Isaure regarde les Cœurs, dans ses mains."}, looks_down),
-		{"who": ISAURE, "text": "… Oui. Je ne sais plus si je l'ai, ce courage. Mais je suis déjà trop haut pour redescendre, Maïa. Plus on monte…"},
+		CS.cue({"text": "Maïa n'a pas bougé. Elle regarde sa mère comme on regarde quelqu'un qui compte sur ses doigts et se trompe exprès."}, counts),
+		{"who": MAIA, "text": "Non."},
+		{"who": ISAURE, "text": "Maïa…"},
+		{"who": MAIA, "text": "Dans la cuisine, je t'ai tout demandé. La barque. Tu n'as pas bougé. La grotte. Tu n'as pas bougé. Le masque. Rien. Et puis j'ai dit « Hélène ». Et là, tu as reposé ta tasse."},
+		{"who": MAIA, "text": "Tu ne vas pas tenir un volcan, maman. Tu vas la chercher."},
+		CS.cue({"text": "Silence. Isaure regarde les Cœurs, dans ses mains. Elle ne dit pas non. Elle ne dit rien du tout."}, looks_down),
+		{"who": CHLOE, "text": "(« Personne ne sait où elle est. Pas même moi. » … Elle savait. Sur la passerelle, elle savait déjà.)"},
+		{"who": ISAURE, "text": "Il faut les cinq pour ouvrir, moussaillon. Et quelqu'un pour le tenir, le temps qu'il faut. Elle a eu peur de lui. Moi, j'ai peur depuis un an. Toutes les nuits. Ça se vaut."},
+		{"who": CHLOE, "text": "Si vous ouvrez le cratère, il se réveille. Elle l'a écrit. Elle l'a écrit partout."},
+		{"who": ISAURE, "text": "Alors je le tiendrai."},
+		{"who": ISAURE, "text": "Je ne sais plus si je l'ai, ce courage. Mais je suis déjà trop haut pour redescendre. Plus on monte…"},
 		{"who": MAIA, "text": "Tu me l'as dit pour les falaises."},
 		{"who": ISAURE, "text": "C'était pour les falaises."},
 	]
@@ -405,25 +429,24 @@ static func _unmasked(who: Node, cast: Dictionary) -> Array:
 	return lines
 
 
-## She leaves by the Descente de Cendre, the Cœurs against her; she does not turn round; she does
-## not run. (The cup, if Chloé read page 25: she stops; « Elle écrivait tout. »)
+## She turns away, the Cœurs against her: three steps towards the Descente de Cendre. She does not
+## run. (The cup, if Chloé read page 25: she stops; « Elle écrivait tout. ») Chloé believes the
+## scene over.
 static func _leaves(cast: Dictionary) -> Array:
 	var isaure = cast.get("isaure")
 	var away := C.px("DESCENTE_CENDRE")
-	var goes := func() -> void:
+	var steps := func() -> void:
 		if not is_instance_valid(isaure):
 			return
 		var at: Vector2 = (isaure as Node2D).global_position
-		# (West along the terrace first, in front of the arch, then up the path of cinders: seen
-		# leaving all the way, never behind a pillar of the arch.)
+		# (West along the terrace, in front of the arch: seen all the way, never behind a pillar.)
 		var turn := Vector2(away.x + ISAURE_TURN * S.CELL, at.y + S.CELL)
-		Stage.look_at(turn, 1.6)
-		await (isaure as Npc).walk_to(turn, "", ISAURE_SPEED)
-		if not is_instance_valid(isaure):
-			return
-		Stage.fade_out(isaure, ISAURE_LEAVES, false)
-		(isaure as Npc).walk_to(away, "", ISAURE_SPEED)
-	var stops := func() -> void:
+		var dir: Vector2 = (turn - at).normalized() if turn.distance_to(at) > 1.0 else Vector2(-1.0, 0.0)
+		var stop := S.ground_near(at + dir * ISAURE_STEPS * S.CELL, 2)
+		cast["stop"] = stop
+		Stage.look_at(stop.lerp(Stage.chloe().global_position, 0.4), 1.4)
+		await (isaure as Npc).walk_to(stop, "", ISAURE_SPEED)
+	var halts := func() -> void:
 		if is_instance_valid(isaure):
 			Stage.emote(isaure, "…")
 	var lines: Array = []
@@ -433,57 +456,152 @@ static func _leaves(cast: Dictionary) -> Array:
 				if is_instance_valid(isaure):
 					(isaure as Npc).face((isaure as Node2D).global_position + Vector2(-10.0, -40.0))),
 			{"who": CHLOE, "text": "Elle a gardé votre tasse."},
-			CS.cue({"text": "Isaure s'arrête."}, stops),
+			CS.cue({"text": "Isaure s'arrête."}, halts),
 			{"who": CHLOE, "text": "Elle l'a écrit. Dans une lettre qu'elle ne vous a jamais envoyée. « Tu n'as pas tort pour le port. Tu as tort sur le moyen. Je garde ta tasse. »"},
 			{"text": "Isaure ne se retourne pas. Longtemps."},
 			{"who": ISAURE, "text": "… Elle écrivait tout."},
 		])
 	lines.append_array([
-		CS.cue({"text": "Elle s'en va par la Descente de Cendre, vers le volcan, les Cœurs contre elle. Elle ne se retourne pas. Elle ne court pas."}, goes),
-		{"who": MAIA, "text": "Elle ne court jamais. Elle dit que ça fait peur aux gens."},
-		{"flag": &"masque_tombe"},
+		CS.cue({"text": "Elle se détourne. Trois pas vers la Descente de Cendre, les Cœurs contre elle. Elle ne court pas. Le masque d'obsidienne reste dans l'herbe."}, steps),
+		{"who": CHLOE, "text": "(C'est fini. Elle s'en va, et c'est fini.)"},
 	])
 	return lines
 
 
-## The mask in the grass: nobody picks it up. What Maïa keeps; the fifth Cœur; Maïa goes back
-## down with the Roi, « les yeux ouverts, cette fois ».
+## « Attends. » Maïa cannot stop her: so she will not lose her. She goes with her. Moustique to
+## Chloé's shoulder (he joins the party), the cardboard mask to Chloé's hands; Isaure does not say
+## yes: she waits. They walk down together, not hand in hand; Maïa waves once, without turning.
+static func _with_her(cast: Dictionary) -> Array:
+	var chloe := Stage.chloe()
+	var isaure = cast.get("isaure")
+	var maia = cast.get("maia")
+	var away := C.px("DESCENTE_CENDRE")
+	var turns := func() -> void:
+		if is_instance_valid(isaure) and is_instance_valid(maia):
+			await S.wait(0.8)
+			(isaure as Npc).face((maia as Node2D).global_position)
+			Stage.hop(isaure, 1, 4.0)
+	var no_hands := func() -> void:
+		if is_instance_valid(isaure):
+			Stage.tremble(isaure, 0.8, 1.2)
+			Stage.emote(isaure, "…")
+	var to_chloe := func() -> void:
+		if is_instance_valid(maia):
+			Stage.look_at((maia as Node2D).global_position.lerp(chloe.global_position, 0.5), 1.0)
+			await (maia as Npc).walk_to(S.ground_near(chloe.global_position + Vector2(-54.0, -8.0), 2), "", 120.0)
+			(maia as Npc).face(chloe.global_position)
+			Stage.turn_to(chloe, (maia as Node2D).global_position)
+	var gives_mask := func() -> void:
+		if is_instance_valid(maia):
+			await CS.reach(maia, chloe.global_position, 12.0, 1.2)
+		if ItemsDB.ITEMS.has("masque_carton"):
+			CS.Act.pop(chloe.global_position, "masque_carton", 1.0)
+			if Game.item_count("masque_carton") == 0:   # (Maïa took it back at the Monts: it comes back once)
+				Game.give_item("masque_carton")
+		Game.set_flag(&"masque_carton_confie")
+	var moustique := func() -> void:
+		var from: Vector2 = (maia as Node2D).global_position + Vector2(0.0, -8.0) if is_instance_valid(maia) else chloe.global_position + Vector2(-50.0, -8.0)
+		var bird := C.stand_in(&"dimorphodon", from, "MoustiqueConfie", MOUSTIQUE_LEVEL, 1.0)
+		cast["moustique"] = bird
+		if bird == null:
+			return
+		Stage.fade_in(bird, 0.3)
+		bird.cry(&"neutre")
+		await CS.fly(bird, chloe.global_position + SHOULDER, 1.2, SHOULDER_UP)   # (perched: his picture stays up)
+		Stage.emote(chloe, "♥")
+	var side_by_side := func() -> void:
+		if is_instance_valid(maia) and is_instance_valid(isaure):
+			var at: Vector2 = (isaure as Node2D).global_position
+			await (maia as Npc).walk_to(S.ground_near(at + Vector2(40.0, 6.0), 2), "", 110.0)
+			(maia as Npc).face(at + Vector2(-200.0, 0.0))
+			(isaure as Npc).face(chloe.global_position)
+	var down := func() -> void:
+		var walkers: Array = [isaure, maia]
+		for w in walkers:
+			if not is_instance_valid(w):
+				continue
+			var at: Vector2 = (w as Node2D).global_position
+			var dir: Vector2 = (away - at).normalized() if away.distance_to(at) > 1.0 else Vector2(-1.0, 0.0)
+			Stage.fade_out(w, ISAURE_LEAVES, false)
+			(w as Npc).walk_to(at + dir * TOGETHER_WALK * S.CELL, "", ISAURE_SPEED)
+		Stage.look_at(away.lerp(chloe.global_position, 0.3), 2.0)
+		await S.wait(ISAURE_LEAVES * 0.45)
+		if is_instance_valid(maia):
+			Stage.hop(maia, 1, 6.0)   # (her arm up, once, without turning round)
+	var lines: Array = [
+		{"who": MAIA, "text": "Attends."},
+		CS.cue({"text": "Isaure s'arrête. Elle ne se retourne pas encore."}, func() -> void: Stage.look_back(0.8)),
+		{"who": MAIA, "text": "Je t'ai dit, aux Monts… non, je ne te l'ai pas dit. Je l'ai dit à Chloé. Je voulais t'arrêter. Pas te perdre."},
+		{"who": MAIA, "text": "Je ne peux pas t'arrêter. Je viens de le voir. Alors je ne te perds pas."},
+		CS.cue({"who": MAIA, "text": "Je viens avec toi."}, turns),
+		{"text": "Isaure se retourne, d'un coup. Pour la première fois de la scène, sa voix monte. Pas fort. Un peu."},
+		{"who": ISAURE, "text": "Non."},
+		{"who": MAIA, "text": "Tu ne cours jamais. Moi non plus. Je te rattraperai en marchant."},
+		{"who": ISAURE, "text": "Maïa. En bas, il y a Brac, les forges, la cendre, et un volcan qui…"},
+		{"who": MAIA, "text": "Et toi. En bas, il y a toi."},
+		{"who": MAIA, "text": "Tu dis que quelqu'un doit le tenir. Et toi, qui te tient ?"},
+		CS.cue({"text": "Isaure ouvre la bouche. Rien ne vient. Elle regarde sa fille comme Roc regardait Chloé au col : sans savoir quoi faire de ses mains."}, no_hands),
+		CS.cue({"who": CHLOE, "text": "Maïa… !"}, to_chloe),
+		{"text": "Maïa se tourne vers Chloé. Elle n'a pas les yeux rouges. Elle a les yeux de sa mère."},
+		{"who": MAIA, "text": "Tu m'as dit que j'étais prête, Chloé. Aux Monts, après notre défi. Tu l'as dit."},
+		{"who": CHLOE, "text": "(Je l'ai dit.)"},
+		{"who": MAIA, "text": "Alors fais-moi confiance. Comme avec les dinos."},
+	]
+	if Game.flag(&"masque_rendu"):
+		lines.append_array([
+			CS.cue({"text": "Elle tend à Chloé le masque en carton, plié en deux."}, gives_mask),
+			{"who": MAIA, "text": "Garde-le-moi. Elle n'en a pas voulu aujourd'hui. Je le lui redemanderai en bas."},
+		])
+	lines.append_array([
+		CS.cue({"text": "De sa capuche sort une petite tête pointue. Moustique. Maïa le prend dans ses deux mains, et le pose sur l'épaule de Chloé. Il s'y accroche, et ne crie pas."}, moustique),
+		{"who": MAIA, "text": "Et garde-moi Moustique. Il ne vole pas assez haut pour là-bas, et il a peur du feu. Et il n'aime pas que je parte. … Moi non plus, je n'aime pas."},
+		{"who": MAIA, "text": "On se retrouve en bas. Pas aujourd'hui. Mais en bas."},
+		CS.cue({"text": "Elle va jusqu'à sa mère. Elle ne lui prend pas la main. Elle se met à côté d'elle, et elle attend. Isaure regarde Chloé par-dessus la tête de sa fille."}, side_by_side),
+		{"who": ISAURE, "text": "… Elle a mon courage. Je te l'avais dit, moussaillon. Et pas assez de prudence."},
+		{"who": ISAURE, "text": "Ça aussi, je te l'avais dit."},
+		CS.cue({"text": "Elles descendent par la Descente de Cendre, vers le volcan, les Cœurs contre Isaure, Maïa à côté. Isaure ne court pas. Maïa non plus. Elles ne se tiennent pas la main. Elles ne se retournent pas."}, down),
+		{"text": "À mi-pente, Maïa lève le bras, sans se retourner, et l'agite. Une fois."},
+		{"flag": &"masque_tombe"},
+		{"flag": &"moustique_confie"},
+	])
+	return lines
+
+
+## Chloé alone: the mask in the grass, Moustique on her shoulder watching the slope, the Roi's
+## head lowered to her. Moustique joins the party (or waits at the Cabinet when it is full).
 static func _after(cast: Dictionary) -> Array:
 	var chloe := Stage.chloe()
-	var maia = cast.get("maia")
 	var fallen = cast.get("fallen")
+	var roi = cast.get("roi")
 	var looks := func() -> void:
 		Stage.look_back(1.2)
 		if is_instance_valid(fallen):
-			Stage.look_at((fallen as Node2D).global_position, 1.0)
-			if is_instance_valid(maia):
-				(maia as Npc).face((fallen as Node2D).global_position)
 			Stage.turn_to(chloe, (fallen as Node2D).global_position)
-			await S.wait(2.0)
-		Stage.look_back(1.0)
-		if is_instance_valid(maia):
-			(maia as Npc).face(chloe.global_position)
-	var leaves := func() -> void:
-		var roi = cast.get("roi")
-		if is_instance_valid(maia) and is_instance_valid(roi):
-			await (maia as Npc).walk_to((roi as Node2D).global_position + Vector2(-16.0, 22.0), "up", 120.0)
-			Stage.fade_out(maia, 0.6, false)
-			await S.wait(0.5)
-			CS.fly(roi, (roi as Node2D).global_position + Vector2(60.0, 520.0), 3.0, CS.FLY_HEIGHT + 140.0)
-			Stage.fade_out(roi, 2.6, false)
+			await S.wait(1.6)
+		Stage.turn_to(chloe, C.px("DESCENTE_CENDRE"))
+	var bows := func() -> void:
+		if is_instance_valid(roi):
+			await (roi as DinoNpc).walk_to(S.ground_near(chloe.global_position + Vector2(90.0, -10.0), 3), 60.0)
+			Stage.turn_to(roi, chloe.global_position)
+			Stage.bow(roi, 1.8)
+	var joins := func() -> void:
+		var d := Dino.create(&"dimorphodon", MOUSTIQUE_LEVEL, "Moustique")
+		var in_party := Game.add_caught(d)
+		Toast.say(S.world().get_tree(), "Moustique rejoint ton équipe !" if in_party else "Moustique attend au Cabinet, avec Roc (ton équipe est pleine).")
+		Stage.companion_joy()
 	return [
-		CS.cue({"text": "Le masque d'obsidienne reste dans l'herbe. Maïa le regarde. Elle ne le ramasse pas. Chloé non plus."}, looks),
-		{"who": MAIA, "text": "Elle l'a enlevé, Chloé. Elle ne l'a pas remis."},
-		{"who": MAIA, "text": "Il reste un Cœur. Sous le volcan. Elle sait où il dort. … Nous aussi, maintenant."},
-		{"who": CHLOE, "text": "(Les quatre Cœurs… Et la Descente de Cendre, qui mène au volcan. Là où tout a commencé pour Hélène.)"},
-		CS.cue({"who": MAIA, "text": "Je redescends avec lui. Les yeux ouverts, cette fois. … Enfin, un. On se retrouve en bas."}, leaves),
+		CS.cue({"text": "Le masque d'obsidienne reste dans l'herbe. Chloé ne le ramasse pas. Sur son épaule, Moustique regarde la pente jusqu'à ce qu'il n'y ait plus rien à regarder."}, looks),
+		CS.cue({"text": "Le Roi, au bord de la terrasse, s'approche, et baisse la tête jusqu'à elle."}, bows),
+		{"who": CHLOE, "text": "(Les Kerval reviennent toujours au port. … Toutes les deux. Je les ramènerai. Toutes les deux.)"},
+		{"who": CHLOE, "text": "(Il reste un Cœur. Elle sait où il dort. Moi aussi, maintenant. Et je sais où est Hélène.)"},
+		CS.cue({"text": "Moustique s'accroche à l'épaule de Chloé, et ne crie toujours pas. Il reste."}, joins),
 		{"who": CHLOE, "text": "(Il y a une page, ici, quelque part. Elle a toujours laissé une page.)"},
 	]
 
 
 ## The scene's actors gone; the zone's mask prop, if any, shown from now on (its show_flag).
 static func _clean_up(who: Node, cast: Dictionary) -> void:
-	for k in ["maia", "roi", "isaure"]:
+	for k in ["maia", "roi", "isaure", "moustique"]:
 		var n = cast.get(k)
 		if is_instance_valid(n):
 			(n as Node).queue_free()
@@ -542,11 +660,12 @@ static func _roc_isaure() -> Array:
 		if prof:
 			Stage.hop(prof, 1, 3.0)
 	return [
-		CS.cue({"text": "Chloé raconte. L'Arche, les Cœurs, le masque dans l'herbe. Roc pose les deux mains sur le bureau. Il ne dit rien."}, slumps),
+		CS.cue({"text": "Chloé raconte. L'Arche, les Cœurs, le masque dans l'herbe. Et Maïa, qui est descendue avec sa mère. Roc pose les deux mains sur le bureau. Il ne dit rien."}, slumps),
 		{"text": "Il ne dit rien longtemps."},
 		{"who": ROC, "text": "Vingt ans. Elle venait prendre le thé, Isaure, au début. Puis elle venait à la porte. Puis elle ne venait plus. Je n'ai rien demandé. On ne demande jamais."},
-		CS.cue({"who": ROC, "text": "Les Kerval reviennent toujours au port, Chloé. … Même elle. Surtout elle."}, straightens),
-		{"who": ROC, "text": "Le cinquième Cœur dort sous le volcan, au sanctuaire de Magma. Elle le sait. Toi aussi. Alors ne la laisse pas arriver la première."},
+		{"who": ROC, "text": "Et Maïa qui la suit… Évidemment qu'elle la suit. C'est la seule de nous tous qui ait eu le courage de rester à côté."},
+		CS.cue({"who": ROC, "text": "Les Kerval reviennent toujours au port, Chloé. … Toutes les deux. Surtout toutes les deux."}, straightens),
+		{"who": ROC, "text": "Le cinquième Cœur dort sous le volcan, au sanctuaire de Magma. Elle le sait. Toi aussi. Alors ne la laisse pas arriver la première. Et ramène-moi la petite."},
 		{"flag": &"roc_masque_tombe"},
 	]
 

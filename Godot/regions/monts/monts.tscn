@@ -1993,12 +1993,14 @@ display_name = "Maïa"
 sheet = ExtResource("20_ic4ij")
 event = &"maia_monts"
 show_flag = &"coeur_4"
+hide_flag = &"masque_tombe"
 
 [node name="CaillouMonts" type="StaticBody2D" parent="Entities" unique_id=533284531]
 position = Vector2(5332.8, 614.4)
 script = ExtResource("19_6alj1")
 species_id = &"triceratops"
 show_flag = &"coeur_4"
+hide_flag = &"masque_tombe"
 size_scale = 0.95
 
 [node name="DeclencheurGlacier" type="Area2D" parent="Entities" unique_id=854453285]

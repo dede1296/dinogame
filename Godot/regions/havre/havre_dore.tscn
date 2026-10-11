@@ -571,6 +571,7 @@ script = ExtResource("11_y07y8")
 display_name = "Maïa"
 sheet = ExtResource("16_ofcx3")
 event = &"maia_havre"
+hide_flag = &"masque_tombe"
 
 [node name="Gaspard" type="StaticBody2D" parent="Entities" unique_id=1837009268 instance=ExtResource("10_0rhqe")]
 position = Vector2(940.8, 537.6)

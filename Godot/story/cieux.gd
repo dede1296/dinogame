@@ -62,10 +62,11 @@ const MAIA_COL_BEFORE := [
 	"Caillou a voulu monter par la falaise. Il a fait trois pas. Il réfléchit, maintenant.",
 	"Moustique a vu l'ombre là-haut, l'immense. Il est rentré dans ma capuche et il n'en sort plus.",
 ]
-const MAIA_COL_AFTER := [
-	"Moustique boude : il voulait voler avec le Roi. Je lui ai dit qu'il avait volé AVEC moi SUR le Roi. Il dit que ça ne compte pas.",
-	"J'ai gardé les yeux ouverts, en redescendant. Enfin, un. … Enfin, par moments.",
-	"Il reste un Cœur, Chloé. Et je sais où elle va. On y va ensemble. Sans courir.",
+## Joss once Maïa has gone down with her mother (masque_tombe).
+const JOSS_APRES := [
+	"Maïa est descendue avec sa mère ? … Elle a mon manteau. Au moins, elle aura chaud. C'est idiot, ce que je dis. Je le sais.",
+	"Moustique est avec toi ? Montre-le-moi. … Il a maigri. Non. Il a la même tête. C'est moi qui ai maigri.",
+	"Quand elles remonteront, je leur couds à toutes les deux ce qu'elles voudront. Même un harnais. Même deux.",
 ]
 
 
@@ -178,7 +179,8 @@ static func joss_harnais() -> bool:
 	if Game.flag(HARNESS_FLAG):
 		if not Game.flag(&"vol_obtenu"):
 			return false   # (chapter 6's lines, MontsFin.joss_havre: he waits for news)
-		await S.say([{"who": JOSS, "text": ForetCamp.next_line(&"joss_cieux_n", JOSS_CIEUX)}])
+		var pool: Array = JOSS_APRES if Game.flag(&"masque_tombe") else JOSS_CIEUX
+		await S.say([{"who": JOSS, "text": ForetCamp.next_line(&"joss_cieux_n", pool)}])
 		return true
 	S.lock(true)
 	await S.say(_the_harness(joss))
@@ -233,8 +235,7 @@ static func maia_monts(_who: Node) -> bool:
 	if not Game.flag(&"maia_alliee") or not Game.flag(HARNESS_FLAG):
 		return false
 	if Game.flag(&"masque_tombe"):
-		await S.say([{"who": MAIA, "text": ForetCamp.next_line(&"maia_cieux_n", MAIA_COL_AFTER)}])
-		return true
+		return false   # (she went down with her mother: her Npc at the col is hidden, hide_flag masque_tombe)
 	if not Game.flag(&"maia_cieux_plan"):
 		Game.set_flag(&"maia_cieux_plan")
 		await S.say([

@@ -183,18 +183,15 @@ static func chatter(who: StringName, pool: Array) -> Array:
 					"Les Cieux, moussaillon ? Là-haut, le vent ne pardonne rien. Rien du tout."]
 		&"roc":
 			if Game.flag(&"masque_tombe"):
-				out.insert(0, "Je sors toujours la nuit. Mais je regarde le volcan autrement, maintenant. Je compte les feux. Et je compte une personne.")
+				out.insert(0, "Je sors toujours la nuit. Mais je regarde le volcan autrement, maintenant. Je compte les feux. Et je compte deux personnes.")
+				out.insert(1, "Moustique, avec toi ? Il a mangé mon encrier. Maïa dit qu'il fait ça quand il s'inquiète. … Moi, je mange des biscuits.")
 			elif Game.flag(&"vol_obtenu"):
 				out.insert(0, "Tu as volé de nuit ? Non ? Hélène le faisait. Elle disait que les étoiles sont plus près. Je lui disais que le sol aussi.")
 			elif Game.flag(&"harnais_vol"):
 				out.insert(0, "Un harnais de vol… Hélène montait avec un vieux Ptéranodon qui louchait. Elle disait qu'il volait droit quand même. Moi, je restais en bas.")
 		&"maia_havre":
 			if Game.flag(&"masque_tombe"):
-				return [
-					"Joss m'a fait une soupe. Il ne sait pas faire la soupe. Je l'ai mangée quand même.",
-					"Tu as volé de nuit ? Maman dit qu'on ne décolle jamais de nuit. … Maman dit beaucoup de choses.",
-					"Il reste un Cœur. On ne la laisse pas arriver la première. Mais on ne court pas. Elle non plus, elle ne court pas.",
-				]
+				return ["…"]   # (she went down with her mother: her Npc at the Havre is hidden, hide_flag masque_tombe)
 			if Game.flag(&"vol_obtenu"):
 				return [
 					"Tu VOLES ? Pour de vrai ? Et moi je rame. C'est injuste. C'est très stylé, mais c'est injuste.",
@@ -204,7 +201,7 @@ static func chatter(who: StringName, pool: Array) -> Array:
 				out.insert(0, "Tu as le harnais ? Avec la fougère ? Alors file aux Monts. Je t'attends au col. J'ai un plan.")
 		&"joss":
 			if Game.flag(&"masque_tombe"):
-				out.insert(0, "Maïa dort chez moi, encore. Elle a dit « merci pour la soupe ». Elle n'a jamais dit ça de sa vie. Ça m'inquiète plus que le reste.")
+				out.insert(0, "Maïa est descendue avec sa mère. Elle a mon manteau. Au moins, elle aura chaud. … C'est idiot, ce que je dis.")
 			elif Game.flag(&"vol_obtenu"):
 				out.insert(0, "Les coutures ont tenu ? … Elles ont tenu. Je le savais.")
 	return out
