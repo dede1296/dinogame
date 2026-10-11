@@ -47,6 +47,11 @@ const MOVES := {
 	## (tête niv. 8, pattes avant niv. 1) mais absentes de MOVES jusqu'ici.
 	&"pique": {"name": "Pique acérée", "type": "vent", "power": 55, "accuracy": 1.0, "pp": 20, "fx": "bite"},
 	&"tornadeAiles": {"name": "Tornade d'ailes", "type": "vent", "power": 50, "accuracy": 0.95, "pp": 15, "fx": "claw"},
+	## Cieux Éternels : les grands ptérosaures (niv. 38-44) ont de quoi se battre dans le vent. Appris
+	## tard (36 et plus), pour ne rien changer aux Pteranodons de la Côte (28-35).
+	&"ventArriere": {"name": "Vent arrière", "type": "vent", "power": 0, "accuracy": 1.0, "pp": 10, "effect": {"self": {"spd": 2}}, "fx": "roar"},
+	&"piqueAerien": {"name": "Piqué", "type": "vent", "power": 85, "accuracy": 0.9, "pp": 10, "fx": "charge"},
+	&"cyclone": {"name": "Cyclone", "type": "vent", "power": 95, "accuracy": 0.85, "pp": 5, "effect": {"status": "etourdi", "chance": 0.15}, "fx": "wave"},
 }
 
 const TYPE_NAMES := {"neutre": "Neutre", "feu": "Feu", "eau": "Eau", "terre": "Terre", "vent": "Vent", "pierre": "Pierre", "nature": "Nature"}
@@ -78,7 +83,7 @@ const LEARN := {
 		&"ceratopsian": [[1, &"charge"], [5, &"coupCorne"]],
 		&"armored": [[1, &"charge"], [7, &"coupCrane"]],
 		&"hadrosaur": [[1, &"charge"], [5, &"criTrompette"]],
-		&"flyer": [[1, &"morsure"], [8, &"pique"]],
+		&"flyer": [[1, &"morsure"], [8, &"pique"], [38, &"piqueAerien"]],
 		&"marine": [[1, &"morsure"], [6, &"machoireAquatique"], [18, &"plongeon"]],
 	},
 	&"teeth": {
@@ -86,7 +91,7 @@ const LEARN := {
 	},
 	&"front_legs": {
 		&"raptor": [[1, &"griffes"], [9, &"laceration"]], &"spino": [[4, &"griffes"]],
-		&"flyer": [[1, &"tornadeAiles"]], &"tyrant": [[3, &"rugissement"]],
+		&"flyer": [[1, &"tornadeAiles"], [42, &"cyclone"]], &"tyrant": [[3, &"rugissement"]],
 	},
 	&"back_legs": {
 		&"raptor": [[3, &"bondGriffu"]], &"sauropod": [[6, &"pietinement"], [20, &"seisme"]],
@@ -95,6 +100,7 @@ const LEARN := {
 	},
 	&"back": {
 		&"armored": [[4, &"blindage"], [9, &"picsDorsaux"]], &"spino": [[5, &"voileMenacante"]], &"ceratopsian": [[6, &"blindage"]],
+		&"flyer": [[36, &"ventArriere"]],
 	},
 	&"tail": {
 		&"armored": [[1, &"coupQueue"], [11, &"massue"]], &"sauropod": [[1, &"coupQueue"], [7, &"fouetCaudal"]],

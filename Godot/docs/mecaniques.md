@@ -39,8 +39,8 @@ au bon niveau pour son Alpha.
 8. **Un réglage de difficulté** (Paramètres) : *Découverte* (adversaires plus faibles, plus
    d'expérience) et *Normal*.
 9. **Pas de trajets à vide** : soins au Cabinet et à des **feux de camp** dans chaque région (un par
-   zone environ), retour rapide vers les zones déjà visitées (✅ Grand Voyageur, ✅ barque de Maïa,
-   puis Vol : voir « Voyage rapide »).
+   zone environ), retour rapide vers les zones déjà visitées (✅ Grand Voyageur, ✅ barque de Maïa :
+   voir « Voyage rapide »), et ✅ le Vol, libre, au-dessus de tout (voir « Le Vol »).
 
 **Critère de conception, vérifié sur chaque région** : environ **20 à 30 combats** du début à
 l'Alpha en jouant normalement, et **au moins la moitié du temps passée à autre chose** (explorer,
@@ -128,7 +128,9 @@ scène d'arrivée habituelle du lieu se joue comme si elle y venait à pied.
 - Le même écran de choix (`ui/voyage_screen.gd`, un titre par moyen de voyage) : l'endroit où l'on
   est est grisé (« Tu es ici »), la première destination a le focus (croix, A, Entrée), B, Échap ou
   « Rester ici » ne changent rien.
-- Le Vol (chapitre 7) viendra en plus.
+- ✅ Le Vol (chapitre 7) n'est pas un voyage rapide : c'est un déplacement **libre**, piloté, dans la zone où
+  l'on est (décision de Greg, 11/10 ; voir « Le Vol »). Une carte de destinations en vol (choisir un point de
+  l'île et s'y faire porter) reste un ajout possible, à décider.
 
 ### Parler, regarder ✅
 
@@ -193,6 +195,9 @@ depuis leur tête ou leur flanc : leur portée grandit avec leur taille (`DinoNp
   lune, un endroit secret).
 - Les dinos d'une zone ont un **niveau adapté** à la progression. Les Alphas et les rares sont
   plus forts.
+- **Jamais pendant une scène** ✅ (11/10) : un dino visible qui touche Chloé ne lance pas de combat tant
+  qu'une scène de l'histoire se joue ou que Chloé est occupée, même entre deux répliques
+  (`WildDino._on_touch` : un Rhamphorhynchus avait coupé le piège de l'Arche du Vent).
 
 ### Jour, nuit, météo (jour et nuit ✅)
 
@@ -213,7 +218,7 @@ depuis leur tête ou leur flanc : leur portée grandit avec leur taille (`DinoNp
 
 ### Les régions froides : le manteau de duvet
 
-**Règle du monde** : on n'entre pas dans une région froide (les **Monts Gelés** ; plus tard les **Cieux
+**Règle du monde** : on n'entre pas dans une région froide (les **Monts Gelés** ; ✅ les **Cieux
 Éternels**) sans un **vêtement chaud**. Il s'achète : le **manteau de duvet** de Rosalie (objet
 `manteau_duvet`, « cle », icône `ui/manteau_duvet.png`), cousu avec le duvet que les dinos à plumes
 perdent à la mue (pas de fourrure : il n'y a pas de mammifères sur l'île).
@@ -232,7 +237,10 @@ perdent à la mue (pas de fourrure : il n'y a pas de mammifères sur l'île).
   (`Monts.update_access()`, appelé à chaque entrée de zone et après les deux boutiques). Fermée, elle
   dit ce qui manque (`monts_bloques` : « Brrr… sans vêtement chaud, je ne ferai pas dix pas là-haut »,
   puis où l'acheter et le prix) ; l'objectif « Un vêtement chaud » mène à Joss. On peut aussi demander à
-  Roc « Où trouver un vêtement chaud ? ». Même règle prévue pour les Cieux.
+  Roc « Où trouver un vêtement chaud ? ». ✅ Même règle aux Cieux : on n'y monte que par les Monts (le manteau y
+  est déjà obligatoire), et les trois zones des Cieux sont froides (`Region.cold` : son manteau, à pied, en selle et
+  **en vol**, `chloe_vol_manteau.png`) ; neige légère, blizzard (le grand vent des hauteurs) et brume de la mer de
+  nuages, jamais de pluie.
 - **Apparence** : dans une région froide, Chloé porte son manteau, à pied et en selle (`Outfits`,
   planches `chloe_manteau*.png`).
 
@@ -250,7 +258,7 @@ introduit l'espèce qui ouvre la suite, ce qui rend la collection utile.
 | **Coup de crâne** ✅ | Murs fissurés | Pachycéphalosaures (Pachycephalosaurus, Stygimoloch) | Forêt |
 | **Nage** ✅ | Eau profonde, rivières | Spinosauridés (Baryonyx…) | Marais |
 | **Plongée** | Grottes sous-marines | Reptiles marins (Plesiosaurus…) | Côte |
-| **Vol** | Falaises, îlots, déplacement rapide entre les régions visitées | Grands ptérosaures | Cieux |
+| **Vol** ✅ | Tout se survole : eau, falaises, vide entre les pitons ; îlots, sommets | Grands ptérosaures (Pteranodon, Tapejara, Tupandactylus, Hatzegopteryx, Quetzalcoatlus) | Cieux |
 
 **Monter, voler, nager** : Monture, Vol, Nage et Plongée demandent aussi un **équipement** fabriqué par
 Joss, le sellier de Havre-Doré (selle, harnais de vol, gilet de nage, masque de plongée), obtenu au fil
@@ -262,7 +270,7 @@ sous-marines) et changent la façon de voyager :
 | **Monture** ✅ | les grands marcheurs au dos praticable : cératopsiens (derrière la collerette), becs de canard, Iguanodon, Gallimimus, Ankylosaurus. Pas les raptors (trop petits), ni le Stégosaure (plaques), ni les sauropodes (hors de portée) | selle (Interlude) | voyager presque deux fois plus vite, traverser les herbes hautes sans rencontre cachée, courses |
 | **Nage** ✅ | spinosauridés (Baryonyx, Suchomimus, Spinosaurus) et reptiles marins | gilet de nage (ch. 3) | rivières, eau profonde, îlots proches |
 | **Plongée** | reptiles marins | masque de plongée (ch. 5) | grottes marines, épaves, récifs |
-| **Vol** | grands ptérosaures seulement (Pteranodon, Quetzalcoatlus ; le Dimorphodon est bien trop petit) | harnais de vol (ch. 7) | sommets, îlots lointains, et d'une région visitée à l'autre |
+| **Vol** ✅ | grands ptérosaures seulement (Pteranodon, Tapejara, Tupandactylus, Hatzegopteryx, Quetzalcoatlus ; le Dimorphodon, l'Anurognathus et le Rhamphorhynchus sont bien trop petits) | harnais de vol (ch. 7) | voler librement au-dessus de tout, se poser où le sol tient : sommets, îlots |
 
 **En selle** : bouton selle sous celui de la carte (touche R), une fois la selle de Joss obtenue ;
 c'est le premier dino de l'équipe capable de porter Chloé qui la porte (à sa taille habituelle).
@@ -474,6 +482,80 @@ K.O. : on peut perdre au premier essai, surtout sans dino du Vent (d'où la leç
 Essais : `tools/test_plongee.gd` (headless : conditions, zone sous l'eau, règles du combat, rythme de
 l'abîme, combats simulés) ; `tools/scenarios/plongee_test.gd` (captures : la plongée, le récif, les combats,
 la remontée, le passage noyé).
+
+### Le Vol (Cieux, chapitre 7) ✅
+
+**Un déplacement libre, piloté** (décision de Greg, 11/10 : « je veux un contrôle en vol ») : Chloé, sur un grand
+ptérosaure muni du **harnais de vol** de Joss, décolle, se dirige dans les huit directions, plus vite qu'à pied, au-dessus
+de **tout** — l'eau, les falaises, les bois, le vide entre les pitons, les ponts —, et se pose là où le sol la tient.
+Pas de pilotage fin ni de chute : on ne peut pas tomber, seulement choisir où se poser.
+
+**Qui, quand** (`story/vol.gd`, `Vol`) : il faut l'objet `harnais_vol` (donné par Joss au Havre, une fois Maïa alliée),
+le drapeau `vol_obtenu` (le Quetzalcoatlus Roi l'a confié : histoire.md § 7) et un **grand ptérosaure adulte** (niv. 12)
+dans l'équipe (capacité `vol`, par espèce : Pteranodon, Tapejara, Tupandactylus, Hatzegopteryx, Quetzalcoatlus).
+Le bouton du harnais (un harnais de cuir, `ui/harnais_vol.png`) apparaît sous celui de la selle dès que l'histoire a donné
+le Vol ; la touche **F** (manette : **X**, redéfinissable : « Voler ») ou le bouton décollent. Refusé, avec un message,
+une raison à la fois (`Vol.take_off_problem`, `Vol.say`) : sans harnais ; sans ptérosaure (« un Pteranodon, un
+Tapejara… ») ; un trop petit (« Dimorphodon est bien trop petit pour te porter ! ») ; un trop jeune (« … adulte, niv. 12 ») ;
+sous un toit, dans une grotte, sous la mer, là où une zone l'interdit (méta `vol_interdit`) ; depuis l'eau (« regagne d'abord
+la rive »). Rien n'est dit pendant une scène (le bouton n'y est pas) ni avant que l'histoire ait donné le Vol.
+
+**En vol** (`actors/flight.gd`, `Flight` ; `Player.flyer`, `Player.flight`) :
+- **Diriger** : le stick, les flèches, ZQSD (ou la souris de l'écran tactile) ; **×2,8** la marche, **×3,4** en piqué
+  (B ou Maj tenus) ; un peu d'inertie (on démarre et on s'arrête en glissant).
+- **Au-dessus de tout** : son masque de collision est vide, et elle n'est sur aucune couche (aucune sortie, aucun
+  déclencheur de scène, aucun dino sauvage ne la touche) ; seuls les bords de la zone la retiennent. Pas de rencontre
+  cachée (pas d'herbes hautes là-haut) ; chaque battement d'ailes compte comme un pas (le Lien du ptérosaure grandit, la
+  carte se dévoile, l'œuf avance).
+- **La hauteur** : 5,5 m au-dessus du plus haut sol alentour et de celui où elle va (le relief de la zone, l'eau) ; elle
+  monte vite avant une falaise, redescend doucement après ; un léger balancement. Au décollage et à l'atterrissage, une
+  courbe douce (0,8 s, 0,7 s).
+- **À l'écran** : le ptérosaure bat des ailes (ses planches de vol `<id>_vol.png` de profil, `<id>_vol_face_dos.png` de face
+  et de dos, `actors/wings.gd` ; dessinées pour les cinq grands ptérosaures, sinon il vole avec ses images de marche), vu dans le sens où il va ; Chloé
+  assise sur son dos dans sa pose de vol (`chloe_vol.png`, `chloe_vol_manteau.png` au froid ; `Saddle` en vol, `Outfits`) ;
+  le ptérosaure qui la porte est montré entre 2,3 et 3 m de haut debout (`Wings.MOUNT_MIN_M`, `MAX_M`) ; vu de face ou
+  de dos, ailes à plat, il n'est jamais plus étroit que de profil (`Wings.face_back_scale` : les planches face/dos du
+  Pteranodon et de l'Hatzegopteryx sont dessinées plus petites que leur profil, montrées ×1,82 et ×1,18 en attendant
+  d'être refaites à la bonne échelle). **L'ombre** reste au
+  sol (cachée au-dessus de l'eau et quand le sol est à plus de 9 m) ; le soleil projette aussi la leur. **La caméra** recule de
+  4 m (`WorldView.close_up`) et sa vue monte avec elle (`Flight.CAMERA_LIFT_SHARE` : le décalage de la caméra 2D, que la
+  caméra 3D suit), Chloé reste au milieu de l'écran. Le vent dans les oreilles, plus fort quand elle va vite.
+- **L'aide** (`ui/vol_help.gd`) : un bandeau en bas de l'écran, avec les vraies touches ou les boutons (`Prompts`, à jour si
+  le joueur change de manette) : « Diriger · Piquer · Se poser » ; en mots sur téléphone. La 1re fois, une bulle le dit aussi.
+- **Les bords** : une sortie **de bord** ouverte se franchit comme à pied (Chloé est posée au point d'arrivée de la zone
+  suivante, à pied, et la scène d'arrivée se joue comme d'habitude ; elle sait qu'elle est venue en volant :
+  `Vol.came_flying(player)`, la méta `Vol.CROSSED_META` posée par `Flight._cross`, valable 15 s — l'Arche du Vent, qu'on
+  atteint à pied par l'aiguille ou en vol, le dit dans sa première ligne) ; une sortie fermée la repousse en l'air, avec
+  ses mots ; une entrée de grotte ou une porte au milieu de la carte ne se prend pas en vol : il faut se poser.
+
+**Se poser** (la touche du Vol, ou **A** / Espace / E : rien à qui parler là-haut) : refusé avec un message clair sur
+l'eau profonde (« c'est de l'eau profonde ! »), au-dessus du vide (méta de zone `vol_vide_sous` : « En dessous, c'est le
+vide ! Pose-toi sur un piton. »), sur les bois impénétrables, là où c'est trop étroit (il faut 3 × 3 cases plates et libres :
+pas sur un pont de lianes ni au bord d'une falaise) ou sur quelque chose de solide (arbre, rocher, maison) ; accepté partout
+ailleurs, même sur un piton qu'on n'atteint pas à pied (on peut toujours redécoller).
+
+**Sûreté** : en vol, la sauvegarde garde le **dernier endroit sûr survolé** (jamais le vide ni l'eau : `Player.save_position`) ;
+une scène qui commencerait en l'air la pose aussitôt à cet endroit ; si son ptérosaure quitte l'équipe (le Dinodex est
+fermé à l'équipe en vol), un autre la porte, sinon elle est posée ; R (la selle) ne fait rien en vol.
+
+**Combats dans le vent** (`battle/sky_engine.gd`, `battle/battle_sky.gd`) : tout combat dans les trois zones des Cieux (ou
+règle `"cieux": true`) : les attaques **Vent ×1,25**, **Terre ×0,75**, dit au premier combat là-haut et marqué sur les cartes
+d'attaque (▲ ▼ au vent) ; le fond des Cieux (`battle/cieux.jpg`), des traînées de vent, des nuages bas, le vent ; les
+ptérosaures ne se posent pas : ils planent au-dessus de leur plateforme, ailes battantes — le Quetzalcoatlus Roi le premier
+(combat d'honneur, niv. 44).
+
+**Équilibrage** (simulations `scratchpad/ch7/sim/sim_cieux.gd`, 300 combats par cas ; équipe : départ L, 3e œuf L-1, Nessie
+L-1, Bouée L-2, le Pteranodon L-2 ; jamais de soin ni de changement) : depuis le niveau 36, 8 combats sauvages mènent au 38,
+13 au 39 (sans compter l'exploration) ; sauvages courts (2 à 4 tours), sauf l'Hatzegopteryx (rare, par tempête : Vif 79 %
+à 38) ; **le Roi** (44) contre une équipe à 38-39 : Bastion 100 %, Écho 98-99 %, **Vif 57-65 %** (aucun dino Pierre : tous
+craignent le Vent) et **83-90 %** avec un Minmi des Monts à la 4e place — la leçon « la Pierre le touche fort » sert ;
+**le Masque** (Noroît, Suroît Hatzegopteryx 42, Grain Tupandactylus 43, corrompus, sans soin) : en apaisant, 100 % pour les
+trois (15 tours, 1 dino K.O. au plus) ; en attaquant d'abord, Vif 44-62 % : il faut apaiser.
+
+Essais : `tools/test_vol.gd` (fenêtre ; conditions une à une, décollage à la manette, stick, caméra, eau, falaise, se poser,
+sorties, 3 zones survolées en tous sens sans faille de collision, sûreté ; les Cieux une fois branchés) ;
+`tools/test_especes_cieux.gd` (fiches, planches, tailles, Dinodex, capacités, attaques, habitats, froid, vide, objets, planche
+de contact).
 
 ## Les dinos
 
@@ -697,7 +779,8 @@ l'encart ouvre la carte.
   Deuxième Cœur d'ambre, icône `coeur_ambre`), `sceau_foret`, `sceau_marais`, `sceau_desert`
   (objets clés), `fossile` (objet de quête, jamais vendu). Chapitres 5 et 6 : `coeur_3`, `coeur_4`,
   `sceau_cote`, `sceau_monts`, `masque_plongee`, `masque_carton`, `moufles_helene` (les moufles d'Hélène,
-  données par Bertille), `manteau_duvet` (acheté : voir « Les régions froides »).
+  données par Bertille), `manteau_duvet` (acheté : voir « Les régions froides »). Chapitre 7 : `harnais_vol` (le harnais
+  de vol de Joss : voir « Le Vol »), `sceau_cieux`.
 
 ## Sauvegarde
 

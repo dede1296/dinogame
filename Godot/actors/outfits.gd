@@ -30,6 +30,14 @@ const COAT_POSE := "manteau_"   # (her poses of a scene in the coat: see POSES "
 const MASK := "masque:"
 const VEST := "gilet:"
 const SADDLE_SHEETS := {MASK: "chloe_selle_masque", VEST: "chloe_selle_gilet", COAT: "chloe_selle_manteau"}
+## In the air (Vol), on a pterosaur in Joss's harness: leaning forward, hands on the grips, hair
+## blown back (chloe_vol.png: chloe_selle.png's grid, 4 columns, a 2nd row optional for the wind in
+## her hair), in her coat in a cold region (chloe_vol_manteau.png). Not drawn yet: her saddle poses.
+const FLIGHT := "vol:"
+const FLIGHT_COAT := "vol_manteau:"
+const FLIGHT_SHEETS := {FLIGHT: "chloe_vol", FLIGHT_COAT: "chloe_vol_manteau"}
+const FLIGHT_CELL_H := 228.0
+const FLIGHT_FPS := 3.0
 ## Poses drawn for a person (base sheet's name): pose -> its sheet, grid, the frames of each
 ## direction (down, left, right, up), fps; `afloat`: share of the drawing under the water line
 ## (on deep water, the picture is set at the surface).
@@ -109,6 +117,30 @@ static func saddle_look(player: Player) -> String:
 	if wears_coat(player) and drawn(SADDLE_SHEETS[COAT]):
 		return COAT
 	return ""
+
+
+## The prefix of her poses in the air: her flight pictures (in her coat in a cold region), else
+## her saddle's look (Saddle, in flight).
+static func flight_look(player: Player) -> String:
+	if player and wears_coat(player) and drawn(FLIGHT_SHEETS[FLIGHT_COAT]):
+		return FLIGHT_COAT
+	if drawn(FLIGHT_SHEETS[FLIGHT]):
+		return FLIGHT
+	return saddle_look(player)
+
+
+## Adds her poses in the air (vol:<pose>, vol_manteau:<pose>) to `frames`, once drawn: `poses` are
+## the columns of the flight sheets (Saddle.POSES); a 2nd row alternates with the first.
+static func add_flight_looks(frames: SpriteFrames, poses: Array) -> void:
+	for look: String in FLIGHT_SHEETS:
+		if not drawn(FLIGHT_SHEETS[look]) or frames.has_animation(StringName(look + String(poses[0]))):
+			continue
+		var sheet: Texture2D = load(DIR % FLIGHT_SHEETS[look])
+		var rows := maxi(1, roundi(sheet.get_height() / FLIGHT_CELL_H))
+		var anims := {}
+		for i in poses.size():
+			anims[StringName(look + String(poses[i]))] = {"frames": [i, i + poses.size()] if rows > 1 else [i], "fps": FLIGHT_FPS}
+		_merge(frames, SheetFrames.build(sheet, poses.size(), rows, anims), "")
 
 
 ## In a cold region with her down coat.

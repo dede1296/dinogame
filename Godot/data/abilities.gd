@@ -8,7 +8,8 @@ class_name Abilities
 ##   Monture: big walkers with a back to sit on — horned faces (behind the frill), duck-bills,
 ##     Iguanodon, the ostrich-like Gallimimus, the low and wide Ankylosaurus. Not the raptors
 ##     (too small), not the Stegosaurus (plates), not the giant sauropods (out of reach).
-##   Vol: only the great pterosaurs (the Dimorphodon is far too small).
+##   Vol: only the great pterosaurs — Pteranodon, Tapejara, Tupandactylus, Hatzegopteryx,
+##     Quetzalcoatlus (the Dimorphodon, the Anurognathus, the Rhamphorhynchus are far too small).
 ##   Nage: the spinosaurids, at home in rivers; the sea reptiles too.   Plongée: the sea reptiles
 ##     that dive deep (Plesiosaurus, Ichthyosaurus, Elasmosaurus), not the Archelon nor the Koolasuchus.
 
@@ -30,8 +31,9 @@ const DEFS := {
 		"species": [&"triceratops", &"styracosaurus", &"parasaurolophus", &"corythosaurus", &"edmontosaurus", &"maiasaura",
 			&"iguanodon", &"gallimimus", &"ankylosaurus"],
 		"desc": "Assez grand pour porter Chloé, avec une selle : on voyage bien plus vite."},
-	&"vol": {"name": "Vol", "icon": "wing", "part": &"back", "soon": true, "adult": true, "species": [&"pteranodon", &"quetzalcoatlus"],
-		"desc": "Emporte Chloé dans les airs : falaises, îlots, et d'une région visitée à l'autre."},
+	&"vol": {"name": "Vol", "icon": "wing", "part": &"back", "adult": true,
+		"species": [&"pteranodon", &"tapejara", &"tupandactylus", &"hatzegopteryx", &"quetzalcoatlus"],
+		"desc": "Emporte Chloé dans les airs, avec le harnais de vol : elle le dirige où elle veut, au-dessus de tout, et se pose où le sol tient."},
 	&"nage": {"name": "Nage", "icon": "wave", "part": &"tail", "adult": true,
 		"species": [&"baryonyx", &"suchomimus", &"spinosaurus"], "families": [&"marine"],
 		"desc": "Traverse l'eau profonde et les rivières, Chloé sur le dos (avec le gilet de nage)."},

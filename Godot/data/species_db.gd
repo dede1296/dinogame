@@ -55,6 +55,12 @@ const PATHS := {
 	&"minmi": "res://data/species/minmi.tres",
 	&"nanuqsaurus": "res://data/species/nanuqsaurus.tres",
 	&"cryolophosaure_titan": "res://data/species/cryolophosaure_titan.tres",
+	# Cieux Éternels
+	&"rhamphorhynchus": "res://data/species/rhamphorhynchus.tres",
+	&"tapejara": "res://data/species/tapejara.tres",
+	&"tupandactylus": "res://data/species/tupandactylus.tres",
+	&"hatzegopteryx": "res://data/species/hatzegopteryx.tres",
+	&"quetzalcoatlus": "res://data/species/quetzalcoatlus.tres",
 }
 
 static var _cache: Dictionary = {}

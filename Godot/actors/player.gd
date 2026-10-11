@@ -39,6 +39,8 @@ const TRAIL_LENGTH := 48
 ## Walking against deep water she cannot swim in, this long (s): told why (once per zone).
 const WATER_TELL_S := 0.7
 const WATER_PROBE := 22.0      # px ahead of her feet where the water is looked for
+## The « surface » of a wingbeat in the air (stepped): nothing there to walk on, nor to hide in.
+const AIR := &"air"
 const SWIM := preload("res://world/swim.gd")
 const SHEET := preload("res://assets/art/characters/chloe.png")
 const FOOTSTEPS: Array[AudioStream] = [
@@ -86,6 +88,10 @@ var mount: Dino = null
 var swimmer: Dino = null
 ## Under the sea (a zone played under the water): her diver carries her the whole time (Dive).
 var diving := false
+## The great pterosaur carrying her in the air (le Vol, story/vol.gd), and the flight's state
+## (actors/flight.gd): both null on the ground. Set by Vol.
+var flyer: Dino = null
+var flight: Flight = null
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
@@ -116,6 +122,9 @@ func _physics_process(delta: float) -> void:
 	if can_move():
 		input = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 		input = _walk_to_goal(input, delta)
+	if flight:
+		_fly(input, delta)
+		return
 	_update_water_mask()
 	# (under the sea her diver glides: slow to start, slow to stop, wide turns; on the ice she slides)
 	var on_ice := _on_slippery_ice()
@@ -132,8 +141,41 @@ func _physics_process(delta: float) -> void:
 	RenderingServer.global_shader_parameter_set(&"player_position", global_position)
 
 
+## In the air (Vol): steered freely over everything (her mask is empty), held in the zone and taken
+## out of it by its edges (Flight.after_move); no input while landing. A scene starting in the air
+## sets her down at once, where it is safe (Vol.set_down_safely).
+func _fly(input: Vector2, delta: float) -> void:
+	mount = null   # (never both: the harness, not the saddle)
+	if busy and Story.playing > 0 and not flight.is_landing():
+		Vol.set_down_safely(self)
+		return
+	if flight.is_landing():
+		input = Vector2.ZERO
+	velocity = velocity.move_toward(input * top_speed(), Flight.ACCEL * delta)
+	var before := global_position
+	move_and_slide()
+	flight.after_move()
+	if flight == null:   # (gone out of the zone: set down on the other side)
+		return
+	flight.update(delta)
+	_animate(input)
+	_track(global_position.distance_to(before))
+	RenderingServer.global_shader_parameter_set(&"player_position", global_position)
+
+
+func is_flying() -> bool:
+	return flight != null
+
+
+## Where the game saves her: where she stands, or in the air the last safe place flown over.
+func save_position() -> Vector2:
+	return flight.safe_point if flight else global_position
+
+
 func top_speed() -> float:
 	var run := running()
+	if flight:
+		return flight.top_speed(run)
 	if mount:
 		return SPEED * (GALLOP_SPEED if run else RIDE_SPEED)
 	if swimmer:
@@ -157,8 +199,11 @@ func _on_slippery_ice() -> bool:
 	return slippery and not diving and swimmer == null and surface_at.is_valid() and surface_at.call(global_position) == &"sand"
 
 
-## The dino carrying Chloé (her mount, or her swimmer in the water), or null: on her feet.
+## The dino carrying Chloé (her flyer in the air, her mount, or her swimmer in the water), or
+## null: on her feet.
 func carried_by() -> Dino:
+	if flyer:
+		return flyer
 	return mount if mount else swimmer
 
 
@@ -224,7 +269,10 @@ func _watch_water(input: Vector2, moved: float, delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"interact") and can_move():
 		get_viewport().set_input_as_handled()
-		_interact()
+		if flight:   # (nothing to talk to up there: A sets her down, like the harness's key)
+			Vol.land(get_tree().current_scene)
+		else:
+			_interact()
 
 
 func _animate(input: Vector2) -> void:
@@ -254,8 +302,11 @@ func _track(moved: float) -> void:
 		if trail.size() > TRAIL_LENGTH:
 			trail.remove_at(0)
 	_step_travel += moved
-	if _step_travel >= STEP_DISTANCE * (RIDE_STEP if mount else SWIM.STROKE if swimmer else 1.0):
+	if _step_travel >= STEP_DISTANCE * (RIDE_STEP if mount or flight else SWIM.STROKE if swimmer else 1.0):
 		_step_travel = 0.0
+		if flight:   # (a wingbeat: no footstep, and no dino hidden in the grass below reaches her)
+			stepped.emit(AIR)
+			return
 		var surface: StringName = surface_at.call(global_position) if surface_at.is_valid() else &"grass"
 		if not swimmer and not _sliding:   # (none while swimming, nor sliding on)
 			_play_step(step_kind(surface, _on_snow(), cold))
@@ -313,7 +364,7 @@ func _interact_with(target: Node2D) -> void:
 ## A click on something usable (WorldView → ClickInteract): in reach, Chloé uses it at once; further
 ## away she walks to it in a straight line, then uses it. Any key or stick movement cancels it.
 func go_and_interact(target: Node2D) -> void:
-	if not can_move() or target == null or not target.visible:
+	if not can_move() or target == null or not target.visible or flight:
 		return
 	if _in_reach(target):
 		face_towards(target.global_position)
@@ -356,6 +407,8 @@ func _walk_to_goal(input: Vector2, delta: float) -> Vector2:
 ## What a press of « interact » would reach now: the closest interactable in reach, preferring what
 ## Chloé faces. Also what the interaction prompt (ui/interact_prompt.gd) points at.
 func nearest_interactable() -> Node2D:
+	if flight:   # (nothing within reach up there)
+		return null
 	var best: Node2D = null
 	var best_score := INF
 	for node in get_tree().get_nodes_in_group(&"interactable"):
@@ -380,9 +433,12 @@ func face_towards(point: Vector2) -> void:
 	_animate(Vector2.ZERO)
 
 
-## Places Chloé (spawn, loaded game) and resets the companion trail.
+## Places Chloé (spawn, loaded game) and resets the companion trail. In the air (a way out of the
+## zone taken in flight, a scene): she is set down there, on her feet.
 func teleport(pos: Vector2) -> void:
 	global_position = pos
 	reset_physics_interpolation()
 	trail = [pos]
 	_water_told = false
+	if flight:
+		Vol.set_down(self)   # (her dino beside her, where she now stands)

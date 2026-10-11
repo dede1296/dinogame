@@ -15,6 +15,7 @@ const ACTIONS := [
 	[&"run", "Courir"],
 	[&"run_toggle", "Course (stick)"],
 	[&"ride", "Monter"],
+	[&"fly", "Voler"],
 	[&"map", "Carte"],
 	[&"dex", "Dinodex"],
 	[&"menu", "Menu"],

@@ -109,6 +109,33 @@ const AMBIENCES := {
 		"beds": [["grotte", 0.5, ""], ["monts", 0.15, ""]],
 		"calls": [{"ids": ["glace"], "every": [25.0, 50.0], "vol": 0.35}],
 	},
+	## Cieux Éternels (chapter 7, no new recording: the ElevenLabs credits are spent): the wind of the
+	## heights all the time (monts: the clean low wind), a breeze over it, gusts more often than in the
+	## Monts. No bird so high (the Rhamphorhynchus' calls are the dinos' own); no echo either.
+	&"cieux": {
+		"beds": [["monts", 0.75, ""], ["brise", 0.3, ""], ["feu", 1.0, "fire"]],
+		"calls": [
+			{"ids": ["rafale-grave"], "every": [8.0, 20.0], "vol": 0.5},
+		],
+	},
+	## The giant nests: sheltered a little from the wind by the nests; the chicks peeping in them by
+	## day (the small birds' calls, softly).
+	&"nids_geants": {
+		"beds": [["monts", 0.55, ""], ["brise", 0.35, ""], ["feu", 1.0, "fire"]],
+		"calls": [
+			{"ids": ["rafale-grave"], "every": [12.0, 28.0], "vol": 0.4},
+			{"ids": ["oiseau-1", "oiseau-2"], "every": [6.0, 14.0], "vol": 0.25, "day": true},
+		],
+	},
+	## The Arche du Vent: the strongest wind of the island, and the arch singing in it, low, like the
+	## rock of the sanctuary of the Winds (the Désert's deep hot wind, softly, for its hum).
+	&"arche_du_vent": {
+		"beds": [["monts", 0.9, ""], ["desert", 0.25, ""], ["feu", 1.0, "fire"]],
+		"calls": [
+			{"ids": ["rafale-grave"], "every": [6.0, 14.0], "vol": 0.55},
+			{"ids": ["rafale"], "every": [20.0, 40.0], "vol": 0.3},
+		],
+	},
 }
 
 

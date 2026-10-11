@@ -94,6 +94,8 @@ func calm_down(seconds := 4.0) -> void:
 
 
 func _on_touch(body: Node2D) -> void:
-	if body is Player and _calm <= 0.0 and not Dialogue.active:
+	# (Never during a story scene, even between two of its lines while Chloé walks or waits: the
+	# chapter 7 trap at the Arche du Vent was cut by a wild Rhamphorhynchus, 11/10.)
+	if body is Player and _calm <= 0.0 and not Dialogue.active and Story.playing == 0 and not (body as Player).busy:
 		_calm = 999.0
 		encountered.emit(self)

@@ -38,6 +38,7 @@ const PAGES := [
 		["Le Dinodex", [&"dex"]],
 		["La carte de l'île", [&"map"]],
 		["Monter sur ton dino, descendre", [&"ride"]],
+		["Voler sur un grand ptérosaure, se poser", [&"fly"]],
 		["Le menu et les réglages", [&"menu"]],
 	]],
 	["Dans les menus et au combat", [

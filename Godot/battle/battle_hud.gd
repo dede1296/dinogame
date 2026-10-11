@@ -562,6 +562,9 @@ func _move_card(i: int) -> Button:
 		water = (engine as UnderwaterEngine).mark(move["type"]).strip_edges()
 	if water != "":
 		detail += "  %s sous l'eau" % water
+	var wind: String = (engine as SkyEngine).mark(move["type"]) if engine is SkyEngine else ""
+	if wind != "":
+		detail += "  %s au vent" % wind
 	var row: HBoxContainer = card.get_meta(&"row")
 	row.add_child(PARTS.gem(colour))
 	row.add_child(PARTS.two_lines(move["name"], detail))

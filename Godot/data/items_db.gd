@@ -53,6 +53,12 @@ const ITEMS := {
 		"desc": "Un disque d'ambre bleu pâle, un flocon et la fougère d'Hélène : la confiance du Cryolophosaure Titan."},
 	"moufles_helene": {"name": "Moufles d'Hélène", "icon": "moufles", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Rouges, tricotées main, un peu feutrées, reprisées au pouce. Bertille les avait tricotées pour Hélène. Trop grandes pour Chloé. Parfaites."},
+	# Cieux Éternels (chapitre 7) : le harnais de Joss (donné par l'histoire, story/cieux.gd ; le Vol :
+	# story/vol.gd) et le Sceau du Quetzalcoatlus Roi.
+	"harnais_vol": {"name": "Harnais de vol", "icon": "harnais_vol", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Cousu deux fois par Joss, avec une fougère frappée dans la sangle, « comme sur les boussoles d'Hélène ». Avec un grand ptérosaure adulte, Chloé vole où elle veut."},
+	"sceau_cieux": {"name": "Sceau des Cieux", "icon": "sceau_cieux", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Un disque d'ambre blanc doré, une aile ouverte et la fougère d'Hélène : la confiance du Quetzalcoatlus Roi. Il était caché sous le vieux harnais d'Hélène."},
 	# A rare find in the Forêt (a wink: docs/histoire.md « Clins d'œil »); Roc has a word about it.
 	"ambre_moustique": {"name": "Ambre au moustique", "icon": "ambre_moustique", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Un galet d'ambre trouvé dans les racines d'une vieille souche de la Forêt. Dedans, un moustique figé depuis des millions d'années. Il a l'air très surpris."},

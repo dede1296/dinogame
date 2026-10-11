@@ -22,7 +22,7 @@
 | Pachycéphalosaures | pierre | Pachycephalosaurus, Stygimoloch |
 | Ornithopodes | nature | Parasaurolophus, Iguanodon, Edmontosaurus |
 | Sauropodes | terre | Brachiosaurus, Argentinosaurus |
-| Ptérosaures | vent | Dimorphodon, Pteranodon, Quetzalcoatlus |
+| Ptérosaures | vent | Dimorphodon, Pteranodon, Tapejara, Quetzalcoatlus |
 | Reptiles marins | eau | Plesiosaurus, Mosasaurus, Ichthyosaurus |
 
 **Rareté** : C commun · P peu commun · R rare · TR très rare · *unique* = personnage (les **Anciens**,
@@ -140,11 +140,25 @@ Zones : Pitons (ponts de lianes) · Mer de nuages · Nids géants · Arche du Ve
 
 | Espèce | Habitat | Famille | Rareté | Moment | Capacité |
 |---|---|---|---|---|---|
-| Rhamphorhynchus | pitons | ptérosaure | C | jour | — |
-| Tapejara | nids | ptérosaure | P | jour | Vol |
-| Tupandactylus | mer de nuages | ptérosaure | P | aube | Vol |
-| Hatzegopteryx | arche du Vent | ptérosaure | R | tempête | Vol |
-| **Quetzalcoatlus Roi** | les nids géants | ptérosaure | Alpha | — | — |
+| Rhamphorhynchus ✅ | pitons | ptérosaure | C | jour | — |
+| Tapejara ✅ | nids | ptérosaure | P | jour | Vol |
+| Tupandactylus ✅ | mer de nuages | ptérosaure | P | aube | Vol |
+| Hatzegopteryx ✅ | arche du Vent | ptérosaure | R | tempête | Vol |
+| **Quetzalcoatlus Roi** ✅ | les nids géants | ptérosaure | Alpha | — | — |
+
+✅ (11/10) Les cinq fiches (`data/species/<id>.tres`, `SpeciesDB`), leurs planches de profil et de face/dos,
+leur fiche du Dinodex (`data/dex_facts.gd` ; le Roi parmi les Uniques), leurs habitats dans les trois zones des
+Cieux. Tous **Vent** (famille ptérosaure) ; vrais gabarits compressés (direction-artistique.md) : Rhamphorhynchus
+0,55 m, Tapejara 0,7, Tupandactylus 1,0, Hatzegopteryx 2,7, Quetzalcoatlus 3,2 (le Roi ×1,2 dans le monde).
+Parties : becs pointus sans dents (le Rhamphorhynchus, lui, a des dents en aiguilles et une longue queue), le
+crâne énorme et le cou court de l'Hatzegopteryx, la crête-voile du Tupandactylus (grosse tête), le Quetzalcoatlus
+le plus grand et le plus rapide. Attaques de vent nouvelles, apprises tard pour ne rien changer aux Pteranodons de
+la Côte : **Vent arrière** (36, vitesse +2), **Piqué** (38, Vent 85), **Cyclone** (42, Vent 95, peut étourdir).
+Le Vol : Pteranodon, Tapejara, Tupandactylus, Hatzegopteryx, Quetzalcoatlus (adultes) ; jamais les petits.
+Équilibrage (simulé, mecaniques.md « Le Vol ») : le Roi au niveau 44, équipe à 38-39 : Bastion 100 %, Écho 99 %,
+Vif 57-65 % sans dino Pierre (83-90 % avec un Minmi des Monts : la leçon « la Pierre le touche fort » compte).
+Planches de vol (`<id>_vol.png`, `_vol_face_dos.png`) : en attente de l'agent images (le format est fixé) ;
+d'ici là, ils volent avec leurs images de marche.
 
 ## Plaine Volcanique — niv. 42 à 48
 
@@ -186,4 +200,5 @@ attaques eau (familles spino/marine) et nature (famille hadrosaur) qui manquaien
 Rempart et les 13 espèces sauvages du Marais/Désert (✅ ci-dessus) sont jouables en combat.
 Utahraptor, Spinosaure Ancestral et Carnotaurus Rouge ont leur fiche mais restent des Alphas (pas
 d'habitat, pas capturables en étape 1).
-Prochains lots : Côte, Monts, Cieux, Volcan, puis les légendaires.
+Prochains lots : Côte, Monts, Cieux, Volcan, puis les légendaires. (11/10 : le lot Cieux est fait, voir
+« Cieux Éternels » ; il reste ses planches de vol.)

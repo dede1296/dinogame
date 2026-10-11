@@ -50,6 +50,9 @@ const APPEAR_S := 0.35
 ## Under the sea (rule "underwater"): the water's rules and look.
 const UNDERWATER_ENGINE := preload("res://battle/underwater_engine.gd")
 const UNDERWATER_LOOK := preload("res://battle/battle_underwater.gd")
+## In the Cieux (rule "cieux", or a battle in one of SkyEngine.ZONES): the wind's rules and look.
+const SKY_ENGINE := preload("res://battle/sky_engine.gd")
+const SKY_LOOK := preload("res://battle/battle_sky.gd")
 const HUD := preload("res://battle/battle_hud.gd")
 const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
 const HEAL_GREEN := Color(0.55, 0.95, 0.5)
@@ -95,7 +98,9 @@ func _ready() -> void:
 ## helps calm it, see BattleEngine), "size": the foe's size, share of its species' adult (a dino
 ## of the story shown bigger or smaller in the world, DinoNpc.size_scale; else its level's),
 ## "underwater": true under the sea (UnderwaterEngine, BattleUnderwater), "abyss": true the
-## Mosasaure Abyssal's rhythm (it sinks into the dark, surges, stays exposed).
+## Mosasaure Abyssal's rhythm (it sinks into the dark, surges, stays exposed), "cieux": true (or
+## false) in the wind of the Cieux — by default, any battle in one of their zones (SkyEngine,
+## BattleSky: Wind stronger, Earth weaker, the pterosaurs hovering).
 func run(wild: Dino, rules := {}) -> String:
 	_rules = rules
 	if rules.get("backdrop") is Texture2D:
@@ -112,6 +117,9 @@ func run(wild: Dino, rules := {}) -> String:
 	if rules.get("underwater", false):   # under the sea: the water's rules, the water all around
 		engine = UNDERWATER_ENGINE.new(Game.party, wild, engine_rules)
 		UNDERWATER_LOOK.apply(self)
+	elif SKY_ENGINE.applies(rules, Game.region_id):   # in the Cieux: the wind's rules, the flyers hovering
+		engine = SKY_ENGINE.new(Game.party, wild, engine_rules)
+		SKY_LOOK.apply(self)
 	else:
 		engine = BattleEngine.new(Game.party, wild, engine_rules)
 	Game.mark_seen(wild.species().id)
