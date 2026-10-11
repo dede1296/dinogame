@@ -46,6 +46,7 @@ var _follow_gap := DinoSize.FOLLOW_MIN   # trail points it walks behind Chloé
 var _keep := 24.0     # px: it never stands closer to her feet than this (half its length and a bit)
 var _shown: Dino      # the dino it looks like (its size changes smoothly while it stays)
 var _resize: Tween
+var _size := 1.0           # its sprite scale (_set_size), before a flight view's own (Wings.face_back_scale)
 var _shadow_width := 0.0   # its shadow's width at sprite scale 1
 ## Waiting outside a door too small for it (Doorway): not in the zone Chloé went into (hidden,
 ## not following her) until she comes out again.
@@ -81,6 +82,11 @@ func refresh() -> void:
 		player.mount = null
 	if player and player.swimmer and not Game.party.has(player.swimmer):   # another swimmer, if any
 		player.swimmer = SWIM.swimmer()
+	if player and player.flyer and not Game.party.has(player.flyer):   # another flyer, or down at once
+		player.flyer = Vol.flyer()
+		if player.flyer == null:
+			Vol.set_down_safely.call_deferred(player)
+			return
 	dino = player.carried_by() if carrying() else Game.lead_dino()
 	visible = dino != null and not outside
 	if dino == null:
@@ -90,9 +96,13 @@ func refresh() -> void:
 	_seat_rider(species)
 	var walking := DinoSize.world_scale(dino)
 	var size := DinoSize.mount_scale(species, walking, swimming()) if carrying() else walking
+	if flying():
+		size = Wings.mount_scale(species, walking)
 	_follow_gap = DinoSize.follow_gap(species, walking)
 	_keep = DinoSize.length_px(species, walking) * 0.5 + KEEP_ROOM
 	sprite.sprite_frames = SheetFrames.dino(species)
+	if flying():
+		Wings.add_to(sprite.sprite_frames, species)
 	var h := species.sheet.get_height() / float(species.sheet_rows)
 	sprite.offset = Vector2(0, -h * 0.46)
 	_shadow_width = species.sheet.get_width() / float(species.sheet_columns) * 0.55
@@ -101,7 +111,9 @@ func refresh() -> void:
 	_resize_to(size, dino == _shown or carrying() != was_carrying)
 	_shown = dino
 	_shadow.visible = not swimming()   # (under the water, no shadow on the ground)
-	sprite.play(&"idle")
+	if not flying():
+		sprite.position = Vector2.ZERO   # (back from the air)
+	sprite.play(Wings.FLY if flying() else &"idle")
 
 
 ## How near Chloé it stands at the closest (px from her feet to its middle: half its length and
@@ -122,6 +134,7 @@ func _resize_to(size: float, smooth: bool) -> void:
 
 
 func _set_size(size: float) -> void:
+	_size = size
 	sprite.scale = Vector2.ONE * size
 	Shadow.fit(_shadow, _shadow_width * size)
 	if sprite.has_meta(&"stage_scale"):   # (a scene's move puts it back to this size)
@@ -180,7 +193,12 @@ func carrying() -> bool:
 
 ## Swimming with Chloé on its back (half under the water, in the view).
 func swimming() -> bool:
-	return player != null and player.mount == null and player.swimmer != null
+	return player != null and player.mount == null and player.flyer == null and player.swimmer != null
+
+
+## Flying with Chloé on its back (Vol): its wings, high above its shadow.
+func flying() -> bool:
+	return player != null and player.flyer != null and player.flight != null
 
 
 ## Chloé in the saddle on it, or back on her feet.
@@ -188,7 +206,9 @@ func _seat_rider(species: DinoSpecies) -> void:
 	if player == null or not player.is_node_ready():
 		return
 	var was_riding := _saddle != null
-	_saddle = Saddle.new(species, player.sprite) if carrying() else null
+	if _saddle:
+		_saddle.release()   # (her size on foot: the next saddle measures it from there)
+	_saddle = Saddle.new(species, player.sprite, flying()) if carrying() else null
 	# Both cut out (WorldView._sync): sorted by depth, never blended with what stands behind.
 	set_meta(&"cut_out", carrying())
 	player.set_meta(&"cut_out", carrying())
@@ -202,6 +222,9 @@ func _seat_rider(species: DinoSpecies) -> void:
 
 ## Under Chloé, going where she goes; she sits as it is seen (Saddle.place).
 func _carry(_delta: float) -> void:
+	if flying():
+		_fly_carry()
+		return
 	var v := player.velocity
 	if absf(v.x) > 8.0:
 		sprite.flip_h = v.x < 0.0
@@ -220,8 +243,32 @@ func _carry(_delta: float) -> void:
 	player.sprite.play(seat["pose"])
 
 
+## In the air (Vol): its wings beat (faster as it goes faster), seen the way it flies (Wings), both
+## lifted by the flight's height; its shadow stays on the ground (hidden far above the void).
+func _fly_carry() -> void:
+	var v := player.velocity
+	if absf(v.x) > 8.0:
+		sprite.flip_h = v.x < 0.0
+	var heading := v if v.length() > 12.0 else Vector2(-1.0 if sprite.flip_h else 1.0, 0.0)
+	var anim := Wings.anim_for(sprite.sprite_frames, heading)
+	sprite.play(anim)
+	var view_scale := 1.0 if anim == Wings.FLY else Wings.face_back_scale(dino.species())
+	sprite.scale = Vector2.ONE * _size * view_scale
+	sprite.speed_scale = clampf(0.7 + v.length() / 400.0, 0.7, 1.5)
+	var lift := player.flight.lift_px()
+	sprite.position = Vector2(0.0, lift)
+	_shadow.visible = player.flight.shadow_shown()
+	var seat := _saddle.place(sprite.animation, sprite.flip_h, sprite.scale.y)
+	global_position = player.global_position + Vector2(0, seat["depth"])
+	player.sprite.position = seat["at"] + Vector2(0.0, lift)
+	player.sprite.play(seat["pose"])
+
+
 ## Is something hidden within reach? Noticing it: a little cry, a look towards it.
 func _sense() -> void:
+	if flying():   # (high up in the air: what lies hidden on the ground is too far below)
+		hint = false
+		return
 	var near: Node2D = null
 	for s in get_tree().get_nodes_in_group(&"secret"):
 		var n := s as Node2D
