@@ -77,3 +77,18 @@ Modular Builder, Ragdoll Generator, BlenderKit, GDDraw, TressFX (cheveux 3D), no
 - Les packs **2DPIXX** (archer, guerrier, magicien, tuilesets) sont arrivés **vides** : leur
   décompression a échoué sur les parenthèses du nom (`(Size 32x32)`). De toute façon, du pixel art
   de tuiles ne correspond pas à la direction artistique d'Ambrelune (peinture, dessin à la main).
+
+## Fait le 11/10 — chantier 1 : du jus dans le combat
+
+Plutôt que d'activer les plugins Saltmire (autoloads, donc `addons/` obligatoire dans l'export),
+leurs idées sont reprises **dans un seul shader maison**, `battle/fighter.gdshader`, qui remplace
+`breathe.gdshader` : respiration, **mollesse** (écrasement/étirement amorti en ressort + balancement
+du haut du corps), **éclat blanc** du coup encaissé, **disparition qui se consume** (K.O., rappel,
+capture, et apparition du remplaçant), **veines d'ambre noir** pour les ~90 espèces qui n'ont pas de
+planche corrompue dessinée. Plus des **images fantômes** derrière les bonds. Test :
+`tools/test_combat_jus.gd` (11 vérifications) ; scénario `tools/scenarios/vis_combat_jus.gd`.
+
+**SoftBody2D n'est pas le bon outil pour les sprites** : c'est une simulation physique (maillage de
+corps rigides, pour de la gelée ou des objets qui se brisent), non déterministe, coûteuse, et qui
+casserait nos planches de 3 images et nos tweens. Le même effet « mou » s'obtient mieux — gratuit et
+contrôlable — par déformation de sommets dans le shader.

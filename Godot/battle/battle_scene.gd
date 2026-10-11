@@ -27,7 +27,26 @@ const AMBER := Color(0.98, 0.72, 0.28)
 const CALM := Color(0.98, 0.84, 0.45)     # its calm gauge, golden
 const BOND_PINK := Color(0.96, 0.45, 0.58)   # the Lien (hearts)
 const CALM_SFX := preload("res://assets/audio/sfx/item.wav")
-const BREATHE := preload("res://battle/breathe.gdshader")
+## La matière des deux combattants : respiration, coup encaissé, disparition, ambre noir.
+const FIGHTER := preload("res://battle/fighter.gdshader")
+## Un coup encaissé : trois éclats, de cette durée chacun (allumage puis retour).
+const FLASH_ON := 0.05
+const FLASH_OFF := 0.07
+## Le ressort de la mollesse : combien il écrase/étire, la vitesse des rebonds et leur amortissement.
+const JELLY_S := 0.55
+const JELLY_SPEED := 22.0
+const JELLY_DAMPING := 7.0
+const JELLY_HIT := 0.22        # un coup encaissé : écrasé
+const JELLY_LUNGE := -0.16     # un bond : étiré
+const JELLY_FAINT := 0.35      # un K.O. : il s'affaisse
+## Les images fantômes du bond : combien, à quel rythme, leur transparence et leur effacement.
+const GHOSTS := 3
+const GHOST_EVERY_S := 0.05
+const GHOST_ALPHA := 0.45
+const GHOST_FADE_S := 0.22
+## Une disparition (K.O., rappel, capture) et une apparition.
+const DISSOLVE_S := 0.5
+const APPEAR_S := 0.35
 ## Under the sea (rule "underwater"): the water's rules and look.
 const UNDERWATER_ENGINE := preload("res://battle/underwater_engine.gd")
 const UNDERWATER_LOOK := preload("res://battle/battle_underwater.gd")
@@ -282,8 +301,34 @@ func _attack_anim(side: String, fx: String, move_type: String) -> void:
 	var t2 := create_tween()
 	t2.tween_property(s, "position", lunge, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 	t2.tween_property(s, "position", home, 0.28).set_trans(Tween.TRANS_SINE)
+	_ghosts(s, MovesDB.TYPE_COLORS.get(move_type, Color.WHITE))
+	_jelly(s, JELLY_LUNGE)
 	await t2.finished
 	s.play(&"idle")
+
+
+## Des images fantômes derrière le bond : elles disent la vitesse là où le sprite, dessiné en
+## trois images, ne peut pas la dire. Posées une par une pendant l'élan, elles s'effacent seules.
+func _ghosts(s: AnimatedSprite2D, tint: Color) -> void:
+	for i in GHOSTS:
+		if not is_instance_valid(s):
+			return
+		var frame := s.sprite_frames.get_frame_texture(s.animation, s.frame)
+		if frame == null:
+			return
+		var ghost := Sprite2D.new()
+		ghost.texture = frame
+		ghost.position = s.position
+		ghost.scale = s.scale
+		ghost.offset = s.offset
+		ghost.modulate = Color(tint.lightened(0.3), GHOST_ALPHA)
+		ghost.show_behind_parent = true
+		_world.add_child(ghost)
+		_world.move_child(ghost, 0)
+		var fade := create_tween()
+		fade.tween_property(ghost, "modulate:a", 0.0, GHOST_FADE_S)
+		fade.tween_callback(ghost.queue_free)
+		await get_tree().create_timer(GHOST_EVERY_S).timeout
 
 
 func _hit(e: Dictionary) -> void:
@@ -297,17 +342,48 @@ func _hit(e: Dictionary) -> void:
 			_shake(10.0, 0.3)
 	_cry_of(engine.dino(side), "degat")
 	_float_number(s.position + Vector2(0, -130), "-%d" % e["amount"], Color(1, 0.9, 0.8) if not e.get("crit", false) else AMBER)
-	# Flash white, then shake sideways.
+	# Il vire vers la couleur du type de l'attaque, puis il est secoué de côté.
+	var tint: Color = MovesDB.TYPE_COLORS.get(e.get("move_type", "neutre"), Color.WHITE)
+	# Un éclat blanc franc : un blanc « teinté du type » se confondait avec la peau des dinos de la
+	# même couleur (essayé sur un Protoceratops de type terre). Le type, lui, se lit dans les étincelles.
+	_skin(s).set_shader_parameter("flash_color", Color.WHITE.lerp(tint, 0.08))
+	_jelly(s, JELLY_HIT * (1.4 if e.get("crit", false) else 1.0))
 	var t := create_tween()
 	for i in 3:
-		t.tween_property(s, "modulate", Color(3, 3, 3), 0.05)
-		t.tween_property(s, "modulate", Color.WHITE, 0.07)
+		t.tween_method(_flash.bind(s), 0.0, 1.0, FLASH_ON)
+		t.tween_method(_flash.bind(s), 1.0, 0.0, FLASH_OFF)
 	var home := s.position
 	var t2 := create_tween()
 	for i in 4:
 		t2.tween_property(s, "position:x", home.x + (10.0 if i % 2 == 0 else -10.0), 0.04)
 	t2.tween_property(s, "position:x", home.x, 0.04)
 	await _tween_hp(panel, e["hp"], e["max_hp"])
+
+
+## Un ressort : le combattant est écrasé (`amplitude` > 0) ou étiré (< 0) d'un coup, puis revient
+## en rebondissant, de moins en moins fort (battle/fighter.gdshader, uniform « squash »).
+func _jelly(s: AnimatedSprite2D, amplitude: float) -> void:
+	var material := _skin(s)
+	var spring := create_tween()
+	spring.tween_method(func(t: float) -> void:
+		if is_instance_valid(s):
+			material.set_shader_parameter("squash", amplitude * exp(-JELLY_DAMPING * t) * cos(JELLY_SPEED * t)),
+		0.0, JELLY_S, JELLY_S)
+
+
+## La matière d'un combattant (battle/fighter.gdshader).
+func _skin(s: AnimatedSprite2D) -> ShaderMaterial:
+	return s.material as ShaderMaterial
+
+
+## Combien il vire vers la couleur du coup (0 à 1).
+func _flash(value: float, s: AnimatedSprite2D) -> void:
+	_skin(s).set_shader_parameter("flash", value)
+
+
+## Combien sa peinture est consumée (0 entier, 1 disparu).
+func _dissolve(value: float, s: AnimatedSprite2D) -> void:
+	_skin(s).set_shader_parameter("dissolve", value)
 
 
 func _dodge(attacker_side: String) -> void:
@@ -323,8 +399,10 @@ func _faint(side: String) -> void:
 	var s := _sprite(side)
 	_cry_of(engine.dino(side), "ko")
 	var t := create_tween().set_parallel(true)
-	t.tween_property(s, "position:y", s.position.y + 60, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	t.tween_property(s, "modulate:a", 0.0, 0.5)
+	t.tween_property(s, "position:y", s.position.y + 60, DISSOLVE_S).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	t.tween_method(_dissolve.bind(s), 0.0, 1.0, DISSOLVE_S)
+	_jelly(s, JELLY_FAINT)
+	t.tween_property(s, "modulate:a", 0.0, DISSOLVE_S)   # (son ombre, qui suit le modulate)
 	await t.finished
 
 
@@ -333,7 +411,11 @@ func _switch_in() -> void:
 	_refresh_panel(_player_panel, engine.player())
 	_layout()
 	_player_sprite.modulate.a = 0.0
-	await create_tween().tween_property(_player_sprite, "modulate:a", 1.0, 0.3).finished
+	_dissolve(1.0, _player_sprite)
+	var t := create_tween().set_parallel(true)
+	t.tween_property(_player_sprite, "modulate:a", 1.0, APPEAR_S)
+	t.tween_method(_dissolve.bind(_player_sprite), 1.0, 0.0, APPEAR_S)
+	await t.finished
 	_cry_of(engine.player(), "neutre")
 
 
@@ -342,6 +424,7 @@ func _recall() -> void:
 	var s := _player_sprite
 	var t := create_tween().set_parallel(true)
 	t.tween_property(s, "modulate", Color(2.2, 1.8, 1.2, 0.0), 0.4)
+	t.tween_method(_dissolve.bind(s), 0.0, 1.0, 0.4)
 	t.tween_property(s, "scale", s.scale * 0.35, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	t.tween_property(s, "position:x", s.position.x - 120.0, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	await t.finished
@@ -388,6 +471,7 @@ func _catch_anim(shakes: int, success: bool) -> void:
 	_burst(target, AMBER, 30, 220.0)
 	var suck := create_tween().set_parallel(true)
 	suck.tween_property(_foe_sprite, "modulate", Color(2.2, 1.6, 0.6, 0.0), 0.35)
+	suck.tween_method(_dissolve.bind(_foe_sprite), 0.0, 1.0, 0.35)
 	suck.tween_property(_foe_sprite, "scale", _foe_sprite.scale * 0.2, 0.35)
 	await suck.finished
 	var ground := _foe_sprite.position + Vector2(0, -20)
@@ -575,6 +659,13 @@ func _setup_dino(s: AnimatedSprite2D, d: Dino, is_foe: bool) -> void:
 	var h := species.sheet.get_height() / float(species.sheet_rows)
 	s.offset = Vector2(0, -h * 0.46)
 	s.modulate = Color.WHITE
+	_dissolve(0.0, s)
+	_flash(0.0, s)
+	_skin(s).set_shader_parameter("squash", 0.0)
+	_skin(s).set_shader_parameter("body_height", h * 0.9)
+	# Les cinq espèces qui ont leur planche corrompue la montrent ; les autres passent par le shader.
+	_skin(s).set_shader_parameter("corruption",
+		1.0 if d.corrupted and not SheetFrames.has_corrupted(species) else 0.0)
 	s.play(&"idle")
 
 
@@ -624,12 +715,12 @@ func _build_ui() -> void:
 		shadow.scale = Vector2(3.4, 1.1) if is_foe else Vector2(3.8, 1.25)
 		shadow.show_behind_parent = true
 		s.add_child(shadow)
-		var breath := ShaderMaterial.new()
-		breath.shader = BREATHE
-		breath.set_shader_parameter("amount", SpriteMotion.BREATH)
-		breath.set_shader_parameter("period", SpriteMotion.BREATH_S)
-		breath.set_shader_parameter("phase", PI if is_foe else 0.0)
-		s.material = breath
+		var skin := ShaderMaterial.new()
+		skin.shader = FIGHTER
+		skin.set_shader_parameter("amount", SpriteMotion.BREATH)
+		skin.set_shader_parameter("period", SpriteMotion.BREATH_S)
+		skin.set_shader_parameter("phase", PI if is_foe else 0.0)
+		s.material = skin
 		_world.add_child(s)
 		if is_foe:
 			_foe_sprite = s

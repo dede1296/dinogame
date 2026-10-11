@@ -45,6 +45,12 @@ const STEPS_META := &"steps_per_cycle"
 ## Dino sheets described by its species: side view (walk, idle, attack) and, when the
 ## species has one, front/back views (walk_down, idle_down, walk_up, idle_up).
 ## `corrupted`: its corrupted side view, if drawn.
+## Vrai si l'espèce a une planche corrompue dessinée. Sinon, c'est le shader du combat
+## (battle/fighter.gdshader, uniform « corruption ») qui montre l'ambre noir.
+static func has_corrupted(species: DinoSpecies) -> bool:
+	return ResourceLoader.exists(CORRUPTED % species.id)
+
+
 static func dino(species: DinoSpecies, corrupted := false) -> SpriteFrames:
 	var sheet := species.sheet
 	if corrupted and ResourceLoader.exists(CORRUPTED % species.id):
