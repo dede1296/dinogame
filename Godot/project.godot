@@ -52,6 +52,7 @@ Audio="*res://core/audio_director.gd"
 Router="*res://core/scene_router.gd"
 Dialogue="*res://ui/dialogue.gd"
 Debug="*res://ui/debug_overlay.gd"
+SimpleGrass="*uid://bfq0snth8sj3h"
 
 [display]
 

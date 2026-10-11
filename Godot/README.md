@@ -202,10 +202,12 @@ Versions utilisées (Godot 4.7.2) :
 | `addons/guideCS` | Guide (C#) | 0.5.7 |
 | `addons/gaussian-blur`, `addons/tressfx` | (effets) | — |
 
-**Règle : aucun chargement automatique (`[autoload]`) ne doit venir de `addons/`.** Le dossier
-n'est pas dans le dépôt et l'export laisse les plugins de côté : le jeu ne démarrerait plus.
-SimpleGrassTextured en ajoute un (`SimpleGrass`) quand on l'active — il est retiré de
-`project.godot` ; si tu réactives le plugin, retire-le à nouveau avant de commiter.
+**Attention aux chargements automatiques venus de `addons/`.** SimpleGrassTextured ajoute
+l'autoload `SimpleGrass` dès qu'il est activé, et l'éditeur le remet à chaque ouverture du projet :
+inutile d'essayer de l'enlever à la main. Conséquence : tant que ce plugin est activé, le projet ne
+démarre **pas** sans `addons/simplegrasstextured`, et l'export Windows doit le garder (il le garde :
+le preset n'exclut que `tools/` et `docs/`). Pour s'en passer — par exemple pour alléger l'exe PC —
+il faut **désactiver le plugin** dans Projet › Extensions, pas retirer la ligne.
 
 Les sources Blender (`assets3d_src/`) et les packs d'assets tiers ne sont pas non plus dans le dépôt.
 Un pack décompressé par erreur à la racine du projet a été rangé le 11/10 dans
