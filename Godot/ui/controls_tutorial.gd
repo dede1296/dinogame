@@ -23,12 +23,14 @@ const CREAM := Color(1, 0.97, 0.9)
 ## What a row's icons are: an action's own key or button, or one of these groups.
 const MOVE := &"@move"            # the four directions on a keyboard, the left stick on a pad
 const MENUS := &"@menus"          # the arrows on a keyboard, the D-pad on a pad
+const CLICK := &"@click"          # the mouse's left click: a keyboard-and-mouse row, hidden on a pad
 ## [title, [[words, [what is drawn…]], …]]
 const PAGES := [
 	["Se déplacer et agir", [
 		["Se déplacer", [MOVE]],
 		["Courir (en marchant)", [&"run"]],
 		["Parler, ramasser, fouiller, lire", [&"interact"]],
+		["Cliquer sur une personne ou un objet : y aller et l'utiliser", [CLICK]],
 		["Revenir, fermer, refuser", [&"cancel"]],
 	]],
 	["Ton équipe et l'île", [
@@ -124,7 +126,7 @@ func _build() -> void:
 	_panel.add_child(column)
 	_body = VBoxContainer.new()
 	_body.add_theme_constant_override(&"separation", 10)
-	_body.custom_minimum_size = Vector2(0, 360)
+	_body.custom_minimum_size = Vector2(0, 410)
 	column.add_child(_body)
 	_dots = HBoxContainer.new()
 	_dots.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -153,6 +155,8 @@ func _show_page() -> void:
 	_body.add_child(_label(page[0], 36, GOLD))
 	_body.add_child(_label(_source_line(), 18, Color(CREAM, 0.7)))
 	for row: Array in page[1]:
+		if row[1] == [CLICK] and Prompts.family != Prompts.KEYBOARD:
+			continue   # (a pad has no click)
 		_body.add_child(_row(row[0], row[1]))
 	for child in _dots.get_children():
 		child.queue_free()
@@ -180,6 +184,9 @@ func _row(words: String, shown: Array) -> Control:
 	icons.custom_minimum_size = Vector2(ICONS_WIDTH, ICON_PX)
 	icons.add_theme_constant_override(&"separation", 6)
 	for what: StringName in shown:
+		if what == CLICK:
+			icons.add_child(_label("Clic gauche", 20, GOLD))
+			continue
 		for texture in _textures(what):
 			icons.add_child(_picture(texture))
 	row.add_child(icons)

@@ -69,6 +69,15 @@ dès qu'il passe de l'un à l'autre. S'ouvre tout seul, **une fois par partie** 
 Suivant / Précédent / Passer ; manette : ◀ ▶ ou LB / RB, A, B ; clavier : ← →, Entrée, Échap. Se
 rouvre depuis Paramètres → Commandes → « Revoir le tutoriel des commandes ». Test : `test_tuto.gd`.
 
+## Le clic dans le monde (11/10, accord de Greg : « clic peut interagir »)
+
+Un clic gauche sur quelque chose d'utilisable — une personne, un panneau, un objet à ramasser — envoie
+Chloé l'utiliser : tout de suite si elle est à portée, sinon elle y marche en ligne droite puis
+l'utilise. Une touche ou le stick l'arrête ; elle renonce après 1,2 s sans avancer (un mur, l'eau).
+Une main remplace la flèche au-dessus de ce qui est cliquable. On vise ce qu'on voit : le point de
+l'écran où la cible est dessinée (son corps, pas ses pieds) à 64 px près. Les clics sur le HUD et les
+menus restent au HUD. Écrit dans `world/click_interact.gd` et `Player.go_and_interact`. Test : `test_clic.gd`.
+
 ## Où c'est écrit
 
 - `core/screen_mode.gd` (autoload `Screen`) : plein écran, taille minimale de la fenêtre, F11.
@@ -91,8 +100,8 @@ tests, il affiche en haut à gauche ce qu'il vérifie (`ShotCaption`) ; l'outil 
 1. **Le HUD à la souris** : les boutons ronds (☰, carte, Dinodex, selle) et la barre d'équipe sont
    dessinés pour des pouces. Sur un écran d'ordinateur ils peuvent être plus petits, et gagneraient
    un survol et une info-bulle.
-2. **Clic de souris dans le monde** : aujourd'hui la souris ne sert qu'aux menus et au zoom.
-   À décider avec Greg : cliquer pour aller quelque part / pour examiner ?
+2. ~~Clic de souris dans le monde~~ — FAIT (voir ci-dessous). Reste : un clic dans le vide ne fait
+   pas marcher Chloé (voulu : le clavier et la manette marchent) ; à rediscuter si Greg le veut.
 3. **Alléger l'export Windows** : le preset embarque encore `addons/*` (350 Mo) et
    `assets/models3d/*` (114 Mo), qui ne servent qu'à la 3D en pause. À faire le jour où on
    reconstruit l'exe (voir la règle « exe sur demande »).

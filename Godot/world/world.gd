@@ -138,6 +138,10 @@ func _ready() -> void:
 	Save.enabled = true
 	Save.before_save = _store_position
 	ControlsTutorial.offer(self)   # the controls, once, as soon as Chloé is free (computer only)
+	var clicks := ClickInteract.new()   # a click on something usable sends Chloé to use it
+	clicks.player = player
+	clicks.view = _view
+	add_child(clicks)
 
 
 func _exit_tree() -> void:

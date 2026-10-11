@@ -28,6 +28,12 @@ const RIDE_SPEED := 1.9
 const GALLOP_SPEED := 2.2
 const RIDE_STEP := 1.7         # its steps are longer than hers
 const INTERACT_REACH := 62.0
+## A click's errand: she stops this share of the reach from the target; a held key above this
+## cancels it; moving slower than this share of her speed for this long means she is stuck.
+const GOAL_ARRIVE := 0.8
+const GOAL_CANCEL_INPUT := 0.2
+const GOAL_STUCK_SPEED := 0.25
+const GOAL_GIVE_UP_S := 1.2
 const TRAIL_SPACING := 6.0
 const TRAIL_LENGTH := 48
 ## Walking against deep water she cannot swim in, this long (s): told why (once per zone).
@@ -72,6 +78,8 @@ var slippery := false
 var trail: PackedVector2Array = []
 var facing := Vector2.DOWN
 var busy := false   # during an interaction
+var _goal: Node2D            # what a click sent her to (go_and_interact)
+var _goal_stuck_s := 0.0
 ## The dino Chloé rides (null: on foot). Set by the world (World.mount / dismount).
 var mount: Dino = null
 ## The dino carrying her in deep water (null: not swimming). Set here, as she walks in or out.
@@ -107,6 +115,7 @@ func _physics_process(delta: float) -> void:
 	var input := Vector2.ZERO
 	if can_move():
 		input = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
+		input = _walk_to_goal(input, delta)
 	_update_water_mask()
 	# (under the sea her diver glides: slow to start, slow to stop, wide turns; on the ice she slides)
 	var on_ice := _on_slippery_ice()
@@ -291,10 +300,57 @@ func _interact() -> void:
 	var best := nearest_interactable()
 	if best == null:
 		return
+	await _interact_with(best)
+
+
+func _interact_with(target: Node2D) -> void:
 	busy = true
 	velocity = Vector2.ZERO
-	await best.interact(self)
+	await target.interact(self)
 	busy = false
+
+
+## A click on something usable (WorldView → ClickInteract): in reach, Chloé uses it at once; further
+## away she walks to it in a straight line, then uses it. Any key or stick movement cancels it.
+func go_and_interact(target: Node2D) -> void:
+	if not can_move() or target == null or not target.visible:
+		return
+	if _in_reach(target):
+		face_towards(target.global_position)
+		_interact_with(target)
+		return
+	_goal = target
+	_goal_stuck_s = 0.0
+
+
+## Leaves the click's errand (a move by hand, a scene, a dialogue).
+func cancel_goal() -> void:
+	_goal = null
+
+
+func _in_reach(target: Node2D) -> bool:
+	return global_position.distance_to(target.global_position) <= INTERACT_REACH * GOAL_ARRIVE + float(target.get_meta(&"reach_bonus", 0.0))
+
+
+## The direction she goes towards the click's target, or `input` (what the player holds) if none.
+func _walk_to_goal(input: Vector2, delta: float) -> Vector2:
+	if _goal == null:
+		return input
+	if input.length() > GOAL_CANCEL_INPUT or not is_instance_valid(_goal) or not _goal.visible:
+		_goal = null
+		return input
+	if _in_reach(_goal):
+		var target := _goal
+		_goal = null
+		face_towards(target.global_position)
+		_interact_with(target)
+		return Vector2.ZERO
+	# Not getting anywhere (a wall, the water): she gives up rather than push for ever.
+	_goal_stuck_s = _goal_stuck_s + delta if velocity.length() < top_speed() * GOAL_STUCK_SPEED else 0.0
+	if _goal_stuck_s > GOAL_GIVE_UP_S:
+		_goal = null
+		return Vector2.ZERO
+	return (_goal.global_position - global_position).normalized()
 
 
 ## What a press of « interact » would reach now: the closest interactable in reach, preferring what
