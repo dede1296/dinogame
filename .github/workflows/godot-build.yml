@@ -1,9 +1,8 @@
 name: Godot — APK Android
 
 # Ambrelune, prototype Godot (dossier Godot/). Indépendant du déploiement Phaser (deploy.yml).
-# - Lancement manuel (onglet Actions › « Run workflow ») : APK en artefact.
-# - Chaque push sur godot-prototype publie AUSSI une Release « Ambrelune Godot — build N »
-#   avec Ambrelune.apk : c'est de là qu'on installe le jeu sur le téléphone, sans compte ni zip.
+# - Lancement manuel (onglet Actions › « Run workflow ») : APK en artefact. Le 2,5D mobile est mis
+#   de côté (04/10) : plus de build automatique à chaque push.
 # - Tag « godot-v* » (ex. godot-v0.1.0) : une Release de version, marquée pré-version.
 # Signature : secret ANDROID_DEBUG_KEYSTORE_BASE64 (keystore encodé en base64) s'il existe,
 # sinon un keystore jetable (il faudra alors désinstaller l'ancienne version avant d'installer).
@@ -12,9 +11,6 @@ on:
   workflow_dispatch:
   push:
     tags: ["godot-v*"]
-    # Chaque mise à jour du prototype sur sa branche produit un APK (onglet Actions).
-    branches: [godot-prototype]
-    paths: ["Godot/**", ".github/workflows/godot-build.yml"]
 
 permissions:
   contents: write
@@ -113,7 +109,7 @@ jobs:
       # milieu des autres (godot-build-9 passe avant godot-build-16 dans un tri par nom).
       # D'où aussi `prerelease: false` : une pré-version ne peut jamais être la dernière.
       - name: GitHub Release (build de la branche)
-        if: github.ref == 'refs/heads/godot-prototype'
+        if: false   # 2,5D mobile mis de côté (04/10) : plus de Release à chaque push
         uses: softprops/action-gh-release@v2
         with:
           tag_name: godot-build-${{ github.run_number }}
