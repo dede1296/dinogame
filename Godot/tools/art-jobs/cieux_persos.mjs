@@ -28,7 +28,7 @@ export default ({ sheet, sharp, find, OUT }) => {
   // calme et fatigué ; 2e version (6vxe57, 11/10 : visage de la mi-quarantaine, cernes légers, rides fines,
   // mèches grises ; l'essai plus poussé uhcsmz faisait 65 ans) ; 4×4 propre, profils dans le bon ordre. Recalée sur masque.png (pas).
   jobs.push([`${OUT}/characters/isaure_sans_masque.png`, async (out) => {
-    const done = await sheet({ id: "6vxe57", rows: 4, cols: 4, frameHeight: 176, out });
+    const done = await sheet({ id: "bdwuiz", rows: 4, cols: 4, frameHeight: 176, out });
     await alignWithBase(out, `${OUT}/characters/masque.png`, 4, 4, sharp);
     return done + " — recalée sur masque.png";
   }]);
@@ -48,9 +48,10 @@ export default ({ sheet, sharp, find, OUT }) => {
   // assise [face, gauche, droite, dos], rangée 2 = debout, étalon d'échelle, inutilisée). vrmeo8 : les deux
   // profils assis regardent à droite : le premier est retourné en miroir pour regarder à gauche.
   jobs.push([`${OUT}/characters/isaure_sans_masque_assise.png`, async (out) => {
-    const done = await sheet({ id: "vrmeo8", rows: 2, cols: 4, frameHeight: 173.5, cell: [240, 184], out });
-    await mirrorCell(out, 1, 0, 4, 2, sharp);
-    return done + " — profil gauche retourné";
+    const id = await eraseGridLines(sharp, find, "l2zqu4", "isaure-assise", 4, 2);   // (3e version : visage cohérent ; la 2e = `_assise_v2.png`)
+    const done = await sheet({ id, rows: 2, cols: 4, frameHeight: 173.5, cell: [240, 184], out });
+    await mirrorCell(out, 1, 0, 4, 2, sharp);   // (le 2e dessin assis regardait à droite)
+    return done + " — l2zqu4, grille effacée, profil gauche retourné";
   }]);
   return jobs;
 };
@@ -61,7 +62,7 @@ async function mirrorCell(file, c, r, cols, rows, sharp) {
   const { width, height } = await sharp(buf).metadata();
   const cw = Math.round(width / cols), ch = Math.round(height / rows);
   const flipped = await sharp(buf).extract({ left: c * cw, top: r * ch, width: cw, height: ch }).flop().png().toBuffer();
-  const blank = await sharp({ create: { width: cw, height: ch, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }).png().toBuffer();
+  const blank = await sharp({ create: { width: cw, height: ch, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 1 } } }).png().toBuffer();
   const cleared = await sharp(buf).composite([{ input: blank, left: c * cw, top: r * ch, blend: "dest-out" }]).png().toBuffer();
   await sharp(cleared).composite([{ input: flipped, left: c * cw, top: r * ch }]).png({ compressionLevel: 9 }).toFile(file + ".tmp.png");
   (await import("node:fs")).renameSync(file + ".tmp.png", file);
@@ -126,4 +127,18 @@ async function shrinkAboutSeat(file, cols, k, seat, sharp) {
   await sharp({ create: { width, height, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
     .composite(parts).png({ compressionLevel: 9 }).toFile(file + ".tmp.png");
   (await import("node:fs")).renameSync(file + ".tmp.png", file);
+}
+
+/** nano-banana a tracé des traits noirs de grille entre les cases : peints en magenta (±7 px) dans une copie. */
+async function eraseGridLines(sharp, find, srcId, name, cols, rows) {
+  const src = find(srcId);
+  const out = (await import("node:path")).join((await import("node:path")).dirname(src), `derived-sans-grille-${name}.png`);
+  if ((await import("node:fs")).existsSync(out)) return (await import("node:path")).basename(out, ".png");
+  const { data, info } = await sharp(src).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, H = info.height, HALF = 7;
+  const paint = (x, y) => { const i = (y * W + x) * 3; data[i] = 255; data[i + 1] = 0; data[i + 2] = 255; };
+  for (let c = 1; c < cols; c++) { const x0 = Math.round(c * W / cols); for (let x = x0 - HALF; x <= x0 + HALF; x++) for (let y = 0; y < H; y++) if (x >= 0 && x < W) paint(x, y); }
+  for (let r = 1; r < rows; r++) { const y0 = Math.round(r * H / rows); for (let y = y0 - HALF; y <= y0 + HALF; y++) for (let x = 0; x < W; x++) if (y >= 0 && y < H) paint(x, y); }
+  await sharp(data, { raw: { width: W, height: H, channels: 3 } }).png().toFile(out);
+  return (await import("node:path")).basename(out, ".png");
 }

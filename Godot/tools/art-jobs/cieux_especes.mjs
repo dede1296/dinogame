@@ -31,8 +31,9 @@ const FACE_DOS = {
 // 4 poses en vol par espèce (nano-banana, 4:1, éditée depuis la planche de profil). La 2e pose (ailes
 // mi-hautes) sortait à chaque essai avec un filé rose flou : écartée, le plané la remplace en 4e image.
 // pick = [[ligne, colonne], …] dans la grille source (rows × cols), 4 entrées.
+// Quetzalcoatlus (11/10 soir) : membranes de vol grises (elles sortaient saumon, le combat dans le ciel lit ces planches) ; anciennes : `_v1.png`.
 const VOL = {
-  quetzalcoatlus: { id: "zy42m0", rows: 1, cols: 4, pick: [[0, 0], [0, 2], [0, 3], [0, 2]] },
+  quetzalcoatlus: { id: "wxjb40", rows: 1, cols: 4, pick: [[0, 0], [0, 2], [0, 3], [0, 2]] },
   hatzegopteryx: { id: "f00025", rows: 1, cols: 4, pick: [[0, 0], [0, 2], [0, 3], [0, 2]] },
   tupandactylus: { id: "awphss", rows: 1, cols: 4, pick: [[0, 0], [0, 2], [0, 3], [0, 2]] },
   tapejara: { id: "iqe93z", rows: 1, cols: 4, pick: [[0, 0], [0, 2], [0, 3], [0, 2]] },
@@ -41,7 +42,7 @@ const VOL = {
 // Échelle : le corps (hauteur de la pose en plané, tête aux pattes) est calé à ±1 % sur celui du profil
 // en vol de la même espèce (`<id>_vol.png`, 2e image) ; la cellule est la plus petite qui contienne tout.
 const VOL_FACE_DOS = {
-  quetzalcoatlus: "4dhns0", hatzegopteryx: "cz9vfe", tupandactylus: "6ftu5n", tapejara: "iy3cfe", pteranodon: "d6hoyx",
+  quetzalcoatlus: "6nqhw3", hatzegopteryx: "cz9vfe", tupandactylus: "6ftu5n", tapejara: "iy3cfe", pteranodon: "d6hoyx",
 };
 const VOL_CELL = [380, 230];   // cellule de sortie ; frameHeight 215 = la plus haute pose
 

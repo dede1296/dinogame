@@ -46,5 +46,22 @@ export default ({ props, icons, seamless, sharp, find, OUT }) => {
   // Fond de combat (même cadrage que battle/monts.jpg : deux plateaux, mer de nuages, nid au bord).
   jobs.push([`${OUT}/battle/cieux.jpg`, (out) => sharp(find("fqq4ss")).resize(1920, 1072, { fit: "cover" })
     .jpeg({ quality: 86, mozjpeg: true }).toFile(out).then(() => out)]);
+  // Accessoires de l'histoire (scènes de l'Arche et des Nids) : le vieux harnais d'Hélène dans son lit de
+  // plumes (60-80 cm au sol) et le masque d'obsidienne tombé dans l'herbe. Détourés, sans ombre.
+  jobs.push([`${OUT}/props/vieux_harnais.png`, () => props({ id: "ntmvnu", scale: 0.4, outDir: `${OUT}/props`, gap: 40, names: ["vieux_harnais"] })]);
+  jobs.push([`${OUT}/props/masque_obsidienne.png`, () => props({ id: "t57k3p", scale: 0.3, outDir: `${OUT}/props`, gap: 40, names: ["masque_obsidienne"] })]);
+  // Bancs de nuages bas (pied des pitons) : 4 variantes, 2×2 sur la planche (lecture : haut gauche, haut droite, bas gauche, bas droite).
+  jobs.push([`${OUT}/props/nuage_bas.png`, () => props({ id: "yksfuz", scale: 0.4, outDir: `${OUT}/props`, boxes: px([[60, 140, 810, 410], [940, 200, 1030, 330], [60, 800, 1130, 360], [1270, 730, 630, 440]]), names: ["nuage_bas_1", "nuage_bas_2", "nuage_bas_3", "nuage_bas_4"] })]);
+  // L'arche vue de loin : fabriquée SANS génération depuis arche_vent.png (nano-banana rendait un fond en
+  // dégradé, impossible à détourer) : teinte bleu-gris, désaturée, éclaircie, contours adoucis, plus petite.
+  jobs.push([`${OUT}/props/arche_vent_loin.png`, async (out) => {
+    const src = `${OUT}/props/arche_vent.png`;
+    const { width } = await sharp(src).metadata();
+    const w = Math.round(width * 0.55);
+    const base = await sharp(src).resize(w).modulate({ saturation: 0.25, brightness: 1.12 })
+      .tint({ r: 150, g: 170, b: 215 }).blur(1.4).ensureAlpha().toBuffer();
+    await sharp(base).linear([1, 1, 1, 0.8], [18, 18, 26, 0]).png({ compressionLevel: 9 }).toFile(out);
+    return out + " (version lointaine, brumeuse)";
+  }]);
   return jobs;
 };
