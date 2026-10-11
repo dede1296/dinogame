@@ -202,12 +202,13 @@ Versions utilisées (Godot 4.7.2) :
 | `addons/guideCS` | Guide (C#) | 0.5.7 |
 | `addons/gaussian-blur`, `addons/tressfx` | (effets) | — |
 
-**Attention aux chargements automatiques venus de `addons/`.** SimpleGrassTextured ajoute
-l'autoload `SimpleGrass` dès qu'il est activé, et l'éditeur le remet à chaque ouverture du projet :
-inutile d'essayer de l'enlever à la main. Conséquence : tant que ce plugin est activé, le projet ne
-démarre **pas** sans `addons/simplegrasstextured`, et l'export Windows doit le garder (il le garde :
-le preset n'exclut que `tools/` et `docs/`). Pour s'en passer — par exemple pour alléger l'exe PC —
-il faut **désactiver le plugin** dans Projet › Extensions, pas retirer la ligne.
+**Règle : le jeu ne doit dépendre d'aucun plugin pour démarrer.** `addons/` n'est pas dans le
+dépôt et les deux exports (Android, Windows) l'excluent. Un plugin qui ajoute un `[autoload]`
+(SimpleGrassTextured, Lit, BetterTerrain, Saltmire, Godot AI…) casserait donc le jeu livré, et
+l'éditeur le remet à chaque activation. Plugins activés en permanence : ceux **sans autoload**
+(3D en pause, outils d'éditeur) et **Godot MCP Toolkit**, dont l'autoload `MCPRuntimeServer` est
+neutralisé à l'export par le plugin lui-même (et se coupe seul hors de l'éditeur). Pour tester un
+plugin à autoload : l'activer, puis le **désactiver** avant de commiter `project.godot`.
 
 Les sources Blender (`assets3d_src/`) et les packs d'assets tiers ne sont pas non plus dans le dépôt.
 Un pack décompressé par erreur à la racine du projet a été rangé le 11/10 dans
