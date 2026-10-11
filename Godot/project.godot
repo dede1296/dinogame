@@ -50,6 +50,7 @@ config/icon="res://assets/art/icone/jeu.png"
 
 Quality="*res://core/quality.gd"
 Screen="*res://core/screen_mode.gd"
+Prompts="*res://core/prompts.gd"
 Game="*res://core/game_state.gd"
 Save="*res://core/save_system.gd"
 Audio="*res://core/audio_director.gd"

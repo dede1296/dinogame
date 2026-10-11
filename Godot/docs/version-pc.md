@@ -26,6 +26,22 @@ C'est pour ça que `Player.running()` ne lit plus `cancel` sur ordinateur — si
 faisait partir Chloé en courant. La manette garde les deux usages (B revient **et** fait courir,
 car B est maintenant aussi dans l'action `run`).
 
+## Les icônes de touches (11/10)
+
+`Prompts` (autoload, `core/prompts.gd`) donne l'image de ce qui déclenche une action :
+`Prompts.texture(&"interact")` → la touche du clavier, ou le bouton de la manette de la famille
+branchée (Xbox, PlayStation, Switch, reconnue par son nom), selon ce que le joueur a touché en dernier.
+Elle lit l'InputMap, donc elle suit les touches redéfinies, et la disposition du clavier (un AZERTY
+voit « Z » là où un QWERTY voit « W »). Quand plusieurs touches font la même chose, elle montre une
+lettre (« E » plutôt qu'« Espace »). Images : Kenney « Input Prompts », CC0, dans
+`assets/art/ui/prompts/` (copiées depuis Controller Icons, qui est en C# et donc inutilisable ici).
+
+- **Invite d'interaction** (`ui/interact_prompt.gd`) : une bulle avec la touche flotte au-dessus de
+  ce que Chloé peut utiliser (parler, ramasser, fouiller, lire) — le même objet que celui qu'atteindrait
+  la touche (`Player.nearest_interactable`). Sur ordinateur seulement ; le bouton A joue ce rôle au téléphone.
+- **Page Commandes** : la touche ET le bouton de manette réels de chaque action, à la place du texte.
+- Test : `tools/test_prompts.gd` (13 vérifications).
+
 ## Où c'est écrit
 
 - `core/screen_mode.gd` (autoload `Screen`) : plein écran, taille minimale de la fenêtre, F11.

@@ -23,17 +23,18 @@ const CONTROLS_HEIGHT := 380.0
 const CONTROL_WHAT_W := 196.0
 const CONTROL_TOUCH_W := 214.0
 const CONTROL_KEYS_W := 150.0
+const PROMPT_PX := 44.0   # the keys and buttons drawn on the Commandes page (computer)
 ## What one does, on a phone and on a computer: [what it does, finger, keys]. Kept next to the
 ## game's own input map (project.godot [input], DexScreen.ensure_action).
 const CONTROLS := [
 	["Se déplacer", "Le pouce gauche, n'importe où sur la moitié gauche", "Les flèches, ou Z Q S D"],
-	["Courir", "Garder B appuyé en marchant", "Maj (ou B de la manette) en marchant"],
-	["Parler, ramasser, fouiller", "A", "Espace, Entrée ou E"],
-	["Revenir, fermer, refuser", "B", "Échap ou Retour arrière"],
-	["Monter sur un dino, descendre", "Le bouton de selle, en bas à droite", "R"],
-	["La carte de l'île", "Le bouton carte, en haut à droite", "M"],
-	["Le Dinodex", "Le bouton Dinodex, en haut à droite", "X"],
-	["Ce menu", "Le bouton ☰, en haut à droite", "Échap (ou Start)"],
+	["Courir", "Garder B appuyé en marchant", "Maj (ou B de la manette) en marchant", [&"run"]],
+	["Parler, ramasser, fouiller", "A", "Espace, Entrée ou E", [&"interact"]],
+	["Revenir, fermer, refuser", "B", "Échap ou Retour arrière", [&"cancel"]],
+	["Monter sur un dino, descendre", "Le bouton de selle, en bas à droite", "R", [&"ride"]],
+	["La carte de l'île", "Le bouton carte, en haut à droite", "M", [&"map"]],
+	["Le Dinodex", "Le bouton Dinodex, en haut à droite", "X", [&"dex"]],
+	["Ce menu", "Le bouton ☰, en haut à droite", "Échap (ou Start)", [&"menu"]],
 	["Plein écran, fenêtre", "—", "F11 (ou Alt + Entrée)"],
 	["Voir de plus près, de plus loin", "Pincer l'écran à deux doigts", "La molette de la souris"],
 	["Changer un dino d'équipe", "Glisser son portrait sur un autre", "Le glisser à la souris"],
@@ -200,8 +201,9 @@ func _controls_page() -> void:
 	rows.add_theme_constant_override("separation", 6)
 	scroll.add_child(rows)
 	for control: Array in CONTROLS:
+		var actions: Array = control[3] if control.size() > 3 else []
 		if Screen.on_computer():
-			rows.add_child(_control_row(control[0], control[2], ""))
+			rows.add_child(_control_row(control[0], control[2], "", actions))
 		else:
 			rows.add_child(_control_row(control[0], control[1], control[2]))
 	_rows.add_child(_button("Retour", _show.bind("menu")))
@@ -307,7 +309,7 @@ func _input(event: InputEvent) -> void:
 
 
 ## One line of the Commandes page: what it does, then the finger and the keys for it.
-func _control_row(what: String, touch: String, keys: String) -> PanelContainer:
+func _control_row(what: String, touch: String, keys: String, actions: Array = []) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _box(Color(0.16, 0.18, 0.22), 12, 1, 10))
 	var row := HBoxContainer.new()
@@ -320,7 +322,29 @@ func _control_row(what: String, touch: String, keys: String) -> PanelContainer:
 		text.custom_minimum_size = Vector2(column[1], 0)
 		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.add_child(text)
+	if not actions.is_empty():
+		_show_prompts(row, actions)
 	return panel
+
+
+## Sur ordinateur : à la place du texte des touches, les vraies — la touche du clavier ET le bouton
+## de la manette de l'action (ce que la page Touches a redéfini, pas ce que le texte annonçait).
+func _show_prompts(row: HBoxContainer, actions: Array) -> void:
+	var texts := row.get_children().filter(func(c: Node) -> bool: return c is Label)
+	for i in range(1, texts.size()):
+		texts[i].visible = false   # the keys text (and the empty column after it) give way
+	# The icons sit where the keys text was: after the action's name.
+	for action: StringName in actions:
+		for kind in ["key", "pad"]:
+			var picture := Prompts.texture(action, kind)
+			if picture == null:
+				continue
+			var icon := TextureRect.new()
+			icon.texture = picture
+			icon.custom_minimum_size = Vector2(PROMPT_PX, PROMPT_PX)
+			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			row.add_child(icon)
 
 
 func _sounds_page() -> void:

@@ -288,6 +288,18 @@ func _play_step(kind: StringName) -> void:
 ## Interacts with the closest interactable in front of Chloé (group "interactable",
 ## method interact(player) which may be a coroutine).
 func _interact() -> void:
+	var best := nearest_interactable()
+	if best == null:
+		return
+	busy = true
+	velocity = Vector2.ZERO
+	await best.interact(self)
+	busy = false
+
+
+## What a press of « interact » would reach now: the closest interactable in reach, preferring what
+## Chloé faces. Also what the interaction prompt (ui/interact_prompt.gd) points at.
+func nearest_interactable() -> Node2D:
 	var best: Node2D = null
 	var best_score := INF
 	for node in get_tree().get_nodes_in_group(&"interactable"):
@@ -304,12 +316,7 @@ func _interact() -> void:
 		if score < best_score:
 			best_score = score
 			best = target
-	if best == null:
-		return
-	busy = true
-	velocity = Vector2.ZERO
-	await best.interact(self)
-	busy = false
+	return best
 
 
 func face_towards(point: Vector2) -> void:

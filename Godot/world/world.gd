@@ -117,6 +117,11 @@ func _ready() -> void:
 	_ride_button = RideButton.add(hud, toggle_ride)
 	hud.add_child(DIVE_BUTTON.new())
 	hud.add_child(PartyBar.new())
+	var prompt := InteractPrompt.new()
+	prompt.player = player
+	prompt.view = _view
+	hud.add_child(prompt)
+	Prompts.changed.connect(prompt._refresh)
 	hud.add_child(ClockBadge.new())
 	hud.add_child(PurseBadge.new())
 	_tracker = QuestTracker.new()

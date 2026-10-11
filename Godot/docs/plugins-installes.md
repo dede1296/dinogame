@@ -119,3 +119,10 @@ Test : `tools/test_lumiere_pc.gd` (13 vérifications). Scénario avant/après :
 
 **Piste pour de vrais rayons** : des faisceaux dessinés (`light_shaft.gdshader`, déjà utilisé aux
 bouches de grottes) posés sous les grands arbres de la Forêt, à l'aube et au crépuscule.
+
+## Fait le 11/10 — chantier 3 : les icônes de touches et de manette
+
+Controller Icons est en **C#** (inutilisable sans la version .NET de Godot) : on n'a gardé que ses
+**images**, le jeu *Input Prompts* de Kenney (CC0), copiées dans `assets/art/ui/prompts/` (clavier,
+Xbox, PlayStation, Switch ; 1,1 Mo) avec un autoload maison `Prompts`. Détail dans `version-pc.md`.
+Reste à faire : les écrans qui parlent encore de « touche A » en texte (lettre à ranger, plongée).

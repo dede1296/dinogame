@@ -42,8 +42,9 @@ func _run() -> void:
 
 	_check("le rendu est Forward+ (le PC)", pc_light.call("available"), RenderingServer.get_current_rendering_method())
 
-	# 1. qualité Haute en plein jour
+	# 1. qualité Haute à l'aube (météo fixée : le jeu en tire une au hasard, et la brume épaissit l'air)
 	quality.call("set_level", 2)
+	game.call("set_weather", &"clear")
 	game.set("clock", 7.0 * 60.0)
 	await create_timer(0.8).timeout
 	_check("Haute : le brouillard volumétrique est allumé", env.volumetric_fog_enabled)
@@ -53,12 +54,14 @@ func _run() -> void:
 	await _shot("lum_00_haute_aube")
 
 	# 2. soleil haut : plus fin qu'à l'aube
+	game.call("set_weather", &"clear")
 	game.set("clock", 12.5 * 60.0)
 	await create_timer(0.8).timeout
 	_check("à midi l'air est plus fin qu'à l'aube", env.volumetric_fog_density < dawn,
 		"%.4f < %.4f" % [env.volumetric_fog_density, dawn])
 
 	# 3. la nuit : pas de soleil, pas de rayons
+	game.call("set_weather", &"clear")
 	game.set("clock", 1.0 * 60.0)
 	await create_timer(0.8).timeout
 	_check("la nuit, plus de brouillard éclairé", env.volumetric_fog_density < 0.001, "%.5f" % env.volumetric_fog_density)
