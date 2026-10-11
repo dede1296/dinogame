@@ -1001,17 +1001,223 @@ ses manteaux, boutique `joss_cote`). Dialogues : `monts_bloques` (remplace celui
 ch. 5 fini : le manteau), `mur_glace_bloque`, `porte_givre_fermee`, `cieux_bloques`, `page_26` à
 `page_30`, `panneau_monts_entree`, `panneau_vallee`, `panneau_glacier`, `panneau_col`.
 
-## Chapitre 7 — Les Cieux Éternels
+## Chapitre 7 — Les Cieux Éternels ✅
 
-1. Ascension par les pitons et les ponts de lianes. Nids géants. Chloé gagne la confiance du
-   **Quetzalcoatlus Roi** (combat dans les airs) : Sceau des Cieux et **Vol**.
-2. **Le piège.** Au sommet de l'Arche du Vent, le **Masque d'Obsidienne** attend, avec des
-   ptérosaures corrompus. Combat. Pendant qu'on se bat, ses ptérosaures **volent les quatre Cœurs**.
-3. **Le masque tombe.** Maïa s'interpose : « Maman. Arrête. » Isaure retire son masque. Elle explique
-   sans crier : le port, vingt ans de refus, l'île qui pourrait tout changer « si quelqu'un avait le
-   courage de la contrôler ». Elle part avec les Cœurs vers le volcan.
-4. Page 34, déchirée : « Je sais qui c'est. Je ne peux pas le lui dire. Elle ne me le pardonnerait
-   pas… » La fin du nom est arrachée.
+Le chapitre le plus haut, et le plus grave : il commence dans le vent et la joie de voler, il finit
+sans musique, avec un masque dans l'herbe. Pas de Cœur ici : le Sceau des Cieux et le **Vol**.
+
+1. **Le harnais** (Havre-Doré). Joss a fini le harnais de vol (« Trois jours. Enfin, une semaine. ») ;
+   il y a frappé une petite fougère, « comme sur les boussoles d'Hélène », à la demande de Maïa. Avec un
+   grand ptérosaure adulte (un Ptéranodon des falaises de la Côte), Chloé monte au bout du sentier des
+   Monts : le Ptéranodon ne vole pas vraiment, **il plane** sur le vent qui remonte la falaise, et la
+   dépose sur le premier piton. Maïa reste au col : « Je te rejoins. J'ai un plan. Un plan stylé. »
+2. **L'ascension.** Des pitons de roche au-dessus d'une **mer de nuages**, reliés par des **ponts de
+   lianes** qui balancent ; des Rhamphorhynchus qui filent dans le vent ; là-haut, personne ne répond
+   quand on appelle. Au Belvédère, la **page 31** : l'île entière vue d'en haut, et, en passant, comment
+   Hélène volait (« on se penche ; on ne ferme pas les yeux »). Au-dessus de tout, une arche de pierre où
+   le vent chante, et quelque chose d'immense qui tourne.
+3. **Les nids géants.** Des nids grands comme des barques ; des petits « grands comme des Ptéranodons
+   adultes, et ce sont des bébés ». Tout en haut, au bord du Grand Nid, le **Quetzalcoatlus Roi** : il ne
+   descend pas, il ouvre les ailes, et le vent de ses ailes fait reculer Chloé d'un pas. Elle ne fuit
+   pas. Il la regarde d'un œil, renifle les quatre Sceaux, les quatre Cœurs ; et dans son nid, gardée
+   vingt-cinq ans, une lanière de cuir usée avec une fougère frappée dedans : **le vieux harnais d'Hélène**.
+   Chloé pose le sien à côté : la même fougère. Il pose son bec dessus. Puis il décolle et crie : **combat
+   d'honneur dans le vent** (il ne se pose jamais). Gagné, il incline son cou jusqu'à l'herbe ; sous le
+   vieux harnais, le **Sceau des Cieux**. Il crie une seconde fois, et de chaque piton, des ptérosaures
+   répondent : désormais, les grands ptérosaures de l'île portent Chloé **où elle veut** : le **Vol**
+   (libre, piloté ; on se pose où le sol tient). Le Roi regarde longtemps en bas, vers les Monts, puis
+   s'envole dans cette direction. **Page 32** dans un nid vide.
+4. **Le piège.** L'Arche du Vent est au bout de l'aiguille des Nids : tant que le Roi ne l'a pas permis, le
+   vent qui en descend plaque Chloé contre la roche ; ensuite, on y monte à pied par le pont de lianes et
+   l'arête de l'aiguille, ou en volant (premier vrai vol). Au sommet, l'île entière,
+   le volcan tout proche qui fume, et sous l'arche, le **Masque d'Obsidienne**, qui attendait. Deux
+   Hatzegopteryx et un Tupandactylus corrompus, aux noms de vents de marin (Noroît, Suroît, Grain).
+   Combat (on les apaise). Pendant que Chloé apaise le dernier, deux ombres ont plongé sur la sacoche :
+   **les quatre Cœurs** sont dans les mains du Masque.
+5. **Le masque tombe.** Un cri : le Roi descend, **Maïa** accrochée à son cou, les yeux fermés. Elle
+   court, se plante entre eux : « Maman. Arrête. » Isaure retire son masque. Elle explique sans crier : le
+   port, vingt ans de refus, l'île qui pourrait tout changer « s'il suffisait que quelqu'un ait le courage
+   de la tenir ». Maïa : « Tu as reposé ta tasse. » Le masque en carton, tendu, pas pris : « Pas
+   aujourd'hui. » Elle part avec les Cœurs vers le volcan, à pied, sans courir. Le masque d'obsidienne
+   reste dans l'herbe : personne ne le ramasse. (Texte complet plus bas.)
+6. **Page 34**, au cairn d'Hélène, déchirée : « Je sais qui c'est. Je ne peux pas le lui dire. Elle ne me
+   le pardonnerait pas… » La fin du nom est arrachée. La Descente de Cendre mène à la Plaine Volcanique
+   (chapitre 8).
+
+### Chapitre 7 — Dans le jeu ✅
+
+> Intégré et joué de bout en bout le 11/10 (scénarios `tools/scenarios/ch7_parcours_1.gd`, `_2.gd`,
+> `_vol.gd` : des Monts aux Nids, le Roi, l'Arche à pied puis en vol, le masque, la page 34, la descente fermée).
+
+Les zones `cieux` (les pitons, les ponts de lianes, le Belvédère, la mer de nuages, l'îlot), `nids_geants`
+(les nids en étages, le Grand Nid, l'aiguille d'envol) et `arche_du_vent` (la terrasse sous l'arche, le
+cairn, la Descente de Cendre) ; les scènes dans `story/cieux.gd` (Joss et le harnais, la sortie des Monts,
+l'arrivée, le premier pont), `story/cieux_nids.gd` (les nids, le Roi, le Sceau, le Vol), `story/cieux_arche.gd`
+(le piège, le masque, l'après) ; les dialogues simples et les questions dans `data/dialogue_cieux.gd`, les
+objectifs dans `story/cieux_objectives.gd`, les lieux dans `story/cieux_places.gd`. Le Vol est un vol
+**libre et piloté** (`story/vol.gd`, agent mécaniques) : la scène qui le donne dit comment voler sans jamais
+écrire une touche (la mécanique affiche l'aide).
+
+0. **Le harnais** (Joss au Havre, `joss`, une fois `maia_alliee`) : il le sort de sous l'établi, encore
+   chaud de la lampe ; il a tout cousu deux fois ; Maïa l'a essayé sur Moustique (« il a volé à l'envers ») ;
+   la fougère frappée dans la sangle, « comme sur les boussoles d'Hélène. C'est Maïa qui m'a demandé ça. »
+   Objet `harnais_vol`, drapeau `harnais_vol`. Sans grand ptérosaure, il dit où en trouver (les Ptéranodons
+   des falaises de la Côte, de jour ; ou celui qui attend au Cabinet).
+1. **La sortie des Monts** (`cieux_bloques`, DialogueMonts → DialogueCieux) : avec le harnais et un
+   ptérosaure adulte qui vole, elle s'ouvre (`cieux_ouverts`) ; le texte dit ce qui manque sinon. Chloé
+   serre les sangles ; le Ptéranodon court jusqu'au bord, se jette, et plane : « il ne monte pas : c'est le
+   vent qui monte ». Avant d'y aller, Maïa au col : elle reste, elle a « un plan stylé » (`maia_cieux_plan`).
+2. **L'arrivée** (zone `cieux`, `cieux_arrivee`) : le Ptéranodon tourne une fois et se pose, replie ses
+   ailes « comme un parapluie » ; le silence ; la mer de nuages, blanche, qui bouge lentement ; les Monts
+   tout petits en bas ; le froid qui pique autrement, « un froid qui vient d'en haut » ; le dino de tête
+   (le raptor regarde en bas, s'assoit très vite ; le cuirassé reste loin du bord, « très loin » ; l'hadrosaure
+   lance un appel… et rien ne répond : pas d'écho, ici) ; des Rhamphorhynchus à longue queue qui filent dans
+   le vent ; tout en haut, une arche de pierre, et une ombre immense qui tourne. Les Cœurs battent plus fort
+   qu'aux Monts : « ils ont hâte, eux ».
+3. **Le premier pont** (StoryTrigger `PremierPont`, `pont_lianes_vu`) : il balance ; Chloé s'accroche aux
+   lianes, le dino de tête passe à sa façon (le raptor court devant et attend, vexé qu'elle soit lente ; le
+   cuirassé avance « très lentement, et le pont se souvient de lui » ; l'hadrosaure ferme les yeux). Un
+   panneau d'Hélène : « Un pont de lianes, ça se traverse. Ça ne se regarde pas. — H. »
+4. **Pages 31 et 33** : au Belvédère (la spirale des régions vue d'en haut ; « I. ne monte plus avec moi »
+   ; et comment on vole : « on ne tire pas sur les sangles, on se penche ; pour se poser, on cherche du plat ;
+   on ne ferme pas les yeux. Anselme ferme les yeux. ») ; sur l'îlot de la mer de nuages, sans pont, **en Vol
+   seulement** (la nuit du feu : l'éruption, le Souverain apaisé, le sceau, la clé brisée en cinq Cœurs).
+5. **Les nids géants** (zone `nids_geants`, `nids_arrivee`) : les coquilles, les petits, un couple de
+   Tapejara ; en haut, le Roi, immobile, « on dirait un piton de plus ». Un panneau : « On ne grimpe pas dans
+   les nids. Même vides. Surtout vides. — H. »
+6. **Le Roi** (DinoNpc `QuetzalRoi`, `quetzal_roi`) : il ouvre les ailes (le vent, Chloé recule d'un pas,
+   le dino de tête s'aplatit) ; elle ne fuit pas ; il baisse la tête jusqu'à elle, un œil grand comme une
+   assiette ; il renifle les Sceaux, les Cœurs ; **le vieux harnais** dans le nid (fougère frappée) ; Chloé
+   pose le sien à côté : la même fougère ; il pose son bec dessus ; il regarde en bas, vers les Monts,
+   longtemps (« Maïa ? … Elle est restée au col. Elle n'a pas d'ailes, elle. ») ; puis il décolle et crie :
+   **combat d'honneur** (niveau 44, ni collier ni fuite ; il ne se pose jamais ; la leçon dit ce qui le
+   touche fort d'après son type ; avant chaque essai, l'équipe boit l'eau de pluie du Grand Nid et se remet
+   d'aplomb). Gagné : il incline le cou jusqu'à l'herbe ; sous le vieux harnais, le **Sceau des Cieux**
+   (ambre blanc doré, une aile ouverte, la fougère) ; son deuxième cri, et toutes les voix des pitons qui
+   répondent ; le Ptéranodon de Chloé déplie ses ailes, impatient : **le Vol** (`vol_obtenu`). La consigne,
+   dite par Chloé avec les mots de la page 31 (« On se penche. On ne ferme pas les yeux. ») et une ligne de
+   narration sans touche : « Monte sur son dos comme en selle : il fera le reste. Penche-toi du côté où tu
+   veux aller. Pour te poser, cherche un sol où tes pieds tiendraient. » Puis le Roi s'envole vers les Monts.
+7. **L'aiguille** (sortie de bord, au nord de `nids_geants`, vers `arche_du_vent` ; `arche_bloquee` tant que
+   `vol_obtenu` est faux) : un pont de lianes y mène depuis le Grand Nid, mais le vent qui descend de l'Arche
+   plaque Chloé contre la roche (« Le vent garde le passage. Ici, c'est le Roi des Cieux qu'il écoute. »).
+   Après le Roi, on y passe **à pied** (le long de l'arête) **ou en volant** (la sortie de bord se franchit en
+   vol) ; l'arrivée à l'Arche dit lequel (« Le ptérosaure se pose sur la plateforme… » ou « Cette fois, le
+   vent de l'aiguille la laisse passer… » : `Vol.came_flying`).
+8. **L'Arche du Vent** (zone `arche_du_vent`, `arche_arrivee`) : la terrasse, l'île entière, le volcan qui
+   fume, tout proche ; le vent chante dans l'arche comme dans la roche du sanctuaire des Vents ; les Cœurs
+   battent « comme avant un orage » ; et sous l'arche, immobile, le Masque. Le piège se joue à la suite
+   (Npc `MasqueArche`, `masque_arche` si l'arrivée a été coupée) : « Tu es montée. Comme elle. » ; « Pose la
+   sacoche, Chloé. » ; Noroît (Hatzegopteryx 42, corrompu), Suroît (Hatzegopteryx 42, corrompu), Grain
+   (Tupandactylus 43, corrompu) : « (Des noms de vents. Des noms de marin.) » ; apaisés tous les trois
+   (`masque_arche_battu`) ; la sacoche ouverte, légère : **les quatre Cœurs** contre la cape du Masque
+   (`coeurs_voles` ; les objets `coeur_1` à `coeur_4` quittent le sac ; les drapeaux `coeur_n` restent : ils
+   disent qu'elle les a eus).
+9. **Le masque tombe** (`masque_tombe`) : la scène complète ci-dessous. Isaure part par la Descente de
+   Cendre ; le masque d'obsidienne reste (StoryProp `MasqueObsidienne`, examinable : « Personne ne l'a
+   ramassé. Personne ne le ramassera. »). Maïa rentre « avec le Roi, les yeux ouverts cette fois ».
+10. **Page 34** au cairn (déchirée ; voir le journal). **La sortie** vers la Plaine Volcanique, au bout de la
+   Descente de Cendre (fermée par le drapeau `volcan_ouvert`, que le chapitre 8 posera ; d'ici là
+   `volcan_bloque` : « La suite de l'aventure arrive bientôt ! »).
+11. **Autour** : Roc au Cabinet (le Sceau des Cieux : « Hélène décollait de nuit. Elle disait que les
+   étoiles sont plus près. Je lui disais que le sol aussi. » ; après le masque : il s'assoit, ne dit rien,
+   puis « Les Kerval reviennent toujours au port. … Même elle. Surtout elle. ») ; Maïa au col des Monts
+   (avant : « un plan stylé » ; après : « Moustique boude : il voulait voler avec le Roi ») et au Havre
+   (« Tu as volé de nuit ? Maman dit qu'on ne décolle jamais de nuit. … Maman dit beaucoup de choses. ») ;
+   Joss (« Les coutures ont tenu ? … Elles ont tenu. ») ; Isaure n'est plus au port (`hide_flag`
+   `masque_tombe` sur son PNJ de Port-Ambre) ;
+   quatre panneaux ; les questions (le harnais, les ponts, le Roi, l'Arche, comment voler).
+12. **Objectifs** : le harnais de Joss (Havre) → un grand ptérosaure adulte (où) → la sortie des Monts →
+   le premier piton → les ponts, jusqu'aux nids → le Roi (astuce : son type) → le Sceau et le Vol → l'Arche,
+   par l'aiguille à pied ou en volant → le Masque → « Vers la Plaine Volcanique (bientôt) » ; en secondaire : les pages 31 à 34 (avec
+   une direction ; la 33 « en volant »), Roc au Cabinet, Maïa au col et au Havre.
+
+Équilibrage (à simuler par l'agent mécaniques, niveaux 38-44 du bestiaire) : le Roi à 44 (combat d'honneur,
+équipe reposée, type Vent : la Pierre le touche fort), les trois corrompus du Masque à 42/42/43 (on les
+apaise : le dino de départ en tête ; pas de soin entre eux ; un vrai test, pas un mur).
+
+Drapeaux : `harnais_vol`, `maia_cieux_plan`, `cieux_ouverts`, `cieux_arrivee`, `pont_lianes_vu`,
+`nids_arrivee`, `quetzal_roi_parle`, `quetzal_roi_battu`, `quetzal_roi_confiance`, `sceau_cieux`,
+`vol_obtenu`, `arche_arrivee`, `arche_piege`, `masque_arche_battu`, `coeurs_voles`, `masque_tombe`,
+`page_34` (= `found_journal_34`), `found_journal_31` à `_34`, `roc_sceau_cieux`, `roc_masque_tombe`,
+`joss_harnais_merci` (et `roi_n`, `maia_cieux_n`, `joss_cieux_n` pour les répliques) ; `volcan_ouvert`
+(posé au chapitre 8 : il ouvrira la Descente de Cendre). Événements :
+`premier_pont`, `quetzal_roi`, `masque_arche`, `masque_obsidienne` ; scènes d'entrée `cieux`, `nids_geants`,
+`arche_du_vent` ; Joss au Havre (`joss`), Maïa au col (`maia_monts`), Roc (`roc`). Dialogues :
+`cieux_bloques` (ce qui manque : le harnais, un ptérosaure), `arche_bloquee`, `volcan_bloque`, `page_31` à
+`page_34`, `panneau_cieux_entree`, `panneau_pont`, `panneau_belvedere`, `panneau_nids`, `panneau_arche`.
+
+### La scène du masque (texte final)
+
+*Le Masque tient les quatre Cœurs contre sa cape, comme on tient quelque chose qui a froid. Le vent est
+tombé. Au-dessus de l'Arche, un cri : le Quetzalcoatlus Roi descend, les ailes grandes ouvertes, et sur
+son cou, agrippée, les yeux fermés, quelqu'un hurle. Il se pose au bord de la terrasse. Maïa glisse le long
+de son cou, tombe à genoux, se relève, et court. Elle se plante entre le Masque et Chloé, face au Masque.*
+
+> **Maïa** — Maman.
+> **Maïa** — Arrête.
+
+*Le Masque ne bouge pas. Puis une main monte vers le visage. Le masque d'obsidienne glisse, et tombe dans
+l'herbe rase, sans bruit. Isaure. Les cheveux défaits par le vent. Les yeux de Maïa.*
+
+> **Isaure** — Tu n'aurais pas dû monter, ma tornade.
+> **Maïa** — Toi non plus.
+> **Isaure** — … Non. Moi non plus.
+
+*Elle regarde Chloé. Pas comme le Masque. Comme sur la barque, le premier jour.*
+
+> **Isaure** — Tu veux savoir pourquoi, moussaillon. Ça tient en une phrase. Et ça ne tient pas du tout.
+> **Isaure** — Il y a vingt ans, le port a commencé à mourir. Les filets remontaient vides. Les maisons se
+> fermaient une par une. J'ai demandé à Hélène un peu d'ambre. Juste un peu : un bateau, des filets, un hiver.
+> **Isaure** — Elle a dit non. Pas fort. Elle ne disait jamais rien fort. Elle a dit : « Chacun chez soi,
+> Isaure. » Et elle est retournée à ses œufs.
+> **Isaure** — Je n'ai pas claqué la porte. Je suis rentrée au port, et j'ai regardé les volets se fermer.
+> Pendant vingt ans. Et puis j'ai fait sans elle. Avec ses notes, puisqu'elle n'en voulait plus. Avec ceux
+> qui payaient. Avec ceux qui avaient faim.
+> **Chloé** — Avec des dinos qui ont peur.
+> **Isaure** — Oui. … Oui, moussaillon. Je ne vais pas te dire que non.
+> **Isaure** — Cette île pourrait tout changer. Pour le port. Pour tous les ports qui meurent. Elle le savait
+> mieux que moi, et elle a préféré l'enfermer. Ce qui dort là-dessous n'est pas un monstre, Chloé : c'est une
+> force. Il suffirait que quelqu'un ait le courage de la tenir.
+> **Isaure** — Elle a eu peur.
+> **Maïa** — Toi aussi. Tu as reposé ta tasse.
+
+*Silence. Isaure regarde les Cœurs, dans ses mains.*
+
+> **Isaure** — … Oui. Je ne sais plus si je l'ai, ce courage. Mais je suis déjà trop haut pour redescendre,
+> Maïa. Plus on monte…
+> **Maïa** — Tu me l'as dit pour les falaises.
+> **Isaure** — C'était pour les falaises.
+
+*Maïa sort de sa poche le masque en carton, plié en deux. Elle le déplie. Elle le tend.*
+
+> **Maïa** — Tu as enlevé le tien. J'avais promis de te rendre celui-là.
+
+*Isaure le regarde longtemps. Elle ne le prend pas.*
+
+> **Isaure** — Pas aujourd'hui.
+
+*(Seulement si Chloé a lu la page 25, la lettre jamais envoyée :)*
+
+> **Chloé** — Elle a gardé votre tasse.
+> *Isaure s'arrête.*
+> **Chloé** — Elle l'a écrit. Dans une lettre qu'elle ne vous a jamais envoyée. « Tu n'as pas tort pour le
+> port. Tu as tort sur le moyen. Je garde ta tasse. »
+> *Isaure ne se retourne pas. Longtemps.*
+> **Isaure** — … Elle écrivait tout.
+
+*Elle s'en va par la Descente de Cendre, vers le volcan, les Cœurs contre elle. Elle ne se retourne pas.
+Elle ne court pas.*
+
+> **Maïa** — Elle ne court jamais. Elle dit que ça fait peur aux gens.
+
+*Le masque d'obsidienne reste dans l'herbe. Maïa le regarde. Elle ne le ramasse pas. Chloé non plus.*
+
+> **Maïa** — Elle l'a enlevé, Chloé. Elle ne l'a pas remis.
+> **Maïa** — Il reste un Cœur. Sous le volcan. Elle sait où il dort. … Nous aussi, maintenant.
+
+Pas de musique pendant la scène : le vent, puis plus de vent. Les versions écartées et leur critique :
+`scratchpad/ch7/masque_brouillons.md`.
 
 ## Chapitre 8 — La Plaine Volcanique · 5e Cœur
 
@@ -1176,7 +1382,7 @@ Tests : `tools/scenarios/jp_*.gd` (`rush=1` pour aller vite).
 | 4 | Page 20 : « Anselme en garde une copie » (la carte des sanctuaires), et il se raidit quand Chloé en parle ; Sirocco l'a vu passer la nuit, avec sa lanterne, demander si le Carnotaurus allait bien ; le mot de « M. » : « d'autres ouvriront les portes pour nous » | Le mot de « M. » sent le sel (« avant la grande marée ») ; la caisse « …ptoir d'Amb… » (Ferréol) ; Maïa : sa mère va sur la Côte « la nuit, en barque » ; la barque sans lanterne vers la Côte ; Sirocco : Isaure jeune, qui gagnait toujours la dernière datte ; Isaure : « Deux Cœurs, déjà ? … On ne sait jamais qui regarde » |
 | 5 | Gustave : « le vieux du Cabinet » est venu une nuit, avec sa lanterne, demander si « le gros du récif » dormait bien ; mais sa copie de la carte est intacte (« personne n'y a touché ») : le Masque n'en avait pas besoin | La barque sans lanterne passe le récif là où personne ne passe (page 21 : seule « I. » connaissait la passe) ; Isaure a conseillé aux pêcheurs de pêcher ailleurs ; Ferréol commande dix masques de plongée « pour ses plongeurs » ; dans la cache, les caisses du Comptoir, le mot de « M. » (« que personne ne la touche ») et la barque qui a amené Chloé, « MAÏA » sur la proue, les nœuds de marin de Maïa, un dessin d'enfant ; Maïa voit la barque de sa mère entrer dans la falaise, une silhouette masquée dedans ; page 23 : « Isaure » en toutes lettres, marraine, les carnets disparus la même semaine ; Roc finit sa phrase du tiroir : « surtout pas à Isaure » |
 | 6 | Innocenté : au Col des Tempêtes, il avoue qu'il surveillait le sceau pour Hélène et confisquait l'ambre noir (page 28 : « il ment très mal : c'est pour ça qu'il se tait ») | Dame Suie a trouvé la réserve d'Hélène grâce à une carte « avec des petites fougères partout, dessinée par quelqu'un qui la connaissait très bien » ; Isaure n'a pas nié : elle a reposé sa tasse, très doucement (comme page 11) ; « Prends garde aux hauteurs, moussaillon » |
-| 7 | — | Le masque tombe |
+| 7 | — | Le Masque nomme ses ptérosaures comme un marin nomme les vents (Noroît, Suroît, Grain) ; il attendait Chloé « comme elle » ; puis **le masque tombe** (voir « La scène du masque », ch. 7) ; page 34 : Hélène savait, le nom reste arraché |
 
 ## Les défis de Maïa
 
@@ -1237,7 +1443,7 @@ précise, chaleureuse, parfois drôle, de plus en plus inquiète.
 | 31 | Cieux · pitons | −20 ans | D'en haut | L'île entière vue d'en haut, la spirale des régions |
 | 32 | Cieux · nids | −25 ans | Le Souverain | Sa découverte, sa taille, son cœur qui bat avec le volcan |
 | 33 | Cieux · mer de nuages | −25 ans | La nuit du feu | L'éruption, le sceau, la clé brisée en cinq Cœurs |
-| 34 | Cieux · arche | −1 an | Je sais qui c'est | Elle a compris qui est le Masque. Nom arraché |
+| 34 | Cieux · arche (le cairn, « le poste d'en haut ») | −1 an | Je sais qui c'est | Déchirée. « Je sais qui c'est. Je le sais depuis la nuit où mes carnets ont disparu, et je crois que je le savais avant. Je ne peux pas le lui dire. Elle ne me le pardonnerait pas… » ; elle l'écrit « une fois, ici, pour ne plus le porter seule : c'est » — le coin est arraché. Le nom n'est jamais lu : Chloé le sait déjà ; ce que la page dit, c'est qu'Hélène a choisi de se taire |
 | 35 | Volcan · sanctuaire | −25 ans | Le cinquième Cœur | Le T-Rex de Magma, le plus difficile à convaincre |
 | 36 | Volcan · coulées | −1 an | Si le sceau cède | Son plan : se sceller avec le Souverain pour le calmer de l'intérieur |
 | 37 | Volcan · forges | −1 an | Pour Isaure | Lettre à Isaure : elle ne la hait pas ; « reviens » |

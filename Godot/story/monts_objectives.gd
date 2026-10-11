@@ -50,8 +50,7 @@ static func main(out: Array[Dictionary]) -> void:
 			&"cote", CotePlaces.SORTIE_MONTS, true)
 		return
 	if Game.flag(&"maia_alliee"):
-		_add(out, "cieux", "Au-dessus des Monts, dans les nuages : les Cieux Éternels. Pour y monter, il faudrait voler… Joss coud un harnais. (La suite de l'aventure arrive bientôt !)",
-			&"monts", P.SORTIE_CIEUX, true)
+		CieuxObjectives.main(out)   # chapter 7, the Cieux Éternels (story/cieux_objectives.gd)
 		return
 	if Game.flag(&"coeur_4"):
 		_add(out, "maia_5", "Quelqu'un t'attend dans la neige, devant le sanctuaire de Givre. Maïa ?", &"monts", _at(&"monts", "MaiaMonts", P.MAIA_RETOUR), true)

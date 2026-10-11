@@ -620,6 +620,12 @@ var _pause_layer: CanvasLayer
 var _rush := false   # (command line « rush=1 »: the demo at full speed, to check it)
 ## What this run checks, written on the view from start to end (command line « titre= »).
 var _caption_text := ""
+## The command "watch": an actor's picture followed frame by frame (see _watch_frame).
+var _watch := {}
+var _watch_queue: Array[Dictionary] = []
+var _watch_n := 0
+const WATCH_PATIENCE := 12000   # frames to wait for the actor to appear (a scene with three battles before it)
+const WATCH_SHOTS := [0, 30, 60, 89]   # the frames of the watch saved as pictures
 
 
 func _initialize() -> void:
@@ -686,6 +692,11 @@ func _process(delta: float) -> bool:
 		if box and box.text != _dlog_last and box.visible_characters == -1:
 			_dlog_last = box.text
 			print("» ", box.text)
+	if _watch.is_empty() and not _watch_queue.is_empty():
+		_watch = _watch_queue.pop_front()
+		_watch_n += 1
+	if not _watch.is_empty():
+		_watch_frame()
 	if _auto:
 		_auto_timer += delta
 		if _auto_timer > (0.1 if _turbo or _rush else 0.35):
@@ -698,7 +709,7 @@ func _process(delta: float) -> bool:
 	while _step < _steps.size() and _sched >= _steps[_step][0] and _wait.is_empty():
 		_run(_steps[_step][1], _steps[_step][2])
 		_step += 1
-	if _step >= _steps.size():
+	if _step >= _steps.size() and _watch.is_empty() and _watch_queue.is_empty():
 		root.get_node("Save").set("enabled", false)
 		if _quality_before >= 0:
 			root.get_node("Quality").call("set_level", _quality_before)
@@ -740,6 +751,14 @@ func _run(command: String, arg: Variant) -> void:
 		"where":   # Chloé's position (tiles), to measure a speed
 			var p: Node2D = current_scene.get("player")
 			print("where ", arg, " : ", p.global_position / 48.0, " t=", Time.get_ticks_msec())
+		"watch":   # [node name, frames, at most, frames to let pass first]: how often that actor's picture
+			# changes over `frames` frames, once it is there (waited for up to WATCH_PATIENCE frames) and `delay` frames on;
+			# the watches are queued, one after the other
+			_watch_queue.append({"name": String(arg[0]), "left": int(arg[1]), "frames": int(arg[1]), "max": int(arg[2]), "changes": 0,
+				"last": "", "anims": {}, "delay": int(arg[3]) if arg.size() > 3 else 0, "patience": WATCH_PATIENCE})
+		"next":   # the line on screen goes on (interact), only while a dialogue shows: never starts a talk
+			if root.get_node("Dialogue").get("active"):
+				_run("press", "interact")
 		"press":
 			for pressed in [true, false]:
 				var ev := InputEventAction.new()
@@ -1265,6 +1284,42 @@ func _read_long_enough(what: String, seconds: float) -> bool:
 		_line_at = _time
 		return false
 	return _time - _line_at >= seconds
+
+
+## One frame of the command "watch": counts the changes of the actor's picture (its animation,
+## its frame, its side) and prints the verdict after the last frame: a still actor waiting (idle,
+## a slow breath) changes a couple of times; one beating its wings or turning round, far more.
+func _watch_frame() -> void:
+	var region = current_scene.get("region") if current_scene else null
+	var who: Node = region.get_node("Entities").find_child(_watch["name"], true, false) if region else null
+	var sprite = who.get("sprite") if who else null
+	if not sprite is AnimatedSprite2D:
+		_watch["patience"] -= 1
+		if _watch["patience"] > 0 and _watch["last"] == "":
+			return
+		print("surveillance %s : FAIL (introuvable ou disparu)" % _watch["name"])
+		_watch = {}
+		return
+	if _watch["delay"] > 0:
+		_watch["delay"] -= 1
+		return
+	var s := sprite as AnimatedSprite2D
+	var state := "%s|%d|%s" % [s.animation, s.frame, s.flip_h]
+	if _watch["last"] != "" and state != _watch["last"]:
+		_watch["changes"] += 1
+	_watch["last"] = state
+	_watch["anims"][String(s.animation)] = true
+	var k: int = _watch["frames"] - _watch["left"]
+	if k in WATCH_SHOTS:
+		root.get_viewport().get_texture().get_image().save_png(_out.path_join("%s_surveillance%d_%02d.png" % [_watch["name"], _watch_n, k]))
+	_watch["left"] -= 1
+	if _watch["left"] > 0:
+		return
+	var ok: bool = _watch["last"] != "" and int(_watch["changes"]) <= int(_watch["max"]) and not _watch["anims"].has("fly")
+	print("surveillance %s : %d changement(s) d'image/animation/sens sur %d images (au plus %d), animations %s : %s" % [
+		_watch["name"], _watch["changes"], _watch["frames"], _watch["max"], _watch["anims"].keys(),
+		"PASS" if ok else ("FAIL (introuvable)" if _watch["last"] == "" else "FAIL")])
+	_watch = {}
 
 
 ## A short battle for the demo: the foe at 1 PV, or a corrupted one nearly calm.

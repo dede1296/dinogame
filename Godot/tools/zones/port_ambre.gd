@@ -70,7 +70,8 @@ static func build() -> Region:
 	# People. The arrival scene (story/prologue.gd) moves Maïa and Isaure to the Cabinet.
 	B.npc(root, "IsaureQuai", "Isaure", CHARS % "isaure", 20.3, 21.4, {"facing": "left", "hide_flag": &"prologue_arrived"})
 	B.npc(root, "MaiaQuai", "Maïa", CHARS % "maia", 19.8, 15.8, {"facing": "down", "hide_flag": &"prologue_arrived"})
-	B.npc(root, "Isaure", "Isaure", CHARS % "isaure", 22.6, 15.7, {"facing": "down", "dialogue": &"isaure", "show_flag": &"prologue_done"})
+	B.npc(root, "Isaure", "Isaure", CHARS % "isaure", 22.6, 15.7, {"facing": "down", "dialogue": &"isaure", "show_flag": &"prologue_done",
+		"hide_flag": &"masque_tombe"})   # (chapter 7: after the mask, she is gone to the volcano)
 	# The guard of the coast road (east), at his post.
 	B.npc(root, "Garde", "Le garde du Havre", CHARS % "garde", 37.6, 8.6, {"facing": "down", "dialogue": &"garde_route"})
 	B.sign(entities, B.cell(36.2, 8.7), &"panneau_route_cotiere")

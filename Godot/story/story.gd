@@ -26,6 +26,7 @@ static func on_zone_entered(zone: StringName) -> void:
 
 static func _on_zone_entered(zone: StringName) -> void:
 	Monts.update_access()   # (the way up to the Monts: end of chapter 5 and a warm coat; old saves too)
+	Cieux.update_access()   # (the way up to the Cieux: the harness and a grown flyer; old saves too)
 	Barque.landing(zone)    # (coming in by Maïa's boat: it waits out at sea, before the picture shows)
 	match zone:
 		&"port_ambre":
@@ -71,6 +72,13 @@ static func _on_zone_entered(zone: StringName) -> void:
 			await MontsGrottes.arrival()
 		&"sanctuaire_givre":
 			await MontsSanctuaire.arrival()
+		# Chapter 7, the Cieux Éternels (story/cieux*.gd)
+		&"cieux":
+			await Cieux.arrival()
+		&"nids_geants":
+			await CieuxNids.arrival()
+		&"arche_du_vent":
+			await CieuxArche.arrival()
 
 
 ## The time of day changed while in zone `zone` (a scene that only happens at night…).
@@ -115,6 +123,7 @@ static func _run(event: StringName, who: Node) -> void:
 			said = await Desert.roc() or said
 			said = await Cote.roc() or said
 			said = await MontsFin.roc() or said
+			said = await CieuxArche.roc() or said
 			said = await clins().roc() or said   # (the car in the tree, the mosquito in amber)
 			said = await Voyage.roc() or said    # (the Grands Voyageurs, once she has met one)
 			said = await _dex_rewards() or said
@@ -141,7 +150,9 @@ static func _run(event: StringName, who: Node) -> void:
 		&"ferreol":
 			await Havre.ferreol()
 		&"joss":
-			if Game.flag(&"monts_arrivee"):   # chapter 6: Maïa at his place, then the flying harness
+			if await Cieux.joss_harnais():   # chapter 7: the harness is done; then his lines of the chapter
+				pass
+			elif Game.flag(&"monts_arrivee"):   # chapter 6: Maïa at his place, then the flying harness
 				await MontsFin.joss_havre()
 			elif Game.flag(&"cote_arrivee"):   # chapter 5: he goes back and forth to the Côte
 				await CoteLagon.joss_havre()
@@ -290,6 +301,17 @@ static func _run(event: StringName, who: Node) -> void:
 			await MontsSanctuaire.coeur(who)
 		&"maia_monts":
 			await MontsFin.maia(who)
+		# Chapter 7, the Cieux Éternels (story/cieux.gd, cieux_nids.gd, cieux_arche.gd)
+		&"premier_pont":
+			await Cieux.pont(who)
+		&"quetzal_roi", &"quetzalcoatlus_roi":
+			await CieuxNids.roi(who)
+		&"vieux_harnais":
+			await CieuxNids.vieux_harnais(who)
+		&"masque_arche":
+			await CieuxArche.masque(who)
+		&"masque_obsidienne":
+			await CieuxArche.masque_obsidienne(who)
 		# Winks at a famous dinosaur film (story/clins_doeil.gd, docs/histoire.md « Clins d'œil »)
 		&"canne_roc":
 			await clins().canne(who)

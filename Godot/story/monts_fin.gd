@@ -51,6 +51,8 @@ const JOSS_HARNESS := [
 ## veux l'arrêter, pas la perdre », the mask, the challenge; won, they team up. Afterwards, a line
 ## and the questions.
 static func maia(who: Node) -> void:
+	if await Cieux.maia_monts(who):   # chapter 7: her plan before the climb, what she keeps after
+		return
 	if Game.flag(&"maia_alliee"):
 		var k := int(Game.flag(&"maia_monts_n"))
 		Game.set_flag(&"maia_monts_n", k + 1)

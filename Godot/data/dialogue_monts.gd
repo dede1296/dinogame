@@ -75,6 +75,9 @@ static func _ice_wall() -> Array:
 
 ## The way north, up to the Cieux Éternels (closed until chapter 7: it takes flying).
 static func _skies() -> Array:
+	var up: Array = DialogueCieux.way_up()   # chapter 7: what is missing, or the glide up (data/dialogue_cieux.gd)
+	if not up.is_empty():
+		return up
 	var steps: Array = [
 		{"text": "Le sentier monte encore, puis s'arrête net, au bord du vide. Au-dessus, dans les nuages, des pitons de roche flottent presque."},
 		{"who": CHLOE, "text": "(Les Cieux Éternels… Pour aller là-haut, il faudrait voler.)"},

@@ -377,6 +377,9 @@ static func lines(id: StringName) -> Array:
 				{"who": CHLOE, "text": "(« Je m'entraîne »… Elle s'entraînait déjà pour moi.)"},
 			]
 	# (chapter 6 first: its « monts_bloques » — the warm coat — replaces the Côte's once chapter 5 is over)
+	var cieux: Array = DialogueCieux.lines(id)   # chapter 7 (data/dialogue_cieux.gd)
+	if not cieux.is_empty():
+		return cieux
 	var monts: Array = DialogueMonts.lines(id)   # chapter 6 (data/dialogue_monts.gd)
 	if not monts.is_empty():
 		return monts
@@ -619,6 +622,7 @@ static func chatter(who: StringName) -> Array:
 	pool = DialogueDesert.chatter(who, pool)   # chapter 4 (data/dialogue_desert.gd)
 	pool = DialogueCote.chatter(who, pool)   # chapter 5 (data/dialogue_cote.gd)
 	pool = DialogueMonts.chatter(who, pool)   # chapter 6 (data/dialogue_monts.gd)
+	pool = DialogueCieux.chatter(who, pool)   # chapter 7 (data/dialogue_cieux.gd)
 	if pool.is_empty():
 		return []
 	var n := int(Game.flag(StringName("bavard_%s" % who)))
