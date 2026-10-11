@@ -1283,7 +1283,7 @@ regarde Chloé par-dessus la tête de sa fille.*
 
 *Elles descendent par la Descente de Cendre, vers le volcan, les Cœurs contre Isaure, Maïa à côté. Isaure ne
 court pas. Maïa non plus. Elles ne se tiennent pas la main. Elles ne se retournent pas. À mi-pente, Maïa lève
-le bras, sans se retourner, et l'agite. Une fois.*
+le bras, sans se retourner, et l'agite. Une fois. Très loin en dessous, au col, Caillou (le Tricératops) lève la tête et part au trot derrière elles : il n'a jamais su attendre.*
 
 *Le masque d'obsidienne reste dans l'herbe. Chloé ne le ramasse pas. Sur son épaule, Moustique regarde la
 pente jusqu'à ce qu'il n'y ait plus rien à regarder. Le Roi, au bord de la terrasse, baisse la tête jusqu'à

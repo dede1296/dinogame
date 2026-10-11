@@ -561,6 +561,7 @@ static func _with_her(cast: Dictionary) -> Array:
 		{"who": ISAURE, "text": "Ça aussi, je te l'avais dit."},
 		CS.cue({"text": "Elles descendent par la Descente de Cendre, vers le volcan, les Cœurs contre Isaure, Maïa à côté. Isaure ne court pas. Maïa non plus. Elles ne se tiennent pas la main. Elles ne se retournent pas."}, down),
 		{"text": "À mi-pente, Maïa lève le bras, sans se retourner, et l'agite. Une fois."},
+		{"text": "Très loin en dessous, au col, un Tricératops lève la tête, secoue ses trois cornes, et part au trot sur la piste derrière elles. Caillou n'a jamais su attendre."},
 		{"flag": &"masque_tombe"},
 		{"flag": &"moustique_confie"},
 	])
