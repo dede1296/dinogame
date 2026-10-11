@@ -81,6 +81,57 @@ Une main remplace la flèche au-dessus de ce qui est cliquable. On vise ce qu'on
 l'écran où la cible est dessinée (son corps, pas ses pieds) à 64 px près. Les clics sur le HUD et les
 menus restent au HUD. Écrit dans `world/click_interact.gd` et `Player.go_and_interact`. Test : `test_clic.gd`.
 
+## Les ombres aplaties (11/10)
+
+Chaque image debout du monde — arbres, buissons, rochers, clôtures et piquets, herbes, fleurs,
+barques, filets, séchoirs, Chloé, les dinos, les PNJ — jette au sol **sa propre silhouette**, couchée
+à l'opposé du soleil (la technique des jeux 2,5D). Elle remplace, pour les images, l'ombre-carte du
+soleil, qui vibrait, était en escalier et, le soleil étant toujours derrière la caméra, ne laissait
+qu'un trait sous une image fine (et rien sous les 73 genres sans ombre de contact).
+
+- **Elle part du pied** : de la dernière ligne opaque de l'image (mesurée une fois par image,
+  `FlatShadows.picture_bottom` ; pour les planches de personnages, `SheetFrames.drawn_in`), au droit
+  de son point au sol, là où la caméra la voit toucher le sol. Le test mesure l'écart pied → début
+  de l'ombre à l'écran.
+- **Elle suit l'heure** : direction et longueur selon le soleil de `WorldView.DAYLIGHT` (longue le
+  matin et le soir, courte à midi), plafonnée (2 m d'ombre par m de hauteur au plus, 9 m en tout) et
+  plus pâle au bout. La nuit, un léger halo sous la lune. Pluie, brume, sable, neige, orage : plus
+  pâle et plus douce. Dedans : plus pâle. Sous la mer : très pâle ; les personnages n'en ont pas
+  quand ils nagent ou plongent.
+- **Elle suit l'image** : le vent et Chloé qui écarte les herbes (le même balancement que l'image),
+  un arbre fouillé, une pierre soulevée ; l'image **courante** d'une animation (un dino qui marche),
+  son retournement, sa taille, le saut de pas. En l'air (le Vol), l'ombre reste au sol, décalée par
+  le soleil, pâlit et se floute avec l'altitude. Chloé en selle et sa monture : **une seule** ombre
+  (gabarit : là où une ombre de personnage est posée, une autre ne la fonce pas).
+- **Elle assombrit, sans jamais éclaircir** (multiplication, teinte brun-bleu) et ne reçoit pas le
+  brouillard (sinon l'aube l'effaçait) ; elle s'efface au loin (26 → 46 m de la caméra).
+- **Sur le relief** elle suit le sol de près ; au bord d'une falaise ou d'un trou, elle s'efface là
+  où elle flotterait. Dans les hautes herbes, celle d'un arbre assombrit le bas des touffes.
+- **Chaque genre** a sa force, sa longueur, son flou et sa façon (ronde : l'image se tourne face au
+  soleil ; planche : une clôture reste de face) dans `world/view3d/shadow_kinds.gd`. « Aucune » : ce
+  qui est couché au sol (nénuphars, os à plat, flaques), accroché à un mur, posé contre une falaise
+  (portes, fresques), les barreaux d'une cage. Un genre absent de la table (un nouveau, des Cieux)
+  reçoit une ombre déduite de `Prop.KINDS` (une plante souple sans collision : courte et légère ;
+  accrochée, foot négatif : aucune).
+- **Qualité** (`Quality` « projected_shadows ») : Haute et Moyenne ; **Basse** n'a que l'ombre de
+  contact (comme avant : pas d'ombre du soleil à Basse). Les **maisons** (modèles 3D), le relief et
+  les décors sans image gardent l'ombre-carte du soleil.
+- Les images par seconde, sans vsync, Haute, GTX 1650 Ti, en alternance au même endroit
+  (`tools/perf_ombres.gd`) : Prairie 112,5 → 109,5 (−2,7 %), Forêt 95,0 → 103,8 (+9 %), Port
+  105,4 → 119,7 (+13,5 %). Appels de dessin : 234 → 367, 282 → 376, 296 → 320 (une instance d'ombre par
+  paquet de décors, plus une par personnage ; l'ombre-carte n'a plus à redessiner les images).
+
+Limites connues : un personnage qui passe dans l'ombre d'un arbre n'est pas assombri (seul le sol
+l'est) ; une ombre peut passer sous une maison 3D ou sur le pied d'une falaise qui monte (elle s'y
+enfonce, sans grimper la paroi) ; deux ombres de décors qui se croisent foncent un peu plus ; les
+rayons de lumière du brouillard volumétrique sous les arbres (PC, Haute) ne sont plus découpés par les
+arbres (ils n'ont plus d'ombre-carte).
+
+Écrit dans `world/view3d/ombre_aplatie.gd` (`FlatShadows`), `ombre_aplatie.gdshader` (décors),
+`ombre_aplatie_sprite.gdshader` (personnages, en `material_overlay`), `ombre_aplatie.gdshaderinc`,
+`shadow_kinds.gd` ; branché dans `world_view.gd` (`flat_shadows`). Test :
+`godot --path Godot --script res://tools/test_ombres.gd --resolution 1600x900 -- out=<dossier>`.
+
 ## Où c'est écrit
 
 - `core/screen_mode.gd` (autoload `Screen`) : plein écran, taille minimale de la fenêtre, F11.

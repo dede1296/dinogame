@@ -27,6 +27,7 @@ enum MAT { GRASS, DIRT, PAVED, CLIFF, MUD, ROCK, SAND, COVER, COVER_PATH, COVER1
 const MAT_SIZE := 512
 const WATER := preload("res://world/view3d/water.gdshader")
 const CONTACT := preload("res://world/view3d/contact_shadow.gdshader")
+const FLAT_SHADOWS := preload("res://world/view3d/ombre_aplatie.gd")
 const RELIEF := preload("res://world/view3d/relief.gdshader")
 ## How strongly the real 3D models' details (normal map) catch the sun (relief.gdshader "detail").
 const MODEL_DETAIL := 3.0
@@ -121,13 +122,13 @@ const CLIFF_TEX := {
 	&"temple_englouti": "res://assets/art/ground/dalles_temple.png",
 	&"monts": "res://assets/art/ground/falaise_neige.png", &"grottes_glace": "res://assets/art/ground/glace.png",
 	&"sanctuaire_givre": "res://assets/art/ground/falaise_neige.png",
-}
 	&"cieux": "res://assets/art/ground/falaise_neige.png", &"nids_geants": "res://assets/art/ground/falaise_neige.png",
 	&"arche_du_vent": "res://assets/art/ground/falaise_neige.png",
-## Zones whose walls are paved like their floor (the temple; the ice caves, their floor ice as
+}
 ## Zones whose cliffs are their own (CLIFF_TEX) everywhere, even under their cover layers (the Cieux:
 ## their first layer is the sea of clouds at the pitons' feet, not a snow lying on the rock).
 const CLIFF_ALWAYS := [&"cieux", &"nids_geants", &"arche_du_vent"]
+## Zones whose walls are paved like their floor (the temple; the ice caves, their floor ice as
 ## well): the tops of the walls darker, so the rooms and passages read at a glance (0: as lit as
 ## the floor).
 const WALL_SHADE := {&"temple_englouti": 0.8, &"grottes_glace": 0.35}
@@ -287,6 +288,8 @@ var doors := Doors.new()
 ## The "!" over Chloé's dino when it senses something hidden nearby.
 var _hint: Label3D
 var _contact_mesh: PlaneMesh
+## Les ombres aplaties des images (arbres, herbes, clôtures, Chloé, les dinos…) : FlatShadows.
+var flat_shadows := FLAT_SHADOWS.new()
 ## Where neighbour zones are shown beyond the edges (world tiles).
 var _bands: Array[Rect2] = []
 var _zones := {}
@@ -427,6 +430,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	var neighbours := [] if region.indoor else _neighbours(_zones)
 	_find_doors(region)
 	_ground_mat = _build_ground(region, heights)
+	flat_shadows.begin_zone(heights, _ground_mat)
 	_set_holes(_ground_mat)
 	if heights.has_water:
 		_set_holes(_build_water(region, heights))
@@ -492,12 +496,12 @@ func _build_ground(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 		if own_cliff:
 			skin[MAT.COVER_CLIFF] = load(cliff)
 			own_cliff = false
+	if r.region_id in CLIFF_ALWAYS and ResourceLoader.exists(cliff):
+		own_cliff = true
 	skin[MAT.CLIFF] = load(cliff if own_cliff else "res://assets/art/ground/falaise.png")
 	skin[MAT.MUD] = load(MUD_TEX)
 	skin[MAT.ROCK] = load(ROCK_TEX)
 	if SAND_TEX.has(r.region_id) and ResourceLoader.exists(SAND_TEX[r.region_id]):
-	if r.region_id in CLIFF_ALWAYS and ResourceLoader.exists(cliff):
-		own_cliff = true
 		skin[MAT.SAND] = load(SAND_TEX[r.region_id])
 		mat.set_shader_parameter("sand_picture", true)
 		mat.set_shader_parameter("sand_is_ice", r.region_id in ICE)
@@ -821,7 +825,8 @@ func nudge(prop: Node2D, shake: float, lift: float, time := 0.8) -> void:
 	var i: int = ref[1]
 	var base := mm.get_instance_custom_data(i)
 	create_tween().tween_method(func(t: float) -> void:
-		mm.set_instance_custom_data(i, Color(base.r, base.g, shake * (1.0 - t), lift * sin(PI * t))), 0.0, 1.0, time)
+		mm.set_instance_custom_data(i, Color(base.r, base.g, shake * (1.0 - t), lift * sin(PI * t)))
+		flat_shadows.mirror(mm, i, Color(base.r, base.g, shake * (1.0 - t), lift * sin(PI * t))), 0.0, 1.0, time)
 
 
 ## A burst of little bits at `p` (2D world position): leaves from a tree, earth dug up,
@@ -1317,12 +1322,14 @@ func _add_billboards(kind: String, items: Array, shadows := true) -> void:
 	mat.set_shader_parameter("half_width", quad.size.x * 0.5)
 	mat.set_shader_parameter("roundness", ROUNDNESS.get(kind, 0.4))
 	quad.material = mat
-	_add_multimesh(quad, items, shadows)
+	# Leur ombre : aplatie (FlatShadows), ou l'ombre-carte du soleil quand la qualité n'en a pas.
+	_add_multimesh(quad, items, shadows and flat_shadows.map_shadows_for_pictures(), VIEW_RANGE, null, kind if shadows else "")
 
 
 ## Instances of one picture (a QuadMesh with its material), relief (`material` given) or model
-## (materials on its surfaces), split into chunks (each culled and faded alone).
-func _add_multimesh(mesh: Mesh, items: Array, shadows: bool, range_end := VIEW_RANGE, material: Material = null) -> void:
+## (materials on its surfaces), split into chunks (each culled and faded alone). `flat_kind`:
+## pictures of that kind, each chunk with its flat shadow beside it (FlatShadows.add_chunk).
+func _add_multimesh(mesh: Mesh, items: Array, shadows: bool, range_end := VIEW_RANGE, material: Material = null, flat_kind := "") -> void:
 	var chunks := {}
 	for it: Array in items:
 		var at: Vector3 = it[0]
@@ -1362,6 +1369,8 @@ func _add_multimesh(mesh: Mesh, items: Array, shadows: bool, range_end := VIEW_R
 			inst.visibility_range_end_margin = 6.0
 			inst.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
 		_zone.add_child(inst)
+		if flat_kind != "":
+			flat_shadows.add_chunk(_zone, inst, flat_kind)
 
 
 ## Trees filling the "forest" tiles of zone `r` (inside `keep`, world tiles, when given).
@@ -1420,9 +1429,9 @@ func _build_tall_grass() -> void:
 				var item := [Vector3(p.x, heights.height(p), p.y), rng.randf() < 0.5, rng.randf_range(0.85, 1.12)]
 				(thin if split and _region.cover_at(p * PX) < THIN_COVER else items).append(item)
 	if not items.is_empty():
-		_add_multimesh(_tuft_mesh(load(own) if ResourceLoader.exists(own) else TUFT), items, false, GRASS_RANGE)
+		_add_multimesh(_tuft_mesh(load(own) if ResourceLoader.exists(own) else TUFT), items, false, GRASS_RANGE, null, FLAT_SHADOWS.KINDS.TUFT)
 	if not thin.is_empty():
-		_add_multimesh(_tuft_mesh(TUFT), thin, false, GRASS_RANGE)
+		_add_multimesh(_tuft_mesh(TUFT), thin, false, GRASS_RANGE, null, FLAT_SHADOWS.KINDS.TUFT)
 
 
 ## The quad of a tuft of tall grass (its picture `tuft`), swaying and pushed aside by Chloé.
@@ -1638,7 +1647,9 @@ func _track(node: Node) -> void:
 		# even when she stands in front of it.
 		pic.sorting_use_aabb_center = false
 		vis = pic
-	vis.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	# (A picture: its flat shadow instead of the sun's shadow map, at the qualities that have it.)
+	var map_shadow := model != null or flat_shadows.map_shadows_for_pictures()
+	vis.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if map_shadow else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_zone.add_child(vis)
 	if not with_door.is_empty():
 		doors.attach(node, vis, with_door)
@@ -1662,6 +1673,7 @@ func _track(node: Node) -> void:
 			_zone.add_child(light)
 			proxy["light"] = light
 			proxy["glow"] = child
+	flat_shadows.track(proxy)
 	_proxies.append(proxy)
 	_sync(proxy)
 
@@ -1742,6 +1754,7 @@ func _sync(p: Dictionary) -> void:
 		_sync_model(p["vis"], src as Prop, sprite as Sprite2D, at)
 	else:
 		_sync_picture(p, at, swimmer)
+		flat_shadows.sync(p, at, heights, swimmer != null or _underwater != null)
 	var vis: GeometryInstance3D = p["vis"]
 	if p["foot"]:
 		var foot: MeshInstance3D = p["foot"]
@@ -2133,6 +2146,7 @@ func _indoor_light(hour: float) -> void:
 				(n as OmniLight3D).omni_range = 6.0
 	RenderingServer.global_shader_parameter_set(&"sun_dir", _sun.global_transform.basis.z.normalized())
 	RenderingServer.global_shader_parameter_set(&"sun_light", clampf(_sun.light_energy / 1.25, 0.0, 1.0))
+	flat_shadows.update_sky(_sun, _sun.light_energy, true)
 
 
 func _update_sky(hour: float) -> void:
@@ -2206,3 +2220,5 @@ func _update_sky(hour: float) -> void:
 	PcLight.update_fog(_env, _sun, low_sun, mist, 1.0 - clampf(rain + bliz + sand, 0.0, 1.0))
 	RenderingServer.global_shader_parameter_set(&"sun_dir", _sun.global_transform.basis.z.normalized())
 	RenderingServer.global_shader_parameter_set(&"sun_light", clampf(_sun.light_energy / 1.25, 0.0, 1.0))
+	# Les ombres aplaties : ce soleil, et ce que le temps en laisse (l'énergie par temps clair à part).
+	flat_shadows.update_sky(_sun, lerpf(a[4], b[4], t), false, _underwater != null)
