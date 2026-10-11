@@ -33,6 +33,8 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = true
 	_ids = REGION_IDS.get_image()
+	if _ids.is_compressed():   # read pixel by pixel below: never from a compressed picture
+		_ids.decompress()
 	var bg := ColorRect.new()
 	bg.color = SEA
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE

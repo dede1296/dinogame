@@ -76,11 +76,9 @@ static func _peak(frames: SpriteFrames, anim: StringName) -> float:
 
 ## Width (px) of the drawing at its feet: the bottom FEET_BAND of what is not transparent.
 static func _feet_width(texture: Texture2D) -> float:
-	var image := texture.get_image() if texture else null
+	var image := _readable_image(texture)
 	if image == null:
 		return 0.0
-	if image.is_compressed():
-		image.decompress()
 	var used := image.get_used_rect()
 	var top := used.end.y - maxi(1, int(used.size.y * FEET_BAND))
 	var left := used.end.x
@@ -91,3 +89,18 @@ static func _feet_width(texture: Texture2D) -> float:
 				left = mini(left, x)
 				right = maxi(right, x)
 	return maxf(0.0, right - left)
+
+
+## The picture's pixels, readable one by one. A frame is an AtlasTexture: cutting its region out
+## of the sheet goes through blit_rect, which refuses a compressed picture — and the 2D sheets ARE
+## imported compressed for the graphics card. So the sheet is decompressed first, then cut.
+static func _readable_image(texture: Texture2D) -> Image:
+	if texture == null:
+		return null
+	var atlas := texture as AtlasTexture
+	var image := (atlas.atlas.get_image() if atlas.atlas else null) if atlas else texture.get_image()
+	if image == null:
+		return null
+	if image.is_compressed() and image.decompress() != OK:
+		return null
+	return image.get_region(Rect2i(atlas.region)) if atlas else image
