@@ -38,7 +38,7 @@ const SEAT_DEFAULT := {"side": Vector2(0.0, 0.68), "front": 0.62, "back": 0.64}
 ## In the air (Vol), on a pterosaur's flight pictures (Wings): on its back between the wings, as
 ## shares of a flight picture (the body lies across its middle). Per species when they need it.
 const FLY_SEATS := {}
-const FLY_SEAT_DEFAULT := {"side": Vector2(0.03, 0.5), "front": 0.46, "back": 0.5}
+const FLY_SEAT_DEFAULT := {"side": Vector2(-0.08, 0.5), "front": 0.46, "back": 0.5}
 ## In the air she is drawn smaller than on foot (Greg, 11/10: « trop grande par rapport au dino ») :
 ## a pterosaur's body is slender, and she must not be as tall as it is thick.
 const FLY_RIDER_SCALE := 0.8
