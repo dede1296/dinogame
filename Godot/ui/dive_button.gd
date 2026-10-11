@@ -41,7 +41,8 @@ func _process(_delta: float) -> void:
 		return
 	_mode = mode
 	visible = mode != ""
-	tooltip_text = "Plonger (R)" if mode == "down" else "Remonter (R)"
+	if not Screen.on_computer():   # (on a computer: the hover tag, HudHint)
+		tooltip_text = "Plonger (R)" if mode == "down" else "Remonter (R)"
 	_icon.queue_redraw()
 	if mode == "down" and not Game.flag(HINT_FLAG) and DIVE.can_dive():
 		Game.set_flag(HINT_FLAG)

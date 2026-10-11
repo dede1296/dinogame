@@ -28,6 +28,8 @@ var _pop_wait := 0.0
 var _menu: Control
 var _menu_layer: CanvasLayer
 var _drag: DinoDrag
+## The mouse's hover tags (HudHint), when there is one: a portrait names its dino.
+var hint: HudHint
 
 
 func _ready() -> void:
@@ -82,6 +84,9 @@ func _rebuild() -> void:
 		slot.picture = portrait(d.species())
 		slot.can_drag = _can_reorder
 		add_child(slot)
+		if hint:
+			hint.attach(slot, func() -> String: return "%s · Niv. %d" % [d.nickname, d.level], &"",
+				"Clic : son menu · Glisser : changer de place" if Game.party.size() > 1 else "Clic : son menu")
 		_slots.append(slot)
 		_drag.add_target(slot, func(p: Dictionary) -> bool: return p.get("index", -1) != i, _dropped_on.bind(i))
 		x += size + GAP

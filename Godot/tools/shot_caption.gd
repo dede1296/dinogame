@@ -26,7 +26,9 @@ static func show_on(tree: SceneTree, text: String) -> CanvasLayer:
 	style.content_margin_bottom = 6
 	bar.add_theme_stylebox_override(&"panel", style)
 	bar.position = Vector2(MARGIN, TOP)   # under the demo's own line of controls
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE   # (it sits over the HUD: it must not catch the mouse)
 	var label := Label.new()
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.text = text
 	label.add_theme_font_size_override(&"font_size", SIZE)
 	label.add_theme_color_override(&"font_color", INK)

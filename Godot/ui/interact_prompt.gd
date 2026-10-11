@@ -36,6 +36,7 @@ func _ready() -> void:
 	box.set_content_margin_all(6)
 	_plate.add_theme_stylebox_override(&"panel", box)
 	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE   # (invisible, it sat over the lead portrait and caught its clicks)
 	row.add_theme_constant_override(&"separation", 4)
 	_plate.add_child(row)
 	_icon = TextureRect.new()
@@ -48,6 +49,7 @@ func _ready() -> void:
 	_text.add_theme_font_size_override(&"font_size", 22)
 	_text.add_theme_color_override(&"font_color", Color(1, 0.97, 0.9))
 	_text.visible = false
+	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(_text)
 	add_child(_plate)
 	_plate.modulate.a = 0.0
@@ -63,6 +65,7 @@ func _process(delta: float) -> void:
 		_refresh()
 	var shown := _target != null
 	_plate.modulate.a = move_toward(_plate.modulate.a, 1.0 if shown else 0.0, FADE_PER_S * delta)
+	_plate.visible = _plate.modulate.a > 0.0
 	if not shown:
 		return
 	var feet := view.heights.to_3d(_target.global_position)
