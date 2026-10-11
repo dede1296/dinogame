@@ -30,9 +30,33 @@ var _menu_layer: CanvasLayer
 var _drag: DinoDrag
 ## The mouse's hover tags (HudHint), when there is one: a portrait names its dino.
 var hint: HudHint
+## The gamepad (or the T key) picks a portrait: the game waits, left and right move between the
+## portraits, A opens the menu of the one picked, B goes back. Needs no mouse: change the lead
+## dino, feed a dino.
+var _selecting := false
+var _selection_help: Control
+
+const TEAM_ACTION := &"team"
+const HELP_BOTTOM := 28.0   # the selection's help line: this far above the bottom edge
+
+
+## The "Équipe" action: T on a keyboard, the pad's left arrow (up is the Dinodex, and the pad's
+## own menu moves). Added here, not in the project settings, like the Dinodex's key
+## (DexScreen.ensure_action), so that it is there wherever the bar is.
+static func ensure_action() -> void:
+	if InputMap.has_action(TEAM_ACTION):
+		return
+	InputMap.add_action(TEAM_ACTION, 0.5)
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_T
+	InputMap.action_add_event(TEAM_ACTION, key)
+	var pad := InputEventJoypadButton.new()
+	pad.button_index = JOY_BUTTON_DPAD_LEFT
+	InputMap.action_add_event(TEAM_ACTION, pad)
 
 
 func _ready() -> void:
+	ensure_action()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -85,11 +109,22 @@ func _rebuild() -> void:
 		slot.can_drag = _can_reorder
 		add_child(slot)
 		if hint:
+			# (to the right of the whole row of portraits: below them is the place's name)
 			hint.attach(slot, func() -> String: return "%s · Niv. %d" % [d.nickname, d.level], &"",
-				"Clic : son menu · Glisser : changer de place" if Game.party.size() > 1 else "Clic : son menu")
+				"Clic : son menu · Glisser : changer de place" if Game.party.size() > 1 else "Clic : son menu",
+				_row_rect)
 		_slots.append(slot)
 		_drag.add_target(slot, func(p: Dictionary) -> bool: return p.get("index", -1) != i, _dropped_on.bind(i))
 		x += size + GAP
+
+
+## The row of portraits, on screen.
+func _row_rect() -> Rect2:
+	var rect := Rect2()
+	for slot in _slots:
+		var box := (slot as Control).get_global_rect()
+		rect = box if rect.size == Vector2.ZERO else rect.merge(box)
+	return rect
 
 
 ## A portrait may be dragged: two dinos at least, no menu, no scene, no battle (paused).
@@ -188,6 +223,7 @@ func _open_menu(index: int) -> void:
 	panel.reset_size()
 	var screen := get_viewport().get_visible_rect().size
 	panel.position = Vector2(clampf(slot.position.x, 8.0, screen.x - panel.size.x - 8.0), slot.position.y + slot.size.y + 10.0)
+	_focus_first_button(col)   # a gamepad or the keyboard goes straight to it
 
 
 ## A menu button: closes the menu, then does `action`.
@@ -241,6 +277,7 @@ func _overlay() -> Control:
 
 
 func _close_menu() -> void:
+	_end_selection(false)
 	if _menu:
 		_menu.queue_free()
 		_menu = null
@@ -254,6 +291,96 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _menu and event.is_action_pressed(&"cancel"):
 		get_viewport().set_input_as_handled()
 		_close_menu()
+	elif _selecting and event.is_action_pressed(&"cancel"):
+		get_viewport().set_input_as_handled()
+		_end_selection()
+	elif not _selecting and not _menu and event.is_action_pressed(TEAM_ACTION) and _can_select():
+		get_viewport().set_input_as_handled()
+		_begin_selection()
+
+
+## The portraits can be picked: none is open, no scene or dialogue is going on, nothing is paused.
+func _can_select() -> bool:
+	if _slots.is_empty() or get_tree().paused or Dialogue.active or Router.is_busy():
+		return false
+	var player = get_tree().get_first_node_in_group(&"player")
+	return player == null or not player.get("busy")
+
+
+## Waits for the game, shows the gold ring and puts the focus on the lead dino's portrait.
+func _begin_selection() -> void:
+	_selecting = true
+	get_tree().paused = true
+	DexTile.keys_used = true
+	for slot in _slots:
+		slot.focus_mode = Control.FOCUS_ALL   # (never outside a selection: Enter / Space would open a menu while playing)
+		slot.queue_redraw()
+	_slots[0].grab_focus()
+	_selection_help = _help_line()
+	add_child(_selection_help)
+
+
+## `resume`: let the game run again (false when a menu closes, it does that itself).
+func _end_selection(resume := true) -> void:
+	if not _selecting:
+		return
+	_selecting = false
+	DexTile.keys_used = false
+	if _selection_help:
+		_selection_help.queue_free()
+		_selection_help = null
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused:
+		focused.release_focus()
+	for slot in _slots:
+		slot.focus_mode = Control.FOCUS_NONE
+		slot.queue_redraw()
+	if resume:
+		get_tree().paused = false
+
+
+## "choisir · A son menu · B retour", under the portraits, with the pad's own buttons.
+func _help_line() -> Control:
+	var panel := PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var box := StyleBoxFlat.new()
+	box.bg_color = INK
+	box.border_color = AMBER
+	box.set_border_width_all(2)
+	box.set_corner_radius_all(12)
+	box.set_content_margin_all(8)
+	panel.add_theme_stylebox_override("panel", box)
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 8)
+	panel.add_child(row)
+	_help_part(row, "◀ ▶  choisir", null)
+	_help_part(row, "son menu", Prompts.texture(&"interact", "pad"))
+	_help_part(row, "retour", Prompts.texture(&"cancel", "pad"))
+	# Bottom of the screen, in the middle: not under the portraits, where the place's name is.
+	var place := func() -> void:
+		var screen := get_viewport().get_visible_rect().size
+		panel.position = Vector2((screen.x - panel.size.x) / 2.0, screen.y - panel.size.y - HELP_BOTTOM)
+	panel.resized.connect(place)
+	place.call_deferred()
+	return panel
+
+
+func _help_part(row: HBoxContainer, text: String, icon: Texture2D) -> void:
+	if icon:
+		var picture := TextureRect.new()
+		picture.texture = icon
+		picture.custom_minimum_size = Vector2(32, 32)
+		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(picture)
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 18)
+	label.add_theme_color_override("font_color", CREAM)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(label)
 
 
 func _panel(content: Control) -> PanelContainer:
@@ -300,17 +427,30 @@ func _bond_line(d: Dino) -> Control:
 	return row
 
 
+## The first button that can be pressed has the focus (deferred: the panel is not placed yet).
+func _focus_first_button(col: Control) -> void:
+	for child in col.get_children():
+		var button := child as Button
+		if button and not button.disabled:
+			button.grab_focus.call_deferred()
+			return
+
+
 func _button(text: String) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.custom_minimum_size = Vector2(0, 64)
-	b.focus_mode = Control.FOCUS_NONE
+	b.focus_mode = Control.FOCUS_ALL
 	b.add_theme_font_size_override("font_size", 22)
-	for state in ["normal", "hover", "pressed", "disabled"]:
+	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
 		var box := StyleBoxFlat.new()
 		box.bg_color = Color(0.45, 0.29, 0.08) if state == "pressed" else Color(0.16, 0.18, 0.22, 0.5 if state == "disabled" else 1.0)
 		box.border_color = Color(0.79, 0.54, 0.16, 0.4 if state == "disabled" else 1.0)
 		box.set_border_width_all(2)
+		if state == "focus":   # the button picked by the keys or the pad: a thick gold edge
+			box.bg_color = Color(0.22, 0.2, 0.15)
+			box.border_color = Color(1, 0.86, 0.5)
+			box.set_border_width_all(4)
 		box.set_corner_radius_all(12)
 		box.set_content_margin_all(10)
 		b.add_theme_stylebox_override(state, box)

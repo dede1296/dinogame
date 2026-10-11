@@ -93,4 +93,4 @@ func _draw_icon() -> void:
 func _place() -> void:
 	var inset := SafeArea.insets(get_viewport())
 	var screen := get_viewport().get_visible_rect().size
-	position = Vector2(screen.x - inset.x - SIZE, inset.y + TOP)
+	position = Vector2(screen.x - inset.x - SIZE, inset.y + HudHint.stack_y(3))

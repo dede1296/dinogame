@@ -53,11 +53,15 @@ const PAD_FILES := {
 
 ## Ce que le joueur a touché en dernier : le clavier (&"key"), ou la famille de sa manette.
 var family: StringName = KEYBOARD
+## Vrai tant que le dernier geste est une touche ou la manette (pas la souris) : les écrans mettent
+## alors un contour doré sur le bouton choisi, et un premier focus (PadFocus).
+var navigating := false
 var _cache := {}
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	ensure_pad_for_menus()
 	if Input.get_connected_joypads().is_empty():
 		return
 	# Une manette branchée au lancement et pas de clavier touché : elle est sans doute la manette.
@@ -66,6 +70,10 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton or (event is InputEventMouseMotion and event.relative.length() > 1.0):
+		navigating = false
+	elif event is InputEventKey or event is InputEventJoypadButton or 			(event is InputEventJoypadMotion and absf(event.axis_value) > 0.5):
+		navigating = true
 	var now := family
 	if event is InputEventKey or event is InputEventMouseButton:
 		now = KEYBOARD
@@ -74,6 +82,22 @@ func _input(event: InputEvent) -> void:
 	if now != family:
 		family = now
 		changed.emit()
+
+
+## Les menus de Godot (ui_accept, ui_cancel : un bouton pressé, un écran qu'on quitte) n'ont ici
+## AUCUN bouton de manette — la croix navigue, mais A ne valide pas et B ne ferme pas. On les
+## ajoute : A valide, B revient (tous les écrans du jeu qui utilisent le focus s'y fient).
+static func ensure_pad_for_menus() -> void:
+	for pair: Array in [[&"ui_accept", JOY_BUTTON_A], [&"ui_cancel", JOY_BUTTON_B]]:
+		var action: StringName = pair[0]
+		if not InputMap.has_action(action):
+			continue
+		var has_pad := InputMap.action_get_events(action).any(func(e: InputEvent) -> bool: return e is InputEventJoypadButton)
+		if has_pad:
+			continue
+		var event := InputEventJoypadButton.new()
+		event.button_index = pair[1]
+		InputMap.action_add_event(action, event)
 
 
 ## La famille d'une manette d'après le nom que Godot lui lit.

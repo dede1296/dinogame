@@ -90,7 +90,7 @@ static func add_open_button(hud: CanvasLayer, on_pressed: Callable) -> Button:
 	var place := func() -> void:
 		var inset := SafeArea.insets(button.get_viewport())
 		var screen := button.get_viewport().get_visible_rect().size
-		button.position = Vector2(screen.x - inset.x - button.custom_minimum_size.x, inset.y + 172.0)
+		button.position = Vector2(screen.x - inset.x - button.custom_minimum_size.x, inset.y + HudHint.stack_y(2))
 	place.call()
 	button.get_viewport().size_changed.connect(place)
 	button.pressed.connect(on_pressed)
@@ -567,12 +567,31 @@ static func _first_focusable(root: Node) -> Control:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"cancel"):
+	var pad := event as InputEventJoypadButton
+	if pad and pad.pressed and pad.button_index in [JOY_BUTTON_LEFT_SHOULDER, JOY_BUTTON_RIGHT_SHOULDER] 			and _entry == &"" and not _chooser:
+		# LB / RB: the previous or next page (Tous, the regions, Uniques, Réserve), from anywhere in the list.
+		get_viewport().set_input_as_handled()
+		_cycle_page(-1 if pad.button_index == JOY_BUTTON_LEFT_SHOULDER else 1)
+	elif event.is_action_pressed(&"cancel"):
 		get_viewport().set_input_as_handled()
 		_back()
 	elif event.is_action_pressed(ACTION):
 		get_viewport().set_input_as_handled()
 		_close()
+
+
+## The page `step` away from the current one, going round (a gamepad's shoulders).
+func _cycle_page(step: int) -> void:
+	var pages := _tab_buttons.keys()
+	if pages.is_empty():
+		return
+	var at := pages.find(_tab)
+	# The regions not yet visited are « ??? » pages with nothing in them: the shoulders skip them.
+	for i in pages.size():
+		at = posmod(at + step, pages.size())
+		if (_tab_buttons[pages[at]] as Button).text != "???":
+			break
+	_show_page(pages[at])
 
 
 ## Android back gesture / button.

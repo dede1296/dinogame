@@ -108,7 +108,14 @@ func _build() -> void:
 	scroll.add_child(_rows)
 
 
+## The rows are rebuilt at every purchase: the pad's focus goes back to the same place.
 func _fill() -> void:
+	var kept := PadFocus.focused_index(_rows)
+	_fill_rows()
+	PadFocus.prepare(self, _rows, kept)
+
+
+func _fill_rows() -> void:
 	_coins.text = "%d pièces" % Game.coins()
 	for r in _rows.get_children():
 		r.queue_free()
