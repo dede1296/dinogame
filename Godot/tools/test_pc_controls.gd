@@ -24,6 +24,7 @@ func _initialize() -> void:
 	game.call("new_game")
 	game.call("give_starter", &"velociraptor")
 	game.call("set_flag", &"prologue_done")
+	game.call("set_flag", &"tuto_commandes")   # (le tutoriel de début n'est pas l'objet de ce test)
 	change_scene_to_file(WORLD)
 	_run()
 

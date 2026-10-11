@@ -206,7 +206,16 @@ func _controls_page() -> void:
 			rows.add_child(_control_row(control[0], control[2], "", actions))
 		else:
 			rows.add_child(_control_row(control[0], control[1], control[2]))
+	if Screen.on_computer() and in_game:
+		_rows.add_child(_button("Revoir le tutoriel des commandes", _replay_tutorial))
 	_rows.add_child(_button("Retour", _show.bind("menu")))
+
+
+## Closes the menu, then plays the controls tutorial again.
+func _replay_tutorial() -> void:
+	var root := get_tree().root
+	_close()
+	ControlsTutorial.open.call_deferred(root)
 
 
 ## Touches: the gamepad drawn, each button with the action it does (tap it, then press the new

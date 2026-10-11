@@ -42,6 +42,33 @@ lettre (« E » plutôt qu'« Espace »). Images : Kenney « Input Prompts », C
 - **Page Commandes** : la touche ET le bouton de manette réels de chaque action, à la place du texte.
 - Test : `tools/test_prompts.gd` (13 vérifications).
 
+## La manette seule (11/10)
+
+Tout se joue à la manette, vérifié par `tools/test_manette.gd` (envoie de vrais événements de
+manette). Ce que l'audit a trouvé et corrigé :
+- **`ui_accept` et `ui_cancel` n'avaient aucun bouton de manette** : la croix navigue, mais A ne
+  validait pas et B ne fermait pas. Ajoutés au démarrage (`Prompts.ensure_pad_for_menus`).
+- **Équipe** : action `team` (◀ de la croix, ou T). Le jeu attend, ◀ ▶ choisissent un portrait,
+  A ouvre son menu (« Dino actif », baies, fiche), B revient. Impossible à la manette avant.
+- **Dinodex** : LB / RB changent de page (en sautant les régions inconnues) ; la fiche d'un dino de
+  l'équipe a « En tête / En réserve ».
+- **Boutique** : boutons focusables, le focus revient au même endroit après un achat.
+- `PadFocus` (`ui/pad_focus.gd`) : rend un écran fait pour la souris pilotable à la croix sans le
+  réécrire (contour doré, premier focus) — et rien ne change tant qu'on est à la souris.
+- Déjà bons, désormais testés : carte (stick, gâchettes, A), menu (Start), Grand Voyageur, combat
+  entier avec A seulement.
+
+Croix de la manette : ↑ Dinodex, ◀ équipe ; Retour (Select) la carte ; Start le menu ; Y monter.
+
+## Le tutoriel des commandes (11/10)
+
+`ui/controls_tutorial.gd` : trois pages (se déplacer et agir ; ton équipe et l'île ; menus et
+combat) avec les vraies images du clavier **ou** de la manette, qui changent sous les yeux du joueur
+dès qu'il passe de l'un à l'autre. S'ouvre tout seul, **une fois par partie** (drapeau
+`tuto_commandes`), quand Chloé est libre depuis 1,5 s (donc après les premières scènes). Souris :
+Suivant / Précédent / Passer ; manette : ◀ ▶ ou LB / RB, A, B ; clavier : ← →, Entrée, Échap. Se
+rouvre depuis Paramètres → Commandes → « Revoir le tutoriel des commandes ». Test : `test_tuto.gd`.
+
 ## Où c'est écrit
 
 - `core/screen_mode.gd` (autoload `Screen`) : plein écran, taille minimale de la fenêtre, F11.

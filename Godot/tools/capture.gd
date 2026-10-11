@@ -649,6 +649,7 @@ func _initialize() -> void:
 	if not scenario.begins_with("prologue"):
 		game.call("give_starter", &"velociraptor")
 		game.call("set_flag", &"prologue_done")
+		game.call("set_flag", &"tuto_commandes")   # (the controls tutorial would cover the pictures)
 		game.set("items", {"collier": 5, "baie": 3})
 		# In the Plaines, at the south entrance (coming from the port).
 		if game.get("region_id") == &"port_ambre":

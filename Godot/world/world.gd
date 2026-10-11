@@ -137,6 +137,7 @@ func _ready() -> void:
 	hud.add_child(_tracker)
 	Save.enabled = true
 	Save.before_save = _store_position
+	ControlsTutorial.offer(self)   # the controls, once, as soon as Chloé is free (computer only)
 
 
 func _exit_tree() -> void:

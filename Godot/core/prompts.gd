@@ -130,6 +130,15 @@ func texture(action: StringName, kind := "") -> Texture2D:
 	return _cache[path]
 
 
+## Une image par son nom de fichier (« dpad », « l_stick », « f11 »…), dans le jeu d'icônes de ce
+## que le joueur tient. Vide si elle n'existe pas.
+func named(file: String) -> Texture2D:
+	var path := FOLDER % [family, file]
+	if not _cache.has(path):
+		_cache[path] = load(path) if ResourceLoader.exists(path) else null
+	return _cache[path]
+
+
 ## Le nom de la touche ou du bouton, pour un texte (« E », « Maj »…), quand l'image manque.
 func label(action: StringName, kind := "") -> String:
 	var wants_pad := (kind == "pad") or (kind == "" and family != KEYBOARD)
