@@ -380,6 +380,7 @@ func _apply_quality() -> void:
 	attributes.dof_blur_far_enabled = Quality.setting(&"dof")
 	attributes.dof_blur_far_transition = 14.0
 	attributes.dof_blur_amount = 0.04
+	PcLight.apply_quality(_env)
 	get_viewport().scaling_3d_scale = Quality.setting(&"render_scale")
 	_pollen.amount = Quality.scaled(POLLEN_MOTES)
 	_rain.amount = Quality.scaled(RAIN_DROPS)
@@ -1718,8 +1719,8 @@ func _process(delta: float) -> void:
 	_sand_amount = lerpf(_sand_amount, 1.0 if Game.weather == &"sandstorm" else 0.0, blend)
 	_snow.blend(delta, blend)
 	_update_sky(Game.clock / 60.0)
+	PcLight.update_dof(camera.attributes as CameraAttributesPractical, camera.shown_distance())
 	_magic.update(delta, _region, player, _sun, _env)
-	(camera.attributes as CameraAttributesPractical).dof_blur_far_distance = camera.distance() + 13.0
 
 
 func _sync(p: Dictionary) -> void:
@@ -2103,6 +2104,7 @@ func _indoor_light(hour: float) -> void:
 	_sun.light_energy = 0.9 if not night else 0.25
 	_env.ambient_light_color = Color(0.85, 0.72, 0.58) if not night else Color(0.22, 0.25, 0.4)
 	_env.ambient_light_energy = 0.8 if not night else 0.5
+	_env.volumetric_fog_density = 0.0   # (the PC's light shafts: outdoors only)
 	_env.background_color = Color(0.02, 0.02, 0.025)
 	_env.fog_light_color = _env.background_color
 	_env.fog_depth_begin = 200.0
@@ -2188,5 +2190,9 @@ func _update_sky(hour: float) -> void:
 	_env.fog_light_color = _env.background_color
 	if _ground_mat:
 		_ground_mat.set_shader_parameter("wetness", rain)
+	# Le brouillard volumétrique du PC : épais quand le soleil est rasant ; rien sous la pluie
+	# ou la tempête (pas de soleil pour y tailler des rayons).
+	var low_sun := 1.0 - clampf(deg_to_rad(-_sun.rotation_degrees.x) / deg_to_rad(40.0), 0.0, 1.0)
+	PcLight.update_fog(_env, _sun, low_sun, mist, 1.0 - clampf(rain + bliz + sand, 0.0, 1.0))
 	RenderingServer.global_shader_parameter_set(&"sun_dir", _sun.global_transform.basis.z.normalized())
 	RenderingServer.global_shader_parameter_set(&"sun_light", clampf(_sun.light_energy / 1.25, 0.0, 1.0))

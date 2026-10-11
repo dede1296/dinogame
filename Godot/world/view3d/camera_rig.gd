@@ -69,6 +69,11 @@ func distance() -> float:
 	return _distance
 
 
+## Where the camera really stands: the player's distance, or a scene's close-up (gliding there).
+func shown_distance() -> float:
+	return _shown
+
+
 func _process(delta: float) -> void:
 	# The Paramètres slider may have changed it.
 	_distance = clampf(float(Quality.pref("camera", "distance", _distance)), DISTANCE_MIN, DISTANCE_MAX)

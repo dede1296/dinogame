@@ -92,3 +92,30 @@ planche corrompue dessinée. Plus des **images fantômes** derrière les bonds. 
 corps rigides, pour de la gelée ou des objets qui se brisent), non déterministe, coûteuse, et qui
 casserait nos planches de 3 images et nos tweens. Le même effet « mou » s'obtient mieux — gratuit et
 contrôlable — par déformation de sommets dans le shader.
+
+## Fait le 11/10 — chantier 2 : la lumière du PC
+
+**Lens Effects (flare et rayons du soleil à l'écran) est écarté.** Calculé : la caméra regarde vers
+le nord, penchée de 40° vers le sol, et le soleil du jeu est **toujours derrière elle** (azimuts de
+−60° à +75°, produit scalaire négatif de 6 h 30 à 19 h) ; l'horizon n'est jamais à l'écran (champ de
+21° à 59° sous l'horizon). Il n'y aurait rien à voir. **Gaussian Blur** n'est pas nécessaire non
+plus : le flou de profondeur natif de Godot suffit une fois calé sur la caméra.
+
+Ce qui a été fait à la place, dans `world/view3d/pc_light.gd` (Forward+ seulement, qualité Haute) :
+- **brouillard volumétrique** : l'air prend la couleur du soleil et se découpe aux ombres ; plus
+  épais soleil rasant (aube, crépuscule) et dans la brume, éteint la nuit, sous la pluie, dans la
+  tempête de sable/blizzard et à l'intérieur ;
+- **occlusion ambiante (SSAO)** : de l'ombre au pied des troncs, des rochers et des maisons ;
+- **flou de profondeur calé sur la caméra**, renforcé dans un gros plan de scène (remplace l'ancienne
+  ligne `distance + 13` de `world_view.gd`).
+
+Résultat honnête : **subtil**, pas spectaculaire. À l'aube la scène est plus lumineuse et plus douce
+(luminosité moyenne 80 → 96 avant réglage, atténué depuis), avec un peu d'ombre sous les structures.
+Pas de grands rayons sous la canopée : le soleil est derrière la caméra et les arbres sont des
+images, pas des volumes. Coût mesuré sans vsync sur une GTX 1650 Ti : **−7 à −10 %** d'images/s
+(157 → 146, 181 → 164, 170 → 155). Éteint sur Android (Mobile) et aux niveaux Basse/Moyenne.
+Test : `tools/test_lumiere_pc.gd` (13 vérifications). Scénario avant/après :
+`tools/scenarios/vis_lumiere_pc.gd` (météo fixée à « clair »).
+
+**Piste pour de vrais rayons** : des faisceaux dessinés (`light_shaft.gdshader`, déjà utilisé aux
+bouches de grottes) posés sous les grands arbres de la Forêt, à l'aube et au crépuscule.
