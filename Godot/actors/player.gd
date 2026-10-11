@@ -135,9 +135,12 @@ func top_speed() -> float:
 	return SPEED * (BOOTS_SPEED if boots else 1.0)
 
 
-## B held (the touch button, Escape) or Shift: she runs, her mount gallops.
+## Shift or the pad's B held: she runs, her mount gallops. On a phone, holding the B button
+## (which is the « cancel » action) runs too; on a computer Échap opens the menu instead.
 func running() -> bool:
-	return Input.is_action_pressed(&"run") or Input.is_action_pressed(&"cancel")
+	if Input.is_action_pressed(&"run"):
+		return true
+	return not Screen.on_computer() and Input.is_action_pressed(&"cancel")
 
 
 ## On slippery ice (Region.slippery: its "sand" tiles), on foot or on her mount.

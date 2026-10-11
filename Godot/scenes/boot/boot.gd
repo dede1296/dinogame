@@ -22,8 +22,21 @@ func _ready() -> void:
 		Engine.get_version_info()["string"],
 		RenderingServer.get_current_rendering_method(),
 	]
+	_add_quit_button()
 	(continue_button if continue_button.visible else new_button).grab_focus()
 	Audio.play_music(MUSIC, 2.0)
+
+
+## On a computer, the title screen closes the game (a phone has its own Home button).
+## The button is made from « Paramètres », so it keeps the screen's own look.
+func _add_quit_button() -> void:
+	if not Screen.on_computer():
+		return
+	var quit := settings_button.duplicate() as Button
+	quit.name = "Quit"
+	quit.text = "Quitter le jeu"
+	settings_button.get_parent().add_child(quit)
+	quit.pressed.connect(func() -> void: get_tree().quit())
 
 
 func _on_continue() -> void:

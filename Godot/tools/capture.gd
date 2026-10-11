@@ -2,6 +2,9 @@ extends SceneTree
 ## Smoke test with screenshots: starts a new game, plays a scripted scenario, saves
 ## screenshots, prints checks, then quits. Needs a window (not --headless) to render.
 ##   godot --path Godot --script res://tools/capture.gd -- out=<folder> [scenario=monde|story|…]
+##       [titre=<ce que le test vérifie>]
+## `titre` writes that line on the view, small, top left, for the whole run (ShotCaption): every
+## test must say on screen what it checks (Greg, 04/10).
 ## A step: [time (s), command, argument]. Commands:
 ##   hold <action>   keep an input action pressed ("" releases)
 ##   press <action>  one press event (like a key or the A button)
@@ -615,6 +618,8 @@ var _hud_taps: Array = []   # (command "hud_tap")
 var _keys := {}
 var _pause_layer: CanvasLayer
 var _rush := false   # (command line « rush=1 »: the demo at full speed, to check it)
+## What this run checks, written on the view from start to end (command line « titre= »).
+var _caption_text := ""
 
 
 func _initialize() -> void:
@@ -628,12 +633,15 @@ func _initialize() -> void:
 			_rush = true
 		elif arg.begins_with("scenario_file="):   # a scenario of its own file: const STEPS := [...]
 			scenario = arg.substr(14)
+		elif arg.begins_with("titre="):
+			_caption_text = arg.substr(6)
 	_steps = SCENARIOS[scenario] if SCENARIOS.has(scenario) else (load(scenario) as Script).get_script_constant_map()["STEPS"]
 	# Never over the player's game: the tool saves in a file of its own.
 	root.get_node("Save").set("path", "user://capture_save.json")
 	DirAccess.make_dir_recursive_absolute(_out)
 	if scenario == "title":   # the real main scene, as the game starts
 		change_scene_to_file(ProjectSettings.get_setting("application/run/main_scene"))
+		_show_caption()
 		return
 	var game := root.get_node("Game")
 	game.call("new_game")
@@ -647,6 +655,13 @@ func _initialize() -> void:
 			game.set("region_id", &"plaines")
 			game.set("arrival", &"DepuisPort")
 	change_scene_to_file("res://world/world.tscn")
+	_show_caption()
+
+
+## The line that says what this run checks, left on screen until the game closes.
+func _show_caption() -> void:
+	if _caption_text != "":
+		ShotCaption.show_on(self, _caption_text)
 
 
 func _process(delta: float) -> bool:

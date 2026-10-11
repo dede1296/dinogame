@@ -2,6 +2,8 @@ extends CanvasLayer
 ## On-screen controls for touch screens: a floating joystick on the left half of the
 ## screen (appears where the thumb lands) and A / B buttons on the right.
 ## They press the same input actions as the keyboard, so the game code only reads actions.
+## On a computer they stay off for good (_enabled): the game is played with the keyboard, the
+## mouse and the pad, and a mouse click (emulate_touch_from_mouse) must never grab the joystick.
 
 const RADIUS := 78.0
 const DEAD_ZONE := 0.18
@@ -15,11 +17,14 @@ var _origin := Vector2.ZERO
 var _knob := Vector2.ZERO
 var _pad: Control
 var _buttons: Array[TouchScreenButton] = []
+## False on a computer: nothing is drawn and no touch is read.
+var _enabled := false
 
 
 func _ready() -> void:
 	layer = 20
-	visible = _touch_screen()
+	_enabled = _touch_screen()
+	visible = _enabled and _touch_ready()
 	_pad = Control.new()
 	_pad.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -29,7 +34,16 @@ func _ready() -> void:
 	_add_button("B", &"cancel", Vector2(-200, -64), Color(0.35, 0.4, 0.45))
 
 
+## A phone or a tablet. On a computer, no (even if Windows reports a touch screen): the
+## computer version is played with the keyboard, the mouse and the pad.
 func _touch_screen() -> bool:
+	if OS.has_feature("pc"):
+		return false
+	return true
+
+
+## The device already says it has a touch screen; otherwise the first real finger shows them.
+func _touch_ready() -> bool:
 	return DisplayServer.is_touchscreen_available() or OS.has_feature("mobile")
 
 
@@ -81,6 +95,8 @@ static func _disc(size: int, color: Color) -> GradientTexture2D:
 
 
 func _input(event: InputEvent) -> void:
+	if not _enabled:
+		return
 	if event is InputEventScreenTouch:
 		if not visible:
 			visible = true   # first touch on a device that didn't report a touch screen

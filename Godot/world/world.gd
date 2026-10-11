@@ -415,7 +415,13 @@ func _explore() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"map"):
+	if event.is_action_pressed(&"menu"):
+		# Échap (or the pad's Start): the game menu, as the ☰ button opens it. Not while
+		# someone is talking — there, Échap belongs to the dialogue.
+		if not Dialogue.active:
+			get_viewport().set_input_as_handled()
+			SettingsMenu.open(hud, true)
+	elif event.is_action_pressed(&"map"):
 		get_viewport().set_input_as_handled()
 		_open_map()
 	elif event.is_action_pressed(DexScreen.ACTION):

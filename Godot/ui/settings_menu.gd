@@ -27,13 +27,14 @@ const CONTROL_KEYS_W := 150.0
 ## game's own input map (project.godot [input], DexScreen.ensure_action).
 const CONTROLS := [
 	["Se déplacer", "Le pouce gauche, n'importe où sur la moitié gauche", "Les flèches, ou Z Q S D"],
-	["Courir", "Garder B appuyé en marchant", "Maj (ou Échap) en marchant"],
+	["Courir", "Garder B appuyé en marchant", "Maj (ou B de la manette) en marchant"],
 	["Parler, ramasser, fouiller", "A", "Espace, Entrée ou E"],
 	["Revenir, fermer, refuser", "B", "Échap ou Retour arrière"],
 	["Monter sur un dino, descendre", "Le bouton de selle, en bas à droite", "R"],
 	["La carte de l'île", "Le bouton carte, en haut à droite", "M"],
 	["Le Dinodex", "Le bouton Dinodex, en haut à droite", "X"],
-	["Ce menu", "Le bouton ☰, en haut à droite", "Échap"],
+	["Ce menu", "Le bouton ☰, en haut à droite", "Échap (ou Start)"],
+	["Plein écran, fenêtre", "—", "F11 (ou Alt + Entrée)"],
 	["Voir de plus près, de plus loin", "Pincer l'écran à deux doigts", "La molette de la souris"],
 	["Changer un dino d'équipe", "Glisser son portrait sur un autre", "Le glisser à la souris"],
 ]
@@ -41,6 +42,12 @@ const HINTS := [
 	"Pour les téléphones plus anciens : moins d'effets, 60 images/s.",
 	"L'équilibre entre effets et autonomie, 60 images/s.",
 	"Tous les effets, et la fluidité maximale de l'écran.",
+]
+## The same three levels, said for someone playing on a computer.
+const HINTS_PC := [
+	"Pour une machine modeste : moins d'effets, 60 images/s.",
+	"Tous les effets courants, 60 images/s.",
+	"Tous les effets, et autant d'images par seconde que l'écran en affiche.",
 ]
 ## What a kind of sound plays once its volume is set (the music and the ambience: already heard).
 const SAMPLES := {
@@ -174,7 +181,11 @@ func _controls_page() -> void:
 	var head := HBoxContainer.new()
 	head.add_theme_constant_override("separation", 12)
 	# (+ the rows' own left margin, so the titles sit over their column)
-	for column: Array in [["", CONTROL_WHAT_W + 10.0], ["Sur le téléphone", CONTROL_TOUCH_W], ["Sur l'ordinateur", CONTROL_KEYS_W]]:
+	var columns: Array = [["", CONTROL_WHAT_W + 10.0], ["Sur le téléphone", CONTROL_TOUCH_W],
+		["Sur l'ordinateur", CONTROL_KEYS_W]]
+	if Screen.on_computer():   # the finger column says nothing to someone playing on a computer
+		columns = [["", CONTROL_WHAT_W + 10.0], ["Clavier, souris, manette", CONTROL_TOUCH_W + CONTROL_KEYS_W]]
+	for column: Array in columns:
 		var title := _label(column[0], 17, Color(GOLD, 0.85))
 		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		title.custom_minimum_size = Vector2(column[1], 0)
@@ -189,7 +200,10 @@ func _controls_page() -> void:
 	rows.add_theme_constant_override("separation", 6)
 	scroll.add_child(rows)
 	for control: Array in CONTROLS:
-		rows.add_child(_control_row(control[0], control[1], control[2]))
+		if Screen.on_computer():
+			rows.add_child(_control_row(control[0], control[2], ""))
+		else:
+			rows.add_child(_control_row(control[0], control[1], control[2]))
 	_rows.add_child(_button("Retour", _show.bind("menu")))
 
 
@@ -351,7 +365,7 @@ func _display_page() -> void:
 		row.button_pressed = level == Quality.level
 		_rows.add_child(row)
 		_levels.append(row)
-	var hint := _label(HINTS[Quality.level], 18, Color(CREAM, 0.8))
+	var hint := _label(_level_hint(Quality.level), 18, Color(CREAM, 0.8))
 	hint.name = "Hint"
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_rows.add_child(hint)
@@ -359,8 +373,26 @@ func _display_page() -> void:
 	var zoom := _slider(CameraRig.DISTANCE_MIN, CameraRig.DISTANCE_MAX, 0.5, CameraRig.saved_distance())
 	zoom.value_changed.connect(func(v: float) -> void: Quality.set_pref("camera", "distance", v, false))
 	_rows.add_child(zoom)
-	_rows.add_child(_label("(ou pincer l'écran avec deux doigts)", 16, Color(CREAM, 0.6)))
+	var how := "(ou la molette de la souris)" if Screen.on_computer() 		else "(ou pincer l'écran avec deux doigts)"
+	_rows.add_child(_label(how, 16, Color(CREAM, 0.6)))
+	if Screen.on_computer():
+		_rows.add_child(_label("Fenêtre", 24, CREAM))
+		_rows.add_child(_fullscreen_row())
 	_rows.add_child(_button("Retour", _show.bind("menu")))
+
+
+## Full screen or a window, remembered (Screen). F11 and Alt + Entrée do the same thing.
+func _fullscreen_row() -> Button:
+	var row := _button(_fullscreen_text(), func() -> void: Screen.toggle())
+	row.text = _fullscreen_text()
+	Screen.changed.connect(func() -> void:
+		if is_instance_valid(row):
+			row.text = _fullscreen_text())
+	return row
+
+
+func _fullscreen_text() -> String:
+	return "Plein écran   ·   oui   (F11)" if Screen.is_fullscreen() else "Plein écran   ·   non   (F11)"
 
 
 ## Back to the title screen: the game saved first. Not in the middle of a scene (its script
@@ -386,13 +418,18 @@ func _title_page() -> void:
 func _level_text(level: int) -> String:
 	var text := Quality.level_name(level)
 	if level == Quality.recommended:
-		text += "   ·   Recommandée pour cet appareil"
+		text += "   ·   Recommandée pour cette machine" if Screen.on_computer() 			else "   ·   Recommandée pour cet appareil"
 	return text
 
 
 func _choose(level: int) -> void:
 	Quality.set_level(level)
-	(find_child("Hint", true, false) as Label).text = HINTS[level]
+	(find_child("Hint", true, false) as Label).text = _level_hint(level)
+
+
+## What a graphics level means, said for the machine this is played on.
+func _level_hint(level: int) -> String:
+	return HINTS_PC[level] if Screen.on_computer() else HINTS[level]
 
 
 ## A scene or a dialogue is going on (Chloé is not free to move).
