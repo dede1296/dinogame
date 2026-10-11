@@ -48,7 +48,7 @@ const gauss = (x, y, cx, cy, r) => Math.exp(-((x - cx) ** 2 + (y - cy) ** 2) / (
 // ---------------------------------------------------------------- regions
 // seeds: where the region lies (0–1); w: extra reach (bigger = wider region).
 const REGIONS = [
-  { id: "plaines", name: "Plaines des Fougères", zones: ["plaines", "grotte_echos", "antre_crane"], levels: [2, 8], seeds: [[0.5, 0.72]], w: 0.02, c: "#93bb68" },
+  { id: "plaines", name: "Prairie du Grand Crâne", zones: ["plaines", "grotte_echos", "antre_crane"], levels: [2, 8], seeds: [[0.5, 0.72]], w: 0.02, c: "#93bb68" },
   { id: "port", name: "Port-Ambre", zones: ["port_ambre", "cabinet"], levels: [1, 1], seeds: [[0.49, 0.875]], w: -0.075, c: "#cdb98e" },
   { id: "havre", name: "Havre-Doré", zones: ["havre_dore"], levels: [1, 1], seeds: [[0.76, 0.755]], w: -0.06, c: "#d8bb78" },
   { id: "foret", name: "Forêt Jurassique", zones: ["foret", "camp_ombre"], levels: [10, 18], seeds: [[0.27, 0.7], [0.36, 0.83]], w: 0.0, c: "#3f6d38" },
@@ -56,7 +56,7 @@ const REGIONS = [
   { id: "desert", name: "Désert Aride", zones: ["desert", "sanctuaire_vents"], levels: [21, 27], seeds: [[0.28, 0.2], [0.2, 0.3]], w: 0.0, c: "#e2b56c" },
   { id: "cote", name: "Côte Préhistorique", zones: ["cote", "grottes_marines", "recif_sanctuaire"], levels: [28, 35], seeds: [[0.55, 0.1], [0.7, 0.14]], w: -0.01, c: "#a7c98a" },
   { id: "monts", name: "Monts Gelés", zones: ["monts", "grottes_glace", "sanctuaire_givre"], levels: [33, 40], seeds: [[0.84, 0.36], [0.76, 0.6]], w: 0.02, c: "#9ea08c" },
-  { id: "cieux", name: "Cieux Éternels", zones: ["cieux"], levels: [38, 44], seeds: [[0.63, 0.3]], w: -0.035, c: "#dfe8f2" },
+  { id: "cieux", name: "Cieux Éternels", zones: ["cieux", "nids_geants", "arche_du_vent"], levels: [38, 44], seeds: [[0.63, 0.3]], w: -0.035, c: "#dfe8f2" },
   { id: "volcan", name: "Plaine Volcanique", zones: ["volcan"], levels: [42, 48], seeds: [], w: 0, c: "#5f4a42" },
   { id: "apex", name: "Terre des Apex", zones: ["apex"], levels: [50, 50], seeds: [], w: 0, c: "#3a2622" },
 ];
@@ -320,6 +320,9 @@ const places = [
   ["recif_sanctuaire", "Récif du Sanctuaire", inRegion("cote", 68.5 / 128, 20.5 / 100)],
   ["grottes_glace", "Grottes de glace", inRegion("monts", 66 / 130, 6 / 110)],
   ["sanctuaire_givre", "Sanctuaire de Givre", inRegion("monts", 114.5 / 130, 7.55 / 110)],
+  // The Cieux: the nests up the carved ramp at the north edge of the pitons, the Arche above them.
+  ["nids_geants", "Nids géants", inRegion("cieux", 46.5 / 100, 0.5 / 86)],
+  ["arche_du_vent", "Arche du Vent", inRegion("cieux", 40 / 100, 0 / 86)],
 ];
 
 await sharp(img, { raw: { width: N, height: N, channels: 3 } }).png().toFile(`${OUT_ART}/atlas_ile.png`);

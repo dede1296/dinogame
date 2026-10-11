@@ -26,6 +26,9 @@ const ZONES := {
 	&"monts": {"name": "Monts Gelés", "size": Vector2i(130, 110), "indoor": false},
 	&"grottes_glace": {"name": "Les Grottes de glace", "size": Vector2i(40, 38), "indoor": true},
 	&"sanctuaire_givre": {"name": "Le Sanctuaire de Givre", "size": Vector2i(32, 34), "indoor": true},
+	&"cieux": {"name": "Les Pitons", "size": Vector2i(100, 86), "indoor": false},
+	&"nids_geants": {"name": "Les Nids géants", "size": Vector2i(70, 60), "indoor": false},
+	&"arche_du_vent": {"name": "L'Arche du Vent", "size": Vector2i(56, 44), "indoor": false},
 }
 
 const SPECIES := {
@@ -127,6 +130,9 @@ const SPECIES := {
 	&"elasmosaurus": [
 		{"zone": &"grottes_marines", "place": "La Grotte des marées", "area": Rect2(5.0, 12.0, 30.0, 13.0), "levels": Vector2i(33, 35), "when": 5, "hidden": false, "weathers": [], "weight": 6},
 		{"zone": &"grottes_marines", "place": "La Cache des contrebandiers", "area": Rect2(1.0, 1.0, 38.0, 8.0), "levels": Vector2i(33, 35), "when": 5, "hidden": false, "weathers": [], "weight": 10},
+	],
+	&"hatzegopteryx": [
+		{"zone": &"arche_du_vent", "place": "L'Arche du Vent", "area": Rect2(0.0, 0.0, 56.0, 44.0), "levels": Vector2i(42, 44), "when": 0, "hidden": false, "weathers": [&"blizzard", &"storm"], "weight": 10},
 	],
 	&"ichthyosaurus": [
 		{"zone": &"cote", "place": "La Baie des Tortues", "area": Rect2(0.0, 0.0, 42.0, 66.0), "levels": Vector2i(31, 33), "when": 1, "hidden": true, "weathers": [], "weight": 3},
@@ -276,6 +282,16 @@ const SPECIES := {
 		{"zone": &"cote", "place": "Les Falaises à Ptéranodons", "area": Rect2(86.0, 6.0, 42.0, 21.0), "levels": Vector2i(31, 34), "when": 1, "hidden": false, "weathers": [], "weight": 12},
 		{"zone": &"cote", "place": "Les Falaises à Ptéranodons", "area": Rect2(86.0, 6.0, 42.0, 21.0), "levels": Vector2i(31, 34), "when": 1, "hidden": true, "weathers": [], "weight": 10},
 	],
+	&"rhamphorhynchus": [
+		{"zone": &"cieux", "place": "Les Pitons", "area": Rect2(0.0, 0.0, 100.0, 86.0), "levels": Vector2i(38, 40), "when": 1, "hidden": false, "weathers": [], "weight": 10},
+		{"zone": &"cieux", "place": "Les Pitons", "area": Rect2(0.0, 0.0, 100.0, 86.0), "levels": Vector2i(38, 40), "when": 1, "hidden": true, "weathers": [], "weight": 8},
+		{"zone": &"cieux", "place": "Le Piton d'Arrivée", "area": Rect2(64.0, 68.0, 18.0, 18.0), "levels": Vector2i(38, 39), "when": 1, "hidden": false, "weathers": [], "weight": 10},
+		{"zone": &"cieux", "place": "La Mer de nuages", "area": Rect2(12.0, 54.0, 29.0, 21.0), "levels": Vector2i(38, 40), "when": 1, "hidden": true, "weathers": [], "weight": 5},
+		{"zone": &"cieux", "place": "Le Piton aux Rhamphorhynques", "area": Rect2(82.0, 64.0, 14.0, 12.0), "levels": Vector2i(39, 41), "when": 1, "hidden": false, "weathers": [], "weight": 10},
+		{"zone": &"cieux", "place": "Le Piton aux Rhamphorhynques", "area": Rect2(82.0, 64.0, 14.0, 12.0), "levels": Vector2i(39, 41), "when": 1, "hidden": true, "weathers": [], "weight": 6},
+		{"zone": &"nids_geants", "place": "Les Nids géants", "area": Rect2(0.0, 0.0, 70.0, 60.0), "levels": Vector2i(39, 41), "when": 1, "hidden": false, "weathers": [], "weight": 4},
+		{"zone": &"arche_du_vent", "place": "L'Arche du Vent", "area": Rect2(0.0, 0.0, 56.0, 44.0), "levels": Vector2i(41, 42), "when": 1, "hidden": false, "weathers": [], "weight": 3},
+	],
 	&"stegosaurus": [
 		{"zone": &"foret", "place": "La Clairière", "area": Rect2(34.0, 14.0, 26.0, 18.0), "levels": Vector2i(12, 14), "when": 1, "hidden": false, "weathers": [], "weight": 10},
 		{"zone": &"foret", "place": "La Clairière", "area": Rect2(34.0, 14.0, 26.0, 18.0), "levels": Vector2i(12, 14), "when": 0, "hidden": true, "weathers": [], "weight": 8},
@@ -291,6 +307,11 @@ const SPECIES := {
 	&"suchomimus": [
 		{"zone": &"marais", "place": "L'Îlot aux racines", "area": Rect2(14.0, 26.0, 24.0, 20.0), "levels": Vector2i(19, 21), "when": 0, "hidden": true, "weathers": [], "weight": 2},
 	],
+	&"tapejara": [
+		{"zone": &"nids_geants", "place": "Les Nids géants", "area": Rect2(0.0, 0.0, 70.0, 60.0), "levels": Vector2i(40, 42), "when": 1, "hidden": false, "weathers": [], "weight": 6},
+		{"zone": &"nids_geants", "place": "Les Nids", "area": Rect2(20.0, 23.0, 33.0, 17.0), "levels": Vector2i(40, 43), "when": 1, "hidden": false, "weathers": [], "weight": 10},
+		{"zone": &"nids_geants", "place": "Les Nids", "area": Rect2(20.0, 23.0, 33.0, 17.0), "levels": Vector2i(40, 43), "when": 1, "hidden": true, "weathers": [], "weight": 8},
+	],
 	&"therizinosaurus": [
 		{"zone": &"marais", "place": "La Forêt noyée", "area": Rect2(2.0, 54.0, 56.0, 40.0), "levels": Vector2i(18, 21), "when": 0, "hidden": true, "weathers": [], "weight": 3},
 		{"zone": &"marais", "place": "La Forêt noyée", "area": Rect2(2.0, 54.0, 56.0, 40.0), "levels": Vector2i(18, 20), "when": 3, "hidden": false, "weathers": [], "weight": 3},
@@ -301,6 +322,10 @@ const SPECIES := {
 		{"zone": &"foret", "place": "Le Sous-bois", "area": Rect2(40.0, 28.0, 70.0, 40.0), "levels": Vector2i(11, 13), "when": 2, "hidden": false, "weathers": [], "weight": 6},
 		{"zone": &"foret", "place": "Le Sous-bois", "area": Rect2(40.0, 28.0, 70.0, 40.0), "levels": Vector2i(11, 13), "when": 2, "hidden": true, "weathers": [], "weight": 6},
 		{"zone": &"foret", "place": "Les Clairières rocheuses", "area": Rect2(78.0, 6.0, 46.0, 32.0), "levels": Vector2i(13, 15), "when": 2, "hidden": true, "weathers": [], "weight": 5},
+	],
+	&"tupandactylus": [
+		{"zone": &"cieux", "place": "La Mer de nuages", "area": Rect2(12.0, 54.0, 29.0, 21.0), "levels": Vector2i(40, 42), "when": 3, "hidden": false, "weathers": [], "weight": 10},
+		{"zone": &"cieux", "place": "La Mer de nuages", "area": Rect2(12.0, 54.0, 29.0, 21.0), "levels": Vector2i(40, 42), "when": 3, "hidden": true, "weathers": [], "weight": 4},
 	],
 	&"velociraptor": [
 		{"zone": &"plaines", "place": "Prairies du sud", "area": Rect2(36.0, 56.0, 44.0, 30.0), "levels": Vector2i(4, 5), "when": 2, "hidden": false, "weathers": [], "weight": 4},

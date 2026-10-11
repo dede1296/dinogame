@@ -23,6 +23,9 @@ const ZONES := {
 	&"monts": "res://regions/monts/monts.tscn",
 	&"grottes_glace": "res://regions/monts/grottes_glace.tscn",
 	&"sanctuaire_givre": "res://regions/monts/sanctuaire_givre.tscn",
+	&"cieux": "res://regions/cieux/cieux.tscn",
+	&"nids_geants": "res://regions/cieux/nids_geants.tscn",
+	&"arche_du_vent": "res://regions/cieux/arche_du_vent.tscn",
 	&"clos_blanc": "res://regions/essai/clos_blanc.tscn",   # zone d'essai (maison Blender + ComfyUI)
 }
 const PLAYER := preload("res://actors/player.tscn")
@@ -113,6 +116,7 @@ func _ready() -> void:
 	_map_button = MapScreen.add_open_button(hud, _open_map)
 	hint.attach(_map_button, "Carte de l'île", &"map")
 	DexScreen.ensure_action()
+	Vol.ensure_action()   # (le Vol, ch. 7 : F, X de la manette ; avant le remappage des touches)
 	KeyRemap.apply_saved()
 	hint.attach(DexScreen.add_open_button(hud, _open_dex), "Dinodex", DexScreen.ACTION)
 	Game.party_changed.connect(_on_party_changed)
@@ -121,6 +125,7 @@ func _ready() -> void:
 	var dive_button := DIVE_BUTTON.new()
 	hud.add_child(dive_button)
 	hint.attach(dive_button, func() -> String: return "Plonger" if dive_button.get("_mode") == "down" else "Remonter", &"ride")
+	Vol.install(self)   # le Vol (ch. 7) : le bouton du harnais sous celui de la selle, l'aide en vol
 	var party_bar := PartyBar.new()
 	party_bar.hint = hint
 	hud.add_child(party_bar)
@@ -338,14 +343,15 @@ func _weather_sound() -> void:
 
 func _store_position() -> void:
 	if player:
-		Game.player_position = player.global_position
+		Game.player_position = player.save_position()   # (in the air: the last safe place flown over, never the void)
 		Game.has_position = true
 
 
 # ------------------------------------------------------------------ ambience
 
 func _process(delta: float) -> void:
-	_ride_button.show_state(Game.flag(&"selle") and region != null and not region.indoor and not player.is_swimming(),
+	_ride_button.show_state(Game.flag(&"selle") and region != null and not region.indoor and not player.is_swimming()
+		and not player.is_flying(),
 		player.mount != null)
 	_explore_timer -= delta
 	if _explore_timer <= 0.0:
@@ -455,7 +461,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func toggle_ride() -> void:
 	if player.busy or _changing_zone or get_tree().paused or not Game.flag(&"selle") or region.indoor:
 		return
-	if player.is_swimming():   # (the swimmer carries her until the shore)
+	if player.is_swimming() or player.is_flying():   # (the swimmer carries her until the shore; in the air, the harness)
 		return
 	if player.mount:
 		dismount()
@@ -501,6 +507,8 @@ func _open_dex() -> void:
 	if player.busy or _changing_zone or get_tree().paused:
 		return
 	var lock := "Dans l'eau, on garde son équipe : reviens sur la terre ferme pour la changer." if player.is_swimming() else ""
+	if player.is_flying():
+		lock = "En vol, on garde son équipe : pose-toi d'abord pour la changer."
 	DexScreen.open(self, lock)
 
 

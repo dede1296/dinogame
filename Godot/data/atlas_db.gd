@@ -14,7 +14,7 @@ const REGIONS := [
 	{"id": &"desert", "name": "Désert Aride", "zones": [&"desert", &"sanctuaire_vents"], "levels": Vector2i(21, 27), "label": Vector2(0.344, 0.305), "bounds": Rect2(0.156, 0.186, 0.349, 0.221)},
 	{"id": &"cote", "name": "Côte Préhistorique", "zones": [&"cote", &"grottes_marines", &"recif_sanctuaire"], "levels": Vector2i(28, 35), "label": Vector2(0.627, 0.257), "bounds": Rect2(0.459, 0.199, 0.369, 0.123)},
 	{"id": &"monts", "name": "Monts Gelés", "zones": [&"monts", &"grottes_glace", &"sanctuaire_givre"], "levels": Vector2i(33, 40), "label": Vector2(0.747, 0.479), "bounds": Rect2(0.593, 0.259, 0.334, 0.435)},
-	{"id": &"cieux", "name": "Cieux Éternels", "zones": [&"cieux"], "levels": Vector2i(38, 44), "label": Vector2(0.585, 0.348), "bounds": Rect2(0.476, 0.262, 0.251, 0.184)},
+	{"id": &"cieux", "name": "Cieux Éternels", "zones": [&"cieux", &"nids_geants", &"arche_du_vent"], "levels": Vector2i(38, 44), "label": Vector2(0.585, 0.348), "bounds": Rect2(0.476, 0.262, 0.251, 0.184)},
 	{"id": &"volcan", "name": "Plaine Volcanique", "zones": [&"volcan"], "levels": Vector2i(42, 48), "label": Vector2(0.500, 0.431), "bounds": Rect2(0.391, 0.362, 0.250, 0.253)},
 	{"id": &"apex", "name": "Terre des Apex", "zones": [&"apex"], "levels": Vector2i(50, 50), "label": Vector2(0.500, 0.527), "bounds": Rect2(0.482, 0.423, 0.068, 0.091)},
 ]
@@ -30,4 +30,6 @@ const PLACES := [
 	[&"recif_sanctuaire", "Récif du Sanctuaire", Vector2(0.651, 0.231)],
 	[&"grottes_glace", "Grottes de glace", Vector2(0.786, 0.306)],
 	[&"sanctuaire_givre", "Sanctuaire de Givre", Vector2(0.874, 0.297)],
+	[&"nids_geants", "Nids géants", Vector2(0.598, 0.272)],
+	[&"arche_du_vent", "Arche du Vent", Vector2(0.588, 0.275)],
 ]

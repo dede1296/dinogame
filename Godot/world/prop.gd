@@ -228,6 +228,25 @@ const KINDS := {
 	"prele_geante": {"scale": 0.657, "foot": 0.03, "solid": 10.0, "sway": 1.5, "shadow": 60.0},
 	"nid_geant": {"scale": 0.553, "foot": 0.04, "solid": 40.0, "sway": 0.0, "shadow": 0.0},
 	"liane_tronc": {"scale": 0.53, "foot": 0.04, "solid": 24.0, "sway": 0.5, "shadow": 110.0},
+	# Chapitre 7, les Cieux (agent IMAGES ; posés par tools/zones/cieux*.gd, nids_geants.gd, arche_du_vent.gd) :
+	# l'Arche du Vent (6,8 × 5,8 m), les drapeaux de vent sur leur cairn (2,2 m, ils marquent les aires où
+	# l'on se pose), les nids géants au sol (3 m de large), les poteaux des ponts de lianes (1,5 m, dans la
+	# paroi au bord du tablier : jamais en travers du chemin), les rochers et aiguilles des pitons, les
+	# plumes géantes des Nids, le bout d'un vieux pont rompu.
+	"arche_vent": {"scale": 0.272, "foot": 0.02, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"drapeau_vent_1": {"scale": 0.324, "foot": 0.05, "solid": 9.0, "sway": 2.0, "shadow": 40.0},
+	"drapeau_vent_2": {"scale": 0.324, "foot": 0.05, "solid": 9.0, "sway": 2.0, "shadow": 40.0},
+	"nid_cieux": {"scale": 0.366, "foot": 0.08, "solid": Vector2(110, 34), "sway": 0.0, "shadow": 110.0},
+	"nid_cieux_vide": {"scale": 0.377, "foot": 0.08, "solid": Vector2(110, 34), "sway": 0.0, "shadow": 110.0},
+	"pilier_pont_1": {"scale": 0.159, "foot": 0.04, "solid": 6.0, "sway": 0.0, "shadow": 22.0},
+	"pilier_pont_2": {"scale": 0.177, "foot": 0.04, "solid": 6.0, "sway": 0.0, "shadow": 22.0},
+	"piton_bas": {"scale": 0.276, "foot": 0.06, "solid": Vector2(78, 28), "sway": 0.0, "shadow": 90.0},
+	"piton_haut": {"scale": 0.62, "foot": 0.2, "solid": 18.0, "sway": 0.0, "shadow": 0.0},
+	"plume_geante_1": {"scale": 0.232, "foot": 0.1, "solid": 0.0, "sway": 1.2, "shadow": 0.0},
+	"plume_geante_2": {"scale": 0.232, "foot": 0.1, "solid": 0.0, "sway": 1.2, "shadow": 0.0},
+	"plume_geante_3": {"scale": 0.236, "foot": 0.1, "solid": 0.0, "sway": 1.2, "shadow": 0.0},
+	"pont_lianes_rompu": {"scale": 0.324, "foot": 0.3, "solid": 0.0, "sway": 0.6, "shadow": 0.0},
+	"rochers_cieux": {"scale": 0.206, "foot": 0.08, "solid": Vector2(80, 28), "sway": 0.0, "shadow": 90.0},
 	# Passe de finition (29/09, tools/art-jobs/finition.mjs): objects held during a scene (small,
 	# readable, real size noted here though the integrator spawns them, not a zone), and the
 	# missing fixed scenery of chapters 1-5.
@@ -365,7 +384,9 @@ const KINDS := {
 	"traineau_suie", "fioles_suie", "abri_roche", "statue_cryolophosaure", "fiole_vide",
 	"griffe_fossile", "chapeau_helene", "affiche_adn", "canne_roc", "ambre_moustique", "voiture_arbre",
 	"cloture_brisee", "banderole_fouilles", "creme_raser", "coffre_comptoir", "table_cuisine", "flaque_ronde", "chevre",
-	"crottes_triceratops")
+	"crottes_triceratops", "arche_vent", "drapeau_vent_1", "drapeau_vent_2", "nid_cieux", "nid_cieux_vide",
+	"pilier_pont_1", "pilier_pont_2", "piton_bas", "piton_haut", "plume_geante_1", "plume_geante_2", "plume_geante_3",
+	"pont_lianes_rompu", "rochers_cieux")
 var kind := "arbre_rond":
 	set(value):
 		kind = value

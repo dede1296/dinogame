@@ -39,7 +39,8 @@ const ROUNDNESS := {
 const TUFT := preload("res://assets/art/props/hautes_herbes.png")
 ## Zones whose tall grass is a picture of its own (the Monts: tundra tufts, brown-green and
 ## frosted). One not made yet: TUFT.
-const ZONE_TUFT := {&"monts": "res://assets/art/props/herbes_toundra.png"}
+const ZONE_TUFT := {&"monts": "res://assets/art/props/herbes_toundra.png", &"cieux": "res://assets/art/props/herbes_toundra.png",
+	&"nids_geants": "res://assets/art/props/herbes_toundra.png"}
 const OUTER_TREES := ["arbre_rond", "araucaria", "fougere_arbre", "arbre_rond"]
 ## On the near side (towards the camera) only low plants: trees there would hide the zone.
 const OUTER_LOW := ["buisson", "fougeres", "buisson", "hautes_herbes"]
@@ -121,7 +122,12 @@ const CLIFF_TEX := {
 	&"monts": "res://assets/art/ground/falaise_neige.png", &"grottes_glace": "res://assets/art/ground/glace.png",
 	&"sanctuaire_givre": "res://assets/art/ground/falaise_neige.png",
 }
+	&"cieux": "res://assets/art/ground/falaise_neige.png", &"nids_geants": "res://assets/art/ground/falaise_neige.png",
+	&"arche_du_vent": "res://assets/art/ground/falaise_neige.png",
 ## Zones whose walls are paved like their floor (the temple; the ice caves, their floor ice as
+## Zones whose cliffs are their own (CLIFF_TEX) everywhere, even under their cover layers (the Cieux:
+## their first layer is the sea of clouds at the pitons' feet, not a snow lying on the rock).
+const CLIFF_ALWAYS := [&"cieux", &"nids_geants", &"arche_du_vent"]
 ## well): the tops of the walls darker, so the rooms and passages read at a glance (0: as lit as
 ## the floor).
 const WALL_SHADE := {&"temple_englouti": 0.8, &"grottes_glace": 0.35}
@@ -490,6 +496,8 @@ func _build_ground(r: Region, hm: HeightMap, shift := Vector2.ZERO, keep := Rect
 	skin[MAT.MUD] = load(MUD_TEX)
 	skin[MAT.ROCK] = load(ROCK_TEX)
 	if SAND_TEX.has(r.region_id) and ResourceLoader.exists(SAND_TEX[r.region_id]):
+	if r.region_id in CLIFF_ALWAYS and ResourceLoader.exists(cliff):
+		own_cliff = true
 		skin[MAT.SAND] = load(SAND_TEX[r.region_id])
 		mat.set_shader_parameter("sand_picture", true)
 		mat.set_shader_parameter("sand_is_ice", r.region_id in ICE)

@@ -31,6 +31,7 @@ const ZONE_NAMES := {
 	&"sanctuaire_vents": "Sanctuaire des Vents", &"cote": "Côte Préhistorique",
 	&"grottes_marines": "Grottes marines", &"recif_sanctuaire": "Récif du Sanctuaire", &"monts": "Monts Gelés",
 	&"grottes_glace": "Grottes de glace", &"sanctuaire_givre": "Sanctuaire de Givre", &"cieux": "Cieux Éternels",
+	&"nids_geants": "Nids géants", &"arche_du_vent": "Arche du Vent",
 }
 
 var region: Region

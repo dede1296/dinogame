@@ -156,6 +156,9 @@ const PLACES := {
 	&"neige": {"kinds": {&"mammifere": {"count": 2, "when": ALWAYS, "on": LAND, "glow": SNOW_LIGHT}},
 		"effects": {&"flocons": {"snowfall": false}}},
 	&"cieux": {"kinds": {&"ptero_vol": 2}, "effects": {&"duvet": {}}},
+	# The nests: more down in the wind; the Arche: a pterosaur or two high up, a little down.
+	&"nids_geants": {"kinds": {&"ptero_vol": 3}, "effects": {&"duvet": {"amount": 30}}},
+	&"arche_du_vent": {"kinds": {&"ptero_vol": 1}, "effects": {&"duvet": {"amount": 10}}},
 	&"volcan": {"kinds": {&"lezard": 3, &"scarabee": 3}, "effects": {&"braises": {}, &"cendres": {}}},
 	&"apex": {"kinds": {&"libellule": 3, &"moustique": 4, &"feuille": 6},
 		"effects": {&"lucioles": {"colour": Color(1.0, 0.45, 0.2), "amount": 30}}},
