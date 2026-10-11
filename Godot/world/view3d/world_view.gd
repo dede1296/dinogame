@@ -372,7 +372,7 @@ func _ready() -> void:
 func _apply_quality() -> void:
 	var shadows: int = Quality.setting(&"shadows")
 	_sun.shadow_enabled = shadows > 0
-	_sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS if shadows > 1 else DirectionalLight3D.SHADOW_ORTHOGONAL
+	PcLight.apply_shadows(_sun, shadows > 1)
 	_sun.directional_shadow_max_distance = 45.0 if shadows > 1 else 28.0
 	_env.glow_enabled = Quality.setting(&"glow")
 	_env.tonemap_exposure = 1.0
@@ -1720,6 +1720,8 @@ func _process(delta: float) -> void:
 	_snow.blend(delta, blend)
 	_update_sky(Game.clock / 60.0)
 	PcLight.update_dof(camera.attributes as CameraAttributesPractical, camera.shown_distance())
+	if int(Quality.setting(&"shadows")) > 1:
+		PcLight.update_shadow_range(_sun, camera.shown_distance())
 	_magic.update(delta, _region, player, _sun, _env)
 
 

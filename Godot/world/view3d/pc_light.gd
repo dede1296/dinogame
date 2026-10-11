@@ -23,6 +23,16 @@ const FOG_MIST := 0.03             # en plus, dans la brume
 const FOG_ANISOTROPY := 0.25       # la lumière se diffuse un peu vers l'avant
 const SSAO_RADIUS := 1.3
 const SSAO_INTENSITY := 1.5
+## Les ombres du soleil. Le réglage d'origine (une zone de 4,5 m, puis une de 45 m, sur 4096 px) donnait
+## aux sprites des ombres en escalier qui vibraient : la zone où l'on joue tombait dans la 2e, étalée sur
+## 45 m. Maintenant la 1re zone couvre ce qu'on voit (de la caméra à un peu derrière Chloé) et la
+## portée suit la distance de la caméra ; sur PC l'atlas passe à 8192 px (134 Mo de mémoire vidéo).
+const SHADOW_ATLAS_PC := 8192
+const SHADOW_ATLAS_PHONE := 4096
+const SHADOW_RANGE_MARGIN := 14.0   # au-delà de la caméra : ce qu'il faut encore ombrer
+const SHADOW_RANGE_MIN := 22.0
+const SHADOW_RANGE_MAX := 45.0
+const SHADOW_NEAR_SPLIT := 0.5      # la part de la portée couverte par la 1re zone (la plus fine)
 ## Flou de profondeur : la netteté s'étend jusqu'à la distance de la caméra + cette marge.
 const DOF_MARGIN := 13.0
 const DOF_BLUR := 0.04
@@ -33,6 +43,22 @@ const DOF_CLOSE_UP_FROM := 9.0     # sous cette distance de caméra, c'est un gr
 ## Vrai si le rendu courant sait faire ces effets (Forward+ : le PC).
 static func available() -> bool:
 	return RenderingServer.get_current_rendering_method() == "forward_plus"
+
+
+## Pose les ombres du soleil à la résolution du niveau de qualité (`detailed` : ombres sur toute la
+## vue, niveau Haute ; sinon une seule zone proche).
+static func apply_shadows(sun: DirectionalLight3D, detailed: bool) -> void:
+	RenderingServer.directional_shadow_atlas_set_size(SHADOW_ATLAS_PC if Screen.on_computer() else SHADOW_ATLAS_PHONE, true)
+	if Screen.on_computer():   # des bords d'ombre plus doux, sans le grain
+		RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_HIGH)
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS if detailed 		else DirectionalLight3D.SHADOW_ORTHOGONAL
+	sun.directional_shadow_split_1 = SHADOW_NEAR_SPLIT
+
+
+## La portée des ombres suit la caméra (`shown` : sa distance réelle) : ni plus loin que la vue — où
+## chaque pixel d'atlas serait perdu —, ni si près que l'ombre s'arrête devant Chloé.
+static func update_shadow_range(sun: DirectionalLight3D, shown: float) -> void:
+	sun.directional_shadow_max_distance = clampf(shown + SHADOW_RANGE_MARGIN, SHADOW_RANGE_MIN, SHADOW_RANGE_MAX)
 
 
 ## Allume ou éteint les effets selon la qualité, et pose leurs réglages fixes.

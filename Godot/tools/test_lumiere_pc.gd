@@ -50,7 +50,8 @@ func _run() -> void:
 	await create_timer(0.8).timeout
 	_check("Haute : le brouillard volumétrique est allumé", env.volumetric_fog_enabled)
 	_check("Haute : l'occlusion ambiante est allumée", env.ssao_enabled)
-	_check("à l'aube, l'air a de l'épaisseur", env.volumetric_fog_density > 0.005, "%.4f" % env.volumetric_fog_density)
+	_check("à l'aube, l'air est plus épais qu'en plein jour (soleil rasant)",
+		env.volumetric_fog_density > float(pc_light.get("FOG_BASE")), "%.4f" % env.volumetric_fog_density)
 	var dawn := env.volumetric_fog_density
 	await _shot("lum_00_haute_aube")
 
@@ -92,6 +93,16 @@ func _run() -> void:
 	pc_light.call("update_dof", attributes, 6.0)   # un gros plan de scène
 	_check("en gros plan, le fond se défait davantage", attributes.dof_blur_amount > wide,
 		"%.3f > %.3f" % [attributes.dof_blur_amount, wide])
+
+	# 6. les ombres du soleil : une portée qui suit la caméra, une 1re zone fine (ombres des sprites nettes)
+	var sun: DirectionalLight3D = view.get("_sun")
+	await process_frame
+	var reach: float = clampf(shown + float(pc_light.get("SHADOW_RANGE_MARGIN")),
+		float(pc_light.get("SHADOW_RANGE_MIN")), float(pc_light.get("SHADOW_RANGE_MAX")))
+	_check("la portée des ombres suit la caméra", is_equal_approx(sun.directional_shadow_max_distance, reach),
+		"%.1f vs %.1f" % [sun.directional_shadow_max_distance, reach])
+	_check("elle est plus courte que l'ancien réglage de 45 m", sun.directional_shadow_max_distance < 45.0 or shown > 31.0)
+	_check("la 1re zone d'ombre couvre la moitié de la portée", is_equal_approx(sun.directional_shadow_split_1, 0.5))
 
 	quality.call("set_level", saved_level)
 	banner.queue_free()
