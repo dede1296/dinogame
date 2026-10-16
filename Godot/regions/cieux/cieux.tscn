@@ -484,6 +484,147 @@ position = Vector2(2712, 1708.7999)
 script = ExtResource("16_i5fr3")
 kind = "piton_haut"
 
+[node name="NuageBas3" type="StaticBody2D" parent="Entities" unique_id=879417541]
+position = Vector2(1650.5706, 2529.49)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_3"
+flip = true
+
+[node name="NuageBas2" type="StaticBody2D" parent="Entities" unique_id=221397077]
+position = Vector2(1123.832, 109.97335)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+
+[node name="NuageBas4" type="StaticBody2D" parent="Entities" unique_id=584998137]
+position = Vector2(1289.7073, 927.942)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas5" type="StaticBody2D" parent="Entities" unique_id=32045201]
+position = Vector2(1357.7435, 1282.8827)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_3"
+flip = true
+
+[node name="NuageBas6" type="StaticBody2D" parent="Entities" unique_id=1754832780]
+position = Vector2(1628.1553, 607.3342)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas7" type="StaticBody2D" parent="Entities" unique_id=637184380]
+position = Vector2(372.4181, 2864.0962)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_3"
+
+[node name="NuageBas8" type="StaticBody2D" parent="Entities" unique_id=1572376967]
+position = Vector2(3298.087, 1302.7028)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+
+[node name="NuageBas9" type="StaticBody2D" parent="Entities" unique_id=1260155877]
+position = Vector2(138.37614, 2085.7344)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas10" type="StaticBody2D" parent="Entities" unique_id=1180609950]
+position = Vector2(1311.7617, 2048.8735)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+
+[node name="NuageBas11" type="StaticBody2D" parent="Entities" unique_id=6682373]
+position = Vector2(2374.1216, 2794.3276)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_3"
+flip = true
+
+[node name="NuageBas12" type="StaticBody2D" parent="Entities" unique_id=1000495710]
+position = Vector2(4494.6094, 296.53146)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas14" type="StaticBody2D" parent="Entities" unique_id=1788566801]
+position = Vector2(2895.767, 933.56824)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas15" type="StaticBody2D" parent="Entities" unique_id=1932291202]
+position = Vector2(276.07587, 675.6762)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas16" type="StaticBody2D" parent="Entities" unique_id=914698259]
+position = Vector2(876.91516, 1542.6072)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_3"
+
+[node name="NuageBas17" type="StaticBody2D" parent="Entities" unique_id=1886828891]
+position = Vector2(906.4741, 250.21927)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas18" type="StaticBody2D" parent="Entities" unique_id=481671808]
+position = Vector2(388.6247, 941.77423)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+
+[node name="NuageBas19" type="StaticBody2D" parent="Entities" unique_id=1958572513]
+position = Vector2(366.0183, 3206.6978)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+
+[node name="NuageBas20" type="StaticBody2D" parent="Entities" unique_id=1252174310]
+position = Vector2(1613.6624, 2114.599)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas1" type="StaticBody2D" parent="Entities" unique_id=1242223645]
+position = Vector2(4406.613, 2163.2664)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_1"
+
+[node name="NuageBas21" type="StaticBody2D" parent="Entities" unique_id=723000631]
+position = Vector2(2637.4111, 3742.401)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas22" type="StaticBody2D" parent="Entities" unique_id=1516946198]
+position = Vector2(407.21576, 924.5233)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas23" type="StaticBody2D" parent="Entities" unique_id=1194728540]
+position = Vector2(1373.7592, 2268.9863)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas24" type="StaticBody2D" parent="Entities" unique_id=306102270]
+position = Vector2(2401.9563, 3093.504)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+
+[node name="NuageBas25" type="StaticBody2D" parent="Entities" unique_id=235490768]
+position = Vector2(2187.065, 3673.1064)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas26" type="StaticBody2D" parent="Entities" unique_id=1074587702]
+position = Vector2(4369.434, 2667.9583)
+script = ExtResource("16_i5fr3")
+kind = "nuage_bas_2"
+flip = true
+
 [node name="Page31" type="StaticBody2D" parent="Entities" unique_id=601617986]
 position = Vector2(3686.4001, 931.19995)
 script = ExtResource("18_ppf4i")

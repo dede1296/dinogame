@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" path="res://actors/npc.tscn" id="15_xf8al"]
 [ext_resource type="Script" path="res://actors/npc.gd" id="16_eimrp"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/masque.png" id="17_4yupv"]
+[ext_resource type="Script" path="res://world/story_prop.gd" id="18_4gho2"]
 [ext_resource type="Script" path="res://world/pickup.gd" id="18_tjr87"]
 [ext_resource type="Script" path="res://world/sign.gd" id="19_4gho2"]
 [ext_resource type="Script" path="res://world/dig_spot.gd" id="20_l3ugp"]
@@ -24,14 +25,14 @@
 [ext_resource type="Script" path="res://data/encounter.gd" id="22_shqld"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="23_1m0g0"]
 
-[sub_resource type="Resource" id="Resource_bge17"]
+[sub_resource type="Resource" id="Resource_sxq4f"]
 script = ExtResource("22_shqld")
 species = &"hatzegopteryx"
 levels = Vector2i(42, 44)
 hidden = false
 weathers = Array[StringName]([&"blizzard", &"storm"])
 
-[sub_resource type="Resource" id="Resource_syetx"]
+[sub_resource type="Resource" id="Resource_ny66h"]
 script = ExtResource("22_shqld")
 species = &"rhamphorhynchus"
 levels = Vector2i(41, 42)
@@ -182,6 +183,83 @@ script = ExtResource("14_4evxr")
 kind = "piton_haut"
 flip = true
 
+[node name="NuageBas3" type="StaticBody2D" parent="Entities" unique_id=1990421739]
+position = Vector2(362.84174, 1335.772)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_3"
+flip = true
+
+[node name="NuageBas2" type="StaticBody2D" parent="Entities" unique_id=1407561230]
+position = Vector2(591.3103, 1972.6433)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas4" type="StaticBody2D" parent="Entities" unique_id=2026032335]
+position = Vector2(2269.6372, 1931.6643)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas5" type="StaticBody2D" parent="Entities" unique_id=705434806]
+position = Vector2(1653.8887, 242.21104)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_4"
+
+[node name="NuageBas6" type="StaticBody2D" parent="Entities" unique_id=672170015]
+position = Vector2(108.67976, 1804.3362)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_4"
+flip = true
+
+[node name="NuageBas1" type="StaticBody2D" parent="Entities" unique_id=1016103629]
+position = Vector2(738.2955, 1784.0446)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_1"
+
+[node name="NuageBas7" type="StaticBody2D" parent="Entities" unique_id=1263452351]
+position = Vector2(1388.9014, 511.1701)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_3"
+
+[node name="NuageBas8" type="StaticBody2D" parent="Entities" unique_id=1295849290]
+position = Vector2(422.26245, 770.73285)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_1"
+
+[node name="NuageBas9" type="StaticBody2D" parent="Entities" unique_id=1651689645]
+position = Vector2(1772.8737, 508.46567)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_3"
+flip = true
+
+[node name="NuageBas10" type="StaticBody2D" parent="Entities" unique_id=994607217]
+position = Vector2(1756.8333, 1707.0408)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_4"
+
+[node name="NuageBas11" type="StaticBody2D" parent="Entities" unique_id=754816131]
+position = Vector2(370.82797, 1097.5483)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas12" type="StaticBody2D" parent="Entities" unique_id=1536019663]
+position = Vector2(740.0108, 1418.4392)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_1"
+
+[node name="NuageBas13" type="StaticBody2D" parent="Entities" unique_id=598283311]
+position = Vector2(509.19077, 735.0575)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_2"
+
+[node name="NuageBas14" type="StaticBody2D" parent="Entities" unique_id=1971375378]
+position = Vector2(2196.355, 473.60236)
+script = ExtResource("14_4evxr")
+kind = "nuage_bas_3"
+flip = true
+
 [node name="MasqueArche" type="StaticBody2D" parent="Entities" unique_id=456446353 instance=ExtResource("15_xf8al")]
 position = Vector2(1344, 912)
 collision_mask = 0
@@ -191,6 +269,13 @@ sheet = ExtResource("17_4yupv")
 event = &"masque_arche"
 show_flag = &"vol_obtenu"
 hide_flag = &"masque_tombe"
+
+[node name="MasqueObsidienne" type="StaticBody2D" parent="Entities" unique_id=369504846]
+position = Vector2(1296, 1056)
+script = ExtResource("18_4gho2")
+event = &"masque_obsidienne"
+show_flag = &"masque_tombe"
+kind = "masque_obsidienne"
 
 [node name="Page34" type="StaticBody2D" parent="Entities" unique_id=1857226771]
 position = Vector2(1795.2001, 825.60004)
@@ -239,7 +324,7 @@ position = Vector2(960, 528)
 script = ExtResource("21_32hg1")
 label = "L'Arche du Vent"
 size = Vector2(2688, 2112)
-encounters = Array[ExtResource("22_shqld")]([SubResource("Resource_bge17"), SubResource("Resource_syetx")])
+encounters = Array[ExtResource("22_shqld")]([SubResource("Resource_sxq4f"), SubResource("Resource_ny66h")])
 roamers = 1
 
 [node name="Exits" type="Node2D" parent="." unique_id=524173110]

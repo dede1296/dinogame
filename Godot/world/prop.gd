@@ -247,6 +247,15 @@ const KINDS := {
 	"plume_geante_3": {"scale": 0.236, "foot": 0.1, "solid": 0.0, "sway": 1.2, "shadow": 0.0},
 	"pont_lianes_rompu": {"scale": 0.324, "foot": 0.3, "solid": 0.0, "sway": 0.6, "shadow": 0.0},
 	"rochers_cieux": {"scale": 0.206, "foot": 0.08, "solid": Vector2(80, 28), "sway": 0.0, "shadow": 90.0},
+	# Chapitre 7, images de la 2e passe (11/10) : le harnais de Joss dans le nid du Roi (1,1 m), le masque tombé
+	# dans l'herbe (petit : 0,5 m), les bouffées de nuage bas (2,5 à 4,5 m, sans rien de solide), l'Arche vue de loin.
+	"vieux_harnais": {"scale": 0.14, "foot": 0.06, "solid": 14.0, "sway": 0.0, "shadow": 40.0},
+	"masque_obsidienne": {"scale": 0.094, "foot": 0.08, "solid": 8.0, "sway": 0.0, "shadow": 16.0},
+	"nuage_bas_1": {"scale": 0.35, "foot": 0.1, "solid": 0.0, "sway": 0.4, "shadow": 0.0},
+	"nuage_bas_2": {"scale": 0.37, "foot": 0.1, "solid": 0.0, "sway": 0.4, "shadow": 0.0},
+	"nuage_bas_3": {"scale": 0.38, "foot": 0.1, "solid": 0.0, "sway": 0.4, "shadow": 0.0},
+	"nuage_bas_4": {"scale": 0.38, "foot": 0.1, "solid": 0.0, "sway": 0.4, "shadow": 0.0},
+	"arche_vent_loin": {"scale": 0.29, "foot": 0.03, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	# Passe de finition (29/09, tools/art-jobs/finition.mjs): objects held during a scene (small,
 	# readable, real size noted here though the integrator spawns them, not a zone), and the
 	# missing fixed scenery of chapters 1-5.
@@ -386,7 +395,8 @@ const KINDS := {
 	"cloture_brisee", "banderole_fouilles", "creme_raser", "coffre_comptoir", "table_cuisine", "flaque_ronde", "chevre",
 	"crottes_triceratops", "arche_vent", "drapeau_vent_1", "drapeau_vent_2", "nid_cieux", "nid_cieux_vide",
 	"pilier_pont_1", "pilier_pont_2", "piton_bas", "piton_haut", "plume_geante_1", "plume_geante_2", "plume_geante_3",
-	"pont_lianes_rompu", "rochers_cieux")
+	"pont_lianes_rompu", "rochers_cieux",
+	"vieux_harnais", "masque_obsidienne", "nuage_bas_1", "nuage_bas_2", "nuage_bas_3", "nuage_bas_4", "arche_vent_loin")
 var kind := "arbre_rond":
 	set(value):
 		kind = value

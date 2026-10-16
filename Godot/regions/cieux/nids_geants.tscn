@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://world/prop.gd" id="15_qitf1"]
 [ext_resource type="Script" path="res://world/nook_find.gd" id="16_wf5yc"]
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="17_qufaf"]
+[ext_resource type="Script" path="res://world/story_prop.gd" id="18_b11lg"]
 [ext_resource type="Script" path="res://world/pickup.gd" id="18_vuuuu"]
 [ext_resource type="Script" path="res://world/sign.gd" id="19_b11lg"]
 [ext_resource type="Script" path="res://world/dig_spot.gd" id="20_376qr"]
@@ -24,7 +25,7 @@
 [ext_resource type="Script" path="res://data/encounter.gd" id="22_k8nki"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="23_s5ksp"]
 
-[sub_resource type="Resource" id="Resource_ed6u3"]
+[sub_resource type="Resource" id="Resource_d40cl"]
 script = ExtResource("22_k8nki")
 species = &"tapejara"
 levels = Vector2i(40, 42)
@@ -32,7 +33,7 @@ weight = 6
 when = 1
 hidden = false
 
-[sub_resource type="Resource" id="Resource_dcpp0"]
+[sub_resource type="Resource" id="Resource_2fps4"]
 script = ExtResource("22_k8nki")
 species = &"rhamphorhynchus"
 levels = Vector2i(39, 41)
@@ -40,14 +41,14 @@ weight = 4
 when = 1
 hidden = false
 
-[sub_resource type="Resource" id="Resource_d40cl"]
+[sub_resource type="Resource" id="Resource_rooj7"]
 script = ExtResource("22_k8nki")
 species = &"tapejara"
 levels = Vector2i(40, 43)
 when = 1
 hidden = false
 
-[sub_resource type="Resource" id="Resource_2fps4"]
+[sub_resource type="Resource" id="Resource_w603m"]
 script = ExtResource("22_k8nki")
 species = &"tapejara"
 levels = Vector2i(40, 43)
@@ -255,6 +256,90 @@ position = Vector2(408, 1708.7999)
 script = ExtResource("15_qitf1")
 kind = "piton_haut"
 
+[node name="NuageBas1" type="StaticBody2D" parent="Entities" unique_id=179122884]
+position = Vector2(201.163, 2531.5679)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_1"
+flip = true
+
+[node name="NuageBas2" type="StaticBody2D" parent="Entities" unique_id=1891372123]
+position = Vector2(3146.4229, 2329.286)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_2"
+
+[node name="NuageBas3" type="StaticBody2D" parent="Entities" unique_id=809162900]
+position = Vector2(573.5877, 2747.4673)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_1"
+flip = true
+
+[node name="NuageBas4" type="StaticBody2D" parent="Entities" unique_id=1784376881]
+position = Vector2(259.06296, 1520.2783)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_1"
+
+[node name="NuageBas5" type="StaticBody2D" parent="Entities" unique_id=772661505]
+position = Vector2(971.349, 1858.0111)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_3"
+
+[node name="NuageBas6" type="StaticBody2D" parent="Entities" unique_id=416047001]
+position = Vector2(1416.6721, 201.05736)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_2"
+
+[node name="NuageBas7" type="StaticBody2D" parent="Entities" unique_id=1038435397]
+position = Vector2(612.97766, 737.0139)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_4"
+
+[node name="NuageBas8" type="StaticBody2D" parent="Entities" unique_id=1484553976]
+position = Vector2(923.76807, 1289.1981)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_2"
+
+[node name="NuageBas9" type="StaticBody2D" parent="Entities" unique_id=1995393738]
+position = Vector2(2927.078, 2675.516)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_4"
+
+[node name="NuageBas10" type="StaticBody2D" parent="Entities" unique_id=982580030]
+position = Vector2(774.77325, 934.886)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_4"
+
+[node name="NuageBas11" type="StaticBody2D" parent="Entities" unique_id=1206413852]
+position = Vector2(2113.5789, 2172.9617)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas12" type="StaticBody2D" parent="Entities" unique_id=141068686]
+position = Vector2(900.69226, 1552.6809)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_3"
+
+[node name="NuageBas13" type="StaticBody2D" parent="Entities" unique_id=337668567]
+position = Vector2(633.9214, 1037.8079)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_3"
+
+[node name="NuageBas14" type="StaticBody2D" parent="Entities" unique_id=895204868]
+position = Vector2(2218.1, 2655.163)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_2"
+flip = true
+
+[node name="NuageBas15" type="StaticBody2D" parent="Entities" unique_id=1485577503]
+position = Vector2(356.9698, 936.43823)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_3"
+
+[node name="NuageBas16" type="StaticBody2D" parent="Entities" unique_id=2119258927]
+position = Vector2(320.72913, 1114.9032)
+script = ExtResource("15_qitf1")
+kind = "nuage_bas_2"
+
 [node name="QuetzalRoi" type="StaticBody2D" parent="Entities" unique_id=1631338604]
 position = Vector2(1104, 460.80002)
 script = ExtResource("17_qufaf")
@@ -291,6 +376,11 @@ position = Vector2(1752, 1704)
 script = ExtResource("17_qufaf")
 species_id = &"tapejara"
 flip = true
+
+[node name="VieuxHarnais" type="StaticBody2D" parent="Entities" unique_id=434298556]
+position = Vector2(1228.8, 480)
+script = ExtResource("18_b11lg")
+kind = "vieux_harnais"
 
 [node name="Page32" type="StaticBody2D" parent="Entities" unique_id=702058620]
 position = Vector2(2188.7998, 1747.2001)
@@ -350,7 +440,7 @@ position = Vector2(2064, 288)
 script = ExtResource("21_crpvv")
 label = "Les Nids géants"
 size = Vector2(3360, 2880)
-encounters = Array[ExtResource("22_k8nki")]([SubResource("Resource_ed6u3"), SubResource("Resource_dcpp0")])
+encounters = Array[ExtResource("22_k8nki")]([SubResource("Resource_d40cl"), SubResource("Resource_2fps4")])
 roamers = 1
 
 [node name="LesNids" type="Node2D" parent="Habitats" unique_id=1505727642]
@@ -358,7 +448,7 @@ position = Vector2(960, 1104)
 script = ExtResource("21_crpvv")
 label = "Les Nids"
 size = Vector2(1584, 816)
-encounters = Array[ExtResource("22_k8nki")]([SubResource("Resource_d40cl"), SubResource("Resource_2fps4")])
+encounters = Array[ExtResource("22_k8nki")]([SubResource("Resource_rooj7"), SubResource("Resource_w603m")])
 
 [node name="LeGrandNid" type="Node2D" parent="Habitats" unique_id=235495581]
 position = Vector2(576, 192)

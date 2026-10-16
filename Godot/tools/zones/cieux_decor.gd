@@ -41,7 +41,7 @@ const POST_STEP := 0.04
 ## their foot sunk in the clouds (their Prop.KINDS foot: no stand-in with a ground drawn under it,
 ## that would stand ON the clouds), puffs of cloud (low: anywhere).
 const NEEDLE := ["piton_haut", "aiguille_rocheuse"]
-const PUFF := "nuage_bas"
+const PUFF := "nuage_bas_%d"   # four pictures (nuage_bas_1..4), one per spot
 ## A needle hides nothing farther than this (tiles) north of it.
 const NEEDLE_SHADOW := 9
 ## The wind flags on their cairns that mark where one lands well (from the air, the landing areas
@@ -227,7 +227,7 @@ static func sea_decor(c: C, entities: Node2D, rng: RandomNumberGenerator, needle
 			continue
 		if put(entities, NEEDLE, Vector2(x + 0.5, y + 0.6), rng.randf() < 0.5):
 			placed += 1
-	if not Prop.KINDS.has(PUFF):
+	if not Prop.KINDS.has(PUFF % 1):
 		return
 	placed = 0
 	tries = 0
@@ -237,7 +237,7 @@ static func sea_decor(c: C, entities: Node2D, rng: RandomNumberGenerator, needle
 		var y := rng.randi_range(2, c.h - 3)
 		if land[y * c.w + x] < 2:
 			continue
-		put(entities, [PUFF], Vector2(x + rng.randf(), y + rng.randf()), rng.randf() < 0.5)
+		put(entities, [PUFF % (1 + (x + y) % 4)], Vector2(x + rng.randf(), y + rng.randf()), rng.randf() < 0.5)
 		placed += 1
 
 
