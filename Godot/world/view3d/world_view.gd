@@ -224,6 +224,8 @@ static func _set_edge_tints(mat: ShaderMaterial, r: Region) -> void:
 	mat.set_shader_parameter("edge_grass", grass)
 	mat.set_shader_parameter("edge_cliff", cliff)
 const CAVE := preload("res://world/view3d/cave_mouth.gdshader")
+const CLOUD_PUFF := "nuage_bas"            # the low clouds of the Cieux (nuage_bas_1..4)
+const CLOUD_DRIFT := 0.8                  # metres they drift to and fro
 const OCCLUDER_HEIGHT := 1.6               # metres: taller scenery may hide Chloé (1.50 m)
 const POLLEN_MOTES := 60
 const RAIN_DROPS := 320
@@ -1319,8 +1321,10 @@ func _add_billboards(kind: String, items: Array, shadows := true) -> void:
 	if Quality.setting(&"sway_props"):
 		mat.set_shader_parameter("sway", float(def["sway"]) / PX)
 		mat.set_shader_parameter("push", float(def["sway"]) * 3.0 / PX)
-	mat.set_shader_parameter("occluder", quad.size.y * STRETCH > OCCLUDER_HEIGHT)
+	mat.set_shader_parameter("occluder", quad.size.y * STRETCH > OCCLUDER_HEIGHT or kind.begins_with(CLOUD_PUFF))
 	mat.set_shader_parameter("half_width", quad.size.x * 0.5)
+	if kind.begins_with(CLOUD_PUFF):   # a low cloud drifts, and lifts (see-through) when it hides Chloé
+		mat.set_shader_parameter("drift", CLOUD_DRIFT)
 	mat.set_shader_parameter("roundness", ROUNDNESS.get(kind, 0.4))
 	quad.material = mat
 	# Leur ombre : aplatie (FlatShadows), ou l'ombre-carte du soleil quand la qualité n'en a pas.

@@ -12,6 +12,7 @@ uniform float half_width = 0.027;     // m : la corde dessinée des poteaux fait
 uniform float min_pixels = 1.6;       // jamais plus fine à l'écran (au loin, elle ne scintille pas)
 uniform float tie_push = 0.08;        // m derrière l'image du poteau, à ses bouts
 uniform float lay = 16.0;             // brins par mètre (le pas de la torsade)
+uniform float sway = 0.05;           // m : le balancement au vent, au milieu de la travée (rien aux poteaux)
 uniform vec3 fibre : source_color = vec3(0.8, 0.6, 0.37);
 uniform vec3 groove : source_color = vec3(0.45, 0.28, 0.19);
 uniform vec3 outline : source_color = vec3(0.2, 0.07, 0.08);
@@ -21,6 +22,12 @@ varying vec3 v_front;
 
 void vertex() {
 	vec3 p = VERTEX;
+	// Le vent : la corde se balance, d'un côté et un peu en hauteur, nulle là où elle est nouée.
+	float free_part = 1.0 - UV2.x;
+	float gust = 0.6 * sin(TIME * 1.1 + UV.x * 0.9 + p.x * 0.3) + 0.4 * sin(TIME * 2.3 + UV.x * 1.7 + p.z * 0.5);
+	vec3 along = normalize(CUSTOM0.xyz);
+	vec3 across = normalize(vec3(-along.z, 0.0, along.x) + vec3(0.0001, 0.0, 0.0));
+	p += (across + vec3(0.0, 0.4, 0.0)) * gust * sway * free_part;
 	vec3 t = normalize(CUSTOM0.xyz);
 	vec3 cam = INV_VIEW_MATRIX[3].xyz;
 	vec3 to_cam = normalize(cam - p);

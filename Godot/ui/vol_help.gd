@@ -10,6 +10,11 @@ const INK := Color(0.07, 0.12, 0.2, 0.84)
 const SKY := Color(0.62, 0.86, 1.0)
 const CREAM := Color(1, 0.97, 0.9)
 const FONT := 18
+const LAND_OK := Color(0.62, 1.0, 0.7)      # « Se poser » when the ground under her takes her
+const LAND_NO := Color(1.0, 0.72, 0.6)      # … and when it does not (water, void, woods, a narrow ledge)
+const LAND_CHECK_S := 0.25
+const LAND_WORDS := "Se poser"
+const LAND_WORDS_NO := "Se poser : pas ici"
 const PHONE := "Joystick : diriger · bouton du harnais : se poser"
 ## [what is drawn, words]: MOVE = the stick or the four movement keys.
 const MOVE := &"@move"
@@ -19,6 +24,8 @@ const ALSO := {&"fly": &"interact"}
 
 var world: Node
 var _row: HBoxContainer
+var _land_label: Label   # the « Se poser » words: green where she can land, red where she cannot
+var _land_in := 0.0
 
 
 func _ready() -> void:
@@ -44,12 +51,16 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_place)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var player: Player = world.get(&"player") if world else null
 	var shown: bool = player != null and player.flight != null and player.flight.is_up() and not get_tree().paused
 	if shown != visible:
 		visible = shown
 		_place.call_deferred()
+	_land_in -= delta
+	if shown and _land_in <= 0.0:
+		_land_in = LAND_CHECK_S
+		_show_landing(player)
 
 
 ## The strip's contents, for what the player holds now.
@@ -64,8 +75,25 @@ func _fill() -> void:
 			_row.add_child(_words("·"))
 		for texture in _textures(ROWS[i][0]):
 			_row.add_child(_picture(texture))
-		_row.add_child(_words(ROWS[i][1]))
+		var words := _words(ROWS[i][1])
+		if words.text == LAND_WORDS:
+			_land_label = words
+		_row.add_child(words)
 	_place.call_deferred()
+
+
+## Can she set down where she is? The words say so (colour and text), without trying: the same
+## test as the landing itself (Vol.landing_problem).
+func _show_landing(player: Player) -> void:
+	if _land_label == null or not is_instance_valid(_land_label) or world == null:
+		return
+	var vol: GDScript = load("res://story/vol.gd")
+	var ok: bool = String(vol.call(&"landing_problem", world.get(&"region"), player.global_position, player)) == ""
+	var text := LAND_WORDS if ok else LAND_WORDS_NO
+	if _land_label.text != text:
+		_land_label.text = text
+		_place.call_deferred()
+	_land_label.add_theme_color_override(&"font_color", LAND_OK if ok else LAND_NO)
 
 
 func _textures(what: StringName) -> Array[Texture2D]:

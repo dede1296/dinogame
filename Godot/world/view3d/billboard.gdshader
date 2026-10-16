@@ -10,6 +10,7 @@ render_mode cull_disabled;
 uniform sampler2D tex : source_color, filter_linear_mipmap, repeat_disable;
 uniform float stretch = 1.15;        // upright pictures seen from above look squashed
 uniform float sway = 0.0;            // metres of sway at the top
+uniform float drift = 0.0;           // metres the whole picture drifts to and fro, slowly (a cloud)
 uniform float push = 0.0;            // metres Chloé pushes the top away
 uniform float push_radius = 0.9;
 uniform float stiffness = 2.0;       // higher = only the very top bends
@@ -27,6 +28,8 @@ varying vec3 v_facing;
 
 void vertex() {
 	vec3 origin = MODEL_MATRIX[3].xyz;
+	origin.x += sin(TIME * 0.13 + origin.z * 0.5 + origin.x * 0.21) * drift;
+	origin.z += sin(TIME * 0.09 + origin.x * 0.37) * drift * 0.4;
 	if (INSTANCE_CUSTOM.x > 0.5) {
 		UV.x = 1.0 - UV.x;
 	}

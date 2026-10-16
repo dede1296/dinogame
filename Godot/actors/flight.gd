@@ -156,6 +156,12 @@ func shadow_shown() -> bool:
 	return lift < SHADOW_DROP_M and region.surface_at(player.global_position) != &"water"
 
 
+## How high she flies above the ground the shadow falls on: 0 (just above it) to 1 (as high as a
+## shadow is still drawn). The shadow shrinks and fades with it (Companion).
+func shadow_height() -> float:
+	return clampf(lift / SHADOW_DROP_M, 0.0, 1.0)
+
+
 # ------------------------------------------------------------------ height of the ground
 
 func _heights() -> HeightMap:

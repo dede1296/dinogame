@@ -47,6 +47,9 @@ var _keep := 24.0     # px: it never stands closer to her feet than this (half i
 var _shown: Dino      # the dino it looks like (its size changes smoothly while it stays)
 var _resize: Tween
 var _size := 1.0           # its sprite scale (_set_size), before a flight view's own (Wings.face_back_scale)
+## Its shadow in flight, at the highest: this part of its size, this part of its opacity.
+const SHADOW_SMALLEST := 0.55
+const SHADOW_FAINTEST := 0.4
 var _shadow_width := 0.0   # its shadow's width at sprite scale 1
 ## Waiting outside a door too small for it (Doorway): not in the zone Chloé went into (hidden,
 ## not following her) until she comes out again.
@@ -225,6 +228,9 @@ func _carry(_delta: float) -> void:
 	if flying():
 		_fly_carry()
 		return
+	if _shadow.modulate.a < 1.0:   # (back on the ground: its shadow as it was)
+		_shadow.modulate.a = 1.0
+		Shadow.fit(_shadow, _shadow_width * _size)
 	var v := player.velocity
 	if absf(v.x) > 8.0:
 		sprite.flip_h = v.x < 0.0
@@ -258,6 +264,10 @@ func _fly_carry() -> void:
 	var lift := player.flight.lift_px()
 	sprite.position = Vector2(0.0, lift)
 	_shadow.visible = player.flight.shadow_shown()
+	# The higher it flies, the smaller and fainter its shadow on the ground (the height shows).
+	var height: float = player.flight.shadow_height()
+	Shadow.fit(_shadow, _shadow_width * _size * lerpf(1.0, SHADOW_SMALLEST, height))
+	_shadow.modulate.a = lerpf(1.0, SHADOW_FAINTEST, height)
 	var seat := _saddle.place(sprite.animation, sprite.flip_h, sprite.scale.y)
 	global_position = player.global_position + Vector2(0, seat["depth"])
 	player.sprite.position = seat["at"] + Vector2(0.0, lift)
