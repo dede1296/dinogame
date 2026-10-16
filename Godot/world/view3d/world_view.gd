@@ -425,7 +425,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	_zone = Node3D.new()
 	_zone.name = "Zone"
 	add_child(_zone)
-	heights = HeightMap.new(region, Quality.setting(&"ground_step"))
+	heights = HeightMap.of(region, Quality.setting(&"ground_step"))
 	_bands.clear()
 	if not zones.is_empty():
 		_zones = zones
@@ -752,7 +752,7 @@ func _neighbours(zones: Dictionary) -> Array:
 			other.free()
 			continue
 		_bands.append(band)
-		out.append({"region": other, "heights": HeightMap.new(other, 2), "shift": shift, "band": band})
+		out.append({"region": other, "heights": HeightMap.of(other, 2), "shift": shift, "band": band})
 	return out
 
 

@@ -39,10 +39,21 @@ var _samples := PackedFloat32Array()
 var _sw := 0
 var _sh := 0
 var _texture: ImageTexture
+## What the relief was measured from (signature()): two zones with the same key have the same relief.
+var key := ""
+
+## Reliefs already measured (key -> HeightMap), the last used last: a zone change measures the new
+## zone and every neighbour shown beyond its edges, mostly zones measured a moment ago (the zone just
+## left, the one seen beyond the edge before going there). At most KNOWN_MAX of them.
+static var _known: Dictionary = {}
+const KNOWN_MAX := 12
 
 
-func _init(region: Region, grid_step := 4) -> void:
+## The relief of `region` (no region: an empty one, filled by of()).
+func _init(region: Region = null, grid_step := 4) -> void:
 	step = grid_step
+	if region == null:
+		return
 	margin = 0 if region.indoor else MARGIN
 	for dock in region.docks():
 		docks.append(Rect2(dock.area().position / PX, dock.area().size / PX))
@@ -62,13 +73,86 @@ func _init(region: Region, grid_step := 4) -> void:
 					is_water = true
 			_water[i] = 1.0 if is_water else 0.0
 			has_water = has_water or is_water
+	_fill_samples()
+
+
+## The relief of `region` as HeightMap.new() measures it, measured only once for the same content
+## (signature()): the zone views (WorldView) ask for it at every zone change.
+static func of(region: Region, grid_step := 4) -> HeightMap:
+	var sig := "%s|%d" % [signature(region), grid_step]   # (the grid step too: its samples depend on it)
+	var known: HeightMap = _known.get(sig)
+	if known:
+		_known.erase(sig)   # (back at the end: the last used)
+	else:
+		known = HeightMap.new(region, grid_step)
+		known.key = sig
+		known.height_texture()   # (made once, shared by every copy)
+		if _known.size() >= KNOWN_MAX:
+			_known.erase(_known.keys()[0])
+	_known[sig] = known
+	return known._copy(grid_step)
+
+
+## Everything the relief is measured from: the tiles (their ground: water), the heights (height_data,
+## relief), the piers, indoors or not, and where the terrain lies (surface_at reads it in place).
+static func signature(region: Region) -> String:
+	var ground := region.terrain
+	var heights := region.height_data
+	var piers := []
+	for dock in region.docks():
+		piers.append([dock.area(), dock is MoonFord])
+	var cells := ground.tile_map_data
+	return "%d|%d|%s|%d|%d|%s|%s|%d" % [hash(cells), cells.size(),
+		ground.get_global_transform() if ground.is_inside_tree() else Transform2D.IDENTITY,
+		hash(heights.get_data()) if heights else 0, hash(region.relief), heights.get_size() if heights else Vector2i.ZERO,
+		region.indoor, hash(var_to_str(piers))]
+
+
+## A copy of this relief for a ground grid of `grid_step` vertices per metre (its arrays shared:
+## nobody writes in them once measured).
+func _copy(grid_step: int) -> HeightMap:
+	var out := HeightMap.new(null, grid_step)
+	out.size = size
+	out.has_water = has_water
+	out.margin = margin
+	out.docks = docks.duplicate()
+	out._fords = _fords.duplicate()
+	out._tiles = _tiles
+	out._water = _water
+	out._samples = _samples
+	out._sw = _sw
+	out._sh = _sh
+	out._texture = _texture
+	out.key = key
+	return out
+
+
+## Every sample of _exact(), its waves along each column and each row worked out once (the very
+## same sums: the very same heights).
+func _fill_samples() -> void:
 	_sw = (size.x + margin * 2) * RES + 1
 	_sh = (size.y + margin * 2) * RES + 1
 	_samples.resize(_sw * _sh)
 	var d := 1.0 / RES
+	var waves_x: Array[PackedFloat64Array] = [PackedFloat64Array(), PackedFloat64Array(), PackedFloat64Array(), PackedFloat64Array()]
+	for gx in _sw:
+		var x := gx * d - margin
+		waves_x[0].append(x)
+		waves_x[1].append(sin(x * 1.9 + 0.2))
+		waves_x[2].append(sin(x * 1.7 + 1.1))
+		waves_x[3].append(0.08 * sin(x * 0.45 + 1.3))
+	var xs := waves_x[0]
+	var cliff_x := waves_x[1]
+	var water_x := waves_x[2]
+	var roll_x := waves_x[3]
 	for gy in _sh:
+		var z := gy * d - margin
+		var cliff_z := sin(z * 2.3 + 0.7)
+		var water_z := sin(z * 2.1 + 0.4)
+		var roll_z := sin(z * 0.38 + 0.4)
+		var row := gy * _sw
 		for gx in _sw:
-			_samples[gy * _sw + gx] = _exact(gx * d - margin, gy * d - margin)
+			_samples[row + gx] = _exact(xs[gx], z, cliff_z, cliff_x[gx], water_z, water_x[gx], roll_x[gx] * roll_z)
 
 
 ## World position (3D) of a 2D point, standing on the ground (or on a pier).
@@ -136,49 +220,60 @@ func _tile(x: int, y: int) -> float:
 	return _tiles[clampi(y, 0, size.y - 1) * size.x + clampi(x, 0, size.x - 1)]
 
 
-## A fraction between two tiles, sharpened into a cliff when their heights differ a lot.
-static func _sharpen(f: float, diff: float) -> float:
-	var k := clampf((absf(diff) - CLIFF_FROM) / 0.5, 0.0, 1.0)
-	return lerpf(f, smoothstep(0.3, 0.7, f), k)
-
-
-func _exact(x: float, z: float) -> float:
+## The ground's height at (x, z) (tiles), given its waves there (see _fill_samples): `cliff_z` =
+## sin(z * 2.3 + 0.7), `cliff_x` = sin(x * 1.9 + 0.2), `water_z` = sin(z * 2.1 + 0.4), `water_x` =
+## sin(x * 1.7 + 1.1), `roll` = 0.08 * sin(x * 0.45 + 1.3) * sin(z * 0.38 + 0.4). (Reading the
+## tiles written out here: called for every sample, small functions cost more than their sums.)
+func _exact(x: float, z: float, cliff_z: float, cliff_x: float, water_z: float, water_x: float, roll: float) -> float:
+	var w := size.x
+	var last_x := size.x - 1
+	var last_z := size.y - 1
 	# Tiles are read at their centres, with a slight wobble so cliff lines are not straight;
 	# none by the zone's edges: a cliff running on into the neighbour shown beyond an edge
 	# meets its own there exactly (no crack between the two rock faces).
 	var edge := minf(minf(x, z), minf(size.x - x, size.y - z))
 	var wobble := 0.12 * smoothstep(0.0, 2.0, edge)
-	var sx := x - 0.5 + wobble * sin(z * 2.3 + 0.7)
-	var sz := z - 0.5 + wobble * sin(x * 1.9 + 0.2)
+	var sx := x - 0.5 + wobble * cliff_z
+	var sz := z - 0.5 + wobble * cliff_x
 	var cx := floori(sx)
 	var cz := floori(sz)
 	var fx := sx - cx
 	var fz := sz - cz
-	var h00 := _tile(cx, cz)
-	var h10 := _tile(cx + 1, cz)
-	var h01 := _tile(cx, cz + 1)
-	var h11 := _tile(cx + 1, cz + 1)
-	var top := lerpf(h00, h10, _sharpen(fx, h10 - h00))
-	var bottom := lerpf(h01, h11, _sharpen(fx, h11 - h01))
-	var h := lerpf(top, bottom, _sharpen(fz, bottom - top))
+	var x0 := clampi(cx, 0, last_x)
+	var x1 := clampi(cx + 1, 0, last_x)
+	var z0 := clampi(cz, 0, last_z) * w
+	var z1 := clampi(cz + 1, 0, last_z) * w
+	var h00 := _tiles[z0 + x0]
+	var h10 := _tiles[z0 + x1]
+	var h01 := _tiles[z1 + x0]
+	var h11 := _tiles[z1 + x1]
+	# Between two tiles, the fraction is sharpened into a cliff when their heights differ by more
+	# than CLIFF_FROM (smoothstep); below that, it is left as it is.
+	var diff := h10 - h00
+	var k := clampf((absf(diff) - CLIFF_FROM) / 0.5, 0.0, 1.0)
+	var top := lerpf(h00, h10, lerpf(fx, smoothstep(0.3, 0.7, fx), k) if k > 0.0 else fx)
+	diff = h11 - h01
+	k = clampf((absf(diff) - CLIFF_FROM) / 0.5, 0.0, 1.0)
+	var bottom := lerpf(h01, h11, lerpf(fx, smoothstep(0.3, 0.7, fx), k) if k > 0.0 else fx)
+	diff = bottom - top
+	k = clampf((absf(diff) - CLIFF_FROM) / 0.5, 0.0, 1.0)
+	var h := lerpf(top, bottom, lerpf(fz, smoothstep(0.3, 0.7, fz), k) if k > 0.0 else fz)
 	# Water: the water tiles read between their centres, so the half-way line (the shore)
-	# runs along the painted water's edge, corners rounded, with a slight wobble.
-	var wx := x - 0.5 + 0.1 * sin(z * 2.1 + 0.4)
-	var wz := z - 0.5 + 0.1 * sin(x * 1.7 + 1.1)
+	# runs along the painted water's edge, corners rounded, with a slight wobble; beyond the
+	# zone, the nearest edge tile (a sea goes on past it).
+	var wx := x - 0.5 + 0.1 * water_z
+	var wz := z - 0.5 + 0.1 * water_x
 	var c := Vector2i(floori(wx), floori(wz))
 	var f := Vector2(wx - c.x, wz - c.y)
-	var wt := lerpf(_water_at(c), _water_at(c + Vector2i(1, 0)), f.x)
-	var wb := lerpf(_water_at(c + Vector2i(0, 1)), _water_at(c + Vector2i(1, 1)), f.x)
+	x0 = clampi(c.x, 0, last_x)
+	x1 = clampi(c.x + 1, 0, last_x)
+	z0 = clampi(c.y, 0, last_z) * w
+	z1 = clampi(c.y + 1, 0, last_z) * w
+	var wt := lerpf(_water[z0 + x0], _water[z0 + x1], f.x)
+	var wb := lerpf(_water[z1 + x0], _water[z1 + x1], f.x)
 	var wet := lerpf(wt, wb, f.y)
 	h -= WATER_DEPTH * smoothstep(0.15, 0.85, wet)
 	# Gentle rolling: none by the water (the shore stays where it is painted), and none near
 	# the zone's edges, so a neighbour shown beyond the edge meets it at the same height.
-	var inland := minf(minf(x, z), minf(size.x - x, size.y - z))
-	h += 0.08 * sin(x * 0.45 + 1.3) * sin(z * 0.38 + 0.4) * (1.0 - smoothstep(0.0, 0.45, wet)) * smoothstep(0.0, 3.0, inland)
+	h += roll * (1.0 - smoothstep(0.0, 0.45, wet)) * smoothstep(0.0, 3.0, edge)
 	return h
-
-
-## Water around a tile; beyond the zone, the nearest edge tile (a sea goes on past it).
-func _water_at(c: Vector2i) -> float:
-	c = Vector2i(clampi(c.x, 0, size.x - 1), clampi(c.y, 0, size.y - 1))
-	return _water[c.y * size.x + c.x]
