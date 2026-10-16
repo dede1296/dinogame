@@ -19,7 +19,9 @@ const WORLD := "res://world/world.tscn"
 const VOL := "res://story/vol.gd"
 const DINO := "res://game/dino.gd"
 const STORY := "res://story/story.gd"
+const SADDLE := "res://actors/saddle.gd"
 const CAPTION := "Vol libre : conditions refusées une à une ; décollage (X) ; stick ; caméra ; au-dessus de l'eau et des falaises ; se poser (refusé / A) ; sorties ; 3 zones sans faille de collision ; sûreté"
+const CAPTION_PHOTO := "Vol (photo) : décollage ; vu dans les 4 sens (profil tourné du côté du vol, face, dos), Chloé aussi ; de face et de dos : Chloé dans l'axe du ptérosaure ; de face : sa tête ne cache pas son visage, sa crête s'arrête sous son menton ailes à plat"
 const AXIS_X := 0
 const AXIS_Y := 1
 const BUTTON_A := 0
@@ -42,10 +44,22 @@ const SWEEP_LEGS := 14
 const LEG_S := 1.2
 ## Un bout de vol est « libre » s'il avance d'au moins cette part de ce qu'il devrait.
 const FREE_SHARE := 0.8
+## Le temps laissé pour se lancer dans un sens (demi-tour compris) : Flight.ACCEL, en l'air, est doux.
+const TURN_MAX_S := 3.0
+## Son visage sur ses images en vol (chloe_vol.png, de face et de dos) : px au-dessus de son siège (Saddle.SEAT_PX).
+const CHIN_ABOVE_SEAT := 58.0
+const EYES_ABOVE_SEAT := 73.0
+## Sur l'écran, vue de face ou de dos, Chloé est dans l'axe de son ptérosaure à ce près (px de la capture).
+const AXIS_TOLERANCE_PX := 4.0
+## Les images 2D posées dans la vue 3D : px par mètre (HeightMap.PX), étirées vers le haut (WorldView.STRETCH).
+const PX := 48.0
+const STRETCH := 1.15
 
 var _out := "user://test_vol"
-## `only=photo` : décollage et deux captures seulement (le reste du test dure plusieurs minutes).
+## `only=photo` : décollage et les quatre sens seulement (le reste du test dure plusieurs minutes) ;
+## `flyer=<espèce>` : en photo, un autre grand ptérosaure que le Pteranodon (pour juger son siège).
 var _only := ""
+var _flyer := &"pteranodon"
 var _failed := 0
 var _game: Node
 var _vol   # (story/vol.gd)
@@ -59,6 +73,8 @@ func _initialize() -> void:
 			_out = arg.substr(4)
 		elif arg.begins_with("only="):
 			_only = arg.substr(5)
+		elif arg.begins_with("flyer="):
+			_flyer = StringName(arg.substr(6))
 	DirAccess.make_dir_recursive_absolute(_out)
 	_rng.seed = 7
 	root.get_node("Save").set("path", "user://test_vol.json")
@@ -78,14 +94,20 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	var banner := ShotCaption.show_on(self, CAPTION)
+	var banner := ShotCaption.show_on(self, CAPTION_PHOTO if _only == "photo" else CAPTION)
 	while current_scene == null or current_scene.get("region") == null:
 		await process_frame
 	await _wait(1.5)
 	_vol.install(current_scene)   # (sans le patch de world.gd : le test pose lui-même le bouton et l'aide)
 	await _settle()
-	if _only == "photo":   # juste Chloé en vol (profil, face) : pour juger un dessin ou un réglage de siège
+	if _only == "photo":   # juste Chloé en vol (profils, face, dos) : pour juger un dessin ou un réglage de siège
 		await _conditions()   # (c'est lui qui met le ptérosaure dans l'équipe et le harnais dans le sac)
+		if _flyer != &"pteranodon":
+			for d in (_game.get("party") as Array).duplicate():
+				if d.call("species").id == &"pteranodon":
+					_leave(d)
+			_join(_flyer, FLYER_LEVEL)
+			await _wait(0.2)
 		await _take_off_with_pad()
 		await _steer_with_stick()
 		banner.queue_free()
@@ -113,7 +135,10 @@ func _run() -> void:
 func _conditions() -> void:
 	print("— (a) les conditions, une à une")
 	var w := current_scene
-	_check("sans vol_obtenu : « not_yet », rien n'est dit", _problem() == "not_yet" and not _vol.take_off(w) and _toasts().is_empty())
+	_clear_toasts()   # (ce que le jeu a dit en arrivant : le Dinodex, l'xp…)
+	await process_frame
+	_check("sans vol_obtenu : « not_yet », rien n'est dit", _problem() == "not_yet" and not _vol.take_off(w) and _toasts().is_empty(),
+		str(_toasts()))
 	_check("sans vol_obtenu : pas de bouton du harnais", not _button().visible)
 	_game.call("set_flag", &"vol_obtenu")
 	_check("sans harnais : « no_harness »", _problem() == "no_harness")
@@ -212,25 +237,70 @@ func _take_off_with_pad() -> void:
 		String((player.get("sprite") as AnimatedSprite2D).animation).contains("ride_"), String((player.get("sprite") as AnimatedSprite2D).animation))
 
 
+## Au stick, dans les quatre sens : chaque fois le ptérosaure et Chloé vus comme ils volent (de profil
+## tournés du côté du vol, de face, de dos). Chaque sens est tenu jusqu'à ce que le vol y soit lancé :
+## en l'air elle a de l'élan (Flight.ACCEL), un demi-tour prend plus d'une seconde, et pendant ce temps
+## elle vole encore dans l'autre sens (c'est ainsi qu'elle doit être vue).
 func _steer_with_stick() -> void:
 	print("— (b) diriger au stick")
 	var player: Node2D = _player()
 	var start := player.global_position
-	await _stick(Vector2(1.0, 0.0), 1.0)
+	await _stick(Vector2(1.0, 0.0), 1.0, false)
 	var moved := player.global_position.distance_to(start)
 	var walk := 165.0
 	_check("au stick : elle avance, plus vite qu'à pied (> 1,5 × la marche)", moved > walk * 1.5, "%.0f px en 1 s" % moved)
+	await _fly_towards(Vector2(1.0, 0.0))
+	_check_seen("vers la droite de l'écran", &"fly", false, "ride_right")
 	await _shot("vol_02_stick")
 	var sprite: AnimatedSprite2D = current_scene.get("companion").get("sprite")
-	await _stick(Vector2(0.0, 1.0), 0.6, false)
-	_check("vers le bas de l'écran : vu de face", sprite.animation == &"fly_down", sprite.animation)
+	await _fly_towards(Vector2(0.0, 1.0))
+	_check_seen("vers le bas de l'écran", &"fly_down", false, "ride_down")
 	var base: float = current_scene.get("companion").get("_size")
 	_check("vu de face, ailes à plat, jamais plus étroit que de profil (Wings.face_back_scale)", sprite.scale.y >= base - 0.001,
 		"×%.2f" % (sprite.scale.y / maxf(base, 0.001)))
 	await _shot("vol_02b_face")
-	await _stick(Vector2(0.0, -1.0), 0.6, false)
-	_check("vers le haut de l'écran : vu de dos", sprite.animation == &"fly_up", sprite.animation)
+	await _measure_seat("face")
+	await _fly_towards(Vector2(0.0, -1.0))
+	_check_seen("vers le haut de l'écran", &"fly_up", false, "ride_up")
+	await _shot("vol_02c_dos")
+	await _measure_seat("dos")
+	await _fly_towards(Vector2(-1.0, 0.0))
+	_check_seen("vers la gauche de l'écran", &"fly", true, "ride_left")
+	await _shot("vol_02d_gauche")
 	await _stick(Vector2.ZERO, 0.6)
+
+
+## Tient le stick dans `dir` jusqu'à ce qu'elle vole franchement dans ce sens (au plus TURN_MAX_S).
+func _fly_towards(dir: Vector2) -> void:
+	var held := 0.0
+	while held < TURN_MAX_S:
+		var v: Vector2 = _player().get("velocity")
+		if v.length() > _top_speed() * 0.8 and v.normalized().dot(dir) > 0.97:
+			break
+		await _stick(dir, 0.05, false)
+		held += 0.05
+	await _stick(dir, 0.1, false)   # (le ptérosaure se tourne à l'image d'après)
+	print("   %s : lancée dans ce sens en %.2f s" % [dir, held])
+
+
+## Vue comme elle vole : le ptérosaure joue `anim` (`flipped` : tourné à gauche), Chloé `pose` (de
+## profil tournée du même côté, de face, de dos) ; de profil, il est derrière elle (sa jambe de notre côté
+## pend sur son flanc, l'autre est cachée par son corps), de face il est devant elle (sa tête devant ses
+## jambes), de dos derrière.
+func _check_seen(what: String, anim: StringName, flipped: bool, pose: String) -> void:
+	var companion: Node2D = current_scene.get("companion")
+	var sprite: AnimatedSprite2D = companion.get("sprite")
+	var rider := String((_player().get("sprite") as AnimatedSprite2D).animation)
+	var views := {&"fly": "de profil", &"fly_down": "vu de face", &"fly_up": "vu de dos"}
+	_check("%s : %s%s" % [what, views[anim], (", tourné à gauche" if flipped else ", tourné à droite") if anim == &"fly" else ""],
+		sprite.animation == anim and (anim != &"fly" or sprite.flip_h == flipped), "%s%s" % [sprite.animation, " (miroir)" if sprite.flip_h else ""])
+	_check("%s : Chloé %s" % [what, {"ride_right": "de profil, regarde à droite", "ride_left": "de profil, regarde à gauche",
+		"ride_down": "de face", "ride_up": "de dos"}[pose]], rider.ends_with(pose), rider)
+	var nearer: float = companion.global_position.y - _player().global_position.y
+	if anim == &"fly":
+		_check("%s : le ptérosaure derrière elle (une jambe sur son flanc, l'autre cachée)" % what, nearer < 0.0, "%.0f px" % nearer)
+	elif anim == &"fly_down":
+		_check("%s : le ptérosaure devant elle (sa tête devant ses jambes)" % what, nearer > 0.0, "%.0f px" % nearer)
 
 
 # ------------------------------------------------------------------ (c) l'eau, (d) les falaises
@@ -719,3 +789,133 @@ func _shot(shot_name: String) -> void:
 	await process_frame
 	await process_frame
 	root.get_viewport().get_texture().get_image().save_png("%s/%s.png" % [_out, shot_name])
+
+
+# ------------------------------------------------------------------ outils : Chloé sur son dos, à l'écran
+
+## Vue de face ou de dos (`view`), Chloé sur son ptérosaure mesurée sur une capture (px de l'image), le
+## temps arrêté : l'écart entre l'axe de son corps (le milieu de son buste et de ses jambes sur son image)
+## et celui du ptérosaure (sa tête et sa crête) ; de face, où monte la pointe de sa crête à chaque battement
+## d'ailes par rapport à son menton (sa tête, plus bas, ne doit pas cacher son visage ; sa crête, une lame
+## dressée devant elle, s'arrête sous son menton ailes à plat, la moitié des battements). Enregistre le
+## gros plan de chaque battement, marqué, et Chloé seule (vol_seat_<vue>.png).
+func _measure_seat(view: String) -> void:
+	var chloe: AnimatedSprite2D = _player().get("sprite")
+	var dino: AnimatedSprite2D = current_scene.get("companion").get("sprite")
+	Engine.time_scale = 0.0   # (la capture, la mesure et Chloé seule : le même instant)
+	for i in 3:
+		await process_frame
+	var shot_size := root.get_viewport().get_texture().get_size()
+	var to_image := Vector2(shot_size) / root.get_viewport().get_visible_rect().size
+	var chloe_pic := _frame_image(chloe.sprite_frames.get_frame_texture(chloe.animation, chloe.frame))
+	var seat_px: Dictionary = load(SADDLE).get_script_constant_map()["SEAT_PX"]
+	var seat_row := chloe_pic.get_height() - float(seat_px[&"ride_down" if view == "face" else &"ride_up"])
+	var body_x := _midline(chloe_pic, seat_row - 48.0, seat_row - 8.0, 1.0)
+	var tips: Array[float] = []   # (la pointe de sa crête sur chaque image de l'animation)
+	var dino_x := 0.0
+	for i in dino.sprite_frames.get_frame_count(dino.animation):
+		var pic := _frame_image(dino.sprite_frames.get_frame_texture(dino.animation, i))
+		tips.append(_crest_tip(pic))
+		if i == dino.frame:
+			dino_x = _midline(pic, tips[i], tips[i] + 20.0, 0.12)
+	var top: float = tips.min()
+	var body: Vector2 = _seen_at(chloe, Vector2(body_x, seat_row)) * to_image
+	var chin: Vector2 = _seen_at(chloe, Vector2(body_x, seat_row - CHIN_ABOVE_SEAT)) * to_image
+	var eyes: Vector2 = _seen_at(chloe, Vector2(body_x, seat_row - EYES_ABOVE_SEAT)) * to_image
+	# Son axe (la crête, la tête) vu à la hauteur des yeux de Chloé : la caméra plonge, les verticales
+	# penchent un peu à l'écran, on les compare donc à la même hauteur.
+	var axis: Vector2 = _seen_at(dino, Vector2(dino_x, top)) * to_image
+	var axis_low: Vector2 = _seen_at(dino, Vector2(dino_x, top + 60.0)) * to_image
+	var off := eyes.x - lerpf(axis.x, axis_low.x, (eyes.y - axis.y) / (axis_low.y - axis.y))
+	# La pointe de sa crête au-dessus de son menton (px, > 0 : plus haut que lui), à chaque battement.
+	var over_chin := tips.map(func(t: float) -> float: return chin.y - (_seen_at(dino, Vector2(dino_x, t)) * to_image).y)
+	print("   mesure %s : axe de Chloé à %+.1f px de celui du ptérosaure%s" % [view, off, "" if view != "face" else
+		" ; pointe de sa crête au-dessus de son menton, à chaque battement : %s px (ses yeux : %+.1f px)"
+		% [", ".join(PackedStringArray(over_chin.map(func(d: float) -> String: return "%+.0f" % d))), chin.y - eyes.y]])
+	_check("vu%s, Chloé est dans l'axe de son ptérosaure (à %.0f px près)" % [" de face" if view == "face" else " de dos", AXIS_TOLERANCE_PX],
+		absf(off) <= AXIS_TOLERANCE_PX, "%+.1f px" % off)
+	if view == "face":
+		var clear := over_chin.filter(func(d: float) -> bool: return d <= 1.0).size()
+		_check("vu de face, sa tête ne cache pas son visage, sa crête s'arrête sous son menton ailes à plat (la moitié des battements)",
+			clear * 2 >= over_chin.size(), "%d battement(s) sur %d" % [clear, over_chin.size()])
+	# Le gros plan : chaque battement d'ailes (le temps arrêté), puis Chloé seule ; ce qui est mesuré y est
+	# marqué : son axe (magenta, de son siège à ses yeux), celui du ptérosaure (cyan, sous la plus haute
+	# pointe de sa crête), son menton et ses yeux (vert).
+	var zoom := Rect2i(Vector2i(body - Vector2(110, 150)), Vector2i(220, 220)).intersection(Rect2i(Vector2i.ZERO, shot_size))
+	var o := Vector2(zoom.position)
+	var panels: Array[Image] = []
+	var shown := dino.frame
+	for i in dino.sprite_frames.get_frame_count(dino.animation) + 1:
+		dino.visible = i < dino.sprite_frames.get_frame_count(dino.animation)
+		if dino.visible:
+			dino.frame = i
+		for f in 3:
+			await process_frame
+		var panel := root.get_viewport().get_texture().get_image().get_region(zoom)
+		panel.fill_rect(Rect2i(Vector2i(body - o) + Vector2i(-1, int(eyes.y - body.y)), Vector2i(2, int(body.y - eyes.y))), Color.MAGENTA)
+		panel.fill_rect(Rect2i(Vector2i(axis - o) + Vector2i(-1, -30), Vector2i(2, 30)), Color.CYAN)
+		for at: Vector2 in [chin, eyes]:
+			panel.fill_rect(Rect2i(Vector2i(at - o) + Vector2i(-12, 0), Vector2i(6, 2)), Color.GREEN)
+		panels.append(panel)
+	dino.visible = true
+	dino.frame = shown
+	Engine.time_scale = 1.0
+	var strip := Image.create(zoom.size.x * panels.size(), zoom.size.y, false, panels[0].get_format())
+	for i in panels.size():
+		strip.blit_rect(panels[i], Rect2i(Vector2i.ZERO, zoom.size), Vector2i(i * zoom.size.x, 0))
+	strip.resize(strip.get_width() * 3 / 2, strip.get_height() * 3 / 2, Image.INTERPOLATE_BILINEAR)
+	strip.save_png("%s/vol_seat_%s.png" % [_out, view])
+
+
+## Où se voit, dans la vue 3D (px de la fenêtre), le point `px` de l'image que montre `sprite` (px depuis son
+## coin haut-gauche) : comme WorldView._sync_picture le pose (une image debout tournée vers la caméra).
+func _seen_at(sprite: AnimatedSprite2D, px: Vector2) -> Vector2:
+	var size := sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame).get_size()
+	var u := size.x - px.x if sprite.flip_h else px.x
+	var local := Vector2(u - size.x / 2.0 + sprite.offset.x, px.y - size.y / 2.0 + sprite.offset.y)
+	var view := _view()
+	var camera: Camera3D = view.get("camera")
+	var foot: Vector3 = view.get("heights").call("to_3d", (sprite.get_parent() as Node2D).global_position)
+	var right := Vector3(camera.global_basis.x.x, 0.0, camera.global_basis.x.z).normalized()
+	var gs := sprite.global_scale
+	var at := foot + Vector3(sprite.position.x / PX, -sprite.position.y / PX * STRETCH, 0.0)
+	at += right * local.x * absf(gs.x) / PX + Vector3.UP * -local.y * absf(gs.y) / PX * STRETCH
+	return camera.unproject_position(at)
+
+
+func _frame_image(frame: Texture2D) -> Image:
+	var atlas := frame as AtlasTexture
+	var image := (atlas.atlas if atlas else frame).get_image()
+	if image.is_compressed():
+		image.decompress()
+	return image.get_region(Rect2i(atlas.region)) if atlas else image
+
+
+## Le milieu de ce qui est dessiné sur les lignes `from`–`to` de `pic`, dans une bande de `band` de sa
+## largeur autour de son milieu (1 : toute la largeur).
+func _midline(pic: Image, from: float, to: float, band: float) -> float:
+	var sum := 0.0
+	var rows := 0
+	var half := pic.get_width() * band / 2.0
+	for y in range(maxi(0, int(from)), mini(pic.get_height(), int(to))):
+		var first := -1
+		var last := -1
+		for x in range(int(pic.get_width() / 2.0 - half), int(pic.get_width() / 2.0 + half)):
+			if pic.get_pixel(x, y).a > 0.25:
+				last = x
+				if first < 0:
+					first = x
+		if first >= 0:
+			sum += (first + last) / 2.0
+			rows += 1
+	return sum / rows if rows else pic.get_width() / 2.0
+
+
+## La ligne la plus haute dessinée au milieu de `pic` (sa crête, sa tête), à 6 % de sa largeur près.
+func _crest_tip(pic: Image) -> float:
+	var half := pic.get_width() * 0.06
+	for y in pic.get_height():
+		for x in range(int(pic.get_width() / 2.0 - half), int(pic.get_width() / 2.0 + half)):
+			if pic.get_pixel(x, y).a > 0.25:
+				return float(y)
+	return 0.0

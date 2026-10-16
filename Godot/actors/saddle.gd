@@ -36,12 +36,24 @@ const SEATS := {
 }
 const SEAT_DEFAULT := {"side": Vector2(0.0, 0.68), "front": 0.62, "back": 0.64}
 ## In the air (Vol), on a pterosaur's flight pictures (Wings): on its back between the wings, as
-## shares of a flight picture (the body lies across its middle). Per species when they need it.
+## shares of a flight picture (the body lies across its middle). From the front, just behind its head,
+## her legs on each side of its neck: high enough that its head does not hide her face, and its crest
+## (a blade raised before her) stops under her chin with its wings flat (16/10: at 0.46 its head hid her
+## face; measured by tools/test_vol.gd only=photo, flyer=<species> for the others). Per species when
+## they need it.
 const FLY_SEATS := {}
-const FLY_SEAT_DEFAULT := {"side": Vector2(-0.08, 0.5), "front": 0.46, "back": 0.5}
+const FLY_SEAT_DEFAULT := {"side": Vector2(-0.08, 0.5), "front": 0.62, "back": 0.5}
 ## In the air she is drawn smaller than on foot (Greg, 11/10: « trop grande par rapport au dino ») :
 ## a pterosaur's body is slender, and she must not be as tall as it is thick.
 const FLY_RIDER_SCALE := 0.8
+## Her flight pictures are not all drawn on the middle of their frames (her ponytail, blown to one
+## side, widened the drawing): px of each sheet her body stands left of the middle, from the front and
+## from behind, put back so she sits on the pterosaur's axis (measured on her bust and legs, 16/10;
+## checked on screen by tools/test_vol.gd only=photo). Per look (Outfits.flight_look).
+const FLY_BODY_X := {
+	Outfits.FLIGHT: {&"ride_down": 14.0, &"ride_up": 4.5},
+	Outfits.FLIGHT_COAT: {&"ride_down": 5.5, &"ride_up": 0.5},
+}
 const DEPTH := 2.0   # px the mount stands nearer the camera (+) or farther (-) than her
 
 var _side := Vector2.ZERO   # the saddle, px from the mount's feet (facing right), at scale 1
@@ -131,6 +143,8 @@ func place(anim: StringName, flipped: bool, size: float) -> Dictionary:
 		at = Vector2(0, _back * size)
 	var chloe := _rider.get_parent() as Player if is_instance_valid(_rider) else null
 	var look: String = Outfits.flight_look(chloe) if _flying else Outfits.saddle_look(chloe)
+	if _flying and is_instance_valid(_rider):
+		at.x += float(FLY_BODY_X.get(look, {}).get(pose, 0.0)) * _rider.scale.x
 	return {"pose": StringName(look + String(pose)), "at": at - Vector2(0, _seat[pose]), "depth": depth}
 
 
