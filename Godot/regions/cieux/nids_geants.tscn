@@ -172,6 +172,11 @@ position = Vector2(1104, 355.2)
 script = ExtResource("15_qitf1")
 kind = "nid_cieux_vide"
 
+[node name="ArcheVentLoin" type="StaticBody2D" parent="Entities" unique_id=1782597902]
+position = Vector2(900, 360)
+script = ExtResource("15_qitf1")
+kind = "arche_vent_loin"
+
 [node name="NidCieuxVide3" type="StaticBody2D" parent="Entities" unique_id=2080708150]
 position = Vector2(2832, 892.80005)
 script = ExtResource("15_qitf1")

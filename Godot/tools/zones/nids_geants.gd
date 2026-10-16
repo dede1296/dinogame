@@ -157,6 +157,8 @@ static func _landmarks(root: Region, entities: Node2D) -> void:
 	D.put(entities, ["rocher_neige"], P.PAGE_32 + Vector2(0.9, -0.5))
 	# The Grand Nid's crown of branches behind the Roi (north of his square: never on it).
 	D.put(entities, ["nid_roi", "nid_cieux_vide", "nid_branches"], P.ROI + Vector2(0.0, -2.2))
+	# The Arche du Vent far off (a hazy picture of it), on the rim west of that crown.
+	D.put(entities, ["arche_vent_loin"], P.ARCHE_LOIN)
 	# The forgotten nest (only the Vol reaches it): an old fern in it.
 	D.put(entities, ["nid_cieux_vide", "nid_branches", "nid_pteranodon"], P.NID_OUBLIE + Vector2(0.0, -0.4))
 	D.find(entities, ["fougeres", "ambre"], P.NID_OUBLIE + Vector2(-1.4, 0.6), "fougere",
@@ -232,5 +234,8 @@ static func _check(root: Region, floating: Array[String]) -> void:
 		failures += 1
 	for s in floating:
 		print("  NON décor qui flotte, impossible à poser : ", s)
+		failures += 1
+	if Prop.KINDS.has("arche_vent_loin") and not root.has_node("Entities/ArcheVentLoin"):
+		print("  NON l'Arche au loin n'a pas de sol où tenir (retirée)")
 		failures += 1
 	print("  %s" % ("tous les lieux sont bons" if failures == 0 else "%d DÉFAUT(S)" % failures))

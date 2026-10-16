@@ -84,6 +84,9 @@ const VIEUX_HARNAIS := Vector2(25.6, 10.0)
 ## the Arche du Vent on its north border (closed until the Vol: « arche_bloquee »).
 const AIGUILLE := Vector2(43.0, 5.0)
 const SORTIE_ARCHE := Vector2(43.0, 0.5)
+## The Arche du Vent far off (its hazy picture, `arche_vent_loin`): on the Grand Nid's north-west rim,
+## beside the Roi's crown of branches, the clouds behind it; seen from his square, off every path.
+const ARCHE_LOIN := Vector2(18.75, 7.5)
 ## For the Vol only: an old nest on its own piton (a curing fern in it).
 const NID_OUBLIE := Vector2(59.0, 19.0)
 
