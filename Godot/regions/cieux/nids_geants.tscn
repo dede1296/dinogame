@@ -428,6 +428,14 @@ script = ExtResource("18_vuuuu")
 taken_flag = &"galet_nids_geants_05"
 kind = "galet"
 
+[node name="TresorNidOublie" type="StaticBody2D" parent="Entities" unique_id=1503579824]
+position = Vector2(2774.4, 955.19995)
+script = ExtResource("16_wf5yc")
+line = "Sous une plume géante, au creux du nid oublié : une fougère curative, toute fraîche. Quelqu'un l'a rapportée ici, il y a longtemps, pour des petits qui ne sont jamais nés."
+taken_flag = &"nids_fougere_oublie"
+item_id = "fougere"
+kind = "ambre"
+
 [node name="Spawns" type="Node2D" parent="." unique_id=2133998144]
 
 [node name="Depart" type="Marker2D" parent="Spawns" unique_id=1904028499]

@@ -95,6 +95,9 @@ static func build() -> Region:
 	B.hide_pebbles(root, entities, Vector2i(P.NIDS_ENTREE.floor()), 6127, 0, 4,
 		[Vector2(40, 49), Vector2(22, 33)], [Vector2(49, 31), Vector2(16, 13)])
 	D.pebbles_in_sight(root, entities, [P.NID_OUBLIE + Vector2(1.6, 0.8)])
+	D.find(entities, ["ambre"], P.NID_OUBLIE + Vector2(-1.2, 0.9), "fougere",
+		"Sous une plume géante, au creux du nid oublié : une fougère curative, toute fraîche. Quelqu'un l'a rapportée ici, il y a longtemps, pour des petits qui ne sont jamais nés.",
+		&"nids_fougere_oublie", "TresorNidOublie")
 	_places(root)
 	_habitats(root)
 	# Every prop on the ground (none floating over a drop, by a bridge's edge or a piton's rim).

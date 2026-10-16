@@ -236,6 +236,16 @@ static func _landmarks(root: Region, entities: Node2D) -> void:
 	D.find(entities, ["ambre"], P.BALCON_BRUMES + Vector2(0.9, -0.2), "fossile",
 		"Dans le vieux coffre, roulé dans une toile cirée : un fossile. Une aile de ptérosaure, toute fine, prise dans la pierre. Qui a bien pu monter ça jusqu'ici ?",
 		&"cieux_coffre_balcon", "TresorBalcon")
+	# More for those who fly there (idée 8, 16/10) : a thing worth the trip on each islet.
+	D.find(entities, ["ambre"], P.AIGUILLE_AU_NID + Vector2(-0.8, 0.5), "collier",
+		"Au fond du nid vide, dans un lit de duvet : un collier d'ambre, tombé d'un cou. Un cou très, très grand.",
+		&"cieux_collier_aiguille", "TresorAiguille")
+	D.find(entities, ["fougere_cendre", "buisson_givre"], P.BALCON_BRUMES + Vector2(-0.4, 1.1), "fougere",
+		"Une fougère qui pousse toute seule sur le balcon, entre deux pierres. Personne ne l'a jamais cueillie. Elle sent bon la pluie.",
+		&"cieux_fougere_balcon", "TresorFougere")
+	D.find(entities, ["ambre"], P.ILOT_NUAGES + Vector2(0.9, 0.6), "baie",
+		"Un petit buisson de baies, perdu sur son îlot. Les oiseaux n'y viennent pas : trop loin de tout. Toi, si.",
+		&"cieux_baie_ilot", "TresorBaie")
 	D.put(entities, ["rocher_neige"], P.ILOT_NUAGES + Vector2(-1.4, -1.2))
 	D.put(entities, ["buisson_givre"], P.BALCON_BRUMES + Vector2(-1.8, 0.6), true)
 

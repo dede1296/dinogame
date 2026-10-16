@@ -187,6 +187,30 @@ taken_flag = &"cieux_coffre_balcon"
 item_id = "fossile"
 kind = "ambre"
 
+[node name="TresorAiguille" type="StaticBody2D" parent="Entities" unique_id=203135438]
+position = Vector2(4425.5996, 1752)
+script = ExtResource("17_dlfui")
+line = "Au fond du nid vide, dans un lit de duvet : un collier d'ambre, tombé d'un cou. Un cou très, très grand."
+taken_flag = &"cieux_collier_aiguille"
+item_id = "collier"
+kind = "ambre"
+
+[node name="TresorFougere" type="StaticBody2D" parent="Entities" unique_id=1943249149]
+position = Vector2(844.80005, 1876.7999)
+script = ExtResource("17_dlfui")
+line = "Une fougère qui pousse toute seule sur le balcon, entre deux pierres. Personne ne l'a jamais cueillie. Elle sent bon la pluie."
+taken_flag = &"cieux_fougere_balcon"
+item_id = "fougere"
+kind = "fougere_cendre"
+
+[node name="TresorBaie" type="StaticBody2D" parent="Entities" unique_id=1031226147]
+position = Vector2(427.19998, 3772.7998)
+script = ExtResource("17_dlfui")
+line = "Un petit buisson de baies, perdu sur son îlot. Les oiseaux n'y viennent pas : trop loin de tout. Toi, si."
+taken_flag = &"cieux_baie_ilot"
+item_id = "baie"
+kind = "ambre"
+
 [node name="RocherNeige" type="StaticBody2D" parent="Entities" unique_id=16312486]
 position = Vector2(316.8, 3686.4001)
 script = ExtResource("16_i5fr3")
