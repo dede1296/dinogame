@@ -285,6 +285,88 @@ position = Vector2(1646.3999, 3440.6401)
 script = ExtResource("16_i5fr3")
 kind = "pilier_pont_1"
 
+[node name="PoteauLianes" type="StaticBody2D" parent="Entities" unique_id=1300830510]
+position = Vector2(2459.52, 3189.5999)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes2" type="StaticBody2D" parent="Entities" unique_id=982875524]
+position = Vector2(2526.72, 3189.5999)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes3" type="StaticBody2D" parent="Entities" unique_id=633485432]
+position = Vector2(2453.76, 3045.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes4" type="StaticBody2D" parent="Entities" unique_id=276008172]
+position = Vector2(2524.7998, 3045.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes5" type="StaticBody2D" parent="Entities" unique_id=286305624]
+position = Vector2(2453.76, 2901.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes6" type="StaticBody2D" parent="Entities" unique_id=143708928]
+position = Vector2(2524.7998, 2901.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes7" type="StaticBody2D" parent="Entities" unique_id=1243143552]
+position = Vector2(2453.76, 2757.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes8" type="StaticBody2D" parent="Entities" unique_id=1364236290]
+position = Vector2(2524.7998, 2757.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes9" type="StaticBody2D" parent="Entities" unique_id=1771690842]
+position = Vector2(2524.7998, 2654.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes10" type="StaticBody2D" parent="Entities" unique_id=1294280025]
+position = Vector2(2309.76, 2133.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes11" type="StaticBody2D" parent="Entities" unique_id=1185676532]
+position = Vector2(2309.76, 1989.6001)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes12" type="StaticBody2D" parent="Entities" unique_id=1581087746]
+position = Vector2(2380.7998, 1989.6001)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes13" type="StaticBody2D" parent="Entities" unique_id=1902789250]
+position = Vector2(2309.76, 1845.6001)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes14" type="StaticBody2D" parent="Entities" unique_id=779955113]
+position = Vector2(2378.8801, 1845.6001)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes15" type="StaticBody2D" parent="Entities" unique_id=315098233]
+position = Vector2(2384.6401, 1670.3999)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
 [node name="PilierPont17" type="StaticBody2D" parent="Entities" unique_id=135714833]
 position = Vector2(2894.4, 2357.76)
 script = ExtResource("16_i5fr3")
@@ -366,6 +448,105 @@ kind = "pilier_pont_2"
 position = Vector2(4005.5999, 3484.7998)
 script = ExtResource("16_i5fr3")
 kind = "pilier_pont_1"
+
+[node name="PoteauLianes16" type="StaticBody2D" parent="Entities" unique_id=631818995]
+position = Vector2(4112.64, 2606.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes17" type="StaticBody2D" parent="Entities" unique_id=1221022241]
+position = Vector2(4045.44, 2606.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes18" type="StaticBody2D" parent="Entities" unique_id=905032313]
+position = Vector2(4108.8, 2750.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes19" type="StaticBody2D" parent="Entities" unique_id=1548601733]
+position = Vector2(4043.52, 2750.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes20" type="StaticBody2D" parent="Entities" unique_id=1745043250]
+position = Vector2(4106.88, 2894.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes21" type="StaticBody2D" parent="Entities" unique_id=2031032121]
+position = Vector2(4037.7603, 2894.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes22" type="StaticBody2D" parent="Entities" unique_id=1427463068]
+position = Vector2(4108.8, 3038.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes23" type="StaticBody2D" parent="Entities" unique_id=1810034697]
+position = Vector2(4037.7603, 3038.4)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes24" type="StaticBody2D" parent="Entities" unique_id=1272483870]
+position = Vector2(4110.7197, 3141.5999)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes25" type="StaticBody2D" parent="Entities" unique_id=1199514966]
+position = Vector2(4039.6802, 3141.5999)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes26" type="StaticBody2D" parent="Entities" unique_id=1014237232]
+position = Vector2(3701.7603, 2133.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes27" type="StaticBody2D" parent="Entities" unique_id=1203669388]
+position = Vector2(3772.7998, 2133.6)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes28" type="StaticBody2D" parent="Entities" unique_id=2015647382]
+position = Vector2(3701.7603, 1989.6001)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes29" type="StaticBody2D" parent="Entities" unique_id=1556670677]
+position = Vector2(3772.7998, 1989.6001)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes30" type="StaticBody2D" parent="Entities" unique_id=305871613]
+position = Vector2(3701.7603, 1845.6001)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes31" type="StaticBody2D" parent="Entities" unique_id=2109241269]
+position = Vector2(3770.88, 1845.6001)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+
+[node name="PoteauLianes32" type="StaticBody2D" parent="Entities" unique_id=771606597]
+position = Vector2(3717.12, 1790.3999)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
+flip = true
+
+[node name="PoteauLianes33" type="StaticBody2D" parent="Entities" unique_id=124184857]
+position = Vector2(3784.3198, 1790.3999)
+script = ExtResource("16_i5fr3")
+kind = "poteau_lianes"
 
 [node name="DrapeauVent1" type="StaticBody2D" parent="Entities" unique_id=1436451395]
 position = Vector2(3624, 3619.2002)
@@ -824,4 +1005,4 @@ target_zone = &"nids_geants"
 target_spawn = &"DepuisCieux"
 
 [node name="Cordes" type="Node" parent="." unique_id=1879807291]
-metadata/paires = [["PilierPont1", "PilierPont3"], ["PilierPont2", "PilierPont4"], ["PilierPont3", "PilierPont5"], ["PilierPont4", "PilierPont6"], ["PilierPont5", "PilierPont7"], ["PilierPont8", "PilierPont10"], ["PilierPont9", "PilierPont11"], ["PilierPont10", "PilierPont12"], ["PilierPont11", "PilierPont13"], ["PilierPont12", "PilierPont14"], ["PilierPont13", "PilierPont15"], ["PilierPont14", "PilierPont16"], ["PilierPont17", "PilierPont19"], ["PilierPont18", "PilierPont20"], ["PilierPont19", "PilierPont21"], ["PilierPont20", "PilierPont22"], ["PilierPont21", "PilierPont23"], ["PilierPont22", "PilierPont24"], ["PilierPont23", "PilierPont25"], ["PilierPont24", "PilierPont26"], ["PilierPont27", "PilierPont29"], ["PilierPont28", "PilierPont30"], ["PilierPont30", "PilierPont31"]]
+metadata/paires = [["PilierPont1", "PilierPont3"], ["PilierPont2", "PilierPont4"], ["PilierPont3", "PilierPont5"], ["PilierPont4", "PilierPont6"], ["PilierPont5", "PilierPont7"], ["PilierPont8", "PilierPont10"], ["PilierPont9", "PilierPont11"], ["PilierPont10", "PilierPont12"], ["PilierPont11", "PilierPont13"], ["PilierPont12", "PilierPont14"], ["PilierPont13", "PilierPont15"], ["PilierPont14", "PilierPont16"], ["PoteauLianes", "PoteauLianes3"], ["PoteauLianes2", "PoteauLianes4"], ["PoteauLianes3", "PoteauLianes5"], ["PoteauLianes4", "PoteauLianes6"], ["PoteauLianes5", "PoteauLianes7"], ["PoteauLianes6", "PoteauLianes8"], ["PoteauLianes8", "PoteauLianes9"], ["PoteauLianes10", "PoteauLianes11"], ["PoteauLianes11", "PoteauLianes13"], ["PoteauLianes12", "PoteauLianes14"], ["PoteauLianes14", "PoteauLianes15"], ["PilierPont17", "PilierPont19"], ["PilierPont18", "PilierPont20"], ["PilierPont19", "PilierPont21"], ["PilierPont20", "PilierPont22"], ["PilierPont21", "PilierPont23"], ["PilierPont22", "PilierPont24"], ["PilierPont23", "PilierPont25"], ["PilierPont24", "PilierPont26"], ["PilierPont27", "PilierPont29"], ["PilierPont28", "PilierPont30"], ["PilierPont30", "PilierPont31"], ["PoteauLianes16", "PoteauLianes18"], ["PoteauLianes17", "PoteauLianes19"], ["PoteauLianes18", "PoteauLianes20"], ["PoteauLianes19", "PoteauLianes21"], ["PoteauLianes20", "PoteauLianes22"], ["PoteauLianes21", "PoteauLianes23"], ["PoteauLianes22", "PoteauLianes24"], ["PoteauLianes23", "PoteauLianes25"], ["PoteauLianes26", "PoteauLianes28"], ["PoteauLianes27", "PoteauLianes29"], ["PoteauLianes28", "PoteauLianes30"], ["PoteauLianes29", "PoteauLianes31"], ["PoteauLianes30", "PoteauLianes32"], ["PoteauLianes31", "PoteauLianes33"]]

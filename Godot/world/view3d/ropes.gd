@@ -26,7 +26,7 @@ const MAX_SPAN := 7.0
 const POINTS_PER_M := 4.0
 const MIN_POINTS := 9
 ## Où l'image d'un poteau dessine sa corde : part de sa hauteur depuis le haut de l'image.
-const ATTACH := {"pilier_pont_1": 0.306, "pilier_pont_2": 0.27, "pieu_corde": 0.36, "poteau_lianes": 0.3}
+const ATTACH := {"pilier_pont_1": 0.306, "pilier_pont_2": 0.27, "pieu_corde": 0.36, "poteau_lianes": 0.36}
 const ATTACH_DEFAULT := 0.3
 ## Les bouts noués : sur tant de mètres depuis chaque poteau, la corde passe derrière son image.
 const TIE_REACH := 0.45

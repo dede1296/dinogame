@@ -29,7 +29,10 @@ const LOW := [["cailloux", 0.016, ""], ["buisson_givre", 0.008, ""]]
 ## A piton's height (m) from which its plants are those of the summits.
 const SUMMIT_FROM := 14.0
 ## The posts of the liana bridges: their pictures (at the ends, along), how far apart along a bridge
-## (tiles), how far off its middle line (tiles: on the deck's edge, by the cliff).
+## (tiles), how far off its middle line (tiles: on the deck's edge, by the cliff). Each post is the
+## first of its pictures that holds where it stands (_post): the pillars' stone base is measured
+## across the picture, so across the deck on a north-south bridge, where the deck is curved and the
+## base would hang over its sides; there, the narrow stake (its base 6 cm) stands instead.
 const POST_END := ["pilier_pont_1", "poteau_lianes", "pieu_corde"]
 const POST := ["pilier_pont_2", "poteau_lianes", "pieu_corde"]
 const POST_EVERY := 3.0
@@ -152,32 +155,35 @@ static func bridge_posts(c: C, hm: HeightMap, entities: Node2D, pts: Array) -> A
 	for k in stops.size():
 		var at := _along(pts, stops[k])
 		var picture: Array = POST_END if k == 0 or k == stops.size() - 1 else POST
-		var post_kind := kind(picture)
 		for sign_: float in [-1.0, 1.0]:
 			var side: Vector2 = (at[1] as Vector2) * sign_
 			var edge: Vector2 = (at[0] as Vector2) + side * POST_OFF
 			var beyond: Vector2 = edge + side * 0.6
 			var post: Node2D = null
 			# On the deck, by its edge over the void (where the deck meets a piton, no post across the way).
-			if post_kind != "" and c.bridges[c.at(floori(edge.x), floori(edge.y))] == 1 and c.is_void(floori(beyond.x), floori(beyond.y)):
-				post = _post(hm, entities, post_kind, at[0], side)
+			if c.bridges[c.at(floori(edge.x), floori(edge.y))] == 1 and c.is_void(floori(beyond.x), floori(beyond.y)):
+				post = _post(hm, entities, picture, at[0], side)
 			if post and previous[sign_]:
 				out.append([previous[sign_], post])
 			previous[sign_] = post
 	return out
 
 
-## One post of `kind` beside the deck's middle line at `middle`, on the `side` (unit vector): as far
-## out as it holds (cieux_pieds.gd), its picture turned so that its foot leans towards the middle; none
-## (null) when it holds nowhere between POST_OFF and POST_MIN.
-static func _post(hm: HeightMap, entities: Node2D, kind: String, middle: Vector2, side: Vector2) -> Node2D:
-	var off := POST_OFF
-	while off >= POST_MIN - 0.001:
-		var t := middle + side * off
-		for flip: bool in [side.x + side.y < 0.0, side.x + side.y >= 0.0]:
-			if F.lift(hm, kind, flip, t * B.TILE) <= F.TOLERANCE:
-				return put(entities, [kind], t, flip)
-		off -= POST_STEP
+## One post beside the deck's middle line at `middle`, on the `side` (unit vector): the first of the
+## pictures `wanted` (those drawn, in turn) that holds there somewhere between POST_OFF and POST_MIN
+## (cieux_pieds.gd), as far out as it holds, its picture turned so that its foot leans towards the
+## middle; none (null) when none of them holds.
+static func _post(hm: HeightMap, entities: Node2D, wanted: Array, middle: Vector2, side: Vector2) -> Node2D:
+	for k: String in wanted:
+		if not Prop.KINDS.has(k):
+			continue
+		var off := POST_OFF
+		while off >= POST_MIN - 0.001:
+			var t := middle + side * off
+			for flip: bool in [side.x + side.y < 0.0, side.x + side.y >= 0.0]:
+				if F.lift(hm, k, flip, t * B.TILE) <= F.TOLERANCE:
+					return put(entities, [k], t, flip)
+			off -= POST_STEP
 	return null
 
 

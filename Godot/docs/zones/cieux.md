@@ -21,6 +21,7 @@ pitons font face au joueur, rien de haut ne cache le chemin) :
   une rampe vers les nids (14,4 m : nids « grands comme des barques », jeunes Quetzalcoatlus, Tapejara, page 32),
   une autre vers le Grand Nid (15 m : carré de 9 × 7 libre, le Roi au bord nord tourné vers l'entrée), un pont de
   lianes vers l'aiguille du bord nord : la sortie vers l'Arche (fermée tant que `vol_obtenu` est faux).
+  L'Arche vue de loin (`arche_vent_loin`, `CieuxPlaces.ARCHE_LOIN`) se dresse sur le bord nord-ouest du Grand Nid.
 - **`arche_du_vent`** (56 × 44) : la plateforme d'atterrissage (15 m, le haut de l'aiguille), une rampe vers la
   terrasse (16,2 m) : le carré de la scène (12 × 10, plat, nu), l'arche au nord de ce carré, le cairn d'Hélène
   (page 34), le feu à l'abri du pilier ouest, la descente de cendre au nord-ouest (fermée : `volcan_bloque`).
@@ -49,7 +50,8 @@ désormais de poteau en poteau, de chaque côté de chaque pont qui a des poteau
   `bridge_posts` rend, côté par côté, les paires de poteaux voisins (la corde s'arrête là où un poteau manque :
   au bout d'un pont, ou d'un côté qui n'en a pas) ; `ropes()` écrit le nœud après `settle_all` (un poteau
   retiré emporte ses cordes). Dans l'éditeur, déplacer un poteau déplace sa corde ; ajouter une corde =
-  ajouter une paire. Aujourd'hui : 23 cordes aux Pitons, 4 aux Nids, aucune à l'Arche (pas de pont de lianes).
+  ajouter une paire. Aujourd'hui : 48 cordes aux Pitons (23 entre piliers, 25 entre pieux sur les ponts
+  nord-sud), 4 aux Nids, aucune à l'Arche (pas de pont de lianes).
 - **Dessinées par la vue** (`world/view3d/ropes.gd`, classe `Ropes`, appelée par `WorldView.show_zone`) : un
   seul maillage par zone (des rubans tournés vers la caméra, `corde.gdshader` : torsade ocre peinte, contour
   brun, éclairée comme un cylindre), une corde nouée là où l'image du poteau dessine la sienne (`ATTACH` :
@@ -62,12 +64,19 @@ désormais de poteau en poteau, de chaque côté de chaque pont qui a des poteau
   tombe presque derrière la corde elle-même à l'écran ; elle se voit peu, c'est normal.
 - **Ponts rompus** (`pont_lianes_rompu`) : une seule image, planches, poteaux et cordes cassées qui pendent
   dessinés dedans ; aucune corde déclarée : rien n'est tendu au-dessus du vide.
-- **Les quatre ponts nord-sud des Pitons** (Guet → Vents, Vents → Haut, Fendu → Rhamphorhynques, Fendu →
-  Belvédère) **n'ont aucun poteau**, donc aucune corde : la base de pierre des piliers est mesurée en travers
-  de l'image, donc en travers du tablier sur un pont nord-sud ; celle de `pilier_pont_2` (0,80 m) y reste au
-  mieux 0,32 m au-dessus du dessus bombé du tablier (`cieux_pieds.gd`, tolérance 5 cm) ; `pieu_corde` (base
-  de 6 cm) y tiendrait. À décider : un poteau étroit pour ces ponts (repli par poteau dans `bridge_posts`),
-  ou un tablier plus plat ; les cordes suivraient d'elles-mêmes.
+- **Repli par poteau** (16/10) : chaque poteau prend la première de ses images qui tient là où il se dresse
+  (`POST_END` aux bouts, `POST` le long : `pilier_pont_1` / `pilier_pont_2`, puis `poteau_lianes` s'il est
+  dessiné un jour, puis `pieu_corde`), toutes essayées du bord du tablier vers le milieu (`_post`). Sur les
+  ponts est-ouest les piliers tiennent : rien n'y change. Sur **les quatre ponts nord-sud des Pitons** (Guet →
+  Vents, Vents → Haut, Fendu → Rhamphorhynques, Fendu → Belvédère), la base de pierre des piliers est mesurée
+  en travers de l'image, donc en travers du tablier bombé : celle de `pilier_pont_2` (0,80 m) y reste au mieux
+  0,32 m au-dessus du tablier (`cieux_pieds.gd`, tolérance 5 cm) ; le pieu (base de 6 cm) tient partout : 33
+  pieux (`PieuCorde…`), 25 cordes, de 0,56 à 0,88 case du milieu. Comme ailleurs, pas de poteau là où le
+  tablier rejoint un piton (au-delà, pas de vide) : quelques bouts de pont n'ont de poteau que d'un côté.
+- **Reste** : `pieu_corde` a une ligne d'examen (`world/examine.gd` : « Un pieu planté dans la terre, sa corde
+  tranchée net… », écrite pour le camp de l'Ombre) ; sur les ponts, chaque pieu est donc « interactable » et la
+  touche E s'affiche en traversant. À régler hors de ces fichiers : soit un genre `poteau_lianes` (même dessin,
+  sans examen : déjà préféré au pieu dans `POST`, son `ATTACH` à passer à 0,36), soit une ligne propre aux Cieux.
 - Test : `vis_cieux.gd` « verifier » : chaque corde déclarée relie deux poteaux de la zone à moins de 7 m.
 
 ## Règles que les plans tiennent (et que le test vérifie)

@@ -198,6 +198,7 @@ const KINDS := {
 	"pierre_gravee": {"scale": 0.195, "foot": 0.15, "solid": Vector2(56, 16), "sway": 0.0, "shadow": 60.0},
 	"pierre_plate": {"scale": 0.208, "foot": 0.12, "solid": Vector2(52, 16), "sway": 0.0, "shadow": 56.0},
 	"pieu_corde": {"scale": 0.229, "foot": 0.03, "solid": 5.6, "sway": 0.0, "shadow": 20.0},
+	"poteau_lianes": {"scale": 0.229, "foot": 0.03, "solid": 5.6, "sway": 0.0, "shadow": 20.0},   # (le pieu des ponts de lianes : sans la ligne d'examen du camp de l'Ombre)
 	"peau_mue": {"scale": 0.18, "foot": 0.2, "solid": 0.0, "sway": 0.3, "shadow": 0.0},
 	"fougeres_ecrasees": {"scale": 0.22, "foot": 0.15, "solid": 0.0, "sway": 1.5, "shadow": 0.0},
 	# People's things, at Chloé's scale (Sirocco's mat, Dame Suie's basket, the henchmen's tools,
@@ -381,7 +382,7 @@ const KINDS := {
 	"havre_maison_1", "havre_maison_2", "havre_maison_3", "havre_maison_4", "benitier", "phare_ruine",
 	"coquillages", "algues", "bois_flotte", "rocher_cote", "rocher_recif", "oyats", "nid_pteranodon", "nid_tortue",
 	"boite_fer", "gravure_hi", "palmier_cote", "masque_pierre", "varech", "corail", "corail_branches", "anemones",
-	"eponges", "herbier", "autel", "statue_spinosaure", "pierre_gravee", "pierre_plate", "pieu_corde", "peau_mue",
+	"eponges", "herbier", "autel", "statue_spinosaure", "pierre_gravee", "pierre_plate", "pieu_corde", "poteau_lianes", "peau_mue",
 	"fougeres_ecrasees", "natte_fouilles", "vertebre", "cotes_sable", "panier_fioles", "outils_mine",
 	"table_observation", "etagere_bocaux", "prele", "cycas", "ginkgo", "roseaux_secs", "conifere_sec", "rocher_lichen",
 	"sapin_neige", "buisson_givre", "rocher_neige", "pin_tordu", "tronc_calcine", "fougere_cendre", "bennettitale",

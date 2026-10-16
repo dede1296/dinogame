@@ -45,6 +45,7 @@ const KINDS := {
 	"cloture": {"strength": 0.9, "turn": 0.0},
 	"cloture_brisee": {"strength": 0.85, "turn": 0.0},
 	"pieu_corde": {"strength": 0.9},
+	"poteau_lianes": {"strength": 0.9},
 	# Les cordes des ponts de lianes (Ropes : pas une image) : un trait fin, pas trop sombre.
 	"corde_pont": {"strength": 0.6, "turn": 0.0, "grass": false},
 	"panneau": {"strength": 0.9, "turn": 0.5},
