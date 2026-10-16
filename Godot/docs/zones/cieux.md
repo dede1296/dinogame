@@ -5,7 +5,7 @@
 > `cieux_decor.gd`, pieds des décors `cieux_pieds.gd`) ; lieux nommés dans `story/cieux_places.gd` (`CieuxPlaces`).
 > Construire : `--script res://tools/build_zone.gd -- cieux --force` (idem pour les deux autres) : chaque plan
 > affiche ses vérifications. Tester : `tools/scenarios/vis_cieux.gd` (lieux, accès à pied, décor qui flotte,
-> jonctions, heures, météos, zoom) et `perf_cieux.gd` (images par seconde).
+> cordes des ponts, jonctions, heures, météos, zoom) et `perf_cieux.gd` (images par seconde).
 
 ## Le parti
 
@@ -38,6 +38,37 @@ pitons font face au joueur, rien de haut ne cache le chemin) :
   (un galet), le balcon des brumes (un vieux coffre, un fossile), le nid oublié (une fougère) ; de vieux ponts
   rompus pendent des bords qui leur font face. Aires où se poser : `CieuxPlaces.ATTERRISSAGES_*`, chacune avec un
   drapeau de vent.
+
+## Cordes des ponts
+
+Retour de Greg (11/10) : « aux nids géants, aucune corde ne relie les piquets ». Le garde-corps court
+désormais de poteau en poteau, de chaque côté de chaque pont qui a des poteaux.
+- **Déclarées dans la zone** : un nœud `Cordes` (type `Node`, dernier enfant de la racine de la zone), sa
+  métadonnée `paires` = les poteaux à relier par leur nom dans `Entities` :
+  `[["PilierPont1", "PilierPont3"], ["PilierPont3", "PilierPont5"], …]`. `cieux_decor.gd` les produit :
+  `bridge_posts` rend, côté par côté, les paires de poteaux voisins (la corde s'arrête là où un poteau manque :
+  au bout d'un pont, ou d'un côté qui n'en a pas) ; `ropes()` écrit le nœud après `settle_all` (un poteau
+  retiré emporte ses cordes). Dans l'éditeur, déplacer un poteau déplace sa corde ; ajouter une corde =
+  ajouter une paire. Aujourd'hui : 23 cordes aux Pitons, 4 aux Nids, aucune à l'Arche (pas de pont de lianes).
+- **Dessinées par la vue** (`world/view3d/ropes.gd`, classe `Ropes`, appelée par `WorldView.show_zone`) : un
+  seul maillage par zone (des rubans tournés vers la caméra, `corde.gdshader` : torsade ocre peinte, contour
+  brun, éclairée comme un cylindre), une corde nouée là où l'image du poteau dessine la sienne (`ATTACH` :
+  ~1 m au-dessus de son pied), affaissée en chaînette de 8 % de sa longueur (~0,8 m au milieu d'une travée de
+  3 m) ; ses bouts passent derrière l'image du poteau. Aucune collision (rien en 2D : les ponts restent
+  praticables). Ombre aplatie fine (`ombre_corde.gdshader`, mécanisme `FlatShadows`, genre `corde_pont`) en
+  qualité Moyenne et Haute ; en Basse, les cordes restent, sans ombre. Coût mesuré : 2 appels de dessin et
+  ~1 000 triangles de plus, images par seconde inchangées (138 contre 137 sans).
+- **Le soleil vient toujours du sud** (derrière la caméra) : comme celle des poteaux, l'ombre d'une corde
+  tombe presque derrière la corde elle-même à l'écran ; elle se voit peu, c'est normal.
+- **Ponts rompus** (`pont_lianes_rompu`) : une seule image, planches, poteaux et cordes cassées qui pendent
+  dessinés dedans ; aucune corde déclarée : rien n'est tendu au-dessus du vide.
+- **Les quatre ponts nord-sud des Pitons** (Guet → Vents, Vents → Haut, Fendu → Rhamphorhynques, Fendu →
+  Belvédère) **n'ont aucun poteau**, donc aucune corde : la base de pierre des piliers est mesurée en travers
+  de l'image, donc en travers du tablier sur un pont nord-sud ; celle de `pilier_pont_2` (0,80 m) y reste au
+  mieux 0,32 m au-dessus du dessus bombé du tablier (`cieux_pieds.gd`, tolérance 5 cm) ; `pieu_corde` (base
+  de 6 cm) y tiendrait. À décider : un poteau étroit pour ces ponts (repli par poteau dans `bridge_posts`),
+  ou un tablier plus plat ; les cordes suivraient d'elles-mêmes.
+- Test : `vis_cieux.gd` « verifier » : chaque corde déclarée relie deux poteaux de la zone à moins de 7 m.
 
 ## Règles que les plans tiennent (et que le test vérifie)
 

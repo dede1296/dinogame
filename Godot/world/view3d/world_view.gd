@@ -437,6 +437,7 @@ func show_zone(region: Region, chloe: Node2D, zones := {}) -> void:
 	for n: Dictionary in neighbours:
 		_build_neighbour(n)
 	_build_scenery()
+	Ropes.build(_zone, region, heights, flat_shadows)   # les cordes des ponts de lianes (zone « Cordes »)
 	_build_forest(region, heights)
 	_build_tall_grass()
 	for dock in region.docks():

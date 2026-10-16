@@ -391,3 +391,6 @@ target_zone = &"arche_du_vent"
 target_spawn = &"DepuisNids"
 required_flag = &"vol_obtenu"
 blocked_dialogue = &"arche_bloquee"
+
+[node name="Cordes" type="Node" parent="." unique_id=1275468936]
+metadata/paires = [["PilierPont1", "PilierPont2"], ["PilierPont2", "PilierPont4"], ["PilierPont3", "PilierPont5"], ["PilierPont5", "PilierPont6"]]

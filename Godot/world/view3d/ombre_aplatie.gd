@@ -223,6 +223,17 @@ func _props_material(kind: String, quad: QuadMesh) -> ShaderMaterial:
 	return mat
 
 
+## Le matériau d'ombre `mat` d'un décor qui n'est pas une image (les cordes des ponts, Ropes) : le
+## genre `kind` (shadow_kinds.gd) et le sol de la zone. false : pas d'ombre aplatie (qualité Basse, ou
+## un genre sans ombre).
+func dress(mat: ShaderMaterial, kind: String) -> bool:
+	var spec := KINDS.for_kind(kind)
+	if not on or float(spec["strength"]) <= 0.0:
+		return false
+	_dress(mat, spec)
+	return true
+
+
 ## Le genre (force, longueur, flou, tournée ou pas) et le sol, sur un matériau d'ombre.
 func _dress(mat: ShaderMaterial, spec: Dictionary) -> void:
 	mat.set_shader_parameter("strength", spec["strength"])

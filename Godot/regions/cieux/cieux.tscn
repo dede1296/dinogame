@@ -681,3 +681,6 @@ script = ExtResource("24_qwrou")
 size = Vector2(144, 26.400002)
 target_zone = &"nids_geants"
 target_spawn = &"DepuisCieux"
+
+[node name="Cordes" type="Node" parent="." unique_id=1879807291]
+metadata/paires = [["PilierPont1", "PilierPont3"], ["PilierPont2", "PilierPont4"], ["PilierPont3", "PilierPont5"], ["PilierPont4", "PilierPont6"], ["PilierPont5", "PilierPont7"], ["PilierPont8", "PilierPont10"], ["PilierPont9", "PilierPont11"], ["PilierPont10", "PilierPont12"], ["PilierPont11", "PilierPont13"], ["PilierPont12", "PilierPont14"], ["PilierPont13", "PilierPont15"], ["PilierPont14", "PilierPont16"], ["PilierPont17", "PilierPont19"], ["PilierPont18", "PilierPont20"], ["PilierPont19", "PilierPont21"], ["PilierPont20", "PilierPont22"], ["PilierPont21", "PilierPont23"], ["PilierPont22", "PilierPont24"], ["PilierPont23", "PilierPont25"], ["PilierPont24", "PilierPont26"], ["PilierPont27", "PilierPont29"], ["PilierPont28", "PilierPont30"], ["PilierPont30", "PilierPont31"]]

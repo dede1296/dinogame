@@ -87,7 +87,7 @@ static func build() -> Region:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = SEED
 	_landmarks(root, entities)
-	D.bridge_posts(c, ground, entities, PONT_AIGUILLE[0])
+	var ropes := D.bridge_posts(c, ground, entities, PONT_AIGUILLE[0])
 	D.landing_flags(c, entities, [P.ATTERRISSAGES_NIDS[0], P.ATTERRISSAGES_NIDS[1], P.ATTERRISSAGES_NIDS[3]])
 	D.scatter(c, entities, rng, _keep_clear(), 0.8)
 	D.sea_decor(c, entities, rng, 4, 16)
@@ -99,6 +99,7 @@ static func build() -> Region:
 	_habitats(root)
 	# Every prop on the ground (none floating over a drop, by a bridge's edge or a piton's rim).
 	_check(root, F.settle_all(root))
+	D.ropes(root, ropes)
 	return root
 
 

@@ -123,7 +123,10 @@ static func _in_view(c: C, keep: Array, x: int, y: int) -> bool:
 ## the drawn deck is narrower than its two tiles: the ground's heights are sampled every half metre,
 ## so its flat top is about a metre wide and its sides already slope down to the clouds, where a post
 ## would hang in the air, cieux_pieds.gd), never nearer the middle than POST_MIN.
-static func bridge_posts(c: C, hm: HeightMap, entities: Node2D, pts: Array) -> void:
+## Returns the ropes along the bridge: [post, next post] on the same side, next to each other (a
+## side's rope stops where a post is missing; see ropes()).
+static func bridge_posts(c: C, hm: HeightMap, entities: Node2D, pts: Array) -> Array:
+	var out: Array = []
 	var total := 0.0
 	for k in pts.size() - 1:
 		total += (pts[k] as Vector2).distance_to(pts[k + 1])
@@ -138,41 +141,62 @@ static func bridge_posts(c: C, hm: HeightMap, entities: Node2D, pts: Array) -> v
 			last = s
 		s += 0.25
 	if first < 0.0:
-		return
+		return out
 	var stops: Array[float] = []
 	s = first + 0.3
 	while s < last - 1.0:
 		stops.append(s)
 		s += POST_EVERY
 	stops.append(last - 0.3)
+	var previous := {-1.0: null, 1.0: null}   # each side's last post (null: none at the stop before)
 	for k in stops.size():
 		var at := _along(pts, stops[k])
 		var picture: Array = POST_END if k == 0 or k == stops.size() - 1 else POST
 		var post_kind := kind(picture)
-		if post_kind == "":
-			continue
 		for sign_: float in [-1.0, 1.0]:
 			var side: Vector2 = (at[1] as Vector2) * sign_
 			var edge: Vector2 = (at[0] as Vector2) + side * POST_OFF
 			var beyond: Vector2 = edge + side * 0.6
+			var post: Node2D = null
 			# On the deck, by its edge over the void (where the deck meets a piton, no post across the way).
-			if c.bridges[c.at(floori(edge.x), floori(edge.y))] != 1 or not c.is_void(floori(beyond.x), floori(beyond.y)):
-				continue
-			_post(hm, entities, post_kind, at[0], side)
+			if post_kind != "" and c.bridges[c.at(floori(edge.x), floori(edge.y))] == 1 and c.is_void(floori(beyond.x), floori(beyond.y)):
+				post = _post(hm, entities, post_kind, at[0], side)
+			if post and previous[sign_]:
+				out.append([previous[sign_], post])
+			previous[sign_] = post
+	return out
 
 
 ## One post of `kind` beside the deck's middle line at `middle`, on the `side` (unit vector): as far
 ## out as it holds (cieux_pieds.gd), its picture turned so that its foot leans towards the middle; none
-## when it holds nowhere between POST_OFF and POST_MIN.
-static func _post(hm: HeightMap, entities: Node2D, kind: String, middle: Vector2, side: Vector2) -> void:
+## (null) when it holds nowhere between POST_OFF and POST_MIN.
+static func _post(hm: HeightMap, entities: Node2D, kind: String, middle: Vector2, side: Vector2) -> Node2D:
 	var off := POST_OFF
 	while off >= POST_MIN - 0.001:
 		var t := middle + side * off
 		for flip: bool in [side.x + side.y < 0.0, side.x + side.y >= 0.0]:
 			if F.lift(hm, kind, flip, t * B.TILE) <= F.TOLERANCE:
-				put(entities, [kind], t, flip)
-				return
+				return put(entities, [kind], t, flip)
 		off -= POST_STEP
+	return null
+
+
+## The ropes of the liana bridges (the hand rail from post to post, drawn by the view: world/view3d/
+## ropes.gd, Ropes), declared in zone `root`: a node « Cordes » whose metadata « paires » lists the posts
+## to join by their names in Entities, [["PilierPont1", "PilierPont3"], …]. `pairs`: [post, post]
+## (bridge_posts); a post removed since (settle_all) takes its ropes with it. Added last: built again,
+## the scene only gains this node.
+static func ropes(root: Region, pairs: Array) -> void:
+	var names: Array = []
+	for pair: Array in pairs:
+		if is_instance_valid(pair[0]) and is_instance_valid(pair[1]):
+			names.append([String((pair[0] as Node).name), String((pair[1] as Node).name)])
+	if names.is_empty():
+		return
+	var holder := Node.new()
+	holder.name = Ropes.NODE
+	holder.set_meta(Ropes.META, names)
+	root.add_child(holder)
 
 
 ## The point `s` tiles along polyline `pts`, and the unit vector across it.

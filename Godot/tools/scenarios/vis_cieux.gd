@@ -3,7 +3,8 @@ extends RefCounted
 ## Éternels (cieux, nids_geants, arche_du_vent), place by place, at several hours and weathers; the
 ## join with the Monts from both sides; then, zone by zone (verifier), on the live zone: every key
 ## place reachable on foot from the way in (and Chloé's own body swept along the way: nothing solid
-## blocks it), the islets reached only in flight, no prop floating over a drop or standing on a path.
+## blocks it), the islets reached only in flight, no prop floating over a drop or standing on a path,
+## every rope of the bridges (Ropes) joining two posts less than 7 m apart.
 ## No scene is played (the story's flags are set; the zones are entered without their scenes).
 ## While world.gd ZONES does not list the three zones yet, `entrer` loads them itself.
 ## godot --path Godot --script res://tools/capture.gd --resolution 1600x900 -- out=<dossier>
@@ -220,6 +221,9 @@ static func verifier(zone: String) -> String:
 	for s in _on_paths(region):
 		fails += 1
 		lines.append("ÉCHEC décor solide sur un chemin : " + s)
+	var ropes := _ropes(world, region)
+	fails += ropes.size() - 1
+	lines.append_array(ropes)
 	for line in lines:
 		print("  ", line)
 	return "%s : %d vérification(s) en échec" % [zone, fails]
@@ -368,6 +372,23 @@ static func _floating(world: Node, region: Node) -> Array[String]:
 		var up: float = feet.call("lift", heights, (n as Prop).kind, (n as Prop).flip, (n as Node2D).position)
 		if up > tolerance:
 			out.append("%s (%s) %s : sa base à %+.2f m du sol" % [n.name, (n as Prop).kind, ((n as Node2D).position / TILE).snapped(Vector2(0.1, 0.1)), up])
+	return out
+
+
+## The ropes of the bridges (Ropes: the zone's « Cordes »): each one declared joins two posts of the zone
+## (POSTS) less than Ropes.MAX_SPAN (7 m) apart, from tie to tie. Its lines: one ÉCHEC per rope that does
+## not, then the count (PASS).
+static func _ropes(world: Node, region: Node) -> Array[String]:
+	var heights: HeightMap = world.get("_view").get("heights")
+	var out: Array[String] = []
+	var pairs := Ropes.pairs(region)
+	for pair: Variant in pairs:
+		var ends := Ropes.posts(region, pair)
+		var posts_ok := ends.size() == 2 and ends.all(func(n: Variant) -> bool: return n != null and String((n as Prop).kind) in POSTS)
+		var span := Ropes.tie_point(heights, ends[0]).distance_to(Ropes.tie_point(heights, ends[1])) if posts_ok else INF
+		if not posts_ok or span >= Ropes.MAX_SPAN:
+			out.append("ÉCHEC corde %s : %s" % [pair, "un bout n'est pas un poteau de la zone" if not posts_ok else "%.1f m entre ses poteaux" % span])
+	out.append("PASS cordes : %d déclarée(s), chacune entre deux poteaux à moins de %d m" % [pairs.size() - out.size(), Ropes.MAX_SPAN])
 	return out
 
 

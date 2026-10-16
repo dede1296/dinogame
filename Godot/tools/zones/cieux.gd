@@ -127,8 +127,9 @@ static func build() -> Region:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = SEED
 	_landmarks(root, entities)
+	var ropes: Array = []   # (the posts' ropes, declared once the props are settled)
 	for p: Array in PONTS:
-		D.bridge_posts(c, ground, entities, p[0])
+		ropes += D.bridge_posts(c, ground, entities, p[0])
 	D.landing_flags(c, entities, P.ATTERRISSAGES_CIEUX)
 	D.scatter(c, entities, rng, _keep_clear())
 	D.sea_decor(c, entities, rng, 7, 26)
@@ -142,6 +143,7 @@ static func build() -> Region:
 	_habitats(root)
 	# Every prop on the ground (none floating over a drop, by a bridge's edge or a piton's rim).
 	_check(root, F.settle_all(root))
+	D.ropes(root, ropes)
 	return root
 
 
