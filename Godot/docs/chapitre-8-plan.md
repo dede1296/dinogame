@@ -1,4 +1,4 @@
-# Chapitre 8 — La Plaine Volcanique : plan proposé (16/10/2026, à valider par Greg)
+# Chapitre 8 — La Plaine Volcanique : plan proposé (16/10/2026, décisions de Greg du 17/10)
 
 > Brouillon écrit d'après `histoire.md` § Chapitre 8, `bestiaire.md` § Plaine Volcanique, `lore.md`
 > (Brac, Dame Suie) et le modèle du chapitre 7 (`chapitre-7-plan.md`). Rien n'est commencé : les points
@@ -18,20 +18,24 @@
 6. **Maïa est absente** (descendue avec Isaure) : Chloé a Moustique et le masque en carton. Caillou n'est
    plus avec elle non plus.
 
-## Proposition : trois zones (modèle des Cieux)
+## Décidé (Greg, 17/10) : QUATRE zones, mécanique B + un peu de A
+
+## Quatre zones (modèle des Cieux)
 
 | Zone (identifiant) | Rôle | Taille indicative |
 |---|---|---|
-| `champs_cendres` | arrivée par la Descente de Cendre (depuis l'Arche), dinos corrompus et Styracosaurus, Saichania ; page 36 | ~90×70 |
-| `forges_ombre` | les forges : camp de l'Ombre, Brac, Dame Suie, la grande forge d'ambre noir ; pages 37 ; lettre à Isaure | ~80×60 |
-| `sanctuaire_magma` | coulées de lave, le T-Rex de Magma, le 5e Cœur ; pages 35 et 38 à la porte du cratère | ~70×60 |
+| `champs_cendres` | arrivée par la Descente de Cendre (depuis l'Arche), Styracosaurus, Saichania, premiers corrompus | ~90×70 |
+| `forges_ombre` | les forges : camp de l'Ombre, corrompus qui se retournent, Brac, Dame Suie, la grande forge d'ambre noir ; page 37 (lettre à Isaure) | ~80×60 |
+| `coulees_lave` | les coulées : la mécanique B (lave franchie par un dino pierre/feu), Daspletosaurus la nuit, page 36 ; chaleur légère | ~80×60 |
+| `sanctuaire_magma` | le T-Rex de Magma, le 5e Cœur ; page 35 | ~60×50 |
+| `porte_cratere` | la porte de la Terre des Apex : page 38, Isaure qui attend, raccord avec le chapitre 9 | ~50×40 |
 
 Dossier `regions/volcan/`, générées par `tools/zones/*.gd` comme les Cieux (clés de nommage identiques :
 `story/volcan*.gd`, `data/dialogue_volcan.gd`, `story/volcan_places.gd`).
 
 ## Mécanique propre au chapitre (comme le froid aux Monts, le Vol aux Cieux)
 
-**À TRANCHER.** Trois pistes, par ordre de ma préférence :
+**DÉCIDÉ : B, avec un peu de A près des coulées.** Les trois pistes étudiées :
 
 - **A. La chaleur** (reprise exacte du mécanisme du froid, `Region.hot`, vêtement/objet résistant à la chaleur
   vendu par Joss ou obtenu chez Rosalie) : peu de code, cohérent, mais déjà vu une fois.
@@ -78,9 +82,11 @@ tout nouveau mobile.
 Intégration par moi (patches communs : `world.gd`, `story.gd`, `zone_map.gd`…), commit par lots.
 Coût estimé : proche du chapitre 7 (4 agents, plusieurs heures de quota) : à lancer quand Greg a du volume.
 
-## Décisions attendues de Greg
+## Le ton de Brac (avis proposé, à confirmer)
 
-1. Mécanique : A, B (recommandée), C, ou autre ?
-2. Trois zones (champs, forges, sanctuaire) : OK ou plus/moins ?
-3. Ton de Brac : franc brutal comique, ou plus menaçant ?
-4. Quand lancer (quota) et dans quel ordre : histoire d'abord (Fable seul), puis carte/mécaniques/images en parallèle ?
+**Brutal et comique, avec un seul vrai moment sombre.** Une grande gueule qui jure, se vante et traite l'ambre noir « à la pelle » (c'est déjà son trait de lore) : cohérent avec le ton chaleureux et drôle du jeu, et rien d'effrayant. Mais quand l'Ombre Noire le lâche, une réplique plus amère et presque humaine (il a donné ses années à quelqu'un qui le jette) : c'est ce qui le rend mémorable et prépare la bascule de Dame Suie. Il part en jurant, vexé, pas détruit.
+
+## Reste à décider
+
+1. Ton de Brac : confirmer (brutal-comique avec un moment amer) ou autre.
+2. Quand lancer (quota) : histoire d'abord (Fable seul), puis carte, mécaniques et images en parallèle.
