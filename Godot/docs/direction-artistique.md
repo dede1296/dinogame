@@ -119,8 +119,41 @@ chaque nouveau repli ; retirer la ligne une fois refait.
 | Chapitre 7, vol de profil : 2 images sur 4 identiques | `dinos/{quetzalcoatlus,hatzegopteryx,tupandactylus,tapejara}_vol.png` | nano-banana : 4 poses demandées, mais la pose « mi-haute » sortait à chaque essai avec un filé rose flou (3 essais) : cycle haut / plané / bas / plané (3 poses distinctes) | Redemander la pose mi-haute seule, nette |
 | Chapitre 7, vol face/dos : pose « ailes basses » | `dinos/*_vol_face_dos.png` | nano-banana : la 3e colonne est parfois très repliée (ailes en U) ; tupandactylus de face : 4e pose avec la tête tournée de 3/4 | Redemander ces cases |
 | Chapitre 7, `chloe_vol*.png` (3e version, 11/10) | `characters/chloe_vol.png`, `chloe_vol_manteau.png` (anciennes : `_v2.png`) | Assise à califourchon : cuisse en avant, genou plié à environ 90°, une seule jambe de profil, jambes écartées de face et de dos, mains sur les poignées ; réduite à 75 % autour du point d'assise (bassin à ±2 px de la 2e version) ; de profil gauche la jambe pend presque droite ; face de `chloe_vol` : yeux fermés (rire) | Si le calage ne plaît pas : `SHRINK` dans `cieux_persos.mjs` |
+| Chapitre 8, trex_magma : pose d'attaque | `dinos/trex_magma.png` (2e essai `qziwoi`) | nano-banana : le 2e essai a la bouche fermée partout (c'est ce qui était demandé au repos) mais la 6e pose « attaque » est elle aussi bouche fermée ; le 1er essai (`1bc8kc`) avait la gueule ouverte mais des poses 4 et 5 au cou penché et un halo de feu autour de la tête. De face, la fumée sort au niveau des yeux (de chaque côté de la tête) plutôt que des naseaux | Redemander la seule pose d'attaque gueule ouverte, sans halo de feu ; fumée des naseaux de face |
+| Chapitre 8, daspletosaurus / saichania : ressemblance avec leurs voisins | `dinos/daspletosaurus*.png`, `saichania*.png` | Daspletosaurus : éditée depuis l'Allosaurus, silhouette de profil proche (tête plus lourde, corps plus trapu seulement de face/dos) ; Saichania : éditée depuis l'Ankylosaurus, même ocre (les cornes du crâne et les épines plus petites la distinguent) | Si on les confond en jeu : Daspletosaurus plus trapu de profil (crâne plus haut, cou plus court), Saichania plus pâle/grise |
+| Chapitre 8, fond de combat volcan : restes du fond des Cieux | `battle/volcan.jpg` (source `1jdddz`) | nano-banana a gardé des plumes au sol et un petit drapeau en lambeaux hérités de `cieux.jpg` | Redemander sans plumes ni drapeau |
+| Chapitre 8, lave : sol non animé | `ground/lave.png` | Une seule image raccordable (nano-banana ne fait pas de planche animée) ; l'animation se fait par défilement/shader du sol | Au besoin, une planche de 4 images décalées |
+| Chapitre 8, autel_magma_fendu : lueur recolorée | `props/autel_magma_fendu.png` | La lueur de la fente, peinte sur le magenta, sortait rose : repeinte en orange par `recolor()` (tools/art-jobs/volcan_decors.mjs) | Redemander l'autel fendu avec la fente éclairée sur un fond d'une autre couleur |
+| Chapitre 8, Léonce assis : masque d'os trop grand | `characters/leonce_assis.png` | nano-banana a dessiné le masque presque aussi grand que la tête (posé sur le genou) | Le redemander plus petit (taille du visage) |
+| Chapitre 8, fiche de Brac assis : colonnes recomposées | `characters/brac_assis_cage.png` | nano-banana a dessiné 6 colonnes au lieu de 4 : recomposées en 4 ; la rangée du bas (debout, inutilisée) a son profil gauche = le droit retourné | Rien si la rangée du bas reste inutilisée |
 
-## Cieux Éternels (art, chapitre 7, 11/10)
+## Plaine Volcanique (art, chapitre 8, 17/10)
+
+Images du chapitre 8 (agent IMAGES, jobs `tools/art-jobs/volcan_especes.mjs`, `volcan_decors.mjs`, `volcan_persos.mjs`, sorties par
+`node Godot/tools/process-art.mjs <chemin>` depuis la racine du dépôt ; **toujours un chemin précis** comme `dinos/styracosaurus.png`
+ou `props/forge_allumee.png` : un nom court comme `_corrompu.png` relance aussi les anciens jobs). Aucune image existante n'a été touchée
+(`cage.png` et `pierre_plate.png` existaient déjà : mes versions s'appellent `cage_fermee` et `pierre_plate_volcan`). **Aucun repli ComfyUI :
+tout est fait avec nano-banana.**
+
+| Quoi | Fichiers | Format |
+|---|---|---|
+| Espèces (profil + face/dos) | `dinos/{styracosaurus,saichania,daspletosaurus,trex_magma}.png` + `_face_dos.png` | profil 3×2 cellules 248×198, 218×153, 266×223, 300×268 ; face/dos 4×2 même cellule |
+| Corrompus (profil seul, veines lilas, yeux blanc-violet, éclats d'ambre noir) | `dinos/{styracosaurus,saichania,daspletosaurus,allosaurus,majungasaurus}_corrompu.png` | 3×2, cellule de l'espèce saine (allosaurus 262×218, majungasaurus 246×208) |
+| Sols | `ground/{cendre,roche_noire,lave,croute_refroidie,obsidienne}.png` | 512×512 raccordables (lave : fixe) |
+| Forges | `props/{forge_allumee,forge_eteinte,forge_eteinte_2,forge_eteinte_3,grande_forge_allumee,grande_forge_eteinte}.png` | PNG détourés |
+| Cages, barricade, fût | `props/{cage_fermee,cage_ouverte,cage_grande,barricade,barricade_tombee,fut_ambre_noir}.png` | idem (la `cage` d'origine reste utilisable) |
+| Atelier de Suie et de Brac | `props/{enclume,auvent,soufflet,marmite,etabli_suie,gants_gris,traineau_roues,masque_os_sol,pierre_plate_volcan}.png` | idem |
+| Sanctuaire et porte | `props/{vasque_source,autel_magma,autel_magma_fendu,coque_lave,lave_paroi,torche,plaque_fer,portail_apex,camp_helene}.png` | idem (`plaque_fer` vierge : numéros écrits par le jeu ; `coque_lave` = îlot de croûte refroidie, lecture libre de « coque ») |
+| Interface | `ui/{sceau_volcan,antidote_ambre,lettre_isaure}.png` | 160×160 |
+| Fond de combat | `battle/volcan.jpg` | 1920×1072, cadrage de `cieux.jpg` |
+| Personnages | `characters/dame_suie_sans_lunettes.png` (4×4, 94×184), `brac_assis_cage.png`, `leonce_assis.png` (2×4, 240×184), `maia_pierre.png` (2×4, 260×240 : la pierre est dans le dessin) | rangée 1 = assis [face, gauche, droite, dos], rangée 2 = debout (échelle, inutilisée) |
+
+Méthode : nano-banana édite une planche du jeu (Tricératops, Ankylosaurus, Allosaurus pour les espèces ; `terre`, `palissade`,
+`cage`, `tente`, `boite_fer`, `sceau_cieux`, `battle/cieux.jpg` pour le décor ; `dame_suie`, `brac`, `sbire_assis`, `maia_assise`
+pour les personnages) avec l'anatomie réelle dans le prompt ; fond magenta ; `align: "bottom"` + `isolate` pour les profils.
+Chloé « montée » pour la lave : la planche `chloe_selle*.png` (profil, face, dos) existe déjà et suffit, rien de dessiné.
+
+## Échelle et conventions
 
 Images du chapitre 7 (agent IMAGES, tout dans des jobs `tools/art-jobs/cieux_especes.mjs`, `cieux_persos.mjs`,
 `cieux_decors.mjs`, sorties par `node Godot/tools/process-art.mjs <nom>` depuis la racine du dépôt ; `npm install` à la
