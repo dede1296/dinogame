@@ -1301,19 +1301,128 @@ versions écartées, les cinq pistes de rebondissement et leur critique : `scrat
 
 ## Chapitre 8 — La Plaine Volcanique · 5e Cœur
 
-1. Champs de cendres, coulées de lave, **forges de l'Ombre Noire**. Beaucoup de dinos corrompus : on
-   les apaise, et ils se retournent contre les forges.
-2. **Brac**, dernier combat : il est lâché par l'Ombre Noire, et part en jurant.
-3. **Dame Suie** change de camp : elle éteint la grande forge d'ambre noir et donne à Chloé le moyen
-   d'**annuler l'ambre noir** (pour le dernier combat).
-4. Le **T-Rex de Magma** garde le **5e Cœur**. Le combat le plus dur avant la fin. Sceau, Cœur.
-5. Isaure a quatre Cœurs, Chloé le cinquième : il faut les cinq pour ouvrir le cratère. Isaure attend
-   à la porte de la **Terre des Apex**. Pages 35 à 38 : Hélène savait, et avait tout prévu.
-6. **Maïa n'est pas avec Chloé** : elle est descendue avec sa mère à la fin du chapitre 7 (« Je ne peux
-   pas t'arrêter. Alors je ne te perds pas. »). Chloé a **Moustique** dans son équipe et le **masque en
-   carton** de Maïa dans sa sacoche. Brac peut en parler (« la petite Kerval qui suit sa mère comme un
-   Compsognathus ») ; Dame Suie change de camp aussi parce qu'elle a vu « la fille du Masque marcher à côté
-   de sa mère, sans une goutte, et sans peur ». La barque de Maïa reste prêtée.
+Le chapitre le plus chaud : il commence seule dans la cendre, sans Maïa, et finit à trois devant une
+porte de bois, à la lueur de deux torches, sans combat. Deux grands combats au milieu : Brac, pour la
+dernière fois, et le T-Rex de Magma, le plus dur du jeu avant la fin. Texte complet des scènes, pages,
+dialogues et drapeaux : [chapitre-8-scenes.md](chapitre-8-scenes.md) (écrit le 17/10, à valider).
+
+1. **La Descente de Cendre.** Dans la cendre, à chaque lacet, deux paires de bottes (une grande, une
+   petite) et trois gros orteils qui traînent : Caillou les a rattrapées. Chloé a Moustique sur l'épaule
+   (il a peur du feu, il se cache dans son col) et le masque en carton dans la sacoche. Pas de Cœur : les
+   quatre sont « là-haut », contre Isaure.
+2. **Les champs de cendres.** Gris partout, le volcan tout proche, sept feux rouges à son pied « comme
+   sur la page de Bertille ». Les traces s'arrêtent à une pierre plate : deux creux côte à côte, et un
+   énorme un peu plus loin, avec des roseaux mâchés. Le premier corrompu : un Styracosaurus à **plaque
+   de fer numérotée** (« 3 ») : Brac n'a plus de noms. Apaisé, il ne rejoint pas l'équipe : il part au
+   trot **vers les forges**, la tête baissée. Il n'a pas peur : il est en colère, et il sait où aller.
+3. **Les forges.** Un camp presque vide : les masques d'os assis par terre, qui attendent des ordres qui
+   ne viennent plus. **Léonce**, vieux pêcheur du port (« La capitaine est passée ce matin. Elle m'a dit :
+   “Rentre, Léonce.” Vingt ans qu'elle me dit quoi faire, alors je rentre. »). Trois petites forges,
+   chacune gardée par un corrompu numéroté (7 le Saichania, 11 l'Allosaurus, 12 le Majungasaurus) ;
+   **apaisé, chacun s'en prend à sa forge** : le 7 la renverse à coups de tête comme Grelot un mur de
+   glace, le 11 arrache le soufflet, le 12 **réfléchit** et pousse un fût d'ambre noir dedans (« l'ambre
+   noir brûle très mal, en fin de compte »). Les trois éteintes, le 3 et le 7 reviennent au trot et
+   **poussent la barricade** ensemble : « Ils se sont donné rendez-vous. » Derrière : « MA BARRICADE ! »
+4. **Brac**, dernier combat. Assis sur une cage retournée, Mastoc, Cabosse et Grognon couchés autour, et
+   dans une grande cage, **Fournaise**, un Daspletosaurus corrompu : le seul qu'il ait nommé. Il n'a plus
+   d'ordres depuis ce matin : Isaure est passée avec les Cœurs « et la petite Kerval qui la suit comme un
+   Compsognathus », et elle a dit « Tu peux rentrer, Brac ». Il a enfin ses **cartes de visite** (trois
+   cents) ; il en a donné une, à Maïa, qui a dit merci. Il veut « gagner UNE fois ». Combat : Cabosse (44),
+   Grognon (44), Mastoc (45), puis Fournaise (46, corrompu, apaisement long). Battu, **le seul moment
+   amer** du chapitre, en quatre répliques : « Douze ans… Rentrer où ? J'ai deux cent quatre-vingt-dix-neuf
+   cartes de visite, et pas d'adresse dessus. » Mastoc pose sa tête sur son genou. Puis il jette son
+   masque d'os dans la cendre (« Il me serrait, de toute façon »), jure (« Crotte de Stégosaure ! Par les
+   écailles de ma grand-mère, et par celles de son Stégosaure ! »), garde ses trois dinos (« ils regardent
+   mon sandwich, mais ils me regardent ») et part « voir la mer. De LOIN. Pas en barque. » Fournaise choisit :
+   l'équipe de Chloé (type feu : il franchira la lave) ou les coulées. Chloé : « Deux masques par terre. Un
+   dans l'herbe, un dans la cendre. Personne ne les ramassera. »
+5. **Dame Suie**, au pied de la grande forge, a tout regardé et tout noté (« Le sujet 12 a… réfléchi. Ce
+   n'est pas un mot de mes tables. »). Isaure lui a pris **une fiole**, la plus pure, à l'aube, et lui a dit
+   d'éteindre ; elle n'a pas éteint : elle regardait **la petite**, « la fille du Masque, à côté de sa mère,
+   pas derrière, qui disait bonjour aux sbires un par un. Pas une goutte. Et pas peur. Il n'y a pas de ligne
+   pour ça. » Belladone, les dormeurs, Maïa : « Une exception, c'est une exception. Deux, une erreur de
+   mesure. Trois… — Trois, c'est que les tables sont fausses. » Elle retire ses **gants**, tourne la roue du
+   tirage : **la grande forge s'éteint** « comme une lampe qu'on baisse » ; douze ans, « ça fait moins de
+   bruit que je pensais » ; elle range ses lunettes fumées pour de bon (« Elles étaient contre la lueur »).
+   Elle donne l'**Ambre clair** (`antidote_ambre`, une dose : « Une goutte. Pas une de plus. — S. » ; mise au
+   point la nuit, aux Monts, « par curiosité : je voulais savoir si ça se défaisait » ; « ce jour-là, vous
+   n'aurez pas le temps de parler »), puis la **lettre d'Hélène « Pour Isaure »** (page 37), posée sur son
+   établi il y a un an, une nuit, par Hélène elle-même, et gardée un an sans être ouverte (« Je ne lis pas
+   le courrier des autres. J'ai des défauts ; pas celui-là. »). Elle part avec Mandragore et **les carnets
+   d'Hélène**, qu'elle rend au Cabinet (« Je lui dirai que je refais mes tables. Il ne comprendra pas. Il
+   fera du thé. »). « Nous nous reverrons. Là où il fait bon, cette fois. » Ses gants restent sur l'établi.
+6. **Les coulées de lave** : la **mécanique B**. Les coulées ne se franchissent que sur le dos d'un dino
+   de tête de type **pierre ou feu** (« le cuir pour » : Bastion, un Saichania, Fournaise…) ; sans lui, le
+   texte dit qui pourrait, dans l'équipe ou où en trouver. Une touche de **A** : à pied près des coulées,
+   une petite jauge de chaleur ; pleine, Chloé recule d'elle-même à l'ombre, sans dégâts ; sur le dos d'un
+   dino qui convient, elle ne monte pas. Première traversée : « Ne regarde pas en bas. … J'ai regardé en
+   bas. » **Page 36** sur un rocher au milieu des coulées (atteint sur un dino de pierre/feu) : le plan
+   d'Hélène, se sceller avec le Souverain « de l'intérieur » : « Elle n'a pas disparu. Elle est entrée. »
+   Daspletosaurus la nuit. La faille du sanctuaire : « On n'entre pas sans frapper. Ici, c'est lui qui
+   frappe. — H. »
+7. **Le sanctuaire de Magma** : une salle ronde de verre noir (« Le masque d'obsidienne était fait de ça »),
+   la lave qui l'éclaire par dessous, une paroi où la lave coule comme dans un sablier. La vasque d'eau
+   fumante : des cercles, un « boum », les cercles. Chloé ne bouge pas (« Un T-Rex ne voit pas ce qui ne
+   bouge pas » : Roc a dit « Une légende. Cours. »). Le **T-Rex de Magma** entre par la paroi de lave et la
+   regarde droit dans les yeux : « Il la voit très bien. … Et je ne cours pas. » Il renifle les six Sceaux
+   (le Désert : un vieux voisin ; la Côte : le poisson ; les Monts : trop froid ; les Cieux : il lève les
+   yeux), cherche les Cœurs, ne les trouve pas, gronde ; Chloé tend les mains comme Hélène (page 10) ; il
+   souffle dessus, chaud, pas brûlant, et rugit : **combat d'honneur** (niveau 48, type feu, l'Eau et la
+   Pierre le touchent fort ; l'équipe boit à la source chaude « au goût d'œuf » avant chaque essai). Gagné,
+   il **frappe l'autel du pied** : le verre se fend en étoile, la lave monte, se fige, et s'ouvre « comme
+   une noix » sur le **Cinquième Cœur**, chaud comme du pain, « le plus bruyant », et le **Sceau du Volcan**
+   (ambre rouge sombre, une flamme, la fougère). « Elle en a quatre, et moi un, et il faut les cinq. Alors
+   elle a besoin de moi. Et moi d'elle. C'est bête, mais ça me rassure. » Il se couche et **fume en
+   dormant** ; le volcan gronde, et **la lave se retire** du chemin du cratère « comme une marée ».
+   **Page 35** dans une fente du mur de verre : trois semaines, « il a mangé mon chapeau », Anselme l'a
+   appelé **Cheminée** ; et « I. a ramassé un éclat de verre noir grand comme une assiette, “pour en faire
+   quelque chose”… le dernier endroit où nous avons ri toutes les deux ». Chloé comprend d'où vient le
+   masque. Elle ne le dira pas à Maïa, « pas comme ça ».
+8. **La porte du cratère.** Un portail de bois à deux battants, cerclé de fer, entre deux torches ; cinq
+   creux en étoile. Le **camp d'Hélène** (lanterne, couverture pliée au carré, cairn) et la **page 38** : sa
+   dernière nuit dehors, les trois œufs, la lettre à Chloé « qui dit beaucoup moins que je voudrais », « J'ai
+   peur. Je l'écris une fois », « ne me cherche pas tout de suite. Occupe-toi d'eux d'abord. Ils sont plus
+   petits. » **Isaure**, debout, le dos à Chloé, les cheveux attachés ; les quatre Cœurs dans sa sacoche de
+   marin battent quand le cinquième approche. **Maïa** sur une pierre, Caillou qui éternue (« Il éternue
+   toujours quand c'est toi. »). Isaure sait pour les forges (« Maïa a compté. — Sept. Comme Bertille. ») et
+   pour Brac (« Il n'a jamais su nager. Douze ans, et je ne lui ai jamais rien appris. »). **Le marché** :
+   « Je ne vais pas te le prendre. Je l'ai fait une fois, là-haut, et je ne le referai pas devant ma fille.
+   Je vais te le demander. » Donne-le-moi et viens, on le tiendra à deux, plus personne ne mourra de faim
+   au port, « et on la sortira de là. Toutes les deux. Ça, je ne te l'ai pas dit là-haut. » Chloé : **« Non. »**
+   Pas fort. « Elle non plus ne disait jamais rien fort. » Maïa : « Tu vois. Elle a dit non. Comme Hélène. »
+   Chloé : « Je ne vous laisserai pas ouvrir cette porte. Mais je ne vous laisserai pas non plus là-dedans
+   toute seule. Ni Maïa. Je ne sais pas encore comment je fais les deux. » Isaure : « Je n'ouvre pas avant
+   l'aube. Je ne descends pas ma fille dans le noir. Tu as jusqu'à l'aube pour changer d'avis. — Vous aussi.
+   — … Oui. Moi aussi, je suppose. » **La lettre** : Isaure la prend, ne l'ouvre pas, la glisse contre les
+   Cœurs ; Maïa : « Lis-la maintenant. » ; « Si je la lis maintenant, ma tornade, je ne descends plus. Et il
+   faut bien que quelqu'un descende. » **Maïa et Chloé** : Moustique vole sur l'épaule de Maïa et la
+   mordille ; « Il a mangé l'encrier de Roc. » (le premier rire du chapitre) ; « Garde-le encore. S'il est
+   avec toi, tu es obligée de revenir. » ; « Demain, à l'aube, je serai de son côté de la porte. Pas contre
+   toi. De son côté. Tu comprends la différence ? — Oui. — Bien. Parce que moi, j'ai mis une nuit entière. »
+   Caillou pousse Chloé de la corne : soigne tes dinos, et reviens avec ton équipe au complet. Pas de
+   combat : « À suivre… (la Terre des Apex) ».
+9. **Autour** : Roc au Cabinet (« Une légende. Cours. » ; la dame en gris a rapporté les carnets d'Hélène :
+   « Je n'ai rien compris. J'ai fait du thé. » ; Brac assis au bout de la jetée avec ses trois bêtes et un
+   sandwich ; Cheminée « m'a mangé deux chapeaux » ; « Ne la laisse pas ouvrir. Et ne la laisse pas toute
+   seule non plus. Je sais : c'est deux choses. ») ; Bertille (« Les feux se sont éteints. J'ai recompté deux
+   fois : zéro. … Tiens. Une soupe. ») ; Joss (un manteau à la taille de Maïa, « avec une poche pour le
+   piaf ») ; Léonce sur le ponton (« Le rouquin regarde la mer. Il a l'air d'un phare qui boude. ») ; les
+   questions (le T-Rex, la lave, les forges, l'ambre clair).
+
+Ce qui change après ce chapitre : Chloé a le Sceau du Volcan et le 5e Cœur ; l'Ambre clair (une dose) ;
+Fournaise peut-être ; les forges sont éteintes et les sbires rentrés au port ; Brac est à la jetée ; Dame
+Suie a rendu les carnets d'Hélène au Cabinet ; Isaure a la lettre d'Hélène, non lue, contre les quatre
+Cœurs ; Maïa garde la porte avec sa mère ; le chapitre 9 commence à l'aube.
+
+Drapeaux (détail et objets dans `chapitre-8-scenes.md`) : `volcan_ouvert`, `cendres_arrivee`, `traces_vues`,
+`premier_corrompu_volcan`, `forges_arrivee`, `leonce_vu`, `forge_1_eteinte` à `_3`, `petites_forges_eteintes`,
+`barricade_tombee`, `brac_volcan_vu`, `brac_vaincu`, `brac_parti`, `fournaise_garde`, `masque_brac_vu`,
+`suie_volcan_vue`, `suie_alliee`, `grande_forge_eteinte`, `antidote_ambre`, `suie_partie`, `coulees_arrivee`,
+`lave_franchie`, `sanctuaire_magma_arrivee`, `flaque_tremble`, `trex_magma_parle`, `trex_magma_battu`,
+`sceau_volcan`, `coeur_5`, `lave_retiree`, `porte_arrivee`, `isaure_porte_vue`, `marche_refuse`,
+`lettre_isaure_donnee`, `maia_porte_vue`, `apex_bloque`, `found_journal_35` à `_38` (= `page_35` à `page_38`),
+`roc_trex_legende`, `roc_suie_carnets`, `carnets_rendus`, `roc_brac_parti`, `roc_sceau_volcan`,
+`bertille_forges_eteintes`, `joss_volcan`. Objets : `antidote_ambre`, `sceau_volcan`, `coeur_5`, `lettre_isaure`.
 
 ## Chapitre 9 — La Terre des Apex
 
@@ -1485,7 +1594,8 @@ tu as Vif), plus Caillou.
 | — | Belvédère des falaises (ch. 5) | — | Elle l'avait fixé là, « avec la mer derrière moi ». Page 23 : Hélène était sa marraine. Refuse le combat, s'enfuit ; son masque en carton reste à Chloé |
 | 5 ✅ | Monts Gelés, devant le sanctuaire de Givre (ch. 6) | Pouce (Iguanodon), Moustique (Dimorphodon), son œuf, Caillou (Tricératops) | Elle a questionné sa mère, qui a « reposé sa tasse, très doucement ». « Je veux l'arrêter. Pas la perdre. » Pas pour gagner : pour savoir si elle est prête. Puis elles font équipe ; sa barque est à Chloé |
 | — | Arche du Vent (ch. 7) | — | « Maman. Arrête. » ; devine que sa mère va chercher Hélène ; **part avec elle** (« Je ne peux pas t'arrêter. Alors je ne te perds pas. ») ; confie Moustique et son masque en carton à Chloé |
-| — | Ch. 8 et 9 | — | Aux côtés de sa mère ; au ch. 9, elle la protège ; alliée de Chloé « d'en bas » |
+| — | Porte du cratère (ch. 8) | — | À côté de sa mère depuis l'Arche : elle a dit bonjour aux sbires un par un, merci à Brac pour une carte de visite (Dame Suie bascule en la voyant passer « sans une goutte, et sans peur ») ; elle garde la porte avec Isaure ; refuse de reprendre Moustique (« s'il est avec toi, tu es obligée de revenir ») ; « Demain, à l'aube, je serai de son côté de la porte. Pas contre toi. » |
+| — | Ch. 9 | — | Elle protège sa mère ; alliée de Chloé « d'en bas » ; Moustique et le masque en carton lui reviennent |
 
 ---
 
@@ -1532,10 +1642,10 @@ précise, chaleureuse, parfois drôle, de plus en plus inquiète.
 | 32 | Cieux · nids | −25 ans | Le Souverain | Sa découverte, sa taille, son cœur qui bat avec le volcan |
 | 33 | Cieux · mer de nuages | −25 ans | La nuit du feu | L'éruption, le sceau, la clé brisée en cinq Cœurs |
 | 34 | Cieux · arche (le cairn, « le poste d'en haut ») | −1 an | Je sais qui c'est | Déchirée. « Je sais qui c'est. Je le sais depuis la nuit où mes carnets ont disparu, et je crois que je le savais avant. Je ne peux pas le lui dire. Elle ne me le pardonnerait pas… » ; elle l'écrit « une fois, ici, pour ne plus le porter seule : c'est » — le coin est arraché. Le nom n'est jamais lu : Chloé le sait déjà ; ce que la page dit, c'est qu'Hélène a choisi de se taire |
-| 35 | Volcan · sanctuaire | −25 ans | Le cinquième Cœur | Le T-Rex de Magma, le plus difficile à convaincre |
-| 36 | Volcan · coulées | −1 an | Si le sceau cède | Son plan : se sceller avec le Souverain pour le calmer de l'intérieur |
-| 37 | Volcan · forges | −1 an | Pour Isaure | Lettre à Isaure : elle ne la hait pas ; « reviens » |
-| 38 | Volcan · porte du cratère | −1 an | La veille | Sa dernière nuit : les trois œufs, la lettre à Chloé, la peur |
+| 35 | Volcan · sanctuaire (une fente du mur de verre, derrière l'autel) | −25 ans | Le cinquième Cœur | Le T-Rex de Magma : trois semaines sans la regarder, « il a mangé mon chapeau », Anselme l'a appelé Cheminée ; « I. a ramassé un éclat de verre noir grand comme une assiette, “pour en faire quelque chose” » : le dernier endroit où elles ont ri |
+| 36 | Volcan · coulées (le rocher au milieu de la lave : sur un dino de pierre ou de feu) | −1 an | Si le sceau cède | Son plan : se sceller avec le Souverain pour le calmer de l'intérieur ; « ce n'est pas un sacrifice, Anselme : c'est une position confortable » |
+| 37 | Volcan · forges (remise par Dame Suie, qui l'a gardée un an sans l'ouvrir ; Chloé la porte à Isaure) | −1 an | Pour Isaure | Lettre : « je sais que c'est toi », « c'était lâche », « tu as tort sur le moyen », « je ne te hais pas », « reviens tout court », « vingt ans à rattraper, dont la moitié est de ma faute » |
+| 38 | Volcan · porte du cratère (le camp d'Hélène, sous le cairn) | −1 an | La veille | Sa dernière nuit : les trois œufs, la lettre à Chloé « qui dit beaucoup moins que je voudrais », « J'ai peur. Je l'écris une fois », « ne me cherche pas tout de suite. Occupe-toi d'eux d'abord. Ils sont plus petits. » |
 | 39 | Terre des Apex | −1 an | Il a peur | Écrite au bord du cratère : « Il a peur. Moi aussi. J'y vais. » |
 | 40 | Remise par Hélène | aujourd'hui | Ce qui dort n'est pas mort | Écrite après son réveil, pour Chloé. La fin. |
 

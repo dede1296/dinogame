@@ -98,7 +98,16 @@ Ses figures :
   écrit le Masque) ; acculé dans le cul-de-sac du canyon des Vents avec ses nouveaux dinos (Cabosse
   le Stygimoloch, Grognon le Majungasaurus, et Mastoc), il abandonne l'Alpha et s'enfuit par une
   corde en jurant « par les écailles de sa grand-mère ». Sur sa liste, l'Alpha de la Forêt est
-  devenu « RATÉ (la gamine) ».
+  devenu « RATÉ (la gamine) ». Au Volcan (ch. 8), il a tant de dinos corrompus qu'il n'a plus de noms :
+  il leur met des **plaques de fer numérotées** ; seul **Fournaise**, un Daspletosaurus, a un nom (« c'est
+  moi qui l'ai nourri. À la pelle. »). Il a enfin ses cartes de visite (trois cents) ; il en a donné une,
+  à Maïa, qui a dit merci. Lâché par Isaure (« Tu peux rentrer, Brac. »), battu une quatrième fois, il a
+  son seul moment amer (« Douze ans… Rentrer où ? J'ai deux cent quatre-vingt-dix-neuf cartes de visite,
+  et pas d'adresse dessus. »), jette son masque d'os dans la cendre (« Il me serrait, de toute façon »),
+  garde Mastoc, Cabosse et Grognon (« ils regardent mon sandwich, mais ils me regardent ») et part « voir
+  la mer. De LOIN. Pas en barque. » On le retrouve assis au bout de la jetée de Port-Ambre, avec ses trois
+  bêtes et un sandwich, « comme un phare qui boude ». Il n'a jamais fait peur à personne : il a surtout eu
+  peur.
 - **Dame Suie**, la chimiste : fabrique l'ambre noir. Froide, curieuse, pas cruelle : elle finira par
   douter. Adversaire du Marais et des Monts Gelés. Manteau couleur de cendre, gants gris perle, chapeau à
   voilette, lunettes aux verres fumés, petits ciseaux d'argent et fioles étiquetées d'une écriture fine ;
@@ -119,6 +128,21 @@ Ses figures :
   fois ses lunettes fumées : « Il faudra peut-être que je refasse mes tables. » Elle laisse partir Chloé
   avec un indice, « gratuitement, c'est rare » : le Masque veut tous les Cœurs d'un coup, dans les Cieux.
   Elle promet de la revoir « là où il fait plus chaud » (le volcan, où elle changera de camp).
+  Au Volcan (ch. 8), elle bascule sur **trois observations**, pas sur un discours : Belladone calmée sans
+  une goutte, les dormeurs parfaits sans une goutte, et « la fille du Masque », vue à l'aube « à côté de sa
+  mère, pas derrière », qui disait bonjour aux sbires, « sans une goutte, et sans peur » (« Une exception,
+  c'est une exception. Deux, une erreur de mesure. Trois… c'est que les tables sont fausses. »). Elle retire
+  ses gants, éteint la grande forge « comme une lampe qu'on baisse » (« Douze ans. Ça fait moins de bruit
+  que je pensais. »), range ses lunettes fumées pour de bon (« Elles étaient contre la lueur »), et donne à
+  Chloé l'**Ambre clair** : l'antidote de l'ambre noir, une seule dose, mis au point la nuit aux Monts
+  « par curiosité : je voulais savoir si ça se défaisait » (« On ne fabrique pas un poison sans fabriquer
+  son contraire. C'est la première règle. Brac ne l'a jamais apprise. »). Elle a gardé un an, sans l'ouvrir,
+  la lettre qu'Hélène a posée sur son établi la nuit avant de descendre (« Je ne lis pas le courrier des
+  autres. J'ai des défauts ; pas celui-là. ») : la page 37, qu'elle confie à Chloé pour Isaure. Puis elle
+  rapporte au Cabinet **les carnets d'Hélène** volés douze ans plus tôt (« Je lui dirai que je refais mes
+  tables. Il ne comprendra pas. Il fera du thé. »). Elle ne demande pas pardon : elle refait ses tables.
+  Ses gants gris perle restent sur l'établi des forges. « Nous nous reverrons. Là où il fait bon, cette
+  fois. »
 - **Les sbires** : des masques d'os anonymes, souvent des pêcheurs du port payés pour se taire
   (« Il paie. Au port, plus personne ne paie. »). Gustave (la Grotte) a démissionné pour
   retourner pêcher ; son cousin Firmin garde le camp de la Forêt, avec le sbire à la lanterne, qui
@@ -338,6 +362,22 @@ descendre de sa paroi de glace, et a enfermé le Cœur dans la glace de l'autel 
 après la nuit du feu, il est resté debout près d'elle toute une nuit, face au vent, pendant qu'elle
 posait ses mains brûlées sur le glacier (page 29). Quand les quatre Cœurs s'allument, il ne regarde pas
 le volcan : il regarde le ciel.
+
+**Le T-Rex de Magma**, Alpha de la Plaine Volcanique, garde le 5e Cœur au **sanctuaire de Magma** : une
+salle ronde de verre noir, dans le flanc du volcan, que la lave éclaire par en dessous, avec une paroi où
+la lave coule à l'intérieur comme dans un sablier, et à l'entrée une vasque d'eau de source chaude « au goût
+d'œuf ». Rouge sombre, des fissures orange qui luisent sur le dos comme des braises sous la cendre, il
+**fume par les naseaux quand il dort** : Anselme l'a appelé **Cheminée** (« Anselme n'a aucun respect, et il
+avait raison »). Il a ignoré Hélène trois semaines, assise chaque jour sur la pierre chaude à lui parler ;
+le vingt-deuxième jour il a mangé son chapeau, le vingt-troisième il s'est couché à côté d'elle « et le sol
+a tremblé ». Il a couvert le dernier Cœur de lave « comme on couvre une braise pour la nuit ». Il n'est pas
+corrompu : il met Chloé à l'épreuve (combat d'honneur, le plus dur avant la fin), la regarde droit dans les
+yeux quand elle ne bouge pas (« un T-Rex ne voit pas ce qui ne bouge pas » : « Une légende. Cours. », dit
+Roc ; « Il la voit très bien. Et je ne cours pas. »), souffle sur ses mains tendues, et, vaincu, frappe
+l'autel du pied : le verre se fend en étoile et la lave s'ouvre « comme une noix » sur le Cœur et le **Sceau
+du Volcan** (ambre rouge sombre, une flamme, la fougère). Le masque d'obsidienne d'Isaure a été taillé dans
+un éclat de ce sanctuaire, ramassé il y a vingt-cinq ans, « le dernier endroit où nous avons ri toutes les
+deux » (page 35).
 
 **Le Souverain**, l'Apex ancestral du cratère, immense, à la peau veinée d'ambre. Ni bon ni
 mauvais : c'est une force de la nature, qui a peur quand on le réveille de force.

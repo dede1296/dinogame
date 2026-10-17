@@ -1,5 +1,46 @@
 # Chapitre 8 — La Plaine Volcanique : plan proposé (16/10/2026, décisions de Greg du 17/10)
 
+## Histoire écrite le 17/10 (agent HISTOIRE, Fable) — à valider
+
+- **Le déroulé** (lieu par lieu, objectifs, ce qu'on apprend, combats, récompenses, drapeaux) :
+  `docs/histoire.md` § Chapitre 8.
+- **Le texte complet des scènes** (didascalies, dialogues de PNJ par lieu et par état, pensées de Chloé,
+  pages 35 à 38, textes d'examen, drapeaux/objets/événements par scène, personnages et images) :
+  `docs/chapitre-8-scenes.md`.
+- **Le lore** mis à jour : `docs/lore.md` (Brac au Volcan, la bascule de Dame Suie, le T-Rex de Magma
+  « Cheminée », l'origine du masque d'obsidienne) ; `histoire.md` : lignes 35-38 du journal, arc de Maïa.
+- Rien n'est codé ; aucun fichier `story/` ni `data/` n'a été touché.
+
+**Décisions de scène à valider par Greg (5 questions) :**
+
+1. **Le masque d'obsidienne vient du sanctuaire.** Page 35 : il y a vingt-cinq ans, « I. a ramassé un
+   éclat de verre noir grand comme une assiette, “pour en faire quelque chose” », le dernier jour où
+   Hélène et Isaure ont ri ensemble. Chloé le comprend seule et décide de ne pas le dire à Maïa « pas comme
+   ça ». Garder cette révélation (forte, un peu amère, jamais dite à Isaure dans ce chapitre) ou la
+   retirer de la page 35 ?
+2. **La lettre d'Hélène (page 37) voyage.** Dame Suie l'a gardée un an sans l'ouvrir ; Chloé la lit (la
+   page entre au journal) puis la porte à Isaure, qui la prend sans l'ouvrir : « Si je la lis maintenant,
+   ma tornade, je ne descends plus. » L'objet `lettre_isaure` quitte le sac ; le chapitre 9 pourra la faire
+   lire (ou pas). D'accord pour que la page 37 soit la seule page qu'on donne à quelqu'un ?
+3. **Brac part « voir la mer, de loin »** et on le retrouve au bout de la jetée de Port-Ambre avec ses
+   trois dinos et un sandwich (Roc et Léonce en parlent ; un PNJ optionnel). Il jette son masque d'os
+   dans la cendre. Fournaise (son Daspletosaurus corrompu) **choisit** : rejoindre Chloé (dino de feu qui
+   franchira la lave) ou partir aux coulées, où on le retrouve capturable. D'accord ?
+4. **Dame Suie rapporte les carnets d'Hélène au Cabinet** (Roc : « Je n'ai rien compris. J'ai fait du
+   thé. ») et laisse ses gants sur l'établi. Elle ne demande jamais pardon (« je refais mes tables »), et
+   Chloé ne lui dit que cinq phrases. Pas de combat contre elle. D'accord sur la bascule « froide » ?
+5. **La fin à la porte.** Isaure fait son marché sans reprendre le Cœur (« Je l'ai fait une fois, là-haut,
+   et je ne le referai pas devant ma fille. Je vais te le demander. »), dit « on la sortira de là » comme
+   argument (sans jamais confirmer qu'elle cherche Hélène), et fixe **l'aube** (« je ne descends pas ma
+   fille dans le noir ») : le chapitre 9 commence à l'aube, devant la porte. Maïa refuse Moustique
+   (« s'il est avec toi, tu es obligée de revenir ») et annonce qu'elle sera « de son côté de la porte, pas
+   contre toi ». D'accord pour ce raccord ?
+
+Points secondaires laissés aux agents (pas à trancher maintenant) : la jauge de chaleur près des coulées
+(suggestion A légère, sans dégâts) ; le type du T-Rex de Magma (feu proposé : l'Eau et la Pierre le
+touchent fort) ; les niveaux (Brac 44/44/45/46, T-Rex 48) ; une pose assise pour Brac et une variante
+« sans lunettes » pour Dame Suie (plus, pas indispensables).
+
 > Brouillon écrit d'après `histoire.md` § Chapitre 8, `bestiaire.md` § Plaine Volcanique, `lore.md`
 > (Brac, Dame Suie) et le modèle du chapitre 7 (`chapitre-7-plan.md`). Rien n'est commencé : les points
 > marqués **À TRANCHER** attendent Greg.
