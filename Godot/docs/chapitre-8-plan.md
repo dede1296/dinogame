@@ -131,3 +131,35 @@ Coût estimé : proche du chapitre 7 (4 agents, plusieurs heures de quota) : à 
 
 1. Ton de Brac : confirmer (brutal-comique avec un moment amer) ou autre.
 2. Quand lancer (quota) : histoire d'abord (Fable seul), puis carte, mécaniques et images en parallèle.
+
+---
+
+## Contrat d'exécution (18/10) — les quatre agents
+
+Source du contenu : `chapitre-8-scenes.md` (scènes, drapeaux, objets, noms de nœuds, tableau « Personnages,
+doublures, images nécessaires »). Rien d'autre à inventer en dehors de cette table.
+
+| Quoi | Identifiant |
+|---|---|
+| Zones | `champs_cendres`, `forges_ombre`, `coulees_lave`, `sanctuaire_magma`, `porte_cratere` ; dossier `Godot/regions/volcan/` ; générées par `tools/zones/volcan*.gd` (un par zone, plus `volcan_decor.gd`, `volcan_canvas.gd` si besoin, comme `cieux_*.gd`) |
+| Lieux nommés | `story/volcan_places.gd` (classe `VolcanPlaces`, constantes en cases, comme `CieuxPlaces`) |
+| Espèces (`data/species/<id>.tres`) | `styracosaurus`, `saichania`, `daspletosaurus`, `trex_magma` (l'Alpha) ; `allosaurus` et `majungasaurus` existent ; corrompus : voir comment les autres corrompus du jeu sont représentés (lire `data/` et `battle/`) |
+| Objets / drapeaux / événements | exactement ceux de « Carte des drapeaux, objets, événements » de `chapitre-8-scenes.md` |
+| Mécanique B | la lave est franchissable à dos de dino de type pierre ou feu (compétence de traversée comme la nage ou l'escalade) ; chaleur légère près des coulées (sans dégâts) ; message clair sinon (`lave_bloquee`) |
+| Fichiers d'histoire | `story/volcan.gd` (Descente, champs), `story/volcan_forges.gd` (Léonce, trois petites forges, Brac, Suie), `story/volcan_sanctuaire.gd` (coulées, sanctuaire, T-Rex), `story/volcan_porte.gd` (porte, Isaure, Maïa), `story/volcan_objectives.gd`, `data/dialogue_volcan.gd` |
+
+| Agent (modèle) | Possède (jamais deux agents sur le même fichier) | Signale seulement (`scratchpad/ch8/patch_<agent>.md`) |
+|---|---|---|
+| **CARTE** (opus) | `tools/zones/volcan*.gd`, `regions/volcan/*`, `story/volcan_places.gd`, le raccord côté Cieux/Arche (un seul ajout dans `tools/zones/arche_du_vent.gd` pour la Descente de Cendre + régénération vérifiée par `git diff`, ids gardés avec `keep_ids.mjs`) | `world/world.gd` (ZONES), `ui/zone_map.gd`, `data/atlas_db.gd`, `data/dex_places.gd`, `world/prop.gd` (nouveaux genres) |
+| **SCÈNES** (opus) | `story/volcan*.gd`, `data/dialogue_volcan.gd`, `story/volcan_objectives.gd`, tests de scène ; il lit les noms de lieux dans `VolcanPlaces` (si absents : `C.px("NOM")` avec repli, et le dit) | `story/story.gd`, `story/objectives.gd`, `story/ask.gd`, `data/dialogue_db.gd`, `data/dialogue_monts.gd`, dialogues de Roc/Bertille/Joss, `data/items_db.gd` : patch |
+| **MÉCANIQUES** (opus) | `data/species/` (4 fiches + corrompus), `data/moves_db.gd`/`abilities.gd` (traversée de lave), `data/items_db.gd` (antidote_ambre, sceau_volcan, coeur_5, lettre_isaure), `actors/` (traversée à dos de dino, chaleur), `battle/` (fond volcan, combats de Brac et du T-Rex), `data/ambience_db.gd`, équilibrage 42–48, tests | `world/world.gd`, `ui/*` communs |
+| **IMAGES** (sonnet) | `tools/art-jobs/volcan*.mjs`, `assets/art/**` (nouveaux fichiers seulement), `docs/direction-artistique.md` (§ Volcan, § À refaire) | — |
+
+Règles communes (identiques au chapitre 7, voir `chapitre-7-plan.md` § Règles communes) : français partout ;
+pas de commit ; tests ciblés avec bandeau `ShotCaption` ; Godot partagé, seul `--import` est exclusif (verrou
+`mkdir <scratchpad>/godot_import.lock`) ; ne jamais tuer tous les Godot (éditeur de Greg ouvert) ; images par
+nano-banana, si les crédits manquent s'arrêter sur l'image et le dire (repli ComfyUI noté dans
+`direction-artistique.md § À refaire`) ; règle des mouvements (profil/face/dos) pour tout nouveau mobile ;
+tout écran nouveau jouable clavier/manette/souris ; fichiers < 800 lignes ; rapport final court en français avec
+résultats de test cités tels quels. Moi : j'applique les `patch_*.md`, j'importe une fois, je régénère, je teste
+le parcours, je commite par lots.
