@@ -29,6 +29,12 @@
   qui souffre : les corrompus « grondent », « tremblent », « ont peur », c'est tout.
 - Cœurs : Chloé n'en a plus (volés au ch. 7 : `coeurs_voles`). Le 5e est le seul qu'elle tiendra. Les
   drapeaux `coeur_1` à `coeur_4` restent vrais (elle les a eus).
+- **Scènes courtes (Greg, 18/10)** : jamais plus d'environ 8 à 12 bulles d'affilée sans que le joueur
+  fasse quelque chose. Les longues scènes (Brac, Dame Suie, la porte, le sanctuaire) sont découpées en
+  **moments**, séparés par un **temps regardé** (une animation, sans texte : *en italique, « sans
+  texte »* ci-dessous) ou par un **choix** du joueur (`Dialogue.choose`, noté **CHOIX**). Les choix ne
+  changent ni les faits ni les drapeaux : ils décident qui dit la phrase, ou le ton. Les textes
+  ci-dessous sont ceux du jeu (`story/volcan*.gd`) depuis ce raccourcissement.
 
 ## Carte des drapeaux, objets, événements (vue d'ensemble)
 
@@ -62,9 +68,8 @@ sur l'épaule. Le sentier gris descend en lacets dans un vent chaud qui sent le 
 > La Descente de Cendre. Un sentier gris qui descend vers le volcan, en lacets, dans un vent chaud qui
 > sent le soufre. À chaque lacet, la cendre est marquée de pas : deux paires de bottes, une grande, une
 > petite. Et, par-dessus, trois gros orteils qui traînent.
-> **Chloé** — (Caillou. Il les a rattrapées. Évidemment.)
-> **Chloé** — (Pas de « c'est stylé ». Pas de Maïa qui râle parce que ça monte. … Ça descend, en plus.
-> Elle aurait râlé quand même.)
+> **Chloé** — (Caillou. Il les a rattrapées. Évidemment. … Pas de « c'est stylé ». Pas de Maïa qui
+> râle parce que ça descend. Elle aurait râlé quand même.)
 
 *Moustique se serre contre son cou, les ailes repliées.*
 
@@ -95,9 +100,8 @@ s'arrête net : ça sent le brûlé.*
 > *(hadrosaure)* Écho souffle un petit « tuut » plein de cendre, et tousse. Elle réessaie. Ça fait « puff ».
 
 > Le vent est chaud. Pas chaud comme le Désert : chaud comme la porte d'un four quand on passe devant.
-> **Chloé** — (Elle est passée par là. Avec les Cœurs contre elle, sans courir. Et Maïa à côté. Pas
-> derrière : à côté.)
-> **Chloé** — (Il reste un Cœur. Et il est là-dessous, quelque part, à battre tout seul. Comme moi.)
+> **Chloé** — (Elle est passée par là, les Cœurs contre elle, sans courir. Et Maïa à côté. Pas
+> derrière : à côté. … Il reste un Cœur, là-dessous, quelque part, à battre tout seul. Comme moi.)
 
 *Moustique sort la tête du col de Chloé, regarde les feux, et la rentre.*
 
@@ -278,46 +282,48 @@ petit feu, une marmite, trois dinos couchés en rond autour de lui (Mastoc, Cabo
 siens, sans veines), et, dans une grande cage encore fermée, une ombre qui gronde. Brac se lève, le
 masque d'os relevé sur le front comme une casquette, la barbe pleine de cendre.*
 
-### 5 a — Avant le combat (`brac_volcan_vu`)
+### 5 a — Avant le combat (`brac_volcan_vu`) : deux moments, un choix
+
+*Moment 1 (9 bulles).*
 
 > **Brac** — Le moucheron. ÉVIDEMMENT, le moucheron. La Forêt, le Désert, et maintenant MON volcan.
 > **Chloé** — Ce n'est pas votre volcan.
 > **Brac** — C'est le volcan où je suis. Donc c'est mon volcan. C'est comme ça que ça marche, les volcans.
-> *Il regarde ses forges éteintes, la barricade par terre, Numéro 3 qui s'éloigne au trot.*
+> *(Il regarde ses forges éteintes, la barricade par terre, Numéro 3 qui s'éloigne au trot.)*
 > **Brac** — Trois forges. Douze ans de forges. Et le Trois qui me regarde comme si c'était MOI qui
 > l'avais mis dans une cage.
 > **Chloé** — C'est vous qui l'avez mis dans une cage.
-> **Brac** — … Techniquement.
-
-*Il se rassoit sur sa cage, lourdement. Mastoc lève la tête ; Brac lui gratte le museau sans regarder.*
-
-> **Brac** — Tu veux savoir quoi, moucheron ? Je n'ai plus d'ordres. J'attends depuis ce matin, et rien.
-> Pas un mot, pas une lettre argentée, pas un « Brac, fais ceci ». Rien.
-> **Brac** — Elle est passée là, juste là, avec les quatre Cœurs sous le bras. Et la petite Kerval qui la
-> suit comme un Compsognathus. Et un Tricératops qui a éternué sur ma marmite.
+> **Brac** — … Techniquement. *(Il se rassoit sur sa cage, lourdement ; Mastoc lève la tête.)*
+> **Brac** — Tu veux savoir quoi, moucheron ? Je n'ai plus d'ordres. Elle est passée là, juste là, avec
+> les quatre Cœurs sous le bras, la petite Kerval à côté, et un Tricératops qui a éternué sur ma marmite.
 > **Chloé** — (Caillou.)
-> **Brac** — Et tu sais ce qu'elle m'a dit, après douze ans ? « Tu peux rentrer, Brac. »
-> **Brac** — RENTRER. Comme on dit à un chien.
+> **Brac** — Et tu sais ce qu'elle m'a dit, après douze ans ? « Tu peux rentrer, Brac. » RENTRER. Comme
+> on dit à un chien.
 
-*Un silence. Il regarde le feu. Puis il se lève d'un bond, et redevient Brac.*
+*Sans texte : un silence. Il regarde le feu. Puis il se lève d'un bond, et redevient Brac.*
+
+*Moment 2 (3 bulles, un choix, puis 5 ou 6).*
 
 > **Brac** — Bon ! Ça ne change rien ! Je suis Brac, chasseur d'Alphas, et c'est écrit sur mes cartes de
 > visite ! J'en ai, maintenant ! Trois cents ! Regarde !
-> *Il sort une carte sale de sa poche et la brandit. On ne lit rien : il y a de la cendre dessus.*
+> Il sort une carte sale de sa poche et la brandit. On ne lit rien : il y a de la cendre dessus.
 > **Brac** — J'en ai donné une. Une seule. À la petite Kerval, ce matin. Elle a dit « merci ». MERCI. Tu
 > sais depuis combien de temps personne ne m'avait dit merci ?
-> **Chloé** — … Vous voulez qu'on arrête ?
+
+**CHOIX** — « Brac attend. Que dit Chloé ? » : *« Vous voulez qu'on arrête ? »* / *Ne rien dire*.
+
+> *(si elle le demande)* **Chloé** — … Vous voulez qu'on arrête ?
 > **Brac** — ARRÊTER ?! Tu as éteint mes forges, renversé ma barricade, et tu me demandes si je veux
-> ARRÊTER ?! Non, moucheron. Il me reste une chose à faire ici, et c'est de gagner UNE fois.
+> ARRÊTER ?! Non, moucheron. Il me reste une chose à faire ici : gagner UNE fois.
+> *(si elle se tait)* **Brac** — Et ne me regarde pas comme ça ! Tu as éteint mes forges, renversé ma
+> barricade… Non, moucheron. Il me reste une chose à faire ici : gagner UNE fois.
 > **Brac** — Mastoc ! Cabosse ! Grognon ! Et toi, là-dedans : réveille-toi. On a de la visite.
-
-*La grande cage s'ouvre : un Daspletosaurus corrompu, énorme, les veines violettes jusqu'au bout de la
-queue. Plaque : « FOURNAISE ». Un nom, pas un numéro.*
-
+> La grande cage s'ouvre : un Daspletosaurus corrompu, énorme, les veines violettes jusqu'au bout de la
+> queue. Plaque : « FOURNAISE ». Un nom, pas un numéro.
 > **Brac** — Fournaise. Mon chef-d'œuvre. Enfin, le chef-d'œuvre de la Suie : mais c'est MOI qui l'ai
 > nourri. À la pelle.
-> **Chloé** — (Un nom. Il lui a donné un nom. … Il l'aime bien, celui-là.)
-> **Chloé** — (Apaiser. Pas Mastoc, pas les autres : eux, ils sont à lui pour de vrai. Fournaise.)
+> **Chloé** — (Un nom. Il lui a donné un nom. … Il l'aime bien, celui-là. Apaiser Fournaise : pas les
+> autres, eux, ils sont à lui pour de vrai.)
 
 ### 5 b — Le combat
 
@@ -333,62 +339,57 @@ quand tu voudras, moucheron ! Je ne vais nulle part. C'est bien le problème. »
 
 ### 5 c — Après le combat : le moment amer, puis le départ (`brac_vaincu`, `brac_parti`)
 
-*Fournaise, apaisé, se couche dans la cendre et ferme les yeux ; ses veines s'éteignent. Mastoc,
-Cabosse et Grognon se relèvent, penauds, et vont se coucher autour de Brac. Brac reste debout, les bras
-ballants. Il ne jure pas. Pas tout de suite.*
+*Moment 1 (4 bulles). Fournaise, apaisé, se couche dans la cendre et ferme les yeux ; ses veines
+s'éteignent. Mastoc, Cabosse et Grognon se relèvent, penauds. Brac reste debout, les bras ballants. Il
+ne jure pas. Pas tout de suite.*
 
-> **Brac** — … Quatre fois.
-> **Brac** — La Forêt. Le Désert. Et deux fois ici, si on compte la barricade. Je compte la barricade.
-
-*Il s'assoit sur sa cage retournée. Il regarde Fournaise qui dort, les veines éteintes.*
-
-> **Brac** — Il dort. Je ne l'avais jamais vu dormir. Trois mois, et je ne l'avais jamais vu dormir.
-> **Brac** — Douze ans, moucheron. Douze ans que je lui ramène des bêtes, des cages pleines, des Cœurs
-> presque. Que je dors dans la cendre. Que je crie pour que ça avance. Et ce matin elle passe devant
-> moi, sans s'arrêter, et elle dit « Tu peux rentrer ».
+> **Brac** — … Quatre fois. La Forêt. Le Désert. Et deux fois ici, si on compte la barricade. Je compte
+> la barricade.
+> **Brac** — Il dort. Trois mois, et je ne l'avais jamais vu dormir. *(Il s'assoit sur sa cage.)*
+> **Brac** — Douze ans, moucheron. Douze ans que je lui ramène des bêtes, que je dors dans la cendre,
+> que je crie pour que ça avance. Et ce matin elle passe devant moi, sans s'arrêter, et elle dit « Tu
+> peux rentrer ».
 > **Brac** — Rentrer où ? J'ai deux cent quatre-vingt-dix-neuf cartes de visite, et pas d'adresse dessus.
 
-*Un long silence. Mastoc pose sa grosse tête sur le genou de Brac. Brac la regarde. Chloé ne dit rien.
+*Sans texte : un long silence. Mastoc pose sa grosse tête sur le genou de Brac. Chloé ne dit rien.
 Moustique non plus. Le dino de tête s'assoit.*
+
+*Moment 2 (9 bulles, puis un choix).*
 
 > **Chloé** — (Il n'a pas peur du Masque. Il n'a plus de Masque. C'est pire, pour lui.)
 > **Chloé** — Elle n'est pas rentrée non plus, vous savez. Elle est montée. Et Maïa aussi.
-> **Brac** — … Je sais. Je les ai regardées partir. La petite m'a dit bonjour en passant. Bonjour, merci,
-> et une carte dans la poche. C'est la plus polie de toute l'Ombre Noire, et elle n'en fait même pas
-> partie.
-
-*Il se lève. Il remet son masque sur le front, puis se ravise, le retire tout à fait et le regarde.*
-
-> **Brac** — Il me serrait, de toute façon.
-> *Il le jette dans la cendre, à ses pieds. Le masque d'os ne fait pas de bruit.*
+> **Brac** — … Je sais. Je les ai regardées partir. La petite m'a dit bonjour, merci, et une carte dans
+> la poche. C'est la plus polie de toute l'Ombre Noire, et elle n'en fait même pas partie.
+> **Brac** — Il me serrait, de toute façon. *(Il se lève, retire son masque d'os et le regarde.)*
 > **Brac** — Bon. CROTTE DE STÉGOSAURE. Nom d'un fossile moisi. Par les écailles de ma grand-mère, et par
-> celles de son Stégosaure.
+> celles de son Stégosaure. *(Il le jette dans la cendre, à ses pieds. Le masque d'os ne fait pas de bruit.)*
 > **Brac** — Je garde Mastoc, Cabosse et Grognon. Eux, quand je parle, ils me regardent. Ils regardent
 > mon sandwich, mais ils me regardent.
 > **Chloé** — Et Fournaise ?
-> **Brac** — Fournaise dort. On ne réveille pas un dino qui dort ; c'est écrit sur un panneau quelque part,
+> **Brac** — Fournaise dort. On ne réveille pas un dino qui dort : c'est écrit sur un panneau quelque part,
 > ta grand-mère en a mis partout. Il est à toi, moucheron. Ou aux coulées. Ou à personne. Il choisira.
-> Ça fera un dino qui choisit, dans ce camp.
 > **Chloé** — Où est-ce que vous allez ?
-> **Brac** — Quelque part où il n'y a pas de volcan. … Il y a des endroits sans volcan ?
-> **Chloé** — La mer.
-> **Brac** — La mer. Je vais aller voir la mer. De LOIN. Pas en barque. Je ne monte plus dans la barque
-> de personne.
 
-*Il tourne les talons, ses trois dinos derrière lui. Il s'arrête, sans se retourner.*
+**CHOIX** — **Brac** : « Quelque part où il n'y a pas de volcan. … Il y a des endroits sans volcan ? » :
+*« La mer. »* / *« Les Monts Gelés. »* (3 bulles ensuite).
 
+> *(la mer)* **Brac** — La mer. Je vais aller voir la mer. De LOIN. Pas en barque. Je ne monte plus dans
+> la barque de personne.
+> *(les Monts)* **Brac** — Les MONTS ? Avec Bertille qui compte mes feux ? … Non. La mer. Je vais aller
+> voir la mer. De LOIN. Pas en barque. Je ne monte plus dans la barque de personne.
 > **Brac** — Moucheron. Si tu la revois… la petite… Dis-lui que la carte, c'est gratuit. Elle a voulu me
-> payer. Avec un biscuit.
-> **Brac** — … C'était un bon biscuit.
+> payer. Avec un biscuit. … C'était un bon biscuit. *(Il tourne les talons, ses trois dinos derrière lui.)*
+> **Brac** — Par la crotte moisie d'un fossile de grand-mère !
 
-*Il part vers les champs, vexé, grand, pas détruit, en marmonnant des jurons de plus en plus inventifs
-(« Par la crotte moisie d'un fossile de grand-mère ! ») jusqu'à ce qu'on ne l'entende plus. Mastoc
-trotte derrière, en regardant la marmite.*
+*Sans texte : il part vers les champs, vexé, grand, pas détruit, jusqu'à ce que la cendre le cache.
+Mastoc trotte derrière, en regardant la marmite.*
+
+*Moment 3 (2 bulles).*
 
 > **Chloé** — (Il va voir la mer. De loin. … Il n'a jamais fait peur à personne, en fait. Il a surtout eu
 > peur.)
-> *Elle regarde le masque d'os dans la cendre.*
 > **Chloé** — (Deux masques par terre. Un dans l'herbe, un dans la cendre. Personne ne les ramassera.)
+> *(Elle regarde le masque d'os dans la cendre.)*
 
 Fournaise : à la fin de la scène, il se lève, regarde Chloé, et choisit (le jeu : s'il y a de la place
 dans l'équipe, il la rejoint sous le nom **Fournaise**, Daspletosaurus 46, type feu : le dino qui
@@ -417,127 +418,100 @@ une balance, un carnet ouvert, une plume. Son traîneau des Monts, monté sur ro
 de cendre, gants gris perle, voilette, lunettes fumées contre la lueur de la forge, écrit. Elle a tout
 vu. Elle n'a pas bougé.*
 
-### 6 a — « Vous avez pris votre temps » (`suie_volcan_vue`)
+### 6 a — « Vous avez pris votre temps » (`suie_volcan_vue`) : 9 bulles
 
-> **Dame Suie** — Mademoiselle Varenne. Vous avez pris votre temps.
-> **Dame Suie** — Trois forges, une barricade, et Brac. Je vous ai regardée depuis le début. J'ai pris des
-> notes. Vous permettez que je finisse ma ligne ?
-> *Elle finit sa ligne. Elle pose la plume.*
+> **Dame Suie** — Mademoiselle Varenne. Vous avez pris votre temps. Trois forges, une barricade, et
+> Brac : j'ai tout regardé, et j'ai pris des notes. Vous permettez que je finisse ma ligne ?
 > **Dame Suie** — Voilà. « Le sujet 7 a renversé sa propre forge. Le sujet 11 a arraché le soufflet. Le
-> sujet 12 a… » Je ne sais pas comment écrire ce qu'a fait le 12. « A réfléchi », je crois. Ce n'est pas
-> un mot de mes tables.
+> sujet 12 a… réfléchi. » Ce n'est pas un mot de mes tables. *(Elle pose la plume.)*
 > **Chloé** — Vous n'avez rien fait pour les empêcher.
-> **Dame Suie** — Non. J'observais. C'est mon métier, mademoiselle : Brac chasse, le Masque veut, et moi
-> j'observe. Et depuis ce matin, j'observe surtout que je n'ai plus de Masque.
-
-*Elle tourne la tête vers la grande forge, qui crache sa fumée violette.*
-
-> **Dame Suie** — Elle est passée à l'aube. La capitaine. Elle m'a pris une fiole : une seule, la plus
-> pure, celle que je gardais pour… pour rien. Pour savoir si je pouvais. Elle a dit : « Vous pouvez
-> éteindre, Dame Suie. Je n'ai plus besoin que d'une goutte. »
-> **Dame Suie** — Je n'ai pas éteint. Je voulais voir si elle reviendrait la chercher. Ce n'est pas la
-> fiole que je regardais partir, mademoiselle. C'est la petite.
+> **Dame Suie** — Non. J'observais. C'est mon métier : Brac chasse, le Masque veut, et moi j'observe. Et
+> depuis ce matin, j'observe surtout que je n'ai plus de Masque.
+> **Dame Suie** — La capitaine est passée à l'aube. Elle m'a pris une fiole, la plus pure, et elle a dit :
+> « Vous pouvez éteindre, Dame Suie. Je n'ai plus besoin que d'une goutte. » *(Elle regarde la forge.)*
+> **Dame Suie** — Je n'ai pas éteint. Ce n'est pas la fiole que je regardais partir, mademoiselle. C'est
+> la petite.
 > **Chloé** — Maïa.
-> **Dame Suie** — La fille du Masque. À côté de sa mère. Pas derrière : à côté. Elle avait des cendres
-> jusqu'aux genoux, un manteau trop grand, et elle disait bonjour aux sbires. Un par un. Elle a dit
-> bonjour à Brac.
-> **Dame Suie** — J'ai regardé ses yeux quand elle est passée devant la forge. Je regarde toujours les
-> yeux : c'est là que l'ambre noir se voit en premier. Pas une goutte. Et pas peur.
-> **Dame Suie** — J'ai cherché dans mes tables à quoi ça correspondait. Une enfant qui marche vers un
-> volcan, à côté de quelqu'un qui lui a menti pendant un an, sans une goutte, et sans peur.
-> **Dame Suie** — Il n'y a pas de ligne pour ça. J'ai regardé deux fois.
+> **Dame Suie** — La fille du Masque. À côté de sa mère, pas derrière, de la cendre jusqu'aux genoux, et
+> elle disait bonjour aux sbires. Un par un. Elle a dit bonjour à Brac.
+> **Dame Suie** — Je regarde toujours les yeux : c'est là que l'ambre noir se voit en premier. Pas une
+> goutte. Et pas peur. Il n'y a pas de ligne pour ça dans mes tables. J'ai regardé deux fois.
 
-### 6 b — Belladone, les dormeurs, et Maïa : trois fois
+*Sans texte : elle retire ses gants, un doigt après l'autre, et les pose sur l'établi. (Aux Monts, elle
+avait retiré ses lunettes. Ici, les gants : elle va toucher à quelque chose.)*
 
-*Elle retire ses gants, un doigt après l'autre, et les pose sur l'établi. (Aux Monts, elle avait retiré
-ses lunettes. Ici, les gants : elle va toucher à quelque chose.)*
+### 6 b — Belladone, les dormeurs, et Maïa : trois fois (3 bulles, un choix, 3 bulles)
 
 > **Dame Suie** — Je vais vous dire où j'en suis, mademoiselle Varenne, parce que vous êtes la seule
 > personne de cette île à qui ça puisse servir.
-> **Dame Suie** — Au Marais, vous avez calmé Belladone sans une goutte. J'ai noté : « exception ». Aux
-> Monts, les dormeurs de votre grand-mère étaient parfaits sans une goutte. J'ai noté : « à vérifier ».
-> Ce matin, la fille du Masque. Je n'ai rien noté. Je n'avais plus de colonne.
+> **Dame Suie** — Au Marais, Belladone, sans une goutte : j'ai noté « exception ». Aux Monts, les
+> dormeurs de votre grand-mère : « à vérifier ». Ce matin, la fille du Masque : je n'avais plus de colonne.
 > **Dame Suie** — Une exception, c'est une exception. Deux, c'est une erreur de mesure. Trois…
-> **Chloé** — Trois, c'est que les tables sont fausses.
+
+**CHOIX** — « Dame Suie attend. Que dit Chloé ? » : *« Trois, c'est que les tables sont fausses. »* /
+*La laisser finir*.
+
+> *(Chloé finit la phrase)* **Chloé** — Trois, c'est que les tables sont fausses.
 > **Dame Suie** — … Vous avez les yeux de votre grand-mère. Ils finissent mes phrases avant moi.
-> **Dame Suie** — Trois, c'est que le dosage n'a jamais été la question. « La peur n'est qu'un problème de
-> dosage. » Je l'ai écrit en tête de chaque carnet pendant douze ans. Il manquait un mot. La peur n'est
-> pas un problème de dosage : c'est un problème. Point.
+> *(Chloé la laisse finir)* **Dame Suie** — Trois, c'est que les tables sont fausses.
+> **Dame Suie** — … Vous l'avez pensé avant moi, et vous ne l'avez pas dit. Vous avez les yeux de votre
+> grand-mère, mademoiselle : ils finissent mes phrases.
+> **Dame Suie** — « La peur n'est qu'un problème de dosage. » Je l'ai écrit en tête de chaque carnet
+> pendant douze ans. Il manquait un mot. La peur n'est pas un problème de dosage : c'est un problème. Point.
 
-*Elle se lève. Elle va jusqu'à la grande forge, à une roue de fer qui commande le tirage.*
+*Sans texte : elle va jusqu'à la grande forge, à une roue de fer qui commande le tirage. Elle tourne la
+roue. Ça grince. Le rouge de la forge baisse, comme une lampe qu'on souffle lentement ; la fumée violette
+blanchit, puis s'arrête. Le camp devient silencieux : plus de ronflement de feu, pour la première fois
+depuis douze ans. Le volcan, derrière, continue de fumer, lui. Mandragore lève la tête, surpris du
+silence, et la repose.*
 
-> **Dame Suie** — Brac donnait l'ambre noir à la pelle. Je le lui ai assez reproché. Mais une pelle ou une
-> pipette, mademoiselle, ça reste de l'ambre noir, et j'ai mis douze ans à le mesurer.
-
-### 6 c — La grande forge s'éteint (`grande_forge_eteinte`)
-
-*Elle tourne la roue. Ça grince. Le rouge de la forge baisse, comme une lampe qu'on souffle lentement ;
-la fumée violette blanchit, puis s'arrête. Le camp devient silencieux : plus de ronflement de feu, pour
-la première fois depuis douze ans. Le volcan, derrière, continue de fumer, lui. Mandragore lève la
-tête, surpris du silence, et la repose.*
+### 6 c — La grande forge s'éteint (`grande_forge_eteinte`) : 4 bulles
 
 > La grande forge s'éteint. Pas d'un coup : comme une lampe qu'on baisse. Le rouge devient rose, puis
-> gris. La fumée blanchit. Et puis, plus rien. Le silence. Le vrai : on entend le vent, et Moustique qui
-> respire.
+> gris. Et puis, plus rien. Le silence. Le vrai : on entend le vent, et Moustique qui respire.
 > **Dame Suie** — Voilà. Douze ans. Ça fait moins de bruit que je pensais.
-
-*Elle retire ses lunettes fumées et les met dans sa poche. Pas comme aux Monts, pour regarder quelque
-chose : pour de bon.*
-
-> **Dame Suie** — Elles étaient contre la lueur. Il n'y a plus de lueur.
+> **Dame Suie** — Elles étaient contre la lueur. Il n'y a plus de lueur. *(Ses lunettes fumées dans sa
+> poche. Pas comme aux Monts, pour regarder quelque chose : pour de bon.)*
 > **Chloé** — (Elle a des yeux gris. Je ne les avais jamais vus. Ils ont l'air… fatigués. Et curieux.)
 
-### 6 d — L'antidote (`antidote_ambre`)
+*Sans texte : elle revient à l'établi, et ouvre un petit coffret de bois.*
 
-*Elle revient à l'établi, ouvre un petit coffret de bois, et en sort une fiole : de l'ambre liquide,
-clair, presque doré, qui luit un peu dans le gris. Étiquette fine : « Ambre clair. Une goutte. Pas une
-de plus. — S. »*
+### 6 d — L'antidote (`antidote_ambre`) : 7 bulles
 
-> **Dame Suie** — On ne fabrique pas un poison sans fabriquer son contraire. C'est la première règle. Brac
-> ne l'a jamais apprise ; je l'ai apprise avant d'avoir des gants.
-> **Dame Suie** — Je l'ai mis au point la nuit, aux Monts, après Aconit. Je me disais : par prudence. Je
-> me mentais : c'était par curiosité. Je voulais savoir si ça se défaisait.
+> Dans le coffret, une fiole : de l'ambre liquide, clair, presque doré, qui luit un peu dans le gris.
+> Étiquette fine : « Ambre clair. Une goutte. Pas une de plus. — S. »
+> **Dame Suie** — On ne fabrique pas un poison sans fabriquer son contraire. C'est la première règle. Je
+> l'ai mis au point la nuit, aux Monts, après Aconit. Par curiosité : je voulais savoir si ça se défaisait.
 > **Chloé** — Et ça se défait ?
-> **Dame Suie** — Une goutte sur un dino corrompu, et les veines s'effacent. D'un coup. Sans parler,
-> sans Lien, sans rien : de la chimie. Vous n'en aurez pas besoin pour les corrompus d'ici : vous faites
-> mieux que moi, et plus lentement.
-> **Dame Suie** — Mais la capitaine a une fiole. La plus pure. Et elle va s'en servir sur quelque chose de
-> très grand, qui dort. Ce jour-là, mademoiselle, vous n'aurez pas le temps de parler.
-> *Elle tend la fiole. Chloé la prend. Elle est tiède.*
-> **Dame Suie** — Une dose. Je n'ai pas eu le temps d'en faire deux : la nuit est courte, au pied d'une
-> forge. Choisissez votre moment.
+> **Dame Suie** — Une goutte sur un dino corrompu, et les veines s'effacent. D'un coup. Sans parler, sans
+> Lien : de la chimie. Vous n'en aurez pas besoin ici : vous faites mieux que moi, et plus lentement.
+> **Dame Suie** — Mais la capitaine a une fiole, la plus pure, et elle va s'en servir sur quelque chose de
+> très grand, qui dort. Ce jour-là, vous n'aurez pas le temps de parler. Une dose. Choisissez votre
+> moment. *(Elle tend la fiole. Chloé la prend. Elle est tiède.)*
 > **Chloé** — Pourquoi vous me la donnez ?
 > **Dame Suie** — Parce que je refais mes tables, et que la première ligne de la nouvelle, c'est vous.
 
 Objet `antidote_ambre` (« Ambre clair », objet clé, une dose, pour le dernier combat). Drapeaux :
 `suie_alliee`, `antidote_ambre`.
 
-### 6 e — La lettre (`found_journal_37`, objet `lettre_isaure`)
-
-*Elle hésite. C'est rare. Puis elle ouvre le tiroir de l'établi et en sort une enveloppe de papier
-épais, pliée en deux, jaunie par la chaleur. Dessus, une écriture qu'on connaît : « Pour Isaure ».*
+### 6 e — La lettre (`found_journal_37`, objet `lettre_isaure`) : 7 bulles, puis la page 37
 
 > **Dame Suie** — Il y a autre chose. Ce n'est pas à moi, et je l'ai gardée un an. Ça fait deux fautes.
-> **Dame Suie** — Votre grand-mère est venue ici. Il y a un an. Une nuit. Personne ne l'a vue ; moi, je
-> l'ai vue, parce que je ne dors pas beaucoup. Elle a traversé le camp comme on traverse sa cuisine,
-> elle a posé ça sur mon établi, à côté de mes fioles, elle m'a regardée, et elle est repartie vers les
+> *(Elle hésite. C'est rare.)*
+> Elle ouvre le tiroir de l'établi et en sort une enveloppe de papier épais, pliée en deux, jaunie par la
+> chaleur. Dessus, une écriture qu'on connaît : « Pour Isaure ».
+> **Dame Suie** — Votre grand-mère est venue ici, il y a un an, une nuit. Elle a traversé le camp comme on
+> traverse sa cuisine, elle a posé ça sur mon établi, elle m'a regardée, et elle est repartie vers les
 > coulées.
-> **Chloé** — Elle vous a regardée ?
-> **Dame Suie** — Comme on regarde une élève qui a bien travaillé sur un mauvais sujet. … Je n'ai pas
-> aimé. J'y repense souvent.
-> **Dame Suie** — Je ne lis pas le courrier des autres, mademoiselle. J'ai des défauts ; pas celui-là. Je
-> l'ai gardée pour la lui donner. Elle est passée ce matin, et je ne l'ai pas fait.
-> **Chloé** — Pourquoi ?
+> **Dame Suie** — Elle m'a regardée comme on regarde une élève qui a bien travaillé sur un mauvais sujet.
+> … Je n'ai pas aimé. J'y repense souvent.
+> **Dame Suie** — Je ne lis pas le courrier des autres : j'ai des défauts, pas celui-là. Je la gardais
+> pour la lui donner. Elle est passée ce matin, et je ne l'ai pas fait.
 > **Dame Suie** — Parce que si elle l'avait lue, elle ne serait peut-être pas montée. Et je voulais voir
 > ce qui se passe quand on monte. … Troisième faute. Je vous la laisse corriger : vous allez là où elle
 > va.
-
-*Chloé prend l'enveloppe. Elle n'est pas scellée : juste pliée. Hélène écrivait tout, et ne cachetait
-rien.*
-
-> **Chloé** — (Pliée, pas fermée. Elle voulait qu'on la lise. Elle voulait que quelqu'un la lise, si
-> Isaure ne venait pas.)
-> **Chloé** — (… Je la lis. Et je la lui porte.)
+> **Chloé** — (Pliée, pas fermée. Elle voulait que quelqu'un la lise, si Isaure ne venait pas. … Je la
+> lis. Et je la lui porte.) *(Chloé prend l'enveloppe. Elle n'est pas scellée : juste pliée.)*
 
 **Page 37 — Pour Isaure** (−1 an ; `letter`, signée « — H. ») :
 
@@ -561,11 +535,11 @@ Drapeaux : `found_journal_37`, `page_37` ; objet `lettre_isaure` (quitte le sac 
 la page reste au mur du journal). Si Chloé a lu la page 25 : une pensée de plus : « (Elle a gardé la
 tasse. Et elle a réécrit la lettre. Deux fois, c'est une habitude.) »
 
-### 6 f — Elle s'en va (`suie_partie`)
+### 6 f — Elle s'en va (`suie_partie`) : 7 bulles, puis 1
 
-*Elle range son carnet, pas ses gants (elle les laisse sur l'établi). Elle attelle Mandragore au
-traîneau sur roues. Dedans : des caisses, pas de fioles. Des carnets. Beaucoup de carnets, à
-couverture de toile, usés.*
+*Sans texte (après la page 37 et les pensées de Chloé) : elle range son carnet, pas ses gants (elle les
+laisse sur l'établi). Elle attelle Mandragore au traîneau sur roues. Dedans : des caisses, pas de
+fioles. Des carnets. Beaucoup de carnets, à couverture de toile, usés.*
 
 > **Dame Suie** — Les carnets de votre grand-mère. Ceux de l'ambre forcé, ceux qu'on m'a donnés il y a
 > douze ans « pour travailler ». J'ai travaillé. Je les rends.
@@ -574,19 +548,16 @@ couverture de toile, usés.*
 > comme si elle allait lui répondre. Je lui dirai que je refais mes tables. Il ne comprendra pas. Il
 > fera du thé.
 > **Dame Suie** — Les coulées sont par là, mademoiselle. Pour les franchir, il vous faut un dino qui a le
-> cuir pour : de la pierre, ou du feu. Brac en avait un. Il l'a laissé choisir. C'est la première chose
-> intelligente qu'il ait faite depuis que je le connais, et il ne le sait pas.
-> **Chloé** — Dame Suie.
-> **Dame Suie** — Mademoiselle ?
-> **Chloé** — Merci.
+> cuir pour : de la pierre, ou du feu. Brac en avait un. Il l'a laissé choisir : la première chose
+> intelligente qu'il ait faite, et il ne le sait pas.
+> **Chloé** — Dame Suie. … Merci.
 > **Dame Suie** — … C'est la deuxième fois aujourd'hui qu'on me dit ça dans ce camp. La première, c'était
 > la petite Kerval, pour un sbire qui lui avait tenu une cage ouverte. Je commence à croire que c'est
 > contagieux.
-> *Elle fait un pas, et s'arrête.*
-> **Dame Suie** — Nous nous reverrons. Là où il fait bon, cette fois. J'aimerais bien.
+> **Dame Suie** — Nous nous reverrons. Là où il fait bon, cette fois. J'aimerais bien. *(Elle fait un pas.)*
 
-*Le traîneau s'éloigne vers les champs, Mandragore au trot. Elle ne se retourne pas. Sur l'établi, ses
-gants gris perle, côte à côte.*
+*Sans texte : le traîneau s'éloigne vers les champs, Mandragore au trot. Elle ne se retourne pas. Sur
+l'établi, ses gants gris perle, côte à côte.*
 
 > **Chloé** — (Froide, curieuse, pas cruelle. Elle n'a pas changé. Elle a seulement compté jusqu'à trois.)
 
@@ -603,8 +574,10 @@ fera du bien, et j'ai besoin de le noter. » Après `suie_partie`, elle n'est pl
 
 Garde-fous : elle ne s'excuse pas, ne pleure pas, ne dit pas « j'avais tort » : elle dit « je refais mes
 tables ». Pas de combat contre elle (le chapitre en a deux grands). La bascule tient à trois choses
-qu'elle a vues, pas à un discours de Chloé (Chloé dit cinq phrases). Le mot « Maïa » est dit par
-Chloé, jamais par elle (« la fille du Masque », « la petite Kerval », « la petite »).
+qu'elle a vues, pas à un discours de Chloé (Chloé dit cinq phrases, quatre si elle la laisse finir). Le
+mot « Maïa » est dit par Chloé, jamais par elle (« la fille du Masque », « la petite Kerval », « la
+petite »). Jamais plus de 9 bulles d'affilée : les gants, la roue, l'établi, le traîneau et son départ
+se regardent, sans texte.
 
 Images : Dame Suie (planche existante ; une variante `suie_sans_lunettes` serait un plus, face), prop
 `etabli_suie`, `gants_gris`, `traineau_roues`, `grande_forge_eteinte`, icône `antidote_ambre.png`
@@ -733,44 +706,43 @@ d'eau fumante : une source chaude.*
 > **Chloé** — (Le masque. Le masque d'obsidienne était fait de ça. De cette pierre-là.)
 > Au centre, un autel de roche noire, vide. Au fond, une paroi de verre où la lave coule, à l'intérieur,
 > lentement, comme du sable dans un sablier.
-> Il fait chaud, et c'est calme. Trop calme. Le dino de tête se colle contre la jambe de Chloé.
 
 *La vasque d'eau fumante, à l'entrée. Des cercles à sa surface. Un « boum » sourd, très loin dessous. La
 caméra tressaille. Les cercles, encore. (Le clin d'œil : « l'eau qui tremble ».)*
 
-> La vasque. Des cercles à la surface de l'eau. Un « boum », tout bas, qui monte par les pieds. Encore
-> des cercles.
-> **Chloé** — (Il arrive.)
-> **Chloé** — (« Un T-Rex ne voit pas ce qui ne bouge pas. » Roc a dit : une légende. Cours.)
-> *Chloé ne bouge pas. Le dino de tête ne bouge pas. Moustique, dans le col, ne respire plus.*
+> C'est calme. Trop calme : le dino de tête se colle contre la jambe de Chloé. Puis, dans la vasque, des
+> cercles à la surface de l'eau. Un « boum », tout bas, qui monte par les pieds. Encore des cercles.
+> **Chloé** — (Il arrive. … « Un T-Rex ne voit pas ce qui ne bouge pas. » Roc a dit : une légende.
+> Cours.) *(la seconde partie seulement si elle a posé la question à Roc)*
+> Chloé ne bouge pas. Le dino de tête ne bouge pas. Moustique, dans le col, ne respire plus.
 
-*Dans la paroi de verre, derrière la lave qui coule, une ombre se lève. Immense. Elle s'approche de la
-paroi, et la paroi s'ouvre comme un rideau de lave : le **T-Rex de Magma** entre dans la salle. Rouge
-sombre, des fissures oranges qui luisent sur son dos comme des braises sous la cendre, de la fumée
-qui sort de ses naseaux quand il souffle. Il pose un pied : le sol tremble. L'autre. Il baisse la tête
-jusqu'à Chloé, et il la regarde. Droit dans les yeux.*
+*Sans texte : dans la paroi de verre, derrière la lave qui coule, une ombre se lève. Immense. Elle
+s'approche de la paroi, et la paroi s'ouvre comme un rideau de lave : le **T-Rex de Magma** entre dans
+la salle. Rouge sombre, des fissures oranges qui luisent sur son dos comme des braises sous la cendre,
+de la fumée qui sort de ses naseaux quand il souffle. Il pose un pied : le sol tremble. L'autre. Il
+baisse la tête jusqu'à Chloé.*
 
-> Le T-Rex de Magma la regarde. Droit dans les yeux. Il la voit très bien.
-> **Chloé** — (Une légende. … Roc avait raison. Et je ne cours pas.)
-
-Drapeaux : `sanctuaire_magma_arrivee`, `flaque_tremble`. Images : sol `obsidienne`, `lave_paroi`
+Drapeaux : `sanctuaire_magma_arrivee`, `flaque_tremble` (6 bulles, puis l'entrée regardée ; la suite,
+8 b, enchaîne : 7 bulles jusqu'au rugissement et au choix du défi). Images : sol `obsidienne`, `lave_paroi`
 (animée si possible), prop `vasque_source`, `autel_magma` ; le T-Rex de Magma (Alpha, profil, face,
 dos, 3 vues ; ~1,4 fois la taille d'un Daspletosaurus ; jamais effrayant : la bouche fermée au repos,
 les braises du dos qui pulsent doucement).
 
 ### 8 b — Le gardien (DinoNpc `TrexMagma`, événement `trex_magma`, `trex_magma_parle`)
 
-*Il renifle. Les Sceaux, un par un : la Forêt, le Marais, le Désert (il souffle : un vieux voisin), la
-Côte (il fronce les naseaux : le poisson, encore), les Monts (il recule la tête : trop froid), les
-Cieux (il lève les yeux vers la voûte). Puis la sacoche. Vide. Il renifle encore. Il cherche les Cœurs.
-Il ne les trouve pas.*
+*Il la regarde. Droit dans les yeux. Puis il renifle. Les Sceaux, un par un : le Désert (il souffle : un
+vieux voisin), la Côte (il fronce les naseaux : le poisson, encore), les Monts (il recule la tête : trop
+froid), les Cieux (il lève les yeux vers la voûte). Puis la sacoche. Vide. Il renifle encore. Il cherche
+les Cœurs. Il ne les trouve pas.*
 
-> Il renifle les Sceaux, un par un. La Forêt, le Marais. Le Désert : il souffle un grand souffle chaud,
-> comme on salue un vieux voisin. La Côte : il fronce les naseaux. Les Monts : il recule la tête. Les
-> Cieux : il lève les yeux vers la voûte, longtemps.
+> Le T-Rex de Magma la regarde. Droit dans les yeux. Il la voit très bien.
+> **Chloé** — (Une légende. … Roc avait raison. Et je ne cours pas.) *(ou « (… Et je ne cours pas.) »)*
+> Il renifle les Sceaux, un par un. Le Désert : un grand souffle chaud, comme on salue un vieux voisin.
+> La Côte : il fronce les naseaux. Les Monts : il recule la tête. Les Cieux : il lève les yeux vers la
+> voûte, longtemps.
 > Puis la sacoche. Il renifle, cherche, renifle encore. Il gronde, tout bas.
-> **Chloé** — Je les avais. Les quatre. On me les a pris, là-haut. Ils sont là-bas, devant la porte, et
-> ils vont servir à ouvrir ce qu'elle a fermé.
+> **Chloé** — Je les avais. Les quatre. On me les a pris, là-haut. Ils sont devant la porte, et ils vont
+> servir à ouvrir ce qu'elle a fermé.
 > **Chloé** — Je sais que vous ne comprenez pas les mots. Elle disait que vous compreniez les mains.
 
 *Elle tend les deux mains, paumes ouvertes, comme Hélène sur la page 10. Il les renifle. Il souffle
@@ -783,14 +755,15 @@ de verre vibrent, la lave dans la paroi saute, et la vasque déborde.*
 
 ### 8 c — Le combat (`trex_magma_battu`)
 
-Combat d'honneur (niveau 48, pas de collier, pas de fuite, musique des Alphas), type **feu** (à
-confirmer par MÉCANIQUES : la leçon dit ce qui le touche fort, l'Eau et la Pierre ; les dinos de feu et
-de vent souffrent) ; il ne se couche jamais ; avant chaque essai, l'équipe boit l'eau de la source
-chaude (« elle a un goût d'œuf, et elle remet d'aplomb ») ; défaite : retour à la faille, équipe
-soignée, une ligne (« Il attend. Il a attendu vingt-cinq ans ; il ne compte plus les jours. »). C'est le
-combat le plus dur du jeu avant la fin : l'équipe doit être vers 45-46, reposée, avec un dino d'Eau ou
-de Pierre (Nessie, Bouée, Bastion, un Saichania…). La leçon de combat le dit sans tricher : « L'Eau et la
-Pierre le touchent fort ; le Feu et le Vent, lui, les traverse. »
+Combat d'honneur (niveau 48, pas de collier, pas de fuite, musique des Alphas), type **feu** (la table
+des types, `data/moves_db.gd` : **il craint l'Eau et la Terre** ; **la Pierre lui résiste**, et le Feu
+aussi ; ses propres coups traversent le Vent et la Nature) ; il ne se couche jamais ; avant chaque essai,
+l'équipe boit l'eau de la source chaude (« elle a un goût d'œuf, et elle remet d'aplomb ») ; défaite :
+retour à la faille, équipe soignée, une ligne (« Il attend. Il a attendu vingt-cinq ans ; il ne compte
+plus les jours. »). C'est le combat le plus dur du jeu avant la fin : l'équipe doit être vers 45-46,
+reposée, avec un dino d'Eau ou de Terre (Nessie, Bouée, un Baryonyx…). La leçon de combat le dit sans
+tricher, d'après la table : « L'Eau et la Terre le touchent fort ; la Pierre et le Feu, lui, les
+traverse. »
 
 ### 8 d — Le Sceau et le Cœur (`sceau_volcan`, `coeur_5`)
 
@@ -807,8 +780,8 @@ de lave noire qui s'ouvre comme une noix.*
 > Dans la coque, à côté, un disque d'ambre rouge sombre : une flamme, et la fougère d'Hélène. Le **Sceau
 > du Volcan**.
 
-> **Chloé** — (Un Cœur. Un seul. Elle en a quatre, et moi un, et il faut les cinq.)
-> **Chloé** — (Alors elle a besoin de moi. Et moi d'elle. … C'est bête, mais ça me rassure.)
+> **Chloé** — (Un Cœur. Un seul. Elle en a quatre, et moi un, et il faut les cinq. Alors elle a besoin de
+> moi. Et moi d'elle. … C'est bête, mais ça me rassure.)
 
 *Le T-Rex se couche enfin, de tout son long, les braises du dos qui ralentissent. Il fume quand il
 dort. Chloé s'approche, et pose la main sur son museau : chaud comme une pierre au soleil.*
@@ -921,76 +894,66 @@ carré. Chloé ne la déplie pas. »
 Cœurs dans une sacoche de marin contre sa hanche : ils se mettent à battre quand Chloé approche, et le
 cinquième, contre Chloé, répond. Les torches vacillent.*
 
+*Moment 1 (11 bulles).*
+
 > Isaure se retourne. Pas de masque. Les cheveux attachés, cette fois : la capitaine du port. Contre sa
-> hanche, une sacoche de marin, et dedans quelque chose qui bat.
-> Le Cœur de Chloé répond. Cinq cœurs qui battent ensemble, de part et d'autre de dix pas de cendre. Les
-> torches vacillent.
+> hanche, une sacoche de marin, et dedans, quelque chose qui bat.
 > **Isaure** — Je l'ai entendu arriver avant toi, moussaillon. Il bat fort, le dernier. Il a toujours été
-> le plus bruyant.
-> **Isaure** — Tu as traversé les forges.
-> **Chloé** — Elles sont éteintes.
-> **Isaure** — … Je sais. On l'a vu d'ici. Les feux, un par un, et puis le grand. Maïa a compté.
+> le plus bruyant. *(Le Cœur de Chloé répond : cinq cœurs qui battent ensemble ; les torches vacillent.)*
+> **Isaure** — Tu as traversé les forges. … Je sais, elles sont éteintes : on l'a vu d'ici. Les feux, un
+> par un, et puis le grand. Maïa a compté.
 > **Maïa** — Sept. Comme Bertille.
 > **Isaure** — Brac ?
 > **Chloé** — Il est parti voir la mer. De loin.
 > **Isaure** — *(un temps)* Il n'a jamais su nager. Douze ans, et je ne lui ai jamais appris. … Je ne lui
 > ai jamais rien appris.
-
-*Elle regarde le portail, puis Chloé.*
-
-> **Isaure** — Alors voilà. Il y a cinq Cœurs sur cette île : j'en ai quatre, et tu as le dernier contre
-> ta poitrine. Il faut les cinq. Elle a fait ça exprès, et elle a bien fait.
+> **Isaure** — Alors voilà. Cinq Cœurs sur cette île : j'en ai quatre, et tu as le dernier contre ta
+> poitrine. Il faut les cinq. Elle a fait ça exprès, et elle a bien fait. *(Elle regarde le portail.)*
 > **Isaure** — Je ne vais pas te le prendre, Chloé. Je l'ai fait une fois, là-haut, et je ne le referai
 > pas devant ma fille. Je vais te le demander.
-> **Isaure** — Donne-le-moi. Et viens. Ouvre cette porte avec moi, et ce qui dort là-dessous, on le
-> tiendra à deux : toi avec ton Lien, moi avec le reste. Plus personne ne mourra de faim au port. Plus
-> jamais. Ni au port, ni ailleurs : on aura de quoi exiger. Tu seras la petite-fille qui a fini ce que
-> sa grand-mère n'a pas osé finir.
+> **Isaure** — Donne-le-moi, et viens. Ouvre cette porte avec moi : ce qui dort là-dessous, on le tiendra
+> à deux, toi avec ton Lien, moi avec le reste. Plus personne ne mourra de faim au port. Plus jamais.
 > **Isaure** — Et on la sortira de là. Toutes les deux. Ça, je ne te l'ai pas dit là-haut. Je te le dis
 > ici.
 
-*Maïa ne dit rien. Elle regarde Chloé. Caillou s'est levé ; le dino de tête de Chloé et lui se
-regardent, museau contre museau, comme aux Monts.*
+*Sans texte : Maïa ne dit rien. Elle regarde Chloé. Caillou s'est levé ; le dino de tête de Chloé et lui
+se regardent, museau contre museau, comme aux Monts.*
+
+*Moment 2 (10 bulles).*
 
 > **Chloé** — (Elle vient de le dire. Pour Hélène. Pas « je vais la chercher » : « on la sortira ». C'est
 > presque pareil. Ce n'est pas pareil.)
-> **Chloé** — (Il a peur. Il a peur quand on le réveille de force. Elle veut le réveiller avec une goutte
-> d'ambre noir et le « tenir ». Hélène a mis vingt-cinq ans et ses deux mains à ne pas faire ça.)
+> **Chloé** — (Il a peur quand on le réveille de force. Elle veut le réveiller avec une goutte d'ambre
+> noir et le « tenir ». Hélène a mis vingt-cinq ans et ses deux mains à ne pas faire ça.)
 > **Chloé** — Non.
-
-*Pas fort. Isaure ferme les yeux une seconde.*
-
-> **Isaure** — … Pas fort. Elle non plus ne disait jamais rien fort.
+> **Isaure** — … Pas fort. Elle non plus ne disait jamais rien fort. *(Elle ferme les yeux une seconde.)*
 > **Maïa** — Tu vois. Elle a dit non. Comme Hélène.
-> **Isaure** — Je vois.
 > **Chloé** — Je ne vous laisserai pas ouvrir cette porte, Isaure. Mais je ne vous laisserai pas non plus
 > là-dedans toute seule. Ni Maïa. Je ne sais pas encore comment je fais les deux.
 > **Isaure** — Tu as les yeux de ta grand-mère, moussaillon. Elle non plus ne savait pas, et elle le
 > faisait quand même.
-
-*Elle se tourne vers le portail.*
-
 > **Isaure** — Je n'ouvre pas avant l'aube. Il faut du jour pour descendre là-dedans, et je ne descends
-> pas ma fille dans le noir. Tu as jusqu'à l'aube pour changer d'avis.
+> pas ma fille dans le noir. Tu as jusqu'à l'aube pour changer d'avis. *(Elle se tourne vers le portail.)*
 > **Chloé** — Vous aussi.
 > **Isaure** — … Oui. Moi aussi, je suppose.
 
-### 9 d — La lettre (`lettre_isaure_donnee`, si Chloé a `lettre_isaure`)
+Puis Maïa se lève de sa pierre et regarde Chloé : sa scène (9 e) se joue quand Chloé va lui parler.
 
-*Chloé sort l'enveloppe jaunie. « Pour Isaure. » Isaure la reconnaît à l'écriture avant de la
-toucher : elle recule d'un demi-pas, puis elle la prend.*
+### 9 d — La lettre (`lettre_isaure_donnee`, si Chloé a `lettre_isaure`) : un choix, 6 bulles
+
+**CHOIX** (après le moment 2, et à chaque fois qu'on reparle à Isaure tant que Chloé a la lettre) —
+« Dans la sacoche de Chloé, l'enveloppe jaunie. « Pour Isaure ». » : *Lui donner la lettre* / *Pas
+maintenant*.
 
 > **Chloé** — Dame Suie l'a gardée un an. Hélène l'a posée sur son établi, la nuit, avant de descendre.
 > Elle est pour vous.
-> *Isaure prend l'enveloppe. Elle ne l'ouvre pas. Elle la tient contre les Cœurs, dans la sacoche.*
-> **Maïa** — Lis-la.
-> **Isaure** — En bas.
-> **Maïa** — Maman. Lis-la maintenant.
+> Isaure la reconnaît à l'écriture avant de la toucher. Elle recule d'un demi-pas, puis elle la prend.
+> Elle ne l'ouvre pas : elle la tient contre les Cœurs, dans la sacoche.
+> **Maïa** — Lis-la. … Maman. Lis-la maintenant.
 > **Isaure** — Si je la lis maintenant, ma tornade, je ne descends plus. Et il faut bien que quelqu'un
 > descende.
-> *Elle la glisse dans la sacoche, contre les Cœurs. Elle ne la lâche pas tout de suite.*
-> **Isaure** — … Elle écrivait tout. Même ce que je n'ai pas lu.
-
+> **Isaure** — … Elle écrivait tout. Même ce que je n'ai pas lu. *(Elle la glisse dans la sacoche, contre
+> les Cœurs. Elle ne la lâche pas tout de suite.)*
 > **Chloé** — (Elle ne l'a pas lue. Mais elle ne l'a pas rendue non plus. … Jusqu'à l'aube.)
 
 Objet `lettre_isaure` : quitte le sac. Drapeau `lettre_isaure_donnee`. Si Chloé n'a pas la lettre (elle
@@ -998,48 +961,41 @@ l'aurait forcément : Dame Suie la donne avec l'antidote), rien.
 
 ### 9 e — Maïa (Npc `MaiaPorte`, événement `maia_porte` ; répliques `maia_porte_n`)
 
-*Isaure s'est retournée vers le portail. Maïa se lève de sa pierre et vient jusqu'à Chloé, le manteau
-de Joss jusqu'aux chevilles, de la cendre jusqu'aux genoux. Moustique sort du col de Chloé, crie, et
-s'envole sur l'épaule de Maïa. Il la mordille. Elle rit.*
+*Sans texte : Isaure s'est retournée vers le portail. Maïa vient jusqu'à Chloé, le manteau de Joss
+jusqu'aux chevilles, de la cendre jusqu'aux genoux. Moustique sort du col de Chloé, crie, et s'envole
+sur l'épaule de Maïa. Il la mordille.*
+
+*Moment 1 (6 bulles).*
 
 > **Maïa** — Aïe. Oui. Moi aussi. … Aïe.
 > **Maïa** — Il a maigri ? Il a maigri. Tu ne lui as pas donné de l'encrier, au moins ?
 > **Chloé** — Il a mangé celui de Roc.
 > **Maïa** — *(elle rit, un vrai rire, le premier du chapitre)* Il fait ça quand il s'inquiète. Roc mange
 > des biscuits.
-> **Chloé** — C'est ce qu'il a dit.
+> **Maïa** — Elle n'a pas dormi. Elle regarde la porte depuis hier soir. Elle a les Cœurs, la fiole de la
+> dame en gris, tout. Et elle n'a pas ouvert. *(Elle regarde sa mère, de dos, devant la porte.)*
+> **Maïa** — Elle attend l'aube, et j'attends avec elle. C'est ce que j'ai dit que je ferais. … Je devais
+> te rattraper en marchant ; c'est toi qui m'as rattrapée. On est nulles, toutes les deux.
 
-*Elle redevient sérieuse. Elle regarde sa mère, de dos, devant la porte.*
+**CHOIX** — « Moustique, sur l'épaule de Maïa, regarde Chloé. » : *« Tu veux Moustique ? »* / *Ne rien
+dire* (moment 2 : 8 ou 9 bulles).
 
-> **Maïa** — Elle n'a pas dormi. Elle regarde la porte depuis hier soir. Elle a les Cœurs, elle a la
-> fiole de la dame en gris, elle a tout. Et elle n'a pas ouvert.
-> **Chloé** — Elle attend l'aube.
-> **Maïa** — Elle attend. C'est tout ce que je sais. Je suis à côté, et j'attends avec elle. C'est ce que
-> j'ai dit que je ferais.
-> **Maïa** — Je ne t'ai pas dit que je te rattraperais en marchant ? C'est toi qui m'as rattrapée. En
-> marchant aussi. On est nulles, toutes les deux.
-> **Chloé** — Tu veux Moustique ?
+> *(si Chloé demande)* **Chloé** — Tu veux Moustique ?
 > **Maïa** — … Non. Garde-le encore. Il a peur du feu, et ici, il n'y a que ça. Et puis s'il est avec
 > toi, tu es obligée de revenir.
+> *(si elle ne dit rien)* **Maïa** — Garde-le encore, Moustique. Il a peur du feu, et ici, il n'y a que
+> ça. Et puis s'il est avec toi, tu es obligée de revenir.
+> *(Elle prend Moustique dans ses deux mains et le repose sur l'épaule de Chloé. Il ne crie pas.)*
 > **Chloé** — J'allais revenir.
 > **Maïa** — Je sais. Mais là, tu es obligée. C'est mieux.
-
-*Elle prend Moustique dans ses deux mains, l'embrasse sur la tête, et le repose sur l'épaule de Chloé.
-Il ne crie pas.*
-
-> **Maïa** — Le masque en carton ?
-> **Chloé** — Dans la sacoche.
-> **Maïa** — Garde-le aussi. Elle a enlevé le sien, mais elle ne l'a pas encore… Elle n'est pas encore
-> prête à en mettre un pour rire. Demain, peut-être.
-> **Maïa** — Chloé. Demain, à l'aube. Quoi qu'il arrive… je serai de son côté de la porte. Pas contre
+> **Maïa** — Et garde aussi le masque en carton. Elle a enlevé le sien, mais elle n'est pas encore prête
+> à en mettre un pour rire. Demain, peut-être. *(seulement si Chloé l'a)*
+> **Maïa** — Chloé. Demain, à l'aube, quoi qu'il arrive… je serai de son côté de la porte. Pas contre
 > toi. De son côté. Tu comprends la différence ?
 > **Chloé** — Oui.
-> **Maïa** — Bien. Parce que moi, j'ai mis une nuit entière.
-
-*Caillou pousse Chloé de la corne, doucement. Elle vacille.*
-
-> **Maïa** — Et lui, il dit : « soigne tes dinos, mange quelque chose, et reviens avec ton équipe au
-> complet ». Il dit beaucoup de choses, Caillou, quand on l'écoute.
+> **Maïa** — Bien. Parce que moi, j'ai mis une nuit entière. … Et lui, il dit : « soigne tes dinos, mange
+> quelque chose, et reviens avec ton équipe au complet ». *(Caillou pousse Chloé de la corne, doucement.
+> Elle vacille.)*
 > **Chloé** — (Elle a les yeux de sa mère. Et elle garde la porte avec elle. … Je les ramènerai. Toutes
 > les deux. Je l'ai dit en haut ; je le redis en bas.)
 
@@ -1077,7 +1033,9 @@ l'aventure arrive bientôt ! » si le ch. 9 n'existe pas encore.
 Garde-fous de la scène : Isaure ne dit **jamais** « je vais chercher Hélène » ; elle dit « on la sortira
 de là », au futur, dans son marché (c'est un marché, pas une confidence). Pas de combat. Maïa ne choisit
 pas entre les deux : elle est « du côté de sa mère de la porte, pas contre Chloé ». Personne ne pleure.
-Caillou éternue. La porte ne s'ouvre pas.
+Caillou éternue. La porte ne s'ouvre pas. Jamais plus de 11 bulles d'affilée : entre deux moments, le
+joueur regarde (les museaux, Moustique qui vole), choisit (la lettre, Moustique) ou marche (d'Isaure à
+Maïa, de Maïa au portail).
 
 ---
 
@@ -1129,15 +1087,16 @@ parler. Elle a dit ça ? Elle a raison. C'est agaçant. »).
 **Objectifs** (`story/volcan_objectives.gd`) : la Descente de Cendre → les champs de cendres (le
 premier corrompu) → les forges (éteindre les trois petites : « les dinos savent comment ») → Brac → Dame
 Suie et la grande forge → les coulées (un dino de pierre ou de feu en tête : qui, où) → le sanctuaire de
-Magma (astuce : l'Eau et la Pierre) → le 5e Cœur → la porte du cratère (Isaure) → « Vers la Terre des Apex
+Magma (astuce : l'Eau et la Terre ; la Pierre lui résiste) → le 5e Cœur → la porte du cratère (Isaure) → « Vers la Terre des Apex
 (bientôt) » ; en secondaire : les pages 35 à 38 (une direction chacune ; la 36 « sur le dos d'un dino de
 pierre ou de feu »), Roc au Cabinet (les carnets, le Sceau), Bertille, Léonce au port.
 
 **Équilibrage** (pour l'agent MÉCANIQUES, niveaux 42-48 du bestiaire ; équipe vers 42 à l'arrivée,
 44-45 chez Brac, 45-46 au T-Rex) : les trois corrompus des forges à 43/43/44 (règle normale, un par un,
 on peut soigner entre) ; Brac à 44/44/45/46 (Fournaise `long_calm`, sans soin entre ses dinos : un vrai
-test) ; le T-Rex de Magma à 48 (combat d'honneur, équipe reposée, type Feu : l'Eau et la Pierre le
-touchent fort ; l'équipe doit avoir un dino d'Eau ou de Pierre pour que ce soit jouable sans mur) ;
+test) ; le T-Rex de Magma à 48 (combat d'honneur, équipe reposée, type Feu : l'Eau et la Terre le
+touchent fort, la Pierre lui résiste ; l'équipe doit avoir un dino d'Eau ou de Terre pour que ce soit
+jouable sans mur) ;
 Fournaise 46 s'il reste ; Numéro 7 (Saichania) 43 s'il est capturé ensuite.
 
 ---

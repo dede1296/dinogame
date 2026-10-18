@@ -139,9 +139,10 @@ static func faille(_who: Node) -> void:
 
 # ------------------------------------------------------------------ the sanctuary of Magma
 
-## 8 a, the first time in the sanctuary: the round hall of black glass, the altar, the wall where
-## the lava flows like sand in an hourglass; the basin's water trembles, « boum »; the T-Rex de
-## Magma comes in through the wall of lava and looks her in the eyes. Then 8 b at once.
+## 8 a, the first time in the sanctuary (6 lines): the round hall of black glass, the altar, the
+## wall where the lava flows like sand in an hourglass; the basin's water trembles, « boum »; Chloé
+## does not move. The T-Rex de Magma comes in through the wall of lava (watched, no line). Then
+## 8 b at once (7 lines, up to the roar and the choice).
 static func arrival() -> void:
 	var guardian = V.actor_of(TREX_NODES)
 	if Game.flag(&"sceau_volcan"):
@@ -178,12 +179,12 @@ static func arrival() -> void:
 		await S.wait(0.8)
 		await Stage.look_at(wall, 1.0)
 		CS.pulse(wall, V.FIRE_RED, 3, 2.0, 2.0, 5.0)
-	var close := func() -> void:
+	var trembles := func() -> void:
 		Stage.look_back(0.8)
 		var dino := CS.lead()
 		if dino:
 			CS.lead_walk(chloe.global_position + Vector2(-26.0, 10.0), 60.0)
-	var trembles := func() -> void:
+		await S.wait(1.2)
 		await Stage.close_up(basin, 4.0, 1.2)
 		var water := Stage.puddle(basin, 0.5)
 		for i in 3:
@@ -198,46 +199,48 @@ static func arrival() -> void:
 		Stage.wide()
 		Stage.look_back(0.6)
 		Stage.turn_to(chloe, wall)
-	var comes := func() -> void:
-		if guardian == null:
-			return
-		await Stage.look_at(wall, 0.8)
-		CS.pulse(wall, V.FIRE_RED, 1, 1.0, 3.5, 6.0)
-		await Stage.fade_in(guardian, 1.0)
-		var to := S.ground_near(chloe.global_position + Vector2(0.0, -BENDS_TO - 40.0), 3)
-		if guardian is DinoNpc:
-			var from: Vector2 = (guardian as Node2D).global_position
-			for k in 2:
-				await (guardian as DinoNpc).walk_to(from.lerp(to, 0.5 * (k + 1)), 50.0)
-				Stage.shake(2.2, 0.35)
-				CS.sfx(V.BLOW, -8.0)
-		Stage.look_at(chloe.global_position.lerp((guardian as Node2D).global_position, 0.5), 0.8)
-		Stage.turn_to(guardian, chloe.global_position)
-		await CS.Act.lean(guardian, chloe.global_position, 18.0, 2.0)
-		MS.breath(guardian, 10)
 	var lines: Array = [
 		CS.cue({"text": "La faille s'ouvre sur une salle ronde. Les murs sont noirs et brillants : du verre. De l'obsidienne. Dessous, la lave les éclaire en rouge, et on se voit dedans, en rouge, partout."}, glass),
 		{"who": CHLOE, "text": "(Le masque. Le masque d'obsidienne était fait de ça. De cette pierre-là.)"},
 		CS.cue({"text": "Au centre, un autel de roche noire, vide. Au fond, une paroi de verre où la lave coule, à l'intérieur, lentement, comme du sable dans un sablier."}, altar_wall),
-		CS.cue({"text": "Il fait chaud, et c'est calme. Trop calme. Le dino de tête se colle contre la jambe de Chloé."}, close),
-		CS.cue({"text": "La vasque. Des cercles à la surface de l'eau. Un « boum », tout bas, qui monte par les pieds. Encore des cercles."}, trembles),
-		{"who": CHLOE, "text": "(Il arrive.)"},
-	]
-	if Game.flag(&"roc_trex_legende"):
-		lines.append({"who": CHLOE, "text": "(« Un T-Rex ne voit pas ce qui ne bouge pas. » Roc a dit : une légende. Cours.)"})
-	lines.append_array([
+		CS.cue({"text": "C'est calme. Trop calme : le dino de tête se colle contre la jambe de Chloé. Puis, dans la vasque, des cercles à la surface de l'eau. Un « boum », tout bas, qui monte par les pieds. Encore des cercles."}, trembles),
+		{"who": CHLOE, "text": "(Il arrive. … « Un T-Rex ne voit pas ce qui ne bouge pas. » Roc a dit : une légende. Cours.)" if Game.flag(&"roc_trex_legende") else "(Il arrive.)"},
 		CS.cue({"text": "Chloé ne bouge pas. Le dino de tête ne bouge pas. Moustique, dans le col, ne respire plus."}, still),
-		CS.cue({"text": "Le T-Rex de Magma la regarde. Droit dans les yeux. Il la voit très bien."}, comes),
-		{"who": CHLOE, "text": "(Une légende. … Roc avait raison. Et je ne cours pas.)" if Game.flag(&"roc_trex_legende") else "(… Et je ne cours pas.)"},
 		{"flag": &"sanctuaire_magma_arrivee"},
 		{"flag": &"flaque_tremble"},
-	])
+	]
 	await S.say(lines)
+	await _comes_in(guardian, wall)
 	Game.award_team_xp(XP_SANCTUAIRE)
 	Save.save_game()
 	S.lock(false)
 	if guardian:
 		await trex(guardian)
+
+
+## Watched, no line: in the wall of glass, behind the lava, a shadow rises, huge; the wall opens
+## like a curtain of lava and the T-Rex de Magma comes in. A foot: the ground shakes. The other.
+## It bends its head down to Chloé.
+static func _comes_in(guardian, wall: Vector2) -> void:
+	if guardian == null:
+		await S.wait(1.0)
+		return
+	var chloe := Stage.chloe()
+	await Stage.look_at(wall, 0.8)
+	CS.pulse(wall, V.FIRE_RED, 1, 1.0, 3.5, 6.0)
+	await Stage.fade_in(guardian, 1.0)
+	var to := S.ground_near(chloe.global_position + Vector2(0.0, -BENDS_TO - 40.0), 3)
+	if guardian is DinoNpc:
+		var from: Vector2 = (guardian as Node2D).global_position
+		for k in 2:
+			await (guardian as DinoNpc).walk_to(from.lerp(to, 0.5 * (k + 1)), 50.0)
+			Stage.shake(2.2, 0.35)
+			CS.sfx(V.BLOW, -8.0)
+	Stage.look_at(chloe.global_position.lerp((guardian as Node2D).global_position, 0.5), 0.8)
+	Stage.turn_to(guardian, chloe.global_position)
+	await CS.Act.lean(guardian, chloe.global_position, 18.0, 2.0)
+	MS.breath(guardian, 10)
+	await S.wait(0.6)
 
 
 # ------------------------------------------------------------------ the T-Rex de Magma
@@ -302,9 +305,10 @@ static func lesson(foe: Dino) -> Array:
 	return [line]
 
 
-## It sniffs the Sceaux one by one (the Désert: an old neighbour; the Côte: the fish; the Monts: too
-## cold; the Cieux: it looks up), then the empty bag, and growls; Chloé holds out both hands, as on
-## page 10; it blows on them: warm, not burning; it backs to the altar and roars.
+## It looks her in the eyes: it sees her very well (« Et je ne cours pas »). It sniffs the Sceaux
+## one by one (the Désert: an old neighbour; the Côte: the fish; the Monts: too cold; the Cieux: it
+## looks up), then the empty bag, and growls; Chloé holds out both hands, as on page 10; it blows
+## on them: warm, not burning; it backs to the altar and roars.
 static func _sniffs(who: Node) -> Array:
 	var chloe := Stage.chloe()
 	var at: Vector2 = (who as Node2D).global_position if who is Node2D else chloe.global_position + Vector2(0.0, -120.0)
@@ -344,10 +348,16 @@ static func _sniffs(who: Node) -> Array:
 				water.impact()
 				await S.wait(0.4)
 			water.queue_free()
+	var eyes := func() -> void:
+		Stage.look_at(chloe.global_position.lerp(at, 0.5), 0.8)
+		Stage.turn_to(who, chloe.global_position)
+		MS.breath(who, 6)
 	return [
-		CS.cue({"text": "Il renifle les Sceaux, un par un. La Forêt, le Marais. Le Désert : il souffle un grand souffle chaud, comme on salue un vieux voisin. La Côte : il fronce les naseaux. Les Monts : il recule la tête. Les Cieux : il lève les yeux vers la voûte, longtemps."}, seals),
+		CS.cue({"text": "Le T-Rex de Magma la regarde. Droit dans les yeux. Il la voit très bien."}, eyes),
+		{"who": CHLOE, "text": "(Une légende. … Roc avait raison. Et je ne cours pas.)" if Game.flag(&"roc_trex_legende") else "(… Et je ne cours pas.)"},
+		CS.cue({"text": "Il renifle les Sceaux, un par un. Le Désert : un grand souffle chaud, comme on salue un vieux voisin. La Côte : il fronce les naseaux. Les Monts : il recule la tête. Les Cieux : il lève les yeux vers la voûte, longtemps."}, seals),
 		CS.cue({"text": "Puis la sacoche. Il renifle, cherche, renifle encore. Il gronde, tout bas."}, bag),
-		{"who": CHLOE, "text": "Je les avais. Les quatre. On me les a pris, là-haut. Ils sont là-bas, devant la porte, et ils vont servir à ouvrir ce qu'elle a fermé."},
+		{"who": CHLOE, "text": "Je les avais. Les quatre. On me les a pris, là-haut. Ils sont devant la porte, et ils vont servir à ouvrir ce qu'elle a fermé."},
 		CS.cue({"who": CHLOE, "text": "Je sais que vous ne comprenez pas les mots. Elle disait que vous compreniez les mains."}, hands),
 		CS.cue({"text": "Il souffle sur ses mains. Chaud. Pas brûlant. Puis il recule jusqu'à l'autel, et il rugit, et toute la salle de verre chante avec lui."}, roars),
 		{"flag": &"trex_magma_parle"},
@@ -413,8 +423,7 @@ static func _gives_heart(who: Node) -> void:
 		CS.cue({"text": "Il frappe l'autel du pied. Une fois. Le verre se fend en étoile, et sous l'autel, de la lave monte, rouge, et se fige, noire, et craque : au milieu, dans une coque de lave ouverte comme une noix, le Cinquième Cœur."}, stamps),
 		CS.cue({"text": "Il est chaud comme du pain qui sort du four. Il bat fort, vite, comme s'il avait couru. Comme s'il savait qu'il est le dernier."}, heart),
 		CS.cue({"text": "Dans la coque, à côté, un disque d'ambre rouge sombre : une flamme, et la fougère d'Hélène. Le Sceau du Volcan."}, seal),
-		{"who": CHLOE, "text": "(Un Cœur. Un seul. Elle en a quatre, et moi un, et il faut les cinq.)"},
-		{"who": CHLOE, "text": "(Alors elle a besoin de moi. Et moi d'elle. … C'est bête, mais ça me rassure.)"},
+		{"who": CHLOE, "text": "(Un Cœur. Un seul. Elle en a quatre, et moi un, et il faut les cinq. Alors elle a besoin de moi. Et moi d'elle. … C'est bête, mais ça me rassure.)"},
 		{"flag": &"coeur_5"},
 		{"flag": &"sceau_volcan"},
 		CS.cue({"text": "Il se couche, et il fume, doucement, par les naseaux. Chloé pose la main sur son museau : chaud comme une pierre au soleil."}, lies),

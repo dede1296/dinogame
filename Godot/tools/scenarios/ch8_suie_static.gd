@@ -1,7 +1,7 @@
 extends RefCounted
-## Chapter 8, one moment (state set by flags, then only this moment; scènes agent, scratchpad ch8/gen_scenarios.py):
-## Dame Suie : « Vous avez pris votre temps », la petite sans une goutte et sans peur, trois fois, les gants, la grande forge qui s'éteint, les lunettes, l'Ambre clair, la lettre « Pour Isaure » (page 37), son départ avec les carnets ; statique.
-## godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario_file=res://tools/scenarios/ch8_suie_static.gd titre="Ch. 8 : Dame Suie, la grande forge, l'antidote, la lettre (statique)"
+## Chapter 8, one moment (state set by flags, then only this moment; scènes courtes du 18/10, scratchpad/court/gen_scenarios2.py):
+## Dame Suie en moments courts : « Vous avez pris votre temps », les gants retirés sans texte, trois fois et un CHOIX (« Trois, c'est que les tables sont fausses. »), la roue et la grande forge qui s'éteint sans texte, les lunettes, l'Ambre clair, la lettre « Pour Isaure » (page 37), le traîneau chargé, son départ, les gants sur l'établi ; statique.
+## godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario_file=res://tools/scenarios/ch8_suie_static.gd titre="Ch. 8 : Dame Suie, la grande forge, l'antidote, la lettre (court, statique)"
 
 const STEPS := [
 	[0.80, "flags", ["prologue_done", "tuto_commandes", "met_roc", "sceau_plaines", "maia_defi_1", "havre_arrive", "selle", "foret_arrivee", "sceau_foret", "maia_defi_2", "marais_arrivee", "gilet_nage", "sceau_marais", "coeur_1", "maia_defi_3", "desert_arrivee", "sceau_desert", "coeur_2", "maia_defi_4", "cote_annonce", "cote_ouverte", "cote_arrivee", "nessie", "masque_plongee", "sceau_cote", "coeur_3", "maia_enfuie", "masque_carton", "monts_ouverts", "monts_arrivee", "bertille_vue", "suie_monts_battue", "suie_indice", "roc_col_vu", "roc_innocente", "sanctuaire_givre_ouvert", "titan_battu", "sceau_monts", "coeur_4", "maia_monts_vue", "masque_rendu", "maia_defi_5", "maia_alliee", "found_journal_25", "harnais_vol", "cieux_ouverts", "cieux_arrivee", "nids_arrivee", "quetzal_roi_parle", "quetzal_roi_battu", "quetzal_roi_confiance", "sceau_cieux", "vol_obtenu", "arche_arrivee", "arche_piege", "masque_arche_battu", "coeurs_voles", "masque_tombe", "moustique_confie", "masque_carton_confie", "roc_masque_tombe", "volcan_ouvert", "descente_cendre", "cendres_arrivee", "premier_corrompu_volcan", "forges_arrivee", "leonce_vu", "forge_1_eteinte", "forge_2_eteinte", "forge_3_eteinte", "petites_forges_eteintes", "barricade_tombee", "brac_volcan_vu", "brac_vaincu", "brac_parti"]],
@@ -22,6 +22,7 @@ const STEPS := [
 	[3.70, "wait_idle", [0.3, 60]],
 	[3.90, "face", Vector2(0, -1)],
 	[4.50, "static", ["res://story/volcan_suie.gd", "static_suie"]],
+	[5.00, "pick", 0],
 	[5.50, "shot", "suie_avant"],
 	[6.20, "next", null],
 	[6.80, "shot", "suie_00"],
@@ -163,42 +164,7 @@ const STEPS := [
 	[134.90, "next", null],
 	[136.00, "next", null],
 	[137.10, "next", null],
-	[138.20, "next", null],
-	[138.80, "shot", "suie_20"],
-	[139.30, "next", null],
-	[140.40, "next", null],
-	[141.50, "next", null],
-	[142.60, "next", null],
-	[143.70, "next", null],
-	[144.80, "next", null],
-	[145.40, "shot", "suie_21"],
-	[145.90, "next", null],
-	[147.00, "next", null],
-	[148.10, "next", null],
-	[149.20, "next", null],
-	[150.30, "next", null],
-	[151.40, "next", null],
-	[152.00, "shot", "suie_22"],
-	[152.50, "next", null],
-	[153.60, "next", null],
-	[154.70, "next", null],
-	[155.80, "next", null],
-	[156.90, "next", null],
-	[158.00, "next", null],
-	[158.60, "shot", "suie_23"],
-	[159.10, "next", null],
-	[160.20, "next", null],
-	[161.30, "next", null],
-	[162.40, "next", null],
-	[163.50, "next", null],
-	[164.60, "next", null],
-	[165.20, "shot", "suie_24"],
-	[165.70, "next", null],
-	[166.80, "next", null],
-	[167.90, "next", null],
-	[169.00, "next", null],
-	[170.10, "next", null],
-	[171.70, "state", null],
-	[171.80, "party", null],
-	[171.90, "tracker", null],
+	[138.70, "state", null],
+	[138.80, "party", null],
+	[138.90, "tracker", null],
 ]

@@ -410,16 +410,16 @@ static func _barricade_falls() -> void:
 
 ## Scene 5, Brac (Npc « BracVolcan », event « brac_volcan », hide_flag brac_parti): before the
 ## battle (no orders, « Tu peux rentrer, Brac. », the visiting cards, Fournaise); the battle;
-## the bitter moment and his going. Behind the barricade until it falls.
+## the bitter moment and his going. Behind the barricade until it falls. Short moments (Greg,
+## 18/10): ~9 lines in a row at most, cut by things watched (he jumps up; Mastoc's head on his
+## knee; he walks off) and two choices (« Vous voulez qu'on arrête ? »; where he goes).
 static func brac(who: Node) -> void:
 	if Game.flag(&"brac_parti") or not Game.flag(&"barricade_tombee"):
 		return
 	var cast := _his_three(who)
 	if not Game.flag(&"brac_vaincu"):
 		if not Game.flag(&"brac_volcan_vu"):
-			S.lock(true)
-			await S.say(_before(who, cast))
-			S.lock(false)
+			await _meets(who, cast)
 		elif await Dialogue.choose(BRAC, "Reviens quand tu voudras, moucheron ! Je ne vais nulle part. C'est bien le problème.",
 			["Le défier", "Pas encore"]) != 0:
 			return
@@ -451,11 +451,23 @@ static func _his_three(who: Node) -> Dictionary:
 	return cast
 
 
-## 5 a, before the battle.
+## 5 a, before the battle: no orders (9 lines); he looks at the fire, then jumps up (watched); his
+## visiting cards (3 lines); a choice (« Vous voulez qu'on arrête ? », or nothing); Fournaise (6 or
+## 5 lines). Also the test's entry (static_brac).
+static func _meets(who: Node, cast: Dictionary) -> void:
+	S.lock(true)
+	await S.say(_before(who, cast))
+	await _jumps_up(who)
+	await S.say(_cards(who))
+	var pick := await Dialogue.choose("", "Brac attend. Que dit Chloé ?", ["« Vous voulez qu'on arrête ? »", "Ne rien dire"])
+	await S.say(_fournaise(who, cast, pick == 0))
+	S.lock(false)
+
+
+## Moment 1 (9 lines): « MON volcan »; the Trois; no orders since this morning; « Tu peux rentrer ».
 static func _before(who: Node, cast: Dictionary) -> Array:
 	var chloe := Stage.chloe()
 	var at: Vector2 = (who as Node2D).global_position
-	var cage := V.at_node(["CageFournaise", "CageGrande"], V.spot_or("FOURNAISE", at + CAGE_FROM_BRAC))
 	var mastoc = cast.get("Mastoc")
 	var stands := func() -> void:
 		Stage.look_at(at.lerp(chloe.global_position, 0.4), 0.8)
@@ -464,25 +476,65 @@ static func _before(who: Node, cast: Dictionary) -> Array:
 		if who is Npc:
 			(who as Npc).face(chloe.global_position)
 		Stage.hop(who, 1, 8.0)
-	var looks := func() -> void:
+	var looks := func() -> void:   # (at his forges out, the barricade down, Numéro 3 trotting off)
 		Stage.turn_to(who, at + Vector2(0.0, 300.0))
 		var three := V.stand_in(&"styracosaurus", at + Vector2(-4.0 * S.CELL, 4.0 * S.CELL), "Numero3Loin")
 		if three:
 			Stage.fade_in(three, 0.4)
 			Stage.fade_out(three, 3.0, true)
 			three.walk_to(three.global_position + Vector2(-5.0 * S.CELL, 3.0 * S.CELL), 110.0)
+		await S.wait(1.2)
+		if who is Npc:
+			(who as Npc).face(chloe.global_position)
 	var sits := func() -> void:
 		Stage.sit(who)
 		if mastoc:
 			Stage.rear(mastoc, 0.8)
 			CS.reach(who, (mastoc as Node2D).global_position, 8.0, 1.2)
-	var silence := func() -> void:
-		await S.wait(1.4)
-		Stage.pose(who, &"")
-		Stage.hop(who, 1, 12.0)
-	var card := func() -> void:
+	return [
+		CS.cue({"who": BRAC, "text": "Le moucheron. ÉVIDEMMENT, le moucheron. La Forêt, le Désert, et maintenant MON volcan."}, stands),
+		{"who": CHLOE, "text": "Ce n'est pas votre volcan."},
+		CS.cue({"who": BRAC, "text": "C'est le volcan où je suis. Donc c'est mon volcan. C'est comme ça que ça marche, les volcans."}, looks),
+		{"who": BRAC, "text": "Trois forges. Douze ans de forges. Et le Trois qui me regarde comme si c'était MOI qui l'avais mis dans une cage."},
+		{"who": CHLOE, "text": "C'est vous qui l'avez mis dans une cage."},
+		CS.cue({"who": BRAC, "text": "… Techniquement."}, sits),
+		{"who": BRAC, "text": "Tu veux savoir quoi, moucheron ? Je n'ai plus d'ordres. Elle est passée là, juste là, avec les quatre Cœurs sous le bras, la petite Kerval à côté, et un Tricératops qui a éternué sur ma marmite."},
+		{"who": CHLOE, "text": "(Caillou.)"},
+		{"who": BRAC, "text": "Et tu sais ce qu'elle m'a dit, après douze ans ? « Tu peux rentrer, Brac. » RENTRER. Comme on dit à un chien."},
+	]
+
+
+## Watched, no line: a silence; he looks at the fire; then he jumps up, and is Brac again.
+static func _jumps_up(who: Node) -> void:
+	var at: Vector2 = (who as Node2D).global_position
+	Stage.turn_to(who, at + Vector2(-60.0, 40.0))
+	await S.wait(1.6)
+	Stage.pose(who, &"")
+	Stage.hop(who, 1, 12.0)
+	Stage.turn_to(who, Stage.chloe().global_position)
+	await S.wait(0.6)
+
+
+## Moment 2 (3 lines): his visiting cards, three hundred; the only one he gave, to Maïa, who said
+## thank you (then the choice).
+static func _cards(who: Node) -> Array:
+	var chloe := Stage.chloe()
+	var at: Vector2 = (who as Node2D).global_position
+	var card := func() -> void:   # (a dirty card held out: nothing to read, ash on it)
 		CS.reach(who, chloe.global_position, 14.0, 1.4)
 		Act.burst(at + Vector2(10.0, -40.0), V.ASH_BITS, 8, 1.2, 0.15)
+	return [
+		{"who": BRAC, "text": "Bon ! Ça ne change rien ! Je suis Brac, chasseur d'Alphas, et c'est écrit sur mes cartes de visite ! J'en ai, maintenant ! Trois cents ! Regarde !"},
+		CS.cue({"text": "Il sort une carte sale de sa poche et la brandit. On ne lit rien : il y a de la cendre dessus."}, card),
+		{"who": BRAC, "text": "J'en ai donné une. Une seule. À la petite Kerval, ce matin. Elle a dit « merci ». MERCI. Tu sais depuis combien de temps personne ne m'avait dit merci ?"},
+	]
+
+
+## After the choice (6 or 5 lines; `asked`: Chloé asked whether to stop): « gagner UNE fois »; his
+## three wake; the great cage opens: Fournaise, a name, not a number.
+static func _fournaise(who: Node, cast: Dictionary, asked: bool) -> Array:
+	var at: Vector2 = (who as Node2D).global_position
+	var cage := V.at_node(["CageFournaise", "CageGrande"], V.spot_or("FOURNAISE", at + CAGE_FROM_BRAC))
 	var wakes := func() -> void:
 		for k in ["Mastoc", "Cabosse", "Grognon"]:
 			var d = cast.get(k)
@@ -501,31 +553,22 @@ static func _before(who: Node, cast: Dictionary) -> Array:
 			Stage.fade_in(big, 0.6)
 			Stage.rear(big, 1.2)
 			Stage.cry(big, &"attaque")
-	return [
-		CS.cue({"who": BRAC, "text": "Le moucheron. ÉVIDEMMENT, le moucheron. La Forêt, le Désert, et maintenant MON volcan."}, stands),
-		{"who": CHLOE, "text": "Ce n'est pas votre volcan."},
-		{"who": BRAC, "text": "C'est le volcan où je suis. Donc c'est mon volcan. C'est comme ça que ça marche, les volcans."},
-		CS.cue({"text": "Il regarde ses forges éteintes, la barricade par terre, Numéro 3 qui s'éloigne au trot."}, looks),
-		{"who": BRAC, "text": "Trois forges. Douze ans de forges. Et le Trois qui me regarde comme si c'était MOI qui l'avais mis dans une cage."},
-		{"who": CHLOE, "text": "C'est vous qui l'avez mis dans une cage."},
-		{"who": BRAC, "text": "… Techniquement."},
-		CS.cue({"who": BRAC, "text": "Tu veux savoir quoi, moucheron ? Je n'ai plus d'ordres. J'attends depuis ce matin, et rien. Pas un mot, pas une lettre argentée, pas un « Brac, fais ceci ». Rien."}, sits),
-		{"who": BRAC, "text": "Elle est passée là, juste là, avec les quatre Cœurs sous le bras. Et la petite Kerval qui la suit comme un Compsognathus. Et un Tricératops qui a éternué sur ma marmite."},
-		{"who": CHLOE, "text": "(Caillou.)"},
-		{"who": BRAC, "text": "Et tu sais ce qu'elle m'a dit, après douze ans ? « Tu peux rentrer, Brac. »"},
-		{"who": BRAC, "text": "RENTRER. Comme on dit à un chien."},
-		CS.cue({"who": BRAC, "text": "Bon ! Ça ne change rien ! Je suis Brac, chasseur d'Alphas, et c'est écrit sur mes cartes de visite ! J'en ai, maintenant ! Trois cents ! Regarde !"}, silence),
-		CS.cue({"text": "Il sort une carte sale de sa poche et la brandit. On ne lit rien : il y a de la cendre dessus."}, card),
-		{"who": BRAC, "text": "J'en ai donné une. Une seule. À la petite Kerval, ce matin. Elle a dit « merci ». MERCI. Tu sais depuis combien de temps personne ne m'avait dit merci ?"},
-		{"who": CHLOE, "text": "… Vous voulez qu'on arrête ?"},
-		{"who": BRAC, "text": "ARRÊTER ?! Tu as éteint mes forges, renversé ma barricade, et tu me demandes si je veux ARRÊTER ?! Non, moucheron. Il me reste une chose à faire ici, et c'est de gagner UNE fois."},
+	var lines: Array = []
+	if asked:
+		lines.append_array([
+			{"who": CHLOE, "text": "… Vous voulez qu'on arrête ?"},
+			CS.cue({"who": BRAC, "text": "ARRÊTER ?! Tu as éteint mes forges, renversé ma barricade, et tu me demandes si je veux ARRÊTER ?! Non, moucheron. Il me reste une chose à faire ici : gagner UNE fois."}, func() -> void: Stage.hop(who, 2, 8.0)),
+		])
+	else:
+		lines.append(CS.cue({"who": BRAC, "text": "Et ne me regarde pas comme ça ! Tu as éteint mes forges, renversé ma barricade… Non, moucheron. Il me reste une chose à faire ici : gagner UNE fois."}, func() -> void: Stage.hop(who, 2, 8.0)))
+	lines.append_array([
 		CS.cue({"who": BRAC, "text": "Mastoc ! Cabosse ! Grognon ! Et toi, là-dedans : réveille-toi. On a de la visite."}, wakes),
 		CS.cue({"text": "La grande cage s'ouvre : un Daspletosaurus corrompu, énorme, les veines violettes jusqu'au bout de la queue. Plaque : « FOURNAISE ». Un nom, pas un numéro."}, opens),
 		{"who": BRAC, "text": "Fournaise. Mon chef-d'œuvre. Enfin, le chef-d'œuvre de la Suie : mais c'est MOI qui l'ai nourri. À la pelle."},
-		{"who": CHLOE, "text": "(Un nom. Il lui a donné un nom. … Il l'aime bien, celui-là.)"},
-		{"who": CHLOE, "text": "(Apaiser. Pas Mastoc, pas les autres : eux, ils sont à lui pour de vrai. Fournaise.)"},
+		{"who": CHLOE, "text": "(Un nom. Il lui a donné un nom. … Il l'aime bien, celui-là. Apaiser Fournaise : pas les autres, eux, ils sont à lui pour de vrai.)"},
 		{"flag": &"brac_volcan_vu"},
-	]
+	])
+	return lines
 
 
 ## Cabosse, Grognon, Mastoc, then Fournaise (corrupted, a long calm); no healing between them.
@@ -544,8 +587,10 @@ static func _team() -> Array:
 	return team
 
 
-## 5 c, after the battle: Fournaise asleep, the bitter moment (four lines), the mask in the ash,
-## the swearing, the sea « de LOIN », the biscuit; he goes. Then Fournaise chooses.
+## 5 c, after the battle: Fournaise asleep, the bitter moment (4 lines); Mastoc's head on his knee
+## (watched); the mask in the ash, the swearing, his three, Fournaise (9 lines); a choice (where
+## he goes: the sea, or the Monts: the sea anyway, « de LOIN »); the biscuit (3 lines); he walks
+## off (watched); the two masks (2 lines). Then Fournaise chooses.
 static func _after(who: Node, cast: Dictionary) -> void:
 	S.lock(true)
 	var chloe := Stage.chloe()
@@ -557,6 +602,27 @@ static func _after(who: Node, cast: Dictionary) -> void:
 		if big:
 			Stage.fade_in(big, 0.4)
 	var mask := {}
+	await S.say(_bitter(who, cast, big))
+	await _knee(who, cast)
+	await S.say(_the_bone_mask(who, mask))
+	var pick := await Dialogue.choose(BRAC, "Quelque part où il n'y a pas de volcan. … Il y a des endroits sans volcan ?", ["« La mer. »", "« Les Monts Gelés. »"])
+	await S.say(_the_sea(who, cast, pick == 0))
+	await _walks_off(who, cast)
+	await S.say(_two_masks(mask))
+	await _fournaise_chooses(big)
+	_clean_up(who, cast, mask)
+	CS.lead_back()
+	Stage.look_back()
+	Game.award_team_xp(XP_BRAC)
+	Save.save_game()
+	S.lock(false)
+
+
+## Moment 1 (4 lines): « Quatre fois. » Fournaise asleep, the first time; twelve years; « Rentrer
+## où ? J'ai deux cent quatre-vingt-dix-neuf cartes de visite, et pas d'adresse dessus. »
+static func _bitter(who: Node, cast: Dictionary, big) -> Array:
+	var chloe := Stage.chloe()
+	var at: Vector2 = (who as Node2D).global_position
 	var asleep := func() -> void:
 		Stage.look_at(at.lerp(chloe.global_position, 0.35), 0.8)
 		if big is DinoNpc:
@@ -570,26 +636,63 @@ static func _after(who: Node, cast: Dictionary) -> void:
 		Stage.sit(who)
 		if big:
 			Stage.turn_to(who, (big as Node2D).global_position)
-	var knee := func() -> void:
-		await S.wait(1.6)
-		var mastoc = cast.get("Mastoc")
-		if mastoc is DinoNpc:
-			await (mastoc as DinoNpc).walk_to(S.ground_near(at + Vector2(46.0, 16.0), 1), 50.0)
-			CS.Act.lean(mastoc, at, 12.0, 2.0)
-		var dino := CS.lead()
-		if dino:
-			CS.crouch(dino, 0.2, 0.8)
+	return [
+		CS.cue({"who": BRAC, "text": "… Quatre fois. La Forêt. Le Désert. Et deux fois ici, si on compte la barricade. Je compte la barricade."}, asleep),
+		CS.cue({"who": BRAC, "text": "Il dort. Trois mois, et je ne l'avais jamais vu dormir."}, sits),
+		{"who": BRAC, "text": "Douze ans, moucheron. Douze ans que je lui ramène des bêtes, que je dors dans la cendre, que je crie pour que ça avance. Et ce matin elle passe devant moi, sans s'arrêter, et elle dit « Tu peux rentrer »."},
+		{"who": BRAC, "text": "Rentrer où ? J'ai deux cent quatre-vingt-dix-neuf cartes de visite, et pas d'adresse dessus."},
+	]
+
+
+## Watched, no line: a long silence. Mastoc lays his big head on Brac's knee. Chloé says nothing.
+## Moustique neither. The lead dino sits down.
+static func _knee(who: Node, cast: Dictionary) -> void:
+	var at: Vector2 = (who as Node2D).global_position
+	await S.wait(1.2)
+	var mastoc = cast.get("Mastoc")
+	if mastoc is DinoNpc:
+		await (mastoc as DinoNpc).walk_to(S.ground_near(at + Vector2(46.0, 16.0), 1), 50.0)
+		CS.Act.lean(mastoc, at, 12.0, 2.0)
+	var dino := CS.lead()
+	if dino:
+		CS.crouch(dino, 0.2, 0.8)
+	await S.wait(1.6)
+
+
+## Moment 2 (9 lines): « Elle n'est pas rentrée non plus »; the bone mask thrown in the ash; the
+## swearing; his three (« ils regardent mon sandwich »); Fournaise will choose; « Où est-ce que vous
+## allez ? » (then the choice).
+static func _the_bone_mask(who: Node, mask: Dictionary) -> Array:
+	var at: Vector2 = (who as Node2D).global_position
 	var off := func() -> void:
 		Stage.pose(who, &"")
 		CS.reach(who, at + Vector2(0.0, -40.0), 6.0, 1.2)
-	var throws := func() -> void:
-		CS.reach(who, at + Vector2(0.0, 30.0), 10.0, 0.6)
+	var throws := func() -> void:   # (in the ash, at his feet: the bone mask makes no noise)
+		await CS.reach(who, at + Vector2(0.0, 30.0), 10.0, 0.6)
 		var m := Stage.show_thing("masque_os_sol", at + Vector2(-24.0, 22.0), "MasqueBracScene")
 		mask["thing"] = m
 		Act.burst(at + Vector2(-24.0, 22.0), V.ASH_BITS, 10, 0.1, 0.3)
-	var swears := func() -> void:
+		await S.wait(0.6)
 		Stage.hop(who, 2, 8.0)
 		Stage.shake(1.0, 0.3)
+	return [
+		{"who": CHLOE, "text": "(Il n'a pas peur du Masque. Il n'a plus de Masque. C'est pire, pour lui.)"},
+		{"who": CHLOE, "text": "Elle n'est pas rentrée non plus, vous savez. Elle est montée. Et Maïa aussi."},
+		{"who": BRAC, "text": "… Je sais. Je les ai regardées partir. La petite m'a dit bonjour, merci, et une carte dans la poche. C'est la plus polie de toute l'Ombre Noire, et elle n'en fait même pas partie."},
+		CS.cue({"who": BRAC, "text": "Il me serrait, de toute façon."}, off),
+		CS.cue({"who": BRAC, "text": "Bon. CROTTE DE STÉGOSAURE. Nom d'un fossile moisi. Par les écailles de ma grand-mère, et par celles de son Stégosaure."}, throws),
+		{"who": BRAC, "text": "Je garde Mastoc, Cabosse et Grognon. Eux, quand je parle, ils me regardent. Ils regardent mon sandwich, mais ils me regardent."},
+		{"who": CHLOE, "text": "Et Fournaise ?"},
+		{"who": BRAC, "text": "Fournaise dort. On ne réveille pas un dino qui dort : c'est écrit sur un panneau quelque part, ta grand-mère en a mis partout. Il est à toi, moucheron. Ou aux coulées. Ou à personne. Il choisira."},
+		{"who": CHLOE, "text": "Où est-ce que vous allez ?"},
+	]
+
+
+## After the choice (3 lines; `sea`: Chloé said « La mer. », else the Monts, which he will not
+## have): the sea, « de LOIN »; the biscuit; his first swearing on the way.
+static func _the_sea(who: Node, cast: Dictionary, sea: bool) -> Array:
+	var chloe := Stage.chloe()
+	var at: Vector2 = (who as Node2D).global_position
 	var away := V.spot_or("ENTREE_FORGES", at + Vector2(0.0, 12.0 * S.CELL))
 	var steps := func() -> void:
 		if who is Npc:
@@ -608,45 +711,33 @@ static func _after(who: Node, cast: Dictionary) -> void:
 			elif wk is DinoNpc:
 				(wk as DinoNpc).walk_to(from + dir * BRAC_WALK * S.CELL, 70.0)
 		Stage.look_at(away.lerp(chloe.global_position, 0.5), 2.0)
+	return [
+		{"who": BRAC, "text": "La mer. Je vais aller voir la mer. De LOIN. Pas en barque. Je ne monte plus dans la barque de personne." if sea
+			else "Les MONTS ? Avec Bertille qui compte mes feux ? … Non. La mer. Je vais aller voir la mer. De LOIN. Pas en barque. Je ne monte plus dans la barque de personne."},
+		CS.cue({"who": BRAC, "text": "Moucheron. Si tu la revois… la petite… Dis-lui que la carte, c'est gratuit. Elle a voulu me payer. Avec un biscuit. … C'était un bon biscuit."}, steps),
+		CS.cue({"who": BRAC, "text": "Par la crotte moisie d'un fossile de grand-mère !"}, leaves),
+	]
+
+
+## Watched, no line: he goes off towards the fields, vexed, tall, not broken, his three behind him,
+## Mastoc looking back at the pot; until the ash hides them.
+static func _walks_off(_who: Node, _cast: Dictionary) -> void:
+	await S.wait(BRAC_LEAVES * 0.5)
+
+
+## Moment 3 (2 lines): « Il a surtout eu peur. »; the bone mask in the ash: two masks on the ground.
+static func _two_masks(mask: Dictionary) -> Array:
+	var chloe := Stage.chloe()
 	var looks := func() -> void:
 		var m = mask.get("thing")
 		Stage.look_back(1.0)
 		if is_instance_valid(m):
 			Stage.turn_to(chloe, (m as Node2D).global_position)
-	await S.say([
-		CS.cue({"who": BRAC, "text": "… Quatre fois."}, asleep),
-		{"who": BRAC, "text": "La Forêt. Le Désert. Et deux fois ici, si on compte la barricade. Je compte la barricade."},
-		CS.cue({"who": BRAC, "text": "Il dort. Je ne l'avais jamais vu dormir. Trois mois, et je ne l'avais jamais vu dormir."}, sits),
-		{"who": BRAC, "text": "Douze ans, moucheron. Douze ans que je lui ramène des bêtes, des cages pleines, des Cœurs presque. Que je dors dans la cendre. Que je crie pour que ça avance. Et ce matin elle passe devant moi, sans s'arrêter, et elle dit « Tu peux rentrer »."},
-		{"who": BRAC, "text": "Rentrer où ? J'ai deux cent quatre-vingt-dix-neuf cartes de visite, et pas d'adresse dessus."},
-		CS.cue({"who": CHLOE, "text": "(Il n'a pas peur du Masque. Il n'a plus de Masque. C'est pire, pour lui.)"}, knee),
-		{"who": CHLOE, "text": "Elle n'est pas rentrée non plus, vous savez. Elle est montée. Et Maïa aussi."},
-		{"who": BRAC, "text": "… Je sais. Je les ai regardées partir. La petite m'a dit bonjour en passant. Bonjour, merci, et une carte dans la poche. C'est la plus polie de toute l'Ombre Noire, et elle n'en fait même pas partie."},
-		CS.cue({"who": BRAC, "text": "Il me serrait, de toute façon."}, off),
-		CS.cue({"text": "Il le jette dans la cendre, à ses pieds. Le masque d'os ne fait pas de bruit."}, throws),
-		CS.cue({"who": BRAC, "text": "Bon. CROTTE DE STÉGOSAURE. Nom d'un fossile moisi. Par les écailles de ma grand-mère, et par celles de son Stégosaure."}, swears),
-		{"who": BRAC, "text": "Je garde Mastoc, Cabosse et Grognon. Eux, quand je parle, ils me regardent. Ils regardent mon sandwich, mais ils me regardent."},
-		{"who": CHLOE, "text": "Et Fournaise ?"},
-		{"who": BRAC, "text": "Fournaise dort. On ne réveille pas un dino qui dort ; c'est écrit sur un panneau quelque part, ta grand-mère en a mis partout. Il est à toi, moucheron. Ou aux coulées. Ou à personne. Il choisira. Ça fera un dino qui choisit, dans ce camp."},
-		{"who": CHLOE, "text": "Où est-ce que vous allez ?"},
-		{"who": BRAC, "text": "Quelque part où il n'y a pas de volcan. … Il y a des endroits sans volcan ?"},
-		{"who": CHLOE, "text": "La mer."},
-		{"who": BRAC, "text": "La mer. Je vais aller voir la mer. De LOIN. Pas en barque. Je ne monte plus dans la barque de personne."},
-		CS.cue({"who": BRAC, "text": "Moucheron. Si tu la revois… la petite… Dis-lui que la carte, c'est gratuit. Elle a voulu me payer. Avec un biscuit."}, steps),
-		{"who": BRAC, "text": "… C'était un bon biscuit."},
-		CS.cue({"who": BRAC, "text": "Par la crotte moisie d'un fossile de grand-mère !"}, leaves),
+	return [
 		{"who": CHLOE, "text": "(Il va voir la mer. De loin. … Il n'a jamais fait peur à personne, en fait. Il a surtout eu peur.)"},
-		CS.cue({"text": "Elle regarde le masque d'os dans la cendre."}, looks),
-		{"who": CHLOE, "text": "(Deux masques par terre. Un dans l'herbe, un dans la cendre. Personne ne les ramassera.)"},
+		CS.cue({"who": CHLOE, "text": "(Deux masques par terre. Un dans l'herbe, un dans la cendre. Personne ne les ramassera.)"}, looks),
 		{"flag": &"brac_parti"},
-	])
-	await _fournaise_chooses(big)
-	_clean_up(who, cast, mask)
-	CS.lead_back()
-	Stage.look_back()
-	Game.award_team_xp(XP_BRAC)
-	Save.save_game()
-	S.lock(false)
+	]
 
 
 ## Fournaise gets up, looks at Chloé, and chooses: Chloé's party when there is room (a fire dino:
@@ -736,8 +827,8 @@ static func static_forges() -> void:
 	S.playing -= 1
 
 
-## For the tests: Brac brought on beside Chloé (the barricade down), 5 a, the battle skipped
-## (brac_vaincu), 5 c and Fournaise's choice.
+## For the tests: Brac brought on beside Chloé (the barricade down), 5 a (the test picks the first
+## answer of each choice), the battle skipped (brac_vaincu), 5 c and Fournaise's choice.
 static func static_brac() -> void:
 	S.playing += 1
 	var chloe := Stage.chloe()
@@ -745,9 +836,7 @@ static func static_brac() -> void:
 	var who := S.stranger("BracVolcan", V.sheet(["brac"]), S.ground_near(chloe.global_position + Vector2(0.0, -2.6 * S.CELL), 3), "down", BRAC)
 	if who:
 		var cast := _his_three(who)
-		S.lock(true)
-		await S.say(_before(who, cast))
-		S.lock(false)
+		await _meets(who, cast)
 		Game.set_flag(&"brac_vaincu")
 		await _after(who, cast)
 	S.playing -= 1

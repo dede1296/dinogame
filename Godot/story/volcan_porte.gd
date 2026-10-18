@@ -4,9 +4,12 @@ class_name VolcanPorte
 ## folded square, a cairn) and page 38; Isaure, standing with her back to Chloé, the four Cœurs in a
 ## sailor's bag; Maïa on a stone, Caillou who sneezes. Isaure's bargain (« Je ne vais pas te le
 ## prendre… Je vais te le demander. »; « on la sortira de là ») and Chloé's « Non. », not loud;
-## nothing opens before dawn. The letter: Isaure takes it without opening it. Maïa: Moustique bites
-## her ear, the first laugh of the chapter; « je serai de son côté de la porte. Pas contre toi. »
-## No battle. The gate does not open: « À suivre… ».
+## nothing opens before dawn. The letter: Chloé chooses to give it (or later); Isaure takes it
+## without opening it. Maïa, when Chloé goes to her: Moustique bites her ear, the first laugh of
+## the chapter; a choice (« Tu veux Moustique ? »); « je serai de son côté de la porte. Pas contre
+## toi. » No battle. The gate does not open: « À suivre… ». Short moments (Greg, 18/10): ~8-12 lines
+## in a row at most, cut by things watched (Caillou and the lead dino muzzle to muzzle, Moustique
+## flying to Maïa) and by choices.
 ## Flags: porte_arrivee, camp_helene_vu, found_journal_38 (DialogueVolcan, page_38), isaure_porte_vue,
 ## marche_refuse, lettre_isaure_donnee, maia_porte_vue, apex_bloque; isaure_porte_n, maia_porte_n.
 
@@ -122,14 +125,15 @@ static func camp(_who: Node) -> void:
 
 # ------------------------------------------------------------------ Isaure
 
-## 9 c, Isaure (Npc « IsaurePorte », event « isaure_porte »): the bargain and the « Non »; then the
-## letter (9 d) and Maïa (9 e) at once. Afterwards, a line each time (the letter if still in the bag).
+## 9 c, Isaure (Npc « IsaurePorte », event « isaure_porte »): the bargain (11 lines), Caillou and the
+## lead dino muzzle to muzzle (watched), the « Non » (10 lines); then the letter (9 d), if Chloé
+## chooses to give it now. Afterwards, a line each time (the letter offered again while she has it).
+## Maïa's scene (9 e) plays when Chloé goes to her: she gets up from her stone to be seen.
 static func isaure(who: Node) -> void:
 	if Game.flag(&"isaure_porte_vue"):
 		if _has_letter():
 			S.lock(true)
-			await S.say(_the_letter(who))
-			_letter_given()
+			await _offer_letter(who)
 			S.lock(false)
 			return
 		await S.say([CS.cue({"who": ISAURE, "text": _again()}, func() -> void:
@@ -138,14 +142,14 @@ static func isaure(who: Node) -> void:
 		return
 	S.lock(true)
 	await S.say(_the_bargain(who))
+	await _muzzles()
+	await S.say(_the_no(who))
 	Game.award_team_xp(XP_ISAURE)
 	Save.save_game()
 	if _has_letter():
-		await S.say(_the_letter(who))
-		_letter_given()
+		await _offer_letter(who)
+	_maia_gets_up()
 	S.lock(false)
-	if not Game.flag(&"maia_porte_vue"):
-		await maia(V.actor_of(MAIA_NODES))
 
 
 ## Her next line (the letter's one only once she has it).
@@ -158,12 +162,12 @@ static func _again() -> String:
 	return ForetCamp.next_line(&"isaure_porte_n", pool)
 
 
+## Moment 1 (11 lines): she turns round; the fifth Cœur answers the four; the forges, Brac; the
+## bargain, up to « on la sortira de là ».
 static func _the_bargain(who: Node) -> Array:
 	var chloe := Stage.chloe()
 	var at: Vector2 = _px(who, Vector2(0.0, -3.0 * S.CELL))
 	var gate := V.at_node(["PortailApex"], V.spot_or("PORTAIL", at + Vector2(0.0, -3.0 * S.CELL)))
-	var maia_npc = V.actor_of(MAIA_NODES)
-	var caillou_npc = V.actor_of(CAILLOU_NODES)
 	var turns := func() -> void:
 		Stage.look_at(at.lerp(chloe.global_position, 0.4), 0.8)
 		await CS.chloe_walk(S.ground_near(at + BEFORE_ISAURE, 2), 80.0, 2.4)
@@ -182,16 +186,50 @@ static func _the_bargain(who: Node) -> Array:
 			(who as Npc).face(gate)
 			await S.wait(1.0)
 			(who as Npc).face(chloe.global_position)
-	var muzzles := func() -> void:
-		if maia_npc:
-			Stage.turn_to(maia_npc, chloe.global_position)
-		if caillou_npc:
-			CS.get_up(caillou_npc, 0.4)
-			var dino := CS.lead()
-			if dino:
-				await CS.lead_walk(S.ground_near((caillou_npc as Node2D).global_position.lerp(chloe.global_position, 0.6), 2), 60.0)
-				Stage.turn_to(dino, (caillou_npc as Node2D).global_position)
-				Stage.turn_to(caillou_npc, dino.global_position)
+	return [
+		CS.cue({"text": "Isaure se retourne. Pas de masque. Les cheveux attachés, cette fois : la capitaine du port. Contre sa hanche, une sacoche de marin, et dedans, quelque chose qui bat."}, turns),
+		CS.cue({"who": ISAURE, "text": "Je l'ai entendu arriver avant toi, moussaillon. Il bat fort, le dernier. Il a toujours été le plus bruyant."}, beats),
+		{"who": ISAURE, "text": "Tu as traversé les forges. … Je sais, elles sont éteintes : on l'a vu d'ici. Les feux, un par un, et puis le grand. Maïa a compté."},
+		{"who": MAIA, "text": "Sept. Comme Bertille."},
+		{"who": ISAURE, "text": "Brac ?"},
+		{"who": CHLOE, "text": "Il est parti voir la mer. De loin."},
+		CS.cue({"who": ISAURE, "text": "Il n'a jamais su nager. Douze ans, et je ne lui ai jamais appris. … Je ne lui ai jamais rien appris."}, a_while),
+		CS.cue({"who": ISAURE, "text": "Alors voilà. Cinq Cœurs sur cette île : j'en ai quatre, et tu as le dernier contre ta poitrine. Il faut les cinq. Elle a fait ça exprès, et elle a bien fait."}, looks),
+		{"who": ISAURE, "text": "Je ne vais pas te le prendre, Chloé. Je l'ai fait une fois, là-haut, et je ne le referai pas devant ma fille. Je vais te le demander."},
+		{"who": ISAURE, "text": "Donne-le-moi, et viens. Ouvre cette porte avec moi : ce qui dort là-dessous, on le tiendra à deux, toi avec ton Lien, moi avec le reste. Plus personne ne mourra de faim au port. Plus jamais."},
+		{"who": ISAURE, "text": "Et on la sortira de là. Toutes les deux. Ça, je ne te l'ai pas dit là-haut. Je te le dis ici."},
+	]
+
+
+## Watched, no line: Maïa turns to Chloé; Caillou gets up; he and the lead dino look at each other,
+## muzzle to muzzle, like at the Monts.
+static func _muzzles() -> void:
+	var chloe := Stage.chloe()
+	var maia_npc = V.actor_of(MAIA_NODES)
+	var caillou_npc = V.actor_of(CAILLOU_NODES)
+	if maia_npc:
+		Stage.turn_to(maia_npc, chloe.global_position)
+	if caillou_npc == null:
+		await S.wait(1.2)
+		return
+	CS.get_up(caillou_npc, 0.4)
+	var dino := CS.lead()
+	if dino:
+		Stage.look_at((caillou_npc as Node2D).global_position.lerp(chloe.global_position, 0.5), 1.0)
+		await CS.lead_walk(S.ground_near((caillou_npc as Node2D).global_position.lerp(chloe.global_position, 0.6), 2), 60.0)
+		Stage.turn_to(dino, (caillou_npc as Node2D).global_position)
+		Stage.turn_to(caillou_npc, dino.global_position)
+		await S.wait(1.0)
+		Stage.look_back(0.8)
+	await S.wait(0.6)
+
+
+## Moment 2 (10 lines): what Chloé thinks, « Non. », not loud; the two things she will do; nothing
+## opens before dawn.
+static func _the_no(who: Node) -> Array:
+	var chloe := Stage.chloe()
+	var at: Vector2 = _px(who, Vector2(0.0, -3.0 * S.CELL))
+	var gate := V.at_node(["PortailApex"], V.spot_or("PORTAIL", at + Vector2(0.0, -3.0 * S.CELL)))
 	var shuts := func() -> void:
 		Stage.emote(who, "…")
 	var away := func() -> void:
@@ -202,26 +240,11 @@ static func _the_bargain(who: Node) -> Array:
 			await S.wait(0.6)
 			(who as Npc).face(chloe.global_position)
 	return [
-		CS.cue({"text": "Isaure se retourne. Pas de masque. Les cheveux attachés, cette fois : la capitaine du port. Contre sa hanche, une sacoche de marin, et dedans quelque chose qui bat."}, turns),
-		CS.cue({"text": "Le Cœur de Chloé répond. Cinq cœurs qui battent ensemble, de part et d'autre de dix pas de cendre. Les torches vacillent."}, beats),
-		{"who": ISAURE, "text": "Je l'ai entendu arriver avant toi, moussaillon. Il bat fort, le dernier. Il a toujours été le plus bruyant."},
-		{"who": ISAURE, "text": "Tu as traversé les forges."},
-		{"who": CHLOE, "text": "Elles sont éteintes."},
-		{"who": ISAURE, "text": "… Je sais. On l'a vu d'ici. Les feux, un par un, et puis le grand. Maïa a compté."},
-		{"who": MAIA, "text": "Sept. Comme Bertille."},
-		{"who": ISAURE, "text": "Brac ?"},
-		{"who": CHLOE, "text": "Il est parti voir la mer. De loin."},
-		CS.cue({"who": ISAURE, "text": "Il n'a jamais su nager. Douze ans, et je ne lui ai jamais appris. … Je ne lui ai jamais rien appris."}, a_while),
-		CS.cue({"who": ISAURE, "text": "Alors voilà. Il y a cinq Cœurs sur cette île : j'en ai quatre, et tu as le dernier contre ta poitrine. Il faut les cinq. Elle a fait ça exprès, et elle a bien fait."}, looks),
-		{"who": ISAURE, "text": "Je ne vais pas te le prendre, Chloé. Je l'ai fait une fois, là-haut, et je ne le referai pas devant ma fille. Je vais te le demander."},
-		{"who": ISAURE, "text": "Donne-le-moi. Et viens. Ouvre cette porte avec moi, et ce qui dort là-dessous, on le tiendra à deux : toi avec ton Lien, moi avec le reste. Plus personne ne mourra de faim au port. Plus jamais. Ni au port, ni ailleurs : on aura de quoi exiger. Tu seras la petite-fille qui a fini ce que sa grand-mère n'a pas osé finir."},
-		{"who": ISAURE, "text": "Et on la sortira de là. Toutes les deux. Ça, je ne te l'ai pas dit là-haut. Je te le dis ici."},
-		CS.cue({"who": CHLOE, "text": "(Elle vient de le dire. Pour Hélène. Pas « je vais la chercher » : « on la sortira ». C'est presque pareil. Ce n'est pas pareil.)"}, muzzles),
-		{"who": CHLOE, "text": "(Il a peur. Il a peur quand on le réveille de force. Elle veut le réveiller avec une goutte d'ambre noir et le « tenir ». Hélène a mis vingt-cinq ans et ses deux mains à ne pas faire ça.)"},
+		{"who": CHLOE, "text": "(Elle vient de le dire. Pour Hélène. Pas « je vais la chercher » : « on la sortira ». C'est presque pareil. Ce n'est pas pareil.)"},
+		{"who": CHLOE, "text": "(Il a peur quand on le réveille de force. Elle veut le réveiller avec une goutte d'ambre noir et le « tenir ». Hélène a mis vingt-cinq ans et ses deux mains à ne pas faire ça.)"},
 		{"who": CHLOE, "text": "Non."},
 		CS.cue({"who": ISAURE, "text": "… Pas fort. Elle non plus ne disait jamais rien fort."}, shuts),
 		{"who": MAIA, "text": "Tu vois. Elle a dit non. Comme Hélène."},
-		{"who": ISAURE, "text": "Je vois."},
 		{"who": CHLOE, "text": "Je ne vous laisserai pas ouvrir cette porte, Isaure. Mais je ne vous laisserai pas non plus là-dedans toute seule. Ni Maïa. Je ne sais pas encore comment je fais les deux."},
 		{"who": ISAURE, "text": "Tu as les yeux de ta grand-mère, moussaillon. Elle non plus ne savait pas, et elle le faisait quand même."},
 		CS.cue({"who": ISAURE, "text": "Je n'ouvre pas avant l'aube. Il faut du jour pour descendre là-dedans, et je ne descends pas ma fille dans le noir. Tu as jusqu'à l'aube pour changer d'avis."}, away),
@@ -232,9 +255,31 @@ static func _the_bargain(who: Node) -> Array:
 	]
 
 
-## 9 d, the letter: she knows the handwriting before touching it, steps back half a step, takes
-## it; does not open it; holds it against the Cœurs. « Si je la lis maintenant, ma tornade, je ne
-## descends plus. »
+## Maïa gets up from her stone and looks at Chloé: her scene is hers to start (event « maia_porte »).
+static func _maia_gets_up() -> void:
+	if Game.flag(&"maia_porte_vue"):
+		return
+	var maia_npc = V.actor_of(MAIA_NODES)
+	if maia_npc:
+		Stage.pose(maia_npc, &"")
+		CS.get_up(maia_npc, 0.4)
+		Stage.hop(maia_npc, 1, 6.0)
+		Stage.turn_to(maia_npc, Stage.chloe().global_position)
+
+
+## 9 d, the letter, Chloé's choice: give it now, or later (she keeps it; Isaure offers the same
+## choice each time until then).
+static func _offer_letter(who: Node) -> void:
+	var pick := await Dialogue.choose("", "Dans la sacoche de Chloé, l'enveloppe jaunie. « Pour Isaure ».", ["Lui donner la lettre", "Pas maintenant"])
+	if pick != 0:
+		return
+	await S.say(_the_letter(who))
+	_letter_given()
+
+
+## The letter (6 lines): she knows the handwriting before touching it, steps back half a step,
+## takes it; does not open it; holds it against the Cœurs. « Si je la lis maintenant, ma tornade,
+## je ne descends plus. »
 static func _the_letter(who: Node) -> Array:
 	var chloe := Stage.chloe()
 	var at: Vector2 = _px(who, Vector2(0.0, -2.0 * S.CELL))
@@ -246,9 +291,9 @@ static func _the_letter(who: Node) -> Array:
 		if ItemsDB.ITEMS.has(LETTER):
 			CS.Act.pop(chloe.global_position, LETTER, 0.9)
 		await CS.reach(chloe, at, 12.0, 1.0)
-		await Stage.recoil(who, chloe.global_position, 8.0)
-		CS.reach(who, chloe.global_position, 10.0, 1.0)
 	var keeps := func() -> void:
+		await Stage.recoil(who, chloe.global_position, 8.0)
+		await CS.reach(who, chloe.global_position, 10.0, 1.0)
 		await Stage.bow(who, 1.0)
 		Stage.glow(who, MS.HEART_GLOW, 1, 1.0)
 	var asks := func() -> void:
@@ -259,13 +304,10 @@ static func _the_letter(who: Node) -> Array:
 		Stage.emote(who, "…")
 	return [
 		CS.cue({"who": CHLOE, "text": "Dame Suie l'a gardée un an. Hélène l'a posée sur son établi, la nuit, avant de descendre. Elle est pour vous."}, holds_out),
-		CS.cue({"text": "Isaure prend l'enveloppe. Elle ne l'ouvre pas. Elle la tient contre les Cœurs, dans la sacoche."}, keeps),
-		CS.cue({"who": MAIA, "text": "Lis-la."}, asks),
-		{"who": ISAURE, "text": "En bas."},
-		{"who": MAIA, "text": "Maman. Lis-la maintenant."},
+		CS.cue({"text": "Isaure la reconnaît à l'écriture avant de la toucher. Elle recule d'un demi-pas, puis elle la prend. Elle ne l'ouvre pas : elle la tient contre les Cœurs, dans la sacoche."}, keeps),
+		CS.cue({"who": MAIA, "text": "Lis-la. … Maman. Lis-la maintenant."}, asks),
 		{"who": ISAURE, "text": "Si je la lis maintenant, ma tornade, je ne descends plus. Et il faut bien que quelqu'un descende."},
-		CS.cue({"text": "Elle la glisse dans la sacoche, contre les Cœurs. Elle ne la lâche pas tout de suite."}, slips),
-		{"who": ISAURE, "text": "… Elle écrivait tout. Même ce que je n'ai pas lu."},
+		CS.cue({"who": ISAURE, "text": "… Elle écrivait tout. Même ce que je n'ai pas lu."}, slips),
 		{"who": CHLOE, "text": "(Elle ne l'a pas lue. Mais elle ne l'a pas rendue non plus. … Jusqu'à l'aube.)"},
 	]
 
@@ -288,8 +330,9 @@ static func _letter_given() -> void:
 # ------------------------------------------------------------------ Maïa, Caillou
 
 ## 9 e, Maïa (Npc « MaiaPorte », event « maia_porte »): after Isaure's bargain (before it, Isaure
-## turns round first). Moustique, Roc's inkpot, « Elle attend », « Garde-le encore », the cardboard
-## mask, « de son côté de la porte. Pas contre toi. », Caillou's horn. Afterwards, a line each time.
+## turns round first). She comes to Chloé, Moustique flies to her and bites her (watched); the
+## inkpot, « Elle attend » (6 lines); a choice (« Tu veux Moustique ? »); « Garde-le encore », the
+## cardboard mask, her side of the door, Caillou's horn (8 or 9 lines). Afterwards, a line each time.
 static func maia(who: Node) -> void:
 	if not Game.flag(&"isaure_porte_vue"):
 		var isaure_npc = V.actor_of(ISAURE_NODES)
@@ -301,8 +344,10 @@ static func maia(who: Node) -> void:
 		return
 	S.lock(true)
 	var cast := {}
-	await S.say(_moustique(who, cast))
-	await S.say(_her_side(who, cast))
+	await _comes_to_chloe(who, cast)
+	await S.say(_moustique(who))
+	var pick := await Dialogue.choose("", "Moustique, sur l'épaule de Maïa, regarde Chloé.", ["« Tu veux Moustique ? »", "Ne rien dire"])
+	await S.say(_her_side(who, cast, pick == 0))
 	var bird = cast.get("bird")
 	if is_instance_valid(bird):
 		Stage.fade_out(bird, 0.4, true)
@@ -320,45 +365,54 @@ static func _maia_again() -> String:
 	return ForetCamp.next_line(&"maia_porte_n", pool)
 
 
-## She comes to Chloé, Joss's coat to her ankles; Moustique comes out of Chloé's collar, cries, and
-## flies onto Maïa's shoulder; he nibbles her; she laughs (the first real laugh of the chapter).
-static func _moustique(who: Node, cast: Dictionary) -> Array:
+## Watched, no line: she comes to Chloé, Joss's coat to her ankles; Moustique comes out of Chloé's
+## collar, cries, flies onto Maïa's shoulder, and nibbles her.
+static func _comes_to_chloe(who: Node, cast: Dictionary) -> void:
 	var chloe := Stage.chloe()
-	var comes := func() -> void:
-		if who is Npc:
-			Stage.pose(who, &"")
-			await (who as Npc).walk_to(S.ground_near(chloe.global_position + Vector2(-60.0, -8.0), 2), "", 100.0)
-			(who as Npc).face(chloe.global_position)
-		Stage.turn_to(chloe, _px(who, Vector2(-60.0, 0.0)))
-		var bird := V.stand_in(&"dimorphodon", chloe.global_position + V.SHOULDER, "MoustiquePorte", V.MOUSTIQUE_LEVEL, 0.8)
-		cast["bird"] = bird
-		if bird == null:
-			return
-		await Stage.fade_in(bird, 0.3)
-		bird.cry(&"neutre")
-		await CS.fly(bird, _px(who, Vector2(-60.0, 0.0)) + Vector2(10.0, 2.0), 0.9, V.SHOULDER_UP)
-		Stage.hop(bird, 2, 4.0)
+	if who is Npc:
+		Stage.pose(who, &"")
+		await (who as Npc).walk_to(S.ground_near(chloe.global_position + Vector2(-60.0, -8.0), 2), "", 100.0)
+		(who as Npc).face(chloe.global_position)
+	Stage.turn_to(chloe, _px(who, Vector2(-60.0, 0.0)))
+	var bird := V.stand_in(&"dimorphodon", chloe.global_position + V.SHOULDER, "MoustiquePorte", V.MOUSTIQUE_LEVEL, 0.8)
+	cast["bird"] = bird
+	if bird == null:
+		await S.wait(0.8)
+		return
+	await Stage.fade_in(bird, 0.3)
+	bird.cry(&"neutre")
+	await CS.fly(bird, _px(who, Vector2(-60.0, 0.0)) + Vector2(10.0, 2.0), 0.9, V.SHOULDER_UP)
+	Stage.hop(bird, 2, 4.0)
+	await S.wait(0.5)
+
+
+## Moment 1 (6 lines): « Aïe. » Roc's inkpot; she laughs (the first real laugh of the chapter);
+## her mother has not slept; « j'attends avec elle ».
+static func _moustique(who: Node) -> Array:
+	var isaure_npc = V.actor_of(ISAURE_NODES)
 	var laughs := func() -> void:
 		Stage.hop(who, 2, 6.0)
 		Stage.emote(who, "♥")
-	return [
-		CS.cue({"who": MAIA, "text": "Aïe. Oui. Moi aussi. … Aïe."}, comes),
-		{"who": MAIA, "text": "Il a maigri ? Il a maigri. Tu ne lui as pas donné de l'encrier, au moins ?"},
-		{"who": CHLOE, "text": "Il a mangé celui de Roc."},
-		CS.cue({"who": MAIA, "text": "Il fait ça quand il s'inquiète. Roc mange des biscuits."}, laughs),
-		{"who": CHLOE, "text": "C'est ce qu'il a dit."},
-	]
-
-
-## Serious again, looking at her mother's back: « Elle attend »; « Garde-le encore »; Moustique
-## back on Chloé's shoulder (he does not cry); the cardboard mask; her side of the door; Caillou
-## pushes Chloé with his horn, gently.
-static func _her_side(who: Node, cast: Dictionary) -> Array:
-	var chloe := Stage.chloe()
-	var isaure_npc = V.actor_of(ISAURE_NODES)
 	var looks := func() -> void:
 		if isaure_npc is Node2D:
 			Stage.turn_to(who, (isaure_npc as Node2D).global_position)
+	var back := func() -> void:
+		Stage.turn_to(who, Stage.chloe().global_position)
+	return [
+		{"who": MAIA, "text": "Aïe. Oui. Moi aussi. … Aïe."},
+		{"who": MAIA, "text": "Il a maigri ? Il a maigri. Tu ne lui as pas donné de l'encrier, au moins ?"},
+		{"who": CHLOE, "text": "Il a mangé celui de Roc."},
+		CS.cue({"who": MAIA, "text": "Il fait ça quand il s'inquiète. Roc mange des biscuits."}, laughs),
+		CS.cue({"who": MAIA, "text": "Elle n'a pas dormi. Elle regarde la porte depuis hier soir. Elle a les Cœurs, la fiole de la dame en gris, tout. Et elle n'a pas ouvert."}, looks),
+		CS.cue({"who": MAIA, "text": "Elle attend l'aube, et j'attends avec elle. C'est ce que j'ai dit que je ferais. … Je devais te rattraper en marchant ; c'est toi qui m'as rattrapée. On est nulles, toutes les deux."}, back),
+	]
+
+
+## Moment 2 (8 or 9 lines), after the choice (`asked`: Chloé asked « Tu veux Moustique ? »): « Garde-le
+## encore »; Moustique back on Chloé's shoulder (he does not cry); the cardboard mask; her side of
+## the door; Caillou pushes Chloé with his horn, gently.
+static func _her_side(who: Node, cast: Dictionary, asked: bool) -> Array:
+	var chloe := Stage.chloe()
 	var back_to_chloe := func() -> void:
 		Stage.turn_to(who, chloe.global_position)
 		var bird = cast.get("bird")
@@ -374,27 +428,24 @@ static func _her_side(who: Node, cast: Dictionary) -> Array:
 		await S.wait(0.2)
 		Stage.recoil(chloe, chloe.global_position + Vector2(40.0, 0.0), 10.0)
 		Stage.tremble(chloe, 0.4, 2.0)
-	var lines: Array = [
-		CS.cue({"who": MAIA, "text": "Elle n'a pas dormi. Elle regarde la porte depuis hier soir. Elle a les Cœurs, elle a la fiole de la dame en gris, elle a tout. Et elle n'a pas ouvert."}, looks),
-		{"who": CHLOE, "text": "Elle attend l'aube."},
-		{"who": MAIA, "text": "Elle attend. C'est tout ce que je sais. Je suis à côté, et j'attends avec elle. C'est ce que j'ai dit que je ferais."},
-		CS.cue({"who": MAIA, "text": "Je ne t'ai pas dit que je te rattraperais en marchant ? C'est toi qui m'as rattrapée. En marchant aussi. On est nulles, toutes les deux."}, func() -> void: Stage.turn_to(who, chloe.global_position)),
-		{"who": CHLOE, "text": "Tu veux Moustique ?"},
-		{"who": MAIA, "text": "… Non. Garde-le encore. Il a peur du feu, et ici, il n'y a que ça. Et puis s'il est avec toi, tu es obligée de revenir."},
-		{"who": CHLOE, "text": "J'allais revenir."},
-		CS.cue({"who": MAIA, "text": "Je sais. Mais là, tu es obligée. C'est mieux."}, back_to_chloe),
-	]
-	if Game.item_count("masque_carton") > 0 or Game.flag(&"masque_carton_confie"):
+	var lines: Array = []
+	if asked:
 		lines.append_array([
-			{"who": MAIA, "text": "Le masque en carton ?"},
-			{"who": CHLOE, "text": "Dans la sacoche."},
-			{"who": MAIA, "text": "Garde-le aussi. Elle a enlevé le sien, mais elle ne l'a pas encore… Elle n'est pas encore prête à en mettre un pour rire. Demain, peut-être."},
+			{"who": CHLOE, "text": "Tu veux Moustique ?"},
+			CS.cue({"who": MAIA, "text": "… Non. Garde-le encore. Il a peur du feu, et ici, il n'y a que ça. Et puis s'il est avec toi, tu es obligée de revenir."}, back_to_chloe),
 		])
+	else:
+		lines.append(CS.cue({"who": MAIA, "text": "Garde-le encore, Moustique. Il a peur du feu, et ici, il n'y a que ça. Et puis s'il est avec toi, tu es obligée de revenir."}, back_to_chloe))
 	lines.append_array([
-		{"who": MAIA, "text": "Chloé. Demain, à l'aube. Quoi qu'il arrive… je serai de son côté de la porte. Pas contre toi. De son côté. Tu comprends la différence ?"},
+		{"who": CHLOE, "text": "J'allais revenir."},
+		{"who": MAIA, "text": "Je sais. Mais là, tu es obligée. C'est mieux."},
+	])
+	if Game.item_count("masque_carton") > 0 or Game.flag(&"masque_carton_confie"):
+		lines.append({"who": MAIA, "text": "Et garde aussi le masque en carton. Elle a enlevé le sien, mais elle n'est pas encore prête à en mettre un pour rire. Demain, peut-être."})
+	lines.append_array([
+		{"who": MAIA, "text": "Chloé. Demain, à l'aube, quoi qu'il arrive… je serai de son côté de la porte. Pas contre toi. De son côté. Tu comprends la différence ?"},
 		{"who": CHLOE, "text": "Oui."},
-		{"who": MAIA, "text": "Bien. Parce que moi, j'ai mis une nuit entière."},
-		CS.cue({"who": MAIA, "text": "Et lui, il dit : « soigne tes dinos, mange quelque chose, et reviens avec ton équipe au complet ». Il dit beaucoup de choses, Caillou, quand on l'écoute."}, horn),
+		CS.cue({"who": MAIA, "text": "Bien. Parce que moi, j'ai mis une nuit entière. … Et lui, il dit : « soigne tes dinos, mange quelque chose, et reviens avec ton équipe au complet »."}, horn),
 		{"who": CHLOE, "text": "(Elle a les yeux de sa mère. Et elle garde la porte avec elle. … Je les ramènerai. Toutes les deux. Je l'ai dit en haut ; je le redis en bas.)"},
 		{"flag": &"maia_porte_vue"},
 	])
@@ -431,7 +482,8 @@ static func _px(who, fallback_offset: Vector2) -> Vector2:
 # ------------------------------------------------------------------ for the tests
 
 ## For the tests (tools/capture.gd « static »): the crater's door on any zone: Isaure, Maïa and
-## Caillou brought on before Chloé; the arrival, the camp, page 38, Isaure, the letter, Maïa, the gate.
+## Caillou brought on before Chloé; the arrival, the camp, page 38, Isaure (the letter: the test
+## picks « Lui donner la lettre »), the gate, Maïa (the test picks « Tu veux Moustique ? »).
 static func static_porte() -> void:
 	S.playing += 1
 	var chloe := Stage.chloe()
@@ -451,5 +503,5 @@ static func static_porte() -> void:
 		await isaure(isaure_npc)
 	await portail(null)
 	if maia_npc:
-		await maia(maia_npc)   # (once more: her next line)
+		await maia(maia_npc)
 	S.playing -= 1

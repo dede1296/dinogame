@@ -1,7 +1,7 @@
 extends RefCounted
-## Chapter 8, one moment (state set by flags, then only this moment; scènes agent, scratchpad ch8/gen_scenarios.py):
+## Chapter 8, one moment (state set by flags, then only this moment; scènes courtes du 18/10, scratchpad/court/gen_scenarios2.py):
 ## la Descente de Cendre (bottes, orteils de Caillou, Moustique), l'arrivée aux Champs de Cendre (gris, sept feux, le dino de tête, le vent), les traces, Numéro 3 apaisé qui part vers les forges ; joué en statique sur la terrasse de l'Arche, sans combat.
-## godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario_file=res://tools/scenarios/ch8_champs_static.gd titre="Ch. 8 : Descente, Champs de Cendre, Numéro 3 (statique)"
+## godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario_file=res://tools/scenarios/ch8_champs_static.gd titre="Ch. 8 : Descente, Champs de Cendre, Numéro 3 (court, statique)"
 
 const STEPS := [
 	[0.80, "flags", ["prologue_done", "tuto_commandes", "met_roc", "sceau_plaines", "maia_defi_1", "havre_arrive", "selle", "foret_arrivee", "sceau_foret", "maia_defi_2", "marais_arrivee", "gilet_nage", "sceau_marais", "coeur_1", "maia_defi_3", "desert_arrivee", "sceau_desert", "coeur_2", "maia_defi_4", "cote_annonce", "cote_ouverte", "cote_arrivee", "nessie", "masque_plongee", "sceau_cote", "coeur_3", "maia_enfuie", "masque_carton", "monts_ouverts", "monts_arrivee", "bertille_vue", "suie_monts_battue", "suie_indice", "roc_col_vu", "roc_innocente", "sanctuaire_givre_ouvert", "titan_battu", "sceau_monts", "coeur_4", "maia_monts_vue", "masque_rendu", "maia_defi_5", "maia_alliee", "found_journal_25", "harnais_vol", "cieux_ouverts", "cieux_arrivee", "nids_arrivee", "quetzal_roi_parle", "quetzal_roi_battu", "quetzal_roi_confiance", "sceau_cieux", "vol_obtenu", "arche_arrivee", "arche_piege", "masque_arche_battu", "coeurs_voles", "masque_tombe", "moustique_confie", "masque_carton_confie", "roc_masque_tombe"]],
@@ -76,19 +76,7 @@ const STEPS := [
 	[53.00, "shot", "champs_07"],
 	[53.50, "next", null],
 	[54.60, "next", null],
-	[55.70, "next", null],
-	[56.80, "next", null],
-	[57.90, "next", null],
-	[59.00, "next", null],
-	[59.60, "shot", "champs_08"],
-	[60.10, "next", null],
-	[61.20, "next", null],
-	[62.30, "next", null],
-	[63.40, "next", null],
-	[64.50, "next", null],
-	[65.60, "next", null],
-	[66.20, "shot", "champs_09"],
-	[67.20, "state", null],
-	[67.30, "party", null],
-	[67.40, "tracker", null],
+	[56.20, "state", null],
+	[56.30, "party", null],
+	[56.40, "tracker", null],
 ]

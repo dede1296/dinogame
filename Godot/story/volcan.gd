@@ -340,8 +340,7 @@ static func descent(go_down: bool) -> Array:
 	var chloe := Stage.chloe()
 	var lines: Array = [
 		{"text": "La Descente de Cendre. Un sentier gris qui descend vers le volcan, en lacets, dans un vent chaud qui sent le soufre. À chaque lacet, la cendre est marquée de pas : deux paires de bottes, une grande, une petite. Et, par-dessus, trois gros orteils qui traînent."},
-		{"who": CHLOE, "text": "(Caillou. Il les a rattrapées. Évidemment.)"},
-		{"who": CHLOE, "text": "(Pas de « c'est stylé ». Pas de Maïa qui râle parce que ça monte. … Ça descend, en plus. Elle aurait râlé quand même.)"},
+		{"who": CHLOE, "text": "(Caillou. Il les a rattrapées. Évidemment. … Pas de « c'est stylé ». Pas de Maïa qui râle parce que ça descend. Elle aurait râlé quand même.)"},
 		CS.cue({"text": "Moustique s'aplatit sur l'épaule de Chloé. En bas, ça brille rouge, et il a peur du feu."},
 			func() -> void:
 				if chloe:
@@ -406,8 +405,7 @@ static func arrival() -> void:
 		lines.append_array(_lead_in_the_ash(lead))
 	lines.append_array([
 		CS.cue({"text": "Le vent est chaud. Pas chaud comme le Désert : chaud comme la porte d'un four quand on passe devant."}, wind),
-		{"who": CHLOE, "text": "(Elle est passée par là. Avec les Cœurs contre elle, sans courir. Et Maïa à côté. Pas derrière : à côté.)"},
-		{"who": CHLOE, "text": "(Il reste un Cœur. Et il est là-dessous, quelque part, à battre tout seul. Comme moi.)"},
+		{"who": CHLOE, "text": "(Elle est passée par là, les Cœurs contre elle, sans courir. Et Maïa à côté. Pas derrière : à côté. … Il reste un Cœur, là-dessous, quelque part, à battre tout seul. Comme moi.)"},
 		CS.cue({"who": CHLOE, "text": "Ça va. Ils sont loin. … Bon. Ils ne sont pas si loin."}, func() -> void: shoulder_peek(chloe, 1.4)),
 		{"flag": &"cendres_arrivee"},
 	])

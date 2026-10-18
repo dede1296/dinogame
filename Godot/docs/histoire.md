@@ -1047,7 +1047,8 @@ sans musique, avec un masque dans l'herbe. Pas de Cœur ici : le Sceau des Cieux
    prête. Alors fais-moi confiance. Comme avec les dinos. » Elle lui confie le masque en carton et
    **Moustique** (qui rejoint l'équipe), et descend à côté de sa mère, sans lui prendre la main. Isaure
    n'accepte pas : elle attend. « Elle a mon courage. Je te l'avais dit. Et pas assez de prudence. » Le
-   masque d'obsidienne reste dans l'herbe : personne ne le ramasse. (Texte complet plus bas.)
+   masque d'obsidienne reste dans l'herbe : personne ne le ramasse. (Résumé de la version jouée plus bas :
+   cinq moments courts, un choix de réponse pour Chloé.)
 6. **Page 34**, au cairn d'Hélène, déchirée : « Je sais qui c'est. Je ne peux pas le lui dire. Elle ne me
    le pardonnerait pas… » La fin du nom est arrachée. La Descente de Cendre mène à la Plaine Volcanique
    (chapitre 8).
@@ -1161,150 +1162,82 @@ Drapeaux : `harnais_vol`, `maia_cieux_plan`, `cieux_ouverts`, `cieux_arrivee`, `
 `cieux_bloques` (ce qui manque : le harnais, un ptérosaure), `arche_bloquee`, `volcan_bloque`, `page_31` à
 `page_34`, `panneau_cieux_entree`, `panneau_pont`, `panneau_belvedere`, `panneau_nids`, `panneau_arche`.
 
-### La scène du masque (texte final)
+### La scène du masque (résumé de la version jouée, courte)
 
-*Le Masque tient les quatre Cœurs contre sa cape, comme on tient quelque chose qui a froid. Le vent est
-tombé. Au-dessus de l'Arche, un cri : le Quetzalcoatlus Roi descend, les ailes grandes ouvertes, et sur
-son cou, agrippée, les yeux fermés, quelqu'un hurle. Il se pose au bord de la terrasse. Maïa glisse le long
-de son cou, tombe à genoux, se relève, et court. Elle se plante entre le Masque et Chloé, face au Masque.*
+> Raccourcie le 18/10 (Greg : les scènes textuelles doivent être courtes ; ce n'est pas la longueur d'une
+> bulle qui gêne, c'est le nombre de bulles d'affilée sans rien faire) : de ~75 bulles d'un trait à
+> **30 à 34 bulles en cinq moments**, séparés par des temps que le joueur regarde (sans texte) et un choix.
+> Les faits, les drapeaux, les objets et les moments forts sont ceux de la version longue (le texte complet
+> d'origine : `scratchpad/ch7/masque_v2_scene.md`, choix de Greg du 11/10). Le texte du jeu :
+> `story/cieux_arche.gd`.
 
-> **Maïa** — Maman.
-> **Maïa** — Arrête.
+1. **Les Cœurs volés** (4 bulles). Les trois ptérosaures apaisés dorment debout sur l'arche ; la sacoche
+   de Chloé est légère, ouverte ; le Masque tient les quatre Cœurs contre sa cape « comme on tient quelque
+   chose qui a froid ». « Rendez-les. — Non. » (`coeurs_voles`.)
+   *Sans texte* : un cri au-dessus de l'arche ; le Roi descend, Maïa agrippée à son cou ; il se pose au
+   bord de la terrasse ; elle glisse, tombe à genoux, se relève, court, et se plante entre le Masque et
+   Chloé, face au Masque.
+2. **Le masque tombe** (8 bulles). « Maman. » « Arrête. » Une main monte vers le visage ; le masque
+   d'obsidienne glisse et tombe dans l'herbe, sans bruit. Isaure. Les yeux de Maïa. « Tu n'aurais pas dû
+   monter, ma tornade. — Toi non plus. — … Non. Moi non plus. » Puis, à Chloé, sans hausser la voix, le
+   pourquoi en deux bulles : il y a vingt ans, le port mourait ; un peu d'ambre demandé à Hélène, « un
+   bateau, des filets, un hiver » ; « Elle a dit non. Pas fort. Elle ne disait jamais rien fort. » ; « J'ai
+   fait sans elle. Avec ses notes, avec ceux qui payaient, avec ceux qui avaient faim. »
+   **Choix** : « Isaure attend. Que répond Chloé ? » — *« Avec des dinos qui ont peur. »* ou *Ne rien
+   dire* (alors Chloé regarde les ptérosaures endormis, et c'est Isaure qui le dit pour elle : « Tu ne le
+   dis pas, mais tu le penses très fort. »). Dans les deux cas : « Oui, moussaillon. Je ne vais pas te dire
+   que non. »
+3. **La tasse reposée** (8 à 10 bulles). « Ce qui dort là-dessous n'est pas un monstre : c'est une force.
+   Il suffirait que quelqu'un ait le courage de la tenir. Elle a eu peur. » Maïa : « Non. » **Premier
+   renversement** : « Dans la cuisine, je t'ai tout demandé. La barque, la grotte, le masque : tu n'as pas
+   bougé. Et puis j'ai dit « Hélène ». Et là, tu as reposé ta tasse. Tu ne vas pas tenir un volcan, maman.
+   Tu vas la chercher. » Isaure regarde les Cœurs dans ses mains, ne dit pas non, ne dit rien (Chloé : « Sur
+   la passerelle, elle savait déjà. »). « Il faut les cinq pour ouvrir, moussaillon. Et quelqu'un pour le
+   tenir, le temps qu'il faut. Je ne sais plus si j'ai ce courage. Mais je suis déjà trop haut pour
+   redescendre. » Le masque en carton, tendu (si `masque_rendu`), pas pris : « Pas aujourd'hui. »
+   *Sans texte* : Isaure se détourne, les Cœurs contre elle, et fait trois pas vers la Descente de Cendre.
+   Elle ne court pas. Le masque d'obsidienne reste dans l'herbe.
+4. **« Attends »** (7 à 10 bulles). Si Chloé a lu la page 25 : « Elle a gardé votre tasse. Elle l'a écrit,
+   dans une lettre qu'elle ne vous a jamais envoyée : « Tu n'as pas tort pour le port. Tu as tort sur le
+   moyen. Je garde ta tasse. » » ; Isaure ne se retourne pas : « … Elle écrivait tout. » **Second
+   renversement**, Maïa : « Attends. … Je voulais t'arrêter. Pas te perdre. Je ne peux pas t'arrêter, je
+   viens de le voir. Alors je ne te perds pas : je viens avec toi. » Isaure se retourne d'un coup, la seule
+   fois où sa voix monte, un peu : « Non. » Maïa : « Tu ne cours jamais. Moi non plus. Je te rattraperai en
+   marchant. … Tu dis que quelqu'un doit le tenir. Et toi, qui te tient ? » Isaure ouvre la bouche, rien ne
+   vient. Maïa vient à Chloé : « Tu m'as dit que j'étais prête. Alors fais-moi confiance. Comme avec les
+   dinos. » Elle lui confie le masque en carton (« Garde-le-moi. Elle n'en a pas voulu aujourd'hui. Je le
+   lui redemanderai en bas. », `masque_carton_confie`) et **Moustique**, posé sur l'épaule de Chloé (« Il a
+   peur du feu, et il n'aime pas que je parte. … Moi non plus. On se retrouve en bas. »), puis se met à
+   côté de sa mère sans lui prendre la main. Isaure n'accepte pas, elle attend : « … Elle a mon courage. Je
+   te l'avais dit, moussaillon. Et pas assez de prudence. Ça aussi, je te l'avais dit. » (`masque_tombe`,
+   `moustique_confie`.)
+   *Sans texte* : elles descendent par la Descente de Cendre, côte à côte. Aucune ne court. Elles ne se
+   tiennent pas la main, ne se retournent pas. À mi-pente, Maïa lève le bras, sans se retourner, une fois.
+5. **Chloé seule** (2 bulles). Le masque d'obsidienne reste dans l'herbe ; Moustique, sur son épaule,
+   regarde la pente jusqu'à ce qu'il n'y ait plus rien à regarder ; le Roi s'approche et baisse la tête
+   jusqu'à elle. « (Je les ramènerai. Toutes les deux. … Il reste un Cœur, et je sais où il dort. Je sais
+   où est Hélène. Et il y a une page, ici, quelque part : elle a toujours laissé une page.) » Moustique
+   rejoint l'équipe.
 
-*Le Masque ne bouge pas. Puis une main monte vers le visage. Le masque d'obsidienne glisse, et tombe dans
-l'herbe rase, sans bruit. Isaure. Les cheveux défaits par le vent. Les yeux de Maïa.*
-
-> **Isaure** — Tu n'aurais pas dû monter, ma tornade.
-> **Maïa** — Toi non plus.
-> **Isaure** — … Non. Moi non plus.
-
-*Elle regarde Chloé. Pas comme le Masque. Comme sur la barque, le premier jour.*
-
-> **Isaure** — Tu veux savoir pourquoi, moussaillon. Ça tient en une phrase. Et ça ne tient pas du tout.
-> **Isaure** — Il y a vingt ans, le port a commencé à mourir. Les filets remontaient vides. Les maisons se
-> fermaient une par une. J'ai demandé à Hélène un peu d'ambre. Juste un peu : un bateau, des filets, un hiver.
-> **Isaure** — Elle a dit non. Pas fort. Elle ne disait jamais rien fort. Elle a dit : « Chacun chez soi,
-> Isaure. » Et elle est retournée à ses œufs.
-> **Isaure** — Je n'ai pas claqué la porte. Je suis rentrée au port, et j'ai regardé les volets se fermer.
-> Pendant vingt ans. Et puis j'ai fait sans elle. Avec ses notes, puisqu'elle n'en voulait plus. Avec ceux
-> qui payaient. Avec ceux qui avaient faim.
-> **Chloé** — Avec des dinos qui ont peur.
-> **Isaure** — Oui. … Oui, moussaillon. Je ne vais pas te dire que non.
-> **Isaure** — Ce qui dort là-dessous n'est pas un monstre, Chloé : c'est une force. Il suffirait que
-> quelqu'un ait le courage de la tenir.
-> **Isaure** — Elle a eu peur.
-
-*Maïa n'a pas bougé. Elle regarde sa mère comme on regarde quelqu'un qui compte sur ses doigts et se
-trompe exprès.*
-
-> **Maïa** — Non.
-> **Isaure** — Maïa…
-> **Maïa** — Dans la cuisine, je t'ai tout demandé. La barque. Tu n'as pas bougé. La grotte. Tu n'as pas
-> bougé. Le masque. Rien. Et puis j'ai dit « Hélène ». Et là, tu as reposé ta tasse.
-> **Maïa** — Tu ne vas pas tenir un volcan, maman. Tu vas la chercher.
-
-*Silence. Isaure regarde les Cœurs, dans ses mains. Elle ne dit pas non. Elle ne dit rien du tout.*
-
-> **Chloé** — (« Personne ne sait où elle est. Pas même moi. » … Elle savait. Sur la passerelle, elle
-> savait déjà.)
-> **Isaure** — Il faut les cinq pour ouvrir, moussaillon. Et quelqu'un pour le tenir, le temps qu'il faut.
-> Elle a eu peur de lui. Moi, j'ai peur depuis un an. Toutes les nuits. Ça se vaut.
-> **Chloé** — Si vous ouvrez le cratère, il se réveille. Elle l'a écrit. Elle l'a écrit partout.
-> **Isaure** — Alors je le tiendrai.
-> **Isaure** — Je ne sais plus si je l'ai, ce courage. Mais je suis déjà trop haut pour redescendre. Plus on
-> monte…
-> **Maïa** — Tu me l'as dit pour les falaises.
-> **Isaure** — C'était pour les falaises.
-
-*Maïa sort de sa poche le masque en carton, plié en deux. Elle le déplie. Elle le tend.*
-
-> **Maïa** — Tu as enlevé le tien. J'avais promis de te rendre celui-là.
-
-*Isaure le regarde longtemps. Elle ne le prend pas.*
-
-> **Isaure** — Pas aujourd'hui.
-
-*(Seulement si Chloé a lu la page 25, la lettre jamais envoyée :)*
-
-> **Chloé** — Elle a gardé votre tasse.
-> *Isaure s'arrête.*
-> **Chloé** — Elle l'a écrit. Dans une lettre qu'elle ne vous a jamais envoyée. « Tu n'as pas tort pour le
-> port. Tu as tort sur le moyen. Je garde ta tasse. »
-> *Isaure ne se retourne pas. Longtemps.*
-> **Isaure** — … Elle écrivait tout.
-
-*Elle se détourne. Trois pas vers la Descente de Cendre, les Cœurs contre elle. Elle ne court pas. Le
-masque d'obsidienne reste dans l'herbe. Chloé regarde Maïa : la scène est finie. Elle le croit.*
-
-> **Maïa** — Attends.
-
-*Isaure s'arrête. Elle ne se retourne pas encore.*
-
-> **Maïa** — Je t'ai dit, aux Monts… non, je ne te l'ai pas dit. Je l'ai dit à Chloé. Je voulais t'arrêter.
-> Pas te perdre.
-> **Maïa** — Je ne peux pas t'arrêter. Je viens de le voir. Alors je ne te perds pas.
-> **Maïa** — Je viens avec toi.
-
-*Isaure se retourne, d'un coup. Pour la première fois de la scène, sa voix monte. Pas fort. Un peu.*
-
-> **Isaure** — Non.
-> **Maïa** — Tu ne cours jamais. Moi non plus. Je te rattraperai en marchant.
-> **Isaure** — Maïa. En bas, il y a Brac, les forges, la cendre, et un volcan qui…
-> **Maïa** — Et toi. En bas, il y a toi.
-> **Maïa** — Tu dis que quelqu'un doit le tenir. Et toi, qui te tient ?
-
-*Isaure ouvre la bouche. Rien ne vient. Elle regarde sa fille comme Roc regardait Chloé au col : sans
-savoir quoi faire de ses mains.*
-
-> **Chloé** — Maïa… !
-
-*Maïa se tourne vers Chloé. Elle n'a pas les yeux rouges. Elle a les yeux de sa mère.*
-
-> **Maïa** — Tu m'as dit que j'étais prête, Chloé. Aux Monts, après notre défi. Tu l'as dit.
-> **Chloé** — (Je l'ai dit.)
-> **Maïa** — Alors fais-moi confiance. Comme avec les dinos.
-
-*Elle tend à Chloé le masque en carton, plié en deux.*
-
-> **Maïa** — Garde-le-moi. Elle n'en a pas voulu aujourd'hui. Je le lui redemanderai en bas.
-
-*De sa capuche sort une petite tête pointue. Moustique. Maïa le prend dans ses deux mains, et le pose sur
-l'épaule de Chloé. Il s'y accroche, et ne crie pas.*
-
-> **Maïa** — Et garde-moi Moustique. Il ne vole pas assez haut pour là-bas, et il a peur du feu. Et il
-> n'aime pas que je parte. … Moi non plus, je n'aime pas.
-> **Maïa** — On se retrouve en bas. Pas aujourd'hui. Mais en bas.
-
-*Elle va jusqu'à sa mère. Elle ne lui prend pas la main. Elle se met à côté d'elle, et elle attend. Isaure
-regarde Chloé par-dessus la tête de sa fille.*
-
-> **Isaure** — … Elle a mon courage. Je te l'avais dit, moussaillon. Et pas assez de prudence.
-> **Isaure** — Ça aussi, je te l'avais dit.
-
-*Elles descendent par la Descente de Cendre, vers le volcan, les Cœurs contre Isaure, Maïa à côté. Isaure ne
-court pas. Maïa non plus. Elles ne se tiennent pas la main. Elles ne se retournent pas. À mi-pente, Maïa lève
-le bras, sans se retourner, et l'agite. Une fois. Très loin en dessous, au col, Caillou (le Tricératops) lève la tête et part au trot derrière elles : il n'a jamais su attendre.*
-
-*Le masque d'obsidienne reste dans l'herbe. Chloé ne le ramasse pas. Sur son épaule, Moustique regarde la
-pente jusqu'à ce qu'il n'y ait plus rien à regarder. Le Roi, au bord de la terrasse, baisse la tête jusqu'à
-elle.*
-
-> **Chloé** — (Les Kerval reviennent toujours au port. … Toutes les deux. Je les ramènerai. Toutes les deux.)
-> **Chloé** — (Il reste un Cœur. Elle sait où il dort. Moi aussi, maintenant. Et je sais où est Hélène.)
-> **Chloé** — (Il y a une page, ici, quelque part. Elle a toujours laissé une page.)
-
-Pas de musique pendant la scène : le vent, puis plus de vent. Garde-fous : Maïa ne pleure pas (elle
-décide), Isaure ne dit pas oui (elle attend), personne n'explique le « plan stylé » (c'était le Roi), Chloé ne
-fait pas de discours, la page 34 reste déchirée, Isaure ne confirme pas qu'elle va chercher Hélène. Les
-versions écartées, les cinq pistes de rebondissement et leur critique : `scratchpad/ch7/masque_brouillons.md`,
-`masque_v2_pistes.md`, `masque_v2_scene.md` (choix de Greg, 11/10 : la piste 1 avec la piste 2 en filigrane).
+Retiré de la version longue (sans changer les faits) : « Chacun chez soi, Isaure », les volets qui se
+ferment, « Moi, j'ai peur depuis un an », « Si vous ouvrez le cratère, il se réveille », « Tu me l'as dit
+pour les falaises », « Et toi. En bas, il y a toi. », « Maïa… ! / Je l'ai dit », « Les Kerval reviennent
+toujours au port » (Roc le dit au Cabinet), et Caillou qui part au trot depuis le col (ses traces sont
+dans la cendre au ch. 8). Pas de musique pendant la scène : le vent, puis plus de vent. Garde-fous : Maïa
+ne pleure pas (elle décide), Isaure ne dit pas oui (elle attend), personne n'explique le « plan stylé »
+(c'était le Roi), Chloé ne fait pas de discours, la page 34 reste déchirée, Isaure ne confirme pas qu'elle
+va chercher Hélène. Les versions écartées, les cinq pistes de rebondissement et leur critique :
+`scratchpad/ch7/masque_brouillons.md`, `masque_v2_pistes.md`, `masque_v2_scene.md`.
 
 ## Chapitre 8 — La Plaine Volcanique · 5e Cœur
 
 Le chapitre le plus chaud : il commence seule dans la cendre, sans Maïa, et finit à trois devant une
 porte de bois, à la lueur de deux torches, sans combat. Deux grands combats au milieu : Brac, pour la
 dernière fois, et le T-Rex de Magma, le plus dur du jeu avant la fin. Texte complet des scènes, pages,
-dialogues et drapeaux : [chapitre-8-scenes.md](chapitre-8-scenes.md) (écrit le 17/10, à valider).
+dialogues et drapeaux : [chapitre-8-scenes.md](chapitre-8-scenes.md) (écrit le 17/10 ; scènes
+raccourcies le 18/10 : jamais plus d'une douzaine de bulles d'affilée, des moments séparés par un temps
+regardé ou un choix du joueur — ce que répond Chloé à Brac et à Dame Suie, où va Brac, donner ou non la
+lettre à Isaure, demander ou non Moustique à Maïa ; aucun choix ne change les faits).
 
 1. **La Descente de Cendre.** Dans la cendre, à chaque lacet, deux paires de bottes (une grande, une
    petite) et trois gros orteils qui traînent : Caillou les a rattrapées. Chloé a Moustique sur l'épaule
@@ -1367,8 +1300,9 @@ dialogues et drapeaux : [chapitre-8-scenes.md](chapitre-8-scenes.md) (écrit le 
    regarde droit dans les yeux : « Il la voit très bien. … Et je ne cours pas. » Il renifle les six Sceaux
    (le Désert : un vieux voisin ; la Côte : le poisson ; les Monts : trop froid ; les Cieux : il lève les
    yeux), cherche les Cœurs, ne les trouve pas, gronde ; Chloé tend les mains comme Hélène (page 10) ; il
-   souffle dessus, chaud, pas brûlant, et rugit : **combat d'honneur** (niveau 48, type feu, l'Eau et la
-   Pierre le touchent fort ; l'équipe boit à la source chaude « au goût d'œuf » avant chaque essai). Gagné,
+   souffle dessus, chaud, pas brûlant, et rugit : **combat d'honneur** (niveau 48, type feu : il craint
+   l'Eau et la Terre, la Pierre lui résiste ; l'équipe boit à la source chaude « au goût d'œuf » avant
+   chaque essai). Gagné,
    il **frappe l'autel du pied** : le verre se fend en étoile, la lave monte, se fige, et s'ouvre « comme
    une noix » sur le **Cinquième Cœur**, chaud comme du pain, « le plus bruyant », et le **Sceau du Volcan**
    (ambre rouge sombre, une flamme, la fougère). « Elle en a quatre, et moi un, et il faut les cinq. Alors

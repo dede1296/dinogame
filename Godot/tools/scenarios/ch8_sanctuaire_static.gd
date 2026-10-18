@@ -1,7 +1,7 @@
 extends RefCounted
-## Chapter 8, one moment (state set by flags, then only this moment; scènes agent, scratchpad ch8/gen_scenarios.py):
-## le sanctuaire de Magma (verre noir, la vasque qui tremble, le T-Rex qui la voit très bien), les Sceaux reniflés, les mains, le rugissement ; défi remis (« Pas encore »), combat sauté (drapeau) ; l'autel, le cinquième Cœur, le Sceau du Volcan, il se couche et fume, la lave se retire ; statique.
-## godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario_file=res://tools/scenarios/ch8_sanctuaire_static.gd titre="Ch. 8 : le sanctuaire de Magma et le cinquième Cœur (statique)"
+## Chapter 8, one moment (state set by flags, then only this moment; scènes courtes du 18/10, scratchpad/court/gen_scenarios2.py):
+## le sanctuaire de Magma (verre noir, la vasque qui tremble, Chloé ne bouge pas ; le T-Rex entre par la paroi de lave sans texte ; il la voit très bien), les Sceaux reniflés, les mains, le rugissement ; défi remis (« Pas encore »), combat sauté (drapeau) ; l'autel, le cinquième Cœur, le Sceau du Volcan, il se couche et fume, la lave se retire ; statique.
+## godot --path Godot --script res://tools/capture.gd -- out=<dossier> scenario_file=res://tools/scenarios/ch8_sanctuaire_static.gd titre="Ch. 8 : le sanctuaire de Magma et le cinquième Cœur (court, statique)"
 
 const STEPS := [
 	[0.80, "flags", ["prologue_done", "tuto_commandes", "met_roc", "sceau_plaines", "maia_defi_1", "havre_arrive", "selle", "foret_arrivee", "sceau_foret", "maia_defi_2", "marais_arrivee", "gilet_nage", "sceau_marais", "coeur_1", "maia_defi_3", "desert_arrivee", "sceau_desert", "coeur_2", "maia_defi_4", "cote_annonce", "cote_ouverte", "cote_arrivee", "nessie", "masque_plongee", "sceau_cote", "coeur_3", "maia_enfuie", "masque_carton", "monts_ouverts", "monts_arrivee", "bertille_vue", "suie_monts_battue", "suie_indice", "roc_col_vu", "roc_innocente", "sanctuaire_givre_ouvert", "titan_battu", "sceau_monts", "coeur_4", "maia_monts_vue", "masque_rendu", "maia_defi_5", "maia_alliee", "found_journal_25", "harnais_vol", "cieux_ouverts", "cieux_arrivee", "nids_arrivee", "quetzal_roi_parle", "quetzal_roi_battu", "quetzal_roi_confiance", "sceau_cieux", "vol_obtenu", "arche_arrivee", "arche_piege", "masque_arche_battu", "coeurs_voles", "masque_tombe", "moustique_confie", "masque_carton_confie", "roc_masque_tombe", "volcan_ouvert", "descente_cendre", "cendres_arrivee", "premier_corrompu_volcan", "forges_arrivee", "petites_forges_eteintes", "barricade_tombee", "brac_vaincu", "brac_parti", "suie_alliee", "grande_forge_eteinte", "antidote_ambre", "found_journal_37", "suie_partie", "coulees_arrivee", "lave_franchie", "roc_trex_legende"]],
@@ -91,30 +91,7 @@ const STEPS := [
 	[64.50, "next", null],
 	[65.60, "next", null],
 	[66.20, "shot", "sanctuaire_09"],
-	[66.70, "next", null],
-	[67.80, "next", null],
-	[68.90, "next", null],
-	[70.00, "next", null],
-	[71.10, "next", null],
-	[72.20, "next", null],
-	[72.80, "shot", "sanctuaire_10"],
-	[73.30, "next", null],
-	[74.40, "next", null],
-	[75.50, "next", null],
-	[76.60, "next", null],
-	[77.70, "next", null],
-	[78.80, "next", null],
-	[79.40, "shot", "sanctuaire_11"],
-	[79.90, "next", null],
-	[81.00, "next", null],
-	[82.10, "next", null],
-	[83.20, "next", null],
-	[84.30, "next", null],
-	[85.40, "next", null],
-	[86.00, "shot", "sanctuaire_12"],
-	[86.50, "next", null],
-	[87.60, "next", null],
-	[89.20, "state", null],
-	[89.30, "party", null],
-	[89.40, "tracker", null],
+	[67.20, "state", null],
+	[67.30, "party", null],
+	[67.40, "tracker", null],
 ]
