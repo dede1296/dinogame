@@ -58,6 +58,7 @@ Router="*res://core/scene_router.gd"
 Dialogue="*res://ui/dialogue.gd"
 Debug="*res://ui/debug_overlay.gd"
 MCPRuntimeServer="*res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd"
+PhantomCameraManager="*uid://duq6jhf6unyis"
 
 [display]
 
@@ -71,7 +72,7 @@ window/size/viewport_height.pc=900
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/GDDraw/plugin.cfg", "res://addons/GDQuest_GDScript_formatter/plugin.cfg", "res://addons/PlantGenerator/plugin.cfg", "res://addons/RoxyVector2D/plugin.cfg", "res://addons/blendkit/plugin.cfg", "res://addons/compositespritesheetgenerator/plugin.cfg", "res://addons/curved_lines_2d/plugin.cfg", "res://addons/dreadpon.spatial_gardener/plugin.cfg", "res://addons/godot_mcp_toolkit/plugin.cfg", "res://addons/lens_effects/plugin.cfg", "res://addons/modular_builder_en/plugin.cfg", "res://addons/proton_scatter/plugin.cfg", "res://addons/ragdoll_generator/plugin.cfg", "res://addons/saltmire_hitbox/plugin.cfg", "res://addons/sky_3d/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/vision2d/plugin.cfg", "res://addons/waterways/plugin.cfg")
+enabled=PackedStringArray("res://addons/GDDraw/plugin.cfg", "res://addons/GDQuest_GDScript_formatter/plugin.cfg", "res://addons/PlantGenerator/plugin.cfg", "res://addons/RoxyVector2D/plugin.cfg", "res://addons/blendkit/plugin.cfg", "res://addons/compositespritesheetgenerator/plugin.cfg", "res://addons/curved_lines_2d/plugin.cfg", "res://addons/dreadpon.spatial_gardener/plugin.cfg", "res://addons/gdUnit4/plugin.cfg", "res://addons/godot_mcp_toolkit/plugin.cfg", "res://addons/lens_effects/plugin.cfg", "res://addons/modular_builder_en/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/proton_scatter/plugin.cfg", "res://addons/ragdoll_generator/plugin.cfg", "res://addons/saltmire_hitbox/plugin.cfg", "res://addons/sky_3d/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/vision2d/plugin.cfg", "res://addons/waterways/plugin.cfg")
 
 [importer_defaults]
 
