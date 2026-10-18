@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/trex_magma.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/trex_magma_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"trex_magma"
+display_name = "T-Rex de Magma"
+family = &"tyrant"
+description = "Le gardien du sanctuaire de Magma. Des fissures orange luisent sur son dos comme des braises sous la cendre, et la fumée sort de ses naseaux quand il souffle. Il ne regarde que ceux qui ne s'enfuient pas."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.622
+battle_scale = 0.635
+walk_fps = 6.0
+cry_prefix = "tyran"
+head_size = 10
+head_bite = 10
+teeth_sharp = 9
+teeth_count = 9
+front_power = 3
+front_reach = 2
+back_legs_power = 9
+back_legs_speed = 6
+back_armor = 7
+back_spikes = 3
+tail_power = 8
+tail_length = 8
+rarity = "epic"

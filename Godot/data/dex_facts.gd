@@ -154,6 +154,19 @@ const INFO := {
 	&"quetzalcoatlus": {"size": "11 m d'envergure, 250 kg", "diet": "carnivore", "era": "Crétacé, il y a 68 millions d'années", "from": "au Texas",
 		"trait": "Le plus grand animal volant de tous les temps.",
 		"fact": "Debout, il était aussi haut qu'une girafe. Pour décoller, il sautait d'un coup de ses quatre pattes, comme un saut à la perche !"},
+	# ---------------------------------------------------------------- Plaine Volcanique
+	&"styracosaurus": {"size": "5,5 m de long, 3 tonnes", "diet": "herbivore", "era": "Crétacé, il y a 75 millions d'années", "from": "au Canada",
+		"trait": "Une grande corne sur le nez et six longues pointes autour de la collerette.",
+		"fact": "Son nom veut dire « lézard à pointes ». Ses pointes servaient sans doute surtout à se faire remarquer : plus elles étaient longues, plus il avait l'air important !"},
+	&"saichania": {"size": "5 à 6 m de long, 2 tonnes", "diet": "herbivore", "era": "Crétacé, il y a 72 millions d'années", "from": "en Mongolie",
+		"trait": "Des plaques d'os partout, même sous le ventre, et une massue au bout de la queue.",
+		"fact": "Son nom veut dire « la belle » en mongol, tant son fossile était magnifique. Son nez plein de couloirs tordus rafraîchissait l'air chaud et sec du désert où il vivait."},
+	&"daspletosaurus": {"size": "9 m de long, 3 tonnes", "diet": "carnivore", "era": "Crétacé, il y a 77 millions d'années", "from": "au Canada et aux États-Unis",
+		"trait": "Une très grosse tête, des dents épaisses et de tout petits bras à deux doigts.",
+		"fact": "C'est un cousin plus ancien du T-Rex : il vivait dix millions d'années avant lui. On a retrouvé plusieurs Daspletosaurus ensemble, peut-être une famille."},
+	&"trex_magma": {"size": "12 m de long, 8 tonnes", "diet": "carnivore", "era": "Crétacé, il y a 67 millions d'années", "from": "en Amérique du Nord",
+		"trait": "Le plus célèbre des dinosaures : une tête énorme et des bras minuscules à deux doigts.",
+		"fact": "Il avait l'un des meilleurs nez de tous les dinosaures, et ses yeux voyaient très bien en relief. Ses petits bras étaient très musclés : il pouvait soulever plus de 200 kg avec !"},
 	# ---------------------------------------------------------------- uniques
 	&"triceratops": {"size": "9 m de long, 8 tonnes", "diet": "herbivore", "era": "Crétacé, il y a 67 millions d'années", "from": "en Amérique du Nord",
 		"trait": "Trois cornes et une immense collerette.",
@@ -218,4 +231,7 @@ const UNIQUES := [
 	{"id": &"quetzalcoatlus", "role": "Le Quetzalcoatlus Roi, Alpha des Cieux", "region": &"cieux",
 		"rumour": "Une ombre immense tournerait au-dessus des nuages, tout en haut des Cieux Éternels.",
 		"where": "Au bord du Grand Nid, tout en haut des Nids géants des Cieux Éternels. Il ne se pose jamais pour combattre."},
+	{"id": &"trex_magma", "role": "Le T-Rex de Magma, Alpha du Volcan", "region": &"volcan",
+		"rumour": "Au fond des coulées, une faille dans le volcan respirerait, chaude et régulière, comme quelqu'un qui dort.",
+		"where": "Dans le Sanctuaire de Magma, une salle de verre noir au cœur du volcan, derrière les coulées de lave."},
 ]

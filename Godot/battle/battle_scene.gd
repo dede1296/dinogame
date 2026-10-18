@@ -53,6 +53,9 @@ const UNDERWATER_LOOK := preload("res://battle/battle_underwater.gd")
 ## In the Cieux (rule "cieux", or a battle in one of SkyEngine.ZONES): the wind's rules and look.
 const SKY_ENGINE := preload("res://battle/sky_engine.gd")
 const SKY_LOOK := preload("res://battle/battle_sky.gd")
+## In the Plaine Volcanique (rule "volcan", or a battle in one of its zones): its backdrop, the embers;
+## and the antidote's toss (rule "antidote").
+const VOLCAN_LOOK := preload("res://battle/battle_volcan.gd")
 const HUD := preload("res://battle/battle_hud.gd")
 const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
 const HEAL_GREEN := Color(0.55, 0.95, 0.5)
@@ -100,7 +103,9 @@ func _ready() -> void:
 ## "underwater": true under the sea (UnderwaterEngine, BattleUnderwater), "abyss": true the
 ## Mosasaure Abyssal's rhythm (it sinks into the dark, surges, stays exposed), "cieux": true (or
 ## false) in the wind of the Cieux — by default, any battle in one of their zones (SkyEngine,
-## BattleSky: Wind stronger, Earth weaker, the pterosaurs hovering).
+## BattleSky: Wind stronger, Earth weaker, the pterosaurs hovering), "volcan": true (or false) in the
+## Plaine Volcanique's heat — by default in its zones (BattleVolcan: its backdrop, embers), "antidote":
+## true the last battle, where the « Ambre clair » may be poured on the corrupted foe (BattleEngine).
 func run(wild: Dino, rules := {}) -> String:
 	_rules = rules
 	if rules.get("backdrop") is Texture2D:
@@ -113,6 +118,7 @@ func run(wild: Dino, rules := {}) -> String:
 		"starter": StringName(starter) if starter is String else &"",
 		"trainer": rules.get("trainer", ""),
 		"abyss": rules.get("abyss", false),
+		"antidote": rules.get("antidote", false),
 	}
 	if rules.get("underwater", false):   # under the sea: the water's rules, the water all around
 		engine = UNDERWATER_ENGINE.new(Game.party, wild, engine_rules)
@@ -122,6 +128,8 @@ func run(wild: Dino, rules := {}) -> String:
 		SKY_LOOK.apply(self)
 	else:
 		engine = BattleEngine.new(Game.party, wild, engine_rules)
+	if VOLCAN_LOOK.applies(rules, Game.region_id):   # in the volcano: its backdrop, the embers
+		VOLCAN_LOOK.apply(self)
 	Game.mark_seen(wild.species().id)
 	_setup_dino(_foe_sprite, wild, true)
 	_setup_dino(_player_sprite, engine.player(), false)
@@ -257,6 +265,9 @@ func _play(events: Array) -> void:
 			"calmed":
 				await _calmed_anim()
 				await _say(e["text"])
+			"antidote":   # the « Ambre clair » poured on the corrupted foe ("calm", "calmed" follow)
+				_hud.say(e["text"])
+				await VOLCAN_LOOK.antidote(self, e)
 			"abyss":   # under the sea, the Mosasaure sinks into the dark, surges, is exposed
 				await UNDERWATER_LOOK.abyss(self, e)
 				await _say(e["text"])

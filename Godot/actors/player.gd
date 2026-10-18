@@ -7,10 +7,15 @@ extends CharacterBody2D
 ## it starts by itself as she walks into the water, and ends on the shore.
 ## She is 1.50 m tall (Heights: her sprite's scale, her shadow). On slippery ice (Region.slippery)
 ## she gets going and stops slowly: she slides a little, and her mount too.
+## Over the lava of the Plaine Volcanique (Lava, chapter 8), on the back of her lead dino if it is of
+## Stone or Fire (lava_walker): it starts by itself as she walks on to a flow, and ends on the rock;
+## near the flows, on foot, the heat rises (Heat) and she steps back to the cool rock (step_away).
 
 signal stepped(surface: StringName)
 ## Chloé starts (true) or stops swimming, or another dino carries her in the water.
 signal swim_changed(swimming: bool)
+## Chloé climbs on (true) or off the back of the dino carrying her over the lava.
+signal lava_changed(on_lava: bool)
 
 const SPEED := 165.0
 const ACCEL := 1500.0
@@ -92,6 +97,8 @@ var diving := false
 ## (actors/flight.gd): both null on the ground. Set by Vol.
 var flyer: Dino = null
 var flight: Flight = null
+## The dino of Stone or Fire carrying her over the lava (null: not on a flow). Set here (Lava).
+var lava_walker: Dino = null
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
@@ -100,6 +107,13 @@ var _push_time := 0.0      # walking against water she cannot swim in (s)
 var _water_told := false   # …and told why, in this zone
 var _to_crack := CRACK_EVERY.x   # steps on the ice before the next crack
 var _sliding := false            # gliding on over the ice, feet still (no input)
+var _lava_push := 0.0            # walking against lava she cannot cross (s)
+var _lava_told := false          # …and told why, in this zone
+## Where the heat sends her back to, out of it (Heat; Vector2.INF: nowhere).
+var _away_to := Vector2.INF
+var _away_stuck_s := 0.0
+const AWAY_ARRIVE := 14.0
+var heat: Heat
 
 
 func _ready() -> void:
@@ -110,7 +124,10 @@ func _ready() -> void:
 	Outfits.dress_chloe(sprite.sprite_frames, 15.0)   # in her walking boots, once she has them
 	sprite.play(&"idle_down")
 	trail.append(global_position)
-	collision_mask = SWIM.SOLID_LAYER | SWIM.WATER_LAYER
+	collision_mask = SWIM.SOLID_LAYER | SWIM.WATER_LAYER | Lava.LAYER
+	heat = Heat.new()
+	heat.player = self
+	add_child(heat)
 
 
 func can_move() -> bool:
@@ -135,7 +152,9 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	var moved := global_position.distance_to(before)
 	_update_swim()
+	_update_lava()
 	_watch_water(input, moved, delta)
+	_watch_lava(input, moved, delta)
 	_animate(input)
 	_track(moved)
 	RenderingServer.global_shader_parameter_set(&"player_position", global_position)
@@ -180,6 +199,8 @@ func top_speed() -> float:
 		return SPEED * (GALLOP_SPEED if run else RIDE_SPEED)
 	if swimmer:
 		return SPEED * SWIM.SPEED
+	if lava_walker:
+		return SPEED * Lava.SPEED
 	var boots := Game.item_count("bottes") > 0
 	if run:
 		return SPEED * (BOOTS_RUN_SPEED if boots else RUN_SPEED)
@@ -199,24 +220,44 @@ func _on_slippery_ice() -> bool:
 	return slippery and not diving and swimmer == null and surface_at.is_valid() and surface_at.call(global_position) == &"sand"
 
 
-## The dino carrying Chloé (her flyer in the air, her mount, or her swimmer in the water), or
-## null: on her feet.
+## The dino carrying Chloé (her flyer in the air, her mount, her swimmer in the water, or her dino
+## of Stone or Fire over the lava), or null: on her feet.
 func carried_by() -> Dino:
 	if flyer:
 		return flyer
-	return mount if mount else swimmer
+	if mount:
+		return mount
+	return swimmer if swimmer else lava_walker
 
 
 func is_swimming() -> bool:
 	return swimmer != null
 
 
-## Deep water stops her, unless she can swim, or already stands in it (never stuck there).
+## On a lava flow, on the back of her dino of Stone or Fire (Lava).
+func is_on_lava() -> bool:
+	return lava_walker != null
+
+
+## The zone she walks in (the one the world gave her ground from), or null.
+func region() -> Region:
+	return surface_at.get_object() as Region if surface_at.is_valid() else null
+
+
+## Deep water stops her, unless she can swim, or already stands in it (never stuck there); the
+## lava too, unless her lead dino has the Cuir de feu, or she already stands on it.
 func _update_water_mask() -> void:
 	var free := swimmer != null or on_water() or SWIM.can_swim()
-	var mask := SWIM.SOLID_LAYER | (0 if free else SWIM.WATER_LAYER)
+	var lava_free := lava_walker != null or Lava.can_cross() or on_lava()
+	var mask := SWIM.SOLID_LAYER | (0 if free else SWIM.WATER_LAYER) | (0 if lava_free else Lava.LAYER)
 	if collision_mask != mask:
 		collision_mask = mask
+
+
+## Is Chloé standing on lava (a flow she may cross on a dino of Stone or Fire)?
+func on_lava() -> bool:
+	var f := Lava.field(region())
+	return f != null and f.is_crossable(global_position)
 
 
 ## Is Chloé standing in deep water (a "water" tile; a pier or a ford's stones are not)?
@@ -249,6 +290,55 @@ func _set_swimmer(s: Dino) -> void:
 		if view:
 			view.splash(global_position)
 	swim_changed.emit(s != null)
+
+
+## On a lava flow, on the back of her lead dino of Stone or Fire (the one already carrying her, while
+## it stays in the party); on the rock, on her feet again. The very first time: a few words (Lava).
+func _update_lava() -> void:
+	if diving or flight:
+		return
+	if not on_lava():
+		if lava_walker:
+			_set_lava_walker(null)
+		return
+	var w: Dino = lava_walker if lava_walker and Game.party.has(lava_walker) else Lava.walker()
+	if w != lava_walker or (w and mount):
+		_set_lava_walker(w)
+
+
+func _set_lava_walker(w: Dino) -> void:
+	var was := lava_walker != null
+	if w and mount:
+		mount = null   # her mount does not cross the lava: the dino of Stone or Fire takes her
+	lava_walker = w
+	if was and w == null:
+		trail = [global_position]   # her dino walks behind her again, from the rock
+	if was != (w != null):
+		lava_changed.emit(w != null)
+	if w and not Game.flag(Lava.FLAG_CROSSED):
+		Lava.tell_crossed(self, w)
+
+
+## Walking against lava she cannot cross: why, and who could, once in the zone (Lava).
+func _watch_lava(input: Vector2, moved: float, delta: float) -> void:
+	if _lava_told or input.length() < 0.5 or collision_mask & Lava.LAYER == 0 or not Lava.has_lava(region()):
+		_lava_push = 0.0
+		return
+	var ahead := global_position + input.normalized() * WATER_PROBE
+	if moved < top_speed() * delta * 0.3 and Lava.at(region(), ahead):
+		_lava_push += delta
+		if _lava_push >= WATER_TELL_S:
+			_lava_told = true
+			Lava.tell_blocked(self)
+	else:
+		_lava_push = 0.0
+
+
+## Too hot (Heat): she walks back by herself to `to`, the cool rock; a key or the stick takes her back.
+func step_away(to: Vector2) -> void:
+	_goal = null
+	_away_to = to
+	_away_stuck_s = 0.0
 
 
 ## Walking against deep water she cannot go into: a word about why, once in the zone.
@@ -302,7 +392,7 @@ func _track(moved: float) -> void:
 		if trail.size() > TRAIL_LENGTH:
 			trail.remove_at(0)
 	_step_travel += moved
-	if _step_travel >= STEP_DISTANCE * (RIDE_STEP if mount or flight else SWIM.STROKE if swimmer else 1.0):
+	if _step_travel >= STEP_DISTANCE * (RIDE_STEP if mount or flight or lava_walker else SWIM.STROKE if swimmer else 1.0):
 		_step_travel = 0.0
 		if flight:   # (a wingbeat: no footstep, and no dino hidden in the grass below reaches her)
 			stepped.emit(AIR)
@@ -331,7 +421,7 @@ func _on_snow() -> bool:
 
 
 func _play_step(kind: StringName) -> void:
-	var lift := MOUNT_STEP_DB if mount else 0.0
+	var lift := MOUNT_STEP_DB if mount or lava_walker else 0.0
 	match kind:
 		&"snow":
 			Audio.play_sfx(SNOW_STEPS.pick_random(), STEP_DB[kind] + lift, 0.08)
@@ -385,6 +475,8 @@ func _in_reach(target: Node2D) -> bool:
 
 ## The direction she goes towards the click's target, or `input` (what the player holds) if none.
 func _walk_to_goal(input: Vector2, delta: float) -> Vector2:
+	if _away_to != Vector2.INF:
+		return _walk_away(input, delta)
 	if _goal == null:
 		return input
 	if input.length() > GOAL_CANCEL_INPUT or not is_instance_valid(_goal) or not _goal.visible:
@@ -402,6 +494,18 @@ func _walk_to_goal(input: Vector2, delta: float) -> Vector2:
 		_goal = null
 		return Vector2.ZERO
 	return (_goal.global_position - global_position).normalized()
+
+
+## Out of the heat (step_away): towards the cool rock, until there, stuck, or taken back by hand.
+func _walk_away(input: Vector2, delta: float) -> Vector2:
+	if input.length() > GOAL_CANCEL_INPUT or global_position.distance_to(_away_to) < AWAY_ARRIVE:
+		_away_to = Vector2.INF
+		return input
+	_away_stuck_s = _away_stuck_s + delta if velocity.length() < top_speed() * GOAL_STUCK_SPEED else 0.0
+	if _away_stuck_s > GOAL_GIVE_UP_S:
+		_away_to = Vector2.INF
+		return Vector2.ZERO
+	return (_away_to - global_position).normalized()
 
 
 ## What a press of « interact » would reach now: the closest interactable in reach, preferring what
@@ -440,5 +544,7 @@ func teleport(pos: Vector2) -> void:
 	reset_physics_interpolation()
 	trail = [pos]
 	_water_told = false
+	_lava_told = false
+	_away_to = Vector2.INF
 	if flight:
 		Vol.set_down(self)   # (her dino beside her, where she now stands)

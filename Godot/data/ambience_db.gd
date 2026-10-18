@@ -136,6 +136,35 @@ const AMBIENCES := {
 			{"ids": ["rafale"], "every": [20.0, 40.0], "vol": 0.3},
 		],
 	},
+	## Plaine Volcanique (chapitre 8 ; aucun enregistrement nouveau : les sons d'ici suffisent). Pas un
+	## oiseau : la cendre. Le vent chaud et grave du Désert, plus ou moins fort ; le feu qui crépite
+	## (« fire » : plus fort près d'un feu, et près des coulées de lave : World._hear_surroundings).
+	## Les champs de cendres : le vent chaud qui soulève la cendre en petites vagues.
+	&"champs_cendres": {
+		"beds": [["desert", 0.55, ""], ["feu", 1.0, "fire"]],
+		"calls": [{"ids": ["rafale-grave"], "every": [12.0, 28.0], "vol": 0.4}],
+	},
+	## Les forges de l'Ombre Noire : les braises des forges partout, sous le vent (et plus fort tout près).
+	&"forges_ombre": {
+		"beds": [["feu", 0.45, ""], ["desert", 0.3, ""], ["feu", 1.0, "fire"]],
+		"calls": [{"ids": ["rafale-grave"], "every": [16.0, 34.0], "vol": 0.3}],
+	},
+	## Les coulées : la lave qui crépite (fort au bord d'une coulée), l'air brûlant qui tremble.
+	&"coulees_lave": {
+		"beds": [["desert", 0.4, ""], ["feu", 0.3, ""], ["feu", 1.0, "fire"]],
+		"calls": [{"ids": ["rafale-grave"], "every": [14.0, 30.0], "vol": 0.35}],
+	},
+	## Le sanctuaire de verre : calme, trop calme ; le bourdon de la roche, la lave derrière le verre, et
+	## de loin en loin un grondement sourd, très bas, qui monte par les pieds.
+	&"sanctuaire_magma": {
+		"beds": [["grotte", 0.55, ""], ["feu", 0.3, ""]],
+		"calls": [{"ids": ["rafale-grave"], "every": [22.0, 45.0], "vol": 0.25}],
+	},
+	## La porte du cratère : le vent du sommet, chaud d'un côté, frais de l'autre ; les deux torches.
+	&"porte_cratere": {
+		"beds": [["desert", 0.5, ""], ["monts", 0.2, ""], ["feu", 1.0, "fire"]],
+		"calls": [{"ids": ["rafale-grave"], "every": [10.0, 24.0], "vol": 0.4}],
+	},
 }
 
 

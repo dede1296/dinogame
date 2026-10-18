@@ -61,6 +61,11 @@ const PATHS := {
 	&"tupandactylus": "res://data/species/tupandactylus.tres",
 	&"hatzegopteryx": "res://data/species/hatzegopteryx.tres",
 	&"quetzalcoatlus": "res://data/species/quetzalcoatlus.tres",
+	# Plaine Volcanique (chapitre 8 ; planches de repli tant que l'agent images n'a pas livré les leurs)
+	&"styracosaurus": "res://data/species/styracosaurus.tres",
+	&"saichania": "res://data/species/saichania.tres",
+	&"daspletosaurus": "res://data/species/daspletosaurus.tres",
+	&"trex_magma": "res://data/species/trex_magma.tres",
 }
 
 static var _cache: Dictionary = {}

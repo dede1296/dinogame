@@ -375,6 +375,8 @@ func _fill_wheel() -> void:
 	var heals := 0
 	for id: String in BattleEngine.HEAL_ITEMS:
 		heals += Game.item_count(id)
+	if engine.can_use_antidote():   # the last battle: the « Ambre clair » is in the bag too
+		heals += 1
 	bag_button.badge = heals
 	bag_button.enable(heals > 0)
 	var others := 0
@@ -525,6 +527,8 @@ func _fill_list(which: String) -> void:
 				grid.add_child(_struggle_card())
 		"bag":
 			panel.get_meta(&"title").text = "Soins"
+			if engine.can_use_antidote():
+				grid.add_child(_antidote_card())
 			for id: String in BattleEngine.HEAL_ITEMS:
 				if Game.item_count(id) > 0:
 					grid.add_child(_item_card(id))
@@ -603,6 +607,24 @@ func _item_card(id: String) -> Button:
 			_heal_item = id
 			show_panel("heal"))
 	PARTS.enable_card(card, usable)
+	return card
+
+
+## The « Ambre clair » (the last battle only, BattleEngine.can_use_antidote): poured on the corrupted
+## foe, its veins fade at once. A single dose.
+func _antidote_card() -> Button:
+	var card := PARTS.card_button(Color(0.36, 0.26, 0.08, 0.95), INK_BOTTOM, GOLD, "item:%s" % BattleEngine.ANTIDOTE)
+	var row: HBoxContainer = card.get_meta(&"row")
+	var icon := TextureRect.new()
+	icon.texture = ItemsDB.icon(BattleEngine.ANTIDOTE)
+	icon.custom_minimum_size = Vector2(54, 54)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(icon)
+	row.add_child(PARTS.two_lines("Ambre clair", "Efface ses veines"))
+	row.add_child(PARTS.label("×1", 22, GOLD))
+	card.pressed.connect(func() -> void: chosen.emit({"type": "antidote"}))
 	return card
 
 

@@ -8,7 +8,8 @@ extends Node2D
 ## Each step together makes its Lien grow (Game.grow_bond): a "♥" over it at a new heart.
 ## When Chloé rides (Player.mount), it is her mount instead: under her, carrying her (Saddle).
 ## In deep water (Player.swimmer), the swimmer of the party carries her the same way, half
-## under the water (the view sinks them both: WorldView).
+## under the water (the view sinks them both: WorldView); over the lava (Player.lava_walker), her lead
+## dino of Stone or Fire (Lava).
 ## Its size: its species', as grown as its level (DinoSize); it keeps behind her as far as it
 ## is long. Carrying her, a big one is shown smaller (DinoSize.MOUNT_MAX_M): it shrinks as she
 ## climbs on and grows back as she gets down (RESIZE_S), as it grows when it levels up.
@@ -66,6 +67,7 @@ func _ready() -> void:
 	if player:
 		player.stepped.connect(_on_step)
 		player.swim_changed.connect(func(_swimming: bool) -> void: refresh())
+		player.lava_changed.connect(func(_on_lava: bool) -> void: refresh())
 	refresh()
 
 
@@ -85,6 +87,8 @@ func refresh() -> void:
 		player.mount = null
 	if player and player.swimmer and not Game.party.has(player.swimmer):   # another swimmer, if any
 		player.swimmer = SWIM.swimmer()
+	if player and player.lava_walker and not Game.party.has(player.lava_walker):   # the new lead, if it can
+		player.lava_walker = Lava.walker()
 	if player and player.flyer and not Game.party.has(player.flyer):   # another flyer, or down at once
 		player.flyer = Vol.flyer()
 		if player.flyer == null:

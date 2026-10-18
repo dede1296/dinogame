@@ -12,6 +12,8 @@ class_name Abilities
 ##     Quetzalcoatlus (the Dimorphodon, the Anurognathus, the Rhamphorhynchus are far too small).
 ##   Nage: the spinosaurids, at home in rivers; the sea reptiles too.   Plongée: the sea reptiles
 ##     that dive deep (Plesiosaurus, Ichthyosaurus, Elasmosaurus), not the Archelon nor the Koolasuchus.
+##   Cuir de feu (chapter 8, the lava: Lava): every dino of Stone or Fire, by its head's family (its
+##     type) — the armoured ones and the domed heads (Stone), the big theropods (Fire).
 
 const ADULT_LEVEL := 12
 
@@ -40,6 +42,8 @@ const DEFS := {
 	&"plongee": {"name": "Plongée", "icon": "bubbles", "part": &"tail", "adult": true,
 		"species": [&"plesiosaurus", &"ichthyosaurus", &"elasmosaurus"],
 		"desc": "Descend sous l'eau, Chloé sur le dos (avec le masque de plongée) : grottes marines, épaves, récifs."},
+	&"cuir_de_feu": {"name": "Cuir de feu", "icon": "flame", "part": &"head", "adult": true, "families": [&"armored", &"tyrant"],
+		"desc": "De pierre ou de feu, il n'a pas peur des braises : en tête de l'équipe, il traverse les coulées de lave, Chloé sur le dos."},
 }
 
 
@@ -131,5 +135,13 @@ static func draw_icon(ci: CanvasItem, icon: String, c: Vector2, s: float, colour
 		"bubbles":   # bubbles rising
 			for b: Array in [[Vector2(-6, 7), 5.0], [Vector2(5, 0), 3.8], [Vector2(-2, -8), 2.8], [Vector2(8, -11), 2.0]]:
 				ci.draw_arc(c + (b[0] as Vector2) * k, b[1] * k, 0.0, TAU, 16, colour, w * 0.8)
+		"flame":   # a flame over a wavy line of lava
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -14) * k, c + Vector2(7, -4) * k, c + Vector2(8, 2) * k,
+				c + Vector2(4, 7) * k, c + Vector2(-4, 7) * k, c + Vector2(-8, 2) * k, c + Vector2(-6, -5) * k,
+				c + Vector2(-2, -2) * k]), colour)
+			var lava := PackedVector2Array()
+			for i in 13:
+				lava.append(c + Vector2(-13 + i * 2.2, 12 + sin(i * 1.1) * 1.8) * k)
+			ci.draw_polyline(lava, colour, w, true)
 		_:
 			ci.draw_circle(c, 6.0 * k, colour)

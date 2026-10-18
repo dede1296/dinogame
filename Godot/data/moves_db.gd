@@ -52,6 +52,10 @@ const MOVES := {
 	&"ventArriere": {"name": "Vent arrière", "type": "vent", "power": 0, "accuracy": 1.0, "pp": 10, "effect": {"self": {"spd": 2}}, "fx": "roar"},
 	&"piqueAerien": {"name": "Piqué", "type": "vent", "power": 85, "accuracy": 0.9, "pp": 10, "fx": "charge"},
 	&"cyclone": {"name": "Cyclone", "type": "vent", "power": 95, "accuracy": 0.85, "pp": 5, "effect": {"status": "etourdi", "chance": 0.15}, "fx": "wave"},
+	## Plaine Volcanique (niv. 42-48) : les grands théropodes y apprennent leur coup le plus chaud (46), les
+	## cératopsiens font trembler le sol (Séisme, 45 : la Terre, ce qui touche fort le T-Rex de Magma ; pas
+	## avant, pour que les Styracosaurus sauvages, 42-44, restent doux). Appris tard : rien ne change avant.
+	&"couleeLave": {"name": "Coulée de lave", "type": "feu", "power": 90, "accuracy": 0.85, "pp": 5, "fx": "quake"},
 }
 
 const TYPE_NAMES := {"neutre": "Neutre", "feu": "Feu", "eau": "Eau", "terre": "Terre", "vent": "Vent", "pierre": "Pierre", "nature": "Nature"}
@@ -76,7 +80,7 @@ const TYPE_CHART := {
 ## Part -> donor family -> [[level, move], …]. A hybrid learns from all of its parts.
 const LEARN := {
 	&"head": {
-		&"tyrant": [[1, &"morsure"], [8, &"ragePredateur"], [14, &"morsureBroyeuse"]],
+		&"tyrant": [[1, &"morsure"], [8, &"ragePredateur"], [14, &"morsureBroyeuse"], [46, &"couleeLave"]],
 		&"spino": [[1, &"morsure"], [7, &"machoireAquatique"]],
 		&"raptor": [[1, &"morsure"], [6, &"regardFeroce"]],
 		&"sauropod": [[1, &"charge"], [9, &"rugissement"]],
@@ -95,7 +99,7 @@ const LEARN := {
 	},
 	&"back_legs": {
 		&"raptor": [[3, &"bondGriffu"]], &"sauropod": [[6, &"pietinement"], [20, &"seisme"]],
-		&"ceratopsian": [[8, &"pietinement"]], &"armored": [[12, &"pietinement"]],
+		&"ceratopsian": [[8, &"pietinement"], [45, &"seisme"]], &"armored": [[12, &"pietinement"]],
 		&"hadrosaur": [[10, &"fougeres"]], &"marine": [[4, &"vagueCaudale"]],
 	},
 	&"back": {

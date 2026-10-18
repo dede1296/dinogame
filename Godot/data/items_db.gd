@@ -59,6 +59,18 @@ const ITEMS := {
 		"desc": "Cousu deux fois par Joss, avec une fougère frappée dans la sangle, « comme sur les boussoles d'Hélène ». Avec un grand ptérosaure adulte, Chloé vole où elle veut."},
 	"sceau_cieux": {"name": "Sceau des Cieux", "icon": "sceau_cieux", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Un disque d'ambre blanc doré, une aile ouverte et la fougère d'Hélène : la confiance du Quetzalcoatlus Roi. Il était caché sous le vieux harnais d'Hélène."},
+	# Plaine Volcanique (chapitre 8, docs/chapitre-8-scenes.md) : l'antidote de Dame Suie (une dose,
+	# réservée au dernier combat : règle « antidote » de BattleEngine), le Sceau et le Cœur du T-Rex de
+	# Magma, la lettre d'Hélène pour Isaure (donnée à la porte : elle quitte le sac). Icônes :
+	# assets/art/ui/<icon>.png (agent images ; l'ambre en attendant).
+	"antidote_ambre": {"name": "Ambre clair", "icon": "antidote_ambre", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Une fiole d'ambre liquide, clair, presque doré, qui luit un peu. « Une goutte. Pas une de plus. — S. » Versée sur un dino corrompu, elle efface ses veines d'un coup. Une seule dose : Dame Suie a dit de choisir le moment."},
+	"sceau_volcan": {"name": "Sceau du Volcan", "icon": "sceau_volcan", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Un disque d'ambre rouge sombre, une flamme et la fougère d'Hélène : la confiance du T-Rex de Magma. Il était dans la coque de lave, à côté du dernier Cœur."},
+	"coeur_5": {"name": "Cinquième Cœur d'ambre", "icon": "coeur_ambre", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Chaud comme du pain qui sort du four, il bat fort et vite, comme s'il avait couru. Le T-Rex de Magma l'avait couvert de lave, comme on couvre une braise pour la nuit."},
+	"lettre_isaure": {"name": "Lettre pour Isaure", "icon": "lettre_isaure", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "La page 37 du journal d'Hélène, pliée en quatre, pas scellée. Dame Suie l'a gardée un an sans l'ouvrir. Elle est pour Isaure."},
 	# A rare find in the Forêt (a wink: docs/histoire.md « Clins d'œil »); Roc has a word about it.
 	"ambre_moustique": {"name": "Ambre au moustique", "icon": "ambre_moustique", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Un galet d'ambre trouvé dans les racines d'une vieille souche de la Forêt. Dedans, un moustique figé depuis des millions d'années. Il a l'air très surpris."},

@@ -35,6 +35,9 @@ extends RefCounted
 ## Rules (the third argument; BattleScene passes them): "long_calm": true for a deep
 ## corruption, a gauge LONG_CALM_FACTOR times as long, where Chloé's own hatchling (species
 ## "starter") stands between her and the foe: more calm per try (CALM_STARTER_BONUS).
+## "antidote": true in the last battle only (chapter 8: Dame Suie's « Ambre clair », ANTIDOTE): the
+## single dose, poured on the corrupted foe ({"type": "antidote"}), fades its veins at once — the
+## foe does not act that turn, the dose is gone (can_use_antidote).
 
 const STATUS_TURNS := {"saigne": 0, "etourdi": 1, "peur": 3}
 const STAT_NAMES := {"atk": "L'attaque", "def": "La défense", "spd": "La vitesse"}
@@ -61,6 +64,9 @@ var long_calm := false
 var starter: StringName = &""
 ## Who the foe belongs to (rule "trainer": "" for a wild dino), for its name in the lines.
 var trainer := ""
+## The last battle (rule "antidote"): the « Ambre clair » may be poured on the corrupted foe.
+var antidote_allowed := false
+const ANTIDOTE := "antidote_ambre"
 const CALM_FULL := 100
 const CALM_STEP := 30        # a calm action that works
 const CALM_KIN_BONUS := 15   # …by a dino of the foe's family
@@ -101,6 +107,7 @@ func _init(player_team: Array[Dino], wild: Dino, rules := {}) -> void:
 	long_calm = rules.get("long_calm", false)
 	starter = StringName(rules.get("starter", &""))
 	trainer = String(rules.get("trainer", ""))
+	antidote_allowed = rules.get("antidote", false)
 	if long_calm:
 		calm_full = roundi(CALM_FULL * LONG_CALM_FACTOR)
 
@@ -156,6 +163,10 @@ func turn(action: Dictionary) -> Array:
 		"switch":
 			if not can_switch_to(int(action.get("index", -1))):
 				return ev
+		"antidote":
+			if can_use_antidote():
+				_pour_antidote(ev)
+			return ev
 	var foe_move := _choose_foe_move()
 	match action["type"]:
 		"run":
@@ -485,6 +496,26 @@ func _try_calm(ev: Array) -> bool:
 	_give_xp(ev)
 	_finish("calmed", ev)
 	return true
+
+
+## Can the « Ambre clair » be poured now? Only in the last battle (rule "antidote"), on a corrupted foe,
+## with the dose in the bag.
+func can_use_antidote() -> bool:
+	return antidote_allowed and not over and foe.corrupted and Game.item_count(ANTIDOTE) > 0
+
+
+## One drop of the « Ambre clair » (the dose is spent): the veins fade at once, without a word.
+func _pour_antidote(ev: Array) -> void:
+	Game.use_item(ANTIDOTE)
+	ev.append({"type": "antidote", "id": ANTIDOTE, "side": "foe",
+		"text": "Chloé débouche la fiole d'ambre clair, et en verse une goutte sur %s. Une seule." % name_of("foe")})
+	calm = calm_full
+	ev.append({"type": "calm", "calm": calm, "text": "L'ambre clair coule le long des veines violettes… et les éteint, une à une."})
+	ev.append({"type": "calmed", "text": "Les veines violettes s'effacent d'un coup. %s est apaisé !" % _cap(foe.species_name())})
+	foe.corrupted = false
+	foe.status = ""
+	_give_xp(ev)
+	_finish("calmed", ev)
 
 
 ## Chance that a calm action by the dino in battle works: more when the foe is worn out,

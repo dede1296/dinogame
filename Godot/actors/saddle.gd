@@ -33,6 +33,13 @@ const SEATS := {
 	&"ichthyosaurus": {"side": Vector2(0.02, 0.64), "front": 0.72, "back": 0.62},
 	&"elasmosaurus": {"side": Vector2(0.1, 0.58), "front": 0.7, "back": 0.6},
 	&"archelon": {"side": Vector2(-0.02, 0.66), "front": 0.64, "back": 0.62},
+	# Plaine Volcanique : le Styracosaurus derrière la collerette (comme le Tricératops), le Saichania
+	# bas et large (comme l'Ankylosaurus) ; sur la lave (Lava), les grands théropodes la portent juste
+	# derrière les épaules (comme les nageurs). À revoir sur leurs vraies planches.
+	&"styracosaurus": {"side": Vector2(-0.12, 0.66), "front": 0.86, "back": 0.64},
+	&"saichania": {"side": Vector2(0.0, 0.72), "front": 0.6, "back": 0.6},
+	&"daspletosaurus": {"side": Vector2(0.03, 0.64), "front": 0.8, "back": 0.62},
+	&"trex_magma": {"side": Vector2(0.03, 0.64), "front": 0.8, "back": 0.62},
 }
 const SEAT_DEFAULT := {"side": Vector2(0.0, 0.68), "front": 0.62, "back": 0.64}
 ## In the air (Vol), on a pterosaur's flight pictures (Wings): on its back between the wings, as
