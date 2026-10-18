@@ -336,11 +336,11 @@ size = Vector2(144, 26.400002)
 target_zone = &"nids_geants"
 target_spawn = &"DepuisArche"
 
-[node name="VersVolcan" type="Area2D" parent="Exits" unique_id=1532233295]
+[node name="VersChampsCendres" type="Area2D" parent="Exits" unique_id=1532233295]
 position = Vector2(912, 0)
 script = ExtResource("23_1m0g0")
 size = Vector2(96, 26.400002)
-target_zone = &"volcan"
+target_zone = &"champs_cendres"
 target_spawn = &"DepuisArche"
 required_flag = &"volcan_ouvert"
 blocked_dialogue = &"volcan_bloque"

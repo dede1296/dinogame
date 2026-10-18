@@ -138,9 +138,10 @@ static func _places(root: Region) -> void:
 	# South: back to the nests' needle (its north border, x 41-45: Nids x = Arche x + 15).
 	B.spawn(root, String(P.SPAWN_NIDS), P.ARCHE_ENTREE.x, P.ARCHE_ENTREE.y)
 	B.exit(root, Rect2(26.5, H - 0.55, 3.0, 0.55), &"nids_geants", P.SPAWN_ARCHE)
-	# North-west: the ridge of cinders down to the Plaine Volcanique (chapter 8: closed for now).
+	# North-west: the Descente de Cendre, down to the Plaine Volcanique (chapter 8: the Champs de Cendre,
+	# their south edge x 43-46, tools/zones/volcan_champs.gd), open once « volcan_ouvert ».
 	B.spawn(root, "DepuisVolcan", P.DESCENTE_CENDRE.x, P.DESCENTE_CENDRE.y)
-	B.exit(root, Rect2(19.0, 0.0, 2.0, 0.55), &"volcan", &"DepuisArche", &"volcan_ouvert", &"volcan_bloque")
+	B.exit(root, Rect2(19.0, 0.0, 2.0, 0.55), &"champs_cendres", &"DepuisArche", &"volcan_ouvert", &"volcan_bloque")
 
 
 static func _habitats(root: Region) -> void:
