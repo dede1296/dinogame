@@ -119,13 +119,11 @@ chaque nouveau repli ; retirer la ligne une fois refait.
 | Chapitre 7, vol de profil : 2 images sur 4 identiques | `dinos/{quetzalcoatlus,hatzegopteryx,tupandactylus,tapejara}_vol.png` | nano-banana : 4 poses demandées, mais la pose « mi-haute » sortait à chaque essai avec un filé rose flou (3 essais) : cycle haut / plané / bas / plané (3 poses distinctes) | Redemander la pose mi-haute seule, nette |
 | Chapitre 7, vol face/dos : pose « ailes basses » | `dinos/*_vol_face_dos.png` | nano-banana : la 3e colonne est parfois très repliée (ailes en U) ; tupandactylus de face : 4e pose avec la tête tournée de 3/4 | Redemander ces cases |
 | Chapitre 7, `chloe_vol*.png` (3e version, 11/10) | `characters/chloe_vol.png`, `chloe_vol_manteau.png` (anciennes : `_v2.png`) | Assise à califourchon : cuisse en avant, genou plié à environ 90°, une seule jambe de profil, jambes écartées de face et de dos, mains sur les poignées ; réduite à 75 % autour du point d'assise (bassin à ±2 px de la 2e version) ; de profil gauche la jambe pend presque droite ; face de `chloe_vol` : yeux fermés (rire) | Si le calage ne plaît pas : `SHRINK` dans `cieux_persos.mjs` |
-| Chapitre 8, trex_magma : pose d'attaque | `dinos/trex_magma.png` (2e essai `qziwoi`) | nano-banana : le 2e essai a la bouche fermée partout (c'est ce qui était demandé au repos) mais la 6e pose « attaque » est elle aussi bouche fermée ; le 1er essai (`1bc8kc`) avait la gueule ouverte mais des poses 4 et 5 au cou penché et un halo de feu autour de la tête. De face, la fumée sort au niveau des yeux (de chaque côté de la tête) plutôt que des naseaux | Redemander la seule pose d'attaque gueule ouverte, sans halo de feu ; fumée des naseaux de face |
 | Chapitre 8, daspletosaurus / saichania : ressemblance avec leurs voisins | `dinos/daspletosaurus*.png`, `saichania*.png` | Daspletosaurus : éditée depuis l'Allosaurus, silhouette de profil proche (tête plus lourde, corps plus trapu seulement de face/dos) ; Saichania : éditée depuis l'Ankylosaurus, même ocre (les cornes du crâne et les épines plus petites la distinguent) | Si on les confond en jeu : Daspletosaurus plus trapu de profil (crâne plus haut, cou plus court), Saichania plus pâle/grise |
-| Chapitre 8, fond de combat volcan : restes du fond des Cieux | `battle/volcan.jpg` (source `1jdddz`) | nano-banana a gardé des plumes au sol et un petit drapeau en lambeaux hérités de `cieux.jpg` | Redemander sans plumes ni drapeau |
 | Chapitre 8, lave : sol non animé | `ground/lave.png` | Une seule image raccordable (nano-banana ne fait pas de planche animée) ; l'animation se fait par défilement/shader du sol | Au besoin, une planche de 4 images décalées |
 | Chapitre 8, autel_magma_fendu : lueur recolorée | `props/autel_magma_fendu.png` | La lueur de la fente, peinte sur le magenta, sortait rose : repeinte en orange par `recolor()` (tools/art-jobs/volcan_decors.mjs) | Redemander l'autel fendu avec la fente éclairée sur un fond d'une autre couleur |
-| Chapitre 8, Léonce assis : masque d'os trop grand | `characters/leonce_assis.png` | nano-banana a dessiné le masque presque aussi grand que la tête (posé sur le genou) | Le redemander plus petit (taille du visage) |
 | Chapitre 8, fiche de Brac assis : colonnes recomposées | `characters/brac_assis_cage.png` | nano-banana a dessiné 6 colonnes au lieu de 4 : recomposées en 4 ; la rangée du bas (debout, inutilisée) a son profil gauche = le droit retourné | Rien si la rangée du bas reste inutilisée |
+| Chapitre 8, trex_magma de face : fumée | `dinos/trex_magma_face_dos.png` (ancienne : `_v1`) | nano-banana, case par case (18/10) : la fumée sort maintenant des naseaux, mais le museau de face est court : les volutes restent près des yeux, assez pâles sur 3 cases sur 4 | Redemander des volutes plus nettes et plus bas si on les trouve mal placées en jeu |
 
 ## Plaine Volcanique (art, chapitre 8, 17/10)
 
@@ -807,3 +805,9 @@ sans niveaux de détail.
   régénérer ces objets sans halo et ajouter la lueur en jeu (PointLight2D).
 - Chaque espèce = une planche de profil (6 cases) + une planche face/dos (8 cases), produites
   par lots, région par région (~60 espèces, voir [bestiaire.md](bestiaire.md)).
+
+## Retouches du 18/10 (agent IMAGES)
+
+Faites avec nano-banana (aucun repli ComfyUI), anciens fichiers gardés à côté (`_v1` ou `_avant`), jobs/notes dans `tools/art-jobs/retouches_volcan.mjs` :
+poteau_lianes (bouts de corde pendants effacés par script), `battle/volcan.jpg` (plumes et drapeau retirés), `leonce_assis` (masque d'os réduit à ~45 %, cellule par cellule),
+`trex_magma` (6e pose : gueule ouverte, rugissement), `trex_magma_face_dos` (fumée des naseaux), `chloe_vol` / `chloe_vol_manteau` (vue de face recentrée par décalage de pixels, sans nano-banana).

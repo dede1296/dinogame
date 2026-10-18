@@ -58,8 +58,8 @@ const FLY_RIDER_SCALE := 0.8
 ## from behind, put back so she sits on the pterosaur's axis (measured on her bust and legs, 16/10;
 ## checked on screen by tools/test_vol.gd only=photo). Per look (Outfits.flight_look).
 const FLY_BODY_X := {
-	Outfits.FLIGHT: {&"ride_down": 14.0, &"ride_up": 4.5},
-	Outfits.FLIGHT_COAT: {&"ride_down": 5.5, &"ride_up": 0.5},
+	Outfits.FLIGHT: {&"ride_down": 0.0, &"ride_up": 4.5},
+	Outfits.FLIGHT_COAT: {&"ride_down": 0.0, &"ride_up": 0.5},
 }
 const DEPTH := 2.0   # px the mount stands nearer the camera (+) or farther (-) than her
 
