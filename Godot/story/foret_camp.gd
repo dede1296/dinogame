@@ -356,11 +356,9 @@ static func _sbire_beaten(n: int, who: Node) -> Array:
 		{"who": CHLOE, "text": "Pas sans le chef de la meute."},
 		{"who": LANTERNE, "text": "Brac, ça va encore. Brac crie. Mais le Masque… Lui, il ne crie jamais."},
 		{"who": LANTERNE, "text": "Il arrive la nuit, par la mer, sans lanterne. Personne n'a jamais vu son visage. Et il sait tout : où tu dors, ce que tu cherches… qui t'a amenée sur l'île."},
-		{"who": CHLOE, "text": "Et vous travaillez pour lui quand même ?"},
-		{"who": LANTERNE, "text": "Il paie. Au port, plus personne ne paie."},
-		{"who": LANTERNE, "text": "Et ses bottes sont toujours pleines de cendre. Il revient des forges, là-haut, sur le volcan. C'est là qu'on fabrique… ça."},
-		GESTES.cue("Du menton, il montre une caisse ouverte. Les pierres noires luisent dans la boue.",
-			func() -> void: _points_at_crate(who)),
+		{"who": LANTERNE, "text": "Pourquoi je bosse pour lui ? Il paie. Au port, plus personne ne paie."},
+		GESTES.cue("Et ses bottes sont toujours pleines de cendre : il revient des forges, là-haut, sur le volcan. C'est là qu'on fabrique… ça.",
+			func() -> void: _points_at_crate(who), LANTERNE),
 	]
 	if Game.flag(&"maia_defi_1") and Game.flag(&"roc_nuit_niee"):
 		lines.append_array([
@@ -768,7 +766,7 @@ static func utahraptor(who: Node) -> void:
 		Stage.lunge(who, at_chloe, 1.0)
 		await Stage.recoil(chloe, (who as Node2D).global_position)   # Chloé, startled, steps back
 		await S.say([
-			{"text": "Le chef de la meute. De près, il est encore plus grand. Ses plumes gris-bleu sont ébouriffées, pleines de boue, et sous sa peau, des veines violettes pulsent comme un second cœur."},
+			{"text": "Le chef de la meute. De près, il est encore plus grand. Ses plumes gris-bleu sont pleines de boue, et sous sa peau, des veines violettes pulsent comme un second cœur."},
 			{"text": "Il ne voit plus Chloé. Il ne voit plus rien. Il se jette contre les barreaux, recule, recommence."},
 			{"who": CHLOE, "text": "On ne peut pas le combattre. Il faut rester plus longtemps que sa peur." if Game.flag(&"found_journal_10")
 				else "Pas de collier, pas de force. Il faut le calmer… même si ça prend longtemps."},
@@ -855,11 +853,11 @@ static func _leader_calmed(who: Node) -> void:
 	await S.say([
 		GESTES.cue("Il se relève de toute sa hauteur. Sous les plumes de son cou pend un collier de lianes tressées, et au bout, un disque d'ambre gravé d'une petite fougère.",
 			func() -> void: Stage.turn_to(who, chloe.global_position); Stage.rear(who, 1.4)),
-		{"who": CHLOE, "text": "La fougère d'Hélène…"},
-		GESTES.cue("Brac ne l'avait même pas remarqué. Le Chef de Meute baisse la tête jusqu'à Chloé, et attend.",
-			func() -> void: Stage.bow(who, 2.6)),
-		GESTES.cue("Chloé dénoue les lianes. Le disque est tiède, comme une pierre restée au soleil.",
-			func() -> void: GESTES.lean(chloe, (who as Node2D).global_position, 6.0, 1.4)),
+		{"who": CHLOE, "text": "La fougère d'Hélène… Brac ne l'avait même pas remarqué."},
+		GESTES.cue("Le Chef de Meute baisse la tête jusqu'à Chloé, et attend. Elle dénoue les lianes : le disque est tiède, comme une pierre restée au soleil.",
+			func() -> void:
+				await Stage.bow(who, 2.6)
+				GESTES.lean(chloe, (who as Node2D).global_position, 6.0, 1.4)),
 		GESTES.cue("Chloé reçoit le Sceau de la Forêt !",
 			func() -> void: Stage.glow(chloe, Color(1.8, 1.45, 0.8), 2); Stage.flash(AMBER, 0.9)),
 		{"flag": &"sceau_foret"},
@@ -882,7 +880,7 @@ static func _leader_calmed(who: Node) -> void:
 		await S.say([GESTES.cue("Et très loin, tout au fond de la Forêt, un cri grave et lent leur répond. Griffe-Grise.",
 			func() -> void: _all_turn(pack + [who], _px(Vector2(30.0, 30.0))))])
 	await S.say([
-		GESTES.cue("Avec le trousseau de Brac, Chloé ouvre les autres cages. Les dinos aux veines violettes sortent en titubant ; la meute les entoure, les renifle, et les pousse doucement vers la forêt.",
+		GESTES.cue("Avec le trousseau de Brac, Chloé ouvre les autres cages. Les dinos aux veines violettes sortent en titubant ; la meute les entoure et les pousse doucement vers la forêt.",
 			func() -> void: _free_the_caged()),
 		GESTES.cue("(Loin de l'ambre noir, leurs veines finiront par pâlir. Comme celles du Stegosaurus d'Hélène.)" if Game.flag(&"found_journal_9")
 			else "(Loin de l'ambre noir, leurs veines finiront par pâlir. Il faudra du temps. Maintenant, ils en ont.)",
@@ -893,10 +891,11 @@ static func _leader_calmed(who: Node) -> void:
 		GESTES.look([_px(VIEW_EXIT)])
 		await who.walk_to(S.at(CAMP_EXIT.x - 2.0, CAMP_EXIT.y), 170.0)
 	await S.say([
-		GESTES.cue("Au moment de quitter le camp, le Chef de Meute s'arrête. Il se retourne vers le sud-est, les plumes hérissées, et gronde longuement vers les arbres géants de la haute futaie.",
-			func() -> void: _growls_south_east(who)),
-		GESTES.cue("Puis il bondit dans le tunnel, et la meute le suit.",
-			func() -> void: _leave(who, CAMP_EXIT + Vector2(3.0, 0.0), 260.0); _pack_follows(pack)),
+		GESTES.cue("En quittant le camp, le Chef de Meute s'arrête et gronde longuement vers le sud-est, vers les arbres géants de la haute futaie. Puis il bondit dans le tunnel, la meute derrière lui.",
+			func() -> void:
+				await _growls_south_east(who)
+				_leave(who, CAMP_EXIT + Vector2(3.0, 0.0), 260.0)
+				_pack_follows(pack)),
 	])
 	await GESTES.until_gone(who, 4.0)
 	_quiet_cages(false)
@@ -1096,9 +1095,8 @@ static func papers(_who: Node) -> void:
 		GESTES.cue("La table de Brac. Des cartes de la Forêt piquées de croix rouges, des bouts de corde, un trognon de pomme, et une pile de papiers.",
 			func() -> void: Stage.bow(chloe, 1.2)),
 		{"text": "Tout en haut, une liste en grosses lettres maladroites : « À ATTRAPER. L'Alpha de la Forêt : FAIT. Le Carnotaurus Rouge, dans le Désert : LE PROCHAIN. »"},
-		{"who": CHLOE, "text": "(Le Désert… C'est là qu'il est parti. Il veut un autre Alpha.)"},
-		{"text": "Dessous, des feuilles couvertes d'une écriture penchée que Chloé connaît par cœur. Des notes sur la meute : « Le chef compte les siens à chaque ruisseau. Il dort dans la clairière aux fougères géantes, au nord-ouest. »"},
-		GESTES.cue("L'écriture d'Hélène ! C'est avec ses notes qu'ils l'ont trouvé…", func() -> void: Stage.emote(chloe, "!"), CHLOE),
+		GESTES.cue("(L'écriture d'Hélène ! Ses notes sur la meute : « Le chef dort dans la clairière aux fougères géantes, au nord-ouest. » C'est avec ça qu'ils l'ont trouvé…)",
+			func() -> void: Stage.emote(chloe, "!"), CHLOE),
 		{"text": "Et glissée entre deux notes, une page qui n'a rien à voir avec la Forêt. Une page de son journal."},
 	])
 	await Dialogue.run(DialogueDB.lines(&"page_11"))
@@ -1106,12 +1104,10 @@ static func papers(_who: Node) -> void:
 	if Game.flag(&"found_journal_3"):
 		lines.append({"who": CHLOE, "text": "(« I. »… L'amie de la barque, sur la page des falaises. Elles se sont fâchées ? À cause de l'ambre ?)"})
 	lines.append_array([
-		{"text": "Le bord de la page est déchiré net. Celle-ci n'a pas été cachée dans l'île, comme les autres : on l'a arrachée d'un carnet."},
-		{"who": CHLOE, "text": "Ses carnets étaient au Cabinet… Quelqu'un y est entré, et les a pris."},
-		{"who": CHLOE, "text": "(Comme la nuit du vol. Sans effraction. Avec une clé.)"},
+		{"who": CHLOE, "text": "(Le bord est déchiré net : on l'a arrachée d'un carnet. Ses carnets étaient au Cabinet… Quelqu'un y est entré. Sans effraction. Avec une clé.)"},
 		GESTES.cue("Tout au fond de la pile, un petit mot plié en quatre, sur un papier noir, à l'encre argentée, d'une écriture fine et droite :",
 			func() -> void: Stage.bow(chloe, 1.0)),
-		{"text": "« Brac. L'Alpha doit être prêt avant la pleine lune. Je viendrai juger ton travail moi-même, depuis la passerelle des deux arbres géants, sur la haute futaie. Ne me déçois pas. — M. »"},
+		{"text": "« Brac. L'Alpha doit être prêt avant la pleine lune. Je viendrai juger ton travail moi-même, depuis la passerelle des deux arbres géants. Ne me déçois pas. — M. »"},
 	])
 	if Game.flag(&"masque_vu"):
 		lines.append({"who": CHLOE, "text": "(M… Le Masque. C'est pour ça qu'il était sur la passerelle.)"})

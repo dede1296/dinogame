@@ -95,10 +95,11 @@ static func hamon(who: Node) -> void:
 			func() -> void:
 				Stage.turn_to(who, chloe.global_position)
 				Stage.emote(who, "♥")),
-		_cue({"who": HAMON, "text": "J'ai un rêve, mademoiselle. Un parc ! Un grand parc, ici, sur cette île, pour que tout le monde puisse voir les dinos."}, dreams),
-		_cue({"who": HAMON, "text": "Des allées, des barrières, des petites voitures qui roulent toutes seules… Je n'ai lésiné sur rien !"}, taps),
-		{"who": CHLOE, "text": "Mais les dinos, ils sont déjà chez eux, ici."},
-		{"who": CHLOE, "text": "Ma grand-mère disait : « Chacun chez soi. » Les dinos dans leurs forêts, et nous, on vient leur rendre visite. En disant bonjour."},
+		_cue({"who": HAMON, "text": "J'ai un rêve, mademoiselle. Un parc ! Un grand parc, ici, pour que tout le monde voie les dinos. Des allées, des barrières, des petites voitures qui roulent toutes seules !"},
+			func() -> void:
+				await dreams.call()
+				taps.call()),
+		{"who": CHLOE, "text": "Mais les dinos sont déjà chez eux, ici. Ma grand-mère disait : « Chacun chez soi. » Nous, on vient leur rendre visite. En disant bonjour."},
 		_cue({"text": "M. Hamon ouvre la bouche. La referme. Il regarde longtemps le bout de sa canne."}, silent),
 		{"who": HAMON, "text": "Hélène Varenne… Tu es sa petite-fille, n'est-ce pas ? Elle m'avait dit exactement la même chose. Il y a trente ans."},
 		{"who": HAMON, "text": "Mon tout premier spectacle, c'était un cirque de puces. Des puces imaginaires. Les gens riaient quand même. J'aime quand les gens s'émerveillent."},
@@ -141,8 +142,7 @@ static func malcombe(who: Node) -> void:
 			func() -> void: Stage.look_at((who as Node2D).global_position.lerp(chloe.global_position, 0.4), 0.9)),
 		_cue({"who": MALCOMBE, "text": "Tiens. Une jeune personne. Ivan Malcombe, mathématicien. Tu veux voir un tour ?"},
 			func() -> void: Stage.turn_to(who, chloe.global_position)),
-		{"who": CHLOE, "text": "Un tour de magie ?"},
-		_cue({"who": MALCOMBE, "text": "Mieux : un tour de mathématiques. Donne-moi ta main. À plat."}, holds_out),
+		_cue({"who": MALCOMBE, "text": "Pas un tour de magie : mieux. Un tour de mathématiques. Donne-moi ta main. À plat."}, holds_out),
 		_cue({"text": "Il fait tomber une goutte d'eau sur le dos de la main de Chloé. Elle roule… vers la gauche."}, func() -> void: rolls.call(-1.0)),
 		{"who": MALCOMBE, "text": "Encore une fois. Même main, même goutte, même endroit."},
 		_cue({"text": "La deuxième goutte roule… vers la droite."}, func() -> void: rolls.call(1.0)),
@@ -206,8 +206,7 @@ static func granit(who: Node) -> void:
 		lines.append({"who": SIROCCO, "text": "Il dit ça à tous les enfants. Et après, il leur apprend tout."})
 	lines.append_array([
 		_cue({"who": GRANIT, "text": "Hm. Tu sais ce que c'est, ça ? Une griffe de raptor. Regarde comme elle est courbée : une vraie faucille."}, shows),
-		_cue({"text": "Il la fait passer dans l'air, tout doucement, comme on fauche de l'herbe."}, sweeps),
-		{"who": GRANIT, "text": "Le raptor la gardait relevée en marchant, pour ne pas l'abîmer. Comme toi, tu lèves les pieds pour ne pas salir tes chaussures neuves."},
+		_cue({"who": GRANIT, "text": "Le raptor la gardait relevée en marchant, pour ne pas l'abîmer. Comme toi, tu lèves les pieds pour ne pas salir tes chaussures neuves."}, sweeps),
 	])
 	var lead := Game.lead_dino()
 	if lead and lead.species().family == &"raptor":
@@ -222,9 +221,8 @@ static func granit(who: Node) -> void:
 			{"who": GRANIT, "text": "… Ha ! Tu vois ? Lui, il sait. Et lui, au moins, il écoute."},
 		])
 	lines.append_array([
-		{"who": GRANIT, "text": "J'en ai offert une toute pareille à un certain Anselme Roc, il y a longtemps. Il s'en sert de presse-papier, je parie."},
-		{"who": CHLOE, "text": "Comment vous le savez ?"},
-		_cue({"who": GRANIT, "text": "Tout le monde s'en sert de presse-papier. C'est un scandale."}, func() -> void: Stage.emote(who, "…")),
+		_cue({"who": GRANIT, "text": "J'en ai offert une pareille à un certain Anselme Roc, il y a longtemps. Il s'en sert de presse-papier, je parie. Tout le monde s'en sert de presse-papier. C'est un scandale."},
+			func() -> void: Stage.emote(who, "…")),
 		{"who": GRANIT, "text": "Et ne me parle pas des machines qu'ils ont au Havre, avec leurs manivelles et leurs sonnettes. Ces machines… Un bon pinceau, voilà tout."},
 		{"flag": &"granit_vu"},
 	])

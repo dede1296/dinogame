@@ -87,12 +87,9 @@ static func _first_meeting(who: Node) -> void:
 		{"who": CHLOE, "text": "(Bonjour, toi. Tu es… tu es vraiment très grand.)"},
 		_cue({"text": "Le Brachiosaure prend une longue inspiration. Une TRÈS longue inspiration."}, func() -> void: Stage.emote(chloe, "!")),
 		_cue({"text": "« ATCHOUM ! »"}, sneezes),
-		{"who": CHLOE, "text": "(…)"},
-		{"who": CHLOE, "text": "(Je suis trempée. De la tête aux pieds. Merci beaucoup.)"},
-		_cue({"text": "Il a l'air très content de lui. Puis il plie les pattes avant et baisse son cou jusqu'au sol, comme une passerelle."}, kneels),
-		{"who": CHLOE, "text": "(… Tu veux que je monte ? C'est une invitation, ça ?)"},
-		{"text": "C'est un Grand Voyageur. Les vieux de l'île disent qu'ils suivent les mêmes chemins depuis toujours, d'une escale à l'autre, sans jamais se presser."},
-		{"text": "Hélène le savait. Sur sa carte, chaque escale porte une petite fougère."},
+		{"who": CHLOE, "text": "(… Je suis trempée. De la tête aux pieds. Merci beaucoup.)"},
+		_cue({"who": CHLOE, "text": "(Il a l'air très content de lui. … Il plie les pattes et baisse son cou jusqu'au sol, comme une passerelle. Tu veux que je monte ?)"}, kneels),
+		{"text": "Un Grand Voyageur. Ils suivent les mêmes chemins depuis toujours, d'une escale à l'autre, sans se presser. Sur la carte d'Hélène, chaque escale porte une petite fougère."},
 	])
 
 

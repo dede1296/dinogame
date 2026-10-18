@@ -217,10 +217,8 @@ static func _suie_hello(who: Node) -> Array:
 		await Stage.bow(who, 1.6)
 		Stage.turn_to(who, chloe.global_position)
 	var lines: Array = [
-		CS.cue({"text": "Dame Suie se tient entre les blocs de glace, une pipette dans une main, un petit thermomètre dans l'autre. Derrière elle, un traîneau chargé de caisses, et un Therizinosaurus attelé qui souffle de la vapeur."}, measures),
-		{"who": SUIE, "text": "Vous tombez à pic. Regardez-les : des œufs, des petits, endormis dans la glace depuis quinze ans. Votre grand-mère avait le sens du rangement."},
-		{"who": CHLOE, "text": "Qu'est-ce que vous leur faites ?"},
-		{"who": SUIE, "text": "Rien encore. Je prends leur température. Elle est parfaite, d'ailleurs. C'est agaçant."},
+		CS.cue({"text": "Entre les blocs de glace, Dame Suie : une pipette dans une main, un thermomètre dans l'autre. Derrière elle, un traîneau de caisses et un Therizinosaurus attelé."}, measures),
+		{"who": SUIE, "text": "Vous tombez à pic. Regardez-les : des œufs, des petits, endormis dans la glace depuis quinze ans. Je prends leur température : parfaite. C'est agaçant."},
 		CS.cue({"who": SUIE, "text": "Le Masque veut une armée. Moi, je veux des résultats. Une goutte de ma formule du Givre dans chaque bloc, et ils se réveillent. Obéissants. Frais. Prêts."}, the_vial),
 	]
 	if Game.flag(&"dame_suie_battue"):
@@ -242,7 +240,6 @@ static func _suie_hello(who: Node) -> Array:
 	lines.append_array([
 		{"who": CHLOE, "text": "Je ne vous laisserai pas les toucher."},
 		CS.cue({"who": SUIE, "text": "Je m'en doutais. Vous avez les yeux de votre grand-mère : ils disent non avant la bouche."}, ungloves),
-		{"text": "Elle retire ses gants gris perle, un doigt après l'autre."},
 		{"flag": &"suie_monts_vue"},
 	])
 	return lines
@@ -332,18 +329,17 @@ static func _suie_beaten(who: Node) -> void:
 			await Stage.look_at(p, 0.9)
 		Stage.look_back(0.8)
 	await S.say([
-		CS.cue({"text": "Le Nanuqsaurus cligne des yeux. Une fois. Les veines violettes pâlissent… et il bâille. Un bâillement énorme, qui n'en finit pas."}, sleeps),
-		{"text": "Et là, au milieu de la grotte, il s'endort d'un coup. Debout. La tête qui dodeline. Il ronfle."},
+		CS.cue({"text": "Le Nanuqsaurus cligne des yeux. Les veines violettes pâlissent… et il bâille, énorme. Puis il s'endort d'un coup. Debout. Il ronfle."}, sleeps),
 		CS.cue({"text": "Dame Suie a arrêté d'écrire. Son stylo est resté en l'air."}, stops),
 		{"who": SUIE, "text": "Il dort. Trois semaines qu'il ne dormait plus. Et vous… vous lui avez seulement parlé."},
-		CS.cue({"text": "Elle va jusqu'aux blocs de glace. Et, pour la première fois, elle enlève ses lunettes fumées."}, to_the_ice),
-		CS.cue({"text": "Elle regarde les dormeurs de très près. Longtemps. Le petit Brachiosaure, le petit Stégosaure, le tout petit Psittacosaure qui a le hoquet dans son sommeil."}, looks),
-		{"who": SUIE, "text": "Quinze ans dans la glace. Pas une veine. Pas un tremblement. Pas une goutte."},
-		{"who": SUIE, "text": "Ils sont… parfaits. Sans une goutte."},
+		CS.cue({"text": "Elle va jusqu'aux blocs de glace et, pour la première fois, enlève ses lunettes fumées. Elle regarde les dormeurs de très près. Longtemps."},
+			func() -> void:
+				await to_the_ice.call()
+				looks.call()),
+		{"who": SUIE, "text": "Quinze ans dans la glace. Pas une veine. Pas un tremblement. Pas une goutte. Ils sont… parfaits."},
 		{"who": SUIE, "text": "Votre grand-mère n'a rien dosé du tout. Elle a seulement attendu qu'ils soient prêts."},
 		{"who": CHLOE, "text": "C'est ça, le Lien. On ne force rien. On attend. On reste."},
-		CS.cue({"who": SUIE, "text": "Ce n'est pas dans mes tables."}, func() -> void: Stage.bow(who, 1.0)),
-		{"who": SUIE, "text": "… Il faudra peut-être que je refasse mes tables."},
+		CS.cue({"who": SUIE, "text": "Ce n'est pas dans mes tables. … Il faudra peut-être que je les refasse."}, func() -> void: Stage.bow(who, 1.0)),
 	])
 	await S.say(_the_clue(who))
 	await _keep_aconit(aconit)
@@ -364,8 +360,7 @@ static func _the_clue(who: Node) -> Array:
 		Stage.look_at((who as Node2D).global_position + Vector2(0.0, -4.0 * S.CELL), 1.2)
 		MS.drips((who as Node2D).global_position + Vector2(0.0, -30.0), 3, 0.4, 2.4)
 	var lines: Array = [
-		CS.cue({"text": "Elle remet ses lunettes. Puis elle se tourne vers Chloé."}, glasses),
-		{"who": SUIE, "text": "Je vais vous dire une chose, mademoiselle Varenne. Gratuitement. C'est rare : notez-le."},
+		CS.cue({"who": SUIE, "text": "Je vais vous dire une chose, mademoiselle Varenne. Gratuitement. C'est rare : notez-le."}, glasses),
 		{"who": SUIE, "text": "Le Masque ne veut pas les Cœurs un par un. Il les veut tous. Le même jour, au même endroit."},
 		{"who": CHLOE, "text": "Où ?"},
 		CS.cue({"who": SUIE, "text": "Là où il n'y a plus de chemin. Les Cieux, mademoiselle. Levez les yeux, de temps en temps."}, up),

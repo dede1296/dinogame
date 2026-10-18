@@ -51,8 +51,7 @@ static func arrival() -> void:
 				_look_north(isaure)
 				_look_north(chloe)),
 		{"who": CHLOE, "text": "C'est ici que vivait ma grand-mère…"},
-		{"who": ISAURE, "text": "Hélène… Oui. C'est moi qui l'ai amenée sur cette île, il y a bien longtemps."},
-		{"who": ISAURE, "text": "Dis-moi… Elle t'a laissé quelque chose ? Une lettre, peut-être ?"},
+		{"who": ISAURE, "text": "Hélène… Oui. C'est moi qui l'ai amenée sur cette île, il y a bien longtemps. Dis-moi… elle t'a laissé quelque chose ? Une lettre, peut-être ?"},
 		{"who": CHLOE, "text": "Le Professeur Roc doit me la donner."},
 		{"who": ISAURE, "text": "Roc. Bien sûr. Il garde tout, celui-là."},
 	])
@@ -65,10 +64,11 @@ static func arrival() -> void:
 				_face(chloe, maia)),
 		{"who": ISAURE, "text": "Chloé, voici ma fille, Maïa. Une vraie tornade."},
 		# The camera shows Caillou asleep on the quay, then comes back.
-		_cue({"who": MAIA, "text": "Salut ! Moi, je connais l'île par cœur. Mon Protoceratops, Caillou, fait la sieste sur le quai : il est têtu comme une pierre."},
-			func() -> void: Stage.look_at_actor(caillou)),
-		_cue({"who": MAIA, "text": "Le Professeur Roc t'attend au Cabinet. Viens, on t'y emmène !"},
-			func() -> void: Stage.look_back()),
+		_cue({"who": MAIA, "text": "Salut ! Moi, je connais l'île par cœur. Lui, c'est Caillou, mon Protoceratops : il dort sur le quai, têtu comme une pierre. Le Professeur Roc t'attend au Cabinet. Viens !"},
+			func() -> void:
+				Stage.look_at_actor(caillou)
+				await S.wait(2.0)
+				Stage.look_back()),
 	])
 	Game.set_flag(&"prologue_arrived")
 	if maia:

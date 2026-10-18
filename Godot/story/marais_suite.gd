@@ -82,25 +82,20 @@ static func _suie_hello(who: Node) -> Array:
 	var chloe_at: Vector2 = Stage.chloe().global_position
 	var roots: Vector2 = (who as Node2D).global_position + Vector2(0.0, -120.0)   # her roots, north of her
 	var lines: Array = [
-		Act.cue({"text": "Au milieu des racines tordues, une dame en gris coupe des racines noires avec de petits ciseaux d'argent. Elle les range une à une dans des fioles, étiquetées d'une écriture fine."},
+		Act.cue({"text": "Au milieu des racines, une dame en gris coupe des racines noires avec de petits ciseaux d'argent. Manteau de cendre, gants gris perle, voilette, lunettes fumées."},
 			func() -> void: _snips(who, roots)),
-		{"text": "Un long manteau couleur de cendre, des gants gris perle, un chapeau à voilette, et des lunettes aux verres fumés qui ne laissent rien voir de ses yeux."},
 		Act.cue({"who": SUIE, "text": "Ne marchez pas sur les racines de brume, je vous prie. Elles sont timides."},
 			func() -> void: Stage.turn_to(who, roots)),   # (not turned yet: see the next line)
-		Act.cue({"text": "Elle se retourne enfin, et regarde Chloé de la tête aux pieds."},
+		Act.cue({"who": SUIE, "text": "Oh. Une enfant. Trempée, avec ça. Mademoiselle Varenne, je présume ? Brac ne parle que de vous. Enfin, il hurle. Brac hurle tout."},
 			func() -> void:
 				Stage.turn_to(who, chloe_at)
 				Stage.bow(who, 1.2)),
-		{"who": SUIE, "text": "Oh. Une enfant. Trempée, avec ça. Mademoiselle Varenne, je présume ? La petite-fille. Brac ne parle que de vous. Enfin, il hurle. Brac hurle tout."},
 		{"who": CHLOE, "text": "Vous êtes avec Brac ?"},
-		{"who": SUIE, "text": "Avec Brac ? Grands dieux, non. Brac est un rustre. Il donne l'ambre noir à la pelle, sans rien mesurer, et il s'étonne ensuite que ses bêtes aient peur de leur ombre."},
-		{"who": SUIE, "text": "Moi, je mesure. Je dose. Je note. On m'appelle Dame Suie. Je suis chimiste."},
+		{"who": SUIE, "text": "Grands dieux, non. Brac est un rustre : il donne l'ambre noir à la pelle, sans mesurer. Moi, je mesure. Je dose. Je note. On m'appelle Dame Suie. Chimiste."},
 		{"who": CHLOE, "text": "C'est vous qui fabriquez l'ambre noir !"},
-		{"who": SUIE, "text": "Je le perfectionne. Mal dosé, il rend fou, c'est vrai. Bien dosé, il rend plus fort, plus rapide, plus obéissant. J'améliore les dinos, mademoiselle."},
-		{"who": SUIE, "text": "Votre grand-mère les réveillait. Moi, je les termine."},
+		{"who": SUIE, "text": "Je le perfectionne. Mal dosé, il rend fou. Bien dosé, il rend plus fort, plus obéissant. Votre grand-mère réveillait les dinos. Moi, je les termine."},
 		{"who": CHLOE, "text": "Ils ont peur ! Des veines violettes partout, et peur de tout !"},
-		{"who": SUIE, "text": "La peur n'est qu'un problème de dosage. Ces racines devraient justement l'adoucir. Je suis une scientifique, pas une brute."},
-		{"who": SUIE, "text": "On dit que vous les calmez. Sans rien. Juste en leur parlant. … Fascinant. Montrez-moi."},
+		{"who": SUIE, "text": "Un simple problème de dosage. On dit que vous les calmez, vous. Sans rien. Juste en leur parlant… Fascinant. Montrez-moi."},
 		Act.cue({"text": "Elle retire ses gants, un doigt après l'autre, et sort un petit carnet noir."},
 			func() -> void: Stage.bow(who, 1.6)),
 		{"who": SUIE, "text": "Pour la science."},
@@ -178,11 +173,9 @@ static func _suie_beaten(who: Node) -> void:
 				if is_instance_valid(who):
 					Stage.turn_to(who, w.player.global_position)
 					Stage.emote(who, "!")),
-		{"who": SUIE, "text": "… Remarquable. Vous l'avez calmé. Sans une goutte. Juste en restant là."},
-		{"who": SUIE, "text": "Ce n'est pas dans mes tables."},
+		{"who": SUIE, "text": "… Remarquable. Vous l'avez calmé. Sans une goutte. Juste en restant là. Ce n'est pas dans mes tables."},
 		{"who": CHLOE, "text": "Ce n'est pas de la chimie. C'est de la confiance. Hélène appelait ça le Lien."},
-		{"who": SUIE, "text": "Votre grand-mère… Savez-vous qu'elle avait brûlé ses notes ? Toutes ses pages sur l'ambre forcé."},
-		{"who": SUIE, "text": "Presque toutes. « Presque. » C'est un mot merveilleux, mademoiselle. Toute ma science tient dedans."},
+		{"who": SUIE, "text": "Votre grand-mère… Savez-vous qu'elle avait brûlé ses notes sur l'ambre forcé ? Presque toutes. « Presque. » Toute ma science tient dans ce mot."},
 	])
 	if Game.flag(&"found_journal_4"):
 		await S.say([{"who": CHLOE, "text": "(« J'ai brûlé mes notes… presque toutes. » La page de la grotte. Quelqu'un a trouvé les autres.)"}])
@@ -192,19 +185,17 @@ static func _suie_beaten(who: Node) -> void:
 		about_temple = [
 			{"who": SUIE, "text": "Quelqu'un a chanté, l'autre jour. La vieille porte du temple s'est ouverte. Le Masque sera ravi de l'apprendre : il cherche ce qui dort là-dessous depuis des années."},
 			{"who": CHLOE, "text": "Vous ne l'aurez pas."},
-			{"who": SUIE, "text": "Moi ? Je ne veux rien, mademoiselle. Je mesure."},
+			{"who": SUIE, "text": "Moi ? Je ne veux rien, mademoiselle. Je mesure. Le Masque paie mes flacons et ne pose jamais de question. C'est très reposant."},
 		]
 	else:
 		about_temple = [
 			{"who": SUIE, "text": "On dit qu'une vieille Parasaurolophus chante dans la roselière, et que son chant ouvre le temple englouti. Le Masque aimerait beaucoup l'entendre."},
 			{"who": CHLOE, "text": "Laissez-la tranquille !"},
-			{"who": SUIE, "text": "Moi ? Je ne touche à rien. Je mesure."},
+			{"who": SUIE, "text": "Moi ? Je ne touche à rien. Je mesure. Le Masque paie mes flacons et ne pose jamais de question. C'est très reposant."},
 		]
 	await S.say(about_temple + [
-		{"who": SUIE, "text": "Le Masque paie mes flacons et ne pose jamais de question. C'est très reposant. Et si vous croisez Brac, dites-lui que ses dinos méritent mieux que lui. Il ne comprendra pas, mais cela me fera plaisir."},
-		Act.cue({"text": "Elle remet ses gants, un doigt après l'autre, et ramasse son panier de fioles."},
+		Act.cue({"who": SUIE, "text": "Au revoir, mademoiselle Varenne. Si vous croisez Brac, dites-lui que ses dinos méritent mieux que lui. Nous nous reverrons. Là où il fait plus froid, peut-être."},
 			func() -> void: Stage.bow(who, 1.6)),
-		{"who": SUIE, "text": "Au revoir, mademoiselle Varenne. Nous nous reverrons, j'en suis sûre. Là où il fait plus froid, peut-être."},
 	])
 	if is_instance_valid(who):   # to her boat, into the mist
 		await ForetCamp._leave(who, _boat_near(who) / S.CELL, 90.0)
@@ -435,15 +426,12 @@ static func roc_confronts(prof, outside: bool) -> void:
 					await S.wait(0.3)
 					if is_instance_valid(prof):
 						prof.face(chloe.global_position)),
-			{"who": ROC, "text": "Chloé ?! Par tous les fossiles… Qu'est-ce que tu fais dehors à une heure pareille ?"},
-			{"who": CHLOE, "text": "Et vous ?"},
-			{"who": ROC, "text": "Moi ? Je… je cueille des champignons. Des champignons de nuit. Ça existe. C'est très rare."},
+			{"who": ROC, "text": "Chloé ?! Qu'est-ce que tu fais dehors à une heure pareille ? … Moi ? Je cueille des champignons. De nuit. Ça existe."},
 		])
 		var lead := Game.lead_dino()
 		if lead:
-			lines.append(Act.cue({"text": "%s renifle les chaussures de Roc : de la vase… et, par-dessus, une fine poussière grise." % lead.nickname},
+			lines.append(Act.cue({"text": "%s renifle les chaussures de Roc : de la vase… et une fine poussière grise. De la cendre, encore." % lead.nickname},
 				func() -> void: _sniffs_shoes(prof)))
-			lines.append(Act.cue({"who": CHLOE, "text": "(De la cendre. Encore.)"}, func() -> void: Act.lead_back()))
 	else:
 		lines.append_array([
 			{"who": ROC, "text": "Ah, Chloé ! Tu tombes bien, je voulais te montrer un…"},
@@ -452,31 +440,23 @@ static func roc_confronts(prof, outside: bool) -> void:
 		])
 	lines.append_array([
 		{"who": CHLOE, "text": "J'ai trouvé une page d'Hélène, dans le Marais. Ses notes sur l'ambre forcé ont été volées au Cabinet. Sans effraction."},
-		{"who": CHLOE, "text": "Elle écrit que trois personnes seulement avaient la clé. Elle… vous… et « I. »."},
-		Act.cue({"text": "Un long silence. Quelque part, une goutte tombe dans l'eau."},
+		{"who": CHLOE, "text": "Trois personnes seulement avaient la clé. Elle… vous… et « I. »."},
+		Act.cue({"who": ROC, "text": "… Je sais. Elle me l'avait dit, à l'époque."},
 			func() -> void:
 				Stage.bow(prof, 2.4)
 				if outside:
 					Act.burst(Act.water_near((prof as Node2D).global_position, 4), Act.SPLASH, 4, Act.ON_WATER, 0.1)),
-		{"who": ROC, "text": "Je sais. Elle me l'avait dit, à l'époque. Je n'ai jamais cessé d'y penser."},
 		{"who": CHLOE, "text": "Le petit volé, la nuit où je suis arrivée : pas d'effraction non plus. Et vous sortez la nuit." + (" Et il y a de l'ambre noir dans votre tiroir." if Game.flag(&"ambre_noir_tiroir") else "")},
-		{"who": ROC, "text": "Oui. Je sors la nuit. Souvent. Depuis qu'elle est partie."},
-		{"who": CHLOE, "text": "Où allez-vous ?"},
-		{"who": ROC, "text": "Je ne peux pas te le dire. Pas parce que j'ai honte. Parce que j'ai promis."},
-		{"who": CHLOE, "text": "Promis à qui ?"},
-		{"who": ROC, "text": "À quelqu'un qui n'est plus là pour me délier de ma promesse."},
-		{"who": ROC, "text": "Ce n'est pas moi, Chloé. Je n'ai jamais touché à ses carnets. Et je n'aurais jamais fait de mal à ce petit. Jamais."},
-		{"who": ROC, "text": "Je sais que je ne t'ai donné aucune raison de me croire. Je bougonne, je mens mal, je cache des choses dans des tiroirs… Mais je t'en supplie : fais-moi confiance. Encore un peu."},
+		{"who": ROC, "text": "Oui. Je sors la nuit. Souvent. Où ? Je ne peux pas te le dire : j'ai promis. À quelqu'un qui n'est plus là pour me délier."},
+		{"who": ROC, "text": "Ce n'est pas moi, Chloé. Je n'ai jamais touché à ses carnets, ni à ce petit. Je bougonne, je mens mal… mais fais-moi confiance. Encore un peu."},
 		{"who": CHLOE, "text": "Et « I. » ? Qui est-ce ?"},
-		{"who": ROC, "text": "Hélène avait beaucoup d'amis, autrefois. Certains le sont restés. D'autres…"},
-		Act.cue({"text": "Il s'arrête net."}, func() -> void: Stage.emote(prof, "…")),
-		{"who": ROC, "text": "Ce n'est pas à moi de le dire. Pas sans preuve."},
+		Act.cue({"who": ROC, "text": "Hélène avait beaucoup d'amis, autrefois. Certains le sont restés. D'autres… Non. Ce n'est pas à moi de le dire. Pas sans preuve."},
+			func() -> void: Stage.emote(prof, "…")),
 	])
 	await S.say(lines)
 	Act.lead_back()
 	if outside:
-		await S.say([{"who": ROC, "text": "Rentre te mettre au chaud. Et sois prudente : la brume cache des choses."}])
-		await S.say([Act.cue({"text": "La lanterne s'éloigne dans la brume, de plus en plus petite, puis plus rien."},
+		await S.say([Act.cue({"who": ROC, "text": "Rentre te mettre au chaud. Et sois prudente : la brume cache des choses."},
 			func() -> void: _lantern_goes(prof))])
 	else:
 		await S.say([Act.cue({"who": ROC, "text": "Et maintenant, si tu veux bien… j'ai des bocaux à étiqueter. Beaucoup de bocaux."},
@@ -484,8 +464,7 @@ static func roc_confronts(prof, outside: bool) -> void:
 				if is_instance_valid(prof):
 					prof.face((prof as Node2D).global_position + Vector2(0.0, -100.0)))])
 	await S.say([
-		{"who": CHLOE, "text": "(Il n'a pas dit non. Il n'a pas dit oui. Il a juste supplié.)"},
-		{"who": CHLOE, "text": "(Je veux le croire. Je crois que je le crois.)"},
+		{"who": CHLOE, "text": "(Il n'a pas dit non. Il n'a pas dit oui. Il a supplié. … Je crois que je le crois.)"},
 		{"flag": &"roc_marais_vu"},
 	])
 	Game.award_team_xp(XP_ROC)
@@ -648,8 +627,7 @@ static func _maia_hello(who: Node) -> Array:
 		lines.append({"who": MAIA, "text": "Et Clairon n'arrête pas de chanter depuis qu'on est dans le Marais. La vieille Voix lui répond, le soir. Je crois qu'ils se racontent des histoires de crêtes."})
 	lines.append_array(_maia_about_roc())
 	lines.append_array([
-		{"who": MAIA, "text": "Bon. Assez parlé. Mon défi numéro TROIS. Et j'ai un petit nouveau : Pouce, un Iguanodon !"},
-		{"who": MAIA, "text": "Il a un pouce en pointe. Il s'en sert pour dire bonjour. Et pour piquer. Surtout pour piquer."},
+		{"who": MAIA, "text": "Bon. Assez parlé. Mon défi numéro TROIS ! Et j'ai un petit nouveau : Pouce, un Iguanodon. Il a un pouce en pointe, pour dire bonjour. Et pour piquer. Surtout pour piquer."},
 	])
 	return lines
 

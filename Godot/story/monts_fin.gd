@@ -130,8 +130,7 @@ static func _her_mother(who: Node) -> Array:
 	var lines: Array = [
 		{"who": MAIA, "text": "Je suis rentrée au port. J'ai attendu maman dans la cuisine, toute la nuit, sans allumer la lampe."},
 		{"who": MAIA, "text": "Quand elle est rentrée, elle avait de la cendre sur ses bottes. Alors je lui ai tout demandé. La barque. La grotte. Hélène. « I. »."},
-		CS.cue({"who": MAIA, "text": "Elle n'a pas dit non."}, func() -> void: Stage.bow(who, 1.2)),
-		{"who": MAIA, "text": "Elle n'a rien dit du tout. Elle a juste reposé sa tasse. Très doucement."},
+		CS.cue({"who": MAIA, "text": "Elle n'a pas dit non. Elle n'a rien dit du tout. Elle a juste reposé sa tasse. Très doucement."}, func() -> void: Stage.bow(who, 1.2)),
 	]
 	if Game.flag(&"found_journal_11"):
 		lines.append({"who": CHLOE, "text": "(« Elle a reposé sa tasse, très doucement, et elle est partie. Elle n'a pas claqué la porte. C'est pire. » La page d'Hélène…)"})
@@ -139,8 +138,7 @@ static func _her_mother(who: Node) -> Array:
 		{"who": MAIA, "text": "Alors c'est moi qui suis partie. Et maintenant, je sais."},
 		CS.cue({"text": "Maïa serre les poings dans ses manches trop longues."}, func() -> void: Stage.tremble(who, 1.2, 1.4)),
 		{"who": MAIA, "text": "Je ne veux pas qu'elle fasse peur aux dinos. Je ne veux pas qu'elle réveille ce qu'il y a sous le volcan. Je ne veux pas qu'elle gagne."},
-		{"who": MAIA, "text": "Je veux l'arrêter."},
-		CS.cue({"who": MAIA, "text": "Pas la perdre."}, func() -> void: CS.later(0.6, func() -> void: Stage.emote(chloe, "…"))),
+		CS.cue({"who": MAIA, "text": "Je veux l'arrêter. … Pas la perdre."}, func() -> void: CS.later(0.6, func() -> void: Stage.emote(chloe, "…"))),
 	])
 	return lines
 
@@ -161,11 +159,9 @@ static func _the_mask(who: Node) -> Array:
 				await CS.reach(who, (who as Node2D).global_position + Vector2(0.0, 20.0), 5.0, 0.5)
 			Stage.bow(who, 0.8)
 		lines.append_array([
-			CS.cue({"who": CHLOE, "text": "Maïa… Tu avais laissé ça, au belvédère."}, gives),
-			{"text": "Le masque en carton noir. L'élastique est toujours cassé."},
+			CS.cue({"who": CHLOE, "text": "Maïa… Tu avais laissé ça, au belvédère. Ton masque en carton. L'élastique est toujours cassé."}, gives),
 			{"who": MAIA, "text": "Mon masque… Je l'avais fait pour lui ressembler. « Trop stylé », je disais."},
-			CS.cue({"text": "Elle le plie en deux, très soigneusement, et le glisse dans sa poche."}, folds),
-			{"who": MAIA, "text": "Je le garde. Le jour où maman enlèvera le sien… je lui rendrai celui-là."},
+			CS.cue({"who": MAIA, "text": "Je le garde. Le jour où maman enlèvera le sien… je lui rendrai celui-là."}, folds),
 			{"flag": &"masque_rendu"},
 		])
 	var squares := func() -> void:
@@ -175,8 +171,7 @@ static func _the_mask(who: Node) -> Array:
 		if caillou:
 			CS.D._snort(caillou)
 	lines.append_array([
-		{"who": MAIA, "text": "Mais d'abord, notre défi. Le numéro cinq. On ne l'a jamais fait."},
-		CS.cue({"who": MAIA, "text": "Si je ne suis pas capable de me battre contre toi, je ne serai jamais capable de lui parler, à elle. Alors on se bat. Pour de vrai."}, squares),
+		CS.cue({"who": MAIA, "text": "Mais d'abord, notre défi. Le numéro cinq. Si je n'arrive pas à me battre contre toi, je n'arriverai jamais à lui parler, à elle. Alors on se bat. Pour de vrai."}, squares),
 	])
 	return lines
 
@@ -247,11 +242,9 @@ static func _beaten(who: Node, caillou) -> void:
 		CS.cue({"text": "Maïa rit un peu. Elle pleure un peu aussi. Les deux en même temps."}, func() -> void:
 			Stage.hop(who, 1, 6.0)
 			Stage.tremble(who, 0.8, 1.0)),
-		{"who": MAIA, "text": "Et tu sais quoi ? Je m'en fiche. Pour la première fois de ma vie, je m'en fiche complètement."},
-		{"who": MAIA, "text": "J'ai tenu. Caillou a tenu. On n'a pas reculé. Pas une fois."},
+		{"who": MAIA, "text": "Et tu sais quoi ? Je m'en fiche. J'ai tenu. Caillou a tenu. On n'a pas reculé. Pas une fois."},
 		{"who": CHLOE, "text": "Tu es prête, Maïa."},
-		{"who": MAIA, "text": "Alors on fait équipe. Toi et moi. Plus de défis."},
-		{"who": MAIA, "text": "… Enfin, plus de défis pendant un moment."},
+		{"who": MAIA, "text": "Alors on fait équipe. Toi et moi. Plus de défis. … Enfin, plus de défis pendant un moment."},
 		CS.cue({"text": "Maïa tend la main. Chloé la prend."}, hands),
 		CS.cue({"text": "Caillou et %s se touchent le museau. Moustique pousse un cri si fort qu'une plaque de neige glisse de la montagne, très loin." % Game.lead_dino().nickname if Game.lead_dino()
 			else "Caillou pousse un grondement content. Moustique pousse un cri si fort qu'une plaque de neige glisse de la montagne, très loin."}, noses),
@@ -268,8 +261,7 @@ static func _beaten(who: Node, caillou) -> void:
 	lines.append_array([
 		CS.cue({"text": "Elles lèvent les yeux. Au-dessus des Monts, dans les nuages, des pitons de roche flottent presque. Et quelque chose d'immense y tourne, les ailes grandes ouvertes."}, up),
 		{"who": MAIA, "text": "Joss parlait d'un harnais de vol. Pour les très grands ptérosaures. Il dit que ses coutures tiendraient. Il dit toujours ça."},
-		{"who": MAIA, "text": "On y va ensemble. Et cette fois, c'est moi qui te suis. … Pour une fois."},
-		{"who": MAIA, "text": "Et ma barque est à toi, quand tu veux. Le port, le Havre, la Côte, le Marais : je connais tous les chemins de la mer. C'est maman qui me les a appris."},
+		{"who": MAIA, "text": "On y va ensemble. Cette fois, c'est moi qui te suis… pour une fois. Et ma barque est à toi : je connais tous les chemins de la mer. C'est maman qui me les a appris."},
 		CS.cue({"text": "À suivre… (les Cieux Éternels)"}, func() -> void: Stage.look_back(1.2)),
 	])
 	await S.say(lines)

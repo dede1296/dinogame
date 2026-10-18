@@ -270,14 +270,13 @@ static func _pecheurs_hello(gustave, firmin) -> Array:
 		await CS.get_up(firmin, 0.3)
 		Stage.hop(firmin, 1, 10.0)
 	var lines: Array = [
-		CS.cue({"text": "Près d'une barque échouée, deux hommes sont assis sur le sable. L'un ravaude un filet, l'aiguille entre les dents. L'autre vide sa botte : il en coule du sable. Beaucoup de sable."}, mending),
+		CS.cue({"text": "Près d'une barque échouée, deux hommes sur le sable. L'un ravaude un filet, l'aiguille entre les dents. L'autre vide sa botte : il en coule du sable. Beaucoup."}, mending),
 		{"who": FIRMIN, "text": "Mais d'où il sort, tout ce sable ?! On est au bord de la MER !"},
 		CS.cue({"who": FIRMIN, "text": "… TOI ?!"}, sees_her),
-		CS.cue({"who": GUSTAVE, "text": "La petite de la grotte ! Celle qui m'a fait démissionner !"}, func() -> void:
+		CS.cue({"who": GUSTAVE, "text": "La petite de la grotte ! Celle qui m'a fait démissionner ! … Merci, hein. Sincèrement. Les poissons, au moins, ne crient pas quand on rate."}, func() -> void:
 			Stage.turn_to(gustave, chloe.global_position)
 			CS.get_up(gustave, 0.4)
 			Stage.recoil(chloe, (gustave as Node2D).global_position if gustave else chloe.global_position, 10.0)),
-		{"who": GUSTAVE, "text": "Merci, hein. Sincèrement. Les poissons, au moins, ils ne crient pas quand on rate."},
 	]
 	if Game.flag(&"poursuite_3_ok") and Game.flag(&"sbire_camp_1_vu"):
 		lines.append_array([
@@ -289,8 +288,7 @@ static func _pecheurs_hello(gustave, firmin) -> Array:
 	lines.append_array([
 		CS.cue({"who": GUSTAVE, "text": "On est pêcheurs, maintenant. Enfin, on essaie. Voici « La Sardine ». Elle prend un peu l'eau, mais elle a bon cœur."},
 			func() -> void: CS.reach(gustave, _boat_near(gustave), 12.0, 1.0)),
-		{"who": GUSTAVE, "text": "On a amené le petit sellier du Havre, Joss. Malade du départ à l'arrivée. Et il a parlé tout le long quand même."},
-		{"who": FIRMIN, "text": "De coutures. Il a parlé de COUTURES. Pendant deux jours."},
+		{"who": GUSTAVE, "text": "On a amené Joss, le petit sellier du Havre. Malade du départ à l'arrivée, et il a parlé de coutures tout le long. Deux jours."},
 		CS.cue({"who": GUSTAVE, "text": "Il est au lagon, la tête dans un bocal. Il dit que c'est un masque. On ne pose plus de questions."},
 			func() -> void: Stage.turn_to(gustave, S.at(P.RIVE_LAGON.x, P.RIVE_LAGON.y))),
 	])
@@ -308,8 +306,7 @@ static func _pecheurs_night(gustave, firmin) -> Array:
 				await S.wait(0.5)
 			Stage.turn_to(gustave, chloe.global_position)
 	var lines: Array = [
-		{"who": CHLOE, "text": "Vous pêchez la nuit, aussi ?"},
-		CS.cue({"who": GUSTAVE, "text": "Plus maintenant. La nuit, il passe une barque. Sans lanterne. Elle traverse le récif, là où personne ne passe, et elle file sous les falaises."}, looks_round),
+		CS.cue({"who": GUSTAVE, "text": "La nuit, on ne pêche plus. Il passe une barque. Sans lanterne. Elle traverse le récif, là où personne ne passe, et elle file sous les falaises."}, looks_round),
 		CS.cue({"who": FIRMIN, "text": "La troisième fois, on a ramé dans l'autre sens. Très vite. Moi, j'avais pas peur. J'avais juste très envie de rentrer."},
 			func() -> void: Stage.tremble(firmin, 1.0, 1.5)),
 	]
@@ -318,7 +315,7 @@ static func _pecheurs_night(gustave, firmin) -> Array:
 	elif Game.flag(&"cote_annonce"):
 		lines.append({"who": CHLOE, "text": "(La barque que j'ai vue depuis la dune du Désert…)"})
 	lines.append_array([
-		{"who": GUSTAVE, "text": "Et y a pas que la barque. Une nuit, le vieux du Cabinet est venu avec sa lanterne. Il voulait savoir si « le gros du récif » dormait bien. On sait pas qui c'est, le gros. On veut pas savoir."},
+		{"who": GUSTAVE, "text": "Et y a pas que la barque. Une nuit, le vieux du Cabinet est venu avec sa lanterne, demander si « le gros du récif » dormait bien. On veut pas savoir qui c'est, le gros."},
 		CS.cue({"who": CHLOE, "text": "(Roc ? Ici, en pleine nuit ?)"}, func() -> void: Stage.emote(chloe, "?")),
 		{"who": FIRMIN, "text": "Et la capitaine Kerval nous a dit d'aller pêcher ailleurs. Très gentiment."},
 		CS.cue({"who": GUSTAVE, "text": "Trop gentiment."}, func() -> void: Stage.bow(gustave, 0.8)),
@@ -671,12 +668,11 @@ static func _roc_isaure() -> Array:
 		CS.cue({"who": CHLOE, "text": "Professeur… Hélène était la marraine de Maïa. C'est écrit dans une page. Et « I. »… c'est Isaure."},
 			func() -> void: CS.reach(Stage.chloe(), (prof as Node2D).global_position if prof is Node2D else Vector2.ZERO, 10.0, 1.0)),
 		CS.cue({"text": "Roc s'assoit lourdement. Le fauteuil grince. Il enlève ses lunettes, et ne les essuie pas."}, sits),
-		{"who": ROC, "text": "… Surtout pas à Isaure."},
 	]
 	if Game.flag(&"ambre_noir_tiroir"):
-		lines.append({"who": ROC, "text": "C'est ce que j'allais dire, ce jour-là, devant le tiroir. « N'en parle à personne. Surtout pas à Isaure. » Je n'avais pas de preuve. Je n'en voulais pas."})
+		lines.append({"who": ROC, "text": "… Surtout pas à Isaure. C'est ce que j'allais dire, ce jour-là, devant le tiroir. Je n'avais pas de preuve. Je n'en voulais pas."})
 	else:
-		lines.append({"who": ROC, "text": "Je le pense depuis des années. Je n'avais pas de preuve. Je n'en voulais pas."})
+		lines.append({"who": ROC, "text": "… Surtout pas à Isaure. Je le pense depuis des années. Je n'avais pas de preuve. Je n'en voulais pas."})
 	if Game.flag(&"barque_isaure_vue"):
 		lines.append_array([
 			{"who": CHLOE, "text": "Dans la grotte, au milieu des caisses d'ambre noir, il y avait sa barque. Avec le nom de Maïa sur la proue."},
@@ -687,8 +683,7 @@ static func _roc_isaure() -> Array:
 	lines.append_array([
 		CS.cue({"who": ROC, "text": "Maïa a hurlé pendant toute la cérémonie. Et Hélène riait, riait…"}, func() -> void: Stage.bow(prof, 1.4)),
 		{"who": CHLOE, "text": "Maïa s'est enfuie. Elle ne veut plus me voir."},
-		{"who": ROC, "text": "Laisse-lui du temps. Les Kerval reviennent toujours au port."},
-		{"who": ROC, "text": "Et ce que tu sais, Chloé, garde-le. Pas pour Isaure : pour Maïa. C'est à elle de choisir ce qu'elle en fait."},
+		{"who": ROC, "text": "Laisse-lui du temps : les Kerval reviennent toujours au port. Et ce que tu sais, garde-le. Pas pour Isaure : pour Maïa. C'est à elle de choisir."},
 	])
 	if Game.flag(&"masque_carton"):
 		lines.append_array([

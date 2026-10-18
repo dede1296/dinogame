@@ -117,33 +117,27 @@ static func arrival() -> void:
 	var lines: Array = [
 		CS.cue({"text": "Le sentier des falaises monte, monte… et d'un coup, le vert s'arrête. Devant Chloé, tout est blanc." if not dark
 			else "Le sentier des falaises monte, monte… et d'un coup, sous la lune, tout devient blanc."}, white),
-		CS.cue({"text": "Un flocon se pose sur son nez. Puis un autre. Puis mille."}, flakes),
-		{"who": CHLOE, "text": "(De la neige… sur une île !)"},
+		CS.cue({"who": CHLOE, "text": "(Un flocon sur mon nez. Puis un autre. Puis mille… De la neige, sur une île !)"}, flakes),
 		CS.cue({"text": "Son souffle fait de petits nuages blancs. Le froid pique les joues, les oreilles, le bout des doigts."}, breathes),
 	]
 	var lead := Game.lead_dino()
 	if lead:
 		lines.append_array(_meets_the_snow(lead))
 	lines.append_array([
-		CS.cue({"text": "En bas, dans la vallée, des troupeaux avancent lentement dans la neige : de gros dinos au nez bosselé, et d'autres au bec de canard, qui soufflent de la vapeur par les naseaux."},
+		CS.cue({"who": CHLOE, "text": "(En bas, des troupeaux avancent dans la neige : de gros dinos au nez bosselé, d'autres au bec de canard, qui soufflent de la vapeur. Ils n'ont pas froid, eux ?)"},
 			func() -> void: _herd_ambles(herd, valley)),
-		{"who": CHLOE, "text": "(Des troupeaux entiers… Ils n'ont pas froid, eux ?)"},
 		CS.cue({"text": "Près d'un grand rocher, un filet de fumée monte dans le ciel blanc. Quelqu'un a fait du feu." if not dark
 			else "Sous un grand rocher, une petite lueur orange danse dans le noir. Quelqu'un a fait du feu."},
 			func() -> void: _smoke(shelter)),
-		CS.cue({"text": "Chloé frissonne, et remonte la capuche de son manteau de duvet jusqu'au nez."}, func() -> void:
+		CS.cue({"who": CHLOE, "text": "(Brrr. Le quatrième Cœur m'attend quelque part là-haut. Heureusement que Rosalie coud chaud.)"}, func() -> void:
 			Stage.look_back(1.0)
 			Stage.tremble(chloe, 1.2, 1.6)),
-		{"who": CHLOE, "text": "(Le quatrième Cœur m'attend quelque part là-haut. Heureusement que Rosalie coud chaud.)"},
 	])
 	if MS.hearts_count() > 0:
-		lines.append_array([
-			CS.cue({"text": "Dans la sacoche, les Cœurs sont tièdes. Chloé y glisse les mains, et ils battent un peu plus fort, comme pour les réchauffer."},
-				func() -> void:
-					Stage.bow(chloe, 1.0)
-					MS.hearts(2, 1.0)),
-			{"who": CHLOE, "text": "(Merci.)"},
-		])
+		lines.append(CS.cue({"who": CHLOE, "text": "(Les Cœurs sont tièdes, dans la sacoche. Je glisse les mains dedans… ils battent plus fort, comme pour me réchauffer. Merci.)"},
+			func() -> void:
+				Stage.bow(chloe, 1.0)
+				MS.hearts(2, 1.0)))
 	lines.append({"flag": &"monts_arrivee"})
 	await S.say(lines)
 	for k in herd:
@@ -355,11 +349,11 @@ static func _counting(who: Node) -> Array:
 		Stage.turn_to(who, chloe.global_position)
 		Stage.emote(who, "!")
 	return [
-		CS.cue({"text": "Sous un grand rocher en surplomb, une femme se tient près d'un feu, emmitouflée jusqu'au nez : une grosse parka doublée de duvet, un bonnet tricoté, un grand bâton de berger posé contre l'épaule."}, shows),
+		CS.cue({"text": "Sous un grand rocher en surplomb, une femme se tient près d'un feu, emmitouflée jusqu'au nez : grosse parka, bonnet tricoté, un grand bâton de berger contre l'épaule."}, shows),
 		CS.cue({"who": BERTILLE, "text": "Cent neuf… cent dix… cent onze…"}, counts),
 		{"who": CHLOE, "text": "Bonjour !"},
 		CS.cue({"who": BERTILLE, "text": "Chut ! … Voilà. Tu m'as fait perdre le compte."}, startled),
-		CS.cue({"who": BERTILLE, "text": "Cent douze Edmontosaurus, quarante et un Pachyrhinosaurus, et un têtu. Tous les soirs, je compte. Tous les soirs, quelqu'un me dérange. D'habitude, c'est le têtu."},
+		CS.cue({"who": BERTILLE, "text": "Cent douze Edmontosaurus, quarante et un Pachyrhinosaurus, et un têtu. Tous les soirs, je compte, et quelqu'un me dérange. D'habitude, c'est le têtu."},
 			func() -> void: Stage.bow(who, 1.0)),
 	]
 
@@ -377,11 +371,10 @@ static func _knew_her(who: Node) -> Array:
 		Stage.bow(who, 1.4)
 		CS.Act.burst(fire, CS.Act.SPARKS, 8, 0.5, 0.15)
 	var lines: Array = [
-		CS.cue({"who": BERTILLE, "text": "Attends. Approche un peu. … Ces yeux-là, je les connais."}, leans),
-		{"who": BERTILLE, "text": "Tu es de la famille de la dame aux mains abîmées. Hélène."},
+		CS.cue({"who": BERTILLE, "text": "Attends. Approche un peu. … Ces yeux-là, je les connais. Tu es de la famille de la dame aux mains abîmées. Hélène."}, leans),
 		{"who": CHLOE, "text": "C'est ma grand-mère. Je m'appelle Chloé."},
-		{"who": BERTILLE, "text": "Moi, c'est Bertille. Je garde les troupeaux de la vallée. Enfin… ce sont plutôt eux qui me gardent : ils savent où est l'herbe sous la neige. Moi, je sais seulement compter. Presque."},
-		{"who": BERTILLE, "text": "Ta grand-mère montait chaque hiver. Elle comptait les troupeaux avec moi, et elle se trompait toujours exprès, pour que je recommence. Comme ça, elle restait plus longtemps près du feu."},
+		{"who": BERTILLE, "text": "Moi, c'est Bertille. Je garde les troupeaux de la vallée. Enfin… ce sont eux qui me gardent : ils savent où est l'herbe sous la neige. Moi, je compte. Presque."},
+		{"who": BERTILLE, "text": "Ta grand-mère montait chaque hiver. Elle comptait les troupeaux avec moi, et se trompait toujours exprès, pour que je recommence et qu'elle reste près du feu."},
 		{"who": BERTILLE, "text": "Elle avait froid aux mains. Toujours. De vieilles brûlures, qu'elle disait. Alors je lui tricotais des moufles. Elle les perdait. Je lui en tricotais d'autres."},
 		CS.cue({"who": BERTILLE, "text": "L'hiver dernier, elle n'est pas venue. Personne n'a dérangé mon compte."}, to_the_fire),
 		{"who": CHLOE, "text": "(Elle l'attend encore, elle aussi.)"},
@@ -406,8 +399,7 @@ static func _the_lady(who: Node) -> Array:
 	if Game.flag(&"dame_suie_battue"):
 		lines.append({"who": CHLOE, "text": "(Dame Suie ! « Nous nous reverrons, là où il fait plus froid »… Elle l'avait dit.)"})
 	lines.append_array([
-		CS.cue({"who": BERTILLE, "text": "Elle avait un traîneau plein de caisses qui tintaient. Enfin, c'est un grand dino aux griffes comme des faux qui le tirait. Elle est montée au glacier, là-haut, au nord."}, points),
-		{"who": BERTILLE, "text": "Mes troupeaux ont eu peur toute la nuit. Ça sentait la cheminée froide."},
+		CS.cue({"who": BERTILLE, "text": "Elle avait un traîneau tiré par un grand dino aux griffes comme des faux. Elle est montée au glacier, là-haut, au nord. Ça sentait la cheminée froide."}, points),
 	])
 	if not Game.flag(&"grelot_rentre"):
 		lines.append_array([
@@ -416,7 +408,7 @@ static func _the_lady(who: Node) -> Array:
 					Stage.look_back(0.8)
 					Stage.turn_to(who, chloe.global_position)),
 			{"who": CHLOE, "text": "Je vais le chercher !"},
-			{"who": BERTILLE, "text": "Tu le reconnaîtras : il a un grelot autour du cou. Je le lui ai mis pour le retrouver dans les tempêtes. Ça marche une fois sur deux. L'autre fois, il fait exprès de ne pas bouger."},
+			{"who": BERTILLE, "text": "Tu le reconnaîtras : il a un grelot au cou, pour le retrouver dans les tempêtes. Ça marche une fois sur deux. L'autre fois, il fait exprès de ne pas bouger."},
 		])
 	else:
 		lines.append(CS.cue({"who": BERTILLE, "text": "Même Grelot est rentré en tremblant. Pourtant, il n'a peur de rien. Sauf des flocons trop gros."},
@@ -424,11 +416,10 @@ static func _the_lady(who: Node) -> Array:
 				Stage.look_back(0.8)
 				Stage.turn_to(who, chloe.global_position)))
 	var charge := MS.charger()
-	lines.append({"who": BERTILLE, "text": "Pour monter au glacier, il y a des murs de glace. Mes grands Pachyrhinosaurus cassent la glace du lac tous les matins, d'un coup de nez, pour boire."})
 	if charge:
-		lines.append({"who": BERTILLE, "text": "Ton %s a l'air d'avoir la tête dure. Ça ira." % charge.nickname})
+		lines.append({"who": BERTILLE, "text": "Pour monter au glacier, il y a des murs de glace. Mes grands Pachyrhinosaurus les cassent d'un coup de nez. Ton %s a l'air d'avoir la tête dure : ça ira." % charge.nickname})
 	else:
-		lines.append({"who": BERTILLE, "text": "Toi, il te faudrait un dino qui charge. " + MS.charge_step()})
+		lines.append({"who": BERTILLE, "text": "Pour monter au glacier, il y a des murs de glace. Il te faudrait un dino qui charge, comme mes grands Pachyrhinosaurus. " + MS.charge_step()})
 	lines.append_array([
 		{"who": BERTILLE, "text": "Et reviens avant la nuit. Ou après. Mais reviens. Il y a de la soupe."},
 		{"flag": &"bertille_vue"},

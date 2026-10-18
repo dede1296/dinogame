@@ -137,8 +137,10 @@ static func _what_she_saw(who: Node, caillou) -> Array:
 		await CS.step_aside(who, 62.0)
 		Stage.turn_to(chloe, (who as Node2D).global_position)
 	var lines: Array = [
-		CS.cue({"text": "Au belvédère, Maïa est assise tout au bord, le menton sur les genoux. Elle regarde la crique, en bas. Caillou se tient debout à côté d'elle, la tête basse."}, comes),
-		CS.cue({"text": "Elle ne se retourne pas."}, func() -> void: CS.later(1.0, func() -> void: Stage.emote(who, "…"))),
+		CS.cue({"text": "Au belvédère, Maïa est assise tout au bord, le menton sur les genoux. Elle regarde la crique. Caillou se tient à côté d'elle, la tête basse. Elle ne se retourne pas."},
+			func() -> void:
+				await comes.call()
+				CS.later(1.0, func() -> void: Stage.emote(who, "…"))),
 		{"who": MAIA, "text": "Cette nuit, j'étais ici. J'ai éteint ma lanterne, pour qu'on ne me voie pas."},
 	]
 	if Game.flag(&"barque_nuit_vue"):
@@ -147,9 +149,8 @@ static func _what_she_saw(who: Node, caillou) -> Array:
 		lines.append({"who": MAIA, "text": "C'est le poste de guet d'Hélène, ici. J'ai trouvé une vieille boîte, dans la roche. Je voulais l'ouvrir avec toi. Après notre défi."})
 	lines.append_array([
 		{"who": MAIA, "text": "J'ai vu la barque de maman. Je la reconnaîtrais entre mille : c'est moi qui ai repeint la rayure bleue, l'été dernier."},
-		CS.cue({"who": MAIA, "text": "Elle est passée par le récif, sans lanterne. Et elle est entrée dans la falaise, là. Comme si la falaise l'avalait."},
+		CS.cue({"who": MAIA, "text": "Elle est passée par le récif, sans lanterne, et elle est entrée dans la falaise, là. Et dedans, il y avait quelqu'un. Debout. Avec une cape. Et un masque noir."},
 			func() -> void: Stage.look_at(cove, 1.2)),
-		{"who": MAIA, "text": "Et dedans, il y avait quelqu'un. Debout. Avec une cape. Et un masque noir."},
 		CS.cue({"who": MAIA, "text": "Et ce matin, toi, tu es sortie de l'eau, là-bas, avec une lumière dans les mains."},
 			func() -> void: Stage.look_at(S.at(P.PASSE.x, P.PASSE.y), 1.2)),
 		CS.cue({"who": MAIA, "text": "Il l'a volée, hein ? Le Masque. Il a volé la barque de maman. Dis-moi que c'est ça."},
@@ -226,8 +227,7 @@ static func _the_box(who: Node, caillou) -> Array:
 		CS.cue({"who": MAIA, "text": "La boîte. On avait dit : après le défi. … On l'ouvre avant. J'ai besoin d'autre chose. N'importe quoi d'autre."}, to_the_box),
 		CS.cue({"text": "Elle tire sur le couvercle. Il ne bouge pas. Elle tire encore, de toutes ses forces. Rien."}, pulls),
 		CS.cue({"text": "Caillou s'approche. Il baisse la tête, cale une corne sous le couvercle… et CLAC : le couvercle saute."}, horn),
-		CS.cue({"text": "Dedans, roulée dans une toile cirée, une page du journal."}, page),
-		{"who": MAIA, "text": "C'est l'écriture d'Hélène… Lis, toi. Moi, je… Lis."},
+		CS.cue({"who": MAIA, "text": "Une page du journal, roulée dans une toile cirée… C'est l'écriture d'Hélène. Lis, toi. Moi, je… Lis."}, page),
 		CS.cue({"text": "Chloé s'assoit à côté d'elle. Elles lisent ensemble."}, sits_by_her),
 	]
 
@@ -245,8 +245,7 @@ static func _refuses(who: Node, caillou) -> Array:
 	var chloe := Stage.chloe()
 	var lines: Array = [
 		CS.cue({"text": "Maïa ne bouge plus. Le vent agite la page… non : c'est sa main qui tremble."}, func() -> void: Stage.tremble(who, 2.0, 1.2)),
-		{"who": MAIA, "text": "Sa… marraine. Hélène était ma marraine."},
-		{"who": MAIA, "text": "Maman ne me l'a jamais dit. Jamais. Elle disait juste : « On a été amies. Il y a longtemps. »"},
+		{"who": MAIA, "text": "Sa… marraine. Hélène était ma marraine. Maman ne me l'a jamais dit. Elle disait juste : « On a été amies. Il y a longtemps. »"},
 		CS.cue({"who": MAIA, "text": "« Isaure et son bébé. » … « I. »"}, func() -> void: Stage.emote(who, "!")),
 	]
 	if Game.flag(&"maia_defi_3"):
@@ -283,17 +282,16 @@ static func _refuses(who: Node, caillou) -> Array:
 			CS.fly(bird, at + Vector2(-60.0, 5.0 * S.CELL), 2.0)
 			Stage.fade_out(bird, 2.0, true)
 	lines.append_array([
-		{"who": MAIA, "text": "Non."},
-		{"who": MAIA, "text": "Non, non, non."},
-		{"who": MAIA, "text": "Maman, elle recoud les filets des autres quand ils sont trop fatigués. Elle chante des chansons de marin toutes fausses, exprès, pour me faire rire. Elle…"},
-		{"who": MAIA, "text": "Elle n'a pas de masque."},
+		{"who": MAIA, "text": "Non. Non, non, non."},
+		{"who": MAIA, "text": "Maman, elle recoud les filets des autres. Elle chante des chansons de marin toutes fausses, exprès, pour me faire rire. Elle… Elle n'a pas de masque."},
 		CS.cue({"text": "Elle se relève d'un coup, et recule d'un pas."}, steps_back),
 		{"who": CHLOE, "text": "Maïa… Notre défi. Le numéro cinq. Tu avais dit : ici, avec la mer derrière toi."},
-		CS.cue({"who": MAIA, "text": "Je ne me bats pas. Pas contre toi. Pas aujourd'hui."}, func() -> void: Stage.tremble(who, 0.8, 1.5)),
-		{"who": MAIA, "text": "Je ne veux plus gagner. Je veux juste que ce soit pas vrai."},
+		CS.cue({"who": MAIA, "text": "Je ne me bats pas. Pas contre toi. Pas aujourd'hui. Je ne veux plus gagner. Je veux juste que ce soit pas vrai."}, func() -> void: Stage.tremble(who, 0.8, 1.5)),
 		CS.cue({"text": "Et elle s'enfuit en courant, par le sentier des falaises."}, flees),
-		CS.cue({"text": "Caillou ne bouge pas tout de suite. Il regarde Chloé. Il regarde la boîte. Puis il suit Maïa, au petit trot, la tête basse."}, caillou_goes),
-		CS.cue({"text": "Moustique s'envole derrière eux, sans un cri."}, bird_goes),
+		CS.cue({"text": "Caillou ne bouge pas tout de suite. Il regarde Chloé, la boîte… puis il suit Maïa au petit trot, la tête basse. Moustique s'envole derrière eux, sans un cri."},
+			func() -> void:
+				caillou_goes.call()
+				bird_goes.call()),
 		{"flag": &"maia_enfuie"},
 	])
 	return lines
@@ -340,13 +338,14 @@ static func _the_mask_left() -> Array:
 		CS.cue({"text": "Le vent le pousse vers le bord. Chloé se jette dessus, et le rattrape juste avant le vide."}, catches),
 		{"flag": &"masque_carton"},
 		CS.cue({"text": "Au-dessus de la mer, les Ptéranodons tournent, sans un cri."}, wheel),
-		CS.cue({"who": CHLOE, "text": "(Hélène… Tu savais. Depuis le début, tu savais.)"}, func() -> void: Stage.look_back(1.2)),
-		{"who": CHLOE, "text": "(Maïa, je te le rendrai. Promis.)"},
-		CS.cue({"text": "Un vent froid descend des falaises de l'est. Tout là-haut, au-dessus de la mer, les montagnes ont blanchi pendant la nuit."}, east),
-		CS.cue({"text": "Un flocon se pose sur le masque en carton. Puis il fond."}, flake),
-		{"who": CHLOE, "text": "(Les Monts Gelés… Le quatrième Cœur m'attend là-haut.)"},
-		{"who": CHLOE, "text": "(J'irai. Même toute seule.)" if Monts.has_coat()
-			else "(J'irai. Même toute seule. Mais pas sans un vêtement chaud : là-haut, on gèle.)"},
+		CS.cue({"who": CHLOE, "text": "(Hélène… Tu savais. Depuis le début, tu savais. … Maïa, je te le rendrai. Promis.)"}, func() -> void: Stage.look_back(1.2)),
+		CS.cue({"text": "Un vent froid descend des falaises de l'est. Là-haut, les montagnes ont blanchi pendant la nuit. Un flocon se pose sur le masque en carton, et fond."},
+			func() -> void:
+				await east.call()
+				await S.wait(1.2)
+				flake.call()),
+		{"who": CHLOE, "text": "(Les Monts Gelés… Le quatrième Cœur m'attend là-haut. J'irai. Même toute seule.)" if Monts.has_coat()
+			else "(Les Monts Gelés… Le quatrième Cœur m'attend là-haut. J'irai. Même toute seule. Mais pas sans un vêtement chaud : là-haut, on gèle.)"},
 	]
 
 
@@ -404,10 +403,8 @@ static func entrepot(who: Node) -> bool:
 		CS.cue({"text": "Chloé colle un œil à une fente, entre deux planches. Dedans, des caisses. Les mêmes que dans la grotte, avec le même tampon."}, peeks),
 		CS.cue({"text": "Une lueur violette filtre entre les couvercles. Et, pendu à un clou, un masque d'os."}, glows),
 		CS.cue({"who": FERREOL, "text": "Belle vue, n'est-ce pas ?"}, appears),
-		{"who": FERREOL, "text": "Le Comptoir achète, le Comptoir vend. Ce que les gens font de ce qu'ils achètent ne regarde personne. Pas même une Varenne."},
-		{"who": CHLOE, "text": "C'est de l'ambre noir. Il rend les dinos fous de peur."},
-		{"who": FERREOL, "text": "Je vends des caisses, mademoiselle. Je ne les ouvre pas. C'est ce qui fait de moi un excellent commerçant."},
-		{"who": CHLOE, "text": "Et qui vous les apporte, la nuit, sans lanterne ?"},
+		{"who": FERREOL, "text": "Le Comptoir achète, le Comptoir vend. Je vends des caisses, mademoiselle : je ne les ouvre pas. C'est ce qui fait de moi un excellent commerçant."},
+		{"who": CHLOE, "text": "C'est de l'ambre noir ! Il rend les dinos fous de peur. Et qui vous les apporte, la nuit, sans lanterne ?"},
 		CS.cue({"who": FERREOL, "text": "La capitaine Kerval ? Une excellente cliente. Une amie, même. Demandez-lui : elle adore les questions."},
 			func() -> void: Stage.hop(ferreol, 1, 4.0)),
 	]

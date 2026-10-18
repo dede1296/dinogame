@@ -117,10 +117,8 @@ static func _goat(who: Node) -> bool:
 		await S.say([
 			{"who": PERVENCHE, "text": "Chloé ! Tu ne devineras jamais. Bardane est revenue."},
 			{"who": CHLOE, "text": "Bardane ?"},
-			{"who": PERVENCHE, "text": "Ma chèvre. Elle est rentrée avant-hier, toute seule, par la route. Avec un bout de corde au collier. Rongé net."},
-			{"who": PERVENCHE, "text": "Elle avait mangé le reste, évidemment. Elle mange tout. Elle a mangé mon chapeau, une fois."},
-			{"who": CHLOE, "text": "(Je l'ai vue, là-bas. Attachée au milieu de leur camp, bien en vue.)"},
-			{"who": CHLOE, "text": "(Ils l'avaient mise là pour faire venir quelque chose de gros… et c'est elle qui s'en est sortie toute seule.)"},
+			{"who": PERVENCHE, "text": "Ma chèvre. Rentrée avant-hier, toute seule, par la route, un bout de corde rongée au collier. Elle avait mangé le reste. Elle mange tout : mon chapeau, une fois."},
+			{"who": CHLOE, "text": "(Je l'ai vue, là-bas, attachée au milieu de leur camp. Ils l'avaient mise là pour attirer quelque chose de gros… et c'est elle qui s'en est sortie toute seule.)"},
 			{"who": PERVENCHE, "text": "Tiens, prends ça pour la route. Des baies. Et une tarte, si tu repasses jeudi."},
 			{"flag": &"chevre_rendue"},
 		])

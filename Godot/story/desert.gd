@@ -214,17 +214,15 @@ static func _sirocco_meeting(who: Node) -> void:
 		await _get_up(who, 0.7)
 		Stage.emote(who, "!")
 	await S.say([
-		_cue({"text": "Devant une tente rapiécée, une vieille dame est assise en tailleur. Un foulard couleur de sable, des lunettes de soudeur relevées sur le front, et un pinceau entre les dents."},
+		_cue({"text": "Devant une tente rapiécée, une vieille dame est assise en tailleur. Foulard couleur de sable, lunettes de soudeur sur le front, un pinceau entre les dents."},
 			func() -> void: _step_aside(who)),
 		_cue({"text": "Elle époussette une vertèbre énorme, tout doucement, comme on coiffe un enfant."}, dusting),
 		_cue({"who": SIROCCO, "text": "Pas un pas de plus, ma caille ! Tu marches sur un Majungasaurus."}, func() -> void: Stage.emote(chloe, "!")),
-		_cue({"text": "Chloé baisse les yeux. Sous ses chaussures, dans le sable, dépasse une rangée de côtes pétrifiées, longues comme des rames."},
+		_cue({"who": SIROCCO, "text": "Sous tes chaussures : ses côtes. Il est mort depuis soixante-six millions d'années, il ne dira rien. Mais c'est une question de politesse."},
 			func() -> void: Stage.bow(chloe, 1.4)),
-		{"who": SIROCCO, "text": "Il est mort depuis soixante-six millions d'années, il ne dira rien. Mais c'est une question de politesse."},
-		_cue({"text": "La vieille dame se lève, remonte ses lunettes… et s'arrête net."}, stands_up),
-		{"who": SIROCCO, "text": "Ces yeux-là… Par les dents du soleil. Tu es la petite d'Hélène."},
+		_cue({"who": SIROCCO, "text": "… Ces yeux-là. Par les dents du soleil ! Tu es la petite d'Hélène."}, stands_up),
 		{"who": CHLOE, "text": "Vous connaissiez ma grand-mère ?"},
-		{"who": SIROCCO, "text": "Si je la connaissais ! On a déterré la moitié de ce cimetière, elle et moi. Elle cherchait les dinos qui dorment ; moi, ceux qui ne se réveilleront jamais. On n'était jamais d'accord, et on riait tout le temps."},
+		{"who": SIROCCO, "text": "Si je la connaissais ! On a déterré la moitié de ce cimetière, elle et moi. Elle cherchait les dinos qui dorment ; moi, ceux qui ne se réveilleront jamais."},
 		{"who": SIROCCO, "text": "Tout le monde m'appelle Tante Sirocco. Comme le vent chaud : j'arrive sans prévenir, je repars avec tout ce qui traîne, et je mets du sable partout."},
 	])
 	var cast := {}   # Bastion out of her party while she looks at him (cast « little »), when not her lead
@@ -257,7 +255,7 @@ static func _sirocco_rempart(who: Node, cast: Dictionary) -> Array:
 			{"who": SIROCCO, "text": "Le canyon muré, à l'ouest. Elle y dort depuis que les rochers sont tombés, et plus personne n'y entre. Mais un petit qui charge comme sa mère… ça, ça passerait."},
 		]
 	var lines: Array = [
-		{"who": SIROCCO, "text": "Et dans le canyon muré, à l'ouest, dort une vieille amie d'Hélène : le Vieux Rempart. Une Ankylosaurus grande comme ma tente. Des rochers sont tombés devant l'entrée ; depuis, plus personne n'y entre."},
+		{"who": SIROCCO, "text": "Et dans le canyon muré, à l'ouest, dort une vieille amie d'Hélène : le Vieux Rempart. Une Ankylosaurus grande comme ma tente. Des rochers bouchent l'entrée."},
 		{"who": SIROCCO, "text": "Il faudrait un dino qui charge, pour passer. Et de la patience, pour la réveiller."},
 	]
 	if bastion:
@@ -270,25 +268,24 @@ static func _sirocco_brac() -> Array:
 	return [
 		{"who": CHLOE, "text": "Tante Sirocco… Vous n'auriez pas vu passer un grand monsieur roux ? Avec un masque d'os relevé sur le front ?"},
 		{"who": SIROCCO, "text": "Le braillard au chariot ? Hier soir. Il a traversé mon cimetière sans dire bonjour aux morts. Mal élevé."},
-		{"who": SIROCCO, "text": "Et dans sa cage, il y avait un grand dino rouge, avec deux cornes au-dessus des yeux. Le Carnotaurus Rouge, ma caille. Le gardien du Désert."},
-		{"who": SIROCCO, "text": "Ses yeux étaient violets. Et il tremblait. Un Carnotaurus qui tremble… Soixante ans que je vis dans ce sable, je n'avais jamais vu ça."},
+		{"who": SIROCCO, "text": "Dans sa cage, un grand dino rouge, deux cornes au-dessus des yeux : le Carnotaurus Rouge, le gardien du Désert. Les yeux violets… et il tremblait. Jamais vu ça."},
 		{"who": CHLOE, "text": "De l'ambre noir… Ils lui en ont fait avaler."},
 		{"who": SIROCCO, "text": "Ils sont partis vers le nord, vers le sanctuaire des Vents. Là où le vent chante dans la falaise."},
-		{"who": SIROCCO, "text": "Et écoute bien Tante Sirocco : quand le ciel devient jaune, c'est que la tempête arrive. Alors tu restes près de tes dinos, et tu avances le nez au ras du sol. Le Désert n'aime pas qu'on se dépêche."},
+		{"who": SIROCCO, "text": "Et écoute bien Tante Sirocco : quand le ciel devient jaune, la tempête arrive. Reste près de tes dinos, et avance le nez au ras du sol."},
 	]
 
 
 ## Her request: five of the six fossils buried in the cemetery, found with a nose (Flair).
 static func _sirocco_fossils() -> Array:
 	var lines: Array = [
-		{"who": SIROCCO, "text": "Maintenant, un service. Mes vieux genoux ne creusent plus comme avant. Dans ce cimetière, il y a six fossiles enfouis : je les sens d'ici. Rapporte-m'en cinq, et je te ferai un cadeau digne d'Hélène."},
+		{"who": SIROCCO, "text": "Maintenant, un service. Mes vieux genoux ne creusent plus. Il y a six fossiles enfouis dans ce cimetière : rapporte-m'en cinq, et je te ferai un cadeau digne d'Hélène."},
 		{"who": CHLOE, "text": "Comment on les trouve ?"},
 	]
 	var nose := Game.ability_user(&"flair")
 	if nose:
 		lines.append({"who": SIROCCO, "text": "Avec un nez, pardi ! Et ton %s a le museau qu'il faut. Promène-le dans le cimetière : il te montrera la terre remuée." % nose.nickname})
 	else:
-		lines.append({"who": SIROCCO, "text": "Avec un nez, pardi ! Un dino qui a du flair : un Compsognathus, un Troodon… ou un Oviraptor. Ils nichent dans les canyons, ces petits voleurs d'œufs, et ils déterrent tout ce qui dépasse."})
+		lines.append({"who": SIROCCO, "text": "Avec un nez, pardi ! Un dino qui a du flair : un Compsognathus, un Troodon, un Oviraptor… Ils nichent dans les canyons et déterrent tout ce qui dépasse."})
 		for d: Dino in Game.box:
 			if Abilities.has(d, &"flair"):
 				lines.append({"who": CHLOE, "text": "(Mon %s a du flair… mais il attend au Cabinet. Je peux le faire venir depuis mon Dinodex.)" % d.nickname})
@@ -309,8 +306,8 @@ static func _fossils_reward(who: Node) -> void:
 		await Stage.bow(who, 0.8)
 		_reach(who, chloe.global_position, 6.0, 0.6)
 	var lines: Array = [
-		_cue({"text": "Chloé pose ses fossiles un à un sur la natte de Tante Sirocco. La vieille dame les prend, les tourne, les renifle, les tapote du bout de son pinceau."}, lays_them),
-		_cue({"who": SIROCCO, "text": "Une griffe de Majungasaurus… une vertèbre de Stygimoloch… et ça… Par les dents du soleil ! Une dent d'œuf ! La toute petite dent qui sert à casser la coquille !"},
+		_cue({"text": "Chloé pose ses fossiles un à un sur la natte. Tante Sirocco les prend, les tourne, les renifle, les tapote du bout de son pinceau."}, lays_them),
+		_cue({"who": SIROCCO, "text": "Une griffe de Majungasaurus… une vertèbre de Stygimoloch… et ça… Par les dents du soleil ! Une dent d'œuf ! La petite dent qui casse la coquille !"},
 			func() -> void: _later(1.6, func() -> void: Stage.hop(who, 2, 8.0))),
 	]
 	if n > P.FOSSILS_WANTED:
@@ -321,17 +318,15 @@ static func _fossils_reward(who: Node) -> void:
 		await Stage.bow(who, 1.6)
 		_reach(who, chloe.global_position, 8.0, 0.8)   # gives them back
 	lines.append_array([
-		_cue({"text": "Elle dessine chaque fossile dans un grand cahier tout gondolé, en tirant la langue. Puis elle les rend à Chloé."}, drawing),
-		{"who": SIROCCO, "text": "Tiens. Je les ai dans mon cahier : c'est tout ce qu'il me faut. Un os de l'île reste sur l'île. Anselme saura peut-être les réveiller, un jour. Ou peut-être pas : les os, ça a son caractère."},
-		{"who": SIROCCO, "text": "Et voilà ton cadeau. Des pièces trouvées dans le sable : les voyageurs en perdent plein, le Désert est le plus grand porte-monnaie de l'île. Et deux fougères de Mémé Pervenche : elle me les envoie par bateau, et je ne suis jamais malade."},
+		_cue({"who": SIROCCO, "text": "Je les dessine dans mon cahier : c'est tout ce qu'il me faut. Un os de l'île reste sur l'île. Tiens, reprends-les."}, drawing),
+		{"who": SIROCCO, "text": "Et voilà ton cadeau. Des pièces trouvées dans le sable, le Désert est le plus grand porte-monnaie de l'île. Et deux fougères de Mémé Pervenche."},
 	])
 	var brush: bool = ItemsDB.ITEMS.has("pinceau_fouille")
 	if brush:
-		lines.append({"who": SIROCCO, "text": "Et mon vieux pinceau de fouille. Hélène avait le même : on les avait achetés ensemble, au marché du port, il y a trente ans. Moi, j'en ai un neuf."})
+		lines.append({"who": SIROCCO, "text": "Et mon vieux pinceau de fouille. Hélène avait le même : on les avait achetés ensemble, au marché du port. Moi, j'en ai un neuf."})
 	lines.append_array([
-		_cue({"text": "Enfin, elle détache une page de son cahier et la tend à Chloé. Un vieux dessin au crayon : deux femmes assises sur un crâne géant, qui rient aux éclats. L'une porte un chapeau beaucoup trop grand."},
+		_cue({"who": SIROCCO, "text": "Et une page de mon cahier : deux femmes assises sur un crâne géant, qui rient aux éclats. C'est nous. Garde-la, ma caille : moi, je m'en souviens par cœur."},
 			func() -> void: _reach(who, chloe.global_position, 10.0, 1.2)),
-		{"who": SIROCCO, "text": "C'est nous. Le chapeau s'est envolé cinq minutes après. Garde-le, ma caille. Moi, je m'en souviens par cœur."},
 		{"flag": &"fossiles_rendus"},
 	])
 	await S.say(lines)
@@ -407,12 +402,11 @@ static func vieux_rempart(who: Node) -> void:
 		_cue({"text": "Contre la paroi dort un énorme rocher couvert de lichen orange. Chloé s'approche pour s'asseoir dessus et vider le sable de sa chaussure…"},
 			func() -> void: _chloe_walk(_beside(who, _room(bastion, who) - 26.0, 30.0), 60.0, 1.2)),
 		_cue({"text": "Le rocher respire."}, func() -> void: _swell(who, 1.8, 0.06)),
-		_cue({"text": "Le rocher se soulève. Lentement. Très lentement. Des plaques épaisses comme des portes, une queue terminée par une massue grosse comme une brouette et, tout au bout d'un long bâillement… une tête."}, wakes),
+		_cue({"text": "Le rocher se soulève. Lentement. Des plaques épaisses comme des portes, une queue à massue grosse comme une brouette et, au bout d'un long bâillement… une tête."}, wakes),
 		_cue({"who": CHLOE, "text": "Pardon ! Pardon, madame ! Je vous avais prise pour un rocher !"}, func() -> void: Stage.bow(chloe, 0.6)),
 		_cue({"text": "L'Ankylosaurus la regarde d'un œil jaune, lent comme un lever de soleil. Elle n'a pas l'air vexée. Elle a l'air d'avoir l'habitude."},
 			func() -> void: Stage.turn_to(who, chloe.global_position)),
-		{"text": "Au-dessus de sa couche, quelqu'un a gravé un nom dans la roche, avec une petite fougère : « Le Vieux Rempart »."},
-		{"who": CHLOE, "text": "Le Vieux Rempart… c'est vous ? Mais vous êtes une dame !"},
+		{"who": CHLOE, "text": "« Le Vieux Rempart », c'est gravé là, dans la roche, avec une petite fougère… C'est vous ? Mais vous êtes une dame !"},
 		_cue({"text": "La vieille Ankylosaurus souffle par les narines : un nuage de sable. Visiblement, elle s'en fiche complètement."}, func() -> void: _snort(who)),
 	])
 	if bastion and Game.party.has(bastion):
@@ -473,16 +467,12 @@ static func _rempart_reunion(bastion: Dino, who: Node) -> void:
 		Stage.hop(dino, 1, 6.0)
 	var after: Array = [
 		_cue({"text": "Au fond de sa gorge, la vieille Ankylosaurus fait un bruit grave, comme un tonnerre très loin. %s lui répond : le même bruit, en plus petit, exactement sur la même note." % name}, rumble),
-		{"who": CHLOE, "text": "Vous le reconnaissez… C'est votre petit. Vous êtes sa maman."},
+		{"who": CHLOE, "text": "Vous le reconnaissez… C'est votre petit. Vous êtes sa maman." if mine
+			else "Vous le reconnaissez… C'est votre petit. On vous l'avait volé, et nourri à l'ambre noir. Mais il est là, maintenant."},
 	]
-	if not mine:
-		after.append({"who": CHLOE, "text": "On vous l'avait volé, et nourri à l'ambre noir. Mais il est là, maintenant."})
 	if Game.flag(&"lettre_scellee"):
-		after.append_array([
-			{"who": CHLOE, "text": "Hélène m'a demandé de vous dire qu'elle va bien."},
-			_cue({"text": "Le Vieux Rempart cligne des yeux, une fois, très lentement. Elle n'y croit pas tout à fait. Chloé non plus."},
-				func() -> void: Stage.emote(who, "…")),
-		])
+		after.append(_cue({"who": CHLOE, "text": "Hélène m'a demandé de vous dire qu'elle va bien. (Elle cligne des yeux, très lentement. Elle n'y croit pas tout à fait. Moi non plus.)"},
+			func() -> void: _later(1.4, func() -> void: Stage.emote(who, "…"))))
 	if not Game.flag(&"found_journal_ancien_rempart"):
 		after.append_array(_ancien_page(who))
 	after.append(_cue({"text": "Chloé grimpe sur une pierre pour gratter le Vieux Rempart sous le menton. La vieille dame ferme les yeux. On dirait qu'elle sourit."},
@@ -575,12 +565,11 @@ static func _ancien_page(who: Node) -> Array:
 			await S.wait(0.5)
 	return [
 		_cue({"text": "Alors la vieille dame fait une chose étonnante : elle se lève. Complètement. Du sable tombe de son ventre, comme d'un sablier."}, stands),
-		_cue({"text": "Là où elle était couchée, dans le sable tiède, il y a une boîte en fer-blanc toute ronde, toute chaude. Elle l'a couvée comme un œuf."},
+		_cue({"text": "Là où elle était couchée, dans le sable tiède, une boîte en fer-blanc toute ronde, toute chaude : elle l'a couvée comme un œuf. Sur le couvercle, l'écriture d'Hélène : « Pour Chloé. Elle te la donnera. »"},
 			func() -> void:
 				Stage.show_thing("boite_ronde", (who as Node2D).global_position + Vector2(0.0, 40.0), "BoiteRempart")   # (just out from under her)
-				Stage.bow(Stage.chloe(), 1.2)),
-		_cue({"text": "Sur le couvercle, de l'écriture penchée d'Hélène : « Pour Chloé. Elle te la donnera. »"},
-			func() -> void: Stage.take_thing(S.actor("BoiteRempart"))),
+				await Stage.bow(Stage.chloe(), 1.2)
+				Stage.take_thing(S.actor("BoiteRempart"))),
 		{"letter": REMPART_PAGE, "sign": "— H."},
 		{"flag": &"found_journal_ancien_rempart"},
 	]
@@ -658,12 +647,13 @@ static func _the_net(who: Node) -> void:
 		Stage.cry(who, &"neutre")
 		Stage.rear(who, 1.8)
 	await S.say([
-		_cue({"text": "Entre deux plaques de sa carapace, quelque chose est coincé. Chloé le décroche : un morceau de filet, épais, coupé net. Sur un nœud, une petite plaque d'os gravée d'un masque."},
+		_cue({"text": "Entre deux plaques de sa carapace, un morceau de filet, épais, coupé net. Sur un nœud, une petite plaque d'os gravée d'un masque. Il sent la cendre froide."},
 			func() -> void: _reach(chloe, at, 12.0, 1.0)),
-		{"text": "Le filet sent la cendre froide."},
 		{"who": CHLOE, "text": "(L'Ombre Noire… Ils ont essayé de l'attraper, elle aussi !)"},
-		_cue({"text": "Chloé regarde les éboulis de l'entrée. Sur les gros rochers, partout, des marques rondes. Des coups de massue."}, looks),
-		_cue({"who": CHLOE, "text": "C'est vous qui avez fait tomber les rochers ? Pour vous enfermer, et qu'ils ne reviennent plus ?"}, back),
+		_cue({"who": CHLOE, "text": "Les rochers de l'entrée… ils sont couverts de coups de massue ! C'est vous qui les avez fait tomber ? Pour qu'ils ne reviennent plus ?"},
+			func() -> void:
+				looks.call()
+				_later(1.6, back)),
 		_cue({"text": "Le Vieux Rempart bâille. C'est sans doute un oui."}, yawns),
 		{"who": CHLOE, "text": "(Elle s'est murée toute seule. Pour se protéger… et pour garder ce qu'Hélène lui a confié.)" if not Game.flag(&"found_journal_20")
 			else "(Elle s'est murée toute seule. Pour se protéger… et pour garder la carte d'Hélène.)"},
@@ -695,13 +685,12 @@ static func _the_north(who: Node) -> void:
 		_face_north(who)
 	var lines: Array = [
 		_cue({"text": "Au loin, vers le nord, un rugissement monte… puis se casse, comme un sanglot."}, far_cry),
-		_cue({"text": "Le Vieux Rempart relève la tête et regarde vers le nord. Vers le sanctuaire des Vents."}, looks_up),
+		_cue({"text": "Le Vieux Rempart relève la tête vers le nord, vers le sanctuaire des Vents. Elle ne suivra pas Chloé : ce canyon est le sien. Mais elle garde un œil ouvert."}, looks_up),
 	]
 	if Game.flag(&"brac_desert_battu"):
 		lines.append({"who": CHLOE, "text": "(Le Carnotaurus Rouge… Il a encore peur. Il faut que je l'aide.)"})
 	else:
 		lines.append({"who": CHLOE, "text": "(Le Carnotaurus Rouge… Il a peur. Et Brac le traîne vers le sanctuaire.)"})
-	lines.append({"text": "Le Vieux Rempart ne suit pas Chloé. Ce canyon est le sien, et elle est trop vieille pour courir. Mais elle garde un œil ouvert, tourné vers le nord."})
 	await S.say(lines)
 
 
@@ -796,26 +785,26 @@ static func _maia_hello(who: Node, caillou) -> Array:
 		Stage.rear(caillou, 1.2)
 	var lines: Array = [
 		_cue({"who": MAIA, "text": "CHLOÉ ! Par ici ! Viens voir ! VIENS VOIR !"}, func() -> void: _step_aside(who, 60.0, -1.0)),   # (Caillou is on her right)
-		_cue({"text": "Au bord de l'oasis, les pieds dans l'eau, Maïa saute sur place. Derrière elle, quelque chose d'énorme boit à grandes gorgées : trois cornes, une collerette grande comme une table…"}, drinks),
+		_cue({"text": "Au bord de l'oasis, Maïa saute sur place. Derrière elle, quelque chose d'énorme boit à grandes gorgées : trois cornes, une collerette grande comme une table…"}, drinks),
 		{"who": CHLOE, "text": "C'est… un Tricératops ?"},
 		{"who": MAIA, "text": "C'est CAILLOU !"},
 	]
 	lines.append_array([
-		_cue({"text": "Le Tricératops relève la tête. Il a une tache en forme de caillou sur le museau. Et il mâchonne un lacet."}, looks_up),
-		_cue({"who": CHLOE, "text": "Caillou ?! Mais il était grand comme un chien !"}, func() -> void: Stage.emote(Stage.chloe(), "!")),
+		_cue({"who": CHLOE, "text": "Caillou ?! Mais il était grand comme un chien ! … C'est bien lui : la tache sur le museau. Et il mâchonne un lacet."},
+			func() -> void:
+				looks_up.call()
+				Stage.emote(Stage.chloe(), "!")),
 		{"who": MAIA, "text": "Il a traversé le marais, il a mangé tous les roseaux, il a dormi trois jours dans le sable chaud… et PAF. Trois cornes. Maman dit que c'est l'âge."},
-		{"who": CHLOE, "text": "(Je ne suis pas sûre que ça marche comme ça.)"},
-		{"who": MAIA, "text": "Chez Caillou, si."},
-		{"who": MAIA, "text": "Et toi, il paraît que tu as apaisé le Carnotaurus Rouge. LE Carnotaurus Rouge. Celui qui fait peur aux Majungasaurus. On l'a entendu rugir jusqu'ici."},
+		{"who": CHLOE, "text": "(Je ne suis pas sûre que ça marche comme ça. … Chez Caillou, peut-être.)"},
+		{"who": MAIA, "text": "Et toi, il paraît que tu as apaisé le Carnotaurus Rouge ! LE Carnotaurus Rouge ! On l'a entendu rugir jusqu'ici."},
 	])
 	if Game.flag(&"coeur_2"):
 		lines.append_array([
-			{"who": MAIA, "text": "Et tu as DEUX Cœurs, maintenant ? Fais voir… Ils brillent ! Ensemble, ils brillent plus fort ! C'est… Bon. C'est stylé. Très stylé."},
+			{"who": MAIA, "text": "Et tu as DEUX Cœurs, maintenant ? Fais voir… Ensemble, ils brillent plus fort ! C'est… Bon. C'est stylé. Très stylé."},
 		])
 	lines.append_array([
-		{"who": MAIA, "text": "Mais aujourd'hui, c'est MON jour. Je le sens. Caillou le sent. Même %s le sent." % starter_name},
-		{"who": MAIA, "text": "Moustique garde nos sacs, là-bas sous le palmier : il n'aime pas le sable, il dit que ça gratte. Alors ce sera Pouce, %s… et Caillou." % starter_name},
-		{"who": MAIA, "text": "Défi numéro QUATRE. Au sommet de ma forme."},
+		{"who": MAIA, "text": "Mais aujourd'hui, c'est MON jour. Je le sens. Caillou le sent. Même %s le sent. Défi numéro QUATRE, au sommet de ma forme !" % starter_name},
+		{"who": MAIA, "text": "Moustique garde nos sacs sous le palmier : il dit que le sable gratte. Alors ce sera Pouce, %s… et Caillou." % starter_name},
 	])
 	return lines
 
@@ -931,7 +920,7 @@ static func annonce() -> void:
 			else "La nuit est tombée sur les dunes. Chloé grimpe tout en haut de la plus grande, au nord de l'oasis, pour regarder le chemin de demain."},
 		_cue({"text": "Au loin, le sable descend vers la mer. On devine une longue ligne blanche : des vagues. La Côte Préhistorique."},
 			func() -> void: Stage.look_at(w.player.global_position.lerp(sea, 0.55), 1.2)),   # the way down to the sea
-		{"text": "Et sur la mer, une barque. Toute petite. Elle file vers la Côte… sans lanterne."},
+		{"text": "Et sur la mer, une barque, toute petite, file vers la Côte… sans lanterne. Puis elle disparaît derrière une falaise."},
 	]
 	var lead := Game.lead_dino()
 	if lead:
@@ -943,13 +932,11 @@ static func annonce() -> void:
 			_fresh(dino)
 			Stage.rear(dino, 1.4)
 		lines.append(_cue({"text": "%s pointe le museau vers la mer, et ne bouge plus." % lead.nickname}, points))
-	lines.append(_cue({"who": CHLOE, "text": "(Qui navigue la nuit, sans lanterne ?)"}, func() -> void: Stage.look_back(0.8)))
-	if Game.flag(&"sbire_camp_2_battu"):
-		lines.append({"who": CHLOE, "text": "(« Il arrive la nuit, par la mer, sans lanterne », disait le sbire à la lanterne…)"})
+	lines.append(_cue({"who": CHLOE, "text": "(Qui navigue la nuit, sans lanterne ? … « Il arrive la nuit, par la mer, sans lanterne », disait le sbire à la lanterne.)" if Game.flag(&"sbire_camp_2_battu")
+		else "(Qui navigue la nuit, sans lanterne ?)"}, func() -> void: Stage.look_back(0.8)))
 	lines.append_array([
-		{"text": "La barque disparaît derrière une falaise. Il ne reste que le vent qui fait chanter les dunes."},
 		{"who": CHLOE, "text": "(La Côte. C'est là que j'irai. Dès que le vent aura tourné.)"},
-		_cue({"text": "Et le vent tourne. Sous les pieds de Chloé, le sable glisse, glisse… et découvre une piste qui descend vers la mer. Pour une fois, le vent l'a redessinée au bon endroit."},
+		_cue({"text": "Et le vent tourne. Sous les pieds de Chloé, le sable glisse, glisse… et découvre une piste qui descend vers la mer. Pour une fois, le vent a bien visé."},
 			func() -> void:
 				# (Chloé in sight, and the sand streaming away from her feet towards the sea: the track)
 				var from: Vector2 = w.player.global_position

@@ -106,18 +106,17 @@ static func _jar(who: Node) -> Array:
 		CS.splash(puddle, 5, CS.Act.ON_WATER, 0.2)
 	return [
 		CS.cue({"text": "Au bord du lagon, quelqu'un sort de l'eau à reculons. Sur sa tête, un bocal de verre cousu à un col de cuir. Dans le bocal, un garçon. Trempé."}, drips),
-		CS.cue({"text": "Collée sur la vitre, une ammonite le regarde. Il la regarde aussi. Ça dure."},
-			func() -> void: CS.later(0.6, func() -> void: Stage.emote(who, "?"))),
-		CS.cue({"who": JOSS, "text": "Chloé ? C'est toi ? Il y a quelque chose sur ma vitre. Il me regarde."},
-			func() -> void: Stage.turn_to(who, chloe.global_position)),
+		CS.cue({"who": JOSS, "text": "Chloé ? C'est toi ? Il y a quelque chose sur ma vitre. Une ammonite. Elle me regarde."},
+			func() -> void:
+				Stage.turn_to(who, chloe.global_position)
+				CS.later(0.6, func() -> void: Stage.emote(who, "?"))),
 		CS.cue({"text": "Chloé décolle l'ammonite, tout doucement. Elle fait « plop », puis elle file dans une flaque."}, unsticks),
-		CS.cue({"who": JOSS, "text": "Merci. … Ne dis rien sur le bocal. C'est un prototype. Le numéro sept."},
+		CS.cue({"who": JOSS, "text": "Merci. … Ne dis rien sur le bocal. C'est un prototype, le numéro sept. Les six premiers, n'en parlons pas : le cinq a coulé. Le six aussi, mais plus lentement."},
 			func() -> void: Stage.bow(who, 0.8)),
-		{"who": JOSS, "text": "Les six premiers, n'en parlons pas. Le cinq a coulé. Le six aussi, mais plus lentement."},
 		{"who": CHLOE, "text": "Qu'est-ce que tu fais ici, Joss ?"},
-		CS.cue({"who": JOSS, "text": "Des masques de plongée ! Maître Ferréol m'en a commandé dix, pour ses « plongeurs ». Je ne sais pas qui sont ses plongeurs. Il paie d'avance : je ne pose pas de questions."},
+		CS.cue({"who": JOSS, "text": "Des masques de plongée ! Maître Ferréol m'en a commandé dix, pour ses « plongeurs ». Je ne sais pas qui c'est. Il paie d'avance : je ne pose pas de questions."},
 			func() -> void: Stage.hop(who, 1, 7.0)),
-		{"who": JOSS, "text": "Mais le premier, le vrai, je le voulais pour toi. Maïa a dit que tu viendrais ici. Maïa dit toujours tout ce que tu vas faire. Elle se trompe rarement. Ça l'énerve."},
+		{"who": JOSS, "text": "Mais le premier, le vrai, je le voulais pour toi. Maïa a dit que tu viendrais ici. Elle se trompe rarement. Ça l'énerve."},
 	]
 
 
@@ -159,29 +158,29 @@ static func _the_net(who: Node) -> void:
 			if net:
 				Stage.tremble(net, 0.3, 2.0)
 	var lines: Array = [
-		CS.cue({"who": JOSS, "text": "Et puis, tout à l'heure, sous l'eau, j'ai vu… un monstre. Un long cou, des nageoires comme des rames. Pris dans un filet, près de la roche plate. Il s'est jeté sur ma vitre."}, shows),
+		CS.cue({"who": JOSS, "text": "Et puis, sous l'eau, j'ai vu… un monstre ! Un long cou, des nageoires comme des rames. Pris dans un filet, près de la roche plate. Il s'est jeté sur ma vitre."}, shows),
 		{"who": JOSS, "text": "Regarde : la marque de ses dents. Enfin… de ses sourires. Il n'avait pas l'air méchant. Il avait l'air d'avoir peur."},
-		CS.cue({"text": "Sur la roche plate, Chloé se penche. Dans l'eau, un jeune Plesiosaurus se débat, le long cou pris dans un vieux filet. Chaque fois qu'il tire, les mailles serrent plus fort."}, to_the_rock),
-		CS.cue({"text": "Sur les flotteurs du filet, une petite plaque d'os gravée d'un masque."},
+		CS.cue({"text": "Sur la roche plate, Chloé se penche. Dans l'eau, un jeune Plesiosaurus se débat, le cou pris dans un vieux filet. Plus il tire, plus les mailles serrent."}, to_the_rock),
+		CS.cue({"who": CHLOE, "text": "(Sur les flotteurs, une plaque d'os gravée d'un masque. L'Ombre Noire… Un filet comme celui du Vieux Rempart.)" if Game.flag(&"rempart_rencontre")
+			else "(Sur les flotteurs, une plaque d'os gravée d'un masque. Un filet de l'Ombre Noire…)"},
 			func() -> void:
 				Stage.bow(chloe, 0.8)
 				CS.later(0.8, func() -> void: Stage.emote(chloe, "!"))),
-		{"who": CHLOE, "text": "(L'Ombre Noire… Un filet comme celui du Vieux Rempart.)" if Game.flag(&"rempart_rencontre") else "(Un filet de l'Ombre Noire…)"},
-		CS.cue({"text": "Chloé s'agenouille au bord de la roche et lui parle tout bas, comme Hélène parlait aux dinos qui ont peur."}, calms),
+		CS.cue({"text": "Chloé s'agenouille au bord de la roche et lui parle tout bas, comme Hélène parlait aux dinos qui ont peur. Le Plesiosaurus cesse de tirer. Il la regarde."},
+			func() -> void:
+				await calms.call()
+				if nessie:
+					Stage.emote(nessie, "…")),
 	]
 	var lead := Game.lead_dino()
 	if lead:
 		lines.append(CS.cue({"text": "Derrière elle, %s s'arrête et ne bouge plus d'une écaille. Même sa queue se tient tranquille." % lead.nickname}, still))
 	lines.append_array([
-		CS.cue({"text": "Le Plesiosaurus cesse de tirer. Il la regarde, le souffle court."},
-			func() -> void:
-				if nessie:
-					Stage.emote(nessie, "…")),
 		CS.cue({"who": JOSS, "text": "Tiens. Mes ciseaux de sellier. Ils coupent le cuir, la corde… et parfois mes doigts."},
 			func() -> void: CS.reach(who, chloe.global_position, 12.0, 0.9)),
-		CS.cue({"text": "Maille après maille, Chloé coupe le filet. Doucement. Le Plesiosaurus ne bouge pas : il a compris."}, cuts),
-		CS.cue({"text": "Le dernier nœud cède. Le filet glisse au fond, avec sa plaque d'os."},
+		CS.cue({"text": "Maille après maille, Chloé coupe le filet. Le Plesiosaurus ne bouge pas : il a compris. Le dernier nœud cède. Le filet coule, avec sa plaque d'os."},
 			func() -> void:
+				await cuts.call()
 				CS.splash(water, 10)
 				if net:
 					CS.Act.sink(net, 1.6, true, true)),
@@ -223,12 +222,10 @@ static func _dives_and_comes_back(who: Node, nessie: DinoNpc, water: Vector2) ->
 		await CS.Act.lean(nessie, chloe.global_position, 14.0, 1.6)
 		Stage.emote(nessie, "♥")
 	await S.say([
-		CS.cue({"text": "Le Plesiosaurus plonge d'un coup et disparaît. L'eau se referme. Plus rien."}, dives),
-		{"who": CHLOE, "text": "(Il est parti…)"},
+		CS.cue({"text": "Le Plesiosaurus plonge d'un coup et disparaît. L'eau se referme. Plus rien. … Il est parti ?"}, dives),
 		CS.cue({"text": "Et puis la surface se bombe, juste devant la roche, et PLOUF : il ressort en éclaboussant tout. Surtout Joss, qui venait de se sécher."}, bursts_up),
 		{"who": JOSS, "text": "… Merci. Vraiment. J'avais presque réussi à être sec."},
-		CS.cue({"text": "Le Plesiosaurus pose le menton sur la roche, aux pieds de Chloé. Il ne veut plus partir."}, chin),
-		{"who": JOSS, "text": "On dirait le monstre du loch Ness ! En plus mignon."},
+		CS.cue({"who": JOSS, "text": "Regarde : il pose le menton sur la roche, à tes pieds ! Il ne veut plus partir. On dirait le monstre du loch Ness. En plus mignon."}, chin),
 		{"who": CHLOE, "text": "Alors tu t'appelleras %s." % NESSIE},
 		{"flag": &"filet_coupe"},
 	])
@@ -260,8 +257,7 @@ static func _the_mask(who: Node) -> void:
 			CS.Act.pop(chloe.global_position, CS.MASK_ITEM, 0.9)
 	var lines: Array = [
 		CS.cue({"text": "Joss fouille dans son sac étanche et en sort un masque : du cuir huilé, une vitre taillée, un joint en gomme de fougère, une sangle large comme la main."}, takes_out),
-		{"who": JOSS, "text": "Le vrai. Le numéro huit. Regarde ces coutures. … En fait, tu n'as pas besoin de regarder : tu les connais. Elles sont parfaites, comme toujours."},
-		{"who": JOSS, "text": "Avec le masque et un dino plongeur adulte dans ton équipe, tu peux descendre là où c'est trop profond pour nager : les passages noyés, les grottes… et le récif, si tu trouves la passe."},
+		{"who": JOSS, "text": "Le numéro huit. Le vrai. Avec un dino plongeur adulte, tu descendras là où c'est trop profond pour nager : les passages noyés, les grottes… et le récif, si tu trouves la passe."},
 	]
 	Game.give_item(CS.MASK_ITEM)
 	Game.set_flag(CS.MASK_FLAG)

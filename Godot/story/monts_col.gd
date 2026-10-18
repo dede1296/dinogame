@@ -161,11 +161,9 @@ static func _the_promise(roc, stop: Vector2) -> Array:
 			else "Le vent souffle si fort que Chloé chancelle. Elle se serre contre Roc, dos au vent."}, shelter),
 		{"who": CHLOE, "text": "Qu'est-ce que vous faites ici, par ce temps ?"},
 		{"who": ROC, "text": "Le volcan. Depuis ton troisième Cœur, il gronde toutes les nuits. Les flacons tombent des étagères. Alors je suis venu voir le sceau. Comme d'habitude."},
-		{"who": CHLOE, "text": "Comme… d'habitude ?"},
-		CS.cue({"text": "Roc enlève ses lunettes. Il les essuie avec son écharpe. Il ne les remet pas."}, wipes),
-		{"who": ROC, "text": "Il faut que je te dise. Tout. Maintenant, avant de geler pour de bon."},
-		{"who": ROC, "text": "Il y a deux ans, Hélène m'a emmené ici, dans ce col. Elle m'a montré le volcan, et elle m'a demandé une chose : « Si je disparais, Anselme, surveille le sceau. Chaque nuit. Et ne le dis à personne. »"},
-		{"who": ROC, "text": "Mes sorties de nuit, c'était ça. Le volcan, les sanctuaires, les Cœurs. Je vérifiais que tout dormait. Avec ma lanterne. Et de la cendre plein les chaussures."},
+		CS.cue({"who": ROC, "text": "Comme d'habitude, oui. … Il faut que je te dise. Tout. Maintenant, avant de geler pour de bon."}, wipes),
+		{"who": ROC, "text": "Hélène m'a emmené ici, dans ce col. Elle m'a montré le volcan et m'a demandé : « Si je disparais, Anselme, surveille le sceau. Chaque nuit. Et ne le dis à personne. »"},
+		{"who": ROC, "text": "Mes sorties de nuit, c'était ça. Le volcan, les sanctuaires, les Cœurs : je vérifiais que tout dormait. Avec ma lanterne, et de la cendre plein les chaussures."},
 	]
 	var seen: Array[String] = []
 	if Game.flag(&"roc_parti_vu"):
@@ -178,10 +176,7 @@ static func _the_promise(roc, stop: Vector2) -> Array:
 		var said := ", ".join(seen.slice(0, -1)) + " et " + seen[-1] if seen.size() > 1 else seen[0]
 		lines.append({"who": CHLOE, "text": "(%s… Tout ce temps, il veillait.)" % (said.substr(0, 1).to_upper() + said.substr(1))})
 	if Game.flag(&"ambre_noir_tiroir"):
-		lines.append_array([
-			{"who": CHLOE, "text": "Et l'ambre noir, dans votre tiroir ?"},
-			{"who": ROC, "text": "Je le confisquais. Aux sbires, aux marchands du Havre, sur les plages… partout où j'en trouvais. Je ne savais pas quoi en faire, alors je le rangeais. Dans un tiroir fermé à clé. Comme un vieil idiot."},
-		])
+		lines.append({"who": ROC, "text": "Et l'ambre noir du tiroir ? Je le confisquais : aux sbires, aux marchands du Havre… Je ne savais pas quoi en faire, alors je le rangeais à clé. Comme un vieil idiot."})
 	lines.append_array([
 		{"who": CHLOE, "text": "Pourquoi vous ne m'avez rien dit ?"},
 		{"who": ROC, "text": "J'avais promis. Et puis… je voulais que tu te méfies. De tout le monde. Même de moi. C'est ce qu'elle t'avait écrit, non ? « Ne fais confiance qu'aux dinos. »"},
@@ -212,9 +207,7 @@ static func _makes_up(roc) -> Array:
 			Stage.emote(roc, "♥")
 	return [
 		CS.cue({"who": CHLOE, "text": "Professeur… J'ai douté de vous. Au Cabinet, au Marais… Pardon."}, func() -> void: Stage.bow(chloe, 1.0)),
-		{"who": ROC, "text": "Tu as bien fait. À ta place, j'aurais douté aussi. Hélène aussi : elle doutait de tout le monde… sauf des gens qu'elle aimait."},
-		{"who": ROC, "text": "Et c'est là qu'elle se trompait."},
-		{"who": ROC, "text": "Pas avec toi, en tout cas. Ni avec moi. Enfin… j'espère."},
+		{"who": ROC, "text": "Tu as bien fait. Hélène aussi doutait de tout le monde… sauf des gens qu'elle aimait. C'est là qu'elle se trompait. Pas avec toi. Ni avec moi… j'espère."},
 		CS.cue({"text": "Chloé le serre dans ses bras. Roc ne sait pas quoi faire des siens. Puis il trouve."}, hugs),
 		{"flag": &"roc_innocente"},
 	]
@@ -242,10 +235,9 @@ static func _the_way_up(roc, seat) -> Array:
 		else "Moi, je redescends. Il y a de la fumée, dans la vallée : quelqu'un aura bien un bol de soupe pour un vieux professeur gelé."
 	return [
 		CS.cue({"text": "Le vent tombe un peu. Dans le blanc, tout en haut du col, une lueur bleue apparaît. Une porte."}, calms),
-		{"who": ROC, "text": "Le sanctuaire de Givre. Hélène y montait seule. Moi, j'attendais ici, avec du thé. Il était toujours froid quand elle redescendait."},
+		{"who": ROC, "text": "Le sanctuaire de Givre. Hélène y montait seule. Moi, j'attendais ici, avec du thé. Toujours froid quand elle redescendait."},
 		{"who": ROC, "text": "La porte a quatre creux. Tes Cœurs sauront quoi faire. " + soup},
-		CS.cue({"text": "Roc remet ses lunettes, secoue sa lanterne, et redescend dans la neige en marmonnant quelque chose en latin."}, goes),
-		{"who": CHLOE, "text": "(Merci, professeur. Pour tout ce temps.)"},
+		CS.cue({"who": CHLOE, "text": "(Il redescend dans la neige en marmonnant du latin… Merci, professeur. Pour tout ce temps.)"}, goes),
 		{"flag": &"roc_col_vu"},
 	]
 

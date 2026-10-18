@@ -218,31 +218,28 @@ static func _joss_hello(who: Node) -> Array:
 	var chloe_at: Vector2 = Stage.chloe().global_position
 	var thief = S.actor("BaryonyxGilet")
 	var lines: Array = [
-		Act.cue({"text": "Sur le ponton de la cabane, un garçon ruisselant essore un gilet de cuir. Il a un roseau dans les cheveux, et il ne s'en est pas aperçu."},
+		Act.cue({"text": "Sur le ponton de la cabane, un garçon ruisselant essore un gilet de cuir. Il a un roseau dans les cheveux, et il ne le sait pas."},
 			func() -> void:
 				if is_instance_valid(who):
 					Stage.tremble(who, 1.6, 1.6)
 					Act.burst((who as Node2D).global_position, Act.SPLASH, 8, 0.9, 0.2)),
 		Act.cue({"who": JOSS, "text": "Chloé ! Tu tombes à pic ! … Enfin, tu tombes bien. Moi, je suis tombé à pic. Dans l'eau. Trois fois."},
 			func() -> void: Stage.hop(who, 1, 9.0)),
-		{"who": JOSS, "text": "Ici, c'est mon atelier d'été : une cabane sur pilotis, et le Marais tout autour. Parfait pour tester mes gilets de nage."},
-		Act.cue({"who": JOSS, "text": "Cuir huilé, flotteurs en liège, double couture au point sellier. Regarde ces coutures. Non, vraiment : regarde-les."},
+		Act.cue({"who": JOSS, "text": "Ici, c'est mon atelier d'été : je teste mes gilets de nage. Cuir huilé, flotteurs en liège, double couture. Regarde ces coutures. Non, vraiment : regarde-les."},
 			func() -> void: Stage.lunge(who, chloe_at, 0.6, false)),
 		{"who": CHLOE, "text": "Elles sont… très droites."},
 		{"who": JOSS, "text": "MERCI. Personne ne regarde jamais les coutures."},
-		{"who": JOSS, "text": "Bref. Mon plus beau gilet, celui aux flotteurs rouges, je l'avais mis à sécher sur la rambarde. Et un jeune Baryonyx me l'a chipé !"},
-		Act.cue({"who": JOSS, "text": "Les Baryonyx adorent tout ce qui flotte. Celui-là fait couler mon gilet, le regarde remonter, et recommence. Depuis ce matin."},
+		Act.cue({"who": JOSS, "text": "Bref. Mon plus beau gilet, aux flotteurs rouges, un jeune Baryonyx me l'a chipé ! Il le fait couler, le regarde remonter, et recommence. Depuis ce matin."},
 			func() -> void:
 				if thief:
 					Stage.turn_to(who, (thief as Node2D).global_position)
 					await Act.pan((thief as Node2D).global_position, 1.4)
 					Act.dunk(thief, 3)),
-		{"who": JOSS, "text": "Il l'a emporté sur un banc de sable, au milieu de la roselière. Tu peux y aller à pied : les pontons, puis la vase. Enlève tes chaussettes."},
-		Act.cue({"who": JOSS, "text": "Si tu me le rapportes, il est à toi. Je l'avais taillé pour Maïa, mais elle dit que les gilets, « c'est pour les poules mouillées »."},
+		Act.cue({"who": JOSS, "text": "Il l'a emporté sur un banc de sable, au milieu de la roselière : les pontons, puis la vase, à pied. Si tu me le rapportes, il est à toi !"},
 			func() -> void:
 				Stage.look_back()
 				Stage.turn_to(who, chloe_at)),
-		{"who": JOSS, "text": "Elle est passée ce matin. Elle a voulu traverser un chenal à pied. Elle est ressortie verte, et elle est partie vers le nord en faisant « splotch » à chaque pas."},
+		{"who": JOSS, "text": "Je l'avais taillé pour Maïa : « les gilets, c'est pour les poules mouillées ». Ce matin, elle a traversé un chenal à pied. Elle est ressortie verte, direction le nord."},
 	]
 	var swimmer: Dino = Game.ability_user(&"nage")
 	if swimmer:
@@ -344,8 +341,7 @@ static func _vest_back(who: Node, caught: Dino) -> void:
 		lines.append(Act.cue({"who": JOSS, "text": "Tu l'as ! MON GILET ! J'ai couru sur tous les pontons en entendant le bruit !"},
 			func() -> void: Stage.hop(helper, 2, 10.0)))
 	lines.append_array([
-		{"who": JOSS, "text": "Une marque de dents sur la poche… Bah. Ça lui donne du caractère."},
-		{"who": JOSS, "text": "Garde-le. Il est à ta taille, et tu en auras plus besoin que Maïa. Elle, de toute façon, elle nage comme une enclume."},
+		{"who": JOSS, "text": "Une marque de dents sur la poche… Bah, ça lui donne du caractère. Garde-le : il est à ta taille, et Maïa, de toute façon, nage comme une enclume."},
 		Act.cue({"text": "Chloé reçoit le gilet de nage de Joss !"}, func() -> void: Act.pop(w.player.global_position, "gilet_nage", 1.2)),
 		{"flag": &"gilet_nage"},
 	])
@@ -356,17 +352,17 @@ static func _vest_back(who: Node, caught: Dino) -> void:
 	var singer = S.actor("VoixDuMarais")
 	var suie = S.actor("DameSuie")
 	await S.say(_swim_lesson(caught) + [
-		Act.cue({"who": JOSS, "text": "Au cœur de la roselière, sur un îlot, chante une vieille Parasaurolophus. Le soir, toutes mes aiguilles vibrent dans leur boîte. Mais une porte d'ambre ferme son îlot."},
+		Act.cue({"who": JOSS, "text": "Au cœur de la roselière, sur un îlot, chante une vieille Parasaurolophus. Le soir, mes aiguilles vibrent dans leur boîte. Mais une porte d'ambre ferme son îlot."},
 			func() -> void:
 				if singer:
 					await Act.pan((singer as Node2D).global_position, 1.8)
 					Act.sing(singer, -16.0)),
-		Act.cue({"who": JOSS, "text": "Et sur l'îlot aux racines, il y a une dame très polie, en gris, avec une voilette, qui vient en barque cueillir des racines. Elle m'a demandé si je faisais des gilets pour Suchomimus."},
+		Act.cue({"who": JOSS, "text": "Et sur l'îlot aux racines, une dame très polie, en gris, avec une voilette, vient en barque cueillir des racines. Elle sent la cheminée froide, Chloé. Je n'aime pas trop."},
 			func() -> void:
 				if suie:
-					Act.pan((suie as Node2D).global_position, 1.8)),
-		Act.cue({"who": JOSS, "text": "J'ai dit que je réfléchissais. … Elle sent la cheminée froide, Chloé. Je n'aime pas trop."},
-			func() -> void: Stage.look_back()),
+					await Act.pan((suie as Node2D).global_position, 1.8)
+					await S.wait(1.2)
+					Stage.look_back()),
 		{"who": JOSS, "text": "Bon ! Je retourne à ma cabane. Si le gilet se découd, tu sais où me trouver. Il ne se découdra pas. Mais tu sais où me trouver."},
 	])
 	if start != Vector2.INF:   # back the way he came
@@ -507,8 +503,7 @@ static func voix(who: Node) -> void:
 	await S.say([
 		Act.cue({"text": "Au milieu de l'îlot, entre des nénuphars larges comme des tables, une très vieille Parasaurolophus chante, les yeux fermés."},
 			func() -> void: Act.keep_singing(who, song)),
-		{"text": "Sa crête est longue, pâlie comme du vieux cuivre. Ses écailles ont la couleur des roseaux en hiver. À chaque note, l'eau tremble, et les pierres d'ambre de l'îlot s'allument, tout doucement."},
-		{"text": "Sur une pierre plate, quelqu'un a gravé un nom, avec une petite fougère : « La Voix »."},
+		{"text": "Sa crête est pâle comme du vieux cuivre. À chaque note, l'eau tremble et les pierres d'ambre de l'îlot s'allument. Sur une pierre plate, gravé avec une fougère : « La Voix »."},
 		Act.cue({"text": "Le chant s'arrête. La vieille Parasaurolophus ouvre un œil."},
 			func() -> void:
 				song["on"] = false
@@ -553,7 +548,7 @@ static func _voix_reunion(echo: Dino, singer: Node) -> void:
 				Act.sing(singer, -6.0)),
 	]
 	if not mine:
-		lines.append(Act.cue({"text": "%s se met à trembler. Chez Brac, on ne lui a jamais chanté que des ordres. Alors la Voix baisse la tête jusqu'à lui et fredonne tout bas, une berceuse, encore et encore, jusqu'à ce qu'il arrête de trembler." % name},
+		lines.append(Act.cue({"text": "%s se met à trembler : chez Brac, on ne lui a jamais chanté que des ordres. Alors la Voix baisse la tête jusqu'à lui et fredonne une berceuse, tout bas, jusqu'à ce qu'il se calme." % name},
 			func() -> void: Act.lullaby(singer, little)))
 	lines.append_array([
 		Act.cue({"text": "Elle pose sa crête contre celle %s. Et elle ne bouge plus." % French.de(name)},
@@ -586,10 +581,9 @@ static func _voix_reunion(echo: Dino, singer: Node) -> void:
 ## The Ancien's page: a copper tube sealed with wax, fished out from under the water lilies.
 static func _ancien_page(singer: Node) -> Array:
 	return [
-		Act.cue({"text": "La Voix plonge la tête sous les nénuphars et en ressort un petit tube de cuivre, tout vert de vieillesse, bouché à la cire. Elle le laisse tomber aux pieds de Chloé."},
-			func() -> void: Act.fishes_tube(singer)),
-		Act.cue({"text": "Sur la cire, de l'écriture penchée d'Hélène : « Pour Chloé. Elle te la donnera. »"},
+		Act.cue({"text": "La Voix sort de sous les nénuphars un petit tube de cuivre, vert de vieillesse, bouché à la cire. Sur la cire, l'écriture penchée d'Hélène : « Pour Chloé. Elle te la donnera. »"},
 			func() -> void:
+				await Act.fishes_tube(singer)
 				var tube = S.actor("TubeVoix")
 				if tube:
 					Stage.take_thing(tube)   # (she picks it up)
@@ -655,9 +649,10 @@ static func _voix_opens_temple(who: Node) -> void:
 			cry("hadrosaure", "neutre", -6.0, OLD_PITCH - 0.04)
 			Act.pan(door_at, 3.2))])
 	var lines: Array = [
-		Act.cue({"text": "Puis, du fond de la brume, un grondement lui répond : le bruit d'une énorme porte de pierre qui glisse, lentement, lentement."},
-			func() -> void: _door_opens(temple)),
-		Act.cue({"who": CHLOE, "text": "Le temple englouti… Tu viens de l'ouvrir. Pour moi ?"}, func() -> void: Stage.look_back()),
+		Act.cue({"who": CHLOE, "text": "(Un grondement, au fond de la brume : une énorme porte de pierre qui glisse, lentement…) Le temple englouti ! Tu viens de l'ouvrir. Pour moi ?"},
+			func() -> void:
+				await _door_opens(temple)
+				Stage.look_back()),
 		Act.cue({"text": "La Voix baisse sa crête vers Chloé. Il y a longtemps, elle a sûrement chanté ce chant-là pour Hélène."},
 			func() -> void:
 				Stage.turn_to(who, Stage.chloe().global_position)

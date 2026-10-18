@@ -397,14 +397,14 @@ static func _spino_rises(who: Node) -> void:
 	var chloe := Stage.chloe()
 	var altar = S.actor("Autel")
 	var lines: Array = [
-		Act.cue({"text": "La grande salle. Par une coupole fendue, un rayon de jour tombe sur un bassin d'eau claire. Au fond, sur un autel de pierre, quelque chose bat doucement, comme un cœur. Une lumière d'ambre."},
+		Act.cue({"text": "La grande salle. Par une coupole fendue, un rayon de jour tombe sur un bassin d'eau claire. Au fond, sur un autel, quelque chose bat doucement. Une lumière d'ambre."},
 			func() -> void:
 				Stage.look_at(_px(ALTAR))
 				if altar:
 					Act.heartbeat(altar, 3, 1.2)),
 		Act.cue({"text": "L'eau du bassin se soulève. Une voile immense en sort, couverte d'algues et de vieilles cicatrices. Puis une tête, longue comme une barque."},
 			func() -> void: _surges(who)),
-		Act.cue({"text": "Le Spinosaure Ancestral. Si grand que Chloé doit renverser la tête pour le voir en entier. Ses yeux sont dorés, calmes, très anciens. Pas une veine violette : lui n'a peur de rien."},
+		Act.cue({"text": "Le Spinosaure Ancestral. Si grand que Chloé doit renverser la tête. Ses yeux sont dorés, calmes, très anciens. Pas une veine violette : lui n'a peur de rien."},
 			func() -> void:
 				Stage.look_back()
 				if is_instance_valid(who):
@@ -468,9 +468,8 @@ static func _trust(who: Node) -> void:
 	await S.say([
 		Act.cue({"text": "Le Spinosaure Ancestral s'ébroue. L'eau vole partout. Puis, lentement, il replie sa voile et baisse la tête jusqu'aux pieds de Chloé. Un salut."},
 			func() -> void: _shakes_and_bows(who)),
-		Act.cue({"text": "Entre deux épines de sa voile, pris dans les algues, un disque d'ambre vert d'eau, gravé d'une vague et d'une petite fougère."},
+		Act.cue({"text": "Entre deux épines de sa voile, pris dans les algues, un disque d'ambre vert d'eau, gravé d'une vague et d'une petite fougère. La fougère d'Hélène."},
 			func() -> void: Stage.glow(who, Color(1.2, 1.6, 1.25), 2, 1.2)),
-		{"who": CHLOE, "text": "La fougère d'Hélène…"},
 		Act.cue({"text": "Chloé le détache, tout doucement. Le Spinosaure ne bouge pas d'une écaille."},
 			func() -> void:
 				if is_instance_valid(who):
@@ -487,12 +486,11 @@ static func _trust(who: Node) -> void:
 	await S.say([
 		Act.cue({"text": "Alors le Spinosaure se tourne vers l'autel. Du bout du museau, avec une douceur incroyable pour une bête de cette taille, il pousse vers Chloé ce qui bat dans la lumière."},
 			func() -> void: _brings_heart(who, altar)),
-		Act.cue({"text": "Une pierre d'ambre grosse comme un poing, tiède, vivante. Elle bat. Lentement, profondément, comme un cœur endormi."},
+		Act.cue({"who": CHLOE, "text": "Une pierre d'ambre grosse comme un poing, tiède, vivante. Elle bat, lentement, comme un cœur endormi. … Le premier Cœur d'ambre."},
 			func() -> void:
 				Stage.look_back()
 				Act.pop(chloe.global_position, "coeur_1", 1.0)
 				Act.heartbeat(chloe, 3, 1.4)),
-		{"who": CHLOE, "text": "Le premier Cœur d'ambre…"},
 	])
 	var lines: Array = [
 		Act.cue({"text": "Très loin, sous la terre, quelque chose gronde. Le volcan. Le Cœur bat plus vite… puis se calme, contre les mains de Chloé."},
@@ -506,7 +504,6 @@ static func _trust(who: Node) -> void:
 				Stage.flash(HEART_GOLD, 1.2)
 				Stage.glow(chloe, Act.AMBER_GLOW, 1, 1.6)
 				Act.burst(chloe.global_position, Act.SPARKS, 30, 1.2, 0.3)),
-		{"text": "Chloé reçoit le premier Cœur d'ambre !"},
 		{"flag": &"coeur_1"},
 		{"who": CHLOE, "text": "Un sur cinq. Je le garderai mieux que personne. Promis."},
 	]

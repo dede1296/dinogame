@@ -288,13 +288,16 @@ static func caisses(who: Node) -> void:
 		for i in 3:
 			await CS.reach(chloe, at + Vector2(0.0, 20.0), 6.0, 0.5)
 	var lines: Array = [
-		CS.cue({"text": "Chloé soulève un couvercle. Des pierres noires, lisses, qui luisent violet dans le noir. Et une odeur de cendre froide."}, opens),
-		CS.cue({"text": "Sur chaque caisse, un tampon. Entier, cette fois : « COMPTOIR D'AMBRE — HAVRE-DORÉ »."}, reads),
+		CS.cue({"text": "Sous le couvercle, des pierres noires qui luisent violet, et une odeur de cendre froide. Sur chaque caisse, un tampon : « COMPTOIR D'AMBRE — HAVRE-DORÉ »."},
+			func() -> void:
+				await opens.call()
+				reads.call()),
 		{"who": CHLOE, "text": "(Sur la caisse de Brac, dans le Désert, il n'en restait que « …ptoir d'Amb… ». Le Comptoir d'Ambre. Maître Ferréol.)" if Game.flag(&"chariot_fouille")
 			else "(Le Comptoir d'Ambre… Le Comptoir de Maître Ferréol ?)"},
-		CS.cue({"text": "Sur une caisse plus petite, un registre de bord, tenu d'une écriture serrée. Chaque semaine, la même ligne : « Entrepôt du Comptoir : 12 caisses. Reçu : F. »"}, leafs),
-		CS.cue({"text": "Et tout en bas de la dernière page : « Masques de plongée : 10 (le sellier). »"},
-			func() -> void: Stage.emote(chloe, "!")),
+		CS.cue({"text": "Un registre, sur une petite caisse. Chaque semaine : « Entrepôt du Comptoir : 12 caisses. Reçu : F. » Et en bas de la dernière page : « Masques de plongée : 10 (le sellier). »"},
+			func() -> void:
+				await leafs.call()
+				Stage.emote(chloe, "!")),
 		{"who": CHLOE, "text": "(Les « plongeurs » de Ferréol… Ce sont eux. Et Joss n'en sait rien.)" if Game.flag(&"joss_cote_vu")
 			else "(Des masques de plongée… pour passer sous l'eau jusqu'ici.)"},
 		CS.cue({"text": "Glissé dans le registre, un papier noir plié en deux. Encre argentée, écriture fine et droite. Le papier sent le sel."},
@@ -355,12 +358,13 @@ static func barque(who: Node) -> void:
 		lines.append(CS.cue({"text": "Les cordages sont noués de nœuds de marin, serrés, parfaits. Des nœuds de quelqu'un qui a grandi sur un port."}, knots))
 	lines.append_array([
 		{"who": CHLOE, "text": "(Cette barque… C'est elle qui m'a amenée sur l'île. Dans la brume, le premier jour.)"},
-		CS.cue({"text": "Chloé fait le tour de la proue. Il y a un nom, peint en blanc, à demi effacé par le sel."}, round_the_bow),
-		CS.cue({"text": "« MAÏA »."}, the_name),
+		CS.cue({"text": "Chloé fait le tour de la proue. Un nom, peint en blanc, à demi effacé par le sel : « MAÏA »."},
+			func() -> void:
+				await round_the_bow.call()
+				the_name.call()),
 		{"who": CHLOE, "text": "(La barque d'Isaure. La barque de la maman de Maïa. Au milieu des caisses d'ambre noir.)"},
-		CS.cue({"text": "Sous le banc, punaisé contre le bois, un dessin d'enfant délavé par l'humidité : un dino à trois cornes, un bateau, deux bonshommes qui se tiennent la main. Dessous, en lettres de travers : « MAMAN + MAÏA + CAILLOU »."}, drawing),
-		CS.cue({"text": "Chloé le laisse où il est."}, func() -> void: CS.get_up(chloe, 0.7)),
-		{"who": CHLOE, "text": "(Maïa ne doit pas l'apprendre comme ça.)"},
+		CS.cue({"text": "Sous le banc, un dessin d'enfant délavé : un dino à trois cornes, un bateau, deux bonshommes qui se tiennent la main. Dessous, de travers : « MAMAN + MAÏA + CAILLOU »."}, drawing),
+		CS.cue({"who": CHLOE, "text": "(Je le laisse là. Maïa ne doit pas l'apprendre comme ça.)"}, func() -> void: CS.get_up(chloe, 0.7)),
 		{"flag": &"barque_isaure_vue"},
 	])
 	await S.say(lines)

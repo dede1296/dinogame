@@ -113,13 +113,12 @@ static func brac_sanctuaire(_trigger: Node) -> void:
 		Stage.hop(boss, 2, 8.0)
 		Stage.tremble(carno, 1.0, 2.0)
 	await S.say([
-		D._cue({"text": "Devant la grande porte de pierre du sanctuaire, un dino immense tire sur une chaîne. Rouge sombre, deux cornes au-dessus des yeux, de tout petits bras… et sous la peau, des veines violettes."}, pulls),
+		D._cue({"text": "Devant la grande porte de pierre du sanctuaire, un dino immense tire sur une chaîne. Rouge sombre, deux cornes au-dessus des yeux, de tout petits bras… et des veines violettes."}, pulls),
 		D._cue({"text": "Au bout de la chaîne, arc-bouté dans le sable : Brac."}, pulls_back),
 		D._cue({"who": BRAC, "text": "ALLEZ ! RUGIS ! Rugis devant la porte, gros tas d'écailles ! Le Masque a dit que tu l'ouvrirais !"},
 			func() -> void: boss.face(carno.global_position)),
 		D._cue({"text": "Le Carnotaurus rugit. Un cri terrible… qui monte, qui monte, et se casse d'un coup, comme un sanglot."}, roars),
-		{"text": "La porte ne bouge pas d'un millimètre."},
-		{"who": CHLOE, "text": "(Ce n'est pas un rugissement de colère. C'est un cri de peur.)"},
+		{"who": CHLOE, "text": "(La porte ne bouge pas d'un millimètre. Et ce n'était pas un rugissement de colère : c'était un cri de peur.)"},
 		{"text": "Sous l'empreinte géante gravée au milieu de la porte, Chloé lit : « Au gardien sans peur, la porte s'ouvre. »"},
 		{"flag": &"porte_vents_vue"},
 		D._cue({"who": BRAC, "text": "Encore ! ENCORE ! … Crotte de Stégosaure, pourquoi ça ne marche pas ?!"}, stamps),
@@ -171,16 +170,12 @@ static func _brac_at_the_door(lead: Dino, boss: Npc) -> Array:
 		{"who": BRAC, "text": "TOI ?! Le moucheron de la Forêt ! Dans MON désert ?! Tu me suis, ou quoi ?"},
 		{"who": CHLOE, "text": "C'est vous qui êtes partout où il y a un Alpha à attraper !"},
 		{"who": BRAC, "text": "Parce que c'est mon MÉTIER ! Chasseur d'Alphas ! C'est écrit sur ma carte de visite ! … Enfin, ça le sera, quand j'aurai des cartes de visite."},
-		{"who": BRAC, "text": "Je t'avais prévenue, moucheron : ici, j'ai des amis. Des amis avec des DENTS !"},
-		{"who": CHLOE, "text": "Ce n'est pas votre ami. Il a peur de vous. Il a peur de tout !"},
+		{"who": CHLOE, "text": "Ce n'est pas votre ami : il a peur de vous. Il a peur de tout !"},
 		{"who": BRAC, "text": "Peur, obéir… c'est pareil, gamine."},
 		{"who": CHLOE, "text": "Non. Et la porte, elle, le sait."},
 	])
 	if Game.flag(&"dame_suie_battue"):
-		lines.append_array([
-			{"who": BRAC, "text": "Pfff. La Suie m'avait prévenu que sa nouvelle fournée d'ambre noir était « trop forte ». La Suie dit toujours « trop ». Moi, j'aime quand c'est trop."},
-			{"who": CHLOE, "text": "(L'ambre noir de Dame Suie… Même elle trouvait ça trop fort.)"},
-		])
+		lines.append({"who": BRAC, "text": "Pfff. La Suie m'avait prévenu : sa nouvelle fournée d'ambre noir est « trop forte ». La Suie dit toujours « trop ». Moi, j'aime quand c'est trop."})
 	return lines
 
 
@@ -551,9 +546,7 @@ static func _lost_henchman() -> void:
 		])
 	after.append_array([
 		{"who": speaker, "text": "Euh… La mer, c'est par où ?"},
-		{"who": CHLOE, "text": "Tout droit vers le sud-est, puis le lac de sel, puis le Marais."},
-		{"who": speaker, "text": "Le Marais… Il y a des trucs qui nagent, dans le Marais ?"},
-		{"who": CHLOE, "text": "Plein."},
+		{"who": CHLOE, "text": "Tout droit vers le sud-est, puis le lac de sel, puis le Marais. Il y a plein de trucs qui nagent, dans le Marais."},
 		{"who": speaker, "text": "… Parfait. Je nagerai." + (" Au revoir, petite. Et si tu croises Gustave, dis-lui que j'arrive. Avec du sable." if known else " Au revoir, moucheron.")},
 	])
 	await S.say(after)
@@ -633,8 +626,8 @@ static func _brac_hello(who: Node) -> Array:
 		if is_instance_valid(who):
 			(who as Npc).face(chloe.global_position)
 	var lines: Array = [
-		D._cue({"text": "Au bout du canyon, la roche se referme en cul-de-sac. Le chariot de Brac est là, penché sur trois roues, et dans la cage, le Carnotaurus Rouge se cogne contre les barreaux." if wheel
-			else "Au bout du canyon, la roche se referme en cul-de-sac. Le chariot de Brac est là, et dans la cage, le Carnotaurus Rouge se cogne contre les barreaux."}, bangs),
+		D._cue({"text": "Au bout du canyon, un cul-de-sac. Le chariot de Brac est là, penché sur trois roues, et dans la cage, le Carnotaurus Rouge se cogne contre les barreaux." if wheel
+			else "Au bout du canyon, un cul-de-sac. Le chariot de Brac est là, et dans la cage, le Carnotaurus Rouge se cogne contre les barreaux."}, bangs),
 		D._cue({"who": BRAC, "text": "Un cul-de-sac ! Qui met un CUL-DE-SAC au bout d'un canyon ?! C'est n'importe quoi, ce désert !"}, rants),
 	]
 	if wheel:
@@ -649,10 +642,11 @@ static func _brac_hello(who: Node) -> Array:
 		{"who": CHLOE, "text": "Laissez-le partir, Brac. Il n'ouvrira jamais la porte pour vous. Elle ne s'ouvre qu'au gardien sans peur."},
 		{"who": BRAC, "text": "Sans peur, sans peur… Il a peur de TOUT, ce gros lézard ! Des cailloux, du vent, de son ombre ! Il a même peur de MOI !"},
 		{"who": CHLOE, "text": "C'est vous qui lui avez fait ça."},
-		D._cue({"text": "Brac ouvre la bouche. La referme. Puis il jette un coup d'œil par-dessus son épaule, comme si quelqu'un pouvait l'entendre."}, over_the_shoulder),
-		{"who": BRAC, "text": "Si je rentre sans le Cœur, le Masque va… Non. Non, non. Tu ne comprends rien, gamine."},
-		D._cue({"text": "Il rabat son masque d'os sur son visage, d'un coup de pouce."}, func() -> void: Stage.bow(who, 0.4)),
-		D._cue({"who": BRAC, "text": "Cabosse ! Grognon ! Mastoc ! Au travail ! On va montrer à ce moucheron ce que valent les dents du Désert !"}, func() -> void: Stage.rear(who, 0.7)),
+		D._cue({"who": BRAC, "text": "… Si je rentre sans le Cœur, le Masque va… Non. Non, non. Tu ne comprends rien, gamine."}, over_the_shoulder),
+		D._cue({"who": BRAC, "text": "Cabosse ! Grognon ! Mastoc ! Au travail ! On va montrer à ce moucheron ce que valent les dents du Désert !"},
+			func() -> void:
+				await Stage.bow(who, 0.4)   # (his bone mask down over his face, with a thumb)
+				Stage.rear(who, 0.7)),
 	])
 	return lines
 
@@ -828,10 +822,9 @@ static func chariot(who: Node) -> void:
 		return
 	S.lock(true)
 	var lines: Array = [
-		D._cue({"text": "Le chariot de Brac, penché dans le sable. La cage est ouverte, les barreaux tordus. Dessous, un vrai bric-à-brac : des cordes, des chaînes, un pot de moutarde, et une pile de papiers."},
+		D._cue({"text": "Le chariot de Brac, penché dans le sable. La cage est ouverte, les barreaux tordus. Dessous, un bric-à-brac : des cordes, un pot de moutarde, et une pile de papiers."},
 			func() -> void: Stage.bow(chloe, 1.2)),
-		{"text": "Tout en haut, la liste de Brac, en grosses lettres maladroites : « À ATTRAPER. L'Alpha de la Forêt : RATÉ (la gamine). Le Carnotaurus Rouge : … » Le reste n'est qu'un grand gribouillis rageur."},
-		{"who": CHLOE, "text": "(« RATÉ, la gamine. » C'est moi. Il a même écrit « la gamine ».)"},
+		{"text": "Tout en haut, la liste de Brac : « À ATTRAPER. L'Alpha de la Forêt : RATÉ (la gamine). Le Carnotaurus Rouge : … » Le reste n'est qu'un grand gribouillis rageur."},
 		{"text": "Dans une caisse, des pierres noires veinées de violet, enveloppées dans un chiffon. Sur le bois, un tampon à moitié effacé : « …ptoir d'Amb… »"},
 	]
 	var lead := Game.lead_dino()
@@ -845,7 +838,7 @@ static func chariot(who: Node) -> void:
 	if Game.flag(&"havre_arrive"):
 		lines.append({"who": CHLOE, "text": "(« …ptoir d'Amb… » ? Comme le Comptoir d'Ambre, à Havre-Doré ?)"})
 	lines.append_array([
-		D._cue({"text": "Chloé enveloppe l'ambre noir dans le chiffon et le glisse au fond de sa sacoche, bien fermée. Il ne fera plus peur à personne. Roc saura quoi en faire. … Enfin, elle l'espère."},
+		D._cue({"text": "Chloé enveloppe l'ambre noir dans le chiffon et le glisse au fond de sa sacoche. Il ne fera plus peur à personne. Roc saura quoi en faire… elle l'espère."},
 			func() -> void: Stage.bow(chloe, 1.0)),
 		D._cue({"text": "Sous la caisse, un petit mot plié en quatre. Papier noir, encre argentée, écriture fine et droite. Comme dans la Forêt."},
 			func() -> void: Stage.emote(chloe, "!")),
@@ -855,8 +848,7 @@ static func chariot(who: Node) -> void:
 	if Game.flag(&"found_journal_20"):
 		lines.append({"who": CHLOE, "text": "(Roc a une copie de la carte des sanctuaires… Non. Non, pas lui.)"})
 	lines.append_array([
-		{"text": "Le papier sent le sel. Et, tout au fond, un peu la cendre."},
-		{"who": CHLOE, "text": "(La grande marée… Pourquoi parler de marée, au milieu du désert ?)"},
+		{"who": CHLOE, "text": "(Le papier sent le sel, et un peu la cendre. La grande marée… Pourquoi parler de marée, au milieu du désert ?)"},
 		{"flag": &"chariot_fouille"},
 	])
 	await S.say(lines)
