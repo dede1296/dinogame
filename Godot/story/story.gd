@@ -27,6 +27,7 @@ static func on_zone_entered(zone: StringName) -> void:
 static func _on_zone_entered(zone: StringName) -> void:
 	Monts.update_access()   # (the way up to the Monts: end of chapter 5 and a warm coat; old saves too)
 	Cieux.update_access()   # (the way up to the Cieux: the harness and a grown flyer; old saves too)
+	Volcan.update_access()   # (the way down to the volcano: open once the mask has fallen; old saves too)
 	Barque.landing(zone)    # (coming in by Maïa's boat: it waits out at sea, before the picture shows)
 	match zone:
 		&"port_ambre":
@@ -79,6 +80,9 @@ static func _on_zone_entered(zone: StringName) -> void:
 			await CieuxNids.arrival()
 		&"arche_du_vent":
 			await CieuxArche.arrival()
+		# Chapter 8, the Plaine Volcanique (story/volcan*.gd)
+		&"champs_cendres", &"forges_ombre", &"coulees_lave", &"sanctuaire_magma", &"porte_cratere":
+			await Volcan.on_zone(zone)
 
 
 ## The time of day changed while in zone `zone` (a scene that only happens at night…).
@@ -124,6 +128,7 @@ static func _run(event: StringName, who: Node) -> void:
 			said = await Cote.roc() or said
 			said = await MontsFin.roc() or said
 			said = await CieuxArche.roc() or said
+			said = await VolcanAutour.roc() or said   # chapter 8 (story/volcan_autour.gd)
 			said = await clins().roc() or said   # (the car in the tree, the mosquito in amber)
 			said = await Voyage.roc() or said    # (the Grands Voyageurs, once she has met one)
 			said = await _dex_rewards() or said
@@ -150,7 +155,9 @@ static func _run(event: StringName, who: Node) -> void:
 		&"ferreol":
 			await Havre.ferreol()
 		&"joss":
-			if await Cieux.joss_harnais():   # chapter 7: the harness is done; then his lines of the chapter
+			if await VolcanAutour.joss():   # chapter 8: news of Maïa at the crater's door (once)
+				pass
+			elif await Cieux.joss_harnais():   # chapter 7: the harness is done; then his lines of the chapter
 				pass
 			elif Game.flag(&"monts_arrivee"):   # chapter 6: Maïa at his place, then the flying harness
 				await MontsFin.joss_havre()
@@ -342,7 +349,9 @@ static func _run(event: StringName, who: Node) -> void:
 		&"triceratops_malade", &"crottes_triceratops":
 			await visiteurs().triceratops(who)
 		_:
-			push_error("Scène inconnue : %s" % event)
+			# Chapter 8, the Plaine Volcanique (story/volcan*.gd): its events, by Volcan.run
+			if not await Volcan.run(event, who):
+				push_error("Scène inconnue : %s" % event)
 
 
 ## Roc when he has nothing new to say: a line (the objective as advice, sometimes), then the

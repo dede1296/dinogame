@@ -93,6 +93,9 @@ static func answer(npc: StringName, speaker: String, topic: StringName) -> Array
 	var monts: Array = MontsAsk.answer(npc, speaker, topic)   # chapter 6 (story/monts_ask.gd)
 	if not monts.is_empty():
 		return monts
+	var volcan: Array = DialogueVolcan.answer(npc, speaker, topic)   # chapter 8 (data/dialogue_volcan.gd)
+	if not volcan.is_empty():
+		return volcan
 	var cieux: Array = DialogueCieux.answer(npc, speaker, topic)   # chapter 7 (data/dialogue_cieux.gd)
 	if not cieux.is_empty():
 		return cieux
@@ -102,7 +105,7 @@ static func answer(npc: StringName, speaker: String, topic: StringName) -> Array
 ## A question in Chloé's words, for npc (she does not ask Roc where Roc goes).
 static func label(npc: StringName, topic: StringName) -> String:
 	return TOPICS_FOR.get(npc, {}).get(topic, TOPICS.get(topic, DesertAsk.TOPICS.get(topic, CoteAsk.TOPICS.get(topic,
-		MontsAsk.TOPICS.get(topic, DialogueCieux.TOPICS.get(topic, String(topic)))))))
+		MontsAsk.TOPICS.get(topic, DialogueCieux.TOPICS.get(topic, DialogueVolcan.TOPICS.get(topic, String(topic))))))))
 
 
 ## The questions of the moment (chapter 2 on): where to go, the cracked wall, calming the
@@ -147,6 +150,9 @@ static func story_topics() -> Array:
 	# Chapter 7, the Cieux Éternels: the harness, the bridges, the Roi, the Arche, how one flies.
 	if Game.flag(&"maia_alliee"):
 		out.append_array(DialogueCieux.story_topics())
+	# Chapter 8, the Plaine Volcanique: the T-Rex, the lava, the forges, the clear amber.
+	if Game.flag(&"masque_tombe"):
+		out.append_array(DialogueVolcan.story_topics())
 	return out
 
 

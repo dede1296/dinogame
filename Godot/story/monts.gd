@@ -311,6 +311,9 @@ static func bertille(who: Node) -> void:
 
 ## What she says now, before her questions: what changed, else the next of her pool.
 static func _again() -> String:
+	var volcan := VolcanAutour.bertille_line()   # chapter 8: the fires gone out (once)
+	if volcan != "":
+		return volcan
 	if Game.is_snowing() and Game.weather == &"blizzard":
 		return "Par ce temps, on ne compte plus rien. On attend. Assieds-toi, et mets tes mains près du feu."
 	if Game.flag(&"maia_alliee") and not Game.flag(&"bertille_maia"):

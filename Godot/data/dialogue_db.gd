@@ -377,6 +377,9 @@ static func lines(id: StringName) -> Array:
 				{"who": CHLOE, "text": "(« Je m'entraîne »… Elle s'entraînait déjà pour moi.)"},
 			]
 	# (chapter 6 first: its « monts_bloques » — the warm coat — replaces the Côte's once chapter 5 is over)
+	var volcan: Array = DialogueVolcan.lines(id)   # chapter 8 first (data/dialogue_volcan.gd): « volcan_bloque » is the Descente de Cendre once the mask has fallen
+	if not volcan.is_empty():
+		return volcan
 	var cieux: Array = DialogueCieux.lines(id)   # chapter 7 (data/dialogue_cieux.gd)
 	if not cieux.is_empty():
 		return cieux

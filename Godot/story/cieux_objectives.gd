@@ -37,8 +37,7 @@ static func _add(out: Array[Dictionary], id: String, text: String, zone: StringN
 ## The main steps, the most advanced first (once maia_alliee).
 static func main(out: Array[Dictionary]) -> void:
 	if Game.flag(&"masque_tombe"):
-		_add(out, "volcan", "Isaure est partie vers le volcan avec les quatre Cœurs. Le cinquième dort sous la Plaine Volcanique : la Descente de Cendre y mène. (La suite de l'aventure arrive bientôt !)",
-			&"arche_du_vent", _at(&"arche_du_vent", "SortieVolcan", C.place("DESCENTE_CENDRE")), true)
+		VolcanObjectives.main(out)   # chapter 8, the Plaine Volcanique (story/volcan_objectives.gd)
 		return
 	if Game.flag(&"arche_arrivee"):
 		_add(out, "masque", "Sous l'Arche du Vent, le Masque attend. Il veut les quatre Cœurs. Apaise ses ptérosaures : ils ont peur, comme les autres.",
