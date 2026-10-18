@@ -124,7 +124,7 @@ once_flag = &"traces_vues"
 position = Vector2(2092.7998, 1372.8)
 script = ExtResource("16_7edbm")
 event = &"pierre_plate"
-kind = "pierre_plate"
+kind = "pierre_plate_volcan"
 
 [node name="RoseauxSecs" type="StaticBody2D" parent="Entities" unique_id=789058424]
 position = Vector2(2246.4, 1324.8)
@@ -141,13 +141,13 @@ flip = true
 position = Vector2(1680, 950.39996)
 script = ExtResource("16_7edbm")
 event = &"cage_ouverte"
-kind = "cage"
+kind = "cage_ouverte"
 
 [node name="FutRenverse" type="StaticBody2D" parent="Entities" unique_id=1394863499]
 position = Vector2(1574.3999, 1084.8)
 script = ExtResource("16_7edbm")
 event = &"fut_renverse"
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 flip = true
 
 [node name="Numero3" type="StaticBody2D" parent="Entities" unique_id=1065710616]

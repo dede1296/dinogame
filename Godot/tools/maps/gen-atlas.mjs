@@ -57,7 +57,7 @@ const REGIONS = [
   { id: "cote", name: "Côte Préhistorique", zones: ["cote", "grottes_marines", "recif_sanctuaire"], levels: [28, 35], seeds: [[0.55, 0.1], [0.7, 0.14]], w: -0.01, c: "#a7c98a" },
   { id: "monts", name: "Monts Gelés", zones: ["monts", "grottes_glace", "sanctuaire_givre"], levels: [33, 40], seeds: [[0.84, 0.36], [0.76, 0.6]], w: 0.02, c: "#9ea08c" },
   { id: "cieux", name: "Cieux Éternels", zones: ["cieux", "nids_geants", "arche_du_vent"], levels: [38, 44], seeds: [[0.63, 0.3]], w: -0.035, c: "#dfe8f2" },
-  { id: "volcan", name: "Plaine Volcanique", zones: ["volcan"], levels: [42, 48], seeds: [], w: 0, c: "#5f4a42" },
+  { id: "volcan", name: "Plaine Volcanique", zones: ["champs_cendres", "forges_ombre", "coulees_lave", "sanctuaire_magma", "porte_cratere"], levels: [42, 48], seeds: [], w: 0, c: "#5f4a42" },
   { id: "apex", name: "Terre des Apex", zones: ["apex"], levels: [50, 50], seeds: [], w: 0, c: "#3a2622" },
 ];
 const G = Object.fromEntries(REGIONS.map((r, i) => [r.id, i]));
@@ -323,6 +323,11 @@ const places = [
   // The Cieux: the nests up the carved ramp at the north edge of the pitons, the Arche above them.
   ["nids_geants", "Nids géants", inRegion("cieux", 46.5 / 100, 0.5 / 86)],
   ["arche_du_vent", "Arche du Vent", inRegion("cieux", 40 / 100, 0 / 86)],
+  // The volcano: the forges at the north edge of the fields (the detailed map), then nearer the crater.
+  ["forges_ombre", "Forges de l'Ombre", inRegion("volcan", 45 / 90, 0 / 70)],
+  ["coulees_lave", "Coulées de lave", inRegion("volcan", 0.5, 0.36)],
+  ["sanctuaire_magma", "Sanctuaire de Magma", inRegion("volcan", 0.45, 0.4)],
+  ["porte_cratere", "Porte du Cratère", inRegion("volcan", 0.48, 0.44)],
 ];
 
 await sharp(img, { raw: { width: N, height: N, channels: 3 } }).png().toFile(`${OUT_ART}/atlas_ile.png`);

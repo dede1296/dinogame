@@ -72,17 +72,17 @@ terrain = NodePath("../../Terrain")
 position = Vector2(1200, 307.2)
 script = ExtResource("13_vrvso")
 event = &"portail_apex"
-kind = "porte_vents"
+kind = "portail_apex"
 
-[node name="Lanterne" type="StaticBody2D" parent="Entities" unique_id=651658720]
+[node name="Torche" type="StaticBody2D" parent="Entities" unique_id=1567013804]
 position = Vector2(979.19995, 336)
 script = ExtResource("14_kkg6y")
-kind = "lanterne"
+kind = "torche"
 
-[node name="Lanterne2" type="StaticBody2D" parent="Entities" unique_id=2143282759]
+[node name="Torche2" type="StaticBody2D" parent="Entities" unique_id=1940796271]
 position = Vector2(1420.8, 336)
 script = ExtResource("14_kkg6y")
-kind = "lanterne"
+kind = "torche"
 flip = true
 
 [node name="IsaurePorte" type="StaticBody2D" parent="Entities" unique_id=307396236 instance=ExtResource("15_sagsl")]
@@ -112,7 +112,7 @@ flip = true
 position = Vector2(739.19995, 374.40002)
 script = ExtResource("13_vrvso")
 event = &"camp_helene"
-kind = "natte_fouilles"
+kind = "camp_helene"
 
 [node name="Page38" type="StaticBody2D" parent="Entities" unique_id=11271105]
 position = Vector2(700.80005, 432)

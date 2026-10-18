@@ -41,7 +41,8 @@ const TUFT := preload("res://assets/art/props/hautes_herbes.png")
 ## Zones whose tall grass is a picture of its own (the Monts: tundra tufts, brown-green and
 ## frosted). One not made yet: TUFT.
 const ZONE_TUFT := {&"monts": "res://assets/art/props/herbes_toundra.png", &"cieux": "res://assets/art/props/herbes_toundra.png",
-	&"nids_geants": "res://assets/art/props/herbes_toundra.png"}
+	&"nids_geants": "res://assets/art/props/herbes_toundra.png", &"champs_cendres": "res://assets/art/props/fougere_cendre.png",
+	&"coulees_lave": "res://assets/art/props/fougere_cendre.png"}
 const OUTER_TREES := ["arbre_rond", "araucaria", "fougere_arbre", "arbre_rond"]
 ## On the near side (towards the camera) only low plants: trees there would hide the zone.
 const OUTER_LOW := ["buisson", "fougeres", "buisson", "hautes_herbes"]
@@ -124,14 +125,18 @@ const CLIFF_TEX := {
 	&"sanctuaire_givre": "res://assets/art/ground/falaise_neige.png",
 	&"cieux": "res://assets/art/ground/falaise_neige.png", &"nids_geants": "res://assets/art/ground/falaise_neige.png",
 	&"arche_du_vent": "res://assets/art/ground/falaise_neige.png",
+	&"champs_cendres": "res://assets/art/ground/roche_noire.png", &"forges_ombre": "res://assets/art/ground/roche_noire.png",
+	&"coulees_lave": "res://assets/art/ground/roche_noire.png", &"porte_cratere": "res://assets/art/ground/roche_noire.png",
+	&"sanctuaire_magma": "res://assets/art/ground/obsidienne.png",
 }
 ## Zones whose cliffs are their own (CLIFF_TEX) everywhere, even under their cover layers (the Cieux:
 ## their first layer is the sea of clouds at the pitons' feet, not a snow lying on the rock).
-const CLIFF_ALWAYS := [&"cieux", &"nids_geants", &"arche_du_vent"]
+const CLIFF_ALWAYS := [&"cieux", &"nids_geants", &"arche_du_vent", &"champs_cendres", &"forges_ombre", &"coulees_lave",
+	&"sanctuaire_magma", &"porte_cratere"]
 ## Zones whose walls are paved like their floor (the temple; the ice caves, their floor ice as
 ## well): the tops of the walls darker, so the rooms and passages read at a glance (0: as lit as
 ## the floor).
-const WALL_SHADE := {&"temple_englouti": 0.8, &"grottes_glace": 0.35}
+const WALL_SHADE := {&"temple_englouti": 0.8, &"grottes_glace": 0.35, &"sanctuaire_magma": 0.55}
 ## Zones whose raised ground is all walls (the ice caves): their tops in the walls' own picture
 ## (CLIFF_TEX, CLIFF_TINT), masses of dark ice apart from the floor.
 const WALL_TOPS := [&"grottes_glace"]

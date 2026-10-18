@@ -259,6 +259,7 @@ introduit l'espèce qui ouvre la suite, ce qui rend la collection utile.
 | **Nage** ✅ | Eau profonde, rivières | Spinosauridés (Baryonyx…) | Marais |
 | **Plongée** | Grottes sous-marines | Reptiles marins (Plesiosaurus…) | Côte |
 | **Vol** ✅ | Tout se survole : eau, falaises, vide entre les pitons ; îlots, sommets | Grands ptérosaures (Pteranodon, Tapejara, Tupandactylus, Hatzegopteryx, Quetzalcoatlus) | Cieux |
+| **Cuir de feu** ✅ | Coulées de lave (le dino **de tête**, Chloé sur son dos) | Tout dino de type Pierre ou Feu, adulte : cuirassés, pachycéphalosaures, grands théropodes (Saichania, Bastion, Fournaise…) | Volcan |
 
 **Monter, voler, nager** : Monture, Vol, Nage et Plongée demandent aussi un **équipement** fabriqué par
 Joss, le sellier de Havre-Doré (selle, harnais de vol, gilet de nage, masque de plongée), obtenu au fil
@@ -556,6 +557,45 @@ Essais : `tools/test_vol.gd` (fenêtre ; conditions une à une, décollage à la
 sorties, 3 zones survolées en tous sens sans faille de collision, sûreté ; les Cieux une fois branchés) ;
 `tools/test_especes_cieux.gd` (fiches, planches, tailles, Dinodex, capacités, attaques, habitats, froid, vide, objets, planche
 de contact).
+
+### La lave et la chaleur (Plaine Volcanique, chapitre 8) ✅
+
+**La lave** (`actors/lava.gd`, `Lava` ; `actors/lava_field.gd`) : les coulées arrêtent Chloé à pied. Elles se
+franchissent sur le dos du **dino de tête** s'il a le **Cuir de feu** (`cuir_de_feu` : type Pierre ou Feu, par
+la famille de sa tête — cuirassés, pachycéphalosaures, grands théropodes —, adulte niv. 12) : rien à presser,
+elle avance sur la coulée et monte sur son dos (`Player.lava_walker`, comme la nage ; ×0,95 la marche), elle
+redescend sur la roche. Changer de tête : son portrait (« Dino actif ») ou le Dinodex (« En tête ») ; pas sur
+la lave même (l'équipe est gardée, la selle aussi). Sans lui, la 1re poussée contre une coulée (une fois par
+zone) : `lave_bloquee` (la pensée de Chloé, puis qui pourrait : « Caillasse (Pierre) a le cuir pour : mets-le
+en tête… », au Cabinet, trop jeune, ou « Les Saichania des coulées refroidies… Et Fournaise ») ; la toute
+première traversée : `lave_franchie` (drapeau). Où est la lave : sur la racine de la zone, la méta `lave`
+(une Image, une case par pixel, blanc = lave) et/ou `lave_cases` (des `Rect2i`) ; `lave_retrait` : de la lave
+que personne ne franchit tant que le drapeau `lave_retiree` (ou `lave_retrait_drapeau`) est faux. Physique :
+la couche 6 (32, « lave »), construite au chargement (nœud `Lave`) ; les dinos sauvages la heurtent et n'y
+apparaissent pas. Le Vol est interdit aux coulées (`vol_interdit` ; « Trop de fumée et d'air brûlant ») ; on
+n'atterrit pas sur la lave.
+
+**La chaleur légère** (`actors/heat.gd`, `Heat`) : à pied, à moins de 3 cases d'une coulée, une petite jauge
+« Chaleur » (en haut au milieu) monte, plus vite tout contre (pleine en ~10 s à une case), et les bords de
+l'écran rougeoient ; la 1re fois, un mot l'explique ; pleine : « Trop chaud ! Chloé recule à l'ombre » et elle
+marche d'elle-même vers la roche fraîche (une touche la reprend). **Jamais de PV perdus.** Sur le dos d'un dino
+de pierre ou de feu, en selle, en vol, pendant une scène : elle ne monte pas. Méta de zone `chaleur` (0 : pas de
+jauge). Le feu de l'ambiance crépite plus fort près des coulées.
+
+**Combats au volcan** (`battle/battle_volcan.gd`, `battle/volcan_battles.gd`) : dans ses cinq zones, le fond
+`battle/volcan.jpg`, des braises qui montent, le feu tout bas ; pas de règle de type en plus. Attaques nouvelles,
+apprises tard : **Coulée de lave** (Feu 90, grands théropodes niv. 46) et **Séisme** pour les cératopsiens (45).
+Équilibrage (simulé, moteur réel ; équipe : départ L, 3e petit L-1, Nessie L-1, Bouée L-2, Ptéro L-2, jamais de
+soin) : sauvages Styracosaurus et Saichania 42-44, Daspletosaurus 44-46 (nuit) ; les corrompus numérotés (3 :
+Styracosaurus 42, 7 : Saichania 43, 11 : Allosaurus 43, 12 : Majungasaurus 44) : 100 % en apaisant ; **Brac**
+(Cabosse 43, Grognon 43, Mastoc 44, puis Fournaise 45 corrompu, apaisement long, sans soin) contre une équipe de
+44 : Vif 82-87 %, Bastion 98 %, Écho 91-97 % ; le **T-Rex de Magma** (48, Feu, combat d'honneur) contre une équipe de 45 :
+Vif 86-89 %, Bastion 97-99 %, Écho 88-93 % (3 K.O. en moyenne : le plus dur). Sa leçon, vraie sur la table : l'Eau
+et la Terre le touchent fort, ses flammes brûlent le Vent et la Nature, la Pierre et l'Eau tiennent bon.
+**L'antidote** (« Ambre clair », `antidote_ambre`, une dose) : seulement au dernier combat (règle `antidote`) :
+au Sac, versé sur le corrompu, ses veines s'effacent d'un coup ; il n'agit pas ce tour-là.
+
+Essais : `tools/test_lave_volcan.gd`, `tools/test_especes_volcan.gd`, `tools/test_combat_volcan.gd`.
 
 ## Les dinos
 

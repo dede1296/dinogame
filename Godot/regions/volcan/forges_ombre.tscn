@@ -75,81 +75,81 @@ position = Vector2(1814.3999, 796.80005)
 script = ExtResource("12_xiie1")
 kind = "feu_camp"
 
-[node name="Cage" type="StaticBody2D" parent="Entities" unique_id=286821190]
+[node name="CageOuverte" type="StaticBody2D" parent="Entities" unique_id=1359070203]
 position = Vector2(1440, 2275.2002)
 script = ExtResource("12_xiie1")
-kind = "cage"
+kind = "cage_ouverte"
 
-[node name="Cage2" type="StaticBody2D" parent="Entities" unique_id=2073827122]
+[node name="CageFermee" type="StaticBody2D" parent="Entities" unique_id=1945993306]
 position = Vector2(1574.3999, 2294.4)
 script = ExtResource("12_xiie1")
-kind = "cage"
+kind = "cage_fermee"
 flip = true
 
-[node name="Cage3" type="StaticBody2D" parent="Entities" unique_id=1059933663]
+[node name="CageOuverte2" type="StaticBody2D" parent="Entities" unique_id=708521864]
 position = Vector2(2620.7998, 2169.6)
 script = ExtResource("12_xiie1")
-kind = "cage"
+kind = "cage_ouverte"
 
-[node name="Cage4" type="StaticBody2D" parent="Entities" unique_id=683449374]
+[node name="CageOuverte3" type="StaticBody2D" parent="Entities" unique_id=1104899100]
 position = Vector2(2755.2002, 2198.4)
 script = ExtResource("12_xiie1")
-kind = "cage"
+kind = "cage_ouverte"
 flip = true
 
-[node name="Cage5" type="StaticBody2D" parent="Entities" unique_id=863797907]
+[node name="CageOuverte4" type="StaticBody2D" parent="Entities" unique_id=365236792]
 position = Vector2(998.39996, 2448)
 script = ExtResource("12_xiie1")
-kind = "cage"
+kind = "cage_ouverte"
 
-[node name="Cage6" type="StaticBody2D" parent="Entities" unique_id=1106392002]
+[node name="CageFermee2" type="StaticBody2D" parent="Entities" unique_id=154980667]
 position = Vector2(2928, 2515.2002)
 script = ExtResource("12_xiie1")
-kind = "cage"
+kind = "cage_fermee"
 flip = true
 
-[node name="CaisseAmbreNoir" type="StaticBody2D" parent="Entities" unique_id=1821839963]
+[node name="FutAmbreNoir" type="StaticBody2D" parent="Entities" unique_id=883753612]
 position = Vector2(1689.6001, 1939.2001)
 script = ExtResource("12_xiie1")
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 
-[node name="CaisseAmbreNoir2" type="StaticBody2D" parent="Entities" unique_id=298776138]
+[node name="FutAmbreNoir2" type="StaticBody2D" parent="Entities" unique_id=1238910984]
 position = Vector2(1756.7999, 1968)
 script = ExtResource("12_xiie1")
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 flip = true
 
-[node name="CaisseAmbreNoir3" type="StaticBody2D" parent="Entities" unique_id=126154836]
+[node name="FutAmbreNoir3" type="StaticBody2D" parent="Entities" unique_id=795292039]
 position = Vector2(2515.2002, 1516.8)
 script = ExtResource("12_xiie1")
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 
-[node name="CaisseAmbreNoir4" type="StaticBody2D" parent="Entities" unique_id=1286850917]
+[node name="FutAmbreNoir4" type="StaticBody2D" parent="Entities" unique_id=1685622840]
 position = Vector2(547.19995, 2256)
 script = ExtResource("12_xiie1")
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 flip = true
 
-[node name="CaisseAmbreNoir5" type="StaticBody2D" parent="Entities" unique_id=1321152633]
+[node name="FutAmbreNoir5" type="StaticBody2D" parent="Entities" unique_id=1017852696]
 position = Vector2(2822.4, 1488)
 script = ExtResource("12_xiie1")
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 
-[node name="CaisseAmbreNoir6" type="StaticBody2D" parent="Entities" unique_id=1693094215]
+[node name="FutAmbreNoir6" type="StaticBody2D" parent="Entities" unique_id=1872089129]
 position = Vector2(2179.2002, 2371.2002)
 script = ExtResource("12_xiie1")
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 
-[node name="CaisseAmbreNoir7" type="StaticBody2D" parent="Entities" unique_id=1370584216]
+[node name="FutAmbreNoir7" type="StaticBody2D" parent="Entities" unique_id=1350913762]
 position = Vector2(2342.4, 2208)
 script = ExtResource("12_xiie1")
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 flip = true
 
-[node name="CaisseAmbreNoir8" type="StaticBody2D" parent="Entities" unique_id=1506510865]
+[node name="FutAmbreNoir8" type="StaticBody2D" parent="Entities" unique_id=757429780]
 position = Vector2(2457.6, 2390.4)
 script = ExtResource("12_xiie1")
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 
 [node name="Tente" type="StaticBody2D" parent="Entities" unique_id=731885933]
 position = Vector2(412.80002, 1488)
@@ -161,6 +161,37 @@ position = Vector2(3427.2002, 2208)
 script = ExtResource("12_xiie1")
 kind = "tente"
 flip = true
+
+[node name="Enclume" type="StaticBody2D" parent="Entities" unique_id=1083204793]
+position = Vector2(624, 1996.7999)
+script = ExtResource("12_xiie1")
+kind = "enclume"
+
+[node name="Enclume2" type="StaticBody2D" parent="Entities" unique_id=1799795961]
+position = Vector2(1353.6001, 1555.2001)
+script = ExtResource("12_xiie1")
+kind = "enclume"
+flip = true
+
+[node name="Enclume3" type="StaticBody2D" parent="Entities" unique_id=1001682227]
+position = Vector2(2966.4, 1795.2001)
+script = ExtResource("12_xiie1")
+kind = "enclume"
+
+[node name="Auvent" type="StaticBody2D" parent="Entities" unique_id=246291993]
+position = Vector2(720, 1948.7999)
+script = ExtResource("12_xiie1")
+kind = "auvent"
+
+[node name="Auvent2" type="StaticBody2D" parent="Entities" unique_id=197351320]
+position = Vector2(1248, 1516.8)
+script = ExtResource("12_xiie1")
+kind = "auvent"
+
+[node name="Auvent3" type="StaticBody2D" parent="Entities" unique_id=1891152796]
+position = Vector2(3072, 1756.7999)
+script = ExtResource("12_xiie1")
+kind = "auvent"
 
 [node name="Palissade" type="StaticBody2D" parent="Entities" unique_id=717085918]
 position = Vector2(163.20001, 1440)
@@ -258,19 +289,25 @@ hide_flag = &"grande_forge_eteinte"
 position = Vector2(720, 1968)
 script = ExtResource("16_jw0y4")
 event = &"forge_1"
-kind = "autel"
+after_flag = &"forge_1_eteinte"
+after_kind = "forge_eteinte"
+kind = "forge_allumee"
 
 [node name="Forge2" type="StaticBody2D" parent="Entities" unique_id=1681449525]
 position = Vector2(1248, 1536)
 script = ExtResource("16_jw0y4")
 event = &"forge_2"
-kind = "autel"
+after_flag = &"forge_2_eteinte"
+after_kind = "forge_eteinte_2"
+kind = "forge_allumee"
 
 [node name="Forge3" type="StaticBody2D" parent="Entities" unique_id=162853153]
 position = Vector2(3072, 1776)
 script = ExtResource("16_jw0y4")
 event = &"forge_3"
-kind = "autel"
+after_flag = &"forge_3_eteinte"
+after_kind = "forge_eteinte_3"
+kind = "forge_allumee"
 
 [node name="Numero7" type="StaticBody2D" parent="Entities" unique_id=1505917800]
 position = Vector2(825.60004, 2102.4)
@@ -297,11 +334,17 @@ event = &"numero_12"
 hide_flag = &"forge_3_eteinte"
 corrupted = true
 
+[node name="Soufflet" type="StaticBody2D" parent="Entities" unique_id=1195915734]
+position = Vector2(1152, 1564.7999)
+script = ExtResource("18_f785h")
+hide_flag = &"forge_2_eteinte"
+kind = "soufflet"
+
 [node name="FutForge3" type="StaticBody2D" parent="Entities" unique_id=1227261042]
 position = Vector2(3177.5999, 1795.2001)
 script = ExtResource("18_f785h")
 hide_flag = &"forge_3_eteinte"
-kind = "caisse_ambre_noir"
+kind = "fut_ambre_noir"
 flip = true
 
 [node name="Barricade" type="StaticBody2D" parent="Entities" unique_id=1953402108]
@@ -309,13 +352,13 @@ position = Vector2(1944, 1214.3999)
 script = ExtResource("16_jw0y4")
 event = &"barricade"
 hide_flag = &"barricade_tombee"
-kind = "rempart_eboulis"
+kind = "barricade"
 
 [node name="BarricadeTombee" type="StaticBody2D" parent="Entities" unique_id=945759397]
 position = Vector2(1747.2001, 1267.2)
 script = ExtResource("18_f785h")
 show_flag = &"barricade_tombee"
-kind = "cloture_brisee"
+kind = "barricade_tombee"
 
 [node name="BracVolcan" type="StaticBody2D" parent="Entities" unique_id=1336411339 instance=ExtResource("13_n16nq")]
 position = Vector2(2016, 825.60004)
@@ -326,10 +369,10 @@ sheet = ExtResource("19_hqhn1")
 event = &"brac_volcan"
 hide_flag = &"brac_parti"
 
-[node name="BouilloirePoele" type="StaticBody2D" parent="Entities" unique_id=466522635]
+[node name="Marmite" type="StaticBody2D" parent="Entities" unique_id=120333559]
 position = Vector2(1756.7999, 739.19995)
 script = ExtResource("12_xiie1")
-kind = "bouilloire_poele"
+kind = "marmite"
 
 [node name="Tente3" type="StaticBody2D" parent="Entities" unique_id=1113742508]
 position = Vector2(1468.8, 556.80005)
@@ -403,30 +446,38 @@ position = Vector2(2083.2002, 902.39996)
 script = ExtResource("16_jw0y4")
 event = &"masque_brac"
 show_flag = &"brac_parti"
-kind = "masque_pierre"
+kind = "masque_os_sol"
 
 [node name="GrandeForge" type="StaticBody2D" parent="Entities" unique_id=1213149451]
 position = Vector2(1920, 364.8)
 script = ExtResource("16_jw0y4")
 event = &"grande_forge"
-kind = "phare_ruine"
+after_flag = &"grande_forge_eteinte"
+after_kind = "grande_forge_eteinte"
+kind = "grande_forge_allumee"
 
 [node name="Etabli" type="StaticBody2D" parent="Entities" unique_id=1735856169]
 position = Vector2(2227.2002, 451.19998)
 script = ExtResource("16_jw0y4")
 event = &"etabli"
-kind = "etabli"
+kind = "etabli_suie"
 
 [node name="FiolesSuie" type="StaticBody2D" parent="Entities" unique_id=2146428109]
 position = Vector2(2332.7998, 465.59998)
 script = ExtResource("12_xiie1")
 kind = "fioles_suie"
 
+[node name="Gants" type="StaticBody2D" parent="Entities" unique_id=498734116]
+position = Vector2(2236.7998, 454.08002)
+script = ExtResource("18_f785h")
+show_flag = &"suie_partie"
+kind = "gants_gris"
+
 [node name="Traineau" type="StaticBody2D" parent="Entities" unique_id=1996054165]
 position = Vector2(2582.4, 489.59998)
 script = ExtResource("18_f785h")
 hide_flag = &"suie_partie"
-kind = "traineau_suie"
+kind = "traineau_roues"
 flip = true
 
 [node name="SuieVolcan" type="StaticBody2D" parent="Entities" unique_id=1382403147 instance=ExtResource("13_n16nq")]

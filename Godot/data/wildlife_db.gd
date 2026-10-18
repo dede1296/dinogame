@@ -160,6 +160,12 @@ const PLACES := {
 	&"nids_geants": {"kinds": {&"ptero_vol": 3}, "effects": {&"duvet": {"amount": 30}}},
 	&"arche_du_vent": {"kinds": {&"ptero_vol": 1}, "effects": {&"duvet": {"amount": 10}}},
 	&"volcan": {"kinds": {&"lezard": 3, &"scarabee": 3}, "effects": {&"braises": {}, &"cendres": {}}},
+	# The Plaine Volcanique (chapter 8): its zones name themselves (Region.ambience_id).
+	&"champs_cendres": {"kinds": {&"lezard": 3, &"scarabee": 3}, "effects": {&"cendres": {}}},
+	&"forges_ombre": {"kinds": {&"scarabee": 2}, "effects": {&"braises": {}, &"cendres": {}}},
+	&"coulees_lave": {"kinds": {&"lezard": 2}, "effects": {&"braises": {}}},
+	&"sanctuaire_magma": {"effects": {&"braises": {"amount": 20}}},
+	&"porte_cratere": {"effects": {&"braises": {"amount": 12}, &"cendres": {}}},
 	&"apex": {"kinds": {&"libellule": 3, &"moustique": 4, &"feuille": 6},
 		"effects": {&"lucioles": {"colour": Color(1.0, 0.45, 0.2), "amount": 30}}},
 }

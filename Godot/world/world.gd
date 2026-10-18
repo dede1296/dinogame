@@ -26,6 +26,11 @@ const ZONES := {
 	&"cieux": "res://regions/cieux/cieux.tscn",
 	&"nids_geants": "res://regions/cieux/nids_geants.tscn",
 	&"arche_du_vent": "res://regions/cieux/arche_du_vent.tscn",
+	&"champs_cendres": "res://regions/volcan/champs_cendres.tscn",
+	&"forges_ombre": "res://regions/volcan/forges_ombre.tscn",
+	&"coulees_lave": "res://regions/volcan/coulees_lave.tscn",
+	&"sanctuaire_magma": "res://regions/volcan/sanctuaire_magma.tscn",
+	&"porte_cratere": "res://regions/volcan/porte_cratere.tscn",
 	&"clos_blanc": "res://regions/essai/clos_blanc.tscn",   # zone d'essai (maison Blender + ComfyUI)
 }
 const PLAYER := preload("res://actors/player.tscn")
@@ -286,6 +291,8 @@ func _on_weather_changed(_weather: StringName) -> void:
 func _can_stand(p: Vector2) -> bool:
 	if region.surface_at(p) == &"water" or p.distance_to(player.global_position) < 200.0:
 		return false
+	if Lava.at(region, p):
+		return false   # (les coulées de lave : aucun dino sauvage n'y apparaît)
 	if not _reachable.is_empty() and not _reachable.has(Vector2i((p / TILE_PX).floor())):
 		return false   # a ledge or a cliff top nobody can climb to
 	var query := PhysicsPointQueryParameters2D.new()
@@ -351,7 +358,7 @@ func _store_position() -> void:
 
 func _process(delta: float) -> void:
 	_ride_button.show_state(Game.flag(&"selle") and region != null and not region.indoor and not player.is_swimming()
-		and not player.is_flying(),
+		and not player.is_flying() and not player.is_on_lava(),
 		player.mount != null)
 	_explore_timer -= delta
 	if _explore_timer <= 0.0:
@@ -375,6 +382,7 @@ func _hear_surroundings() -> void:
 	for f in get_tree().get_nodes_in_group(&"fire"):
 		var d := (f as Node2D).global_position.distance_to(player.global_position) / region.tile_size().x
 		fire = maxf(fire, clampf(1.0 - d / FIRE_HEAR_TILES, 0.0, 1.0))
+	fire = maxf(fire, Lava.near(region, player.global_position))   # (les coulées de lave crépitent aussi)
 	Audio.ambience.set_mix("sea", sea)
 	Audio.ambience.set_mix("fire", fire)
 
@@ -461,7 +469,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func toggle_ride() -> void:
 	if player.busy or _changing_zone or get_tree().paused or not Game.flag(&"selle") or region.indoor:
 		return
-	if player.is_swimming() or player.is_flying():   # (the swimmer carries her until the shore; in the air, the harness)
+	if player.is_swimming() or player.is_flying() or player.is_on_lava():   # (the swimmer carries her until the shore; in the air, the harness; on the lava, her dino of Stone or Fire)
 		return
 	if player.mount:
 		dismount()
@@ -509,6 +517,8 @@ func _open_dex() -> void:
 	var lock := "Dans l'eau, on garde son équipe : reviens sur la terre ferme pour la changer." if player.is_swimming() else ""
 	if player.is_flying():
 		lock = "En vol, on garde son équipe : pose-toi d'abord pour la changer."
+	if player.is_on_lava():
+		lock = "Sur la lave, on garde son équipe : regagne d'abord la roche pour la changer."
 	DexScreen.open(self, lock)
 
 

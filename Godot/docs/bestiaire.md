@@ -172,6 +172,12 @@ Zones : Champs de cendres · Coulées de lave · Forges de l'Ombre Noire · Sanc
 | *Dinos corrompus* | forges | variées | fréquents | — | — |
 | **T-Rex de Magma** | le sanctuaire de Magma | grand théropode | Alpha | — | — |
 
+✅ (18/10) Les quatre fiches (`data/species/<id>.tres` : `styracosaurus` Terre, `saichania` Pierre,
+`daspletosaurus` et `trex_magma` Feu), leurs planches (profil, face/dos, corrompues), leur Dinodex (le T-Rex parmi
+les Uniques), gabarits 2,34 / 2,00 / 3,30 / 3,80 m (le T-Rex ×1,2 en scène). Capacités : Charge et Monture
+(Styracosaurus), Charge et **Cuir de feu** (Saichania), Cuir de feu (Daspletosaurus, T-Rex). Niveaux et combats :
+`docs/mecaniques.md` « La lave et la chaleur ».
+
 ## Terre des Apex — niv. 50
 
 - **Le Souverain** : l'Apex ancestral, espèce inconnue, unique. Combat final (à apaiser).

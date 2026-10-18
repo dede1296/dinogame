@@ -257,6 +257,37 @@ const KINDS := {
 	"nuage_bas_3": {"scale": 0.38, "foot": 0.1, "solid": 0.0, "sway": 0.4, "shadow": 0.0},
 	"nuage_bas_4": {"scale": 0.38, "foot": 0.1, "solid": 0.0, "sway": 0.4, "shadow": 0.0},
 	"arche_vent_loin": {"scale": 0.29, "foot": 0.03, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	# Chapitre 8, la Plaine Volcanique (agent IMAGES ; posés par tools/zones/volcan_*.gd, tailles : agent CARTE).
+	"forge_allumee": {"scale": 0.27, "foot": 0.04, "solid": Vector2(62, 30), "sway": 0.0, "shadow": 70.0, "light": true},
+	"forge_eteinte": {"scale": 0.27, "foot": 0.04, "solid": Vector2(62, 30), "sway": 0.0, "shadow": 70.0},
+	"forge_eteinte_2": {"scale": 0.27, "foot": 0.04, "solid": Vector2(62, 30), "sway": 0.0, "shadow": 70.0},
+	"forge_eteinte_3": {"scale": 0.27, "foot": 0.04, "solid": Vector2(62, 30), "sway": 0.0, "shadow": 70.0},
+	"grande_forge_allumee": {"scale": 0.5, "foot": 0.02, "solid": Vector2(120, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"grande_forge_eteinte": {"scale": 0.5, "foot": 0.02, "solid": Vector2(120, 60), "sway": 0.0, "shadow": 0.0},
+	"cage_fermee": {"scale": 0.427, "foot": 0.05, "solid": Vector2(108, 48), "sway": 0.0, "shadow": 110.0},
+	"cage_ouverte": {"scale": 0.427, "foot": 0.05, "solid": Vector2(108, 48), "sway": 0.0, "shadow": 110.0},
+	"cage_grande": {"scale": 0.427, "foot": 0.05, "solid": Vector2(160, 64), "sway": 0.0, "shadow": 150.0},
+	"barricade": {"scale": 0.427, "foot": 0.04, "solid": Vector2(165, 48), "sway": 0.0, "shadow": 0.0},
+	"barricade_tombee": {"scale": 0.427, "foot": 0.06, "solid": Vector2(150, 44), "sway": 0.0, "shadow": 120.0},
+	"fut_ambre_noir": {"scale": 0.174, "foot": 0.05, "solid": 14.0, "sway": 0.0, "shadow": 36.0},
+	"enclume": {"scale": 0.17, "foot": 0.06, "solid": Vector2(42, 18), "sway": 0.0, "shadow": 44.0},
+	"auvent": {"scale": 0.378, "foot": 0.03, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"soufflet": {"scale": 0.093, "foot": 0.15, "solid": 0.0, "sway": 0.0, "shadow": 26.0},
+	"marmite": {"scale": 0.19, "foot": 0.04, "solid": 12.0, "sway": 0.0, "shadow": 40.0},
+	"etabli_suie": {"scale": 0.212, "foot": 0.06, "solid": Vector2(88, 24), "sway": 0.0, "shadow": 90.0},
+	"gants_gris": {"scale": 0.056, "foot": -3.8, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"traineau_roues": {"scale": 0.154, "foot": 0.05, "solid": Vector2(110, 30), "sway": 0.0, "shadow": 100.0},
+	"masque_os_sol": {"scale": 0.095, "foot": 0.15, "solid": 0.0, "sway": 0.0, "shadow": 16.0},
+	"pierre_plate_volcan": {"scale": 0.128, "foot": 0.1, "solid": Vector2(54, 18), "sway": 0.0, "shadow": 56.0},
+	"vasque_source": {"scale": 0.175, "foot": 0.05, "solid": 22.0, "sway": 0.0, "shadow": 50.0},
+	"autel_magma": {"scale": 0.206, "foot": 0.05, "solid": Vector2(58, 26), "sway": 0.0, "shadow": 66.0},
+	"autel_magma_fendu": {"scale": 0.206, "foot": 0.05, "solid": Vector2(58, 26), "sway": 0.0, "shadow": 66.0},
+	"coque_lave": {"scale": 0.114, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 30.0},
+	"lave_paroi": {"scale": 0.395, "foot": 0.02, "solid": Vector2(190, 40), "sway": 0.0, "shadow": 0.0, "light": true},
+	"torche": {"scale": 0.265, "foot": 0.03, "solid": 6.0, "sway": 0.0, "shadow": 20.0, "light": true},
+	"plaque_fer": {"scale": 0.072, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"portail_apex": {"scale": 0.741, "foot": 0.01, "solid": Vector2(330, 40), "sway": 0.0, "shadow": 0.0},
+	"camp_helene": {"scale": 0.256, "foot": 0.08, "solid": Vector2(56, 20), "sway": 0.0, "shadow": 50.0},
 	# Passe de finition (29/09, tools/art-jobs/finition.mjs): objects held during a scene (small,
 	# readable, real size noted here though the integrator spawns them, not a zone), and the
 	# missing fixed scenery of chapters 1-5.
@@ -397,7 +428,8 @@ const KINDS := {
 	"crottes_triceratops", "arche_vent", "drapeau_vent_1", "drapeau_vent_2", "nid_cieux", "nid_cieux_vide",
 	"pilier_pont_1", "pilier_pont_2", "piton_bas", "piton_haut", "plume_geante_1", "plume_geante_2", "plume_geante_3",
 	"pont_lianes_rompu", "rochers_cieux",
-	"vieux_harnais", "masque_obsidienne", "nuage_bas_1", "nuage_bas_2", "nuage_bas_3", "nuage_bas_4", "arche_vent_loin")
+	"vieux_harnais", "masque_obsidienne", "nuage_bas_1", "nuage_bas_2", "nuage_bas_3", "nuage_bas_4", "arche_vent_loin",
+	"forge_allumee", "forge_eteinte", "forge_eteinte_2", "forge_eteinte_3", "grande_forge_allumee", "grande_forge_eteinte", "cage_fermee", "cage_ouverte", "cage_grande", "barricade", "barricade_tombee", "fut_ambre_noir", "enclume", "auvent", "soufflet", "marmite", "etabli_suie", "gants_gris", "traineau_roues", "masque_os_sol", "pierre_plate_volcan", "vasque_source", "autel_magma", "autel_magma_fendu", "coque_lave", "lave_paroi", "torche", "plaque_fer", "portail_apex", "camp_helene")
 var kind := "arbre_rond":
 	set(value):
 		kind = value

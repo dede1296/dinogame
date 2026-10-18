@@ -29,6 +29,11 @@ const ZONES := {
 	&"cieux": {"name": "Les Pitons", "size": Vector2i(100, 86), "indoor": false},
 	&"nids_geants": {"name": "Les Nids géants", "size": Vector2i(70, 60), "indoor": false},
 	&"arche_du_vent": {"name": "L'Arche du Vent", "size": Vector2i(56, 44), "indoor": false},
+	&"champs_cendres": {"name": "Les Champs de Cendre", "size": Vector2i(90, 70), "indoor": false},
+	&"forges_ombre": {"name": "Les Forges de l'Ombre", "size": Vector2i(80, 60), "indoor": false},
+	&"coulees_lave": {"name": "Les Coulées de lave", "size": Vector2i(80, 60), "indoor": false},
+	&"sanctuaire_magma": {"name": "Le Sanctuaire de Magma", "size": Vector2i(48, 42), "indoor": true},
+	&"porte_cratere": {"name": "La Porte du Cratère", "size": Vector2i(50, 40), "indoor": false},
 }
 
 const SPECIES := {
@@ -94,6 +99,10 @@ const SPECIES := {
 		{"zone": &"marais", "place": "Le Débarcadère", "area": Rect2(86.0, 52.0, 28.0, 20.0), "levels": Vector2i(15, 17), "when": 1, "hidden": false, "weathers": [], "weight": 8},
 		{"zone": &"marais", "place": "Le Débarcadère", "area": Rect2(86.0, 52.0, 28.0, 20.0), "levels": Vector2i(15, 17), "when": 0, "hidden": true, "weathers": [], "weight": 8},
 		{"zone": &"marais", "place": "Le Bassin des nénuphars", "area": Rect2(86.0, 78.0, 28.0, 16.0), "levels": Vector2i(15, 17), "when": 0, "hidden": true, "weathers": [], "weight": 6},
+	],
+	&"daspletosaurus": [
+		{"zone": &"coulees_lave", "place": "Les Coulées de lave", "area": Rect2(0.0, 12.0, 80.0, 32.0), "levels": Vector2i(45, 47), "when": 2, "hidden": false, "weathers": [], "weight": 10},
+		{"zone": &"coulees_lave", "place": "Les Coulées refroidies", "area": Rect2(0.0, 44.0, 80.0, 16.0), "levels": Vector2i(45, 47), "when": 2, "hidden": false, "weathers": [], "weight": 3},
 	],
 	&"deinonychus": [
 		{"zone": &"foret", "place": "Le Sous-bois", "area": Rect2(40.0, 28.0, 70.0, 40.0), "levels": Vector2i(12, 15), "when": 3, "hidden": false, "weathers": [], "weight": 7},
@@ -292,6 +301,12 @@ const SPECIES := {
 		{"zone": &"nids_geants", "place": "Les Nids géants", "area": Rect2(0.0, 0.0, 70.0, 60.0), "levels": Vector2i(39, 41), "when": 1, "hidden": false, "weathers": [], "weight": 4},
 		{"zone": &"arche_du_vent", "place": "L'Arche du Vent", "area": Rect2(0.0, 0.0, 56.0, 44.0), "levels": Vector2i(41, 42), "when": 1, "hidden": false, "weathers": [], "weight": 3},
 	],
+	&"saichania": [
+		{"zone": &"champs_cendres", "place": "Les Champs de Cendre", "area": Rect2(0.0, 0.0, 90.0, 48.0), "levels": Vector2i(43, 44), "when": 1, "hidden": false, "weathers": [], "weight": 3},
+		{"zone": &"champs_cendres", "place": "Les Coulées refroidies", "area": Rect2(56.0, 8.0, 32.0, 24.0), "levels": Vector2i(43, 45), "when": 1, "hidden": false, "weathers": [], "weight": 10},
+		{"zone": &"coulees_lave", "place": "Les Coulées de lave", "area": Rect2(0.0, 12.0, 80.0, 32.0), "levels": Vector2i(43, 45), "when": 1, "hidden": false, "weathers": [], "weight": 4},
+		{"zone": &"coulees_lave", "place": "Les Coulées refroidies", "area": Rect2(0.0, 44.0, 80.0, 16.0), "levels": Vector2i(43, 45), "when": 1, "hidden": false, "weathers": [], "weight": 10},
+	],
 	&"stegosaurus": [
 		{"zone": &"foret", "place": "La Clairière", "area": Rect2(34.0, 14.0, 26.0, 18.0), "levels": Vector2i(12, 14), "when": 1, "hidden": false, "weathers": [], "weight": 10},
 		{"zone": &"foret", "place": "La Clairière", "area": Rect2(34.0, 14.0, 26.0, 18.0), "levels": Vector2i(12, 14), "when": 0, "hidden": true, "weathers": [], "weight": 8},
@@ -303,6 +318,11 @@ const SPECIES := {
 		{"zone": &"desert", "place": "Le Canyon d'entrée", "area": Rect2(88.0, 78.0, 32.0, 22.0), "levels": Vector2i(21, 23), "when": 1, "hidden": true, "weathers": [], "weight": 4},
 		{"zone": &"desert", "place": "Le Canyon des Vents", "area": Rect2(24.0, 4.0, 26.0, 16.0), "levels": Vector2i(23, 26), "when": 1, "hidden": false, "weathers": [], "weight": 8},
 		{"zone": &"desert", "place": "Le Canyon des Vents", "area": Rect2(24.0, 4.0, 26.0, 16.0), "levels": Vector2i(23, 26), "when": 0, "hidden": true, "weathers": [], "weight": 6},
+	],
+	&"styracosaurus": [
+		{"zone": &"champs_cendres", "place": "Les Champs de Cendre", "area": Rect2(0.0, 0.0, 90.0, 48.0), "levels": Vector2i(42, 44), "when": 1, "hidden": false, "weathers": [], "weight": 10},
+		{"zone": &"champs_cendres", "place": "Les Champs de Cendre", "area": Rect2(0.0, 0.0, 90.0, 48.0), "levels": Vector2i(42, 44), "when": 1, "hidden": true, "weathers": [], "weight": 6},
+		{"zone": &"champs_cendres", "place": "Les Coulées refroidies", "area": Rect2(56.0, 8.0, 32.0, 24.0), "levels": Vector2i(42, 44), "when": 1, "hidden": false, "weathers": [], "weight": 3},
 	],
 	&"suchomimus": [
 		{"zone": &"marais", "place": "L'Îlot aux racines", "area": Rect2(14.0, 26.0, 24.0, 20.0), "levels": Vector2i(19, 21), "when": 0, "hidden": true, "weathers": [], "weight": 2},

@@ -32,6 +32,8 @@ const ZONE_NAMES := {
 	&"grottes_marines": "Grottes marines", &"recif_sanctuaire": "Récif du Sanctuaire", &"monts": "Monts Gelés",
 	&"grottes_glace": "Grottes de glace", &"sanctuaire_givre": "Sanctuaire de Givre", &"cieux": "Cieux Éternels",
 	&"nids_geants": "Nids géants", &"arche_du_vent": "Arche du Vent",
+	&"champs_cendres": "Champs de Cendre", &"forges_ombre": "Forges de l'Ombre", &"coulees_lave": "Coulées de lave",
+	&"sanctuaire_magma": "Sanctuaire de Magma", &"porte_cratere": "Porte du Cratère",
 }
 
 var region: Region

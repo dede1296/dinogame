@@ -66,21 +66,23 @@ y_sort_enabled = true
 script = ExtResource("13_6kv6e")
 terrain = NodePath("../../Terrain")
 
-[node name="FlaqueRonde" type="StaticBody2D" parent="Entities" unique_id=737686585]
+[node name="VasqueSource" type="StaticBody2D" parent="Entities" unique_id=1631363983]
 position = Vector2(1027.2, 1248)
 script = ExtResource("14_lx3n6")
-kind = "flaque_ronde"
+kind = "vasque_source"
 
 [node name="AutelMagma" type="StaticBody2D" parent="Entities" unique_id=1398127673]
 position = Vector2(1152, 844.80005)
 script = ExtResource("15_frtwp")
 event = &"autel_magma"
-kind = "autel"
+after_flag = &"trex_magma_battu"
+after_kind = "autel_magma_fendu"
+kind = "autel_magma"
 
-[node name="MurFissure" type="StaticBody2D" parent="Entities" unique_id=245350758]
-position = Vector2(1145.1917, 421.15228)
+[node name="LaveParoi" type="StaticBody2D" parent="Entities" unique_id=1915594718]
+position = Vector2(1152, 403.19998)
 script = ExtResource("14_lx3n6")
-kind = "mur_fissure"
+kind = "lave_paroi"
 
 [node name="TrexMagma" type="StaticBody2D" parent="Entities" unique_id=1141711173]
 position = Vector2(1152, 547.19995)

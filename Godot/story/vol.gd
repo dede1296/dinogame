@@ -20,6 +20,11 @@ const ACTION := &"fly"
 ## Chloé's own collision layer on foot (player.tscn): she is on none in the air.
 const PLAYER_LAYER := 2
 const NO_FLIGHT_META := &"vol_interdit"
+# Ce que le refus dit dans cette zone (la Plaine Volcanique : la fumée), à la place de SAY["forbidden"].
+const NO_FLIGHT_TEXT_META := &"vol_interdit_texte"
+const NO_FLIGHT_SMOKE := "Trop de fumée et d'air brûlant : ton ptérosaure refuse de décoller ici."
+# Pas d'atterrissage sur une coulée (Lava).
+const LAND_LAVA := "Pas sur la lave ! Pose-toi sur la roche."
 ## The Cieux' sea of clouds: on a zone's root, the height (m) below which a tile is the void between
 ## the pitons (tools/zones/cieux*.gd write « vol_vide_sous »; « void_below » is read too).
 const VOID_METAS: Array[StringName] = [&"vol_vide_sous", &"void_below"]
@@ -123,6 +128,13 @@ static func say(problem: String) -> String:
 			return line % _party_member(func(d: Dino) -> bool: return d.species().id in SMALL_FLYERS).nickname
 		"young":
 			return line % [_party_member(func(d: Dino) -> bool: return Abilities.has(d, ABILITY)).nickname, Abilities.ADULT_LEVEL]
+		"forbidden":
+			var w = Story.world()
+			var region: Region = w.get(&"region") if w else null
+			if region and region.has_meta(NO_FLIGHT_TEXT_META):
+				return String(region.get_meta(NO_FLIGHT_TEXT_META))
+			if region and Lava.has_lava(region):
+				return NO_FLIGHT_SMOKE
 	return line
 
 
@@ -155,6 +167,8 @@ static func landing_problem(region: Region, at: Vector2, chloe: Node2D = null) -
 		return LAND_VOID
 	if ground == &"forest":
 		return LAND_WOODS
+	if Lava.at(region, at):
+		return LAND_LAVA
 	if not _roomy(region, cell):
 		return LAND_NARROW
 	if chloe and _blocked(chloe, at):
