@@ -114,7 +114,7 @@ static func _story(root: Region, entities: Node2D) -> void:
 	A.person(root, "IsaureAbri", "Isaure", ["isaure_sans_masque"], P.ISAURE_ABRI, {"facing": "right", "event": &"isaure_abri",
 		"show_flag": &"helene_reveillee", "hide_flag": &"apex_fini"}, Color.WHITE, true)
 	A.person(root, "HeleneAbri", "Hélène", A.HELENE, P.HELENE_ABRI, {"facing": "down", "event": &"helene_abri",
-		"show_flag": &"helene_reveillee", "hide_flag": &"apex_fini"}, A.HELENE_TINT, true)
+		"show_flag": &"helene_reveillee", "hide_flag": &"apex_fini"}, Color.WHITE, true)   # (on the ground: helene_sol)
 	A.person(root, "MaiaAbri", "Maïa", ["maia_arche"], P.MAIA_ABRI, {"facing": "left", "event": &"maia_abri",
 		"show_flag": &"souverain_eveille", "hide_flag": &"apex_fini"})
 	B.dino_npc(root, "CaillouRempart", &"triceratops", P.CAILLOU_REMPART.x, P.CAILLOU_REMPART.y, {"event": &"caillou_rempart",

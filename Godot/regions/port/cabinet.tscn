@@ -251,6 +251,7 @@ sheet = ExtResource("17_gx543")
 event = &"helene_cabinet"
 show_flag = &"apex_fini"
 metadata/held_pose = &"assis"
+metadata/person = &"helene_fauteuil"
 
 [node name="TableThe" type="StaticBody2D" parent="Entities" unique_id=684819911]
 position = Vector2(451.19998, 244.79999)
@@ -282,6 +283,7 @@ event = &"isaure_cabinet"
 facing = "left"
 show_flag = &"tasse_bleue"
 hide_flag = &"epilogue_port"
+metadata/held_pose = &"assis"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=1530571016]
 

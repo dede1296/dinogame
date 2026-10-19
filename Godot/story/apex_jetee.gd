@@ -27,7 +27,7 @@ const MORNING := 10.0
 ## The village on the jetty: [node, sheet(s), display, ApexPlaces name, round Chloé elsewhere (px)].
 const VILLAGE := [
 	["GustaveJetee", ["pecheur"], "Gustave", "JETEE_GUSTAVE", Vector2(-140.0, -50.0)],
-	["FirminJetee", ["pecheur"], "Firmin", "JETEE_FIRMIN", Vector2(-250.0, -60.0)],
+	["FirminJetee", ["firmin_sans_masque", "sbire"], "Firmin", "JETEE_FIRMIN", Vector2(-250.0, -60.0)],
 	["RosalieJetee", ["rosalie"], "Rosalie", "JETEE_ROSALIE", Vector2(-200.0, -100.0)],
 	["PervencheJetee", ["pervenche"], "Mémé Pervenche", "JETEE_PERVENCHE", Vector2(-150.0, -140.0)],
 	["JossJetee", ["joss"], "Joss", "JETEE_JOSS", Vector2(160.0, -160.0)],
@@ -75,7 +75,7 @@ static func _jetty_cast() -> Dictionary:
 	cast["roc"] = A.person(["RocJetee"], ["roc"], A.spot("JETEE_ROC", Vector2(60.0, -120.0)) + up, "down", ROC)
 	cast["isaure"] = A.person(["IsaureJetee"], A.ISAURE_SHEETS, A.spot("JETEE_ISAURE", Vector2(50.0, 100.0)), "left", ISAURE)
 	cast["maia"] = A.person(["MaiaJetee"], A.MAIA_SHEETS, A.spot("JETEE_MAIA", Vector2(-4.0 * S.CELL, -2.0 * S.CELL)), "right", MAIA)
-	cast["leonce"] = A.person(["Leonce", "LeonceJetee"], ["pecheur"], A.spot("JETEE_LEONCE", Vector2(-40.0, 50.0)), "right", LEONCE)
+	cast["leonce"] = A.person(["Leonce", "LeonceJetee"], ["leonce_port", "pecheur"], A.spot("JETEE_LEONCE", Vector2(-40.0, 50.0)), "right", LEONCE)
 	cast["hamon"] = A.person(["HamonJetee"], ["hamon"], A.spot("JETEE_HAMON", Vector2(140.0, -100.0)), "left", HAMON)
 	cast["brac"] = A.person(["BracJetee"], ["brac_assis_cage", "brac"], A.spot("JETEE_BRAC", Vector2(-40.0, 220.0)), "down", BRAC)
 	cast["caillou"] = A.dino(["CaillouJetee"], &"triceratops", A.spot("JETEE_CAILLOU", Vector2(120.0, -220.0)))

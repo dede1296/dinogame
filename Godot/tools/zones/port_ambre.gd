@@ -75,12 +75,12 @@ static func build() -> Region:
 	B.npc(root, "Isaure", "Isaure", CHARS % "isaure", 22.6, 15.7, {"facing": "down", "dialogue": &"isaure", "show_flag": &"prologue_done",
 		"hide_flag": &"masque_tombe"})   # (chapter 7: after the mask, she is gone to the volcano)
 	# Chapter 8 (story/volcan_autour.gd): Léonce home from the forges, mending the nets on the pontoon
-	# (the fisherman's sheet and his sitting pose with the net: Outfits.POSES « pecheur »), once the
-	# great forge is out; Brac at the end of it, on a cage, looking at the sea « de loin », once he has
-	# gone (« Le rouquin est assis au bout de la jetée »). On its west side: the way to Maïa's boat stays free.
-	var leonce := B.npc(root, "Leonce", "Léonce", CHARS % "pecheur", 18.6, 18.6, {"facing": "down", "event": &"leonce_port",
-		"show_flag": &"grande_forge_eteinte"})
-	leonce.set_meta(Outfits.HELD_META, &"assis")
+	# (his own sheet, drawn on 19/10: no mask, a net on his arm and the shuttle in his hand; standing:
+	# his sitting pose is the forges' one, the bone mask on his knee), once the great forge is out; Brac
+	# at the end of it, on a cage, looking at the sea « de loin », once he has gone (« Le rouquin est
+	# assis au bout de la jetée »). On its west side: the way to Maïa's boat stays free.
+	B.npc(root, "Leonce", "Léonce", CHARS % ("leonce_port" if Outfits.drawn("leonce_port") else "pecheur"), 18.6, 18.6,
+		{"facing": "down", "event": &"leonce_port", "show_flag": &"grande_forge_eteinte"})
 	var brac := B.npc(root, "BracJetee", "Brac", CHARS % "brac", 18.6, 22.3, {"facing": "down", "event": &"brac_jetee",
 		"show_flag": &"brac_parti"})
 	brac.set_meta(Outfits.HELD_META, &"assis")
@@ -125,7 +125,7 @@ static func _epilogue(root: Region) -> void:
 		"show_flag": &"tasse_bleue", "hide_flag": &"epilogue_cabinet"})
 	# [node, name, sheets, place, facing, event, gone once, stand-in's tint]
 	for p: Array in [
-			["HeleneJetee", "Hélène", A.HELENE, AP.JETEE_HELENE, "down", &"helene_jetee", &"epilogue_fini", A.HELENE_TINT],
+			["HeleneJetee", "Hélène", A.HELENE, AP.JETEE_HELENE, "down", &"helene_jetee", &"epilogue_fini", Color.WHITE],
 			["RocJetee", "Prof. Roc", ["roc"], AP.JETEE_ROC, "down", &"roc_jetee", &"epilogue_fini", Color.WHITE],
 			["MaiaJetee", "Maïa", ["maia_arche"], AP.JETEE_MAIA, "right", &"maia_jetee", &"epilogue_fini", Color.WHITE],
 			["IsaureJetee", "Isaure", ["isaure_sans_masque"], AP.JETEE_ISAURE, "right", &"isaure_jetee", &"", Color.WHITE],

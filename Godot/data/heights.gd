@@ -26,6 +26,9 @@ const PEOPLE := {
 	# Chapitres 7-8 (18/10) : Maïa dans le manteau de Joss (sinon 1,70 m par défaut, plus grande que
 	# Chloé), Dame Suie sans ses lunettes (Outfits.LOOKS) ; hauteur dessinée mesurée comme ci-dessus.
 	"maia_arche": [1.50, 173.0], "dame_suie_sans_lunettes": [1.68, 174.0],
+	# Chapitre 9 (19/10) : Hélène (1,60 m, docs/chapitre-9-scenes.md ; son chapeau compte dans l'union),
+	# Isaure sans masque et avec le masque en carton à la main (Outfits.LOOKS), à la taille d'« isaure ».
+	"helene": [1.60, 175.5], "isaure_sans_masque": [1.70, 173.0], "isaure_masque_carton": [1.70, 173.0],
 }
 ## Someone not in the table yet.
 const DEFAULT := [1.70, 174.0]

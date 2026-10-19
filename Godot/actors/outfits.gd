@@ -86,12 +86,23 @@ const POSES := {
 	"brac": {&"assis": {"sheet": "brac_assis_cage", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"leonce": {&"assis": {"sheet": "leonce_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"maia_arche": {&"assis": {"sheet": "maia_pierre", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
+	# Chapter 9 (docs/direction-artistique.md § Hélène, docs/chapitre-9-scenes.md): Hélène sits on the ground
+	# in the crater (helene_sol: held by Isaure, the scenes' Stage.sit), in Roc's armchair at the Cabinet: her
+	# Npc there says it wears the armchair's poses (meta « person » « helene_fauteuil », tools/zones/cabinet.gd).
+	# The armchair is the room's prop: her picture without it once drawn, else the one with it (`sheet`: a
+	# list, the first drawn wins). Isaure without her mask, cross-legged (the 3rd version; the old one: _v2).
+	"helene": {&"assis": {"sheet": "helene_sol", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
+	"helene_fauteuil": {&"assis": {"sheet": ["helene_assise_sans_fauteuil", "helene_assise"], "cols": 4, "rows": 2,
+		"frames": [[0], [1], [2], [3]]}},
+	"isaure_sans_masque": {&"assis": {"sheet": "isaure_sans_masque_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 }
 ## Other looks of a person for a scene: base sheet's name -> look -> sheet (same grid as it).
-## Dame Suie without her smoked glasses (chapter 8, the great forge out: story/volcan_suie.gd).
+## Dame Suie without her smoked glasses (chapter 8, the great forge out: story/volcan_suie.gd); Isaure
+## holding Maïa's cardboard mask in her hand (chapter 9, the jetty: story/apex_jetee.gd).
 const LOOKS := {
 	"joss": {&"bocal": "joss_bocal"},
 	"dame_suie": {&"sans_lunettes": "dame_suie_sans_lunettes"},
+	"isaure_sans_masque": {&"masque_carton": "isaure_masque_carton"},
 }
 const DIRS := ["down", "left", "right", "up"]
 ## Npc metas: whose poses it wears (person()); a pose it holds from the start, in its zone (Npc._ready:
@@ -166,6 +177,16 @@ static func drawn(sheet: String) -> bool:
 	return ResourceLoader.exists(DIR % sheet)
 
 
+## A pose's sheet: its name, or the first drawn of a list of names (else the last one).
+static func first_drawn(sheets) -> String:
+	if sheets is String:
+		return sheets
+	for s: String in sheets:
+		if drawn(s):
+			return s
+	return String(sheets[-1])
+
+
 ## Adds the ride poses with an accessory to `frames` (masque:<pose>, gilet:<pose>): `poses`
 ## are the columns of the saddle sheets.
 static func add_saddle_looks(frames: SpriteFrames, poses: Array) -> void:
@@ -232,7 +253,7 @@ static func _add_pose(frames: SpriteFrames, pose_name: StringName, def: Dictiona
 	var anims := {}
 	for i in DIRS.size():
 		anims[pose_anim(pose_name, DIRS[i], look)] = {"frames": def["frames"][i], "fps": def.get("fps", 1.0)}
-	var sheet: String = def["coat"] if look == COAT_POSE else def["sheet"]
+	var sheet := first_drawn(def["coat"] if look == COAT_POSE else def["sheet"])
 	var built := SheetFrames.build(load(DIR % sheet), def["cols"], def["rows"], anims)
 	_feet_on_base(built, frames)
 	_merge(frames, built, "")

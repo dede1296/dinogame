@@ -99,12 +99,12 @@ static func build() -> Region:
 ## them back, chapter 8). The cup and the case are placed once drawn (agent IMAGES).
 static func _epilogue(root: Region, entities: Node2D) -> void:
 	A.person(root, "HeleneAssise", "Hélène", A.HELENE, AP.CABINET_HELENE, {"facing": "down", "event": &"helene_cabinet",
-		"show_flag": &"apex_fini"}, A.HELENE_TINT, true)
+		"show_flag": &"apex_fini"}, Color.WHITE, true, A.HELENE_ARMCHAIR)
 	A.flagged(entities, A.TABLE, AP.CABINET_TABLE, "TableThe", &"apex_fini", &"")
 	A.story_prop(entities, A.TASSE, AP.TASSE_BLEUE, "TasseBleue", &"tasse_bleue", {"show_flag": &"tasse_bleue"})
 	A.story_prop(entities, A.CAISSE_CARNETS, AP.CAISSE_CARNETS, "CaisseCarnets", &"caisse_carnets", {"show_flag": &"carnets_rendus"})
 	A.person(root, "IsaureCabinet", "Isaure", ["isaure_sans_masque"], AP.CABINET_ISAURE, {"facing": "left", "event": &"isaure_cabinet",
-		"show_flag": &"tasse_bleue", "hide_flag": &"epilogue_port"})
+		"show_flag": &"tasse_bleue", "hide_flag": &"epilogue_port"}, Color.WHITE, true)   # (sat down at the table: story/epilogue.gd)
 
 
 ## Winks at a famous dinosaur film (29/09; docs/histoire.md « Clins d'œil », story/clins_doeil.gd):

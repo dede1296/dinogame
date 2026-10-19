@@ -384,9 +384,9 @@ static func run(event: StringName, who: Node) -> bool:
 		&"roi_apex":
 			await roi(who)
 		# The bottom (story/apex_coeur.gd, apex_helene.gd)
-		&"bloc_souverain":
+		&"bloc_souverain", &"bloc_eclate":   # (the block, then its pieces: StoryProp « BlocEclate »)
 			await ApexCoeur.bloc(who)
-		&"souverain":
+		&"souverain", &"souverain_couche":   # (awake, then lying at peace: DinoNpc « SouverainCouche »)
 			await ApexCoeur.souverain(who)
 		&"helene_ambre", &"isaure_helene":
 			await ApexCoeur.helene_ambre(who)

@@ -25,10 +25,12 @@ const TORCHE_ETEINTE := ["torche_eteinte"]
 const TASSE := ["tasse_bleue"]
 const CAISSE_CARNETS := ["caisse_carnets"]
 const TABLE := ["table_cuisine"]
-## The people (sheets, contract names first) and their stand-in's tint while only a stand-in is drawn.
-const HELENE := ["helene", "pervenche"]
-const HELENE_TINT := Color(0.84, 0.9, 1.0)
-const FIRMIN := ["firmin", "sbire"]   # (« sans masque » at the jetty: a sheet to draw; his masked one meanwhile)
+## The people (sheets, contract names first, then a stand-in). Hélène's own sheet is drawn (19/10): no more
+## Mémé Pervenche tinted in her place; in Roc's armchair, her Npc wears the poses of HELENE_ARMCHAIR
+## (actors/outfits.gd POSES: the armchair is the Cabinet's prop).
+const HELENE := ["helene"]
+const HELENE_ARMCHAIR := &"helene_fauteuil"
+const FIRMIN := ["firmin_sans_masque", "firmin", "sbire"]   # (at the jetty without his mask: drawn on 19/10, sbire.png's grid)
 ## The species: the Souverain (agent MÉCANIQUES), or a big theropod meanwhile; his size in the scenes
 ## (« ×1,5 en scène, trop grand pour l'écran »), and the stand-in's (smaller species).
 const SOUVERAIN := &"souverain"
@@ -78,9 +80,10 @@ static func sheet(sheets: Array) -> Array:
 
 
 ## A person of the story (actors/npc.tscn) in `sheets` (or its stand-in, tinted `tint`); `opts` as
-## zone_builder.gd npc(); `sitting`: holds the pose « assis » from the start (once drawn for that sheet).
+## zone_builder.gd npc(); `sitting`: holds the pose « assis » from the start (once drawn for that sheet);
+## `poses`: whose poses it wears when not its sheet's (Outfits.PERSON_META: Hélène in the armchair).
 static func person(root: Region, node_name: String, display_name: String, sheets: Array, t: Vector2, opts := {},
-		tint := Color.WHITE, sitting := false) -> Node:
+		tint := Color.WHITE, sitting := false, poses := &"") -> Node:
 	var s := sheet(sheets)
 	var o := opts.duplicate()
 	if not s[1]:
@@ -88,6 +91,8 @@ static func person(root: Region, node_name: String, display_name: String, sheets
 	var n := B.npc(root, node_name, display_name, s[0], t.x, t.y, o)
 	if sitting:
 		n.set_meta(Outfits.HELD_META, &"assis")
+	if poses != &"":
+		n.set_meta(Outfits.PERSON_META, poses)
 	return n
 
 

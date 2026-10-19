@@ -12,7 +12,7 @@
 [ext_resource type="Script" path="res://actors/npc.gd" id="10_aqdj1"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="11_5q2di"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="12_n28m7"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/pecheur.png" id="13_lc2tk"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/leonce_port.png" id="13_hm0vc"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/brac.png" id="14_8l7f2"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/garde.png" id="13_o56jy"]
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="14_w7ifx"]
@@ -24,7 +24,8 @@
 [ext_resource type="Texture2D" path="res://assets/art/characters/dame_suie.png" id="22_fap50"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/hamon.png" id="23_yx0cb"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/joss.png" id="24_j718j"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/sbire.png" id="25_2pm0f"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/pecheur.png" id="13_lc2tk"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/firmin_sans_masque.png" id="26_vpig4"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/rosalie.png" id="26_fcqjw"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/pervenche.png" id="27_vpig4"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="15_8mw0v"]
@@ -782,10 +783,9 @@ position = Vector2(892.8, 892.8)
 collision_mask = 0
 script = ExtResource("10_aqdj1")
 display_name = "Léonce"
-sheet = ExtResource("13_lc2tk")
+sheet = ExtResource("13_hm0vc")
 event = &"leonce_port"
 show_flag = &"grande_forge_eteinte"
-metadata/held_pose = &"assis"
 
 [node name="BracJetee" type="StaticBody2D" parent="Entities" unique_id=335849370 instance=ExtResource("9_m714b")]
 position = Vector2(892.8, 1070.4)
@@ -937,7 +937,7 @@ position = Vector2(681.6, 787.19995)
 collision_mask = 0
 script = ExtResource("10_aqdj1")
 display_name = "Firmin"
-sheet = ExtResource("25_2pm0f")
+sheet = ExtResource("26_vpig4")
 event = &"firmin_jetee"
 facing = "right"
 show_flag = &"epilogue_cabinet"
