@@ -48,6 +48,6 @@ static func sit(prop: Prop, player: Player) -> void:
 			Audio.pop_music())
 	if by_fire:
 		Save.save_game()
-		Toast.say(tree, "L'équipe a repris des forces. Partie sauvegardée.")
+		Toast.say(tree, "L'équipe a repris des forces. Partie sauvegardée · emplacement %d." % Save.slot)
 	else:
 		Toast.say(tree, "L'équipe a repris des forces.")

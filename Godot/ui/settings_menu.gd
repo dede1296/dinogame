@@ -18,6 +18,8 @@ const INK := Color(0.106, 0.122, 0.157, 0.96)
 const CREAM := Color(1, 0.97, 0.9)
 const GOLD := Color(1, 0.86, 0.5)
 const TITLE_SCREEN := "res://scenes/boot/boot.tscn"
+## The slots screen (loaded when used: it draws its boxes with this menu's _box).
+const SAVE_SLOTS := "res://ui/save_slots.gd"
 ## The Commandes page: how tall its list is, and how wide its three columns are.
 const CONTROLS_HEIGHT := 380.0
 const CANCEL_PAD_BUTTON := JOY_BUTTON_B   # while a new button is awaited, B cancels (it cannot be given)
@@ -181,6 +183,8 @@ func _menu_page() -> void:
 	_rows.add_child(_button("Affichage", _show.bind("affichage")))
 	_rows.add_child(_films_row())
 	if in_game:
+		if Save.slot_of_file(Save.path) > 0:   # (the game saves in a slot: not in the 3D's own file)
+			_rows.add_child(_save_row())
 		_rows.add_child(_button("Retour au titre", _show.bind("titre")))
 	else:
 		_rows.add_child(_button("Fermer", _close))
@@ -234,6 +238,38 @@ func _films_row() -> HBoxContainer:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(button)
 	return row
+
+
+## In game: the slot the game saves in (Save.slot), and « Changer d'emplacement » (ui/save_slots.gd,
+## « Sauvegarder dans… »: the game is copied into the slot picked, which is the one from then on).
+func _save_row() -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.name = "SaveRow"
+	row.add_theme_constant_override("separation", 12)
+	var where := _label("Sauvegarde : emplacement %d" % Save.slot, 22, CREAM)
+	where.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	where.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(where)
+	var change := _button("Changer d'emplacement", _change_slot)
+	change.name = "ChangeSlot"
+	change.add_theme_font_size_override("font_size", 22)
+	row.add_child(change)
+	return row
+
+
+## The slots screen over the menu (hidden meanwhile: the pad stays on the cards), then the menu again.
+func _change_slot() -> void:
+	visible = false
+	var slots = load(SAVE_SLOTS)
+	var screen = slots.open(self, slots.Mode.SAVE_TO)
+	var n: int = await screen.chosen
+	if n > 0 and not Save.switch_slot(n, true):   # (save_slots.gd asked before overwriting a game)
+		Toast.say(get_tree(), "Sauvegarde impossible dans l'emplacement %d : la partie reste dans l'emplacement %d." % [n, Save.slot])
+	visible = true
+	_show("menu")
+	var change := find_child("ChangeSlot", true, false) as Button
+	if change and Prompts.navigating:
+		change.grab_focus()
 
 
 ## Closes the menu, then plays the intro or the credits over the screen; back to it at the end.
@@ -494,7 +530,7 @@ func _fullscreen_text() -> String:
 func _title_page() -> void:
 	_rows.add_child(_label("Retour au titre", 40, GOLD))
 	var can_leave := not _scene_playing()
-	var text := "La partie est sauvegardée : « Continuer » la reprendra ici." if can_leave \
+	var text := "La partie est sauvegardée (emplacement %d) : « Continuer » la reprendra ici." % Save.slot if can_leave \
 		else "Une scène est en cours : attends qu'elle se termine pour revenir au titre."
 	var note := _label(text, 22, CREAM)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -560,6 +596,8 @@ func _sample_later(bus: StringName) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not visible:   # (hidden under the slots screen: it answers)
+		return
 	if event.is_action_pressed(&"cancel"):
 		get_viewport().set_input_as_handled()
 		_back()
@@ -567,7 +605,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Android back gesture / button.
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST and visible:
 		_back()
 
 

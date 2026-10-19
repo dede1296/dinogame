@@ -27,7 +27,7 @@ var companion: Dinosaur3D
 ## Before the zone is built: the game (loaded or new), and where Chloé stands in it (Vector3.INF:
 ## at the zone's arrival point).
 func begin() -> Vector3:
-	if Save.path == Save.PATH:   # (the test tool sets a file of its own: kept)
+	if Save.dir == Save.PLAYER_DIR:   # (the 2.5D's slots: the 3D keeps a file of its own; the test tool's is kept)
 		Save.path = SAVE_PATH
 	if not Game.in_game:
 		if not (Save.has_save() and Save.load_game()):

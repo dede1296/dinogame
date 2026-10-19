@@ -132,6 +132,17 @@ arbres (ils n'ont plus d'ombre-carte).
 `shadow_kinds.gd` ; branché dans `world_view.gd` (`flat_shadows`). Test :
 `godot --path Godot --script res://tools/test_ombres.gd --resolution 1600x900 -- out=<dossier>`.
 
+## Sauvegardes (19/10)
+
+Trois emplacements (`user://save_1.json` … `save_3.json`, `core/save_system.gd`). Toutes les sauvegardes du jeu
+(automatiques et `Save.save_game()`) vont dans l'**emplacement actif** : le dernier chargé, créé ou choisi en jeu,
+mémorisé dans `save_meta.json`. Titre : « Continuer » (le dernier, son résumé dessous), « Charger une partie »
+(les trois cartes : lieu, objectif, dino de tête, temps de jeu, date, « Partie terminée » ; supprimer) et
+« Nouvelle partie », qui demande l'emplacement. En jeu, Paramètres : « Sauvegarde : emplacement 2 » et « Changer
+d'emplacement » (la partie y est copiée tout de suite). Écraser ou supprimer demande toujours confirmation ; la partie
+écrasée reste en `save_N.json.ancienne`. L'ancienne `save.json` devient l'emplacement 1 au premier titre (gardée en
+`save.json.migre`). Tests : `tests/sauvegarde/` (GdUnit4) ; captures : `tools/scenarios/sauvegarde_test.gd`.
+
 ## Où c'est écrit
 
 - `core/screen_mode.gd` (autoload `Screen`) : plein écran, taille minimale de la fenêtre, F11.
