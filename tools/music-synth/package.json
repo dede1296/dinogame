@@ -1,0 +1,13 @@
+{
+  "name": "ambrelune-music-synth",
+  "private": true,
+  "type": "module",
+  "description": "Le synthétiseur de musique d'Ambrelune (version Phaser, récupéré) et son rendu hors ligne.",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.48.2",
+    "wasm-media-encoders": "^0.7.0"
+  }
+}
