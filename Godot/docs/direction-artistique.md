@@ -859,7 +859,10 @@ Corrigés le 19/10 (passe de cohérence, édition nano-banana en gardant composi
 
 Passe finale du 19/10 (agent IMAGES, `tools/art-jobs/retouches_final.mjs`) : Isaure harmonisée (intro_07/08/09 : casquette de marin, écharpe rouge, tenue de sa planche `isaure.png` ; fin_02/fin_04 : chignon gris, vêtements sombres de `isaure_sans_masque.png`), `fin_06_dinos_bastion` (Ankylosaurus ocre de sa planche, lichen discret, massue de queue lisible, Maïa avec sa corde), `fin_06_dinos_base` (fumée du volcan retirée, comme les trois variantes), `intro_05_carte` et `_vide` (boussole sans lettres ni chiffres, repères gravés ; cadran collé à l'identique sur les deux), `intro_04` (œuf corail allongé). `fin_01` : vérifié, volcan et cheminées sans fumée. Cohérence de Chloé vérifiée dans toutes les peintures (auburn, barrette, taches de rousseur, sac, gilet) : rien à corriger.
 
+Retouches « Fable » du 19/10 (agent IMAGES, nano-banana, collées par masque flouté pour ne toucher que la zone voulue) : `fin_08_souverain` (trois blocs d'ambre sombre veinés d'or au fond du cratère, avec un sauropode, un théropode et un cératopsien couchés : les « blocs des géants » ; Souverain, ciel et mer inchangés) ; `intro_05_carte` (à l'encre : trois cheminées de forge qui fument et un petit masque d'os près du « ? » du volcan, zone 800-1700 × 500-1050 seulement). `intro_05_carte_vide` NON touchée : la carte et la carte vide restent superposables, l'encre en plus.
+
 Défauts connus restants (courts, sans gravité) :
+- `intro_05_carte` : cheminées et masque sont légèrement colorés (beige) plutôt qu'en encre brune pure ; à refaire avec nano-banana si Greg le veut plus « trait ». `fin_08_souverain` : les blocs sont un peu gros pour des « hameaux de géants ».
 - `fin_08_souverain` : la spirale de l'île reste approximative (non retouchée : pas simple sans toucher au Souverain).
 - `fin_09_journal` : les gribouillis ont un air régulier de près (le moteur peut les flouter).
 - `fin_02_barque_visiteurs` : Isaure change peu (déjà proche de sa planche) ; l'édition a aussi légèrement redessiné de petits détails.
