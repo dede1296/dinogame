@@ -1,7 +1,7 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://world/region.gd" id="1_l3dnd"]
-[ext_resource type="AudioStream" path="res://assets/audio/music/monts.ogg" id="2_yetda"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/cieux.ogg" id="2_yetda"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/pierre_cieux.png" id="3_npq68"]
 [ext_resource type="Texture2D" path="res://assets/art/battle/cieux.jpg" id="4_tx80a"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/neige.png" id="5_7k7ap"]

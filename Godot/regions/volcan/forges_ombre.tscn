@@ -1,7 +1,7 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://world/region.gd" id="1_bqrjh"]
-[ext_resource type="AudioStream" path="res://assets/audio/music/ombre.ogg" id="2_hgge0"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/forges_ombre.ogg" id="2_hgge0"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/roche_noire.png" id="3_hqi0h"]
 [ext_resource type="Texture2D" path="res://assets/art/battle/volcan.jpg" id="4_ydbbl"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/cendre.png" id="5_2iubw"]

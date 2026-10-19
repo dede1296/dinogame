@@ -1,7 +1,7 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://world/region.gd" id="1_s33fa"]
-[ext_resource type="AudioStream" path="res://assets/audio/music/monts.ogg" id="2_cwla1"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/nids_geants.ogg" id="2_q3rma"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/pierre_cieux.png" id="3_q3rma"]
 [ext_resource type="Texture2D" path="res://assets/art/battle/cieux.jpg" id="4_tnujo"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/nuages.png" id="5_ntgpf"]
@@ -62,7 +62,7 @@ display_name = "Cieux Éternels"
 zone_name = "Les Nids géants"
 levels = Vector2i(40, 43)
 pebbles = 6
-music = ExtResource("2_cwla1")
+music = ExtResource("2_q3rma")
 ambience_id = &"nids_geants"
 ground_tex = ExtResource("3_q3rma")
 battle_backdrop = ExtResource("4_tnujo")

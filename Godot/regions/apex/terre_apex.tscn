@@ -1,6 +1,7 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://world/region.gd" id="1_joel6"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/terre_apex.ogg" id="2_sungw"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/roche_apex.png" id="2_5snm1"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/roche_apex_fond.png" id="3_sungw"]
 [ext_resource type="Texture2D" path="res://assets/art/battle/apex.jpg" id="4_usp53"]
@@ -29,6 +30,7 @@ display_name = "Terre des Apex"
 zone_name = "La Terre des Apex"
 levels = Vector2i(50, 50)
 pebbles = 3
+music = ExtResource("2_sungw")
 ambience_id = &"terre_apex"
 ground_tex = ExtResource("2_5snm1")
 path_tex = ExtResource("3_sungw")

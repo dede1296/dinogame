@@ -1,7 +1,7 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://world/region.gd" id="1_23yl0"]
-[ext_resource type="AudioStream" path="res://assets/audio/music/desert.ogg" id="2_h6nvo"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/volcan.ogg" id="2_h6nvo"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/roche_noire.png" id="3_fjc2b"]
 [ext_resource type="Texture2D" path="res://assets/art/ground/cendre.png" id="4_n3oc6"]
 [ext_resource type="Texture2D" path="res://assets/art/battle/volcan.jpg" id="5_u02oo"]
