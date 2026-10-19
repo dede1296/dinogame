@@ -367,6 +367,24 @@ static func on_zone(zone: StringName) -> void:
 ## The chapter's scenes started by talking to someone or something (one branch of Story._run,
 ## asked BEFORE Volcan.run). False when `event` is not the chapter's, or not yet (Isaure at the door
 ## is chapter 8's until the dawn can come; Brac and Léonce at the port until the epilogue).
+## One short line in their own voice when Chloé talks to them during the big scenes (the Souverain awake,
+## the arrival in the crater): no new scene, just a reason to wait (they were « Scène inconnue »).
+const NOT_NOW := {
+	"isaure": "Pas maintenant, moussaillon. Regarde-le.",
+	"maia": "Pas maintenant. Il a peur, Chloé.",
+	"helene": "Doucement, Chloé. Il nous écoute.",
+}
+
+
+static func _not_now(event: StringName) -> void:
+	var name_ := String(event).get_slice("_", 0)
+	if name_ == "caillou":
+		await S.say([{"text": "Caillou souffle, les cornes baissées. Il ne te quitte pas des yeux."}])
+		return
+	var who_ := {"isaure": ISAURE, "maia": MAIA, "helene": HELENE}.get(name_, ISAURE) as String
+	await S.say([{"who": who_, "text": NOT_NOW.get(name_, NOT_NOW["isaure"])}])
+
+
 static func run(event: StringName, who: Node) -> bool:
 	match event:
 		# The dawn, the duel, the door (story/apex_aube.gd)
@@ -408,6 +426,9 @@ static func run(event: StringName, who: Node) -> bool:
 			await Epilogue.step_event(event, who)
 		&"tasse_bleue", &"caisse_carnets", &"isaure_cabinet":
 			await Epilogue.cabinet_event(event, who)
+		# The people standing in the crater and at the bottom: nothing to ask them in the middle of the scene
+		&"isaure_coeur", &"maia_coeur", &"caillou_coeur", &"isaure_abri", &"helene_abri", &"maia_abri", &"caillou_rempart", &"isaure_apex", &"maia_apex", &"caillou_apex":
+			await _not_now(event)
 		&"brac_jetee":
 			if not Game.flag(&"epilogue_fini"):
 				return false
