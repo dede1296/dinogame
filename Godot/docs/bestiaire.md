@@ -180,7 +180,13 @@ les Uniques), gabarits 2,34 / 2,00 / 3,30 / 3,80 m (le T-Rex ×1,2 en scène). C
 
 ## Terre des Apex — niv. 50
 
-- **Le Souverain** : l'Apex ancestral, espèce inconnue, unique. Combat final (à apaiser).
+- **Le Souverain** : l'Apex ancestral, espèce inconnue, unique. Combat final (à apaiser). ✅ (19/10) Fiche
+  `data/species/souverain.tres` : famille `archosaure` (type Terre ; ses quatre coups sont neutres : *Coup de queue*,
+  *Tremblement*, *Cri*, *Il ne bouge pas*), niv. 50, légendaire, cri « sauropode » ; planches de l'agent images
+  (`souverain.png`, `_face_dos`, `_corrompu`), gabarit vu 3,8 m (~12 m de long ; ×1,5 en combat) ; Unique du Dinodex
+  (région `apex`). Jamais sauvage. Combat : `docs/mecaniques.md` « Les deux derniers combats ».
+- **L'équipe d'Isaure** (« les miens », jamais corrompus) : Hauban (Pteranodon 47), Bouline (Baryonyx 47), Étrave
+  (Suchomimus 48), Carène (Archelon 49) : espèces existantes, aucune planche nouvelle.
 - **Post-game** : les géants endormis du cratère, qui se réveillent un à un après la fin :
   Giganotosaurus, Argentinosaurus, Therizinosaurus géant… Et les espèces ressuscitées grâce aux
   fossiles complets, dont le **Titanosaure d'Or**.

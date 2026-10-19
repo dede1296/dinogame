@@ -597,6 +597,52 @@ au Sac, versé sur le corrompu, ses veines s'effacent d'un coup ; il n'agit pas 
 
 Essais : `tools/test_lave_volcan.gd`, `tools/test_especes_volcan.gd`, `tools/test_combat_volcan.gd`.
 
+### Les deux derniers combats (Terre des Apex, chapitre 9) ✅
+
+Moteur `battle/apex_engine.gd` (`ApexEngine`, sous-classe de `BattleEngine`), combats et règles prêts à lancer dans
+`battle/apex_battles.gd` (`ApexBattles`), fond et animations `battle/battle_apex.gd` (fond `assets/art/battle/apex.jpg`,
+repli : la grotte aux cristaux d'ambre réchauffée ; grains d'ambre, lueur des veines), roue `battle/apex_hud.gd`.
+
+**Isaure** (`isaure_team()`, `isaure_rules()`) : « les miens », quatre dinos de la mer jamais corrompus : Hauban
+(Pteranodon 47), Bouline (Baryonyx 47), Étrave (Suchomimus 48), Carène (Archelon 49) ; pas de musique ; règle
+`hesitates` : **Carène perd sa première action** (« Carène hésite… »). Simulé (moteur réel, 120 combats, graine 48,
+équipe type) contre une équipe de 47 : Vif 95 %, Bastion 100 %, Écho 86 % (moyenne 94 % ; de 46 : 88 %) ; jamais
+un mur (de 46 : 77 % au pire). Perdu : `lose_spawn` (le camp d'Hélène), rien n'est pris.
+
+**Le Souverain** (`souverain()`, `souverain_team()`, `souverain_rules()`) : espèce `souverain` (famille
+`archosaure`, type Terre, coups neutres), niv. 50, corrompu, jamais sous 1 PV, ni capturé ni fui. Il a peur : il
+**frappe en reculant** (*Coup de queue*, *Tremblement* qui secoue aussi les dinos qui attendent, 6 % de leurs PV,
+jamais sous 1 PV, *Cri* : peur), et « *Il ne bouge pas* » de plus en plus souvent en se calmant (20 % → 65 %).
+- `calm_factor: 3` : jauge **300** ; les mots arrivent à 26 % de leur effet habituel (`LISTENS`) ; sa peur revient
+  (−7) à la fin d'un tour où Chloé **ne lui a pas parlé** (jamais sous le givre, jamais sous le seuil de l'Ambre clair
+  une fois atteint).
+- **« Sceaux »** à la place de Fuir : les cinq gardiens de Cœurs, **chacun une fois**, et **sans coûter le tour**
+  (le Souverain ne frappe pas pendant que l'Alpha est là) : Spinosaure (toute l'équipe soignée, même au sol), Piment
+  (+40 de calme), Minuit (son prochain coup deux fois plus doux ; sa voix seulement, des ondes sur le sol), Toupet (le
+  calme ne retombe plus pendant 3 tours, coups compris), Cheminée (+60, et le Souverain ne bouge pas à sa prochaine
+  action). Ni le Tricératops, ni l'Utahraptor, ni le Roi des Cieux (décision du 19/10).
+- **Caillou** : une fois, le coup qui mettrait le dino de Chloé au sol, il le prend (« Caillou se met devant ! »).
+- **L'Ambre clair** (`antidote_min_calm: 0.66`) : avant deux tiers de calme, Chloé range la fiole (le tour est
+  gardé, la carte du Sac dit « Quand il écoute ») ; à deux tiers, le Sac clignote et c'est **le dernier geste** du
+  dino de départ (Vif bondit et le gratte sous le menton, Bastion encaisse la queue et souffle sa cendre, Écho
+  chante) : il entre s'il n'y est pas, il se relève s'il est au sol, puis la goutte. Tant que la dose est là, les mots
+  seuls ne remplissent pas la jauge.
+- **Pas de défaite** (`rally`) : toute l'équipe au sol, elle se relève sur place, soignée (« Encore. Il ne part pas,
+  et nous non plus. ») ; les Sceaux et Caillou reviennent, le calme reste.
+- Simulé contre une équipe de 48 (départ Lien 5, les autres 2 cœurs) : **sans Sceaux 17-24 tours** (en lui parlant
+  tout de suite : 17 ; en l'usant d'abord : 19-24), **avec les cinq 9,5 tours** en lui parlant (8-11), 12-15 en
+  l'usant d'abord ; 0 à 0,8 K.O. par combat, toujours apaisé, aucune relève nécessaire.
+
+**Le sac** (`actors/apex_bag.gd`, `ApexBag`) : les Cœurs 1-4 rendus par Isaure, puis les cinq posés dans la porte
+(les drapeaux `coeur_n` restent), le dino de départ monté à Lien 5, Moustique rendu à Maïa (équipe ou réserve), le
+masque, les moufles, la lettre, l'insigne de gardienne (`insigne_gardienne`).
+**Les géants du cratère** (post-game, `actors/apex_giants.gd`, `ApexGiants`) : dès `post_game`, un à la fois, dans
+l'ordre ; Chloé s'assoit à côté du bloc une fois par jour du jeu (+60 points de Lien au dino de tête) ; au 3e jour,
+il ouvre l'œil (`geant_<n>_eveille`).
+
+Essais (GdUnit4, sans fenêtre) : `tests/apex/mecaniques/` (34 cas) ; à l'écran :
+`tests/apex/mecaniques/fenetre_combat_souverain.gd`.
+
 ## Les dinos
 
 - **Espèces** : environ 60, réparties par région et par habitat ([bestiaire.md](bestiaire.md)).
@@ -696,7 +742,7 @@ La mécanique de cœur, héritée d'Hélène.
   Ancestral ») ; les autres « le … sauvage » ou « le … corrompu » (`BattleEngine.name_of`, règle
   `trainer` posée par `Story.duel`).
 - **Adversaires** : dinos sauvages ✅, sbires et lieutenants de l'Ombre Noire (équipes de plusieurs
-  dinos), Maïa, les Alphas, le Masque, le Souverain.
+  dinos), Maïa, les Alphas, le Masque, Isaure ✅, le Souverain ✅ (voir « Les deux derniers combats »).
 - **Récompenses** : expérience ✅, objets, argent (les **éclats d'ambre**, monnaie de l'île).
 
 ## Capture

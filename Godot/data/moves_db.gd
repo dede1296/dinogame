@@ -56,6 +56,17 @@ const MOVES := {
 	## cératopsiens font trembler le sol (Séisme, 45 : la Terre, ce qui touche fort le T-Rex de Magma ; pas
 	## avant, pour que les Styracosaurus sauvages, 42-44, restent doux). Appris tard : rien ne change avant.
 	&"couleeLave": {"name": "Coulée de lave", "type": "feu", "power": 90, "accuracy": 0.85, "pp": 5, "fx": "quake"},
+	## Terre des Apex (chapitre 9) : le Souverain, seul de sa famille (« archosaure »). Il a peur : il frappe
+	## en reculant, jamais en avançant (fx « recul ») ; « say » : ce que dit le combat à la place de « utilise »
+	## (ApexEngine). Coups neutres : aucun type n'est fort ni faible contre eux, c'est le calme qui compte.
+	&"queueSouveraine": {"name": "Coup de queue", "type": "neutre", "power": 80, "accuracy": 0.9, "pp": 15, "fx": "recul",
+		"say": "%s recule… et sa queue balaie le sol, derrière lui, devant lui !"},
+	&"tremblement": {"name": "Tremblement", "type": "neutre", "power": 35, "accuracy": 1.0, "pp": 20, "fx": "recul",
+		"say": "%s recule contre la paroi, et tout le sol tremble !"},
+	&"criSouverain": {"name": "Cri", "type": "neutre", "power": 0, "accuracy": 1.0, "pp": 15, "effect": {"status": "peur", "chance": 1.0}, "fx": "roar",
+		"say": "%s crie. Pas un rugissement : un cri de bête qui ne sait pas où elle est."},
+	&"immobile": {"name": "Il ne bouge pas", "type": "neutre", "power": 0, "accuracy": 1.0, "pp": 40, "fx": "recul",
+		"say": "%s recule contre la paroi, et regarde. Il ne bouge pas."},
 }
 
 const TYPE_NAMES := {"neutre": "Neutre", "feu": "Feu", "eau": "Eau", "terre": "Terre", "vent": "Vent", "pierre": "Pierre", "nature": "Nature"}
@@ -66,6 +77,7 @@ const TYPE_COLORS := {
 const FAMILY_TYPES := {
 	&"tyrant": "feu", &"spino": "eau", &"raptor": "vent", &"sauropod": "terre", &"ceratopsian": "terre",
 	&"armored": "pierre", &"hadrosaur": "nature", &"flyer": "vent", &"marine": "eau",
+	&"archosaure": "terre",   # le Souverain (chapitre 9) : la roche du cratère ; ses coups, eux, sont neutres
 }
 ## Attacker type -> defender type -> multiplier (1.5 strong, 0.7 weak, 1 otherwise).
 const TYPE_CHART := {
@@ -89,6 +101,7 @@ const LEARN := {
 		&"hadrosaur": [[1, &"charge"], [5, &"criTrompette"]],
 		&"flyer": [[1, &"morsure"], [8, &"pique"], [38, &"piqueAerien"]],
 		&"marine": [[1, &"morsure"], [6, &"machoireAquatique"], [18, &"plongeon"]],
+		&"archosaure": [[1, &"criSouverain"]],
 	},
 	&"teeth": {
 		&"tyrant": [[10, &"crocsBrulants"]], &"spino": [[12, &"crocsBrulants"]], &"marine": [[10, &"crocsBrulants"]],
@@ -100,15 +113,15 @@ const LEARN := {
 	&"back_legs": {
 		&"raptor": [[3, &"bondGriffu"]], &"sauropod": [[6, &"pietinement"], [20, &"seisme"]],
 		&"ceratopsian": [[8, &"pietinement"], [45, &"seisme"]], &"armored": [[12, &"pietinement"]],
-		&"hadrosaur": [[10, &"fougeres"]], &"marine": [[4, &"vagueCaudale"]],
+		&"hadrosaur": [[10, &"fougeres"]], &"marine": [[4, &"vagueCaudale"]], &"archosaure": [[1, &"tremblement"]],
 	},
 	&"back": {
 		&"armored": [[4, &"blindage"], [9, &"picsDorsaux"]], &"spino": [[5, &"voileMenacante"]], &"ceratopsian": [[6, &"blindage"]],
-		&"flyer": [[36, &"ventArriere"]],
+		&"flyer": [[36, &"ventArriere"]], &"archosaure": [[1, &"immobile"]],
 	},
 	&"tail": {
 		&"armored": [[1, &"coupQueue"], [11, &"massue"]], &"sauropod": [[1, &"coupQueue"], [7, &"fouetCaudal"]],
-		&"marine": [[1, &"vagueCaudale"]], &"hadrosaur": [[7, &"racines"]],
+		&"marine": [[1, &"vagueCaudale"]], &"hadrosaur": [[7, &"racines"]], &"archosaure": [[1, &"queueSouveraine"]],
 	},
 }
 const DEFAULT_TAIL := [[1, &"coupQueue"]]

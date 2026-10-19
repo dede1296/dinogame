@@ -6,7 +6,7 @@ extends Control
 ## along the bottom, like the zone banner; and in the bottom-right corner, under the thumb, the
 ## action wheel: a big round Attaquer, chosen by default, and around it Collier (with its count;
 ## it glows softly once the wild dino is worn out) or Apaiser (violet, against a corrupted dino),
-## Sac, Dinos and Fuir. Every action is one tap. Attaquer, Sac and Dinos open their list in the
+## Sac, Dinos and Fuir (Sceaux in its place in the last battle: battle/apex_hud.gd). Every action is one tap. Attaquer, Sac and Dinos open their list in the
 ## same corner (the moves with their type, power points and a hint of how well they hit; the
 ## healing items, then who gets one; the party), with Retour. After a knock-out, the party's list
 ## asks who takes over (no Retour: someone must go in). The choices come out as `chosen`, an action for
@@ -22,6 +22,8 @@ const ICON_RUN := preload("res://assets/art/ui/hud_fuir.png")
 const ICON_CALM := preload("res://assets/art/ui/hud_apaiser.png")
 const ICON_BAG := preload("res://assets/art/ui/sac.png")
 const PARTS := preload("res://battle/hud_parts.gd")
+## The last battle (chapter 9, ApexEngine): « Sceaux » in Fuir's place, its list; the Ambre clair waiting.
+const APEX_HUD := preload("res://battle/apex_hud.gd")
 const INK_TOP := PARTS.INK_TOP
 const INK_BOTTOM := PARTS.INK_BOTTOM
 const GOLD := PARTS.GOLD
@@ -57,7 +59,7 @@ const WORN := 0.4
 const POP_S := 0.18
 ## The lists and the panel each is shown in: the party's panel serves "team" (send another in),
 ## "relief" (after a knock-out) and "heal" (who gets the item picked in the Sac).
-const LISTS := {"moves": "moves", "bag": "bag", "team": "team", "relief": "team", "heal": "team"}
+const LISTS := {"moves": "moves", "bag": "bag", "team": "team", "relief": "team", "heal": "team", "sceaux": "sceaux"}
 const HEAL_TITLES := {"baie": "À qui donner la baie ?", "fougere": "À qui donner la fougère ?"}
 
 
@@ -71,12 +73,14 @@ var wheel: Control
 var moves_panel: Control
 var bag_panel: Control
 var team_panel: Control
+var sceaux_panel: Control
 var attack_button: PARTS.RoundButton
 var collar_button: PARTS.RoundButton
 var calm_button: PARTS.RoundButton
 var bag_button: PARTS.RoundButton
 var team_button: PARTS.RoundButton
 var run_button: PARTS.RoundButton
+var sceaux_button: PARTS.RoundButton
 
 var _band: Control
 var _tap_hint: Label
@@ -97,7 +101,8 @@ func _ready() -> void:
 	moves_panel = _list_panel()
 	bag_panel = _list_panel()
 	team_panel = _list_panel()
-	_panels = {"wheel": wheel, "moves": moves_panel, "bag": bag_panel, "team": team_panel}
+	sceaux_panel = _list_panel()
+	_panels = {"wheel": wheel, "moves": moves_panel, "bag": bag_panel, "team": team_panel, "sceaux": sceaux_panel}
 	show_panel("")
 	get_viewport().size_changed.connect(_layout)
 	_layout()
@@ -118,6 +123,8 @@ func _process(delta: float) -> void:
 	_tap_hint.modulate.a = 0.45 + 0.55 * absf(sin(_t * 3.0)) if _tap_hint.visible else 0.0
 	if collar_button and wheel.visible and collar_button.visible and engine:
 		collar_button.pulse = not collar_button.disabled and engine.foe.hp <= engine.foe.max_hp() * WORN
+	if bag_button and wheel.visible and engine:   # (the last battle: the Ambre clair is ready)
+		bag_button.pulse = APEX_HUD.has_sceaux(engine) and engine.can_use_antidote()
 
 
 # ------------------------------------------------------------------ messages
@@ -359,7 +366,10 @@ func _build_wheel() -> void:
 	team_button.pressed.connect(func() -> void: show_panel("team"))
 	run_button = PARTS.round_button(RUN_SLATE, ICON_RUN, "Fuir", SMALL_D, "fuir")
 	run_button.pressed.connect(func() -> void: chosen.emit({"type": "run"}))
-	for b: PARTS.RoundButton in [collar_button, calm_button, bag_button, team_button, run_button, attack_button]:
+	sceaux_button = APEX_HUD.button()
+	sceaux_button.visible = false
+	sceaux_button.pressed.connect(func() -> void: show_panel("sceaux"))
+	for b: PARTS.RoundButton in [collar_button, calm_button, bag_button, team_button, sceaux_button, run_button, attack_button]:
 		wheel.add_child(b)
 
 
@@ -369,13 +379,15 @@ func _fill_wheel() -> void:
 	var corrupted := engine.foe.corrupted
 	collar_button.visible = rules.get("catch", true) and not corrupted
 	calm_button.visible = corrupted
-	run_button.visible = rules.get("run", true)
+	sceaux_button.visible = APEX_HUD.has_sceaux(engine)   # (in Fuir's place)
+	sceaux_button.enable(APEX_HUD.can_call_any(engine))
+	run_button.visible = rules.get("run", true) and not sceaux_button.visible
 	collar_button.badge = Game.item_count("collier")
 	collar_button.enable(Game.item_count("collier") > 0)
 	var heals := 0
 	for id: String in BattleEngine.HEAL_ITEMS:
 		heals += Game.item_count(id)
-	if engine.can_use_antidote():   # the last battle: the « Ambre clair » is in the bag too
+	if APEX_HUD.antidote_shown(engine):   # the last battle: the « Ambre clair » is in the bag too
 		heals += 1
 	bag_button.badge = heals
 	bag_button.enable(heals > 0)
@@ -387,7 +399,7 @@ func _fill_wheel() -> void:
 	attack_button.position = HUB - attack_button.size / 2.0
 	var ring: Array[PARTS.RoundButton] = [attack_button]
 	var k := 0
-	for b: PARTS.RoundButton in [collar_button, calm_button, bag_button, team_button, run_button]:
+	for b: PARTS.RoundButton in [collar_button, calm_button, bag_button, team_button, sceaux_button, run_button]:
 		if not b.visible:
 			continue
 		var a := deg_to_rad(ANGLES[k])
@@ -429,7 +441,7 @@ func _open_wheel() -> void:
 func show_panel(which: String) -> void:
 	_shown = which
 	var panel: Control = _panels.get(LISTS.get(which, which))
-	for p: Control in [wheel, moves_panel, bag_panel, team_panel]:
+	for p: Control in _panels.values():
 		p.visible = p == panel
 	if which == "wheel":
 		_fill_wheel()
@@ -456,7 +468,7 @@ func _back_from(which: String) -> String:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"cancel") and _shown in ["moves", "bag", "team", "heal"]:
+	if event.is_action_pressed(&"cancel") and _shown in ["moves", "bag", "team", "heal", "sceaux"]:
 		get_viewport().set_input_as_handled()
 		show_panel(_back_from(_shown))
 	# E (« interact », out of battle) presses too; Entrée and Espace already do (« ui_accept »).
@@ -525,9 +537,11 @@ func _fill_list(which: String) -> void:
 					grid.add_child(_move_card(i))
 			else:   # no power points left at all: it struggles
 				grid.add_child(_struggle_card())
+		"sceaux":
+			APEX_HUD.fill(self, panel, grid)
 		"bag":
 			panel.get_meta(&"title").text = "Soins"
-			if engine.can_use_antidote():
+			if APEX_HUD.antidote_shown(engine):
 				grid.add_child(_antidote_card())
 			for id: String in BattleEngine.HEAL_ITEMS:
 				if Game.item_count(id) > 0:
@@ -622,7 +636,7 @@ func _antidote_card() -> Button:
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(icon)
-	row.add_child(PARTS.two_lines("Ambre clair", "Efface ses veines"))
+	row.add_child(PARTS.two_lines("Ambre clair", APEX_HUD.antidote_detail(engine)))
 	row.add_child(PARTS.label("×1", 22, GOLD))
 	card.pressed.connect(func() -> void: chosen.emit({"type": "antidote"}))
 	return card
@@ -714,7 +728,7 @@ func _layout() -> void:
 	mine["box"].reset_size()
 	mine["box"].position = Vector2(inset.x, _band.position.y - 8.0 - mine["box"].size.y)
 	wheel.position = view - inset - WHEEL
-	for panel: Control in [moves_panel, bag_panel, team_panel]:
+	for panel: Control in [moves_panel, bag_panel, team_panel, sceaux_panel]:
 		if panel and panel.visible:
 			_place_list(panel)
 

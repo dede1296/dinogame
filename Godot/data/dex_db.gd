@@ -26,7 +26,7 @@ const REGIONS := [
 const FAMILY_NAMES := {
 	&"raptor": "Raptor", &"tyrant": "Grand prédateur", &"spino": "Spinosauridé", &"ceratopsian": "Cératopsien",
 	&"armored": "Cuirassé", &"hadrosaur": "Ornithopode", &"sauropod": "Sauropode", &"flyer": "Ptérosaure",
-	&"marine": "Reptile marin",
+	&"marine": "Reptile marin", &"archosaure": "Archosaure inconnu",
 }
 const RARITY_NAMES := {"common": "Commune", "rare": "Rare", "epic": "Très rare", "legendary": "Légendaire"}
 const PHASE_NAMES := {&"dawn": "à l'aube", &"day": "le jour", &"dusk": "au crépuscule", &"night": "la nuit"}

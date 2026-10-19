@@ -472,7 +472,7 @@ func _frighten(ev: Array) -> void:
 ## Chloé's own hatchling, calm it faster.
 func _try_calm(ev: Array) -> bool:
 	var helper: bool = starter_helps()
-	var foe_name: String = French.le(foe.species_name() + " corrompu")
+	var foe_name := _calm_name()
 	if helper and not _told_starter:
 		_told_starter = true
 		ev.append({"type": "text", "text": "%s se met entre Chloé et %s…" % [player().nickname, foe_name]})
@@ -490,12 +490,22 @@ func _try_calm(ev: Array) -> bool:
 	ev.append({"type": "calm", "calm": calm, "text": how})
 	if calm < calm_full:
 		return false
-	ev.append({"type": "calmed", "text": "Les veines violettes s'effacent. %s est apaisé !" % _cap(foe.species_name())})
+	ev.append({"type": "calmed", "text": "Les veines violettes s'effacent. %s est apaisé !" % _calmed_name()})
 	foe.corrupted = false
 	foe.status = ""
 	_give_xp(ev)
 	_finish("calmed", ev)
 	return true
+
+
+## How the calming lines name the corrupted foe (« le Daspletosaurus corrompu »).
+func _calm_name() -> String:
+	return French.le(foe.species_name() + " corrompu")
+
+
+## Who « est apaisé ! » (« Daspletosaurus »).
+func _calmed_name() -> String:
+	return _cap(foe.species_name())
 
 
 ## Can the « Ambre clair » be poured now? Only in the last battle (rule "antidote"), on a corrupted foe,

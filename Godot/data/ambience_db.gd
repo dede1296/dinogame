@@ -165,6 +165,19 @@ const AMBIENCES := {
 		"beds": [["desert", 0.5, ""], ["monts", 0.2, ""], ["feu", 1.0, "fire"]],
 		"calls": [{"ids": ["rafale-grave"], "every": [10.0, 24.0], "vol": 0.4}],
 	},
+	## Terre des Apex (chapitre 9 ; aucun son nouveau). Pas de lave, pas un oiseau : la roche noire qui bourdonne,
+	## un vent tiède du bord, et de loin en loin un souffle grave et lent, comme une respiration (c'est lui :
+	## la rafale grave, à intervalles presque réguliers). Le cratère : on descend la spirale, il respire loin.
+	&"terre_apex": {
+		"beds": [["grotte", 0.4, ""], ["desert", 0.25, ""], ["feu", 1.0, "fire"]],
+		"calls": [{"ids": ["rafale-grave"], "every": [8.0, 12.0], "vol": 0.35}],
+	},
+	## Le Cœur des Apex : la salle ronde à ciel ouvert, le bourdon de la roche plus fort ; le souffle tout près, plus
+	## lent et plus présent ; le vent du sommet à peine.
+	&"coeur_apex": {
+		"beds": [["grotte", 0.6, ""], ["monts", 0.12, ""], ["feu", 1.0, "fire"]],
+		"calls": [{"ids": ["rafale-grave"], "every": [7.0, 9.5], "vol": 0.5}],
+	},
 }
 
 

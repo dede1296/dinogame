@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/souverain.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/souverain_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"souverain"
+display_name = "Souverain"
+family = &"archosaure"
+description = "L'ancêtre du cratère, d'une espèce que personne ne connaît : un très grand archosaure, bas et massif, la tête longue, le dos cuirassé de plaques veinées d'ambre. Il a les yeux ouverts depuis vingt-cinq ans. Il ne dormait pas : il avait peur."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.599
+battle_scale = 0.611
+walk_fps = 4.0
+cry_prefix = "sauropode"
+head_size = 10
+head_bite = 6
+teeth_sharp = 5
+teeth_count = 6
+front_power = 8
+front_reach = 5
+back_legs_power = 10
+back_legs_speed = 3
+back_armor = 10
+back_spikes = 6
+tail_power = 10
+tail_length = 10
+rarity = "legendary"

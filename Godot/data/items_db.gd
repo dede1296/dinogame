@@ -71,6 +71,10 @@ const ITEMS := {
 		"desc": "Chaud comme du pain qui sort du four, il bat fort et vite, comme s'il avait couru. Le T-Rex de Magma l'avait couvert de lave, comme on couvre une braise pour la nuit."},
 	"lettre_isaure": {"name": "Lettre pour Isaure", "icon": "lettre_isaure", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "La page 37 du journal d'Hélène, pliée en quatre, pas scellée. Dame Suie l'a gardée un an sans l'ouvrir. Elle est pour Isaure."},
+	# Épilogue (chapitre 9, docs/chapitre-9-scenes.md 5 c) : remis par Hélène sur la jetée (ApexBag.give_insigne ;
+	# celui de Maïa reste à Maïa). Icône : assets/art/ui/insigne_gardienne.png (agent images ; l'ambre en attendant).
+	"insigne_gardienne": {"name": "Insigne de gardienne", "icon": "insigne_gardienne", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Un disque d'ambre nu, avec la fougère d'Hélène. Chloé Varenne, gardienne de la Réserve d'Ambrelune. « Les Alphas te reconnaîtront. Ils te reconnaissent déjà. »"},
 	# A rare find in the Forêt (a wink: docs/histoire.md « Clins d'œil »); Roc has a word about it.
 	"ambre_moustique": {"name": "Ambre au moustique", "icon": "ambre_moustique", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Un galet d'ambre trouvé dans les racines d'une vieille souche de la Forêt. Dedans, un moustique figé depuis des millions d'années. Il a l'air très surpris."},

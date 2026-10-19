@@ -195,6 +195,10 @@ const INFO := {
 	&"cryolophosaure_titan": {"size": "6,5 m de long, 450 kg", "diet": "carnivore", "era": "Jurassique, il y a 190 millions d'années", "from": "en Antarctique",
 		"trait": "Une crête en éventail posée en travers du front.",
 		"fact": "On l'a découvert en Antarctique, sur une montagne glacée à 4 000 m. Sa crête le fait ressembler à un chanteur de rock : on l'a surnommé « Elvisaurus » !"},
+	# Terre des Apex (chapitre 9) : une espèce inconnue ; le « vrai » de sa fiche, ce sont les archosaures.
+	&"souverain": {"size": "Environ 12 m de long", "diet": "omnivore", "era": "Personne ne le sait", "from": "nulle part ailleurs qu'au cratère d'Ambrelune",
+		"trait": "Bas et massif, la tête longue, le dos cuirassé de plaques veinées d'ambre.",
+		"fact": "« Archosaure » veut dire « reptile dominant » : c'est la grande famille des dinosaures, des oiseaux et des crocodiles. Leurs plus vieux ancêtres vivaient il y a 250 millions d'années."},
 }
 
 ## The characters of the story, one of a kind, in their order in the Dinodex. `role`: who
@@ -234,4 +238,7 @@ const UNIQUES := [
 	{"id": &"trex_magma", "role": "Le T-Rex de Magma, Alpha du Volcan", "region": &"volcan",
 		"rumour": "Au fond des coulées, une faille dans le volcan respirerait, chaude et régulière, comme quelqu'un qui dort.",
 		"where": "Dans le Sanctuaire de Magma, une salle de verre noir au cœur du volcan, derrière les coulées de lave."},
+	{"id": &"souverain", "role": "Le Souverain, l'Apex ancestral", "region": &"apex",
+		"rumour": "Hélène a écrit qu'au fond du cratère, quelque chose de très grand garde les yeux ouverts.",
+		"where": "Au Cœur des Apex, tout au fond du cratère. Il ne dort plus dans l'ambre : il est couché, et il regarde la mer. Il n'a plus peur."},
 ]

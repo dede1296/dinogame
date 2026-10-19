@@ -56,6 +56,10 @@ const SKY_LOOK := preload("res://battle/battle_sky.gd")
 ## In the Plaine Volcanique (rule "volcan", or a battle in one of its zones): its backdrop, the embers;
 ## and the antidote's toss (rule "antidote").
 const VOLCAN_LOOK := preload("res://battle/battle_volcan.gd")
+## In the Terre des Apex (rule "apex", or its zones): its backdrop; and what ApexEngine tells (the Sceaux…).
+const APEX_LOOK := preload("res://battle/battle_apex.gd")
+## Isaure's duel and the Souverain (chapter 9): ApexEngine's rules (its RULES).
+const APEX_ENGINE := preload("res://battle/apex_engine.gd")
 const HUD := preload("res://battle/battle_hud.gd")
 const AMBIENCE_IN_BATTLE_DB := -18.0   # below its normal level
 const HEAL_GREEN := Color(0.55, 0.95, 0.5)
@@ -105,7 +109,9 @@ func _ready() -> void:
 ## false) in the wind of the Cieux — by default, any battle in one of their zones (SkyEngine,
 ## BattleSky: Wind stronger, Earth weaker, the pterosaurs hovering), "volcan": true (or false) in the
 ## Plaine Volcanique's heat — by default in its zones (BattleVolcan: its backdrop, embers), "antidote":
-## true the last battle, where the « Ambre clair » may be poured on the corrupted foe (BattleEngine).
+## true the last battle, where the « Ambre clair » may be poured on the corrupted foe (BattleEngine); chapter 9's
+## rules (ApexEngine.RULES: "sceaux", "caillou", "calm_factor", "antidote_min_calm", "rally", "hesitates") and "apex"
+## (the crater's backdrop — by default in its zones, BattleApex).
 func run(wild: Dino, rules := {}) -> String:
 	_rules = rules
 	if rules.get("backdrop") is Texture2D:
@@ -120,16 +126,23 @@ func run(wild: Dino, rules := {}) -> String:
 		"abyss": rules.get("abyss", false),
 		"antidote": rules.get("antidote", false),
 	}
+	for key: String in APEX_ENGINE.RULES:   # (chapter 9: Isaure, the Souverain)
+		if rules.has(key):
+			engine_rules[key] = rules[key]
 	if rules.get("underwater", false):   # under the sea: the water's rules, the water all around
 		engine = UNDERWATER_ENGINE.new(Game.party, wild, engine_rules)
 		UNDERWATER_LOOK.apply(self)
 	elif SKY_ENGINE.applies(rules, Game.region_id):   # in the Cieux: the wind's rules, the flyers hovering
 		engine = SKY_ENGINE.new(Game.party, wild, engine_rules)
 		SKY_LOOK.apply(self)
+	elif APEX_ENGINE.applies(engine_rules):   # Isaure's duel, the Souverain: the Sceaux, Caillou, the last gesture…
+		engine = APEX_ENGINE.new(Game.party, wild, engine_rules)
 	else:
 		engine = BattleEngine.new(Game.party, wild, engine_rules)
 	if VOLCAN_LOOK.applies(rules, Game.region_id):   # in the volcano: its backdrop, the embers
 		VOLCAN_LOOK.apply(self)
+	elif APEX_LOOK.applies(rules, Game.region_id):   # at the bottom of the crater: its backdrop, the amber
+		APEX_LOOK.apply(self)
 	Game.mark_seen(wild.species().id)
 	_setup_dino(_foe_sprite, wild, true)
 	_setup_dino(_player_sprite, engine.player(), false)
@@ -271,6 +284,10 @@ func _play(events: Array) -> void:
 			"abyss":   # under the sea, the Mosasaure sinks into the dark, surges, is exposed
 				await UNDERWATER_LOOK.abyss(self, e)
 				await _say(e["text"])
+			"sceau", "sceau_end", "caillou", "gesture", "quake", "fear", "rally":   # (ApexEngine)
+				await APEX_LOOK.play(self, e)
+				if e.has("text"):
+					await _say(e["text"])
 			"bond_hold":   # a full Lien: it holds on at 1 PV
 				_refresh_panel(_player_panel, engine.player())
 				_burst(_player_sprite.position + Vector2(0, -60), BOND_PINK, 26, 200.0)
@@ -316,7 +333,8 @@ func _attack_anim(side: String, fx: String, move_type: String) -> void:
 		return
 	s.play(&"attack")
 	var home := s.position
-	var lunge := home.lerp(target.position, 0.35 if fx == "charge" else 0.22)
+	# « recul » (the Souverain, afraid): he strikes backing away, never coming forward.
+	var lunge := home.lerp(target.position, -0.1 if fx == "recul" else 0.35 if fx == "charge" else 0.22)
 	var t2 := create_tween()
 	t2.tween_property(s, "position", lunge, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 	t2.tween_property(s, "position", home, 0.28).set_trans(Tween.TRANS_SINE)

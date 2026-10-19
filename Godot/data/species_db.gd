@@ -66,6 +66,8 @@ const PATHS := {
 	&"saichania": "res://data/species/saichania.tres",
 	&"daspletosaurus": "res://data/species/daspletosaurus.tres",
 	&"trex_magma": "res://data/species/trex_magma.tres",
+	# Terre des Apex (chapitre 9) : le Souverain, jamais sauvage, jamais capturé (battle/apex_engine.gd).
+	&"souverain": "res://data/species/souverain.tres",
 }
 
 static var _cache: Dictionary = {}
