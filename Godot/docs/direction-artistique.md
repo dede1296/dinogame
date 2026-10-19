@@ -124,8 +124,18 @@ chaque nouveau repli ; retirer la ligne une fois refait.
 | Chapitre 8, autel_magma_fendu : lueur recolorée | `props/autel_magma_fendu.png` | La lueur de la fente, peinte sur le magenta, sortait rose : repeinte en orange par `recolor()` (tools/art-jobs/volcan_decors.mjs) | Redemander l'autel fendu avec la fente éclairée sur un fond d'une autre couleur |
 | Chapitre 8, fiche de Brac assis : colonnes recomposées | `characters/brac_assis_cage.png` | nano-banana a dessiné 6 colonnes au lieu de 4 : recomposées en 4 ; la rangée du bas (debout, inutilisée) a son profil gauche = le droit retourné | Rien si la rangée du bas reste inutilisée |
 | Chapitre 8, trex_magma de face : fumée | `dinos/trex_magma_face_dos.png` (ancienne : `_v1`) | nano-banana, case par case (18/10) : la fumée sort maintenant des naseaux, mais le museau de face est court : les volutes restent près des yeux, assez pâles sur 3 cases sur 4 | Redemander des volutes plus nettes et plus bas si on les trouve mal placées en jeu |
+| Chapitre 9, Souverain : planches 3×2 et vue de dos | `dinos/souverain*.png` | nano-banana a dessiné 3×3 (9 poses) : recomposées en 3×2 par `apex_especes.mjs` (cases choisies) ; l'attaque saine a la gueule ouverte, l'apaisé n'en a pas ; de dos, la queue épaisse se lit un peu comme un triangle clair | Redemander la vue de dos avec la queue plus fine et le cou visible si on le prend pour un ankylosaure |
+| Chapitre 9, Souverain couché : couleurs | `dinos/souverain_couche.png` | la version apaisée est plus grise que `souverain_apaise.png` (olive) ; les deux rangées sont quasi identiques | Les harmoniser si on les met côte à côte en jeu |
+| Chapitre 9, portail ouvert | `props/portail_apex_ouvert.png` | six disques d'ambre sur l'arche (3+3) au lieu des cinq Cœurs | Redemander avec cinq disques si on les compte |
+| Chapitre 9, bloc du Souverain : la forme dedans | `props/bloc_souverain*.png` | l'animal piégé a des pointes d'ankylosaure sur le dos (plus que les plaques lisses de l'espèce) | Redemander avec `souverain.png` en référence |
+| Chapitre 9, `isaure_helene` | `props/isaure_helene.png` | dessinée en gros plan (têtes plus grandes que les sprites), Isaure aux cheveux plus gris que sur sa planche | À refaire en chibi si elle jure avec les sprites en jeu |
+| Chapitre 9, Hélène assise : profils | `characters/helene_assise.png`, `helene_sol.png` | profil droit = profil gauche retourné (fauteuil et assise au sol) ; rangée « debout soutenue » : le bras tendu est retourné avec le profil | Dessiner les deux profils si le bras tendu se voit mal |
+| Chapitre 9, `helene.png` : ordre des rangées | `characters/helene.png` | éditée depuis `bertille.png`, qui a la rangée du dos EN PREMIER (ordre du jeu : face, gauche, droite, dos) : rangées remises dans l'ordre du jeu après découpe | Vérifier `bertille.png` (rangées peut-être inversées) |
 
 ## Plaine Volcanique (art, chapitre 8, 17/10)
+
+
+
 
 Images du chapitre 8 (agent IMAGES, jobs `tools/art-jobs/volcan_especes.mjs`, `volcan_decors.mjs`, `volcan_persos.mjs`, sorties par
 `node Godot/tools/process-art.mjs <chemin>` depuis la racine du dépôt ; **toujours un chemin précis** comme `dinos/styracosaurus.png`
@@ -150,6 +160,30 @@ Méthode : nano-banana édite une planche du jeu (Tricératops, Ankylosaurus, Al
 `cage`, `tente`, `boite_fer`, `sceau_cieux`, `battle/cieux.jpg` pour le décor ; `dame_suie`, `brac`, `sbire_assis`, `maia_assise`
 pour les personnages) avec l'anatomie réelle dans le prompt ; fond magenta ; `align: "bottom"` + `isolate` pour les profils.
 Chloé « montée » pour la lave : la planche `chloe_selle*.png` (profil, face, dos) existe déjà et suffit, rien de dessiné.
+
+## Terre des Apex (art, chapitre 9, 19/10)
+
+Images du chapitre 9 (agent IMAGES, jobs `tools/art-jobs/apex_especes.mjs`, `apex_decors.mjs`, `apex_ui.mjs`, `apex_persos.mjs`, sorties par
+`node Godot/tools/process-art.mjs <chemin précis>`, jamais un nom court). Aucun fichier existant touché. **Aucun repli ComfyUI : tout est fait avec nano-banana.**
+Les quatre dinos d'Isaure (Hauban, Bouline, Étrave, Carène) sont des espèces existantes (`pteranodon`, `baryonyx`, `suchomimus`, `archelon`) : rien de nouveau.
+
+| Quoi | Fichiers | Format |
+|---|---|---|
+| Le Souverain (nouvelle espèce : archosaure archaïque ~12 m, quadrupède bas, tête longue de théropode, double rangée de plaques veinées d'ambre) | `dinos/souverain.png` + `souverain_face_dos.png` | profil 3×2 cellules 475×228 (hauteur de cadre 220), face/dos 4×2 même cellule |
+| Variantes | `dinos/souverain_corrompu.png` (veines violettes, éclats d'ambre noir, yeux blanc-violet, effrayé, sans blessure), `souverain_apaise.png` (veines éteintes, brun-gris, yeux calmes) | 3×2, cellule 475×228 (pas de face/dos : shader comme les autres corrompus) |
+| Couché, yeux ouverts | `dinos/souverain_couche.png` | 3×2 cellules 385×228 : colonnes = veines d'ambre / corrompu / apaisé (les deux rangées = même pose, légère variation) |
+| Sols | `ground/{roche_apex,roche_apex_fond,veines_ambre,veines_ambre_blanc,veines_ambre_or}.png` | 512×512 raccordables ; les trois `veines_ambre*` = même dessin, lueur ambre / blanche (éveil) / or (après) : à fondre par le jeu |
+| Grand bloc | `props/{bloc_souverain,bloc_souverain_fendu,bloc_souverain_eclate}.png` | 824×1039, 811×1039, 798×684 (le Souverain et Hélène dedans) |
+| Blocs des géants | `props/bloc_geant_{1,2,3,4}.png`, `cairn_helene.png` | 671×848 (×3), 342×413, 64×54 |
+| Portail | `props/portail_apex_ouvert.png` | 462×475 (même empreinte que `portail_apex.png`) |
+| Petits objets | `props/{tasse_bleue,caisse_carnets,torche_eteinte,masque_carton_sol,isaure_helene}.png` | 69×78, 100×106, 60×125, 52×41, 132×130 |
+| Interface | `ui/insigne_gardienne.png` | 160×160 |
+| Fond de combat | `battle/apex.jpg` | 1920×1072, cadrage de `volcan.jpg` |
+| Hélène (nouveau) | `characters/helene.png` (4×4 : face, gauche, droite, dos ; chapeau de paille, canne), `helene_assise.png` (2×4 : fauteuil + couverture + moufles rouges, rangée 2 debout), `helene_sol.png` (2×4 : assise au sol, puis debout soutenue un bras tendu) | 133×184, 240×184, 240×184 par case |
+| Isaure | `characters/isaure_masque_carton.png` (4×4, le masque de Maïa à la main) | 138×184 par case ; ses cheveux sont déjà attachés dans `isaure_sans_masque.png` |
+
+Méthode : nano-banana édite une planche du jeu (Ankylosaurus pour le Souverain ; `roche_noire`, `ambre`, `portail_apex`, `banc`, `torche`, `volcan.jpg`, `sceau_marais` pour le décor ; `bertille`, `roc_assis`, `isaure_sans_masque*` pour les personnages) avec l'anatomie / la tenue dans le prompt. Le Souverain : le premier essai de face/dos recopiait l'Ankylosaurus (cornes, tête d'ankylosaure), refait en ne donnant que le profil du Souverain comme image.
+Pas de `banc` nouveau (`props/banc.png` existe) ; le carton « Ambrelune » et les pages 39/40 sont du texte écrit par le jeu, sans image ; `moufles.png` et `masque_carton.png` (ui) existent déjà. Caillou, Maïa, Brac : planches existantes (`triceratops` pose d'attaque, `maia_arche`, `brac_assis_cage`), aucune variante dessinée.
 
 ## Échelle et conventions
 
