@@ -85,10 +85,22 @@ static func play_credits(parent: Node) -> Cinematic:
 	return Cinematic.play(parent, credits_sequence())
 
 
-## « Revoir l'intro » / « Crédits » from Paramètres: the film over the screen, then back to it.
+## Can this film be replayed from Paramètres? The end only once the game has been finished (no spoiler before).
+static func replay_available(what: String) -> bool:
+	return what != "end" or Game.flag(END_FLAG)
+
+
+## « Revoir l'intro » / « Revoir la fin » / « Crédits » from Paramètres: the film over the screen, then back to it
+## (the end replays without touching fin_vue).
 static func replay(parent: Node, what: String) -> Cinematic:
 	if what == "credits":
 		return play_credits(parent)
+	if what == "end":
+		var finale := end_sequence()
+		finale["end"] = "reveal"
+		finale["restore_music"] = true
+		finale.erase("flag")
+		return Cinematic.play(parent, finale)
 	var seq := intro_sequence()
 	seq["end"] = "reveal"
 	seq["restore_music"] = true

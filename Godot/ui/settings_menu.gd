@@ -222,11 +222,14 @@ func _controls_page() -> void:
 	_rows.add_child(_button("Retour", _show.bind("menu")))
 
 
-## « Revoir l'intro » and « Crédits » side by side (story/cinematiques.gd): one row, the menu stays short.
+## « Revoir l'intro », « Revoir la fin » (once the game is finished) and « Crédits » side by side
+## (story/cinematiques.gd): one row, the menu stays short.
 func _films_row() -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
-	for pair: Array in [["Revoir l'intro", "intro"], ["Crédits", "credits"]]:
+	for pair: Array in [["Revoir l'intro", "intro"], ["Revoir la fin", "end"], ["Crédits", "credits"]]:
+		if not Cinematiques.replay_available(pair[1]):
+			continue
 		var button := _button(pair[0], _replay_film.bind(pair[1]))
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(button)

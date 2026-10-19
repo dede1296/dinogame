@@ -398,3 +398,27 @@ func test_une_musique_absente_retombe_sur_titre() -> void:
 	assert_object(Cinematic.music_stream("res://assets/audio/music/n_existe_pas.ogg", "")).is_null()
 	for track in ["cinematique_intro_a", "cinematique_intro_b", "cinematique_fin", "credits"]:
 		assert_object(Cinematic.music_stream(Cinematiques.MUSIC % track)).override_failure_message(track).is_not_null()
+
+
+func test_revoir_la_fin_seulement_une_fois_le_jeu_fini() -> void:
+	# Arrange : une partie neuve, la fin pas encore vue
+	assert_bool(Cinematiques.replay_available("intro")).is_true()
+	assert_bool(Cinematiques.replay_available("credits")).is_true()
+	assert_bool(Cinematiques.replay_available("end")).is_false()
+	# Act : le joueur a fini le jeu (fin_vue)
+	Game.set_flag(&"fin_vue")
+	# Assert
+	assert_bool(Cinematiques.replay_available("end")).is_true()
+
+
+func test_la_fin_rejouee_ne_repose_pas_le_drapeau() -> void:
+	# Arrange : fin déjà vue, drapeau posé
+	Game.give_starter(&"velociraptor")
+	Game.set_flag(&"fin_vue")
+	# Act : « Revoir la fin » depuis les Paramètres
+	var film := Cinematiques.replay(get_tree().root, "end")
+	# Assert : un film de fin, qui revient à l'écran (reveal), sans drapeau à poser ni musique perdue
+	assert_object(film).is_not_null()
+	assert_str(String(film.sequence.get("end", ""))).is_equal("reveal")
+	assert_bool(film.sequence.has("flag")).is_false()
+	film.queue_free()
