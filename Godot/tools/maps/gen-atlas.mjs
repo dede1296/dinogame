@@ -58,7 +58,7 @@ const REGIONS = [
   { id: "monts", name: "Monts Gelés", zones: ["monts", "grottes_glace", "sanctuaire_givre"], levels: [33, 40], seeds: [[0.84, 0.36], [0.76, 0.6]], w: 0.02, c: "#9ea08c" },
   { id: "cieux", name: "Cieux Éternels", zones: ["cieux", "nids_geants", "arche_du_vent"], levels: [38, 44], seeds: [[0.63, 0.3]], w: -0.035, c: "#dfe8f2" },
   { id: "volcan", name: "Plaine Volcanique", zones: ["champs_cendres", "forges_ombre", "coulees_lave", "sanctuaire_magma", "porte_cratere"], levels: [42, 48], seeds: [], w: 0, c: "#5f4a42" },
-  { id: "apex", name: "Terre des Apex", zones: ["apex"], levels: [50, 50], seeds: [], w: 0, c: "#3a2622" },
+  { id: "apex", name: "Terre des Apex", zones: ["terre_apex", "coeur_apex"], levels: [50, 50], seeds: [], w: 0, c: "#3a2622" },
 ];
 const G = Object.fromEntries(REGIONS.map((r, i) => [r.id, i]));
 
@@ -328,6 +328,8 @@ const places = [
   ["coulees_lave", "Coulées de lave", inRegion("volcan", 0.5, 0.36)],
   ["sanctuaire_magma", "Sanctuaire de Magma", inRegion("volcan", 0.45, 0.4)],
   ["porte_cratere", "Porte du Cratère", inRegion("volcan", 0.48, 0.44)],
+  // The Terre des Apex: the fond at the foot of the ramp in the middle of the crater (terre_apex is 80 x 70).
+  ["coeur_apex", "Cœur des Apex", inRegion("apex", 47.5 / 80, 44.3 / 70)],
 ];
 
 await sharp(img, { raw: { width: N, height: N, channels: 3 } }).png().toFile(`${OUT_ART}/atlas_ile.png`);

@@ -67,14 +67,14 @@ position = Vector2(1152, 768)
 script = ExtResource("11_80ode")
 event = &"bloc_souverain"
 hide_flag = &"souverain_eveille"
-kind = "crane_geant_desert"
+kind = "bloc_souverain"
 
 [node name="BlocEclate" type="StaticBody2D" parent="Entities" unique_id=581645577]
 position = Vector2(1152, 768)
 script = ExtResource("11_80ode")
 event = &"bloc_eclate"
 show_flag = &"souverain_eveille"
-kind = "cristaux"
+kind = "bloc_souverain_eclate"
 
 [node name="Souverain" type="StaticBody2D" parent="Entities" unique_id=309577543]
 position = Vector2(1512, 595.19995)
@@ -131,6 +131,14 @@ position = Vector2(696, 902.39996)
 script = ExtResource("17_t54v5")
 kind = "rocher_grotte"
 flip = true
+
+[node name="IsaureHelene" type="StaticBody2D" parent="Entities" unique_id=1030170904]
+position = Vector2(576, 988.80005)
+script = ExtResource("11_80ode")
+event = &"isaure_helene"
+show_flag = &"souverain_eveille"
+hide_flag = &"helene_reveillee"
+kind = "isaure_helene"
 
 [node name="IsaureAbri" type="StaticBody2D" parent="Entities" unique_id=299633217 instance=ExtResource("13_ffy06")]
 position = Vector2(537.6, 988.80005)

@@ -34,6 +34,7 @@ const ZONE_NAMES := {
 	&"nids_geants": "Nids géants", &"arche_du_vent": "Arche du Vent",
 	&"champs_cendres": "Champs de Cendre", &"forges_ombre": "Forges de l'Ombre", &"coulees_lave": "Coulées de lave",
 	&"sanctuaire_magma": "Sanctuaire de Magma", &"porte_cratere": "Porte du Cratère",
+	&"terre_apex": "Terre des Apex", &"coeur_apex": "Cœur des Apex",
 }
 
 var region: Region

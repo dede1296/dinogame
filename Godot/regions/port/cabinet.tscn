@@ -258,6 +258,20 @@ script = ExtResource("8_6yp8w")
 show_flag = &"apex_fini"
 kind = "table_cuisine"
 
+[node name="TasseBleue" type="StaticBody2D" parent="Entities" unique_id=1421451670]
+position = Vector2(468, 247.68)
+script = ExtResource("12_7ey14")
+event = &"tasse_bleue"
+show_flag = &"tasse_bleue"
+kind = "tasse_bleue"
+
+[node name="CaisseCarnets" type="StaticBody2D" parent="Entities" unique_id=1256216747]
+position = Vector2(228, 146.88)
+script = ExtResource("12_7ey14")
+event = &"caisse_carnets"
+show_flag = &"carnets_rendus"
+kind = "caisse_carnets"
+
 [node name="IsaureCabinet" type="StaticBody2D" parent="Entities" unique_id=2057176231 instance=ExtResource("9_5mdr5")]
 position = Vector2(523.19995, 268.8)
 collision_mask = 0

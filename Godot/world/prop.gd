@@ -288,6 +288,22 @@ const KINDS := {
 	"plaque_fer": {"scale": 0.072, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	"portail_apex": {"scale": 0.741, "foot": 0.01, "solid": Vector2(330, 40), "sway": 0.0, "shadow": 0.0},
 	"camp_helene": {"scale": 0.256, "foot": 0.08, "solid": Vector2(56, 20), "sway": 0.0, "shadow": 50.0},
+	# Chapitre 9, la Terre des Apex et l'épilogue (agent IMAGES ; posés par tools/zones/apex_*.gd, volcan_porte.gd, cabinet.gd ;
+	# tailles : agent CARTE, docs/zones/apex.md).
+	"bloc_souverain": {"scale": 0.329, "foot": 0.03, "solid": Vector2(260, 64), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_souverain_fendu": {"scale": 0.329, "foot": 0.03, "solid": Vector2(260, 64), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_souverain_eclate": {"scale": 0.329, "foot": 0.03, "solid": Vector2(240, 56), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_1": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_2": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_3": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_4": {"scale": 0.436, "foot": 0.03, "solid": Vector2(140, 48), "sway": 0.0, "shadow": 0.0, "light": true},
+	"cairn_helene": {"scale": 0.667, "foot": 0.08, "solid": Vector2(40, 14), "sway": 0.0, "shadow": 40.0},
+	"portail_apex_ouvert": {"scale": 0.741, "foot": 0.01, "solid": Vector2(330, 40), "sway": 0.0, "shadow": 0.0, "light": true},
+	"torche_eteinte": {"scale": 0.72, "foot": 0.03, "solid": 6.0, "sway": 0.0, "shadow": 20.0},
+	"isaure_helene": {"scale": 0.38, "foot": 0.04, "solid": Vector2(50, 18), "sway": 0.0, "shadow": 50.0},
+	"tasse_bleue": {"scale": 0.069, "foot": -5.7, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"caisse_carnets": {"scale": 0.149, "foot": -2.3, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
+	"masque_carton_sol": {"scale": 0.216, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 14.0},
 	# Passe de finition (29/09, tools/art-jobs/finition.mjs): objects held during a scene (small,
 	# readable, real size noted here though the integrator spawns them, not a zone), and the
 	# missing fixed scenery of chapters 1-5.
@@ -429,7 +445,8 @@ const KINDS := {
 	"pilier_pont_1", "pilier_pont_2", "piton_bas", "piton_haut", "plume_geante_1", "plume_geante_2", "plume_geante_3",
 	"pont_lianes_rompu", "rochers_cieux",
 	"vieux_harnais", "masque_obsidienne", "nuage_bas_1", "nuage_bas_2", "nuage_bas_3", "nuage_bas_4", "arche_vent_loin",
-	"forge_allumee", "forge_eteinte", "forge_eteinte_2", "forge_eteinte_3", "grande_forge_allumee", "grande_forge_eteinte", "cage_fermee", "cage_ouverte", "cage_grande", "barricade", "barricade_tombee", "fut_ambre_noir", "enclume", "auvent", "soufflet", "marmite", "etabli_suie", "gants_gris", "traineau_roues", "masque_os_sol", "pierre_plate_volcan", "vasque_source", "autel_magma", "autel_magma_fendu", "coque_lave", "lave_paroi", "torche", "plaque_fer", "portail_apex", "camp_helene")
+	"forge_allumee", "forge_eteinte", "forge_eteinte_2", "forge_eteinte_3", "grande_forge_allumee", "grande_forge_eteinte", "cage_fermee", "cage_ouverte", "cage_grande", "barricade", "barricade_tombee", "fut_ambre_noir", "enclume", "auvent", "soufflet", "marmite", "etabli_suie", "gants_gris", "traineau_roues", "masque_os_sol", "pierre_plate_volcan", "vasque_source", "autel_magma", "autel_magma_fendu", "coque_lave", "lave_paroi", "torche", "plaque_fer", "portail_apex", "camp_helene",
+	"bloc_souverain", "bloc_souverain_fendu", "bloc_souverain_eclate", "bloc_geant_1", "bloc_geant_2", "bloc_geant_3", "bloc_geant_4", "cairn_helene", "portail_apex_ouvert", "torche_eteinte", "isaure_helene", "tasse_bleue", "caisse_carnets", "masque_carton_sol")
 var kind := "arbre_rond":
 	set(value):
 		kind = value

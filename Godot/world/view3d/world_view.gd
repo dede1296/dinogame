@@ -128,11 +128,12 @@ const CLIFF_TEX := {
 	&"champs_cendres": "res://assets/art/ground/roche_noire.png", &"forges_ombre": "res://assets/art/ground/roche_noire.png",
 	&"coulees_lave": "res://assets/art/ground/roche_noire.png", &"porte_cratere": "res://assets/art/ground/roche_noire.png",
 	&"sanctuaire_magma": "res://assets/art/ground/obsidienne.png",
+	&"terre_apex": "res://assets/art/ground/roche_apex.png", &"coeur_apex": "res://assets/art/ground/roche_apex_fond.png",
 }
 ## Zones whose cliffs are their own (CLIFF_TEX) everywhere, even under their cover layers (the Cieux:
 ## their first layer is the sea of clouds at the pitons' feet, not a snow lying on the rock).
 const CLIFF_ALWAYS := [&"cieux", &"nids_geants", &"arche_du_vent", &"champs_cendres", &"forges_ombre", &"coulees_lave",
-	&"sanctuaire_magma", &"porte_cratere"]
+	&"sanctuaire_magma", &"porte_cratere", &"terre_apex", &"coeur_apex"]
 ## Zones whose walls are paved like their floor (the temple; the ice caves, their floor ice as
 ## well): the tops of the walls darker, so the rooms and passages read at a glance (0: as lit as
 ## the floor).

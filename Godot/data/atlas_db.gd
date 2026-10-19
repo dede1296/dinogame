@@ -16,7 +16,7 @@ const REGIONS := [
 	{"id": &"monts", "name": "Monts Gelés", "zones": [&"monts", &"grottes_glace", &"sanctuaire_givre"], "levels": Vector2i(33, 40), "label": Vector2(0.747, 0.479), "bounds": Rect2(0.593, 0.259, 0.334, 0.435)},
 	{"id": &"cieux", "name": "Cieux Éternels", "zones": [&"cieux", &"nids_geants", &"arche_du_vent"], "levels": Vector2i(38, 44), "label": Vector2(0.585, 0.348), "bounds": Rect2(0.476, 0.262, 0.251, 0.184)},
 	{"id": &"volcan", "name": "Plaine Volcanique", "zones": [&"champs_cendres", &"forges_ombre", &"coulees_lave", &"sanctuaire_magma", &"porte_cratere"], "levels": Vector2i(42, 48), "label": Vector2(0.500, 0.431), "bounds": Rect2(0.391, 0.362, 0.250, 0.253)},
-	{"id": &"apex", "name": "Terre des Apex", "zones": [&"apex"], "levels": Vector2i(50, 50), "label": Vector2(0.500, 0.527), "bounds": Rect2(0.482, 0.423, 0.068, 0.091)},
+	{"id": &"apex", "name": "Terre des Apex", "zones": [&"terre_apex", &"coeur_apex"], "levels": Vector2i(50, 50), "label": Vector2(0.500, 0.527), "bounds": Rect2(0.482, 0.423, 0.068, 0.091)},
 ]
 ## Places inside the regions, marked once visited: [zone, name, where (0–1)].
 const PLACES := [
@@ -36,4 +36,5 @@ const PLACES := [
 	[&"coulees_lave", "Coulées de lave", Vector2(0.499, 0.436)],
 	[&"sanctuaire_magma", "Sanctuaire de Magma", Vector2(0.485, 0.478)],
 	[&"porte_cratere", "Porte du Cratère", Vector2(0.493, 0.490)],
+	[&"coeur_apex", "Cœur des Apex", Vector2(0.523, 0.480)],
 ]

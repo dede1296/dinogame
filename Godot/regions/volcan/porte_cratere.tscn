@@ -13,13 +13,13 @@
 [ext_resource type="Script" path="res://world/ground.gd" id="11_kc6f4"]
 [ext_resource type="Script" path="res://world/tall_grass.gd" id="12_0gyn3"]
 [ext_resource type="Script" path="res://world/story_prop.gd" id="13_vrvso"]
-[ext_resource type="Script" path="res://world/prop.gd" id="14_kkg6y"]
 [ext_resource type="PackedScene" path="res://actors/npc.tscn" id="15_sagsl"]
 [ext_resource type="Script" path="res://actors/npc.gd" id="16_l1hgd"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/isaure_sans_masque.png" id="17_dulph"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/maia_arche.png" id="18_hedqc"]
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="19_5ymal"]
 [ext_resource type="Script" path="res://world/pickup.gd" id="20_xbewe"]
+[ext_resource type="Script" path="res://world/prop.gd" id="14_kkg6y"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="21_wb1na"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="22_edsfs"]
 
@@ -72,16 +72,22 @@ terrain = NodePath("../../Terrain")
 position = Vector2(1200, 307.2)
 script = ExtResource("13_vrvso")
 event = &"portail_apex"
+after_flag = &"apex_ouvert"
+after_kind = "portail_apex_ouvert"
 kind = "portail_apex"
 
 [node name="Torche" type="StaticBody2D" parent="Entities" unique_id=1567013804]
 position = Vector2(979.19995, 336)
-script = ExtResource("14_kkg6y")
+script = ExtResource("13_vrvso")
+after_flag = &"apex_ouvert"
+after_kind = "torche_eteinte"
 kind = "torche"
 
 [node name="Torche2" type="StaticBody2D" parent="Entities" unique_id=1940796271]
 position = Vector2(1420.8, 336)
-script = ExtResource("14_kkg6y")
+script = ExtResource("13_vrvso")
+after_flag = &"apex_ouvert"
+after_kind = "torche_eteinte"
 kind = "torche"
 flip = true
 

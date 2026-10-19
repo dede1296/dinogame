@@ -88,10 +88,10 @@ event = &"caillou_apex"
 flip = true
 hide_flag = &"apex_arrivee"
 
-[node name="PierrePlate" type="StaticBody2D" parent="Entities" unique_id=160116352]
+[node name="CairnHelene" type="StaticBody2D" parent="Entities" unique_id=1591839984]
 position = Vector2(1608, 355.2)
 script = ExtResource("16_gijcf")
-kind = "pierre_plate"
+kind = "cairn_helene"
 
 [node name="Page39" type="StaticBody2D" parent="Entities" unique_id=172790912]
 position = Vector2(1651.2001, 374.40002)
@@ -104,39 +104,39 @@ kind = "ambre"
 position = Vector2(816, 1440)
 script = ExtResource("18_5vy27")
 event = &"bloc_geant_1"
-kind = "squelette_geant"
+kind = "bloc_geant_1"
 
 [node name="BlocGeant2" type="StaticBody2D" parent="Entities" unique_id=1369389159]
 position = Vector2(1248, 960)
 script = ExtResource("18_5vy27")
 event = &"bloc_geant_2"
-kind = "squelette_geant"
+kind = "bloc_geant_2"
 flip = true
 
 [node name="BlocGeant3" type="StaticBody2D" parent="Entities" unique_id=1835806762]
 position = Vector2(3216, 984)
 script = ExtResource("18_5vy27")
 event = &"bloc_geant_3"
-kind = "squelette_geant"
+kind = "bloc_geant_3"
 
 [node name="BlocGeant4" type="StaticBody2D" parent="Entities" unique_id=2092307764]
 position = Vector2(2760, 2280)
 script = ExtResource("18_5vy27")
 event = &"bloc_geant_4"
-kind = "os_geant"
+kind = "bloc_geant_4"
 flip = true
 
 [node name="BlocLoin" type="StaticBody2D" parent="Entities" unique_id=2086993020]
 position = Vector2(1848, 2064)
 script = ExtResource("19_3bt1m")
 hide_flag = &"souverain_eveille"
-kind = "crane_geant_desert"
+kind = "bloc_souverain"
 
 [node name="BlocLoinEclate" type="StaticBody2D" parent="Entities" unique_id=1547867663]
 position = Vector2(1848, 2064)
 script = ExtResource("19_3bt1m")
 show_flag = &"souverain_eveille"
-kind = "cristaux"
+kind = "bloc_souverain_eclate"
 
 [node name="SouverainLoin" type="StaticBody2D" parent="Entities" unique_id=204334101]
 position = Vector2(1848, 2236.7998)

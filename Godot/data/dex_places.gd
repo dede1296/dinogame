@@ -34,6 +34,8 @@ const ZONES := {
 	&"coulees_lave": {"name": "Les Coulées de lave", "size": Vector2i(80, 60), "indoor": false},
 	&"sanctuaire_magma": {"name": "Le Sanctuaire de Magma", "size": Vector2i(48, 42), "indoor": true},
 	&"porte_cratere": {"name": "La Porte du Cratère", "size": Vector2i(50, 40), "indoor": false},
+	&"terre_apex": {"name": "La Terre des Apex", "size": Vector2i(80, 70), "indoor": false},
+	&"coeur_apex": {"name": "Le Cœur des Apex", "size": Vector2i(50, 40), "indoor": false},
 }
 
 const SPECIES := {

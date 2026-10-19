@@ -31,6 +31,8 @@ const ZONES := {
 	&"coulees_lave": "res://regions/volcan/coulees_lave.tscn",
 	&"sanctuaire_magma": "res://regions/volcan/sanctuaire_magma.tscn",
 	&"porte_cratere": "res://regions/volcan/porte_cratere.tscn",
+	&"terre_apex": "res://regions/apex/terre_apex.tscn",
+	&"coeur_apex": "res://regions/apex/coeur_apex.tscn",
 	&"clos_blanc": "res://regions/essai/clos_blanc.tscn",   # zone d'essai (maison Blender + ComfyUI)
 }
 const PLAYER := preload("res://actors/player.tscn")

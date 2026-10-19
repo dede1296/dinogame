@@ -168,6 +168,9 @@ const PLACES := {
 	&"porte_cratere": {"effects": {&"braises": {"amount": 12}, &"cendres": {}}},
 	&"apex": {"kinds": {&"libellule": 3, &"moustique": 4, &"feuille": 6},
 		"effects": {&"lucioles": {"colour": Color(1.0, 0.45, 0.2), "amount": 30}}},
+	# La Terre des Apex (chapter 9): its zones name themselves (Region.ambience_id).
+	&"terre_apex": {"effects": {&"lucioles": {"colour": Color(1.0, 0.72, 0.3), "amount": 24, "when": ALWAYS}}},
+	&"coeur_apex": {"effects": {&"lucioles": {"colour": Color(1.0, 0.72, 0.3), "amount": 16, "when": ALWAYS, "blink": false}}},
 }
 
 
