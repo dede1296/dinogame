@@ -31,3 +31,8 @@ Unreal/**/DerivedDataCache/
 *.obj
 *.TMP
 Godot/reports/
+
+# Clés de signature et notes locales : ne jamais commiter
+*.keystore
+*.jks
+.env.local
