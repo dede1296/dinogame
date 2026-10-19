@@ -5,6 +5,8 @@ extends RefCounted
 const PATH := "res://regions/port/cabinet.tscn"
 const B := preload("res://tools/zone_builder.gd")
 const FLAGGED_PROP := preload("res://world/flagged_prop.gd")
+const A := preload("res://tools/zones/apex_decor.gd")
+const AP := preload("res://story/apex_places.gd")
 
 const PLAN := [
 	"................",
@@ -86,7 +88,23 @@ static func build() -> Region:
 	B.spawn(root, "Depart", 8.0, 9.4)
 	B.exit(root, Rect2(7.0, 10.45, 2.0, 0.55), &"port_ambre", &"DepuisCabinet", &"prologue_done", &"cabinet_bloque")
 	_clins_doeil(entities)
+	_epilogue(root, entities)
 	return root
+
+
+## Chapter 9, the epilogue (docs/chapitre-9-scenes.md 4, places in story/apex_places.gd): Hélène in Roc's
+## armchair once « apex_fini » (and after: the post-game), the little table before it; the blue cup on it
+## once « tasse_bleue » (taken from the top of the great shelf), Isaure at the table from then until the
+## jetty (« epilogue_port »); the case of notebooks on the desk once « carnets_rendus » (Dame Suie brought
+## them back, chapter 8). The cup and the case are placed once drawn (agent IMAGES).
+static func _epilogue(root: Region, entities: Node2D) -> void:
+	A.person(root, "HeleneAssise", "Hélène", A.HELENE, AP.CABINET_HELENE, {"facing": "down", "event": &"helene_cabinet",
+		"show_flag": &"apex_fini"}, A.HELENE_TINT, true)
+	A.flagged(entities, A.TABLE, AP.CABINET_TABLE, "TableThe", &"apex_fini", &"")
+	A.story_prop(entities, A.TASSE, AP.TASSE_BLEUE, "TasseBleue", &"tasse_bleue", {"show_flag": &"tasse_bleue"})
+	A.story_prop(entities, A.CAISSE_CARNETS, AP.CAISSE_CARNETS, "CaisseCarnets", &"caisse_carnets", {"show_flag": &"carnets_rendus"})
+	A.person(root, "IsaureCabinet", "Isaure", ["isaure_sans_masque"], AP.CABINET_ISAURE, {"facing": "left", "event": &"isaure_cabinet",
+		"show_flag": &"tasse_bleue", "hide_flag": &"epilogue_port"})
 
 
 ## Winks at a famous dinosaur film (29/09; docs/histoire.md « Clins d'œil », story/clins_doeil.gd):

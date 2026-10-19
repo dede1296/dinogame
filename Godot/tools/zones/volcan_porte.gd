@@ -8,6 +8,11 @@ extends RefCounted
 ## Isaure before it, her back to the way up; Maïa on a stone beside her; Caillou lying behind; Hélène's
 ## camp against the wall (lantern, blanket, cairn: page 38). No wild dinos, no music (the torches and
 ## the wind).
+## Chapter 9 (agent CARTE, 19/10; story/apex_places.gd): once « apex_ouvert » the portal is open (its
+## picture « portail_apex_ouvert » once drawn, the torches out « torche_eteinte » likewise), the way
+## through it leads to terre_apex (exit « VersTerreApex » before it; closed until then: « apex_bloque »),
+## Isaure, Maïa and Caillou are gone (they go first: met again in the crater); the duel lost, Chloé gets
+## up by Hélène's camp (« DevantCamp »).
 ## Build: --script res://tools/build_zone.gd -- volcan_porte --force
 
 const PATH := "res://regions/volcan/porte_cratere.tscn"
@@ -17,6 +22,7 @@ const C := preload("res://tools/zones/volcan_canvas.gd")
 const D := preload("res://tools/zones/volcan_decor.gd")
 const V := preload("res://tools/zones/volcan_verif.gd")
 const P := preload("res://story/volcan_places.gd")
+const AP := preload("res://story/apex_places.gd")
 const CHARS := "res://assets/art/characters/%s.png"
 const MUSIC := ["res://assets/audio/music/porte_cratere.ogg"]
 const W := 50
@@ -90,14 +96,20 @@ static func _paint(c: C) -> void:
 
 ## The portal and its torches, the people waiting, Hélène's camp and page 38.
 static func _story(root: Region, entities: Node2D) -> void:
-	D.story_prop(entities, D.PORTAIL, P.PORTAIL, "PortailApex", &"portail_apex")
+	D.story_prop(entities, D.PORTAIL, P.PORTAIL, "PortailApex", &"portail_apex", {"after_flag": &"apex_ouvert", "after": ["portail_apex_ouvert"]})
 	for i in P.TORCHES.size():
-		D.put(entities, D.TORCHE, P.TORCHES[i], i == 1)
+		if D.kind(["torche_eteinte"]) == "":
+			D.put(entities, D.TORCHE, P.TORCHES[i], i == 1)
+		else:   # (chapter 9: out once the portal is open)
+			D.story_prop(entities, D.TORCHE, P.TORCHES[i], "Torche%s" % ("" if i == 0 else str(i + 1)), &"",
+				{"flip": i == 1, "after_flag": &"apex_ouvert", "after": ["torche_eteinte"]})
 	B.npc(root, "IsaurePorte", "Isaure", CHARS % "isaure_sans_masque", P.ISAURE.x, P.ISAURE.y, {"facing": "up",
-		"event": &"isaure_porte"})
-	var maia := B.npc(root, "MaiaPorte", "Maïa", CHARS % "maia_arche", P.MAIA.x, P.MAIA.y, {"facing": "down", "event": &"maia_porte"})
+		"event": &"isaure_porte", "hide_flag": &"apex_ouvert"})
+	var maia := B.npc(root, "MaiaPorte", "Maïa", CHARS % "maia_arche", P.MAIA.x, P.MAIA.y, {"facing": "down", "event": &"maia_porte",
+		"hide_flag": &"apex_ouvert"})
 	maia.set_meta(Outfits.HELD_META, &"assis")   # (on her stone, in the picture: actors/outfits.gd POSES « maia_arche »)
-	B.dino_npc(root, "CaillouPorte", &"triceratops", P.CAILLOU.x, P.CAILLOU.y, {"flip": true, "event": &"caillou_porte"})
+	B.dino_npc(root, "CaillouPorte", &"triceratops", P.CAILLOU.x, P.CAILLOU.y, {"flip": true, "event": &"caillou_porte",
+		"hide_flag": &"apex_ouvert"})
 	D.story_prop(entities, D.CAMP_HELENE, P.CAMP_HELENE, "CampHelene", &"camp_helene")
 	D.page(entities, 38, P.PAGE_38)
 
@@ -107,6 +119,12 @@ static func _places(root: Region) -> void:
 	# South: back down the crater path to the coulées (their north edge, x 63-65: Coulées x = Porte x + 40).
 	B.spawn(root, String(P.SPAWN_COULEES), P.PORTE_ENTREE.x, P.PORTE_ENTREE.y)
 	B.exit(root, Rect2(23.0, H - 0.55, 3.0, 0.55), &"coulees_lave", P.SPAWN_PORTE)
+	# Chapter 9: through the portal, once it is open, to the crater (terre_apex: its north edge); back out
+	# before it. The duel against Isaure lost: by Hélène's camp.
+	B.spawn(root, String(AP.SPAWN_APEX), AP.DEPUIS_APEX.x, AP.DEPUIS_APEX.y)
+	B.spawn(root, String(AP.LOSE_AUBE), AP.DEVANT_CAMP.x, AP.DEVANT_CAMP.y)
+	B.exit(root, Rect2(AP.SORTIE_APEX.x - 1.5, AP.SORTIE_APEX.y - 0.25, 3.0, 0.5), &"terre_apex", AP.SPAWN_PORTE, &"apex_ouvert",
+		&"apex_bloque")
 
 
 static func _keep_clear() -> Array:
@@ -124,4 +142,6 @@ static func _on_foot() -> Dictionary:
 		"second lacet": P.LACET_2, "l'esplanade": P.ESPLANADE, "devant le portail": P.PORTAIL + Vector2(0, 1.4),
 		"Isaure": P.ISAURE + Vector2(0, 1.2), "Maïa": P.MAIA + Vector2(0, 1.2), "Caillou": P.CAILLOU + Vector2(-1.5, 1.5),
 		"le camp d'Hélène": P.CAMP_HELENE + Vector2(0, 1.2), "page 38": P.PAGE_38,
+		"sortie vers la Terre des Apex": AP.SORTIE_APEX, "retour de la Terre des Apex": AP.DEPUIS_APEX, "devant le camp (défaite)": AP.DEVANT_CAMP,
+		"Chloé à l'aube": AP.AUBE_CHLOE,
 	}

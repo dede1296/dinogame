@@ -93,6 +93,7 @@ display_name = "Isaure"
 sheet = ExtResource("17_dulph")
 event = &"isaure_porte"
 facing = "up"
+hide_flag = &"apex_ouvert"
 
 [node name="MaiaPorte" type="StaticBody2D" parent="Entities" unique_id=1540714632 instance=ExtResource("15_sagsl")]
 position = Vector2(969.60004, 566.4)
@@ -101,6 +102,7 @@ script = ExtResource("16_l1hgd")
 display_name = "Maïa"
 sheet = ExtResource("18_hedqc")
 event = &"maia_porte"
+hide_flag = &"apex_ouvert"
 metadata/held_pose = &"assis"
 
 [node name="CaillouPorte" type="StaticBody2D" parent="Entities" unique_id=1983157541]
@@ -109,6 +111,7 @@ script = ExtResource("19_5ymal")
 species_id = &"triceratops"
 event = &"caillou_porte"
 flip = true
+hide_flag = &"apex_ouvert"
 
 [node name="CampHelene" type="StaticBody2D" parent="Entities" unique_id=1756142501]
 position = Vector2(739.19995, 374.40002)
@@ -230,6 +233,12 @@ position = Vector2(1176, 1776)
 [node name="DepuisCoulees" type="Marker2D" parent="Spawns" unique_id=369448330]
 position = Vector2(1176, 1776)
 
+[node name="DepuisApex" type="Marker2D" parent="Spawns" unique_id=1098431121]
+position = Vector2(1200, 427.19998)
+
+[node name="DevantCamp" type="Marker2D" parent="Spawns" unique_id=307616677]
+position = Vector2(835.19995, 499.19998)
+
 [node name="Habitats" type="Node2D" parent="." unique_id=63211042]
 
 [node name="LaPorteDuCratère" type="Node2D" parent="Habitats" unique_id=1957857277]
@@ -246,3 +255,12 @@ script = ExtResource("22_edsfs")
 size = Vector2(144, 26.400002)
 target_zone = &"coulees_lave"
 target_spawn = &"DepuisPorte"
+
+[node name="VersTerreApex" type="Area2D" parent="Exits" unique_id=2133028004]
+position = Vector2(1128, 314.40002)
+script = ExtResource("22_edsfs")
+size = Vector2(144, 24)
+target_zone = &"terre_apex"
+target_spawn = &"DepuisPorte"
+required_flag = &"apex_ouvert"
+blocked_dialogue = &"apex_bloque"

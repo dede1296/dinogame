@@ -17,6 +17,16 @@
 [ext_resource type="Texture2D" path="res://assets/art/characters/garde.png" id="13_o56jy"]
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="14_w7ifx"]
 [ext_resource type="Script" path="res://world/story_prop.gd" id="15_lc2tk"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/maia_arche.png" id="18_f18nk"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/helene.png" id="19_fr8wn"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/roc.png" id="20_mu2v4"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/isaure_sans_masque.png" id="21_xs4gd"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/dame_suie.png" id="22_fap50"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/hamon.png" id="23_yx0cb"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/joss.png" id="24_j718j"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/sbire.png" id="25_2pm0f"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/rosalie.png" id="26_fcqjw"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/pervenche.png" id="27_vpig4"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="15_8mw0v"]
 [ext_resource type="Script" path="res://world/dock.gd" id="16_lc2tk"]
 
@@ -820,6 +830,172 @@ script = ExtResource("15_lc2tk")
 event = &"barque_maia"
 show_flag = &"maia_alliee"
 kind = "barque"
+
+[node name="MaiaMarche" type="StaticBody2D" parent="Entities" unique_id=1645231575 instance=ExtResource("9_m714b")]
+position = Vector2(1574.3999, 432)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Maïa"
+sheet = ExtResource("18_f18nk")
+event = &"maia_marche"
+show_flag = &"tasse_bleue"
+hide_flag = &"epilogue_cabinet"
+
+[node name="CaillouRuelle" type="StaticBody2D" parent="Entities" unique_id=1588038770]
+position = Vector2(1315.2, 504)
+script = ExtResource("14_w7ifx")
+species_id = &"triceratops"
+event = &"caillou_ruelle"
+show_flag = &"tasse_bleue"
+hide_flag = &"epilogue_cabinet"
+
+[node name="HeleneJetee" type="StaticBody2D" parent="Entities" unique_id=509597586 instance=ExtResource("9_m714b")]
+position = Vector2(940.80005, 734.4)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Hélène"
+sheet = ExtResource("19_fr8wn")
+event = &"helene_jetee"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="RocJetee" type="StaticBody2D" parent="Entities" unique_id=1822658487 instance=ExtResource("9_m714b")]
+position = Vector2(993.60004, 720)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Prof. Roc"
+sheet = ExtResource("20_mu2v4")
+event = &"roc_jetee"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="MaiaJetee" type="StaticBody2D" parent="Entities" unique_id=220091938 instance=ExtResource("9_m714b")]
+position = Vector2(883.19995, 787.19995)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Maïa"
+sheet = ExtResource("18_f18nk")
+event = &"maia_jetee"
+facing = "right"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="IsaureJetee" type="StaticBody2D" parent="Entities" unique_id=188853987 instance=ExtResource("9_m714b")]
+position = Vector2(986.39996, 945.60004)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Isaure"
+sheet = ExtResource("21_xs4gd")
+event = &"isaure_jetee"
+facing = "right"
+show_flag = &"epilogue_cabinet"
+
+[node name="SuieJetee" type="StaticBody2D" parent="Entities" unique_id=213065070 instance=ExtResource("9_m714b")]
+position = Vector2(758.4, 604.80005)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Dame Suie"
+sheet = ExtResource("22_fap50")
+event = &"suie_jetee"
+show_flag = &"epilogue_cabinet"
+
+[node name="HamonJetee" type="StaticBody2D" parent="Entities" unique_id=569983305 instance=ExtResource("9_m714b")]
+position = Vector2(1075.2, 748.80005)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "M. Hamon"
+sheet = ExtResource("23_yx0cb")
+event = &"hamon_jetee"
+facing = "left"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="JossJetee" type="StaticBody2D" parent="Entities" unique_id=2082851279 instance=ExtResource("9_m714b")]
+position = Vector2(1099.2, 686.4)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Joss"
+sheet = ExtResource("24_j718j")
+event = &"joss_jetee"
+facing = "left"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="GustaveJetee" type="StaticBody2D" parent="Entities" unique_id=420470650 instance=ExtResource("9_m714b")]
+position = Vector2(796.80005, 796.80005)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Gustave"
+sheet = ExtResource("13_lc2tk")
+event = &"gustave_jetee"
+facing = "right"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="FirminJetee" type="StaticBody2D" parent="Entities" unique_id=22245410 instance=ExtResource("9_m714b")]
+position = Vector2(681.6, 787.19995)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Firmin"
+sheet = ExtResource("25_2pm0f")
+event = &"firmin_jetee"
+facing = "right"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="RosalieJetee" type="StaticBody2D" parent="Entities" unique_id=1952172993 instance=ExtResource("9_m714b")]
+position = Vector2(739.19995, 748.80005)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Rosalie"
+sheet = ExtResource("26_fcqjw")
+event = &"rosalie_jetee"
+facing = "right"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="PervencheJetee" type="StaticBody2D" parent="Entities" unique_id=813473346 instance=ExtResource("9_m714b")]
+position = Vector2(787.19995, 700.80005)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Mémé Pervenche"
+sheet = ExtResource("27_vpig4")
+event = &"pervenche_jetee"
+facing = "right"
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="CaillouJetee" type="StaticBody2D" parent="Entities" unique_id=1520293946]
+position = Vector2(1056, 619.19995)
+script = ExtResource("14_w7ifx")
+species_id = &"triceratops"
+event = &"caillou_jetee"
+flip = true
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="MastocJetee" type="StaticBody2D" parent="Entities" unique_id=1105325425]
+position = Vector2(945.60004, 1008)
+script = ExtResource("14_w7ifx")
+species_id = &"allosaurus"
+event = &"mastoc_jetee"
+flip = true
+show_flag = &"epilogue_cabinet"
+hide_flag = &"epilogue_fini"
+
+[node name="CabosseJetee" type="StaticBody2D" parent="Entities" unique_id=1373212733]
+position = Vector2(595.19995, 782.39996)
+script = ExtResource("14_w7ifx")
+species_id = &"stygimoloch"
+event = &"cabosse_jetee"
+show_flag = &"epilogue_cabinet"
+
+[node name="GrognonJetee" type="StaticBody2D" parent="Entities" unique_id=64777803]
+position = Vector2(489.59998, 772.80005)
+script = ExtResource("14_w7ifx")
+species_id = &"majungasaurus"
+event = &"grognon_jetee"
+show_flag = &"epilogue_cabinet"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=185849788]
 

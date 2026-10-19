@@ -16,6 +16,8 @@
 [ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="14_ffmpm"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="15_15k7d"]
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="16_f5308"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/helene.png" id="17_gx543"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/isaure_sans_masque.png" id="18_0pjlv"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="17_wget7"]
 
 [node name="Cabinet" type="Node2D" unique_id=523327635]
@@ -239,6 +241,33 @@ event = &"canne_roc"
 hide_flag = &"roc_dehors"
 kind = "canne_roc"
 flip = true
+
+[node name="HeleneAssise" type="StaticBody2D" parent="Entities" unique_id=2069883825 instance=ExtResource("9_5mdr5")]
+position = Vector2(451.19998, 175.20001)
+collision_mask = 0
+script = ExtResource("10_tik4p")
+display_name = "Hélène"
+sheet = ExtResource("17_gx543")
+event = &"helene_cabinet"
+show_flag = &"apex_fini"
+metadata/held_pose = &"assis"
+
+[node name="TableThe" type="StaticBody2D" parent="Entities" unique_id=684819911]
+position = Vector2(451.19998, 244.79999)
+script = ExtResource("8_6yp8w")
+show_flag = &"apex_fini"
+kind = "table_cuisine"
+
+[node name="IsaureCabinet" type="StaticBody2D" parent="Entities" unique_id=2057176231 instance=ExtResource("9_5mdr5")]
+position = Vector2(523.19995, 268.8)
+collision_mask = 0
+script = ExtResource("10_tik4p")
+display_name = "Isaure"
+sheet = ExtResource("18_0pjlv")
+event = &"isaure_cabinet"
+facing = "left"
+show_flag = &"tasse_bleue"
+hide_flag = &"epilogue_port"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=1530571016]
 

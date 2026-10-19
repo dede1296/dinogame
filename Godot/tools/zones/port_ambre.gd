@@ -5,6 +5,8 @@ extends RefCounted
 
 const PATH := "res://regions/port/port_ambre.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const A := preload("res://tools/zones/apex_decor.gd")
+const AP := preload("res://story/apex_places.gd")
 
 const PLAN := [
 	"................==......................",
@@ -105,4 +107,41 @@ static func build() -> Region:
 	# (her dino then stands on her left, still on the pier). Far enough from the fishing boats and
 	# the bollards that « interact » there means the boat.
 	B.maias_boat(root, Vector2(22.1, 23.0), Vector2(20.5, 22.6))
+	_epilogue(root)
 	return root
+
+
+## Chapter 9, the epilogue (docs/chapitre-9-scenes.md 4 d and 5, places in story/apex_places.gd). The
+## evening of the tea (« tasse_bleue », until « epilogue_cabinet »): Maïa on the Cabinet's step, Caillou
+## across the street. The next day (« epilogue_cabinet »), the jetty: the whole village on the quay at the
+## foot of the pier, Hélène on Roc's arm before them, Isaure by her boat, Brac at the end (« BracJetee »,
+## chapter 8) with his three, Dame Suie at the back. After the end (« epilogue_fini »), stay: Isaure at her
+## boat, Dame Suie on the quay, Cabosse and Grognon (Brac is the night watchman); the others go home, and
+## Mastoc too (by Brac on the pier, he would bar the way to Maïa's boat).
+static func _epilogue(root: Region) -> void:
+	A.person(root, "MaiaMarche", "Maïa", ["maia_arche"], AP.MARCHE_MAIA, {"facing": "down", "event": &"maia_marche",
+		"show_flag": &"tasse_bleue", "hide_flag": &"epilogue_cabinet"})
+	B.dino_npc(root, "CaillouRuelle", &"triceratops", AP.RUELLE_CAILLOU.x, AP.RUELLE_CAILLOU.y, {"event": &"caillou_ruelle",
+		"show_flag": &"tasse_bleue", "hide_flag": &"epilogue_cabinet"})
+	# [node, name, sheets, place, facing, event, gone once, stand-in's tint]
+	for p: Array in [
+			["HeleneJetee", "Hélène", A.HELENE, AP.JETEE_HELENE, "down", &"helene_jetee", &"epilogue_fini", A.HELENE_TINT],
+			["RocJetee", "Prof. Roc", ["roc"], AP.JETEE_ROC, "down", &"roc_jetee", &"epilogue_fini", Color.WHITE],
+			["MaiaJetee", "Maïa", ["maia_arche"], AP.JETEE_MAIA, "right", &"maia_jetee", &"epilogue_fini", Color.WHITE],
+			["IsaureJetee", "Isaure", ["isaure_sans_masque"], AP.JETEE_ISAURE, "right", &"isaure_jetee", &"", Color.WHITE],
+			["SuieJetee", "Dame Suie", ["dame_suie"], AP.JETEE_SUIE, "down", &"suie_jetee", &"", Color.WHITE],
+			["HamonJetee", "M. Hamon", ["hamon"], AP.JETEE_HAMON, "left", &"hamon_jetee", &"epilogue_fini", Color.WHITE],
+			["JossJetee", "Joss", ["joss"], AP.JETEE_JOSS, "left", &"joss_jetee", &"epilogue_fini", Color.WHITE],
+			["GustaveJetee", "Gustave", ["pecheur"], AP.JETEE_GUSTAVE, "right", &"gustave_jetee", &"epilogue_fini", Color.WHITE],
+			["FirminJetee", "Firmin", A.FIRMIN, AP.JETEE_FIRMIN, "right", &"firmin_jetee", &"epilogue_fini", Color.WHITE],
+			["RosalieJetee", "Rosalie", ["rosalie"], AP.JETEE_ROSALIE, "right", &"rosalie_jetee", &"epilogue_fini", Color.WHITE],
+			["PervencheJetee", "Mémé Pervenche", ["pervenche"], AP.JETEE_PERVENCHE, "right", &"pervenche_jetee", &"epilogue_fini", Color.WHITE]]:
+		var t: Vector2 = p[3]
+		A.person(root, p[0], p[1], p[2], t, {"facing": p[4], "event": p[5], "show_flag": &"epilogue_cabinet", "hide_flag": p[6]}, p[7])
+	# [node, species, place, flip, gone once]
+	for d: Array in [["CaillouJetee", &"triceratops", AP.JETEE_CAILLOU, true, &"epilogue_fini"],
+			["MastocJetee", &"allosaurus", AP.JETEE_MASTOC, true, &"epilogue_fini"], ["CabosseJetee", &"stygimoloch", AP.JETEE_CABOSSE, false, &""],
+			["GrognonJetee", &"majungasaurus", AP.JETEE_GROGNON, false, &""]]:
+		var t: Vector2 = d[2]
+		B.dino_npc(root, d[0], d[1], t.x, t.y, {"event": StringName(String(d[0]).to_snake_case()), "flip": d[3],
+			"show_flag": &"epilogue_cabinet", "hide_flag": d[4]})
