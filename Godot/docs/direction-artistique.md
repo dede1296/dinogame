@@ -855,13 +855,12 @@ poteau_lianes (bouts de corde pendants effacés par script), `battle/volcan.jpg`
 
 Toutes les peintures sont dans `assets/art/cinematiques/` (2560×1440, nano-banana en 2752×1536 réduit proprement ; générées en édition à partir des planches et de l'écran titre). Cheveux de Chloé auburn (décision de Greg). Intro : `intro_01`…`intro_09` + `intro_05_carte_vide` ; fin : `fin_01`…`fin_09`, `fin_06_dinos_{base,vif,bastion,echo}`, `fin_09_journal_sans_trait` ; `credits_fond` (sert aussi à F-10, le carton « Ambrelune » est du texte moteur).
 
-Défauts connus, à refaire avec nano-banana si ça gêne en jeu :
-- `intro_05_carte` / `carte_vide` : la boussole est à une échelle un peu différente entre les deux (à caler en moteur) ; quelques lettres de boussole.
-- `intro_07`, `intro_08`, `intro_09`, `fin_02`, `fin_03`, `fin_04` : Isaure sans casquette ni écharpe rouge de sa planche (cheveux gris en chignon, manteau sombre, selon le document) ; dans `fin_03` elle porte une robe sombre, sans manches retroussées.
-- `intro_04` : un seul œuf tacheté gris-vert ; l'œuf « rond épais » est crème, le « corail » est rose.
-- `fin_01` : fumée de cheminée supprimée (le moteur l'anime). `fin_03` : forge peu démontée (une seule pièce).
-- `fin_05` : l'insigne de gardienne est rendu comme un pendentif rond.
-- `fin_06_dinos_echo` : Parasaurolophus à corps vert (seule la crête est corail) ; l'oiseau ne se bouche pas vraiment les oreilles. `fin_06_dinos_vif` : un silhouette de Parasaurolophus se superpose à la tête du raptor au fond.
-- `fin_07` : Mastoc rouge-orangé, lanterne tenue d'une patte plus que dans la gueule ; des « Z » de sommeil (petits glyphes) près de Grognon.
-- `fin_08` : le Souverain a des plaques plus grandes que sur sa planche (colonne 3, qui est grise) et la spirale de l'île est approximative.
-- `fin_09_journal` : l'écriture d'Hélène ressemble par endroits à de l'anglais approximatif (devrait être illisible) ; le moteur peut la masquer ou la flouter.
+Corrigés le 19/10 (passe de cohérence, édition nano-banana en gardant composition et style) : `fin_03` (Isaure en tenue sombre de marin, manches retroussées, mains nues ; forge sans toit, briques et pièces au sol), `fin_05` (visage de Chloé repris sur `intro_07`, insigne épinglé à plat sans cordon), `fin_07` (Mastoc tient la lanterne dans la gueule, tête d'Allosaurus de sa planche — son rouge-orangé est bien celui de la planche —, « Z » supprimés), `fin_06_dinos_echo` (Parasaurolophus vert sauge à rayures, crête et bec corail ; l'oiseau se bouche les oreilles), `fin_06_dinos_vif` (silhouette du fond retirée), `fin_08` (Souverain : petites écailles/bosses, plus de grandes plaques), `fin_09_journal` et `_sans_trait` (écriture d'Hélène remplacée par un gribouillis manuscrit illisible dessiné par script, « — H. » conservé ; les deux images restent superposables), `intro_05_carte_vide` (compas et fougère repris pixel pour pixel de `intro_05_carte` : se superposent).
+
+Défauts connus restants, à refaire avec nano-banana si ça gêne en jeu :
+- `intro_05_carte` : quelques lettres de boussole illisibles (sans gravité).
+- `intro_07`, `intro_08`, `intro_09`, `fin_02`, `fin_04` : Isaure sans casquette ni écharpe rouge de sa planche (cheveux gris en chignon, manteau sombre, selon le document) ; pas retouchées.
+- `intro_04` : les trois œufs sont bien là (crème épais, rose corail, tacheté gris-vert) ; le corail est ovale plutôt que long, le « toc » est sonore (moteur), rien à refaire.
+- `fin_01` : fumée de cheminée supprimée (le moteur l'anime).
+- `fin_06_dinos_bastion` / `_base` non revues. `fin_08` : la spirale de l'île reste approximative.
+- `fin_09_journal` : les gribouillis ont un air régulier de près (le moteur peut les flouter).
