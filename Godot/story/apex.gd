@@ -95,7 +95,7 @@ const STAND_INS := {&"souverain": &"trex_magma"}
 ## The people's sheets, the first drawn wins (assets/art/characters/<sheet>.png); sitting is a pose
 ## (Stage.sit: Outfits « assis », when it is drawn for them). Hélène's are the IMAGES agent's (until
 ## then: an old lady of the island, tinted like the CARTE agent's stand-in, so a scene shows someone).
-const HELENE_SHEETS := ["helene", "pervenche"]
+const HELENE_SHEETS := ["helene"]
 const HELENE_TINT := Color(0.84, 0.9, 1.0)
 const ISAURE_SHEETS := ["isaure_sans_masque", "isaure"]
 const MAIA_SHEETS := ["maia_arche", "maia_manteau", "maia"]
