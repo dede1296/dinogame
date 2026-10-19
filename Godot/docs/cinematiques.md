@@ -544,3 +544,11 @@ pendant cette passe : (1) I-05 disait « Sur sa carte, chaque région a ses dino
 remplacés par des silhouettes. Durées : intro 70 s + carton (cible 60-80), fin 97 s (cible 90-120). Faiblesses
 connues : I-05 et F-09 demandent une révélation progressive d'un trait (un masque animé : simple, mais à coder) ; F-06
 coûte trois éditions ; le ciel de C-01 doit rester uni pour la lisibilité des crédits, ce qui bride un peu la peinture.
+
+## Voir les films
+
+- **`tools/voir-intro.cmd`** (double-clic) : l'intro seule, en temps réel, dans une vraie fenêtre de 1600 × 900 (~90 s de film, ~100 s avec le démarrage de Godot) ; la fenêtre se ferme à la fin.
+- **`tools/voir-fin-et-credits.cmd`** (double-clic) : la fin puis les crédits jusqu'à « Merci d'avoir joué » (~95 s de fin + ~98 s pour F-10 et les crédits) ; le dino de F-06 se choisit en argument : `voir-fin-et-credits.cmd ankylosaurus` (`velociraptor` = Vif, par défaut ; `ankylosaurus` = Bastion ; `parasaurolophus` = Écho ; `starter=…`, `bastion`, `echo` marchent aussi).
+- « Passer » marche comme en jeu (Échap deux fois ou maintenu, B, ou un clic sur le bouton : la fenêtre se ferme) ; Espace, Entrée ou un clic : image suivante (dans les crédits : pause).
+- Rien n'est accéléré ni capturé, aucun bandeau de test : les deux lanceurs passent par `tools/voir_cinematiques.gd` (pas par `tools/capture.gd`), qui redirige la sauvegarde vers `user://voir_cinematiques_save.json` sans rien y écrire : la partie de Greg et ses réglages ne sont jamais touchés.
+- Les durées de chaque plan s'écrivent dans le journal de Godot (`%APPDATA%\Godot\app_userdata\Ambrelune\logs\godot.log`, lignes « Fin du film » et « Plans : »).

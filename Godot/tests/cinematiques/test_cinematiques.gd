@@ -1,7 +1,9 @@
 extends GdUnitTestSuite
 ## Les cinématiques (docs/cinematiques.md, story/cinematiques.gd, ui/cinematic.gd), sans fenêtre : les
-## deux séquences sont complètes (nombre de plans, durées, une phrase de 8 à 14 mots par image, les noms
-## des peintures du document) ; F-06 suit le dino de départ (sa peinture, son nom) ; une image absente
+## deux séquences sont complètes (nombre de plans, durées, une ou deux phrases de 18 mots au plus par
+## image, exactement les textes de docs/cinematiques_textes.md, les noms des peintures du document), et
+## chaque phrase tient dans le bandeau (trois lignes au plus) ; F-06 suit le dino de départ (sa
+## peinture, son nom) ; une image absente
 ## donne un fond uni avec la phrase, sans planter ; « Passer » demande deux appuis (ou un clic sur le
 ## bouton), termine le film et pose son drapeau (intro_vue, fin_vue) ; la fin ne se joue qu'une fois ;
 ## l'intro est proposée en Nouvelle partie et en Nouvelle partie+ ; une musique absente retombe sur
@@ -74,9 +76,31 @@ func assert_phrases(seq: Dictionary) -> void:
 	for plan: Dictionary in seq["plans"]:
 		if plan.get("kind", "") != "":
 			continue
-		var n := Cinematiques.word_count(String(plan["text"]))
-		assert_int(n).override_failure_message("%s : « %s » a %d mots (8 à 14)" % [plan["id"], plan["text"], n]) \
-			.is_between(Cinematiques.WORDS_MIN, Cinematiques.WORDS_MAX)
+		assert_phrase(String(plan["id"]), String(plan["text"]))
+
+
+## One or two short sentences, 8 to 18 words (docs/cinematiques_textes.md: 18 at most).
+func assert_phrase(id: String, text: String) -> void:
+	var n := Cinematiques.word_count(text)
+	assert_int(n).override_failure_message("%s : « %s » a %d mots (%d à %d)" % [id, text, n, Cinematiques.WORDS_MIN,
+		Cinematiques.WORDS_MAX]).is_between(Cinematiques.WORDS_MIN, Cinematiques.WORDS_MAX)
+	var sentences := Cinematiques.sentence_count(text)
+	assert_int(sentences).override_failure_message("%s : « %s » a %d phrases (1 ou 2)" % [id, text, sentences]) \
+		.is_between(1, Cinematiques.SENTENCES_MAX)
+
+
+## Every phrase of both films (F-06 in its three variants): {id: text}.
+static func all_phrases() -> Dictionary:
+	var out := {}
+	for species: StringName in Cinematiques.STARTER_VARIANTS:
+		Game.new_game()
+		Game.give_starter(species)
+		for seq: Dictionary in [Cinematiques.intro_sequence(), Cinematiques.end_sequence()]:
+			for plan: Dictionary in seq["plans"]:
+				if plan.has("text"):
+					var id := String(plan["id"]) + (" %s" % species if plan["id"] == "F-06" else "")
+					out[id] = String(plan["text"])
+	return out
 
 
 # ------------------------------------------------------------------ the sequences
@@ -85,12 +109,16 @@ func test_l_intro_neuf_images_et_le_carton() -> void:
 	var seq := Cinematiques.intro_sequence()
 	assert_array(ids(seq)).contains_exactly(["I-01", "I-02", "I-03", "I-04", "I-05", "I-06", "I-07", "I-08", "I-09", "carton"])
 	assert_array(durations(seq)).contains_exactly([7.0, 7.0, 8.0, 7.0, 9.0, 8.0, 7.0, 8.0, 9.0, 4.0])
-	assert_float(total(seq)).override_failure_message("intro : 60 à 80 s").is_between(60.0, 80.0)
+	assert_float(total(seq)).override_failure_message("intro prévue : 60 à 80 s").is_between(60.0, 80.0)
+	var real := Cinematic.sequence_length(seq)
+	assert_float(real).override_failure_message("intro, le temps de lire compris : %.1f s (60 à 95)" % real).is_between(60.0, 95.0)
 	var card: Dictionary = seq["plans"][9]
 	assert_str(String(card["kind"])).is_equal("card")
 	assert_str(String(card["title"])).is_equal("Ambrelune")
 	assert_phrases(seq)
-	assert_str(String(seq["plans"][8]["text"])).is_equal("Et l'île apparaît. Les légendes, ça se trouve.")
+	assert_str(String(seq["plans"][0]["text"])).starts_with("Moi, c'est Chloé, douze ans.")
+	assert_str(String(seq["plans"][6]["text"])).ends_with("« Monte, moussaillon. Les légendes, ça se trouve. »")
+	assert_str(String(seq["plans"][8]["text"])).is_equal("Et l'île est apparue. Hélène était quelque part là-dedans. Et les gens masqués aussi.")
 	assert_str(String(seq["flag"])).is_equal("intro_vue")
 	assert_str(String(seq["end"])).is_equal("black")
 	assert_array(files(seq)).contains_exactly(["intro_01_large.jpg", "intro_02_falaises.jpg", "intro_03_cabinet.jpg",
@@ -103,12 +131,15 @@ func test_la_fin_dix_plans_puis_les_credits() -> void:
 	var seq := Cinematiques.end_sequence()
 	assert_array(ids(seq)).contains_exactly(["F-01", "F-02", "F-03", "F-04", "F-05", "F-06", "F-07", "F-08", "F-09", "F-10"])
 	assert_array(durations(seq)).contains_exactly([10.0, 9.0, 9.0, 11.0, 9.0, 10.0, 9.0, 11.0, 11.0, 8.0])
-	assert_float(total(seq)).override_failure_message("fin : 90 à 120 s hors crédits").is_between(90.0, 120.0)
+	assert_float(total(seq)).override_failure_message("fin prévue : 90 à 120 s hors crédits").is_between(90.0, 120.0)
+	var real := Cinematic.sequence_length(seq)
+	assert_float(real).override_failure_message("fin, le temps de lire compris : %.1f s (70 à 130 hors crédits)" % real) \
+		.is_between(70.0, 130.0)
 	var last: Dictionary = seq["plans"][9]
 	assert_str(String(last["kind"])).is_equal("credits")
 	assert_float(float(last["opening_secs"])).is_equal(8.0)
 	assert_phrases(seq)
-	assert_str(String(seq["plans"][8]["text"])).contains("« Ce qui dort n'est pas mort. »")
+	assert_str(String(seq["plans"][8]["text"])).starts_with("« Ce qui dort n'est pas mort. »")
 	assert_str(String(seq["flag"])).is_equal("fin_vue")
 	assert_array(files(seq)).contains_exactly(["fin_01_jetee_fete.jpg", "fin_02_barque_visiteurs.jpg", "fin_03_forges.jpg",
 		"fin_04_tasse_bleue.jpg", "fin_05_gardiennes.jpg", "fin_06_dinos_vif.jpg", "fin_06_dinos_base.jpg", "fin_07_brac_nuit.jpg",
@@ -127,16 +158,114 @@ func test_f06_suit_le_dino_de_depart() -> void:
 		assert_str(String(f06["id"])).is_equal("F-06")
 		assert_str(String(f06["image"]).get_file()).is_equal("fin_06_dinos_%s.jpg" % expected[species][0])
 		assert_str(String(f06["text"])).starts_with(expected[species][1])
-		var n := Cinematiques.word_count(String(f06["text"]))
-		assert_int(n).override_failure_message("F-06 %s : %d mots" % [species, n]).is_between(8, 14)
+		assert_str(String(f06["text"])).override_failure_message("F-06 : la promesse des œufs, pour les trois") \
+			.ends_with(". Et bientôt d'autres bébés : Hélène m'apprend à réveiller les derniers œufs.")
+		assert_phrase("F-06 %s" % species, String(f06["text"]))
 		var notes := (f06["layers"] as Array).any(func(l: Dictionary) -> bool: return l.get("kind", "") == "notes")
 		assert_bool(notes).override_failure_message("les notes d'Écho seulement pour Écho").is_equal(species == &"parasaurolophus")
 
 
+## docs/cinematiques_textes.md, relu ici : chaque plan dit EXACTEMENT le « NOUVEAU texte » du document,
+## avec le nombre de mots qu'il donne ; les totaux de l'intro et de la fin aussi ; F-06 dans ses trois
+## variantes (§ f, le nom du dino de départ à la place de %s) ; le carton « Pour Chloé. » des crédits.
 func test_les_mots_comptes_comme_le_document() -> void:
-	assert_int(Cinematiques.word_count("Une capitaine connaît le chemin. « Monte, moussaillon. On y va. »")).is_equal(10)
-	assert_int(Cinematiques.word_count("Gardien de nuit : Brac. Enfin, « BARC », d'après le panneau.")).is_equal(9)
-	assert_int(Cinematiques.word_count("Page 40 : « Ce qui dort n'est pas mort. » Il reste des pages blanches.")).is_equal(13)
+	var doc := FileAccess.get_file_as_string(Cinematiques.TEXTS_DOC).replace("\r\n", "\n")
+	assert_str(doc).override_failure_message("%s introuvable" % Cinematiques.TEXTS_DOC).is_not_empty()
+	var wanted := {}
+	var rows := RegEx.create_from_string("(?m)^\\| ([IF]-\\d\\d) \\|[^|]*\\|[^|]*\\| \\*\\*(.+?)\\*\\* \\((\\d+)\\)")
+	for m in rows.search_all(doc):
+		wanted[m.get_string(1)] = [m.get_string(2), int(m.get_string(3))]
+	assert_int(wanted.size()).override_failure_message("17 textes dans les tableaux (I-01 à I-09, F-01 à F-09 sans F-06)").is_equal(17)
+	Game.give_starter(&"velociraptor")
+	var shown := {}
+	for seq: Dictionary in [Cinematiques.intro_sequence(), Cinematiques.end_sequence()]:
+		for plan: Dictionary in seq["plans"]:
+			if plan.has("text"):
+				shown[String(plan["id"])] = String(plan["text"])
+	var sums := {"I": 0, "F": 0}
+	for id: String in wanted:
+		var text: String = wanted[id][0]
+		assert_str(String(shown.get(id, ""))).override_failure_message("%s : le texte du jeu n'est pas celui du document" % id).is_equal(text)
+		assert_int(Cinematiques.word_count(text)).override_failure_message("%s : %d mots, le document dit %d" % [id,
+			Cinematiques.word_count(text), wanted[id][1]]).is_equal(wanted[id][1])
+		sums[id.left(1)] += Cinematiques.word_count(text)
+	# F-06 (§ f): « - **Vif** (`fin_06_dinos_vif.png`) : **« %s a deux dents… »** (17) », on two lines.
+	var f := doc.substr(doc.find("## f."), doc.find("## g.") - doc.find("## f."))
+	f = RegEx.create_from_string("\\n\\s+").sub(f, " ", true)
+	var variants := RegEx.create_from_string("- \\*\\*(.+?)\\*\\* \\(`fin_06_dinos_(\\w+)\\.png`\\) : \\*\\*« (.+?) »\\*\\* \\((\\d+)\\)").search_all(f)
+	assert_int(variants.size()).override_failure_message("§ f : trois variantes de F-06").is_equal(3)
+	var f06_most := 0   # (the document's total counts F-06 at its longest: 17-18 words)
+	for m in variants:
+		var species: StringName = &""
+		for s: StringName in Cinematiques.STARTER_VARIANTS:
+			if Cinematiques.STARTER_VARIANTS[s][0] == m.get_string(2):
+				species = s
+		assert_str(String(species)).override_failure_message("F-06 : pas de dino de départ pour « %s »" % m.get_string(2)).is_not_empty()
+		assert_str(String(Cinematiques.STARTER_VARIANTS[species][1])).override_failure_message("F-06 %s" % m.get_string(1)) \
+			.is_equal(m.get_string(3))
+		Game.new_game()
+		Game.give_starter(species)
+		var f06 := String(Cinematiques.end_sequence()["plans"][5]["text"])
+		assert_str(f06).is_equal(m.get_string(3) % m.get_string(1))
+		assert_int(Cinematiques.word_count(f06)).override_failure_message("F-06 %s : mots" % m.get_string(1)).is_equal(int(m.get_string(4)))
+		f06_most = maxi(f06_most, Cinematiques.word_count(f06))
+	# The totals: « 17+15+…= **137 mots » (intro), « 16+18+…= **155 mots » (end, F-06 at its longest).
+	var totals := RegEx.create_from_string("= \\*\\*(\\d+) mots").search_all(doc)
+	assert_int(totals.size()).is_equal(2)
+	assert_int(sums["I"]).override_failure_message("mots de l'intro").is_equal(int(totals[0].get_string(1)))
+	assert_int(sums["F"] + f06_most).override_failure_message("mots de la fin").is_equal(int(totals[1].get_string(1)))
+	# The « Pour Chloé » card (§ Les cartons de crédits): two lines.
+	var card := RegEx.create_from_string("(?m)^> \\*\\*(.+?)\\*\\*\\n> (.+)$").search(doc)
+	assert_object(card).override_failure_message("le carton « Pour Chloé » du document").is_not_null()
+	assert_str(CreditsRoll.DEDICATION).is_equal(card.get_string(1))
+	assert_str(CreditsRoll.DEDICATION_LINE).is_equal(card.get_string(2))
+
+
+## The sentences as the document counts them: a quotation does not cut its sentence, a sentence opening
+## on « Et » or « Enfin » carries on the one before; a third real sentence is one too many.
+func test_les_phrases_comptees_comme_le_document() -> void:
+	assert_int(Cinematiques.sentence_count("Un an sans nouvelles, puis une lettre du professeur Roc : « Viens vite. » J'ai fait mon sac.")).is_equal(2)
+	assert_int(Cinematiques.sentence_count("Au port, une seule capitaine connaissait le chemin. « Monte, moussaillon. Les légendes, ça se trouve. »")).is_equal(2)
+	assert_int(Cinematiques.sentence_count("Dans la brume, je ne pensais qu'à Hélène. Pas peur du tout. Enfin, presque.")).is_equal(2)
+	assert_int(Cinematiques.sentence_count("Et l'île est apparue. Hélène était quelque part là-dedans. Et les gens masqués aussi.")).is_equal(2)
+	assert_int(Cinematiques.sentence_count("Brac connaissait les cages ; maintenant, il garde les dinos la nuit. Enfin, « BARC », d'après le panneau.")).is_equal(1)
+	assert_int(Cinematiques.sentence_count("« Ce qui dort n'est pas mort. » Le Cabinet est à moi, et il reste des pages blanches.")).is_equal(2)
+	assert_int(Cinematiques.sentence_count("Une île. Un volcan. Des dinos.")).override_failure_message("trois phrases").is_equal(3)
+
+
+## Each phrase holds in the band at the bottom: on the narrowest screen (1280 wide), three lines at most,
+## inside its box (it never leaves the screen); on a computer (1600 wide), two lines at most. The film
+## shows it with its French punctuation held (« Viens vite. » never cut), and gives its words back as is.
+func test_chaque_phrase_tient_dans_le_bandeau() -> void:
+	var phrases := all_phrases()
+	var label := Cinematic.caption_label()
+	label.set_anchors_preset(Control.PRESET_TOP_LEFT)   # (its width set by hand below)
+	add_child(label)
+	var box := Cinematic.TEXT_LINES_MAX * Cinematic.TEXT_LINE_PX
+	assert_float(Cinematic.BAND_PX).override_failure_message("le bandeau sombre couvre les trois lignes") \
+		.is_greater_equal(Cinematic.TEXT_BOTTOM + box)
+	var report := PackedStringArray()
+	for screen_width: float in [1280.0, 1600.0]:
+		var most := 3 if screen_width < 1600.0 else 2
+		for id: String in phrases:
+			label.text = Cinematic.display_text(phrases[id])
+			label.size = Vector2(screen_width - 2.0 * Cinematic.TEXT_SIDE, box)
+			var lines := label.get_line_count()
+			assert_int(lines).override_failure_message("%s, écran de %d : %d lignes (%d au plus)" % [id, screen_width, lines, most]) \
+				.is_between(1, most)
+			assert_float(float(lines * label.get_line_height())).override_failure_message("%s : le texte déborde du bandeau" % id) \
+				.is_less_equal(box)
+			if screen_width == 1600.0:
+				report.append("%s %d" % [id, lines])
+	print("Lignes à 1600 px : ", ", ".join(report))
+	label.queue_free()
+	var film := Cinematic.play(self, Cinematiques.intro_sequence())
+	film.set_process(false)
+	film.seek(5)   # (I-06: « Viens vite. »)
+	run(film, 2.0)
+	assert_str(film.caption_text()).is_equal(String(film.plan_now()["text"]))
+	assert_int(film.caption_lines()).is_between(1, Cinematic.TEXT_LINES_MAX)
+	assert_str(Cinematic.display_text("Roc : « Viens vite. »")).is_equal("Roc : « Viens vite. »")
 
 
 # ------------------------------------------------------------------ missing pictures
@@ -172,7 +301,7 @@ func test_toute_l_intro_se_joue_sans_ses_peintures() -> void:
 	var film := Cinematic.play(self, Cinematiques.intro_sequence())
 	film.set_process(false)
 	var seen := []
-	for i in 900:   # 90 s
+	for i in 1000:   # 100 s (the intro: ~91 s)
 		film.advance(STEP)
 		if film.done:
 			break
@@ -275,6 +404,8 @@ func test_echap_maintenu_passe_tout() -> void:
 func test_chaque_phrase_a_le_temps_d_etre_lue() -> void:
 	assert_float(Cinematic.reading_secs("un deux trois quatre cinq six sept huit neuf dix onze douze treize quatorze")) \
 		.override_failure_message("14 mots : 6,3 s").is_equal_approx(6.3, 0.001)
+	assert_float(Cinematic.reading_secs("Sous le volcan dormait un secret énorme. Et des gens masqués voulaient ses dinos, pour les faire obéir.")) \
+		.override_failure_message("18 mots (I-05) : 8,1 s").is_equal_approx(8.1, 0.001)
 	assert_float(Cinematic.reading_secs("Et l'île apparaît.")).override_failure_message("plancher de 3 s").is_equal(3.0)
 	for seq: Dictionary in [Cinematiques.intro_sequence(), Cinematiques.end_sequence()]:
 		var plans: Array = seq["plans"]
@@ -305,7 +436,7 @@ func test_duree_reelle_des_deux_films() -> void:
 			var id := String(film.plan_now()["id"])
 			full[id] = float(full.get(id, 0.0)) + STEP
 	print("Intro : %.1f s (prévu %.1f s)" % [elapsed, Cinematic.sequence_length(intro)])
-	assert_float(elapsed).override_failure_message("intro : %.1f s (70 à 95)" % elapsed).is_between(70.0, 95.0)
+	assert_float(elapsed).override_failure_message("intro : %.1f s (60 à 95)" % elapsed).is_between(60.0, 95.0)
 	assert_float(elapsed).is_equal_approx(Cinematic.sequence_length(intro), 0.35)
 	for plan: Dictionary in intro["plans"]:
 		if plan.has("text"):
@@ -323,7 +454,7 @@ func test_duree_reelle_des_deux_films() -> void:
 		if stage is CreditsRoll and (stage as CreditsRoll).phase != "opening":
 			break
 	print("Fin, jusqu'au défilé des crédits (F-10 compris) : %.1f s (prévu %.1f s)" % [elapsed, Cinematic.sequence_length(end)])
-	assert_float(elapsed).override_failure_message("fin hors crédits : %.1f s (95 à 130)" % elapsed).is_between(95.0, 130.0)
+	assert_float(elapsed).override_failure_message("fin hors crédits : %.1f s (70 à 130)" % elapsed).is_between(70.0, 130.0)
 	assert_float(elapsed).is_equal_approx(Cinematic.sequence_length(end), 0.35)
 	await Router.fade_in(0.0)
 

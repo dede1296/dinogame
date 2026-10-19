@@ -9,7 +9,9 @@ extends Control
 ##   créé par Grégory Cuypers »…) ; après la fin du jeu, « Ambrelune » d'abord seul (F-10) ;
 ## - le défilé de CreditsData (la seule source : tirée de docs/credits.md), lent et lisible par un enfant,
 ##   dans le ciel : titres en ambre, lignes en crème, « ## » = sous-titre, « » = un espace ;
-## - « Pour Chloé » (décision de Greg), puis « Merci d'avoir joué », qui reste, puis le fondu.
+## - « Pour Chloé. » (décision de Greg) et, dessous, « Cette île est à toi. Elle l'a toujours été. »
+##   (docs/cinematiques_textes.md : le prénom en ambre, le reste en crème), puis « Merci d'avoir joué »,
+##   qui reste, puis le fondu.
 ## A, Espace, Entrée ou un clic : pause (la cinématique appelle toggle_pause).
 
 const SPEED := 25.0               # px/s for a screen 720 px tall
@@ -23,7 +25,10 @@ const AREA_BOTTOM := 0.62
 const EDGE := 54.0                # lines fade in and out over this much at the area's edges
 const WIDTH := 960.0
 const CREATOR := "Grégory Cuypers"
-const DEDICATION := "Pour Chloé"
+const DEDICATION := "Pour Chloé."
+const DEDICATION_LINE := "Cette île est à toi. Elle l'a toujours été."
+const DEDICATION_NAME := "Chloé"       # (in amber)
+const DEDICATION_LINE_SIZE := 36
 const THANKS := "Merci d'avoir joué"
 const AMBER := Color(0.98, 0.76, 0.35)   # #fac259
 const CREAM := Color(0.98, 0.94, 0.84)
@@ -49,7 +54,7 @@ var background: CinematicPlan
 var content: VBoxContainer
 var _opening: VBoxContainer
 var _rest: Array[Control] = []
-var _card: Label
+var _card: RichTextLabel
 var _phase_t := 0.0
 var _scroll := 0.0
 var _opening_s := OPENING_S
@@ -83,9 +88,15 @@ static func entries() -> Array[Dictionary]:
 				out.append({"text": text.substr(3), "style": "subtitle"})
 			else:
 				out.append({"text": text, "style": "line"})
-	out.append({"text": DEDICATION, "style": "card"})
+	out.append({"text": DEDICATION, "style": "card", "line": DEDICATION_LINE})
 	out.append({"text": THANKS, "style": "card"})
 	return out
+
+
+## The dedication card: « Pour Chloé. », the name in amber, and its line under it, smaller, in cream.
+static func dedication_bbcode() -> String:
+	var title := DEDICATION.replace(DEDICATION_NAME, "[color=#%s]%s[/color]" % [AMBER.to_html(false), DEDICATION_NAME])
+	return "%s\n[font_size=%d]%s[/font_size]" % [title, DEDICATION_LINE_SIZE, DEDICATION_LINE]
 
 
 static func _opening_style(line: String) -> String:
@@ -126,11 +137,27 @@ func _build() -> void:
 		else:
 			content.add_child(node)
 			_rest.append(node)
-	_card = _label(DEDICATION, "card")
-	_card.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_card.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_card = _card_label()
+	_card.text = dedication_bbcode()
 	_card.modulate.a = 0.0
 	add_child(_card)
+
+
+## The last two cards (the dedication, the thanks), alone at the centre of the screen.
+func _card_label() -> RichTextLabel:
+	var look: Array = STYLES["card"]
+	var card := RichTextLabel.new()
+	card.bbcode_enabled = true
+	card.scroll_active = false
+	card.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	card.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.set_anchors_preset(Control.PRESET_FULL_RECT)
+	card.add_theme_font_size_override(&"normal_font_size", look[0])
+	card.add_theme_color_override(&"default_color", look[1])
+	card.add_theme_color_override(&"font_outline_color", OUTLINE)
+	card.add_theme_constant_override(&"outline_size", look[2])
+	return card
 
 
 func _line(entry: Dictionary) -> Control:
@@ -166,8 +193,14 @@ func shown_texts() -> Array[String]:
 		if node is Label:
 			out.append((node as Label).text)
 	out.append(DEDICATION)
+	out.append(DEDICATION_LINE)
 	out.append(THANKS)
 	return out
+
+
+## The card on screen now (the dedication or the thanks), as read.
+func card_text() -> String:
+	return _card.get_parsed_text()
 
 
 func toggle_pause() -> void:
@@ -195,7 +228,7 @@ func tick(dt: float) -> void:
 			if not paused:
 				_scroll += SPEED * screen.y / 720.0 * dt
 			if content.position.y + content.size.y < top and content.size.y > 0.0:
-				_card.text = DEDICATION
+				_card.text = dedication_bbcode()
 				_to("dedication")
 		"dedication":
 			_card.modulate.a = _card_alpha(CARD_HOLD, true)

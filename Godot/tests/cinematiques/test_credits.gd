@@ -1,9 +1,9 @@
 extends GdUnitTestSuite
 ## Les crédits (ui/credits.gd), sans fenêtre : ils se construisent depuis CreditsData (la seule source,
 ## tirée de docs/credits.md : chaque titre, chaque ligne, « ## » en sous-titre, « Powered by Stability
-## AI »), s'ouvrent sur le carton de Grégory Cuypers, finissent par « Pour Chloé » puis « Merci d'avoir
-## joué » ; le défilé va au bout, s'arrête en pause et repart ; depuis le menu, on retrouve l'écran
-## d'avant.
+## AI »), s'ouvrent sur le carton de Grégory Cuypers, finissent par « Pour Chloé. » (et sa ligne « Cette
+## île est à toi. Elle l'a toujours été. ») puis « Merci d'avoir joué » ; le défilé va au bout, s'arrête
+## en pause et repart ; depuis le menu, on retrouve l'écran d'avant.
 
 const STEP := 0.25
 
@@ -39,7 +39,8 @@ func test_les_credits_viennent_de_credits_data() -> void:
 	assert_str(String(entries[0]["text"])).is_equal("Ambrelune")
 	assert_str(String(entries[0]["style"])).is_equal("card_title")
 	assert_bool(entries.any(func(e: Dictionary) -> bool: return e["text"] == "Grégory Cuypers" and e["style"] == "card_name")).is_true()
-	assert_array(texts.slice(-2)).contains_exactly(["Pour Chloé", "Merci d'avoir joué"])
+	assert_array(texts.slice(-2)).contains_exactly(["Pour Chloé.", "Merci d'avoir joué"])
+	assert_str(String(entries[-2].get("line", ""))).is_equal("Cette île est à toi. Elle l'a toujours été.")
 
 
 func test_le_rouleau_montre_chaque_ligne() -> void:
@@ -63,6 +64,7 @@ func test_le_defile_va_au_bout_avec_une_pause() -> void:
 	var roll := film.stage_now() as CreditsRoll
 	assert_object(roll).is_not_null()
 	var phases := ["opening"]
+	var cards := []
 	var paused_once := false
 	var elapsed := 0.0
 	while not film.done and elapsed < 400.0:
@@ -70,6 +72,7 @@ func test_le_defile_va_au_bout_avec_une_pause() -> void:
 		elapsed += STEP
 		if is_instance_valid(roll) and phases[-1] != roll.phase:
 			phases.append(roll.phase)
+			cards.append(roll.card_text())
 		if not paused_once and is_instance_valid(roll) and roll.phase == "roll" and elapsed > 20.0:
 			paused_once = true
 			film.go_on()   # (A, a click: pause)
@@ -83,6 +86,9 @@ func test_le_defile_va_au_bout_avec_une_pause() -> void:
 	print("Crédits depuis le menu : %.0f s" % elapsed)
 	assert_bool(film.done).override_failure_message("les crédits vont au bout (%.0f s)" % elapsed).is_true()
 	assert_array(phases).contains_exactly(["opening", "roll", "dedication", "thanks"])
+	assert_str(String(cards[1])).override_failure_message("le carton de la dédicace : deux lignes").is_equal(
+		"Pour Chloé.\nCette île est à toi. Elle l'a toujours été.")
+	assert_str(String(cards[2])).is_equal("Merci d'avoir joué")
 	assert_float(elapsed).override_failure_message("durée des crédits : %.0f s" % elapsed).is_between(45.0, 160.0)
 	assert_str(String(film.sequence["end"])).override_failure_message("depuis le menu : retour à l'écran d'avant").is_equal("reveal")
 

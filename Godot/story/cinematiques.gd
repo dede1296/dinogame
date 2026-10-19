@@ -2,14 +2,19 @@ class_name Cinematiques
 extends RefCounted
 ## Les deux cinématiques d'Ambrelune et le fond des crédits (docs/cinematiques.md, décisions de Greg du
 ## 19/10) : la DESCRIPTION des séquences, lue par ui/cinematic.gd, et les points d'entrée.
-## - L'INTRO, « Les légendes, ça se trouve » : 9 images + le carton « Ambrelune » (~74 s), au lancement
+## LES TEXTES : ceux de docs/cinematiques_textes.md (version 2, validés par Greg tels quels), la seule
+## source ; la voix de Chloé, au passé dans l'intro, au présent dans la fin ; une ou deux phrases
+## courtes par image, 18 mots au plus. Les durées prévues ci-dessous sont des planchers : chaque plan
+## est prolongé tout seul pour que sa phrase se lise (ui/cinematic.gd, 0,45 s par mot, 3 s au moins).
+## - L'INTRO, « Les légendes, ça se trouve » : 9 images + le carton « Ambrelune » (~90 s), au lancement
 ##   d'une Nouvelle partie, et en Nouvelle partie+ (elle se rejoue) : scenes/boot/boot.gd ; puis le quai
 ##   de Port-Ambre (Prologue.arrival). « Revoir l'intro » : Paramètres.
-## - LA FIN, « Ce qui dort n'est pas mort » : 9 images + F-10, les crédits sur le fond C-01 (~97 s hors
+## - LA FIN, « Ce qui dort n'est pas mort » : 9 images + F-10, les crédits sur le fond C-01 (~103 s hors
 ##   crédits), après la page 40 sur la jetée (story/apex_jetee.gd::_the_end), une fois (drapeau fin_vue) ;
 ##   F-06 suit le dino de départ (trois peintures : Vif, Bastion avec Maïa assise dessus, Écho qui chante
 ##   faux ; son nom : celui que le joueur lui a donné).
 ## - LES CRÉDITS seuls : bouton « Crédits » du titre et des Paramètres ; à la fin, retour où l'on était.
+## Les regarder en entier, en temps réel : tools/voir-intro.cmd, tools/voir-fin-et-credits.cmd.
 ##
 ## Les peintures : assets/art/cinematiques/<nom>.png (2560 × 1440), faites par l'agent IMAGES. Tant
 ## qu'une peinture manque, son plan se joue sur un fond uni avec sa phrase. Les calques détourés, eux,
@@ -29,14 +34,21 @@ const CRY := "res://assets/audio/cries/%s.mp3"
 const INTRO_FLAG := &"intro_vue"
 const END_FLAG := &"fin_vue"
 const GAME_TITLE := "Ambrelune"
-## The phrase on each picture: one sentence, 8 to 14 words (docs/cinematiques.md § Format commun).
+## The text on each picture (docs/cinematiques_textes.md, version 2): one or two short sentences
+## (sentence_count), 18 words at most (word_count).
+const TEXTS_DOC := "res://docs/cinematiques_textes.md"
 const WORDS_MIN := 8
-const WORDS_MAX := 14
-## F-06: the starter's species → its painting, its phrase (%s: its name, as the player gave it).
+const WORDS_MAX := 18
+const SENTENCES_MAX := 2
+## A sentence opening on one of these carries on the one before (« Et les gens masqués aussi. »,
+## « Enfin, presque. »): it is not a sentence of its own.
+const SENTENCE_LINKS := ["Et", "Enfin"]
+## F-06: the starter's species → its painting, its phrase (%s: its name, as the player gave it; the
+## second sentence is the same for the three: the eggs Hélène teaches Chloé to wake).
 const STARTER_VARIANTS := {
-	&"velociraptor": ["vif", "%s a deux dents de plus, et ne tient toujours pas en place."],
-	&"ankylosaurus": ["bastion", "%s a grandi. Tout le monde s'assoit encore dessus."],
-	&"parasaurolophus": ["echo", "%s chante toujours faux le matin. Ça ne fait rien."],
+	&"velociraptor": ["vif", "%s a deux dents de plus. Et bientôt d'autres bébés : Hélène m'apprend à réveiller les derniers œufs."],
+	&"ankylosaurus": ["bastion", "%s a grandi, on s'assoit encore dessus. Et bientôt d'autres bébés : Hélène m'apprend à réveiller les derniers œufs."],
+	&"parasaurolophus": ["echo", "%s chante toujours faux, le matin. Et bientôt d'autres bébés : Hélène m'apprend à réveiller les derniers œufs."],
 }
 const STARTER_CRIES := {&"velociraptor": "raptor-neutre", &"ankylosaurus": "cuirasse-neutre", &"parasaurolophus": "hadrosaure-neutre"}
 const PTERO := "res://assets/art/dinos/pteranodon_vol.png"
@@ -116,7 +128,7 @@ static func intro_sequence() -> Dictionary:
 		"plans": [
 			# (Positions measured on the paintings of 19/10: 0..1 of the picture.)
 			_plan("I-01", "intro_01_large", 7.0, 1.0, _zoom(1.0, 1.08, Vector2(0.5, 0.5), Vector2(0.62, 0.42)),
-				"Au large de toutes les cartes, une île que personne ne trouve.", Color(0.13, 0.38, 0.48), {
+				"Moi, c'est Chloé, douze ans. Ma grand-mère Hélène vivait là-bas, sur une île que personne ne trouve.", Color(0.13, 0.38, 0.48), {
 				"music": MUSIC % "cinematique_intro_a", "loops": sea + [AMB % "brise"],
 				"sfx": [[3.5, CRY % "pterosaure-neutre", -16.0]],
 				"layers": [
@@ -130,7 +142,7 @@ static func intro_sequence() -> Dictionary:
 					_ptero(Vector2(0.5, 0.22), Vector2(0.29, 0.17), 0.5, 6.5, 0.018),
 				]}),
 			_plan("I-02", "intro_02_falaises", 7.0, 1.2, _pan(1.08, 0.465, 0.535),
-				"Les nuits de pleine lune, ses falaises brillent comme du miel.", Color(0.08, 0.1, 0.22), {
+				"Elle m'écrivait que ses falaises brillent les nuits de pleine lune. Je croyais qu'elle inventait.", Color(0.08, 0.1, 0.22), {
 				"loops": sea,
 				"layers": [
 					_layer("intro_02_falaises", "ambre", {"anim": "pulse", "min": 0.35, "max": 1.0, "period": 3.2}),
@@ -139,7 +151,7 @@ static func intro_sequence() -> Dictionary:
 					_fx("sparkle", Rect2(0.6, 0.66, 0.35, 0.18), {"color": Color(1.0, 0.97, 0.85, 0.9)}),
 				]}),
 			_plan("I-03", "intro_03_cabinet", 8.0, 1.2, _zoom(1.0, 1.1, Vector2(0.5, 0.5), Vector2(0.52, 0.6)),
-				"Là-bas, une grand-mère réveillait des dinosaures. Des vrais.", Color(0.2, 0.13, 0.08), {
+				"Dans sa maison, elle réveillait des dinosaures endormis dans l'ambre. Des vrais.", Color(0.2, 0.13, 0.08), {
 				"loops": [AMB % "maison", SFX % "horloge-tictac", SFX % "lampe-huile"],
 				"sfx": [[2.4, SFX % "page-froissee", -6.0], [2.5, "res://assets/audio/sfx/page.wav", -12.0]],
 				"layers": [
@@ -149,7 +161,7 @@ static func intro_sequence() -> Dictionary:
 					_fx("dust", Rect2(0.25, 0.2, 0.4, 0.45)),
 				]}),
 			_plan("I-04", "intro_04_oeufs", 7.0, 0.8, _zoom(1.0, 1.06, Vector2(0.5, 0.5), Vector2(0.5, 0.52)),
-				"Puis elle est partie. Elle a laissé trois œufs, et un mot.", Color(0.26, 0.16, 0.07), {
+				"Un jour, elle est partie vers le volcan. Elle m'a laissé trois œufs, et un mot.", Color(0.26, 0.16, 0.07), {
 				"loops": [AMB % "labo"],
 				"sfx": [[4.3, SFX % "oeuf-toc", -4.0]],
 				"layers": [
@@ -160,7 +172,7 @@ static func intro_sequence() -> Dictionary:
 					_fx("bubbles", Rect2(0.44, 0.6, 0.12, 0.0), {"amount": 3}),
 				]}),
 			_plan("I-05", "intro_05_carte_vide", 9.0, 0.8, _zoom(1.12, 1.0, Vector2(0.38, 0.66), Vector2(0.5, 0.5)),
-				"Chaque région a ses dinos. Au milieu, un volcan qui gronde.", Color(0.88, 0.82, 0.68), {
+				"Sous le volcan dormait un secret énorme. Et des gens masqués voulaient ses dinos, pour les faire obéir.", Color(0.88, 0.82, 0.68), {
 				"image_or": [FOLDER % "intro_05_carte"],
 				"sfx": [[0.6, SFX % "plume-gratte", -6.0], [7.6, AMB % "volcan-grondement", -10.0]],
 				"layers": [
@@ -170,7 +182,7 @@ static func intro_sequence() -> Dictionary:
 					_fx("smoke", Rect2(0.52, 0.37, 0.0, 0.0), {"start": 7.4, "amount": 6, "color": Color(0.35, 0.25, 0.18, 0.4)}),
 				]}),
 			_plan("I-06", "intro_06_chambre", 8.0, 1.2, _zoom(1.0, 1.08, Vector2(0.5, 0.5), Vector2(0.5, 0.46)),
-				"Chloé a douze ans, un sac trop plein et une grand-mère à retrouver.", Color(0.55, 0.42, 0.3), {
+				"Un an sans nouvelles, puis une lettre du professeur Roc : « Viens vite. » J'ai fait mon sac.", Color(0.55, 0.42, 0.3), {
 				"music": MUSIC % "cinematique_intro_b", "loops": [AMB % "maison"],
 				"sfx": [[1.5, SFX % "lacet-fermeture-eclair", -4.0], [4.6, SFX % "objet-tombe-toc", -4.0]],
 				"layers": [
@@ -180,7 +192,7 @@ static func intro_sequence() -> Dictionary:
 					_fx("dust", Rect2(0.62, 0.1, 0.3, 0.6)),
 				]}),
 			_plan("I-07", "intro_07_ponton", 7.0, 1.2, _pan(1.08, 0.535, 0.47),
-				"Une capitaine connaît le chemin. « Monte, moussaillon. On y va. »", Color(0.62, 0.55, 0.45), {
+				"Au port, une seule capitaine connaissait le chemin. « Monte, moussaillon. Les légendes, ça se trouve. »", Color(0.62, 0.55, 0.45), {
 				"loops": sea + [SFX % "rames"],
 				"sfx": [[1.1, SFX % "saut-planches-plouf", -2.0], [1.5, SFX % "mouette-vexee", -4.0], [1.6, AMB % "mouettes", -8.0]],
 				"layers": [
@@ -190,7 +202,7 @@ static func intro_sequence() -> Dictionary:
 					_fx("sparkle", Rect2(0.05, 0.08, 0.9, 0.12)),
 				]}),
 			_plan("I-08", "intro_08_brume", 8.0, 0.8, _zoom(1.0, 1.06, Vector2(0.5, 0.5), Vector2(0.3, 0.45)),
-				"La brume avale tout. Chloé n'a pas peur. Enfin, presque.", Color(0.72, 0.72, 0.68), {
+				"Dans la brume, je ne pensais qu'à Hélène. Pas peur du tout. Enfin, presque.", Color(0.72, 0.72, 0.68), {
 				"loops": sea + [AMB % "brume-vent-feutre", SFX % "rames"],
 				"sfx": [[5.0, "res://assets/audio/sfx/colonne_bulles.mp3", -16.0]],
 				"layers": [
@@ -200,7 +212,7 @@ static func intro_sequence() -> Dictionary:
 					_fx("mist", Rect2(0.0, 0.7, 1.0, 0.25), {"amount": 12}),
 				]}),
 			_plan("I-09", "intro_09_arrivee", 9.0, 0.8, _zoom(1.08, 1.0, Vector2(0.5, 0.45), Vector2(0.5, 0.5)),
-				"Et l'île apparaît. Les légendes, ça se trouve.", Color(0.45, 0.66, 0.8), {
+				"Et l'île est apparue. Hélène était quelque part là-dedans. Et les gens masqués aussi.", Color(0.45, 0.66, 0.8), {
 				"loops": sea + [AMB % "mouettes"],
 				"sfx": [[0.3, SFX % "brume-se-dechire", -4.0], [2.2, CRY % "pterosaure-neutre", -8.0], [5.6, CRY % "pterosaure-neutre", -11.0]],
 				"layers": [
@@ -237,7 +249,7 @@ static func end_sequence() -> Dictionary:
 		"id": "fin", "flag": END_FLAG, "end": "black", "restore_music": true, "fade_in": 1.5, "fade_out": 1.5,
 		"plans": [
 			_plan("F-01", "fin_01_jetee_fete", 10.0, 1.5, _zoom(1.08, 1.0, Vector2(0.5, 0.5), Vector2(0.5, 0.5)),
-				"L'île ne se vend pas, pas un galet. Mais elle se montre.", Color(0.5, 0.68, 0.78), {
+				"J'ai retrouvé Hélène. Et l'île est devenue une Réserve : rien ne se vend, tout se montre.", Color(0.5, 0.68, 0.78), {
 				"music": MUSIC % "cinematique_fin",
 				"loops": sea + [AMB % "village", SFX % "fanions-vent", SFX % "brouhaha-village"],
 				"sfx": [[1.0, AMB % "mouettes", -8.0]],
@@ -248,7 +260,7 @@ static func end_sequence() -> Dictionary:
 					_fx("sparkle", Rect2(0.05, 0.8, 0.9, 0.15)),
 				]}),
 			_plan("F-02", "fin_02_barque_visiteurs", 9.0, 0.8, _pan(1.08, 0.47, 0.53),
-				"Les barques de la capitaine amènent les visiteurs. Tarif unique : rien.", Color(0.4, 0.6, 0.68), {
+				"Isaure amène les visiteurs en barque, tarif unique : rien. Son masque en carton, lui, fait « Bouh » aux poissons.", Color(0.4, 0.6, 0.68), {
 				"loops": sea + [SFX % "rames"],
 				"sfx": [[3.0, CRY % "marin-neutre", -12.0]],
 				"layers": [
@@ -257,7 +269,7 @@ static func end_sequence() -> Dictionary:
 					_fx("sparkle", Rect2(0.05, 0.78, 0.9, 0.15)),
 				]}),
 			_plan("F-03", "fin_03_forges", 9.0, 1.2, _zoom(1.0, 1.08, Vector2(0.5, 0.5), Vector2(0.58, 0.55)),
-				"Isaure démonte les forges. Avec ses mains. Roc tient l'échelle, les yeux fermés.", Color(0.22, 0.2, 0.2), {
+				"Les forges de l'ambre noir, Isaure les démonte avec ses mains. Roc tient l'échelle, les yeux fermés.", Color(0.22, 0.2, 0.2), {
 				"loops": [AMB % "forge-eteinte"],
 				"sfx": [[1.8, SFX % "metal-grince-boulon", -4.0], [4.4, SFX % "echelle-craque", -4.0], [6.2, "res://assets/audio/sfx/latch.wav", -8.0]],
 				"layers": [
@@ -268,7 +280,7 @@ static func end_sequence() -> Dictionary:
 				]}),
 			# (No Compsognathus at the door: the painting shows no door to peek through.)
 			_plan("F-04", "fin_04_tasse_bleue", 11.0, 1.2, _zoom(1.0, 1.1, Vector2(0.5, 0.5), Vector2(0.5, 0.62)),
-				"Deux vieilles amies, une tasse bleue ébréchée, et vingt ans à rattraper.", Color(0.36, 0.26, 0.16), {
+				"Hélène avait raison : rien ne se réveille de force. Une vieille amie non plus : on s'assoit à côté.", Color(0.36, 0.26, 0.16), {
 				"loops": [AMB % "maison", SFX % "horloge-tictac"],
 				"sfx": [[1.2, SFX % "the-verse", -4.0], [3.0, SFX % "tasse-porcelaine", -4.0], [8.0, SFX % "tasse-porcelaine", -10.0]],
 				"layers": [
@@ -279,7 +291,7 @@ static func end_sequence() -> Dictionary:
 					_fx("dust", Rect2(0.55, 0.05, 0.25, 0.4)),
 				]}),
 			_plan("F-05", "fin_05_gardiennes", 9.0, 1.2, _pan(1.08, 0.535, 0.465),
-				"Deux gardiennes. Pas de cages : des gens que les bêtes connaissent.", Color(0.5, 0.7, 0.45), {
+				"Maïa et moi, gardiennes : pas de cages, les dinos nous connaissent. Et Maïa veut déjà sa revanche.", Color(0.5, 0.7, 0.45), {
 				"loops": [AMB % "brise"],
 				"sfx": [[3.0, SFX % "eternuement-triceratops", -2.0], [3.1, CRY % "ceratopsien-neutre", -10.0],
 					[5.0, CRY % "pterosaure-neutre", -14.0], [7.0, CRY % "sauropode-neutre", -16.0]],
@@ -293,7 +305,7 @@ static func end_sequence() -> Dictionary:
 				"image_or": [FOLDER % "fin_06_dinos_base"],
 				"loops": [AMB % "eau", AMB % "brise"], "sfx": f06_sfx, "layers": f06_layers}),
 			_plan("F-07", "fin_07_brac_nuit", 9.0, 1.2, _zoom(1.0, 1.08, Vector2(0.5, 0.5), Vector2(0.62, 0.45)),
-				"Gardien de nuit : Brac. Enfin, « BARC », d'après le panneau.", Color(0.08, 0.1, 0.2), {
+				"Brac connaissait les cages ; maintenant, il garde les dinos la nuit. Enfin, « BARC », d'après le panneau.", Color(0.08, 0.1, 0.2), {
 				"loops": sea + [AMB % "grillons-nuit", SFX % "ronflement-dino"],
 				"sfx": [[4.0, SFX % "gemissement-mastoc", -6.0]],
 				"layers": [
@@ -306,7 +318,7 @@ static func end_sequence() -> Dictionary:
 				]}),
 			# (The pterosaur over the sea is painted: no sprite on top of it.)
 			_plan("F-08", "fin_08_souverain", 11.0, 1.2, _zoom(1.1, 1.0, Vector2(0.5, 0.3), Vector2(0.5, 0.5)),
-				"Au bord du volcan, le Souverain regarde la mer. Les yeux ouverts. Sans peur.", Color(0.45, 0.32, 0.4), {
+				"Le Souverain veille, sans peur. Les géants du cratère dorment encore : je les réveillerai un à un, doucement.", Color(0.45, 0.32, 0.4), {
 				"loops": [AMB % "vent-hauteurs"],
 				"sfx": [[1.5, SOUVERAIN_BREATH, -4.0], [6.5, SOUVERAIN_BREATH, -6.0]],
 				"layers": [
@@ -316,7 +328,7 @@ static func end_sequence() -> Dictionary:
 					_glow(Vector2(0.16, 0.73), 0.015, LAMP_GLOW, {"pulse": 0.3, "period": 1.7}),
 				]}),
 			_plan("F-09", "fin_09_journal_sans_trait", 11.0, 1.2, _zoom(1.0, 1.1, Vector2(0.5, 0.5), Vector2(0.7, 0.55)),
-				"Page 40 : « Ce qui dort n'est pas mort. » Il reste des pages blanches.", Color(0.3, 0.2, 0.12), {
+				"« Ce qui dort n'est pas mort. » Le Cabinet est à moi, et il reste des pages blanches.", Color(0.3, 0.2, 0.12), {
 				"image_or": [FOLDER % "fin_09_journal"],
 				"loops": [SFX % "horloge-tictac", SFX % "lampe-huile"],
 				"sfx": [[1.4, SFX % "crayon-papier", -4.0], [7.0, "res://assets/audio/sfx/page.wav", -12.0]],
@@ -460,6 +472,33 @@ static func _ptero(from: Vector2, to: Vector2, start: float, dur: float, height:
 ## The words of a phrase, as the document counts them (« : », « « » » are not words).
 static func word_count(text: String) -> int:
 	return Cinematic.word_count(text)
+
+
+## The sentences of a phrase, as the document counts them: one ends on « . », « ! », « ? » or « … »;
+## words quoted inside a sentence do not cut it (« fait « Bouh » aux poissons »), a quotation closed
+## right after its own full stop ends the sentence too (« « Viens vite. » J'ai fait mon sac. »); a
+## sentence opening on « Et » or « Enfin » carries on the one before (SENTENCE_LINKS).
+static func sentence_count(text: String) -> int:
+	var count := 0
+	var starting := true
+	var depth := 0
+	var stopped := false   # the last token with a mark or a word ended on a full stop
+	for token in text.split(" ", false):
+		depth += token.count("«")
+		var bare := token.lstrip("«»:;,.!?…-–").rstrip("«»:;,.!?…-–")
+		if bare != "" and starting:
+			if count == 0 or not SENTENCE_LINKS.has(bare):
+				count += 1
+			starting = false
+		var closes := token.count("»")
+		depth = maxi(depth - closes, 0)
+		var tail := token.replace("»", "").replace("«", "")
+		var ends := tail != "" and tail.right(1) in [".", "!", "?", "…"]
+		if depth == 0 and (ends or (closes > 0 and tail == "" and stopped)):
+			starting = true
+		if tail != "":
+			stopped = ends
+	return count
 
 
 ## Every picture a sequence names (main paintings, their stand-ins and the reveals), and the ones

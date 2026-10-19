@@ -7,9 +7,10 @@ extends CanvasLayer
 ## les plans, au noir au début et à la fin. Le dernier plan peut être les crédits (ui/credits.gd).
 ##
 ## Le temps de lire (Greg, 19/10 : « assez lent pour un enfant ») : chaque phrase reste entièrement
-## affichée au moins READING_MIN_S, ou un mot par 1/READING_WORDS_PER_S seconde (14 mots : 6,3 s), après
+## affichée au moins READING_MIN_S, ou un mot par 1/READING_WORDS_PER_S seconde (18 mots : 8,1 s), après
 ## son fondu d'entrée ; un plan prévu plus court est prolongé (sa caméra dérive plus lentement). Les
-## durées prévues restent le tempo si le joueur ne touche à rien.
+## durées prévues restent le tempo si le joueur ne touche à rien. Le bandeau tient deux phrases courtes
+## sur deux lignes (trois au plus sur l'écran le plus étroit), sans jamais sortir de l'écran.
 ##
 ## Passer, à tout moment (ui/cinematic_skip.gd) : deux appuis sur Échap, B (ou toute touche qui
 ## n'avance pas), Échap ou B maintenu HOLD_S, ou un clic sur « Passer », en bas à droite, la touche
@@ -40,7 +41,15 @@ const TEXT_SIZE := 32
 const TEXT_DELAY := 0.4            # the phrase comes this long after its picture, and goes this long before the next fade
 const TEXT_RAMP := 0.35
 const TEXT_SIDE := 190.0           # it keeps clear of the « Passer » button
+## The phrase (one or two short sentences, 18 words at most): two lines on a computer, three at most on
+## the narrowest screen (1280 wide), set on the bottom of its box; a longer one would rise, never fall
+## off the screen.
+const TEXT_BOTTOM := 26.0
+const TEXT_LINES_MAX := 3
+const TEXT_LINE_PX := 46.0         # one line of TEXT_SIZE, its outline included
+const BAND_PX := 210.0             # the dark band under it, as tall as three lines and a margin
 const BAND := Color(0.02, 0.02, 0.03, 0.55)
+const NBSP := " "             # (a non-breaking space: French punctuation stays with its word)
 const FADE := 0.8
 const EDGE_FADE := 1.5
 const SKIP_FADE := 0.5
@@ -192,21 +201,7 @@ func _build() -> void:
 	_root.add_child(_stages)
 	_band = _make_band()
 	_root.add_child(_band)
-	_caption = Label.new()
-	_caption.name = "Caption"
-	_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_caption.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	_caption.offset_left = TEXT_SIDE
-	_caption.offset_right = -TEXT_SIDE
-	_caption.offset_top = -112.0
-	_caption.offset_bottom = -26.0
-	_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_caption.add_theme_font_size_override(&"font_size", TEXT_SIZE)
-	_caption.add_theme_color_override(&"font_color", TEXT_COLOR)
-	_caption.add_theme_color_override(&"font_outline_color", TEXT_OUTLINE)
-	_caption.add_theme_constant_override(&"outline_size", 10)
+	_caption = caption_label()
 	_caption.modulate.a = 0.0
 	_root.add_child(_caption)
 	_black = ColorRect.new()
@@ -218,6 +213,38 @@ func _build() -> void:
 	_skip.skip_requested.connect(skip)
 	_skip.pause_requested.connect(_toggle_pause)
 	_root.add_child(_skip)
+
+
+## The phrase's label, at the bottom of the screen (the tests measure its lines with it): room for
+## TEXT_LINES_MAX lines, the text set on the bottom of the box, which grows upwards if it must.
+static func caption_label() -> Label:
+	var caption := Label.new()
+	caption.name = "Caption"
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caption.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	caption.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	caption.offset_left = TEXT_SIDE
+	caption.offset_right = -TEXT_SIDE
+	caption.offset_top = -(TEXT_BOTTOM + TEXT_LINES_MAX * TEXT_LINE_PX)
+	caption.offset_bottom = -TEXT_BOTTOM
+	caption.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	caption.add_theme_font_size_override(&"font_size", TEXT_SIZE)
+	caption.add_theme_color_override(&"font_color", TEXT_COLOR)
+	caption.add_theme_color_override(&"font_outline_color", TEXT_OUTLINE)
+	caption.add_theme_constant_override(&"outline_size", 10)
+	return caption
+
+
+## The phrase as shown: « « », « » », « : », « ; », « ! », « ? » held to their word by a non-breaking
+## space, so a line never begins with a closing mark nor ends on an opening one (the words stay those
+## of the document).
+static func display_text(text: String) -> String:
+	var shown := text.replace("« ", "«" + NBSP).replace(" »", NBSP + "»")
+	for mark in [":", ";", "!", "?"]:
+		shown = shown.replace(" " + mark, NBSP + mark)
+	return shown
 
 
 ## A dark band at the bottom, fading upwards, under the phrase: it reads on any picture.
@@ -236,7 +263,7 @@ func _make_band() -> TextureRect:
 	band.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	band.stretch_mode = TextureRect.STRETCH_SCALE
 	band.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	band.offset_top = -150.0
+	band.offset_top = -BAND_PX
 	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	band.modulate.a = 0.0
 	return band
@@ -257,7 +284,7 @@ func _start(i: int) -> void:
 	_stage = _make_stage(plan, _len + _next_fade(i))
 	_stage.modulate.a = 0.0
 	_stages.add_child(_stage)
-	_caption.text = String(plan.get("text", ""))
+	_caption.text = display_text(String(plan.get("text", "")))
 	_caption.modulate.a = 0.0
 	_sfx_done.clear()
 	_cue_music(plan)
@@ -606,8 +633,14 @@ func stage_now() -> Control:
 	return _stage
 
 
+## The phrase on screen, in the words of the document (its non-breaking spaces back to plain ones).
 func caption_text() -> String:
-	return _caption.text
+	return _caption.text.replace(NBSP, " ")
+
+
+## How many lines the phrase on screen takes.
+func caption_lines() -> int:
+	return _caption.get_line_count()
 
 
 func caption_alpha() -> float:
