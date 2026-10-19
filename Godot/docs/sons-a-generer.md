@@ -32,14 +32,14 @@ pic ≤ -0,5 dBFS ; boucles sans couture (vérifiées). Les zones cherchent ces 
 | `volcan.ogg` | **fait** (boucle 78 s) | Champs de cendres et coulées (ch. 8) | `desert.ogg` |
 | `terre_apex.ogg` | **fait** (boucle 69 s) | Terre des Apex, spirale du cratère (ch. 9) | aucune musique |
 | `coeur_apex.ogg` | **fait** (boucle 72 s) | Cœur des Apex, salle ronde (ch. 9) | aucune musique |
-| `nids_geants.ogg` | à faire (facultatif) | Nids géants (ch. 7) : tendre et curieux, berceuse protectrice, célesta et pizzicati | `cieux.ogg` |
-| `arche_du_vent.ogg` | à faire (facultatif) | Arche du Vent (ch. 7) : lent et majestueux, cor solennel, l'arche qui chante dans le vent | `cieux.ogg` |
-| `forges_ombre.ogg` | à faire (facultatif) | Forges de l'Ombre Noire (ch. 8) : sombre mais doux, enclumes, cuivres graves | `ombre.ogg` |
-| `souverain.ogg` (à brancher ensuite) | à faire (facultatif) | combat du Souverain (ch. 9) : noble et triste plus que méchant | `alpha.ogg` |
-| `jetee.ogg` (à brancher ensuite) | à faire (facultatif) | jetée de Port-Ambre, épilogue : guitare et cordes, tendre | — |
+| `nids_geants.ogg` | **fait** (boucle 70 s) | Nids géants (ch. 7) : majestueux et chaleureux, choral de cors, le vent | `cieux.ogg` |
+| `arche_du_vent.ogg` | **fait** (boucle 72 s) | Arche du Vent (ch. 7) : suspendu, venteux ; Maïa et l'Ombre en filigrane | `cieux.ogg` |
+| `forges_ombre.ogg` | **fait** (boucle 71 s) | Forges de l'Ombre Noire (ch. 8) : marche lourde et un peu comique, puis l'éclaircie | `ombre.ogg` |
+| `souverain.ogg` | **fait** (boucle 94 s), **branché** | combat du Souverain (ch. 9) : choral des Alphas, Hélène au milieu | `alpha.ogg` |
+| `jetee.ogg` | **fait** (boucle 80 s), **branché** | jetée de Port-Ambre, épilogue : valse musette, le thème de Chloé, « BARC » | musique de la zone |
 
-Les cinématiques prennent leurs pistes tout de suite ; **les zones seulement à leur prochaine génération** (liste dans
-`musiques-composees.md` § Ce qui change dans le jeu). `porte_cratere.ogg` et `sanctuaire_magma.ogg` sont cités dans `MUSIC`
+Les cinématiques, le combat du Souverain et la jetée prennent leurs pistes tout de suite ; **les zones seulement à leur
+prochaine génération** (liste dans `musiques-composees.md` § Ce qui change dans le jeu). `porte_cratere.ogg` et `sanctuaire_magma.ogg` sont cités dans `MUSIC`
 mais le silence est voulu (torches et vent ; « trop calme ») : ne pas les faire.
 
 Fabriquer une piste : écrire `tools/music-synth/scores/<nom>.js` (dans la palette et avec les leitmotivs du jeu, voir

@@ -1,7 +1,7 @@
 # Musiques composées (19/10) — synthétiseur d'origine du jeu
 
-Stable Audio Open a été écarté par Greg (« on dirait un orgue sur lequel on fait 3 accords »). Les huit pistes
-ci-dessous sont **composées note par note** et jouées par le **synthétiseur Web Audio de la version Phaser**, celui qui
+Stable Audio Open a été écarté par Greg (« on dirait un orgue sur lequel on fait 3 accords »). Les treize pistes
+ci-dessous (huit, puis cinq de plus le même soir : `nids_geants`, `arche_du_vent`, `forges_ombre`, `souverain`, `jetee`) sont **composées note par note** et jouées par le **synthétiseur Web Audio de la version Phaser**, celui qui
 a produit les 15 musiques du jeu (`titre`, `plaines`, `monts`…), retrouvé dans l'historique git. Aucune mélodie n'est
 reprise d'une œuvre existante : seulement les thèmes du jeu lui-même, comme leitmotivs.
 
@@ -127,6 +127,81 @@ timbale par mesure). A (6), grave : **les violoncelles chantent le motif des Alp
 flûte chante la tête du thème de Chloé sur une harpe lente, le cœur s'arrête. C (6), tremblant : cor et violoncelles à
 l'octave, le motif avec un **mi♭ napolitain**, le trémolo enfle ; la (V) ramène le début.
 
+## Cinq pistes de plus (19/10, second lot)
+
+**Cinq timbres de plus**, mêmes recettes (`engine/instruments-plus.js`, niveaux calibrés sur la flûte et le cor ; les tables
+ne font que grandir : aucune piste existante ne change) : **accordéon** musette (trois anches, les deux extérieures
+désaccordées de ±14 cents : le battement, sans vibrato ; jamais d'accords tenus, seulement mélodie et « tchak »),
+**violon** solo (deux scies dans les résonances de la caisse, comme le chœur ; large vibrato), **tuba** (rond, un petit
+« blat » d'attaque), **vent** (un bruit blanc dans une résonance étroite sur la note : un souffle qui chante, 5,5 s, il enfle
+et retombe — l'idée du souffle de la flûte d'origine) et **enclume** (barre de métal frappée, partiels inharmoniques, accordée).
+
+### `nids_geants.ogg` — 70 s, boucle (chapitre 7, le sanctuaire du Quetzalcoatlus Roi)
+
+Si♭ majeur, 3/4 à 72 (le balancement lent des ailes), 28 mesures ; cousine de `cieux`, plus grave et plus solennelle.
+Intro (2) : le vent — harpe qui monte, souffle accordé, un cor lointain ; sol m7 → fa/la, la basse monte vers le si♭.
+A (8) : **le choral** — deux cors en tierces et sixtes chantent l'air du Roi des Cieux (la tête de la partie B de `cieux` :
+ré–fa, do–fa–la, si♭–la–sol), violoncelles qui descendent, harpe qui roule, un coup de timbale aux mesures 1 et 5 (un
+battement d'ailes) ; demi-cadence sur fa. B (8) : **l'envol** — sol mineur, la flûte monte et plane (un air neuf ; le la♮
+lydien sur mi♭maj7, le ciel de `cieux`), les cors tiennent un choral doux, cordes qui frémissent, pizzicati ; roulement de
+timbale sur fa7sus4. A' (10) : l'air en entier, violons à l'octave des cors, sommet sur le mi♭ aigu, puis un « amen »
+plagal (mi♭6 → si♭) posé sur la tierce, qui rend la main au vent.
+
+### `arche_du_vent.ogg` — 72 s, boucle (chapitre 7, le sommet ; la scène du masque)
+
+Ré (sus2, do♮ mixolydien ; mi♭ phrygien quand passe l'Ombre), 4/4 à 60, 18 mesures. Aucun air ne se termine : une
+**esquisse de trois notes, la–ré–mi** (une quarte, un pas, laissée sur la neuvième) revient trois fois, plus longue chaque
+fois, sans jamais se résoudre. I (4) : le vent — une harpe éolienne (harmoniques aiguës de ré, hors du temps), le souffle
+accordé, une cloche ; au loin, le cor dit l'esquisse. II (5) : la petite — ré, si m7, solmaj7, mi m7, la sus4 : le kalimba
+joue **le motif de Maïa** à mi-vitesse (la–fa#–la–fa#–ré) et s'arrête ; la flûte reprend l'esquisse et retombe sur ré.
+III (5) : l'Ombre — ré mineur, mi♭/fa, si♭maj7 : les violoncelles chantent lentement **la tête de l'Ombre** en ré
+phrygien (ré–la–ré–mi♭, fa–mi♭–ré–si♭) ; l'esquisse de la flûte se plie à elle (la–ré–mi♭) ; le motif de Maïa revient
+**en mineur** (fa♮) : la mère et la fille, une mesure chacune. IV (4) : l'esquisse — un **violon seul** en fait enfin une
+phrase (la–ré–mi–fa#, la… sol, fa#–mi, mi encore), tenue sur la7sus4 : le vent la reprend.
+
+### `forges_ombre.ogg` — 70,9 s, boucle (chapitre 8, les forges de l'Ombre Noire)
+
+Mi phrygien puis mi majeur, 4/4 à 96 en doubles croches, 28 mesures, en **deux moitiés**. Les forges allumées (14 mesures,
+35,9 s) : intro (2) — la machine : enclumes accordées en 3+2+3 (mi–si–mi), engrenages au wood-block, le « poum » du tuba, le
+« tchak » des pizzicati, la vapeur au shaker, un gros pied doux (taiko) ; A (8) — **la marche** : le basson joue en piqué
+tout l'air de `ombre` (mi–si–mi–fa, sol–fa–mi–do… ; mi m fa mi m fa do si7 mi m si7), le hautbois pouffe dans ses notes
+longues, un roulement de caisse claire à chaque moitié ; A' (3) — le marteau : deux cors à l'octave reprennent la tête,
+lourds, le basson court dessous en croches, les enclumes frappent chaque temps, une bouilloire siffle (mi–fa–mi–fa) ;
+**point d'orgue** (1) — si7 tenu en ralentissant de moitié : le dernier coup, puis la vapeur qui s'échappe (un long
+souffle). Les forges éteintes (14 mesures, 35 s) : C (8) — **l'éclaircie** : mi majeur, la flûte chante le même air avec
+son fa♮ devenu **fa#** (comme la berceuse de Brac dans la fin), harpe, pizzicati, un cor doux, le métal qui tinte en
+refroidissant ; D (4) — le repos : le cor chante la–si–mi ; le basson, par habitude, recommence la vieille tête mineure
+(mi–si–mi–fa♮)… et la flûte le corrige : fa#–sol#–mi ; liaison (2) — do, si7 : le tuba et les engrenages se réveillent.
+**Couper en deux ambiances** (facultatif) : chaque moitié boucle aussi sur elle-même (si7 → mi m ; si7 → mi) ; pour deux
+fichiers, copier la partition en deux (sections 1 à 4, puis 5 à 7, `loop: true`) et les rendre.
+
+### `souverain.ogg` — 94,2 s, boucle (chapitre 9, le combat du Souverain, 8 à 25 tours)
+
+Tension mais tendresse : il a peur, il ne faut pas le haïr. Ni tambours de guerre, ni basse synthé, ni caisse claire :
+cordes graves en croches détachées, pizzicati à contretemps, timbales. Intro (2) : il tremble — trémolo, un cœur qui court
+(timbale, da-dam deux fois par mesure). A (8) : **le choral** — deux cors chantent l'air de `alpha` (ré–la, si♭–do–ré,
+mi–sol, fa–mi–ré…), ré m si♭ do ré m ré m si♭ sol m la, timbales sur 1 et 3. A' (8) : **il monte** — un ton plus haut (mi
+mineur), violons à l'octave au-dessus des cors, le trémolo enfle, un taiko doux toutes les quatre mesures. B (6) : **la
+peur** — violoncelles seuls, la tête penchée (do–sol, la–si–do ; si♭m6), et la flûte répond par la tête du thème de Chloé
+(ré–do–si♭, do–ré–sol) : elle lui parle ; le cœur ralentit, le trémolo s'éteint ; ralenti vers… H (8) : **Hélène**, à 90 —
+la boîte à musique chante le motif du Cabinet en fa majeur (si♭maj7 do, sol m7 ré m7 mi♭maj7 fa), harpe, une pulsation
+douce, un violoncelle qui répond ; plus de cœur. C (8) : **le choral en ré majeur**, large (104) : cors et violons, le si♭
+de l'air des Alphas devenu si♮ (comme F-08) ; ré/la – la7 ramène le ré mineur tremblant.
+
+### `jetee.ogg` — 80 s, boucle (épilogue, la jetée de Port-Ambre)
+
+Une fête tranquille, une fanfare de village douce : **accordéon** musette, **violon**, guitare « pompe », **tuba**, cors doux.
+Ré majeur, valse à 108 (cousine de `village`, la chanson de Port-Ambre en 3/4, mais dans la tonalité de Chloé), 48 mesures.
+Intro (4) : l'orchestre démarre (poum-tchak-tchak, triangle), l'accordéon grimpe vers… A (16) : **tout le thème de Chloé
+en valse** — l'accordéon chante A1-A2, le violon B1-B2 (l'accordéon repasse au tchak-tchak). B (12) : **la fête** — un air
+neuf en sol (si–ré–sol ; la tête du thème de Chloé au passage ; mi–sol–si…) : l'accordéon demande, le violon répond, puis
+tous deux en tierces avec les cors ; ça monte jusqu'à la7… et tout le monde s'arrête. **BARC** (4) : le clin d'œil à Brac —
+son nom écrit en notes comme on écrit B-A-C-H (noms allemands, B = si♭) : **si♭ – la – (R : une mesure de silence) – do**,
+au tuba seul, bourru ; l'orchestre éclate de rire sur do (l'accordéon dégringole sol–mi–do–sol) et retombe sur ré :
+si♭–do–ré, la plus joyeuse des cadences. A' (8) : le thème, tutti — le violon chante, l'accordéon en tierces dessous, la
+fanfare des cors, des étincelles de boîte à musique. Coda (4) : l'accordéon refait le clin d'œil, tout doux (si♭–la–(r)–do…
+ré–fa#–la–ré), le violon pouffe.
+
 ## Mesures (fichiers livrés)
 
 Niveau : règle de Greg (catégorie « music » : RMS actif = médiane des 15 musiques du jeu, **-14,5 dB** ; existantes :
@@ -144,8 +219,24 @@ erreur de l'encodeur Vorbis autour de la jonction ÷ son erreur habituelle (1 = 
 | `volcan` | 78,3 s | oui | -0,8 | -14,5 | -2,2 dB, 0,2 s | -128 dB | 1,1 |
 | `terre_apex` | 68,6 s | oui | -0,8 | -14,5 | -0,6 dB | -118 dB | 0,9 |
 | `coeur_apex` | 72,0 s | oui | -1,5 | -14,5 | aucun | -117 dB | 1,0 |
+| `nids_geants` | 70,0 s | oui | -0,9 | -14,5 | -2,0 dB, 0,1 s | -121 dB | 1,2 |
+| `arche_du_vent` | 72,0 s | oui | -0,7 | -14,5 | -1,7 dB, 0,1 s | -122 dB | 4,0 (\*) |
+| `forges_ombre` | 70,9 s | oui | -0,8 | -14,5 | -2,5 dB, 0,7 s | -112 dB | 0,4 |
+| `souverain` | 94,2 s | oui | -0,8 | -14,5 | -1,6 dB, 0,1 s | -118 dB | 1,6 |
+| `jetee` | 80,0 s | oui | -0,6 | -14,5 | -3,2 dB, 0,7 s | -130 dB | 2,4 |
 
-Le limiteur n'agit que sur quelques coups (timbales, taiko, coup de cuivres) : jamais plus de 0,6 s au-delà de 1 dB.
+(\*) `arche_du_vent` : la jonction tombe dans le souffle du vent (un passage dense) ; rapportée au signal local, l'erreur
+de l'encodeur y est ordinaire (0,19 ; médiane du morceau 0,13, 95e centile 0,36) et le même aigu est déjà dans le signal
+avant encodage : pas un clic. Idem pour `jetee` (0,21 contre 0,12 / 0,48).
+
+Le limiteur n'agit que sur quelques coups (timbales, taiko, coup de cuivres) : jamais plus de 0,6 s au-delà de 1 dB pour le
+premier lot ; 0,7 s pour `forges_ombre` (le piqué du basson, le tuba et les pizzicati sur les temps) et `jetee` (le violon,
+dont les résonances donnent une onde pointue, et les cors), au plus 3,2 dB sur un seul coup.
+**Second lot, niveau par tranches** (2,5 à 4 s) : `nids_geants` -18 → -13,5 dB, `souverain` -18 → -12,8, `forges_ombre`
+-19,5 (l'intro) → -11,7, `arche_du_vent` -19 (le vent du début, voulu) → -11,4, `jetee` -21 (la mesure de silence de BARC) →
+-11,8 ; les musiques d'origine restent à ±2-3 dB. **Spectre** (part grave < 250 Hz / aigu > 2 kHz) : de 16 à 56 % et de 0,8
+à 13 % ; `jetee` la plus claire (aigu 13 %, entre `boutique` 3 % et `capture` 23 %), `souverain` la plus sombre (comme
+`coeur_apex`).
 Équilibre spectral (grave / médium / aigu) dans la fourchette des musiques existantes (proche de `titre` et `plaines` ;
 `terre_apex` et `volcan` plus sombres, comme `monts` et `foret`).
 
@@ -167,17 +258,29 @@ Le limiteur n'agit que sur quelques coups (timbales, taiko, coup de cuivres) : j
 | `volcan` | 5 | 30 | 9 | 28 | 10 | 18/27 | 37 | 10 |
 | `terre_apex` | 4 | 16 | 8 | 10 | 5 | 3/3 | 20 | 9 |
 | `coeur_apex` | 3 | 18 | 10 | 18 | 8 | 10/13 | 34 | 8 |
+| `nids_geants` | 4 | 28 | 13 | 28 | 6 | 17/25 | 27 | 12 |
+| `arche_du_vent` | 4 | 18 | 12 | 16 | 9 | 9/11 | 36 | 12 |
+| `forges_ombre` | 7 | 28 | 12 | 25 | 8 | 17/22 | 36 | 15 |
+| `souverain` | 6 | 40 | 23 | 36 | 11 | 22/37 | 45 | 11 |
+| `jetee` | 6 | 48 | 15 | 44 | 9 | 22/34 | 41 | 9 |
 
-(`terre_apex` : 3 motifs seulement, voulu — un choral en notes longues ; « minimal ».)
+(`terre_apex` : 3 motifs seulement, voulu — un choral en notes longues ; « minimal ». `arche_du_vent` : peu de notes,
+voulu — une esquisse. L'étendue compte toutes les voix principales d'une piste, d'une section à l'autre.)
 
 ## Ce qui change dans le jeu
 
 - **Cinématiques et crédits** : tout de suite (le moteur prend la piste si elle existe, sinon `titre.ogg`).
+- **Le combat du Souverain** : tout de suite. `battle/apex_battles.gd` `souverain_rules()` (et son repli
+  `story/apex_coeur.gd` `battle_rules()`) prend `souverain.ogg`, sinon `alpha.ogg` comme avant.
+- **La jetée (épilogue)** : tout de suite. `story/apex_jetee.gd` : après le carton « Le lendemain », `jetee.ogg` passe par
+  `Audio.push_music` (fondu de 2 s avec l'image) pour toute la scène ; le film de fin la remet après lui ; au retour sur la
+  jetée (après « L'île est à vous… »), `Audio.pop_music` rend la musique de la zone. Fichier absent : rien ne change.
 - **Zones** : rien tant qu'on ne les régénère pas (une zone garde la musique écrite dans sa scène). À la prochaine
-  génération, prendraient la nouvelle piste : `tools/zones/cieux.gd` (**cieux** au lieu de `monts`), `arche_du_vent.gd` et
-  `nids_geants.gd` (**cieux** au lieu de `monts`, faute de leur propre piste), `volcan_champs.gd` et `volcan_coulees.gd`
-  (**volcan** au lieu de `desert`), `apex_terre.gd` (**terre_apex**, au lieu du silence), `apex_coeur.gd` (**coeur_apex**,
-  au lieu du silence). Inchangées : `volcan_forges.gd` (`ombre`), `volcan_porte.gd` et `volcan_sanctuaire.gd` (silence voulu).
+  génération, prendraient la nouvelle piste : `tools/zones/cieux.gd` (**cieux** au lieu de `monts`), `nids_geants.gd`
+  (**nids_geants** ; sa scène a aujourd'hui `monts`), `arche_du_vent.gd` (**arche_du_vent** ; aujourd'hui `monts`),
+  `volcan_forges.gd` (**forges_ombre** ; aujourd'hui `ombre`), `volcan_champs.gd` et `volcan_coulees.gd` (**volcan** au lieu
+  de `desert`), `apex_terre.gd` (**terre_apex**, au lieu du silence), `apex_coeur.gd` (**coeur_apex**, au lieu du silence).
+  Inchangées : `volcan_porte.gd` et `volcan_sanctuaire.gd` (silence voulu).
 
 ## Incertain à l'oreille (à juger par Greg)
 
@@ -192,3 +295,19 @@ Le limiteur n'agit que sur quelques coups (timbales, taiko, coup de cuivres) : j
   `credits.ogg` ; si le point d'orgue doit s'entendre entier, faire démarrer les crédits après le carton.
 - **La nappe de `cieux`** (allégée et doublée de cordes pour éviter l'« orgue ») et le **souffle** de `terre_apex`.
 - **Les basses** (la basse d'origine double à l'octave grave) sur de petits haut-parleurs.
+
+Second lot :
+
+- **Les cinq nouveaux timbres**, jamais entendus : le **violon** (le plus incertain : des formants sur des scies), l'**accordéon**
+  (musette ; s'il sonne « harmonium », réduire l'écart des anches ±14 cents ou la résonance), le **tuba**, le **vent** (doit
+  « chanter » une note ; s'il ne fait que souffler, augmenter la résonance), l'**enclume**.
+- **BARC** (`jetee`, ≈ 54-60 s) : une mesure entière de silence (1,7 s) au milieu de la boucle ; si elle fait croire à une
+  panne, la réduire à un temps. Le clin d'œil si♭–la–(r)–do n'est lisible que pour qui connaît B-A-C-H ; reste la blague du
+  tuba bourru et de l'orchestre qui rit.
+- **`souverain`** : la partie d'Hélène (≈ 54-76 s) ralentit à 90 en plein combat, voulu ; si elle casse l'élan, la passer
+  à 100. Trois tempos (108, 90, 104).
+- **`forges_ombre`** : le comique (basson piqué, hoquets du hautbois, bouilloire) peut paraître trop léger pour une zone de
+  combat ; le souffle de vapeur du point d'orgue (le vent sur si) ; l'enclume trop présente ou pas assez.
+- **`arche_du_vent`** : le début (le vent seul, -19 dB par tranche) peut se perdre sous l'ambiance de la zone.
+- **`nids_geants`** : le choral de cors tenu (B) ne doit pas sonner « orgue » ; il bouge à chaque mesure, mais c'est à vérifier.
+- **`jetee`** : la plus claire des musiques (accordéon, violon, guitare) ; le violon pousse le limiteur (0,7 s, 3,2 dB au plus).

@@ -9,7 +9,7 @@ extends RefCounted
 ##   les torches) ; Carène hésite (perd sa première action). Le CHOIX d'avant Carène : la scène lance d'abord
 ##   `isaure_team().slice(0, 3)`, puis le choix, puis `isaure_team().slice(3)` (les PV de l'équipe de Chloé restent).
 ## - Le Souverain (`Story.duel("", souverain_team(), souverain_rules())`) : niv. 50, corrompu, jauge triple (300),
-##   Sceaux, Caillou, l'Ambre clair à deux tiers, la musique des Alphas, et pas de défaite (« rally » : on reprend sur
+##   Sceaux, Caillou, l'Ambre clair à deux tiers, sa musique (souverain.ogg, sinon celle des Alphas), et pas de défaite (« rally » : on reprend sur
 ##   place, rien à recharger : pas de « lose_spawn »). Story.duel compte « calmed » comme gagné.
 ## Équilibrage : EQUILIBRAGE (et docs/mecaniques.md).
 
@@ -26,6 +26,8 @@ const SOUVERAIN_LESSON := [
 	"(Les Sceaux sont à la place de Fuir. L'Ambre clair, dans le Sac, quand il écoute.)",
 ]
 const ALPHA_MUSIC := "res://assets/audio/music/alpha.ogg"
+## Sa musique à lui (tools/music-synth/scores/souverain.js) ; absente, celle des Alphas.
+const SOUVERAIN_MUSIC := "res://assets/audio/music/souverain.ogg"
 ## L'équilibrage simulé (tests/apex/mecaniques/test_equilibrage_apex.gd, 120 combats par cas, graine 48).
 const EQUILIBRAGE := "Isaure contre une équipe de 47 : Vif 95 %, Bastion 100 %, Écho 86 % (moyenne 94 % ; de 46 : 88 %). Le Souverain contre une équipe de 48 : sans Sceaux 17-24 tours, avec les cinq 9,5 (en lui parlant) à 15 (en l'usant d'abord) ; 0 à 0,8 K.O., jamais perdu."
 
@@ -66,11 +68,13 @@ static func souverain_team() -> Array:
 
 
 ## Ses règles (ApexEngine) : jauge triple, Sceaux, Caillou, l'Ambre clair à deux tiers, pas de défaite ; le Cœur des
-## Apex (battle/battle_apex.gd : son fond) ; la musique des Alphas.
+## Apex (battle/battle_apex.gd : son fond) ; sa musique (souverain.ogg ; repli : celle des Alphas).
 static func souverain_rules() -> Dictionary:
 	var rules := {"catch": false, "run": false, "long_calm": true, "calm_factor": 3, "sceaux": true, "caillou": true,
 		"antidote": true, "antidote_min_calm": 0.66, "rally": true, "apex": true, "size": SOUVERAIN_SIZE,
 		"intro": SOUVERAIN_INTRO, "lesson": SOUVERAIN_LESSON.duplicate()}
-	if ResourceLoader.exists(ALPHA_MUSIC):
-		rules["music"] = load(ALPHA_MUSIC)
+	for path: String in [SOUVERAIN_MUSIC, ALPHA_MUSIC]:
+		if ResourceLoader.exists(path):
+			rules["music"] = load(path)
+			break
 	return rules

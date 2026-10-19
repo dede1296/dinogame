@@ -34,6 +34,9 @@ const VILLAGE := [
 	["SuieJetee", ["dame_suie_sans_lunettes", "dame_suie"], "Dame Suie", "JETEE_SUIE", Vector2(-180.0, -240.0)],
 ]
 const XP_EPILOGUE := 100
+## The village's party on the jetty (tools/music-synth/scores/jetee.js), over the zone's music for the scene
+## only; absent, the zone's music goes on.
+const JETTY_MUSIC := "res://assets/audio/music/jetee.ogg"
 
 
 ## 5 a to 5 e, the next morning on the jetty; then « Ambrelune », and the post-game.
@@ -45,6 +48,7 @@ static func jetty() -> void:
 	Game.pass_time_until(MORNING)
 	await Epilogue.card("Le lendemain")
 	var cast := _jetty_cast()
+	var music := _music_in()
 	await Router.fade_in(0.8)
 	await _arrives(cast)
 	await S.say(reserve(cast))
@@ -59,8 +63,17 @@ static func jetty() -> void:
 	await S.say(page_40(cast))
 	Game.award_team_xp(XP_EPILOGUE)
 	Save.save_game()
-	await _the_end(cast)
+	await _the_end(cast, music)
 	S.lock(false)
+
+
+## jetee.ogg for the scene (Audio.push_music: the zone's music is remembered, _the_end brings it back).
+## False when the file is not there.
+static func _music_in() -> bool:
+	if not ResourceLoader.exists(JETTY_MUSIC):
+		return false
+	Audio.push_music(load(JETTY_MUSIC), 2.0)
+	return true
 
 
 ## Everybody on the jetty (ApexPlaces.JETEE_*; round Chloé elsewhere): Hélène and Roc at the foot of
@@ -348,8 +361,9 @@ static func page_40(_cast: Dictionary) -> Array:
 ## Fade; the end film and the credits, once (story/cinematiques.gd: fin_vue; else the « Ambrelune »
 ## card); « L'île est à vous. Les géants du cratère se réveillent un à un… »; back on the jetty: the
 ## post-game is open. Who stays: Isaure at her boat, Dame Suie on the quay, Joss (his coat for Maïa,
-## once), Maïa beside him, Brac (the zone's own).
-static func _the_end(cast: Dictionary) -> void:
+## once), Maïa beside him, Brac (the zone's own). `music_pushed`: jetee.ogg is playing (the end film puts it
+## back when it is over); the zone's music comes back with the jetty.
+static func _the_end(cast: Dictionary, music_pushed := false) -> void:
 	await Router.fade_out(2.0)
 	await Cinematiques.the_end()
 	await Epilogue.card("L'île est à vous. Les géants du cratère se réveillent un à un…", 3.4)
@@ -362,6 +376,8 @@ static func _the_end(cast: Dictionary) -> void:
 	Epilogue.port_residents()
 	CS.lead_back()
 	Stage.look_back()
+	if music_pushed:
+		Audio.pop_music(2.0)
 	await Router.fade_in(1.2)
 
 

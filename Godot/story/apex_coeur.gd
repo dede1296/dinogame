@@ -39,6 +39,7 @@ const SOUVERAIN_LEVEL := 50
 const IN_AMBER := Color(1.0, 0.82, 0.5, 0.92)
 const INK: Array[Color] = [Color(0.18, 0.08, 0.24), Color(0.3, 0.12, 0.4), Color(0.1, 0.05, 0.12)]
 const ALPHA_MUSIC := "res://assets/audio/music/alpha.ogg"
+const SOUVERAIN_MUSIC := "res://assets/audio/music/souverain.ogg"   # (his own; absent: the Alphas')
 const XP_ARRIVEE := 40
 const XP_SOUVERAIN := 300
 
@@ -588,12 +589,14 @@ static func fight() -> bool:
 
 ## The last battle's rules from the document (docs/chapitre-9-scenes.md 3 f) if ApexBattles were gone
 ## (its words are ApexEngine's): no collar, no running away (« Sceaux » instead), a deep corruption
-## three times as long, Caillou, the clear amber at two thirds, no defeat, the Alphas' music.
+## three times as long, Caillou, the clear amber at two thirds, no defeat, his music (else the Alphas').
 static func battle_rules() -> Dictionary:
 	var rules := {"catch": false, "run": false, "long_calm": true, "calm_factor": 3, "sceaux": true, "caillou": true,
 		"antidote": true, "antidote_min_calm": 0.66, "rally": true, "apex": true, "size": SOUVERAIN_SIZE}
-	if ResourceLoader.exists(ALPHA_MUSIC):
-		rules["music"] = load(ALPHA_MUSIC)
+	for path: String in [SOUVERAIN_MUSIC, ALPHA_MUSIC]:
+		if ResourceLoader.exists(path):
+			rules["music"] = load(path)
+			break
 	return rules
 
 

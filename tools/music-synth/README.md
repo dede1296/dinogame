@@ -56,7 +56,8 @@ python analyze.py key out/cieux.ogg            # tonalité estimée
   (l'ancien enregistreur en temps réel, pour référence).
 - `engine/compile.js` — la notation de `music.js` (inchangée) + les sections ; `engine/offline.js` —
   le rendu dans le navigateur ; `engine/instruments-plus.js` — cors, basson, trémolo, violoncelles,
-  timbales, nappe « souffle » (mêmes recettes que les instruments d'origine) ; `engine/stats.js`.
+  timbales, nappe « souffle », puis accordéon, violon (`fiddle`), tuba, vent (`wind`, à jouer avec `ring`) et enclume
+  (`anvil`) (mêmes recettes que les instruments d'origine) ; `engine/stats.js`.
 - `scores/` — les partitions composées (description dans `Godot/docs/musiques-composees.md`).
 
 ## Partition
