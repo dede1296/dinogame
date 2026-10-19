@@ -4,6 +4,9 @@ extends Node2D
 ## ambience, spawns the dinos of the zone's habitats, handles what the zone reports.
 ## The 2D nodes are not drawn; the 2D camera still follows Chloé for positional sounds.
 
+## The zones whose ground is ash: Chloé's steps are those of the ash (Player.ashy).
+const ASH_ZONES: Array[StringName] = [&"champs_cendres", &"forges_ombre", &"coulees_lave", &"sanctuaire_magma",
+	&"porte_cratere", &"terre_apex", &"coeur_apex"]
 const ZONES := {
 	&"port_ambre": "res://regions/port/port_ambre.tscn",
 	&"cabinet": "res://regions/port/cabinet.tscn",
@@ -193,6 +196,7 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF, story :=
 	player.surface_at = region.surface_at
 	player.snow_at = region.snow_at
 	player.cold = region.cold
+	player.ashy = ASH_ZONES.has(id)
 	player.slippery = region.slippery
 	player.teleport(pos)
 	companion.stand_beside(pos)

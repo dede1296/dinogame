@@ -61,6 +61,12 @@ const SNOW_STEPS: Array[AudioStream] = [
 	preload("res://assets/audio/footsteps/neige02.ogg"), preload("res://assets/audio/footsteps/neige03.ogg"),
 	preload("res://assets/audio/footsteps/neige04.ogg"), preload("res://assets/audio/footsteps/neige05.ogg"),
 ]
+## On the volcano's ash (the Plaine Volcanique and the Terre des Apex: World.ASH_ZONES, `ashy`): dry, crunchy steps.
+const ASH_STEPS: Array[AudioStream] = [
+	preload("res://assets/audio/footsteps/cendre00.ogg"), preload("res://assets/audio/footsteps/cendre01.ogg"),
+	preload("res://assets/audio/footsteps/cendre02.ogg"), preload("res://assets/audio/footsteps/cendre03.ogg"),
+	preload("res://assets/audio/footsteps/cendre04.ogg"), preload("res://assets/audio/footsteps/cendre05.ogg"),
+]
 const ICE_CRACKS: Array[AudioStream] = [
 	preload("res://assets/audio/footsteps/glace_craque00.ogg"), preload("res://assets/audio/footsteps/glace_craque01.ogg"),
 	preload("res://assets/audio/footsteps/glace_craque02.ogg"),
@@ -69,13 +75,15 @@ const ICE_PITCH := 0.8
 const CRACK_EVERY := Vector2i(4, 6)
 ## Step levels (dB) by kind (see step_kind): softer on grass, crisper on the path; the snow's crunch
 ## lasts longer, so it is played lower; a crack lower still. On a mount, MOUNT_STEP_DB louder.
-const STEP_DB := {&"grass": -13.0, &"path": -8.0, &"snow": -15.0, &"ice": -11.0, &"crack": -17.0}
+const STEP_DB := {&"grass": -13.0, &"path": -8.0, &"snow": -15.0, &"ice": -11.0, &"crack": -17.0, &"ash": -13.0}
 const MOUNT_STEP_DB := 4.0
 
 ## Asked for the ground type under a position (set by the world, from the region).
 var surface_at: Callable
 ## Asked how thick the snow lies at a position (Region.snow_at: 0–1, -1 without a snow layer).
 var snow_at: Callable
+## Ash underfoot (the volcano's zones, set by the world): the steps are those of the ash.
+var ashy := false
 ## A cold region (Region.cold, set by the world): steps on the ice (and in the snow without a
 ## cover layer); her coat (Outfits).
 var cold := false
@@ -399,17 +407,19 @@ func _track(moved: float) -> void:
 			return
 		var surface: StringName = surface_at.call(global_position) if surface_at.is_valid() else &"grass"
 		if not swimmer and not _sliding:   # (none while swimming, nor sliding on)
-			_play_step(step_kind(surface, _on_snow(), cold))
+			_play_step(step_kind(surface, _on_snow(), cold, ashy))
 		stepped.emit(surface)
 
 
 ## The kind of step on `surface` (Region.surface_at): &"ice" on the "sand" of a cold zone (`icy`),
 ## &"snow" where the snow lies (`on_snow`), else &"path" on the path, &"grass" elsewhere.
-static func step_kind(surface: StringName, on_snow: bool, icy := false) -> StringName:
+static func step_kind(surface: StringName, on_snow: bool, icy := false, ashy := false) -> StringName:
 	if icy and surface == &"sand":
 		return &"ice"
 	if on_snow:
 		return &"snow"
+	if ashy and surface != &"water":
+		return &"ash"
 	return &"path" if surface == &"path" else &"grass"
 
 
@@ -425,6 +435,8 @@ func _play_step(kind: StringName) -> void:
 	match kind:
 		&"snow":
 			Audio.play_sfx(SNOW_STEPS.pick_random(), STEP_DB[kind] + lift, 0.08)
+		&"ash":
+			Audio.play_sfx(ASH_STEPS.pick_random(), STEP_DB[kind] + lift, 0.08)
 		&"ice":
 			Audio.play_sfx(FOOTSTEPS.pick_random(), STEP_DB[kind] + lift, 0.05, ICE_PITCH)
 			_to_crack -= 1
