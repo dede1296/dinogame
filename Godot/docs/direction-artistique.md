@@ -850,3 +850,18 @@ sans niveaux de détail.
 Faites avec nano-banana (aucun repli ComfyUI), anciens fichiers gardés à côté (`_v1` ou `_avant`), jobs/notes dans `tools/art-jobs/retouches_volcan.mjs` :
 poteau_lianes (bouts de corde pendants effacés par script), `battle/volcan.jpg` (plumes et drapeau retirés), `leonce_assis` (masque d'os réduit à ~45 %, cellule par cellule),
 `trex_magma` (6e pose : gueule ouverte, rugissement), `trex_magma_face_dos` (fumée des naseaux), `chloe_vol` / `chloe_vol_manteau` (vue de face recentrée par décalage de pixels, sans nano-banana).
+
+## Cinématiques (intro et fin) — 19/10/2026
+
+Toutes les peintures sont dans `assets/art/cinematiques/` (2560×1440, nano-banana en 2752×1536 réduit proprement ; générées en édition à partir des planches et de l'écran titre). Cheveux de Chloé auburn (décision de Greg). Intro : `intro_01`…`intro_09` + `intro_05_carte_vide` ; fin : `fin_01`…`fin_09`, `fin_06_dinos_{base,vif,bastion,echo}`, `fin_09_journal_sans_trait` ; `credits_fond` (sert aussi à F-10, le carton « Ambrelune » est du texte moteur).
+
+Défauts connus, à refaire avec nano-banana si ça gêne en jeu :
+- `intro_05_carte` / `carte_vide` : la boussole est à une échelle un peu différente entre les deux (à caler en moteur) ; quelques lettres de boussole.
+- `intro_07`, `intro_08`, `intro_09`, `fin_02`, `fin_03`, `fin_04` : Isaure sans casquette ni écharpe rouge de sa planche (cheveux gris en chignon, manteau sombre, selon le document) ; dans `fin_03` elle porte une robe sombre, sans manches retroussées.
+- `intro_04` : un seul œuf tacheté gris-vert ; l'œuf « rond épais » est crème, le « corail » est rose.
+- `fin_01` : fumée de cheminée supprimée (le moteur l'anime). `fin_03` : forge peu démontée (une seule pièce).
+- `fin_05` : l'insigne de gardienne est rendu comme un pendentif rond.
+- `fin_06_dinos_echo` : Parasaurolophus à corps vert (seule la crête est corail) ; l'oiseau ne se bouche pas vraiment les oreilles. `fin_06_dinos_vif` : un silhouette de Parasaurolophus se superpose à la tête du raptor au fond.
+- `fin_07` : Mastoc rouge-orangé, lanterne tenue d'une patte plus que dans la gueule ; des « Z » de sommeil (petits glyphes) près de Grognon.
+- `fin_08` : le Souverain a des plaques plus grandes que sur sa planche (colonne 3, qui est grise) et la spirale de l'île est approximative.
+- `fin_09_journal` : l'écriture d'Hélène ressemble par endroits à de l'anglais approximatif (devrait être illisible) ; le moteur peut la masquer ou la flouter.
