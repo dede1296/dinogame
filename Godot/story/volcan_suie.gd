@@ -35,13 +35,21 @@ const SLED_LEAVES := 6.0
 const XP_SUIE := 120
 
 
+## What she says before Brac has lost (a line each time, `suie_volcan_n`).
+const SUIE_WAITS := [
+	"Finissez d'abord avec Brac, mademoiselle. Il a besoin de perdre une dernière fois : ça lui fera du bien, et j'ai besoin de le noter.",
+	"Brac d'abord, mademoiselle. Je note mieux quand il a fini de crier.",
+	"Toujours pas battu ? Mes tables attendent, et elles n'aiment pas ça.",
+]
+
+
 ## Scene 6, Dame Suie (Npc « SuieVolcan », event « suie_volcan », hide_flag suie_partie): once
 ## Brac has lost, the whole scene, each part resumed where it stopped (its flag).
 static func suie(who: Node) -> void:
 	if Game.flag(&"suie_partie"):
 		return
 	if not Game.flag(&"brac_vaincu"):
-		await S.say([{"who": SUIE, "text": "Finissez d'abord avec Brac, mademoiselle. Il a besoin de perdre une dernière fois : ça lui fera du bien, et j'ai besoin de le noter."}])
+		await S.say([{"who": SUIE, "text": ForetCamp.next_line(&"suie_volcan_n", SUIE_WAITS)}])
 		return
 	S.lock(true)
 	var cast := {"suie": who}
@@ -404,7 +412,7 @@ static func _great_px(at: Vector2) -> Vector2:
 
 ## The iron wheel of its draught, at the forge's foot.
 static func _wheel_px(at: Vector2) -> Vector2:
-	return V.at_node(["RoueTirage"], _great_px(at) + Vector2(-60.0, 70.0))
+	return _great_px(at) + Vector2(-60.0, 70.0)
 
 
 # ------------------------------------------------------------------ for the tests

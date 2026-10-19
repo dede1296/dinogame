@@ -424,17 +424,29 @@ static func brac(who: Node) -> void:
 	if not Game.flag(&"brac_vaincu"):
 		if not Game.flag(&"brac_volcan_vu"):
 			await _meets(who, cast)
-		elif await Dialogue.choose(BRAC, "Reviens quand tu voudras, moucheron ! Je ne vais nulle part. C'est bien le problème.",
+		elif await Dialogue.choose(BRAC, _waits(),
 			["Le défier", "Pas encore"]) != 0:
 			return
 		var rules: Dictionary = {"lose_spawn": V.spawn("SPAWN_CHAMPS")}
 		rules.merge(V.battles_const("BRAC_RULES", {}), true)   # (the MÉCANIQUES agent's rules win)
 		if not await S.duel(BRAC, _team(), rules):
-			await S.say([{"who": BRAC, "text": "Reviens quand tu voudras, moucheron ! Je ne vais nulle part. C'est bien le problème."}])
+			await S.say([{"who": BRAC, "text": _waits()}])
 			return
 		Game.set_flag(&"brac_vaincu")
 		Save.save_game()
 	await _after(who, cast)
+
+
+## What he says when she comes back before the fight (a line each time, `brac_n`).
+const BRAC_WAITS := [
+	"Reviens quand tu voudras, moucheron ! Je ne vais nulle part. C'est bien le problème.",
+	"Encore toi ? Mes bêtes font la sieste. Reviens quand tu veux !",
+	"Deux cent quatre-vingt-dix-neuf cartes. La trois-centième, une petite l'a gardée. Elle a dit merci.",
+]
+
+
+static func _waits() -> String:
+	return ForetCamp.next_line(&"brac_n", BRAC_WAITS)
 
 
 ## His three, lying round him (the zone's DinoNpc « Mastoc », « Cabosse », « Grognon » when there,
@@ -539,7 +551,7 @@ static func _cards(who: Node) -> Array:
 ## three wake; the great cage opens: Fournaise, a name, not a number.
 static func _fournaise(who: Node, cast: Dictionary, asked: bool) -> Array:
 	var at: Vector2 = (who as Node2D).global_position
-	var cage := V.at_node(["CageFournaise", "CageGrande"], V.spot_or("FOURNAISE", at + CAGE_FROM_BRAC))
+	var cage := V.at_node(["EnclosFournaise", "Fournaise"], V.spot_or("FOURNAISE", at + CAGE_FROM_BRAC))
 	var wakes := func() -> void:
 		for k in ["Mastoc", "Cabosse", "Grognon"]:
 			var d = cast.get(k)
