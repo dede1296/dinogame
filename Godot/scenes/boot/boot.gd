@@ -118,7 +118,8 @@ func _on_load() -> void:
 ## overwriting a game), then the intro (story/cinematiques.gd), which ends on black: then the quay
 ## of Port-Ambre.
 func _on_new_game() -> void:
-	var n := await _choose_slot(SaveSlots.Mode.NEW)
+	# No game saved yet: nothing to choose or overwrite, the first slot (Greg, 19/10: « au mieux »).
+	var n := 1 if not Save.has_save() else await _choose_slot(SaveSlots.Mode.NEW)
 	if n <= 0:
 		_back_to_menu(new_button)
 		return
