@@ -345,12 +345,13 @@ static func page_40(_cast: Dictionary) -> Array:
 	]
 
 
-## Fade; « Ambrelune »; « L'île est à vous. Les géants du cratère se réveillent un à un… »; back on
-## the jetty: the post-game is open. Who stays: Isaure at her boat, Dame Suie on the quay, Joss
-## (his coat for Maïa, once), Maïa beside him, Brac (the zone's own).
+## Fade; the end film and the credits, once (story/cinematiques.gd: fin_vue; else the « Ambrelune »
+## card); « L'île est à vous. Les géants du cratère se réveillent un à un… »; back on the jetty: the
+## post-game is open. Who stays: Isaure at her boat, Dame Suie on the quay, Joss (his coat for Maïa,
+## once), Maïa beside him, Brac (the zone's own).
 static func _the_end(cast: Dictionary) -> void:
 	await Router.fade_out(2.0)
-	await Epilogue.card("Ambrelune", 3.4)
+	await Cinematiques.the_end()
 	await Epilogue.card("L'île est à vous. Les géants du cratère se réveillent un à un…", 3.4)
 	var keep := ["brac", "maia", "JossJetee", "isaure", "SuieJetee"]   # (Isaure and Dame Suie stay: residents)
 	A.clean_up(cast, keep)

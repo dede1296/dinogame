@@ -136,6 +136,17 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_hover")
 text = "Paramètres"
 
+[node name="Credits" type="Button" parent="Menu" unique_id=1734906215]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_hover")
+text = "Crédits"
+
 [node name="Version" type="Label" parent="." unique_id=560292898]
 unique_name_in_owner = true
 layout_mode = 1

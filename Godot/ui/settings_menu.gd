@@ -179,6 +179,7 @@ func _menu_page() -> void:
 	_rows.add_child(_button("Touches", _show.bind("touches")))
 	_rows.add_child(_button("Sons", _show.bind("sons")))
 	_rows.add_child(_button("Affichage", _show.bind("affichage")))
+	_rows.add_child(_films_row())
 	if in_game:
 		_rows.add_child(_button("Retour au titre", _show.bind("titre")))
 	else:
@@ -219,6 +220,24 @@ func _controls_page() -> void:
 	if Screen.on_computer() and in_game:
 		_rows.add_child(_button("Revoir le tutoriel des commandes", _replay_tutorial))
 	_rows.add_child(_button("Retour", _show.bind("menu")))
+
+
+## « Revoir l'intro » and « Crédits » side by side (story/cinematiques.gd): one row, the menu stays short.
+func _films_row() -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	for pair: Array in [["Revoir l'intro", "intro"], ["Crédits", "credits"]]:
+		var button := _button(pair[0], _replay_film.bind(pair[1]))
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(button)
+	return row
+
+
+## Closes the menu, then plays the intro or the credits over the screen; back to it at the end.
+func _replay_film(what: String) -> void:
+	var root := get_tree().root
+	_close()
+	Cinematiques.replay.call_deferred(root, what)
 
 
 ## Closes the menu, then plays the controls tutorial again.

@@ -8,6 +8,7 @@ const MUSIC := preload("res://assets/audio/music/titre.ogg")
 @onready var continue_button: Button = %Continue
 @onready var new_button: Button = %NewGame
 @onready var settings_button: Button = %Settings
+@onready var credits_button: Button = %Credits
 @onready var version_label: Label = %Version
 
 
@@ -17,6 +18,7 @@ func _ready() -> void:
 	new_button.pressed.connect(_on_new_game)
 	settings_button.pressed.connect(func() -> void:
 		SettingsMenu.open(self).closed.connect(settings_button.grab_focus))
+	credits_button.pressed.connect(_on_credits)
 	version_label.text = "Ambrelune %s · Godot %s · rendu %s" % [
 		ProjectSettings.get_setting("application/config/version"),
 		Engine.get_version_info()["string"],
@@ -47,7 +49,17 @@ func _on_continue() -> void:
 		continue_button.disabled = true
 
 
+## A new game (and a Nouvelle partie+ the same way) opens on the intro (story/cinematiques.gd), which
+## ends on black: then the quay of Port-Ambre.
 func _on_new_game() -> void:
 	Game.new_game()
+	await Cinematiques.new_game_intro(self)
 	Router.go_to(WORLD)
+
+
+## The credits alone, then back here.
+func _on_credits() -> void:
+	await Cinematiques.play_credits(self).finished
+	if is_inside_tree() and Prompts.navigating:
+		credits_button.grab_focus()
 
