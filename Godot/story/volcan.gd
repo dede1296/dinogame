@@ -80,9 +80,14 @@ const XP_CORROMPU := 20
 const NUMERO_3_LEVEL := 42
 const TROT_TILES := 8.0
 const FIRES_GAP := 3.0
-## Moustique on Chloé's shoulder, peeking out of her collar (CieuxArche's shoulder).
+## Moustique perched on a shoulder (CieuxArche's shoulder: Maïa's at the crater's door).
 const SHOULDER := Vector2(14.0, 2.0)
 const SHOULDER_UP := 34.0
+## Moustique hidden in Chloé's collar (shoulder_peek, « seulement le bec »): just behind her (north:
+## her picture hides his body), lower and closer to her neck than the perch, so only his head shows,
+## between her shoulder and her cheek (measured on captures, 18/10: tools/scenarios/ch8_feux_col_test.gd).
+const COLLAR := Vector2(6.0, -3.0)
+const COLLAR_UP := 21.0
 const MOUSTIQUE_LEVEL := 36
 ## A lead dino named like the starters of the scenes' text (« Écho … Elle réessaie »).
 const SHE := ["Écho"]
@@ -282,6 +287,8 @@ static func run(event: StringName, who: Node) -> bool:
 		# The forges (story/volcan_forges.gd, volcan_suie.gd)
 		&"leonce":
 			await VolcanForges.leonce(who)
+		&"masques_os":   # (the bone masks sitting by the barrels, Npcs « MasqueOs1/2 »: the arrival's words)
+			await S.say([{"text": "Les masques d'os qui restent sont assis par terre. Ils ne font rien. L'un d'eux dort."}])
 		&"numero_7", &"numero7", &"forge_1", &"forge1":
 			await VolcanForges.forge(1, who)
 		&"numero_11", &"numero11", &"forge_2", &"forge2":
@@ -322,9 +329,11 @@ static func run(event: StringName, who: Node) -> bool:
 			await VolcanPorte.caillou(who)
 		&"portail_apex":
 			await VolcanPorte.portail(who)
-		# Around (story/volcan_autour.gd): Léonce on the pontoon of Port-Ambre
+		# Around (story/volcan_autour.gd): Léonce on the pontoon of Port-Ambre, Brac at the end of it
 		&"leonce_port":
 			await VolcanAutour.leonce_port(who)
+		&"brac_jetee":
+			await VolcanAutour.brac_jetee(who)
 		_:
 			return false
 	return true
@@ -387,7 +396,8 @@ static func arrival() -> void:
 			Act.burst(chloe.global_position + Vector2(randf_range(-16.0, 16.0), 4.0), ASH_BITS, 10, 0.15, 0.35)
 			await S.wait(0.35)
 	var volcano := func() -> void:
-		await Stage.look_at(fires + Vector2(0.0, -2.0 * S.CELL), 1.6)
+		# (just above the line of fires: 2 tiles higher, they fell under the dialogue box)
+		await Stage.look_at(fires + Vector2(0.0, -0.5 * S.CELL), 1.6)
 		seven_fires(fires)
 		Stage.shake(0.8, 0.6)
 	var wind := func() -> void:
@@ -478,12 +488,12 @@ static func seven_fires(centre: Vector2, times := 2) -> void:
 static func shoulder_peek(chloe: Node2D, secs := 1.4) -> void:
 	if chloe == null:
 		return
-	var bird := stand_in(&"dimorphodon", chloe.global_position + SHOULDER, "MoustiqueCol", MOUSTIQUE_LEVEL, 0.8)
+	var bird := stand_in(&"dimorphodon", chloe.global_position + COLLAR, "MoustiqueCol", MOUSTIQUE_LEVEL, 0.8)
 	if bird == null:
 		return
 	var sprite := Stage.sprite_of(bird)
 	if sprite:
-		sprite.position.y = -SHOULDER_UP
+		sprite.position.y = -COLLAR_UP
 		sprite.set_meta(&"stage_rest", sprite.position)
 	await Stage.fade_in(bird, 0.3)
 	Stage.emote(bird, "…")
@@ -665,6 +675,14 @@ static func say_lines(ids: Array) -> void:
 	S.playing += 1
 	for id in ids:
 		await S.say(DialogueVolcan.lines(StringName(id)))
+	S.playing -= 1
+
+
+## For the tests (tools/capture.gd « static »): Moustique peeking out of Chloé's collar, held `secs`
+## (where his beak shows, against her collar).
+static func static_col(secs := 6.0) -> void:
+	S.playing += 1
+	await shoulder_peek(Stage.chloe(), float(secs))
 	S.playing -= 1
 
 

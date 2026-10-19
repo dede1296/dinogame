@@ -95,8 +95,9 @@ static func _story(root: Region, entities: Node2D) -> void:
 		D.put(entities, D.TORCHE, P.TORCHES[i], i == 1)
 	B.npc(root, "IsaurePorte", "Isaure", CHARS % "isaure_sans_masque", P.ISAURE.x, P.ISAURE.y, {"facing": "up",
 		"event": &"isaure_porte"})
-	B.npc(root, "MaiaPorte", "Maïa", CHARS % "maia_arche", P.MAIA.x, P.MAIA.y, {"facing": "down", "event": &"maia_porte"})
-	B.dino_npc(root, "CaillouPorte", &"triceratops", P.CAILLOU.x, P.CAILLOU.y, {"flip": true})
+	var maia := B.npc(root, "MaiaPorte", "Maïa", CHARS % "maia_arche", P.MAIA.x, P.MAIA.y, {"facing": "down", "event": &"maia_porte"})
+	maia.set_meta(Outfits.HELD_META, &"assis")   # (on her stone, in the picture: actors/outfits.gd POSES « maia_arche »)
+	B.dino_npc(root, "CaillouPorte", &"triceratops", P.CAILLOU.x, P.CAILLOU.y, {"flip": true, "event": &"caillou_porte"})
 	D.story_prop(entities, D.CAMP_HELENE, P.CAMP_HELENE, "CampHelene", &"camp_helene")
 	D.page(entities, 38, P.PAGE_38)
 

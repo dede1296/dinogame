@@ -265,6 +265,8 @@ sheet = ExtResource("15_cfstg")
 event = &"leonce"
 facing = "left"
 hide_flag = &"grande_forge_eteinte"
+metadata/person = &"leonce"
+metadata/held_pose = &"assis"
 
 [node name="MasqueOs1" type="StaticBody2D" parent="Entities" unique_id=1607535120 instance=ExtResource("13_n16nq")]
 position = Vector2(2304, 2246.4)
@@ -274,6 +276,7 @@ display_name = "Masque d'os"
 sheet = ExtResource("15_cfstg")
 event = &"masques_os"
 hide_flag = &"grande_forge_eteinte"
+metadata/held_pose = &"assis"
 
 [node name="MasqueOs2" type="StaticBody2D" parent="Entities" unique_id=140841744 instance=ExtResource("13_n16nq")]
 position = Vector2(2409.6, 2428.7998)
@@ -284,6 +287,7 @@ sheet = ExtResource("15_cfstg")
 event = &"masques_os"
 facing = "left"
 hide_flag = &"grande_forge_eteinte"
+metadata/held_pose = &"assis"
 
 [node name="Forge1" type="StaticBody2D" parent="Entities" unique_id=1768489013]
 position = Vector2(720, 1968)
@@ -368,6 +372,7 @@ display_name = "Brac"
 sheet = ExtResource("19_hqhn1")
 event = &"brac_volcan"
 hide_flag = &"brac_parti"
+metadata/held_pose = &"assis"
 
 [node name="Marmite" type="StaticBody2D" parent="Entities" unique_id=120333559]
 position = Vector2(1756.7999, 739.19995)
@@ -858,4 +863,4 @@ size = Vector2(144, 26.400002)
 target_zone = &"coulees_lave"
 target_spawn = &"DepuisForges"
 required_flag = &"suie_partie"
-blocked_dialogue = &"coulees_fermees"
+blocked_dialogue = &"coulees_bloquees"

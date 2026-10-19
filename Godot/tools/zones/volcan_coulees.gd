@@ -153,7 +153,7 @@ static func _places(root: Region) -> void:
 	# North-east: up the crater path to the portal (its south edge, x 23-25: Porte x = Coulées x - 40), once
 	# the lava has gone back.
 	B.spawn(root, String(P.SPAWN_PORTE), P.DEPUIS_PORTE.x, P.DEPUIS_PORTE.y)
-	B.exit(root, Rect2(63.0, 0.0, 3.0, 0.55), &"porte_cratere", P.SPAWN_COULEES, &"lave_retiree", &"cratere_bloque")
+	B.exit(root, Rect2(63.0, 0.0, 3.0, 0.55), &"porte_cratere", P.SPAWN_COULEES, &"lave_retiree", &"chemin_cratere_bloque")
 
 
 static func _habitats(root: Region) -> void:

@@ -101,11 +101,13 @@ script = ExtResource("16_l1hgd")
 display_name = "Maïa"
 sheet = ExtResource("18_hedqc")
 event = &"maia_porte"
+metadata/held_pose = &"assis"
 
 [node name="CaillouPorte" type="StaticBody2D" parent="Entities" unique_id=1983157541]
 position = Vector2(1488, 460.80002)
 script = ExtResource("19_5ymal")
 species_id = &"triceratops"
+event = &"caillou_porte"
 flip = true
 
 [node name="CampHelene" type="StaticBody2D" parent="Entities" unique_id=1756142501]

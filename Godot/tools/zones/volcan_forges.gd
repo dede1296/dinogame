@@ -125,12 +125,17 @@ static func _camp(entities: Node2D) -> void:
 	for t: Vector2 in PALISSADES:
 		D.put(entities, ["palissade", "cloture"], t, int(t.x * 10.0) % 3 == 0)
 	var root := entities.get_parent() as Region
-	B.npc(root, "Leonce", "Léonce", CHARS % "sbire", P.LEONCE.x, P.LEONCE.y, {"facing": "left", "event": &"leonce",
+	# Sitting from the start (actors/outfits.gd POSES): Léonce with his mask on his knee (his own
+	# poses, « leonce », in a bone mask's sheet), the masks on the ground doing nothing.
+	var leonce := B.npc(root, "Leonce", "Léonce", CHARS % "sbire", P.LEONCE.x, P.LEONCE.y, {"facing": "left", "event": &"leonce",
 		"hide_flag": &"grande_forge_eteinte"})
+	leonce.set_meta(Outfits.PERSON_META, &"leonce")
+	leonce.set_meta(Outfits.HELD_META, &"assis")
 	for i in P.MASQUES_OS.size():
 		var at: Vector2 = P.MASQUES_OS[i]
-		B.npc(root, "MasqueOs%d" % (i + 1), "Masque d'os", CHARS % "sbire", at.x, at.y, {"facing": "down" if i == 0 else "left",
+		var mask := B.npc(root, "MasqueOs%d" % (i + 1), "Masque d'os", CHARS % "sbire", at.x, at.y, {"facing": "down" if i == 0 else "left",
 			"event": &"masques_os", "hide_flag": &"grande_forge_eteinte"})
+		mask.set_meta(Outfits.HELD_META, &"assis")
 
 
 ## The three small forges (StoryProps, out once their flag is set: their « forge_eteinte » picture once
@@ -156,8 +161,9 @@ static func _forges(root: Region, entities: Node2D) -> void:
 static func _brac(root: Region, entities: Node2D) -> void:
 	D.story_prop(entities, D.BARRICADE, P.BARRICADE, "Barricade", &"barricade", {"hide_flag": &"barricade_tombee"})
 	D.flagged(entities, D.BARRICADE_TOMBEE, P.BARRICADE_TOMBEE, "BarricadeTombee", &"barricade_tombee", &"")
-	B.npc(root, "BracVolcan", "Brac", CHARS % "brac", P.BRAC.x, P.BRAC.y, {"facing": "down", "event": &"brac_volcan",
+	var brac := B.npc(root, "BracVolcan", "Brac", CHARS % "brac", P.BRAC.x, P.BRAC.y, {"facing": "down", "event": &"brac_volcan",
 		"hide_flag": &"brac_parti"})
+	brac.set_meta(Outfits.HELD_META, &"assis")   # (on his cage, in the picture: the scenes stand him up)
 	D.put(entities, D.MARMITE, P.MARMITE)
 	D.put(entities, ["tente"], P.TENTE_BRAC, true)
 	for d: Array in [["Mastoc", &"allosaurus", P.MASTOC, true], ["Cabosse", &"stygimoloch", P.CABOSSE, false],
@@ -192,7 +198,7 @@ static func _places(root: Region) -> void:
 	B.exit(root, Rect2(39.0, H - 0.55, 3.0, 0.55), &"champs_cendres", P.SPAWN_FORGES)
 	# North, from the platform: the coulées (their south edge, x 39-41), once Dame Suie has gone.
 	B.spawn(root, String(P.SPAWN_COULEES), P.DEPUIS_COULEES_FORGES.x, P.DEPUIS_COULEES_FORGES.y)
-	B.exit(root, Rect2(55.0, 0.0, 3.0, 0.55), &"coulees_lave", P.SPAWN_FORGES, &"suie_partie", &"coulees_fermees")
+	B.exit(root, Rect2(55.0, 0.0, 3.0, 0.55), &"coulees_lave", P.SPAWN_FORGES, &"suie_partie", &"coulees_bloquees")
 
 
 static func _habitats(root: Region) -> void:

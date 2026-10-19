@@ -36,6 +36,18 @@ func _ready() -> void:
 	sprite.sprite_frames = SheetFrames.character(sheet)
 	sprite.self_modulate = tint
 	sprite.play(StringName("idle_" + facing))
+	if has_meta(Outfits.HELD_META):   # sitting from the start (its zone's plan: Brac on his cage…)
+		Outfits.pose(self, get_meta(Outfits.HELD_META))
+
+
+## Back to its rest: turned `facing`, in the pose it holds (sitting…) if it holds one.
+func rest() -> void:
+	if has_meta(&"pose"):
+		var held := Outfits.pose_anim(get_meta(&"pose"), facing, get_meta(&"pose_look", ""))
+		if sprite.sprite_frames.has_animation(held):
+			sprite.play(held)
+			return
+	sprite.play(StringName("idle_" + facing))
 
 
 ## Should it be in the zone, given the story flags?
@@ -57,7 +69,8 @@ func interact(player: Player) -> void:
 		await Dialogue.run(DialogueDB.lines(dialogue_id))
 	else:
 		await Dialogue.run([{"who": display_name, "text": "Oh, bonjour Chloé !"}])
-	sprite.play(StringName("idle_" + facing))
+	if is_instance_valid(self) and is_inside_tree():   # (a scene may have sent it away)
+		rest()
 
 
 ## Walking (walk_to): not to be turned round meanwhile (Stage.turn_to, the dialogue box).

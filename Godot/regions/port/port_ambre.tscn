@@ -12,6 +12,8 @@
 [ext_resource type="Script" path="res://actors/npc.gd" id="10_aqdj1"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/isaure.png" id="11_5q2di"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="12_n28m7"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/pecheur.png" id="13_lc2tk"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/brac.png" id="14_8l7f2"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/garde.png" id="13_o56jy"]
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="14_w7ifx"]
 [ext_resource type="Script" path="res://world/story_prop.gd" id="15_lc2tk"]
@@ -764,6 +766,26 @@ sheet = ExtResource("11_5q2di")
 dialogue_id = &"isaure"
 show_flag = &"prologue_done"
 hide_flag = &"masque_tombe"
+
+[node name="Leonce" type="StaticBody2D" parent="Entities" unique_id=179397034 instance=ExtResource("9_m714b")]
+position = Vector2(892.8, 892.8)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Léonce"
+sheet = ExtResource("13_lc2tk")
+event = &"leonce_port"
+show_flag = &"grande_forge_eteinte"
+metadata/held_pose = &"assis"
+
+[node name="BracJetee" type="StaticBody2D" parent="Entities" unique_id=335849370 instance=ExtResource("9_m714b")]
+position = Vector2(892.8, 1070.4)
+collision_mask = 0
+script = ExtResource("10_aqdj1")
+display_name = "Brac"
+sheet = ExtResource("14_8l7f2")
+event = &"brac_jetee"
+show_flag = &"brac_parti"
+metadata/held_pose = &"assis"
 
 [node name="Garde" type="StaticBody2D" parent="Entities" unique_id=1091697393 instance=ExtResource("9_m714b")]
 position = Vector2(1804.8, 412.8)

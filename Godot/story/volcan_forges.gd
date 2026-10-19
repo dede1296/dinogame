@@ -228,6 +228,9 @@ static func _eleven(guard) -> Array:
 		Stage.look_at(forge_px.lerp(chloe.global_position, 0.3), 1.0)
 		await S.wait(1.4)
 		await CS.Act.lean(guard, forge_px, 18.0, 0.6)
+		var bellows = V.actor_of(["Soufflet"])   # (the zone's bellows, gone from it once forge_2_eteinte)
+		if bellows:
+			Stage.fade_out(bellows, 0.4, true)
 		Stage.tremble(guard, 1.6, 6.0)
 		Stage.cry(guard, &"attaque")
 		await S.wait(1.6)
@@ -387,6 +390,7 @@ static func _barricade_falls() -> void:
 		var brac_npc = V.actor_of(["BracVolcan"])
 		if brac_npc:
 			Stage.look_at((brac_npc as Node2D).global_position, 0.8)
+			Stage.pose(brac_npc, &"")   # (up from his cage: he sits on it in the zone)
 			Stage.hop(brac_npc, 1, 14.0)
 			Stage.turn_to(brac_npc, chloe.global_position)
 	await S.say([
@@ -470,6 +474,7 @@ static func _before(who: Node, cast: Dictionary) -> Array:
 	var at: Vector2 = (who as Node2D).global_position
 	var mastoc = cast.get("Mastoc")
 	var stands := func() -> void:
+		Stage.pose(who, &"")   # (on his feet: back in the zone, he was sitting on his cage again)
 		Stage.look_at(at.lerp(chloe.global_position, 0.4), 0.8)
 		await CS.chloe_walk(at + Vector2(-20.0, 120.0), 90.0, 2.0)
 		Stage.turn_to(chloe, at)
@@ -545,6 +550,9 @@ static func _fournaise(who: Node, cast: Dictionary, asked: bool) -> Array:
 	var opens := func() -> void:
 		CS.sfx(V.TINKLE, -4.0)
 		Stage.shake(2.5, 0.6)
+		var fence = V.actor_of(["EnclosFournaise"])   # (the pen's front, gone from the zone once brac_volcan_vu)
+		if fence:
+			Stage.fade_out(fence, 0.5, true)
 		var big = cast.get("fournaise")
 		if big == null:
 			big = V.stand_in(FOURNAISE, S.ground_near(cage + Vector2(0.0, 30.0), 2), "Fournaise", 0, 1.1, true)
@@ -803,8 +811,9 @@ static func static_forges() -> void:
 	S.playing += 1
 	var chloe := Stage.chloe()
 	await arrival()
-	var leonce_npc := S.stranger("Leonce", V.sheet(["leonce_assis", "pecheur", "sbire"]), S.ground_near(chloe.global_position + Vector2(-90.0, -60.0), 3), "down", LEONCE)
+	var leonce_npc := S.stranger("Leonce", "sbire", S.ground_near(chloe.global_position + Vector2(-90.0, -60.0), 3), "down", LEONCE)
 	if leonce_npc:
+		leonce_npc.set_meta(Outfits.PERSON_META, &"leonce")   # (his sitting pose: leonce_assis, the zone's Npc's)
 		await leonce(leonce_npc)
 	for n in [1, 2, 3]:
 		var g: Dictionary = GUARDS[n]

@@ -23,6 +23,9 @@ const PEOPLE := {
 	# planches éditées depuis roc/garde/isaure/gaspard puis recalées (alignWithBase) sur ces mêmes
 	# planches — hauteur dessinée = médiane des 16 cases (mêmes ~174 px, cohérent avec leurs sources).
 	"hamon": [1.70, 174.0], "granit": [1.85, 173.5], "elise": [1.65, 173.5], "malcombe": [1.80, 173.0],
+	# Chapitres 7-8 (18/10) : Maïa dans le manteau de Joss (sinon 1,70 m par défaut, plus grande que
+	# Chloé), Dame Suie sans ses lunettes (Outfits.LOOKS) ; hauteur dessinée mesurée comme ci-dessus.
+	"maia_arche": [1.50, 173.0], "dame_suie_sans_lunettes": [1.68, 174.0],
 }
 ## Someone not in the table yet.
 const DEFAULT := [1.70, 174.0]

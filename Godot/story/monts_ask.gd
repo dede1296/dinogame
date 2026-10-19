@@ -74,7 +74,7 @@ static func story_topics() -> Array:
 		out.append(&"col")
 	if Game.flag(&"sanctuaire_givre_ouvert") and not Game.flag(&"sceau_monts"):
 		out.append(&"titan")
-	if Game.flag(&"forges_vues"):
+	if Game.flag(&"forges_vues") and not Game.flag(&"forges_arrivee"):   # (at the forges, chapter 8 asks its own)
 		out.append(&"forges")
 	if Game.flag(&"suie_monts_battue"):
 		out.append(&"cieux")

@@ -692,4 +692,4 @@ size = Vector2(144, 26.400002)
 target_zone = &"porte_cratere"
 target_spawn = &"DepuisCoulees"
 required_flag = &"lave_retiree"
-blocked_dialogue = &"cratere_bloque"
+blocked_dialogue = &"chemin_cratere_bloque"

@@ -115,6 +115,17 @@ static func leonce_port(who: Node) -> void:
 	await S.say([{"who": LEONCE, "text": ForetCamp.next_line(&"leonce_port_n", pool)}])
 
 
+## Brac at the end of the pontoon (Npc « BracJetee » of the port, show_flag brac_parti), sitting,
+## looking at the sea « de loin » (Léonce's and Roc's words): watched, no line of his own (none is
+## written: « Il ne dérange personne »). He glances at Chloé, and back at the sea.
+static func brac_jetee(who: Node) -> void:
+	Stage.emote(who, "…")
+	await S.wait(1.4)
+	if who is Npc:
+		(who as Npc).face((who as Node2D).global_position + Vector2(0.0, 100.0))
+	await S.wait(0.6)
+
+
 # ------------------------------------------------------------------ for the tests
 
 ## For the tests (tools/capture.gd « static »): Roc brought on beside Chloé, on any zone (his news

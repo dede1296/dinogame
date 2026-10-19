@@ -79,12 +79,25 @@ const POSES := {
 	"roc": {&"assis": {"sheet": "roc_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"pecheur": {&"assis": {"sheet": "pecheur_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"sbire": {&"assis": {"sheet": "sbire_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
+	# Chapter 8 (docs/direction-artistique.md § Plaine Volcanique): Brac on his cage (the cage is in the
+	# picture); Léonce, a bone mask of the forges (sbire.png) with his mask on his knee: his Npc says
+	# whose poses it wears (meta « person », see person()); Maïa in Joss's coat on her stone (the
+	# stone is in the picture, its cell taller than her sheet's: lowered so their feet meet, _add_pose).
+	"brac": {&"assis": {"sheet": "brac_assis_cage", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
+	"leonce": {&"assis": {"sheet": "leonce_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
+	"maia_arche": {&"assis": {"sheet": "maia_pierre", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 }
 ## Other looks of a person for a scene: base sheet's name -> look -> sheet (same grid as it).
+## Dame Suie without her smoked glasses (chapter 8, the great forge out: story/volcan_suie.gd).
 const LOOKS := {
 	"joss": {&"bocal": "joss_bocal"},
+	"dame_suie": {&"sans_lunettes": "dame_suie_sans_lunettes"},
 }
 const DIRS := ["down", "left", "right", "up"]
+## Npc metas: whose poses it wears (person()); a pose it holds from the start, in its zone (Npc._ready:
+## Léonce, the bone masks, Brac on his cage, Maïa on her stone), until a scene stands it up.
+const PERSON_META := &"person"
+const HELD_META := &"held_pose"
 
 
 # ------------------------------------------------------------------ Chloé's accessories
@@ -167,12 +180,16 @@ static func add_saddle_looks(frames: SpriteFrames, poses: Array) -> void:
 
 # ------------------------------------------------------------------ poses of a scene
 
-## Whose sheet the actor wears at heart ("chloe", "joss"…; "" when unknown).
+## Whose sheet the actor wears at heart ("chloe", "joss"…; "" when unknown). An Npc drawn with
+## someone else's sheet says whose poses are its own with the meta « person » (Léonce: « leonce »,
+## in a bone mask's sheet).
 static func person(actor) -> String:
 	if actor is Player:
 		return "chloe"
 	var npc := actor as Npc
 	if npc:
+		if npc.has_meta(PERSON_META):
+			return String(npc.get_meta(PERSON_META))
 		var base: Texture2D = npc.get_meta(&"base_sheet", npc.sheet)
 		return base.resource_path.get_file().get_basename() if base else ""
 	return ""
@@ -216,7 +233,23 @@ static func _add_pose(frames: SpriteFrames, pose_name: StringName, def: Dictiona
 	for i in DIRS.size():
 		anims[pose_anim(pose_name, DIRS[i], look)] = {"frames": def["frames"][i], "fps": def.get("fps", 1.0)}
 	var sheet: String = def["coat"] if look == COAT_POSE else def["sheet"]
-	_merge(frames, SheetFrames.build(load(DIR % sheet), def["cols"], def["rows"], anims), "")
+	var built := SheetFrames.build(load(DIR % sheet), def["cols"], def["rows"], anims)
+	_feet_on_base(built, frames)
+	_merge(frames, built, "")
+
+
+## A pose sheet with taller cells than the person's own (Maïa's stone drawn under her): the sprite
+## is centred, so its pictures get an empty margin below, as much as they are taller, and their
+## feet meet the ground where the walking ones do (both sheets leave the same few pixels below).
+static func _feet_on_base(built: SpriteFrames, frames: SpriteFrames) -> void:
+	if not frames.has_animation(&"idle_down") or frames.get_frame_count(&"idle_down") == 0:
+		return
+	var base_h := frames.get_frame_texture(&"idle_down", 0).get_height()
+	for anim in built.get_animation_names():
+		for i in built.get_frame_count(anim):
+			var atlas := built.get_frame_texture(anim, i) as AtlasTexture
+			if atlas and atlas.region.size.y > base_h + 0.5:
+				atlas.margin = Rect2(0.0, 0.0, 0.0, atlas.region.size.y - base_h)
 
 
 static func _facing(actor, sprite: AnimatedSprite2D) -> String:

@@ -45,6 +45,9 @@ const FUT_RENVERSE := Vector2(32.8, 22.6)
 ## The cooled flows of the north-east (the Saichania's, by day), the ash dunes of the west.
 const COULEES_REFROIDIES := Vector2(70.0, 20.0)
 const DUNES := Vector2(18.0, 30.0)
+## The seven red fires seen from the fields at the volcano's foot, « en ligne » (the arrival's camera
+## looks there, Volcan.seven_fires pulses them 3 tiles apart): the forges, past the north edge.
+const FEUX_FORGES := Vector2(45.0, 4.0)
 ## North edge: the way to the forges (x 44-46, 6.4 m; Forges x = Champs x - 4.5).
 const SORTIE_FORGES := Vector2(45.0, 0.5)
 const DEPUIS_FORGES := Vector2(45.0, 3.0)

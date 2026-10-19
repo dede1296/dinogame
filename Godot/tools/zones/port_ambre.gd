@@ -72,6 +72,16 @@ static func build() -> Region:
 	B.npc(root, "MaiaQuai", "Maïa", CHARS % "maia", 19.8, 15.8, {"facing": "down", "hide_flag": &"prologue_arrived"})
 	B.npc(root, "Isaure", "Isaure", CHARS % "isaure", 22.6, 15.7, {"facing": "down", "dialogue": &"isaure", "show_flag": &"prologue_done",
 		"hide_flag": &"masque_tombe"})   # (chapter 7: after the mask, she is gone to the volcano)
+	# Chapter 8 (story/volcan_autour.gd): Léonce home from the forges, mending the nets on the pontoon
+	# (the fisherman's sheet and his sitting pose with the net: Outfits.POSES « pecheur »), once the
+	# great forge is out; Brac at the end of it, on a cage, looking at the sea « de loin », once he has
+	# gone (« Le rouquin est assis au bout de la jetée »). On its west side: the way to Maïa's boat stays free.
+	var leonce := B.npc(root, "Leonce", "Léonce", CHARS % "pecheur", 18.6, 18.6, {"facing": "down", "event": &"leonce_port",
+		"show_flag": &"grande_forge_eteinte"})
+	leonce.set_meta(Outfits.HELD_META, &"assis")
+	var brac := B.npc(root, "BracJetee", "Brac", CHARS % "brac", 18.6, 22.3, {"facing": "down", "event": &"brac_jetee",
+		"show_flag": &"brac_parti"})
+	brac.set_meta(Outfits.HELD_META, &"assis")
 	# The guard of the coast road (east), at his post.
 	B.npc(root, "Garde", "Le garde du Havre", CHARS % "garde", 37.6, 8.6, {"facing": "down", "dialogue": &"garde_route"})
 	B.sign(entities, B.cell(36.2, 8.7), &"panneau_route_cotiere")
