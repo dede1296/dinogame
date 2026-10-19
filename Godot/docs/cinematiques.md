@@ -1,3 +1,14 @@
+# DÉCISIONS DE GREG (19/10) — valables pour toute la production
+
+1. **Cheveux de Chloé** : non tranché par Greg ; PAR DÉFAUT **auburn**, comme ses planches de jeu et l'écran titre (cohérence avec le Chloé jouable). À reprendre si Greg préfère châtain foncé.  
+2. **F-06 (les dinos de Chloé à l'étang)** : **trois peintures**, une par dino de départ (Vif / Bastion avec Maïa assise dessus / Écho qui chante faux).  
+3. **Carton « Pour Chloé »** avant « Merci d'avoir joué » : **oui**.  
+4. **L'ombre de Carène sous la barque** (intro, la brume) : **on la garde**.  
+5. **« Revoir l'intro »** : **oui** dans les Paramètres, **et** « Crédits » au menu ; en Nouvelle partie+, l'intro **se rejoue** (oui).  
+6. Pas de vente prévue (mémoire pas-de-vente) ; crédits : « Grégory Cuypers » humain ; contenu des crédits dans docs/credits.md et data/credits_data.gd (déjà écrits).
+
+---
+
 # Les deux cinématiques d'Ambrelune — scénario et découpage
 
 > Écrit le 19/10/2026 par l'agent HISTOIRE/CONCEPTION (Fable), pour validation par Greg. **Rien n'est codé, aucune
