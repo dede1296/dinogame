@@ -1,9 +1,21 @@
 # Sons à générer — chapitres 7, 8 et 9
 
+> **RÈGLE DE NIVEAU (Greg)** : tout son produit se normalise sur les éléments de **même catégorie** déjà présents dans le jeu.
+> Référence mesurée : `tools/audio-jobs/levels_reference.json` (`python tools/audio-jobs/levels_reference.py`), RMS actif
+> (fenêtres de 50 ms > -50 dBFS) et pic par catégorie (ambience-bed, ambience-call, music, cries, sfx, footsteps/<famille>).
+> Outil réutilisable : `tools/audio-jobs/normalize_to_category.mjs` (RMS actif = médiane de la catégorie, pic limité à
+> min(médiane des pics + 1 dB ; -0,5 dBFS) par soft-clip ; son trop court = calé sur le pic médian). Boucles : fondu enchaîné
+> **avant** la normalisation.
+
 État au 19/10 : le quota ElevenLabs gratuit est épuisé (**6 crédits restants sur 10 000**, remise à zéro vers le 26 du mois).
 Les bruitages ci-dessous sont prêts à lancer par `tools/audio-jobs/chapitres_7_9.mjs` (voir plus bas) ; aucun n'est encore généré.
 
-## 1. Musique (non générable avec ElevenLabs gratuit : Stable Audio ou autre)
+## 1. Musique
+
+**Stable Audio Open 1.0 essayé le 19/10 : résultat jugé insuffisant par Greg (timbre d'orgue, 3 accords) ; musiques écartées
+(rangées dans `tools/sounds/musique_sa_ecartee/`, ignoré par Godot) ; repli : pistes existantes du jeu.** Aucune musique ne
+reste à brancher : les zones prennent le premier fichier existant de leur liste `MUSIC` (monts, desert, ombre…). Le tableau
+et les prompts ci-dessous restent comme cahier des charges si une autre source de musique est trouvée.
 
 Dossier : `assets/audio/music/`, format **.ogg**, stéréo. Le jeu cherche ces noms dans l'ordre de `MUSIC` des générateurs
 `tools/zones/*.gd` ; tant qu'un fichier manque, il prend le suivant de la liste (repli ci-dessous). Style des pistes existantes
@@ -42,19 +54,24 @@ convertir en .ogg (ffmpeg n'est **pas** installé sur ce PC : `ffmpeg -version` 
 `tools/prepare-ambience.mjs`) ; nommer **exactement** comme ci-dessus ; déposer dans `assets/audio/music/` ; le jeu les prend au
 prochain lancement (lancer un `--import` pour les `.import`). Vérifier que la boucle ne claque pas à la couture.
 
-## 2. Bruitages ElevenLabs en attente (quota)
+## 2. Bruitages, ambiances et cris : FAITS en local (Stable Audio Open 1.0 via ComfyUI, gratuit)
 
-Script : `tools/audio-jobs/chapitres_7_9.mjs` (génère les MP3 bruts dans `tools/sounds/`, convertit en .ogg dans `assets/audio/…`,
-n'écrase rien, plafond 3000 crédits, ~720 crédits pour la liste). Depuis la racine du dépôt, après le 26 :
-`AUDIO_MODULES=<dossier node_modules avec mpg123-decoder et wasm-media-encoders> node Godot/tools/audio-jobs/chapitres_7_9.mjs`
+Script : `tools/audio-jobs/stable_audio_local.mjs` (ComfyUI sur 127.0.0.1:8188, un job à la fois ; 2 prises par son, graine
+suivante si quasi muet, journal dans `tools/audio-jobs/stable_audio_log.json`, MP3 bruts dans `tools/sounds/sa/` ; reprend sans
+refaire ; `REDO=1` refait les .ogg depuis les MP3 sans Stable Audio). `chapitres_7_9.mjs` (ElevenLabs) n'est plus nécessaire.
+Commande : `AUDIO_MODULES=<node_modules> SA_WORKFLOW=<api_prompt.json> node tools/audio-jobs/stable_audio_local.mjs sfx`
+(la musique n'est jamais lancée par défaut).
 
-| Fichier | Durée | Boucle | Branchement prévu |
-|---|---|---|---|
-| `ambience/lave-bouillonne.ogg` | 10 s | oui | lit « feu » 0.3 de `coulees_lave` |
-| `ambience/volcan-grondement.ogg` | 10 s | oui | `sanctuaire_magma` (appel sourd), `champs_cendres`, `terre_apex` |
-| `ambience/forge-ronfle.ogg` | 10 s | oui | lit « feu » 0.45 de `forges_ombre` |
-| `ambience/vent-hauteurs.ogg` | 10 s | oui | lit « monts » de `cieux` |
-| `ambience/forge-eteinte.ogg` | 4 s | non | scène de la forge qui s'éteint (aucune constante aujourd'hui) |
-| `cries/souverain-grondement.ogg`, `cries/souverain-souffle.ogg` | 4 s | non | scène du Souverain (aucune constante aujourd'hui) |
-| `cries/tyran-magma-rugissement.ogg` | 4 s | non | T-Rex de Magma (aucune constante aujourd'hui) |
-| `sfx/ambre-craque.ogg`, `sfx/portail-pierre.ogg`, `sfx/coeur-ambre-pose.ogg`, `sfx/tasse-porcelaine.ogg`, `sfx/pas-cendre.ogg` | 2-5 s | non | aucune constante aujourd'hui : à appeler depuis les scènes quand Greg le décide |
+| Fichier | Boucle | Branchement |
+|---|---|---|
+| `ambience/lave-bouillonne.ogg` | oui | `coulees_lave` (remplace le lit « feu » 0.3), dans `data/ambience_db.gd` |
+| `ambience/volcan-grondement.ogg` | oui | `sanctuaire_magma`, `champs_cendres`, `terre_apex` (lit ajouté) |
+| `ambience/forge-ronfle.ogg` | oui | `forges_ombre` (remplace le lit « feu » 0.45) |
+| `ambience/vent-hauteurs.ogg` | oui | `cieux` (lit principal, `monts` en soutien) |
+| `ambience/forge-eteinte.ogg` | non | scène de la forge qui s'éteint : **aucune constante encore** |
+| `cries/souverain-grondement.ogg`, `cries/souverain-souffle.ogg`, `cries/tyran-magma-rugissement.ogg` | non | **aucune constante encore** (scène du Souverain, T-Rex de Magma) |
+| `sfx/ambre-craque.ogg`, `sfx/portail-pierre.ogg`, `sfx/coeur-ambre-pose.ogg`, `sfx/tasse-porcelaine.ogg` | non | **aucune constante encore** : à appeler depuis les scènes |
+| `footsteps/cendre00..05.ogg` | non | pas sur la cendre (0,3 s, découpés de prises Stable Audio) : à brancher dans `actors/player.gd` (`step_kind` + `_play_step`, comme `neige`) ; non branchés |
+
+Limites : sons non écoutés par l'auteur du script (mesures seulement) ; `coeur-ambre-pose` reste un peu plus faible que la
+médiane des sfx (carillon très épars, pic déjà à -0,4 dBFS).

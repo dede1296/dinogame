@@ -36,3 +36,7 @@ Godot/reports/
 *.keystore
 *.jks
 .env.local
+
+# Sons bruts générés et musiques écartées (régénérables)
+Godot/tools/sounds/sa/
+Godot/tools/sounds/musique_sa_ecartee/

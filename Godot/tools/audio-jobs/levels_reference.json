@@ -1,0 +1,794 @@
+{
+ "categories": {
+  "ambience-bed": {
+   "count": 13,
+   "activeRmsDb": {
+    "median": -23.3,
+    "min": -49.1,
+    "max": -17.7
+   },
+   "peakDb": {
+    "median": -2.9,
+    "min": -27.0,
+    "max": -1.4
+   }
+  },
+  "ambience-call": {
+   "count": 10,
+   "activeRmsDb": {
+    "median": -22.5,
+    "min": -29.7,
+    "max": -19.5
+   },
+   "peakDb": {
+    "median": -4.1,
+    "min": -9.1,
+    "max": -0.8
+   }
+  },
+  "cries": {
+   "count": 36,
+   "activeRmsDb": {
+    "median": -11.2,
+    "min": -20.4,
+    "max": -6.8
+   },
+   "peakDb": {
+    "median": 0.0,
+    "min": -3.0,
+    "max": 2.8
+   }
+  },
+  "footsteps/footstep": {
+   "count": 10,
+   "activeRmsDb": {
+    "median": -21.2,
+    "min": -26.2,
+    "max": -16.6
+   },
+   "peakDb": {
+    "median": -1.3,
+    "min": -7.1,
+    "max": 0.2
+   }
+  },
+  "footsteps/glace_craque": {
+   "count": 3,
+   "activeRmsDb": {
+    "median": -26.3,
+    "min": -28.5,
+    "max": -21.6
+   },
+   "peakDb": {
+    "median": -2.7,
+    "min": -3.3,
+    "max": -2.2
+   }
+  },
+  "footsteps/neige": {
+   "count": 6,
+   "activeRmsDb": {
+    "median": -24.6,
+    "min": -25.2,
+    "max": -23.6
+   },
+   "peakDb": {
+    "median": -5.3,
+    "min": -8.6,
+    "max": -2.3
+   }
+  },
+  "music": {
+   "count": 15,
+   "activeRmsDb": {
+    "median": -14.5,
+    "min": -17.0,
+    "max": -12.8
+   },
+   "peakDb": {
+    "median": -1.3,
+    "min": -2.0,
+    "max": -0.7
+   }
+  },
+  "sfx": {
+   "count": 21,
+   "activeRmsDb": {
+    "median": -21.1,
+    "min": -36.5,
+    "max": -13.6
+   },
+   "peakDb": {
+    "median": -1.4,
+    "min": -20.0,
+    "max": -0.0
+   }
+  }
+ },
+ "files": {
+  "assets/audio/ambience/blizzard.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -20.0,
+   "peakDb": -4.4,
+   "seconds": 22.0
+  },
+  "assets/audio/ambience/brise.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -20.2,
+   "peakDb": -2.9,
+   "seconds": 22.0
+  },
+  "assets/audio/ambience/desert.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -22.0,
+   "peakDb": -6.7,
+   "seconds": 22.0
+  },
+  "assets/audio/ambience/eau.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -23.3,
+   "peakDb": -1.4,
+   "seconds": 18.0
+  },
+  "assets/audio/ambience/feu.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -37.2,
+   "peakDb": -1.9,
+   "seconds": 16.0
+  },
+  "assets/audio/ambience/glace.ogg": {
+   "category": "ambience-call",
+   "activeRmsDb": -29.7,
+   "peakDb": -1.8,
+   "seconds": 5.0
+  },
+  "assets/audio/ambience/goutte.ogg": {
+   "category": "ambience-call",
+   "activeRmsDb": -23.7,
+   "peakDb": -0.9,
+   "seconds": 3.0
+  },
+  "assets/audio/ambience/grotte.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -19.7,
+   "peakDb": -6.3,
+   "seconds": 22.0
+  },
+  "assets/audio/ambience/labo.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -31.3,
+   "peakDb": -6.3,
+   "seconds": 20.0
+  },
+  "assets/audio/ambience/maison.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -30.9,
+   "peakDb": -2.3,
+   "seconds": 20.0
+  },
+  "assets/audio/ambience/monts.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -20.4,
+   "peakDb": -5.7,
+   "seconds": 22.0
+  },
+  "assets/audio/ambience/mouettes.ogg": {
+   "category": "ambience-call",
+   "activeRmsDb": -23.1,
+   "peakDb": -9.1,
+   "seconds": 4.0
+  },
+  "assets/audio/ambience/oiseau-1.ogg": {
+   "category": "ambience-call",
+   "activeRmsDb": -20.6,
+   "peakDb": -3.9,
+   "seconds": 3.0
+  },
+  "assets/audio/ambience/oiseau-2.ogg": {
+   "category": "ambience-call",
+   "activeRmsDb": -21.9,
+   "peakDb": -5.1,
+   "seconds": 3.0
+  },
+  "assets/audio/ambience/oiseau-3.ogg": {
+   "category": "ambience-call",
+   "activeRmsDb": -19.7,
+   "peakDb": -5.2,
+   "seconds": 3.0
+  },
+  "assets/audio/ambience/orage.mp3": {
+   "category": "ambience-bed",
+   "activeRmsDb": -17.7,
+   "peakDb": -1.5,
+   "seconds": 22.0
+  },
+  "assets/audio/ambience/pluie.mp3": {
+   "category": "ambience-bed",
+   "activeRmsDb": -49.1,
+   "peakDb": -27.0,
+   "seconds": 22.0
+  },
+  "assets/audio/ambience/rafale-grave.ogg": {
+   "category": "ambience-call",
+   "activeRmsDb": -27.5,
+   "peakDb": -6.2,
+   "seconds": 6.0
+  },
+  "assets/audio/ambience/rafale.ogg": {
+   "category": "ambience-call",
+   "activeRmsDb": -27.2,
+   "peakDb": -3.7,
+   "seconds": 6.0
+  },
+  "assets/audio/ambience/tonnerre-1.mp3": {
+   "category": "ambience-call",
+   "activeRmsDb": -19.5,
+   "peakDb": -4.2,
+   "seconds": 6.0
+  },
+  "assets/audio/ambience/tonnerre-2.mp3": {
+   "category": "ambience-call",
+   "activeRmsDb": -20.7,
+   "peakDb": -0.8,
+   "seconds": 5.0
+  },
+  "assets/audio/ambience/vagues.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -26.1,
+   "peakDb": -2.0,
+   "seconds": 22.0
+  },
+  "assets/audio/ambience/village.ogg": {
+   "category": "ambience-bed",
+   "activeRmsDb": -40.0,
+   "peakDb": -1.4,
+   "seconds": 22.0
+  },
+  "assets/audio/cries/ceratopsien-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -6.8,
+   "peakDb": 0.7,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/ceratopsien-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -14.1,
+   "peakDb": -0.4,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/ceratopsien-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -11.4,
+   "peakDb": 0.1,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/ceratopsien-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -7.5,
+   "peakDb": 0.2,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/cuirasse-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -9.8,
+   "peakDb": 0.1,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/cuirasse-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -10.7,
+   "peakDb": 0.9,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/cuirasse-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -12.1,
+   "peakDb": 0.0,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/cuirasse-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -12.8,
+   "peakDb": 0.5,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/hadrosaure-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -9.7,
+   "peakDb": 0.5,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/hadrosaure-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -9.4,
+   "peakDb": 0.2,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/hadrosaure-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -9.7,
+   "peakDb": -0.1,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/hadrosaure-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -8.1,
+   "peakDb": -0.0,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/marin-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -12.5,
+   "peakDb": -0.3,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/marin-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -12.4,
+   "peakDb": -0.3,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/marin-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -13.4,
+   "peakDb": -0.3,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/marin-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -11.7,
+   "peakDb": -0.2,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/pterosaure-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -13.0,
+   "peakDb": 1.1,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/pterosaure-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -10.1,
+   "peakDb": 2.4,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/pterosaure-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -11.9,
+   "peakDb": 2.2,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/pterosaure-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -10.8,
+   "peakDb": 2.7,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/raptor-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -10.7,
+   "peakDb": 2.2,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/raptor-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -10.1,
+   "peakDb": 0.9,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/raptor-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -10.3,
+   "peakDb": 2.8,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/raptor-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -12.7,
+   "peakDb": 2.4,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/sauropode-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -9.5,
+   "peakDb": -0.3,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/sauropode-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -11.0,
+   "peakDb": -0.4,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/sauropode-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -12.5,
+   "peakDb": -0.5,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/sauropode-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -11.9,
+   "peakDb": -0.4,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/spino-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -14.8,
+   "peakDb": -0.7,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/spino-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -17.9,
+   "peakDb": -2.6,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/spino-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -12.4,
+   "peakDb": 0.7,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/spino-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -20.4,
+   "peakDb": -3.0,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/tyran-attaque.mp3": {
+   "category": "cries",
+   "activeRmsDb": -9.9,
+   "peakDb": 0.0,
+   "seconds": 1.2
+  },
+  "assets/audio/cries/tyran-degat.mp3": {
+   "category": "cries",
+   "activeRmsDb": -9.1,
+   "peakDb": -0.1,
+   "seconds": 0.9
+  },
+  "assets/audio/cries/tyran-ko.mp3": {
+   "category": "cries",
+   "activeRmsDb": -10.9,
+   "peakDb": -0.1,
+   "seconds": 2.2
+  },
+  "assets/audio/cries/tyran-neutre.mp3": {
+   "category": "cries",
+   "activeRmsDb": -16.2,
+   "peakDb": -1.2,
+   "seconds": 2.5
+  },
+  "assets/audio/footsteps/footstep00.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -20.0,
+   "peakDb": -0.6,
+   "seconds": 0.2
+  },
+  "assets/audio/footsteps/footstep01.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -19.0,
+   "peakDb": -0.0,
+   "seconds": 0.3
+  },
+  "assets/audio/footsteps/footstep02.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -22.5,
+   "peakDb": -1.9,
+   "seconds": 0.2
+  },
+  "assets/audio/footsteps/footstep03.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -20.3,
+   "peakDb": 0.1,
+   "seconds": 0.3
+  },
+  "assets/audio/footsteps/footstep04.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -24.7,
+   "peakDb": -5.3,
+   "seconds": 0.3
+  },
+  "assets/audio/footsteps/footstep05.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -26.2,
+   "peakDb": -6.2,
+   "seconds": 0.3
+  },
+  "assets/audio/footsteps/footstep06.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -22.1,
+   "peakDb": -3.4,
+   "seconds": 0.2
+  },
+  "assets/audio/footsteps/footstep07.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -20.3,
+   "peakDb": -0.6,
+   "seconds": 0.3
+  },
+  "assets/audio/footsteps/footstep08.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -16.6,
+   "peakDb": 0.2,
+   "seconds": 0.3
+  },
+  "assets/audio/footsteps/footstep09.ogg": {
+   "category": "footsteps/footstep",
+   "activeRmsDb": -24.2,
+   "peakDb": -7.1,
+   "seconds": 0.2
+  },
+  "assets/audio/footsteps/glace_craque00.ogg": {
+   "category": "footsteps/glace_craque",
+   "activeRmsDb": -28.5,
+   "peakDb": -2.2,
+   "seconds": 0.5
+  },
+  "assets/audio/footsteps/glace_craque01.ogg": {
+   "category": "footsteps/glace_craque",
+   "activeRmsDb": -21.6,
+   "peakDb": -2.7,
+   "seconds": 0.5
+  },
+  "assets/audio/footsteps/glace_craque02.ogg": {
+   "category": "footsteps/glace_craque",
+   "activeRmsDb": -26.3,
+   "peakDb": -3.3,
+   "seconds": 0.5
+  },
+  "assets/audio/footsteps/neige00.ogg": {
+   "category": "footsteps/neige",
+   "activeRmsDb": -24.4,
+   "peakDb": -4.6,
+   "seconds": 0.4
+  },
+  "assets/audio/footsteps/neige01.ogg": {
+   "category": "footsteps/neige",
+   "activeRmsDb": -24.3,
+   "peakDb": -8.6,
+   "seconds": 0.4
+  },
+  "assets/audio/footsteps/neige02.ogg": {
+   "category": "footsteps/neige",
+   "activeRmsDb": -25.2,
+   "peakDb": -6.0,
+   "seconds": 0.4
+  },
+  "assets/audio/footsteps/neige03.ogg": {
+   "category": "footsteps/neige",
+   "activeRmsDb": -23.6,
+   "peakDb": -2.3,
+   "seconds": 0.4
+  },
+  "assets/audio/footsteps/neige04.ogg": {
+   "category": "footsteps/neige",
+   "activeRmsDb": -24.8,
+   "peakDb": -4.3,
+   "seconds": 0.4
+  },
+  "assets/audio/footsteps/neige05.ogg": {
+   "category": "footsteps/neige",
+   "activeRmsDb": -24.9,
+   "peakDb": -6.1,
+   "seconds": 0.4
+  },
+  "assets/audio/music/alpha.ogg": {
+   "category": "music",
+   "activeRmsDb": -13.8,
+   "peakDb": -1.7,
+   "seconds": 17.1
+  },
+  "assets/audio/music/boutique.ogg": {
+   "category": "music",
+   "activeRmsDb": -15.7,
+   "peakDb": -1.3,
+   "seconds": 16.6
+  },
+  "assets/audio/music/capture.ogg": {
+   "category": "music",
+   "activeRmsDb": -14.9,
+   "peakDb": -1.2,
+   "seconds": 8.5
+  },
+  "assets/audio/music/desert.ogg": {
+   "category": "music",
+   "activeRmsDb": -14.1,
+   "peakDb": -1.2,
+   "seconds": 20.9
+  },
+  "assets/audio/music/foret.ogg": {
+   "category": "music",
+   "activeRmsDb": -15.7,
+   "peakDb": -1.2,
+   "seconds": 120.0
+  },
+  "assets/audio/music/marais.ogg": {
+   "category": "music",
+   "activeRmsDb": -14.5,
+   "peakDb": -1.9,
+   "seconds": 29.1
+  },
+  "assets/audio/music/monts.ogg": {
+   "category": "music",
+   "activeRmsDb": -14.3,
+   "peakDb": -2.0,
+   "seconds": 54.9
+  },
+  "assets/audio/music/ombre.ogg": {
+   "category": "music",
+   "activeRmsDb": -17.0,
+   "peakDb": -0.7,
+   "seconds": 14.5
+  },
+  "assets/audio/music/plaines.ogg": {
+   "category": "music",
+   "activeRmsDb": -13.8,
+   "peakDb": -1.5,
+   "seconds": 213.3
+  },
+  "assets/audio/music/repos.ogg": {
+   "category": "music",
+   "activeRmsDb": -12.8,
+   "peakDb": -1.6,
+   "seconds": 7.2
+  },
+  "assets/audio/music/rivale.ogg": {
+   "category": "music",
+   "activeRmsDb": -15.4,
+   "peakDb": -1.3,
+   "seconds": 12.8
+  },
+  "assets/audio/music/sauvage.ogg": {
+   "category": "music",
+   "activeRmsDb": -15.4,
+   "peakDb": -1.1,
+   "seconds": 13.3
+  },
+  "assets/audio/music/titre.ogg": {
+   "category": "music",
+   "activeRmsDb": -13.1,
+   "peakDb": -1.5,
+   "seconds": 45.7
+  },
+  "assets/audio/music/victoire.ogg": {
+   "category": "music",
+   "activeRmsDb": -13.0,
+   "peakDb": -1.2,
+   "seconds": 9.8
+  },
+  "assets/audio/music/village.ogg": {
+   "category": "music",
+   "activeRmsDb": -15.3,
+   "peakDb": -1.2,
+   "seconds": 83.1
+  },
+  "assets/audio/sfx/bump.wav": {
+   "category": "sfx",
+   "activeRmsDb": -13.6,
+   "peakDb": -1.0,
+   "seconds": 0.1
+  },
+  "assets/audio/sfx/chop.wav": {
+   "category": "sfx",
+   "activeRmsDb": -18.4,
+   "peakDb": -0.3,
+   "seconds": 0.2
+  },
+  "assets/audio/sfx/coins.wav": {
+   "category": "sfx",
+   "activeRmsDb": -27.2,
+   "peakDb": -1.4,
+   "seconds": 0.8
+  },
+  "assets/audio/sfx/colonne_bulles.mp3": {
+   "category": "sfx",
+   "activeRmsDb": -25.6,
+   "peakDb": -8.0,
+   "seconds": 6.0
+  },
+  "assets/audio/sfx/courant.mp3": {
+   "category": "sfx",
+   "activeRmsDb": -35.4,
+   "peakDb": -20.0,
+   "seconds": 6.0
+  },
+  "assets/audio/sfx/creuser.mp3": {
+   "category": "sfx",
+   "activeRmsDb": -34.1,
+   "peakDb": -13.6,
+   "seconds": 1.6
+  },
+  "assets/audio/sfx/door_open.wav": {
+   "category": "sfx",
+   "activeRmsDb": -21.1,
+   "peakDb": -0.0,
+   "seconds": 0.9
+  },
+  "assets/audio/sfx/feuillage.mp3": {
+   "category": "sfx",
+   "activeRmsDb": -30.8,
+   "peakDb": -9.8,
+   "seconds": 1.5
+  },
+  "assets/audio/sfx/galet.mp3": {
+   "category": "sfx",
+   "activeRmsDb": -31.4,
+   "peakDb": -12.1,
+   "seconds": 1.2
+  },
+  "assets/audio/sfx/glass.wav": {
+   "category": "sfx",
+   "activeRmsDb": -18.1,
+   "peakDb": -1.0,
+   "seconds": 0.1
+  },
+  "assets/audio/sfx/hit_0.wav": {
+   "category": "sfx",
+   "activeRmsDb": -16.4,
+   "peakDb": -1.0,
+   "seconds": 0.5
+  },
+  "assets/audio/sfx/hit_1.wav": {
+   "category": "sfx",
+   "activeRmsDb": -15.4,
+   "peakDb": -1.0,
+   "seconds": 0.4
+  },
+  "assets/audio/sfx/item.wav": {
+   "category": "sfx",
+   "activeRmsDb": -14.6,
+   "peakDb": -1.0,
+   "seconds": 0.5
+  },
+  "assets/audio/sfx/latch.wav": {
+   "category": "sfx",
+   "activeRmsDb": -20.4,
+   "peakDb": -0.5,
+   "seconds": 0.2
+  },
+  "assets/audio/sfx/page.wav": {
+   "category": "sfx",
+   "activeRmsDb": -36.5,
+   "peakDb": -10.2,
+   "seconds": 0.4
+  },
+  "assets/audio/sfx/pierre.mp3": {
+   "category": "sfx",
+   "activeRmsDb": -32.0,
+   "peakDb": -4.3,
+   "seconds": 1.0
+  },
+  "assets/audio/sfx/plongee.mp3": {
+   "category": "sfx",
+   "activeRmsDb": -19.5,
+   "peakDb": -1.1,
+   "seconds": 2.5
+  },
+  "assets/audio/sfx/rafale-grave.ogg": {
+   "category": "sfx",
+   "activeRmsDb": -27.5,
+   "peakDb": -6.2,
+   "seconds": 6.0
+  },
+  "assets/audio/sfx/remontee.mp3": {
+   "category": "sfx",
+   "activeRmsDb": -17.6,
+   "peakDb": -1.9,
+   "seconds": 2.5
+  },
+  "assets/audio/sfx/rock_heavy.wav": {
+   "category": "sfx",
+   "activeRmsDb": -21.4,
+   "peakDb": -1.4,
+   "seconds": 0.5
+  },
+  "assets/audio/sfx/slice.wav": {
+   "category": "sfx",
+   "activeRmsDb": -19.7,
+   "peakDb": -4.2,
+   "seconds": 0.5
+  }
+ }
+}

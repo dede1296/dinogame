@@ -113,7 +113,7 @@ const AMBIENCES := {
 	## heights all the time (monts: the clean low wind), a breeze over it, gusts more often than in the
 	## Monts. No bird so high (the Rhamphorhynchus' calls are the dinos' own); no echo either.
 	&"cieux": {
-		"beds": [["monts", 0.75, ""], ["brise", 0.3, ""], ["feu", 1.0, "fire"]],
+		"beds": [["vent-hauteurs", 0.65, ""], ["monts", 0.35, ""], ["brise", 0.3, ""], ["feu", 1.0, "fire"]],   # vent-hauteurs : Stable Audio (local) ; monts garde l'ancien vent en soutien
 		"calls": [
 			{"ids": ["rafale-grave"], "every": [8.0, 20.0], "vol": 0.5},
 		],
@@ -141,23 +141,23 @@ const AMBIENCES := {
 	## (« fire » : plus fort près d'un feu, et près des coulées de lave : World._hear_surroundings).
 	## Les champs de cendres : le vent chaud qui soulève la cendre en petites vagues.
 	&"champs_cendres": {
-		"beds": [["desert", 0.55, ""], ["feu", 1.0, "fire"]],
+		"beds": [["desert", 0.55, ""], ["volcan-grondement", 0.3, ""], ["feu", 1.0, "fire"]],
 		"calls": [{"ids": ["rafale-grave"], "every": [12.0, 28.0], "vol": 0.4}],
 	},
 	## Les forges de l'Ombre Noire : les braises des forges partout, sous le vent (et plus fort tout près).
 	&"forges_ombre": {
-		"beds": [["feu", 0.45, ""], ["desert", 0.3, ""], ["feu", 1.0, "fire"]],
+		"beds": [["forge-ronfle", 0.5, ""], ["desert", 0.3, ""], ["feu", 1.0, "fire"]],
 		"calls": [{"ids": ["rafale-grave"], "every": [16.0, 34.0], "vol": 0.3}],
 	},
 	## Les coulées : la lave qui crépite (fort au bord d'une coulée), l'air brûlant qui tremble.
 	&"coulees_lave": {
-		"beds": [["desert", 0.4, ""], ["feu", 0.3, ""], ["feu", 1.0, "fire"]],
+		"beds": [["desert", 0.4, ""], ["lave-bouillonne", 0.5, ""], ["feu", 1.0, "fire"]],
 		"calls": [{"ids": ["rafale-grave"], "every": [14.0, 30.0], "vol": 0.35}],
 	},
 	## Le sanctuaire de verre : calme, trop calme ; le bourdon de la roche, la lave derrière le verre, et
 	## de loin en loin un grondement sourd, très bas, qui monte par les pieds.
 	&"sanctuaire_magma": {
-		"beds": [["grotte", 0.55, ""], ["feu", 0.3, ""]],
+		"beds": [["grotte", 0.55, ""], ["feu", 0.3, ""], ["volcan-grondement", 0.35, ""]],
 		"calls": [{"ids": ["rafale-grave"], "every": [22.0, 45.0], "vol": 0.25}],
 	},
 	## La porte du cratère : le vent du sommet, chaud d'un côté, frais de l'autre ; les deux torches.
@@ -169,7 +169,7 @@ const AMBIENCES := {
 	## un vent tiède du bord, et de loin en loin un souffle grave et lent, comme une respiration (c'est lui :
 	## la rafale grave, à intervalles presque réguliers). Le cratère : on descend la spirale, il respire loin.
 	&"terre_apex": {
-		"beds": [["grotte", 0.4, ""], ["desert", 0.25, ""], ["feu", 1.0, "fire"]],
+		"beds": [["grotte", 0.4, ""], ["desert", 0.25, ""], ["volcan-grondement", 0.3, ""], ["feu", 1.0, "fire"]],
 		"calls": [{"ids": ["rafale-grave"], "every": [8.0, 12.0], "vol": 0.35}],
 	},
 	## Le Cœur des Apex : la salle ronde à ciel ouvert, le bourdon de la roche plus fort ; le souffle tout près, plus
