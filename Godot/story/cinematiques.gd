@@ -20,7 +20,8 @@ extends RefCounted
 ## Musiques : assets/audio/music/cinematique_intro_a.ogg, _b.ogg, cinematique_fin.ogg, credits.ogg
 ## (à produire ; absentes : titre.ogg). Bruitages : ceux du document ; absents, on n'entend rien.
 
-const FOLDER := "res://assets/art/cinematiques/%s.png"
+const FOLDER := "res://assets/art/cinematiques/%s.jpg"   # (the paintings: JPG, 21 Mo instead of 126 Mo as PNG)
+const LAYER_FOLDER := "res://assets/art/cinematiques/%s.png"   # (the optional cut-out layers keep their transparency: PNG)
 const MUSIC := "res://assets/audio/music/%s.ogg"
 const SFX := "res://assets/audio/sfx/%s.ogg"
 const AMB := "res://assets/audio/ambience/%s.ogg"
@@ -421,7 +422,7 @@ static func _pan(zoom: float, x0: float, x1: float, y := 0.5) -> Array:
 
 ## A cut-out layer of a painting: <painting>_<name>.png (optional).
 static func _layer(painting: String, layer_name: String, extra := {}) -> Dictionary:
-	var layer := {"kind": "image", "path": FOLDER % ("%s_%s" % [painting, layer_name])}
+	var layer := {"kind": "image", "path": LAYER_FOLDER % ("%s_%s" % [painting, layer_name])}
 	layer.merge(extra, true)
 	return layer
 

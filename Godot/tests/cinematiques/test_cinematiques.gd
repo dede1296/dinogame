@@ -93,9 +93,9 @@ func test_l_intro_neuf_images_et_le_carton() -> void:
 	assert_str(String(seq["plans"][8]["text"])).is_equal("Et l'île apparaît. Les légendes, ça se trouve.")
 	assert_str(String(seq["flag"])).is_equal("intro_vue")
 	assert_str(String(seq["end"])).is_equal("black")
-	assert_array(files(seq)).contains_exactly(["intro_01_large.png", "intro_02_falaises.png", "intro_03_cabinet.png",
-		"intro_04_oeufs.png", "intro_05_carte_vide.png", "intro_05_carte.png", "intro_06_chambre.png", "intro_07_ponton.png",
-		"intro_08_brume.png", "intro_09_arrivee.png"])
+	assert_array(files(seq)).contains_exactly(["intro_01_large.jpg", "intro_02_falaises.jpg", "intro_03_cabinet.jpg",
+		"intro_04_oeufs.jpg", "intro_05_carte_vide.jpg", "intro_05_carte.jpg", "intro_06_chambre.jpg", "intro_07_ponton.jpg",
+		"intro_08_brume.jpg", "intro_09_arrivee.jpg"])
 
 
 func test_la_fin_dix_plans_puis_les_credits() -> void:
@@ -110,9 +110,9 @@ func test_la_fin_dix_plans_puis_les_credits() -> void:
 	assert_phrases(seq)
 	assert_str(String(seq["plans"][8]["text"])).contains("« Ce qui dort n'est pas mort. »")
 	assert_str(String(seq["flag"])).is_equal("fin_vue")
-	assert_array(files(seq)).contains_exactly(["fin_01_jetee_fete.png", "fin_02_barque_visiteurs.png", "fin_03_forges.png",
-		"fin_04_tasse_bleue.png", "fin_05_gardiennes.png", "fin_06_dinos_vif.png", "fin_06_dinos_base.png", "fin_07_brac_nuit.png",
-		"fin_08_souverain.png", "fin_09_journal_sans_trait.png", "fin_09_journal.png", "credits_fond_sans_lanterne.png", "credits_fond.png"])
+	assert_array(files(seq)).contains_exactly(["fin_01_jetee_fete.jpg", "fin_02_barque_visiteurs.jpg", "fin_03_forges.jpg",
+		"fin_04_tasse_bleue.jpg", "fin_05_gardiennes.jpg", "fin_06_dinos_vif.jpg", "fin_06_dinos_base.jpg", "fin_07_brac_nuit.jpg",
+		"fin_08_souverain.jpg", "fin_09_journal_sans_trait.jpg", "fin_09_journal.jpg", "credits_fond_sans_lanterne.jpg", "credits_fond.jpg"])
 
 
 func test_f06_suit_le_dino_de_depart() -> void:
@@ -125,7 +125,7 @@ func test_f06_suit_le_dino_de_depart() -> void:
 			d.nickname = "plume"   # (renamed by the player, written small: the phrase opens with a capital)
 		var f06: Dictionary = Cinematiques.end_sequence()["plans"][5]
 		assert_str(String(f06["id"])).is_equal("F-06")
-		assert_str(String(f06["image"]).get_file()).is_equal("fin_06_dinos_%s.png" % expected[species][0])
+		assert_str(String(f06["image"]).get_file()).is_equal("fin_06_dinos_%s.jpg" % expected[species][0])
 		assert_str(String(f06["text"])).starts_with(expected[species][1])
 		var n := Cinematiques.word_count(String(f06["text"]))
 		assert_int(n).override_failure_message("F-06 %s : %d mots" % [species, n]).is_between(8, 14)
