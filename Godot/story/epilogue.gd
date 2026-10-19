@@ -338,7 +338,8 @@ static func _step_cast() -> Dictionary:
 	var step := A.spot("MARCHE_MAIA", Vector2(-70.0, -20.0))
 	var maia := A.person(["MaiaMarche"], ["maia_arche", "maia_manteau", "maia"], step, "down", MAIA)
 	if maia:
-		Stage.sit(maia)
+		if not Outfits.pose(maia, &"assis_marche"):   # (her coat without the stone: the step; else the usual sitting)
+			Stage.sit(maia)
 	var bird: DinoNpc = A.stand_in(&"dimorphodon", step + V.SHOULDER, "MoustiqueMarche", V.MOUSTIQUE_LEVEL, 0.8)
 	if bird:
 		var sprite := Stage.sprite_of(bird)

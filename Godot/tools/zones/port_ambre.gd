@@ -119,8 +119,9 @@ static func build() -> Region:
 ## boat, Dame Suie on the quay, Cabosse and Grognon (Brac is the night watchman); the others go home, and
 ## Mastoc too (by Brac on the pier, he would bar the way to Maïa's boat).
 static func _epilogue(root: Region) -> void:
-	A.person(root, "MaiaMarche", "Maïa", ["maia_arche"], AP.MARCHE_MAIA, {"facing": "down", "event": &"maia_marche",
+	var maia := A.person(root, "MaiaMarche", "Maïa", ["maia_arche"], AP.MARCHE_MAIA, {"facing": "down", "event": &"maia_marche",
 		"show_flag": &"tasse_bleue", "hide_flag": &"epilogue_cabinet"})
+	maia.set_meta(Outfits.HELD_META, &"assis_marche")   # sitting on the step from the start (no stone: maia_arche_assise)
 	B.dino_npc(root, "CaillouRuelle", &"triceratops", AP.RUELLE_CAILLOU.x, AP.RUELLE_CAILLOU.y, {"event": &"caillou_ruelle",
 		"show_flag": &"tasse_bleue", "hide_flag": &"epilogue_cabinet"})
 	# [node, name, sheets, place, facing, event, gone once, stand-in's tint]

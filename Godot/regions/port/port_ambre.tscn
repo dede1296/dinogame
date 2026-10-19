@@ -840,6 +840,7 @@ sheet = ExtResource("18_f18nk")
 event = &"maia_marche"
 show_flag = &"tasse_bleue"
 hide_flag = &"epilogue_cabinet"
+metadata/held_pose = &"assis_marche"
 
 [node name="CaillouRuelle" type="StaticBody2D" parent="Entities" unique_id=1588038770]
 position = Vector2(1315.2, 504)

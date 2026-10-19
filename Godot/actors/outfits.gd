@@ -85,7 +85,10 @@ const POSES := {
 	# stone is in the picture, its cell taller than her sheet's: lowered so their feet meet, _add_pose).
 	"brac": {&"assis": {"sheet": "brac_assis_cage", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
 	"leonce": {&"assis": {"sheet": "leonce_assis", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
-	"maia_arche": {&"assis": {"sheet": "maia_pierre", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]}},
+	"maia_arche": {
+		&"assis": {"sheet": "maia_pierre", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+		&"assis_marche": {"sheet": "maia_arche_assise", "cols": 4, "rows": 2, "frames": [[0], [1], [2], [3]]},
+	},
 	# Chapter 9 (docs/direction-artistique.md § Hélène, docs/chapitre-9-scenes.md): Hélène sits on the ground
 	# in the crater (helene_sol: held by Isaure, the scenes' Stage.sit), in Roc's armchair at the Cabinet: her
 	# Npc there says it wears the armchair's poses (meta « person » « helene_fauteuil », tools/zones/cabinet.gd).
