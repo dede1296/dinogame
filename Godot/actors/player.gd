@@ -92,6 +92,9 @@ var slippery := false
 ## Recent positions, oldest first: the companion walks in Chloé's footsteps.
 var trail: PackedVector2Array = []
 var facing := Vector2.DOWN
+## Where her picture looks among 8 directions (SheetFrames.next_view): used on her feet when her
+## look's sheet has three-quarter views (X_diag.png), else the dominant axis of `facing`.
+var _view := {}
 var busy := false   # during an interaction
 var _goal: Node2D            # what a click sent her to (go_and_interact)
 var _goal_stuck_s := 0.0
@@ -384,6 +387,9 @@ func _animate(input: Vector2) -> void:
 		sprite.play(Outfits.pose_anim(get_meta(&"pose"), dir, get_meta(&"pose_look", "")))
 		return
 	var look := Outfits.walk_look(self)   # (her accessories: Outfits)
+	# On her feet, her three-quarter views when her look's sheet has them (SheetFrames.walk_dir).
+	_view = SheetFrames.next_view(_view, facing, input.length() > 0.1, get_physics_process_delta_time())
+	dir = SheetFrames.walk_dir(sprite.sprite_frames, look, _view, facing)
 	if speed > 12.0 and not _sliding:
 		sprite.play(StringName(look + "walk_" + dir))
 		# Quicker steps when faster, but less than the speed (running: longer strides, not a flurry).
@@ -546,6 +552,7 @@ func nearest_interactable() -> Node2D:
 
 func face_towards(point: Vector2) -> void:
 	facing = (point - global_position).normalized()
+	_view = {}   # (turned on purpose: no margin, no hold)
 	_animate(Vector2.ZERO)
 
 

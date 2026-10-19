@@ -117,7 +117,8 @@ const HELD_META := &"held_pose"
 # ------------------------------------------------------------------ Chloé's accessories
 
 ## Adds her looks on foot to her frames (bottes:walk_<dir>, bottes:idle_<dir>; manteau:… once
-## drawn).
+## drawn), with their three-quarter views when drawn (bottes:walk_down_left…: SheetFrames.character
+## reads chloe_bottes_diag.png, chloe_manteau_diag.png).
 static func dress_chloe(frames: SpriteFrames, fps: float) -> void:
 	_merge(frames, SheetFrames.character(load(DIR % BOOTS_SHEET), fps), BOOTS)
 	if drawn(COAT_SHEET):

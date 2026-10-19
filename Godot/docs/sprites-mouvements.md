@@ -38,6 +38,15 @@ la tête de profil. Une entité mobile a les vues dont ses mouvements ont besoin
 4. **Échelle** : une entité garde la même taille à l'écran quelle que soit la vue (hauteur de référence dans `Heights`, 1 case = 1 m) ; on contrôle que face et profil se superposent à ±5 % en hauteur.
 5. **Pas de rotation d'image** pour simuler une direction, sauf pour un objet sans avant (une feuille, une boule). Un petit roulis d'embarcation (balancement) est permis : c'est du mouvement, pas de la direction.
 
+## Trois-quarts de Chloé (19/10)
+
+- **Format** : à côté d'une planche de marche `X.png`, `X_diag.png` : mêmes cellules, 4 colonnes (le cycle de marche) × 2 lignes : ligne 0 vers le coin **bas-gauche** de l'écran (trois-quarts face), ligne 1 vers le coin **haut-gauche** (trois-quarts dos). Livrées : `chloe`, `chloe_bottes` (`chloe_manteau` à venir) ; une nouvelle planche s'importe (`--import`) avant d'être vue.
+- **Droites** : jamais dessinées ; `SheetFrames.character` les fait une fois en mémoire, miroir de la planche (pas de `flip_h` à tenir : selle, poses, vue 3D inchangées). Animations `walk_/idle_` + `down_left`, `up_left`, `down_right`, `up_right` (attente = 1re image), préfixées par le look (`bottes:`, `manteau:`, `Outfits.dress_chloe`).
+- **Règle** (`SheetFrames.diagonal_name`, `next_view`) : diagonale à 25° au moins des deux axes, marge de 4° contre le scintillement ; une diagonale ne cède à l'un de ses deux axes qu'après 0,1 s tenu : au clavier, on lâche rarement les deux touches ensemble, elle s'arrête de trois-quarts.
+- **Où** : seulement à pied, marche, course et attente (`Player._animate`) ; selle, nage, vol, lave, poses de scène et PNJ gardent leurs 4 sens. La direction regardée pour interagir (`facing`) ne change pas.
+- **Repli** : planche `_diag` absente (ou illisible) pour le look porté : l'axe dominant, comme avant (`SheetFrames.walk_dir`), sans erreur.
+- **Vérifié par** `tests/animations/test_trois_quarts.gd` (GdUnit4, sans fenêtre) et `tools/scenarios/diagonales_test.gd` (captures, 4 sens, arrêts, bottes).
+
 ## La règle artistique
 
 - **Même main partout** : contour, palette, lumière (chaude en haut à gauche, comme les décors) et traitement des ombres de `docs/direction-artistique.md`. Une nouvelle vue se dessine **à partir de la vue existante** (nano-banana en édition de l'image de référence), jamais en repartant d'une page blanche : sinon l'espèce change de tête d'une vue à l'autre.
