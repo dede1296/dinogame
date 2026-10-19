@@ -867,3 +867,11 @@ Défauts connus restants (courts, sans gravité) :
 - `fin_09_journal` : les gribouillis ont un air régulier de près (le moteur peut les flouter).
 - `fin_02_barque_visiteurs` : Isaure change peu (déjà proche de sa planche) ; l'édition a aussi légèrement redessiné de petits détails.
 - `intro_04_oeufs` : l'œuf corail, désormais très long, touche presque le petit mot collé sur le dôme.
+
+## Diagonales de Chloé
+
+Planches de marche en trois-quarts (19/10) : `characters/chloe_diag.png`, `chloe_bottes_diag.png`, `chloe_manteau_diag.png`.
+Cellules de la planche de base (123×184, 122×185, 143×184), 4 colonnes (cycle de marche : jambes ensemble, grand pas, pied arrière levé,
+pied avant en balancement) × 2 lignes : 0 = bas-gauche (trois-quarts face), 1 = haut-gauche (trois-quarts dos). Les diagonales droites
+sont affichées en miroir horizontal. Hauteur dessinée ≈ 175 px, pieds 4 px au-dessus du bas de la cellule. Méthode : `tools/art-jobs/diagonales_chloe.mjs`.
+À refaire avec nano-banana si le pas inverse (autre jambe devant) est jugé nécessaire.
