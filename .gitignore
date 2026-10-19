@@ -30,3 +30,4 @@ Unreal/**/DerivedDataCache/
 *.pch
 *.obj
 *.TMP
+Godot/reports/
