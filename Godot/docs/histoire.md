@@ -1360,42 +1360,154 @@ Drapeaux (détail et objets dans `chapitre-8-scenes.md`) : `volcan_ouvert`, `cen
 
 ## Chapitre 9 — La Terre des Apex
 
-1. **La porte.** Isaure propose un marché : ensemble, avec le Souverain, plus personne ne mourra de
-   faim au port. Chloé refuse. **Combat contre Isaure** (le Masque), équipe complète.
-2. Vaincue, Isaure brise une fiole d'**ambre noir** sur les cinq Cœurs réunis. Le cratère s'ouvre, le
-   volcan hurle. Au centre, dans un bloc d'ambre géant, le **Souverain**… et **Hélène**, figée à ses
-   côtés, une main posée sur lui.
-3. L'ambre noir atteint le Souverain : il s'éveille, **corrompu**, terrifié. Isaure perd tout contrôle
-   et se retrouve en danger : **Maïa la protège** (elle est à ses côtés depuis l'Arche du Vent, ch. 7 :
-   elle « la tient », comme elle l'avait dit). Après le Souverain, Chloé rend à Maïa Moustique et le masque
-   en carton ; Maïa le tend une seconde fois à sa mère.
-4. **Combat final : apaiser le Souverain.** Chaque Sceau appelle son Alpha, qui vient aider un tour.
-   Maïa et Caillou tiennent la ligne. Le dernier geste revient à **Chloé et son dino de départ**,
-   Lien à 5 cœurs, chacun à sa façon : Vif bondit jusqu'au front du Souverain, Bastion encaisse son
-   coup de queue sans reculer, Écho chante jusqu'à ce que l'ambre réponde.
-5. Les veines violettes s'effacent. Le Souverain se calme et se couche. L'ambre autour d'Hélène se
-   fend. Hélène ouvre les yeux, voit Chloé, puis le dino : elle le reconnaît (« le petit de
-   Griffe-Grise… », « du Vieux Rempart… » ou « de la Voix… ») et sourit : « Tu as grandi. » Page 39.
+Le chapitre le plus grand : il commence à l'aube devant une porte de bois, finit sur une jetée avec un masque
+en carton, et au milieu une bête trop grande pour l'écran qui a peur. Plan, questions pour Greg et contrat :
+[chapitre-9-plan.md](chapitre-9-plan.md) ; texte complet des scènes, pages 39 et 40, drapeaux :
+[chapitre-9-scenes.md](chapitre-9-scenes.md) (écrit le 19/10 ; scènes courtes : jamais plus de dix bulles
+d'affilée, sept choix dont un seul vrai dilemme, des temps regardés). **Deux zones nouvelles** : `terre_apex`
+(le cratère) et `coeur_apex` (le fond) ; l'aube se joue dans `porte_cratere`, l'épilogue au Cabinet et sur la
+jetée de Port-Ambre.
+
+1. **L'aube** (`porte_cratere`). Quand l'équipe est au complet **et que le dino de départ est dedans** (Isaure :
+   « Et le petit d'Hélène ? Va le chercher. Ce n'est pas moi qui te le demande : c'est elle. »), le joueur
+   choisit « C'est l'aube » (`apex_aube`). Si Chloé a encore la lettre, le choix de la donner revient. **La
+   dernière demande** (« Je ne redemande qu'une fois. ») ; « Non. » ; **le pari de marin** : « si je gagne, le
+   Cœur ; si tu gagnes, c'est toi qui décides ce qu'on fait de cette porte, et je ferai ce que tu décides. »
+   Elle siffle : **les miens**, quatre dinos de la mer qui suivent sa barque depuis la naissance de Maïa,
+   **sans une veine violette** (Hauban le Pteranodon, Bouline la Baryonyx « qui fait couler tout ce qui flotte »,
+   Étrave le Suchomimus, Carène l'Archelon « qui a l'âge de ma barque ») : Isaure a toujours eu le Lien. Elle
+   **avoue le troisième œuf** (« je l'ai pris sur une couveuse, une nuit, avec ma clé, et je l'ai donné à Brac ;
+   c'est lui, dans ton équipe »), avant : « ta marraine disait qu'on avoue avant ». Maïa : « Je suis de son
+   côté. Je ne me bats pas. Je regarde. C'est le plus dur. »
+2. **Le duel** (Hauban 47, Bouline 47, Étrave 48, Carène 49 ; aucun n'est corrompu : on les bat). Avant Carène,
+   un **choix** de ce que dit Chloé (« Maïa regarde. » / « Ils n'ont pas peur de vous. » / rien) : Carène
+   « regarde Isaure, puis Chloé, et prend son temps » (elle hésite un tour). Perdu : « L'aube peut attendre
+   encore un peu : elle a attendu un an. » Gagné : **les Kerval tiennent parole**. Isaure rend les quatre Cœurs
+   (« cinq battements, puis un seul ») : « Décide, moussaillon. » **Le seul vrai dilemme** du jeu (ouvrir
+   ensemble, sans ambre noir / laisser fermée : Maïa parle, le cinquième Cœur bat, les deux chemins se
+   rejoignent). Isaure ne promet pas : « Je ne la toucherai pas tant qu'il y aura un autre moyen. Ça, je peux le
+   tenir. » **Chloé pose elle-même les cinq Cœurs** ; les torches s'éteignent, les battants s'ouvrent, Caillou
+   éternue : « J'ai dit que je ne la laisserais pas ouvrir cette porte. C'est vrai : c'est moi qui l'ai
+   ouverte. » Isaure passe devant (« si quelque chose doit arriver en premier, ce sera à moi »), Maïa à côté.
+3. **La Terre des Apex** (`terre_apex`). Pas de lave : de la roche noire veinée d'ambre qui luit sans lune, un
+   chemin en spirale « comme l'île », des blocs gros comme des maisons avec des **géants** dedans (« Chacun chez
+   soi » : le post-game), et tout en bas un bloc plus grand que le Cabinet, une petite forme assise contre, une
+   main posée. Moustique cesse de trembler : pas de feu ici. **Page 39** sous la pierre plate du dernier cairn,
+   fait vite : « il a les yeux ouverts. Il ne dort pas. Il n'a jamais dormi. Il a peur, et il attend que ça
+   passe, et ça ne passe pas, parce qu'il est tout seul. … Il a peur. Moi aussi. J'y vais. »
+4. **Le bloc** (`coeur_apex`). Le Souverain couché, immense, **les yeux ouverts** (il regarde dehors et il
+   attend) ; Hélène assise contre son flanc, dans l'ambre jusqu'au cou, la main à plat « comme on calme un
+   cheval », les mains abîmées. Isaure pose sa main sur la sienne, de l'autre côté (« Elle n'a jamais eu l'air de
+   dormir. Même quand elle dormait. »). **Trois essais** pour fendre l'ambre (griffes, charge, chant : « Hélène
+   n'a pas fait une porte : elle a fait un abri »). **La goutte** : « Il n'y a pas d'autre moyen, moussaillon.
+   J'ai regardé très fort. » Une goutte d'ambre noir **sur l'ambre d'Hélène, pas sur lui** (« J'ai tenu parole
+   aussi longtemps que j'ai pu. Un an, c'est ce que j'avais. ») ; Chloé : « (La même erreur qu'elle. « Ne fais
+   pas les mêmes erreurs qu'elle » : c'est Isaure qui me l'a dit, sur la passerelle.) » **L'éveil** (sans texte) :
+   la veine noire comme de l'encre dans l'eau, l'ambre qui se fend en étoile, Hélène qui glisse dans les bras
+   d'Isaure « sans trembler »… et la veine qui court jusqu'au Souverain : violet jusqu'aux yeux, il se lève, la
+   tête hors de l'écran, et **crie de peur**. Sa queue balaie : **Caillou** charge et tient, cornes contre queue ;
+   **Maïa** tire sa mère et Hélène derrière un rocher : « Je te tiens. Je t'ai dit que je te tiendrais. » Isaure :
+   « Va, moussaillon. Je ne peux pas. Je n'ai jamais pu : je faisais semblant, avec une fiole. » Le dino de
+   départ se met entre Chloé et lui (**Lien 5**). « (Il a peur. Moi aussi. J'y vais.) »
+5. **Apaiser le Souverain** (niveau 50, corrompu, jauge de calme **triple**, jamais au sol, jamais capturé ; il
+   « frappe en reculant »). La commande **« Sceaux »** : chacun des **huit** Sceaux appelle son Alpha **une fois**
+   pour un tour : le Tricératops fait mur, la meute l'étourdit, le Spinosaure apporte l'eau « dans sa gueule,
+   sans en perdre une goutte », Piment rugit « à côté de lui, sans peur », Minuit chante « par les veines
+   d'ambre » (il n'entre pas), Toupet gèle la colère, le Roi donne le vent, Cheminée **se couche à côté de lui**.
+   **Caillou tient la ligne** (une fois, le coup qui mettrait un dino au sol). L'**Ambre clair** n'agit que quand
+   le calme est aux deux tiers (« Il est trop grand pour une goutte. Il faut d'abord qu'il l'écoute. ») ; alors
+   **le dernier geste** : Vif bondit jusqu'au front et **le gratte sous le menton** (Griffe-Grise) ; Bastion
+   encaisse le coup de queue sans reculer et souffle un nuage de cendre pour dire bonjour (le Vieux Rempart) ;
+   Écho chante la note tremblante de la Voix, et l'ambre répond ; et Chloé verse la goutte. « Une seule. »
+   Perdu : il recule contre la paroi et attend ; les veines du sol luisent et l'équipe se relève ; Maïa :
+   « Encore. Il ne part pas, et nous non plus. »
+6. **Hélène.** Les veines s'éteignent ; il se couche ; le volcan se tait ; il **souffle** sur le rocher, et ce qui
+   reste d'ambre autour d'Hélène se fend « comme une noix » (il y avait un autre moyen : c'était lui). Hélène
+   ouvre les yeux, regarde le Souverain d'abord, puis Chloé, puis le dino : « Le petit de Griffe-Grise. Il a ses
+   yeux. Et deux dents de plus. » / « Le petit du Vieux Rempart. On s'est assis dessus, je parie. » / « Le petit
+   de la Voix. Il chante faux. Ça ne fait rien. » **« Tu as grandi. »** « Tu ne m'as pas cherchée tout de suite. —
+   Non. Je les ai trouvés d'abord. Les trois. — Bien. … Alors c'est tout de suite. » À Isaure, qui la tient :
+   « Tu m'as toujours sortie de partout. Mal. Et je suis toujours sortie. … Tu as attaché tes cheveux. — Tu as un
+   an de retard pour le remarquer. » Il baisse la tête jusqu'à elle, souffle sur ses mains : « C'est la première
+   fois que je le vois sans peur. C'est toi qui as fait ça. Avec lui. » Chloé rend **Moustique** et le **masque en
+   carton** ; Maïa le tend une seconde fois ; Isaure le prend, ne le met pas : « Pas encore. » (« C'est mieux que
+   « pas aujourd'hui ». On avance. ») Le **Roi des Cieux** n'était jamais reparti : il redescend Hélène et Chloé
+   (« Je vais fermer les yeux, Chloé. Juste cette fois. Ne le dis pas à Anselme. ») ; Maïa, Isaure et Caillou
+   remontent à pied. Le Souverain reste couché au centre du cratère, les yeux ouverts, sans peur.
 
 ## Épilogue
 
-- Hélène, affaiblie, rentre au Cabinet. Elle et Isaure se parlent enfin : pas de pardon facile,
-  mais une porte ouverte.
-- **La troisième voie** : Hélène annonce la **Réserve d'Ambrelune**. Des chercheurs et des visiteurs
-  viendront, encadrés, et le port vivra de ça : les bateaux d'Isaure les amèneront. Isaure, avec
-  Roc, démonte les forges.
-- Le Souverain reste éveillé, paisible, gardien du cratère. Le volcan s'apaise.
-- Maïa et Chloé deviennent les premières **gardiennes** de la Réserve.
-- Hélène tend à Chloé la **page 40**, qu'elle vient d'écrire.
+Deux scènes, dans des zones existantes, après un fondu « Trois jours plus tard ».
+
+1. **Le Cabinet.** Hélène dans le fauteuil de Roc ; Roc fait du thé « depuis trois jours ». « Tu as surveillé le
+   sceau. Chaque nuit. — Vous aviez dit « pas même à Chloé ». — J'avais tort. Elle a tout trouvé toute seule. —
+   Elle trouve tout toute seule. C'est très agaçant. Comme vous. » Les **moufles** de Bertille rendues
+   (« Parfaites »). Les carnets rapportés par Dame Suie (« on brûlera le reste ensemble, elle et moi ; les bons,
+   on les garde »). On frappe : **Isaure** sur le seuil ; Roc : « Tu venais prendre le thé, au début. Puis tu venais
+   à la porte. — Je suis à la porte, Anselme. » **La tasse bleue** (page 25), gardée en haut de l'étagère,
+   poussée vers Isaure avec une moufle. Pas de pardon facile : « Tu as fait peur à des bêtes qui dormaient.
+   Pendant douze ans. Et tu m'as pris mes carnets, et un œuf, et vingt ans. — Oui. — Je ne te pardonne pas
+   aujourd'hui. Je ne sais pas quel jour. Mais je sais ce que tu vas faire d'ici là. » **Les forges démontées**
+   par Isaure, « avec tes mains, pas avec des gens payés » (Roc tient l'échelle : il a le vertige), puis **des gens
+   ramenés en barque**, « vivants, et avec rien dans les poches qui brille » : **la Réserve d'Ambrelune**. « Il
+   fallait quelqu'un qui connaisse la mer. Je n'avais que toi. Je n'ai toujours que toi. » Isaure boit. (Si la
+   lettre n'avait pas été donnée, elle est lue ici, en silence : « Tu écris tout. — Tu ne lis rien. On se
+   complète. ») Chloé sort : Maïa sur la marche (« Je ne l'ai jamais vue avec quelqu'un qui dit non. — Hélène dit
+   non pas fort. — C'est pire. »), Caillou éternue.
+2. **La jetée** (le lendemain). Tout le village, « ce qui ne fait pas beaucoup de monde, et c'est déjà plus
+   qu'avant » ; Hélène au bras de Roc, un chapeau neuf, « en paille : pas de feutre, Cheminée aime le feutre ».
+   « Je ne ferai pas de discours. Anselme en a préparé un ; il le gardera. » **La Réserve** : « Cette île est à
+   ceux qui y dorment. Elle ne se vend pas, pas un galet. Mais elle se montre. » Les barques d'Isaure (« c'est moi
+   qui tiens la barre »), le poisson qui « revient quand on arrête de le regarder », M. Hamon (« Un parc ! » /
+   « Une réserve, monsieur Hamon. Vous aurez un banc. »). **Brac**, du bout de la jetée : « ET MOI ? Je connais les
+   cages. Dans l'autre sens, ça doit se faire. » Sa carte a enfin une adresse (« Le bout de la jetée. — C'est une
+   adresse. ») : **gardien de nuit** (« Crotte de Stégosaure. C'est oui, moucheron, arrête de sourire. »). **Les
+   gardiennes** : deux disques d'ambre nus à la fougère (« Les Alphas vous reconnaissent déjà. Ce n'est pas un
+   cadeau : c'est du travail. ») ; à Maïa : « Tu étais du côté de ta mère. C'est le plus difficile des deux. Et tu
+   as tenu : la ligne, et elle. » Roc se mouche (« C'est le vent. »). **« Bouh. »** : Isaure met le masque en
+   carton, l'élastique cassé, tenu à la main ; Maïa : « C'est nul. C'est le meilleur « bouh » du monde. » : le
+   premier rire des deux Kerval ensemble ; Brac rit, Caillou éternue sur Brac. Puis, au bout de la jetée où Chloé
+   a débarqué le premier jour, la **page 40**, écrite le matin même (« l'encre a séché sur la barque ») : « on ne
+   réveille rien de force, ni un dino, ni une amie, ni un port ; on s'assoit à côté » ; « Fais confiance **comme**
+   les dinos : à qui reste » ; « Le Cabinet est à toi. Il l'a toujours été. Je reprends juste mon fauteuil. » Le
+   dino de départ pose sa tête contre la jambe de Chloé ; au loin, sur le bord du cratère, une forme immense
+   couchée regarde la mer. « Tu as grandi, toi aussi. » Carton **Ambrelune** ; « L'île est à vous. Les géants du
+   cratère se réveillent un à un… »
+
+Ce qui change après : les cinq Cœurs restent dans la porte ouverte ; l'Ambre clair est consommé ; Moustique et
+le masque en carton sont à Maïa ; les moufles à Hélène ; Chloé a l'**insigne de gardienne** ; Hélène est au
+Cabinet (son fauteuil), Isaure à sa barque (voyage rapide par la mer, « tarif unique : rien »), Brac gardien de
+nuit au bout de la jetée, Dame Suie sur le quai sans gants (« Je sais défaire. C'est la première règle ; je l'ai
+apprise en dernier. »), le Souverain couché au centre du cratère, visitable.
+
+Drapeaux (détail dans `chapitre-9-scenes.md`) : `apex_aube`, `isaure_pari`, `isaure_aveu_oeuf`,
+`isaure_vaincue`, `coeurs_rendus`, `apex_decision`, `apex_ouvert` (celui que `dialogue_volcan.gd` attend),
+`apex_arrivee`, `found_journal_39` (= `page_39`), `bloc_geant_vu`, `coeur_apex_arrivee`, `helene_vue`,
+`essai_griffes` / `_charge` / `_chant`, `essais_finis`, `goutte_noire`, `souverain_eveille`, `helene_sortie`,
+`caillou_rempart`, `starter_lien_5`, `souverain_apaise`, `helene_liberee`, `helene_reveillee`,
+`moustique_rendu`, `masque_carton_rendu`, `masque_carton_pris`, `apex_fini`, `epilogue_cabinet`,
+`moufles_rendues`, `isaure_cabinet`, `tasse_bleue`, `lettre_lue`, `reserve_dite`, `epilogue_port`,
+`reserve_annoncee`, `brac_gardien`, `gardiennes_nommees`, `masque_carton_porte`, `found_journal_40`
+(= `page_40`), `epilogue_fini`, `post_game`. Objets : `insigne_gardienne` ; `coeur_1` à `coeur_5`,
+`antidote_ambre`, `masque_carton`, `moufles_helene`, `lettre_isaure` quittent le sac.
 
 ## Post-game
 
-- **La Terre des Apex** s'explore : les géants endormis du cratère se réveillent un à un.
-- **Les fossiles légendaires** (Titanosaure d'Or…) à ressusciter au Cabinet.
+- **La Terre des Apex** s'explore : les quatre blocs des géants (Giganotosaurus, Argentinosaurus, un
+  Therizinosaurus géant, un « petit » géant au marque-page) se réveillent **un à un**, par un **réveil doux**
+  (sans rien forcer : on s'assoit à côté, avec Hélène qui dit comment, et un Lien qui monte) ; le Souverain,
+  couché au centre, respire, et la cendre bouge.
+- **Les fossiles légendaires** (Titanosaure d'Or…) à ressusciter au Cabinet, avec Hélène.
 - **Le Dinodex** à compléter, habitat par habitat, de jour, de nuit et à la pleine lune.
-- **Revanches** : Maïa (niveau 50), les Alphas (qui peuvent rejoindre Chloé une fois vaincus à nouveau).
-- **Hélène au Cabinet** : de nouvelles conversations, et des œufs d'ambre rares.
-- **Nouvelle partie+** : recommencer avec un autre œuf (voir [mecaniques.md](mecaniques.md)).
+- **Revanches** : Maïa (niveau 50, défi n° 6 au Grand Crâne, « pour voir », une fois par jour), les Alphas (qui
+  peuvent rejoindre Chloé une fois affrontés à nouveau : « les gardiens connaissent la gardienne »).
+- **Hélène au Cabinet** : de nouvelles conversations (les géants, les Anciens, Isaure et les forges, « ma
+  recette pour un Alpha qui boude : trois semaines sur une pierre chaude, prévois deux chapeaux »), et des œufs
+  d'ambre rares, « les derniers que je réveillerai. Les autres, c'est toi. Doucement. »
+- **Autour** : Isaure à sa barque (voyage rapide par la mer), Brac gardien de nuit (sa lanterne, son sandwich,
+  le panneau « BARC » de Roc), Dame Suie sur le quai, Bertille qui tricote, les Anciens qui savent.
+- **Nouvelle partie+** : recommencer avec un autre œuf (voir [mecaniques.md](mecaniques.md)) : un autre dernier
+  geste, une autre phrase d'Hélène au réveil.
 
 ## Le Grand Voyageur (voyage rapide)
 
@@ -1529,7 +1641,9 @@ tu as Vif), plus Caillou.
 | 5 ✅ | Monts Gelés, devant le sanctuaire de Givre (ch. 6) | Pouce (Iguanodon), Moustique (Dimorphodon), son œuf, Caillou (Tricératops) | Elle a questionné sa mère, qui a « reposé sa tasse, très doucement ». « Je veux l'arrêter. Pas la perdre. » Pas pour gagner : pour savoir si elle est prête. Puis elles font équipe ; sa barque est à Chloé |
 | — | Arche du Vent (ch. 7) | — | « Maman. Arrête. » ; devine que sa mère va chercher Hélène ; **part avec elle** (« Je ne peux pas t'arrêter. Alors je ne te perds pas. ») ; confie Moustique et son masque en carton à Chloé |
 | — | Porte du cratère (ch. 8) | — | À côté de sa mère depuis l'Arche : elle a dit bonjour aux sbires un par un, merci à Brac pour une carte de visite (Dame Suie bascule en la voyant passer « sans une goutte, et sans peur ») ; elle garde la porte avec Isaure ; refuse de reprendre Moustique (« s'il est avec toi, tu es obligée de revenir ») ; « Demain, à l'aube, je serai de son côté de la porte. Pas contre toi. » |
-| — | Ch. 9 | — | Elle protège sa mère ; alliée de Chloé « d'en bas » ; Moustique et le masque en carton lui reviennent |
+| — | Porte du cratère, l'aube (ch. 9) | — | « Je suis de son côté. Je ne me bats pas. Je regarde. C'est le plus dur. » ; apprend que sa mère a volé le troisième œuf (« Tu ne me l'avais pas dit. — Je te le dis maintenant. Avant, pas après. ») ; au fond du cratère, **tient sa mère par le col** et Hélène avec, pendant que Caillou tient la queue du Souverain (« Je te tiens. Je t'ai dit que je te tiendrais. ») ; Moustique et le masque en carton lui reviennent ; elle tend le masque une seconde fois (« Pas encore. — C'est mieux que « pas aujourd'hui ». ») |
+| — | Jetée de Port-Ambre (épilogue) | — | Nommée **gardienne** avec Chloé (« Tu étais du côté de ta mère. C'est le plus difficile des deux. ») ; sa mère met le masque en carton : « Bouh. » / « C'est nul. C'est le meilleur « bouh » du monde. » : leur premier rire ensemble |
+| 6 | Grand Crâne (post-game) | niveau 50, « pour voir », une fois par jour | Gardienne du Crâne (« Et toi ? … Tout le reste ? C'est injuste. On échange demain. ») |
 
 ---
 
@@ -1580,8 +1694,8 @@ précise, chaleureuse, parfois drôle, de plus en plus inquiète.
 | 36 | Volcan · coulées (le rocher au milieu de la lave : sur un dino de pierre ou de feu) | −1 an | Si le sceau cède | Son plan : se sceller avec le Souverain pour le calmer de l'intérieur ; « ce n'est pas un sacrifice, Anselme : c'est une position confortable » |
 | 37 | Volcan · forges (remise par Dame Suie, qui l'a gardée un an sans l'ouvrir ; Chloé la porte à Isaure) | −1 an | Pour Isaure | Lettre : « je sais que c'est toi », « c'était lâche », « tu as tort sur le moyen », « je ne te hais pas », « reviens tout court », « vingt ans à rattraper, dont la moitié est de ma faute » |
 | 38 | Volcan · porte du cratère (le camp d'Hélène, sous le cairn) | −1 an | La veille | Sa dernière nuit : les trois œufs, la lettre à Chloé « qui dit beaucoup moins que je voudrais », « J'ai peur. Je l'écris une fois », « ne me cherche pas tout de suite. Occupe-toi d'eux d'abord. Ils sont plus petits. » |
-| 39 | Terre des Apex | −1 an | Il a peur | Écrite au bord du cratère : « Il a peur. Moi aussi. J'y vais. » |
-| 40 | Remise par Hélène | aujourd'hui | Ce qui dort n'est pas mort | Écrite après son réveil, pour Chloé. La fin. |
+| 39 | Terre des Apex · bord du cratère (le dernier cairn, fait vite, sous une pierre plate) | −1 an | Il a peur | « Il a les yeux ouverts. Il ne dort pas. Il n'a jamais dormi. Il a peur, et il attend que ça passe, et ça ne passe pas, parce qu'il est tout seul. » ; « ce n'est pas un sacrifice, Anselme : c'est une position confortable, j'ai laissé la couverture en haut, il fait chaud en bas » ; « Il a peur. Moi aussi. J'y vais. » |
+| 40 | Remise par Hélène au bout de la jetée de Port-Ambre, là où Chloé a débarqué (« l'encre a séché sur la barque ») | aujourd'hui | Ce qui dort n'est pas mort | « on ne réveille rien de force, ni un dino, ni une amie, ni un port ; on s'assoit à côté, et on attend qu'il n'ait plus peur » ; « je t'ai écrit « ne fais confiance qu'aux dinos » ; j'avais tort d'un mot : fais confiance comme les dinos : à qui reste » ; « Tu as grandi, et je l'ai vu » ; « Le Cabinet est à toi. Il l'a toujours été. Je reprends juste mon fauteuil. » La fin. |
 
 La montée des révélations sur le Masque suit l'ordre des pages 3 → 11 → 14 → 21 → 23 → 34 → 37.
 Au chapitre 1, les pages 1, 3 et 4 arrivent dans l'ordre des passages choisis : chacune doit donc

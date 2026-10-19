@@ -107,7 +107,12 @@ Ses figures :
   garde Mastoc, Cabosse et Grognon (« ils regardent mon sandwich, mais ils me regardent ») et part « voir
   la mer. De LOIN. Pas en barque. » On le retrouve assis au bout de la jetée de Port-Ambre, avec ses trois
   bêtes et un sandwich, « comme un phare qui boude ». Il n'a jamais fait peur à personne : il a surtout eu
-  peur.
+  peur. À l'épilogue, c'est lui qui crie « ET MOI ? » du bout de la jetée : « Je connais les cages. Dans l'autre
+  sens, ça doit se faire. » Sa carte de visite a enfin une adresse (« Le bout de la jetée. — C'est une adresse. »)
+  : Hélène le fait **gardien de nuit** de la Réserve (« Les visiteurs auront peur de vous : c'est parfait, ils
+  resteront sur le chemin. » — « Crotte de Stégosaure. C'est oui, moucheron, arrête de sourire. »). Il surveille
+  la mer, de loin, avec une lanterne qu'il laisse à Mastoc, « qui a peur du noir ». Roc lui a fait un panneau :
+  « BARC ». Il garde.
 - **Dame Suie**, la chimiste : fabrique l'ambre noir. Froide, curieuse, pas cruelle : elle finira par
   douter. Adversaire du Marais et des Monts Gelés. Manteau couleur de cendre, gants gris perle, chapeau à
   voilette, lunettes aux verres fumés, petits ciseaux d'argent et fioles étiquetées d'une écriture fine ;
@@ -142,7 +147,11 @@ Ses figures :
   rapporte au Cabinet **les carnets d'Hélène** volés douze ans plus tôt (« Je lui dirai que je refais mes
   tables. Il ne comprendra pas. Il fera du thé. »). Elle ne demande pas pardon : elle refait ses tables.
   Ses gants gris perle restent sur l'établi des forges. « Nous nous reverrons. Là où il fait bon, cette
-  fois. »
+  fois. » On la revoit sur le quai de Port-Ambre, à l'épilogue, sans gants : « Il y a une colonne pour vous,
+  maintenant. Et une pour le Souverain : « sans une goutte ». … Une goutte, en fait. La bonne. » Avec Hélène :
+  « Vous avez brûlé mes notes. — Presque toutes, madame. — … C'est un mot merveilleux, « presque ». » Elles
+  brûleront le reste ensemble ; les bons carnets, on les garde. « Je sais défaire. C'est la première règle ; je
+  l'ai apprise en dernier. »
 - **Les sbires** : des masques d'os anonymes, souvent des pêcheurs du port payés pour se taire
   (« Il paie. Au port, plus personne ne paie. »). Gustave (la Grotte) a démissionné pour
   retourner pêcher ; son cousin Firmin garde le camp de la Forêt, avec le sbire à la lanterne, qui
@@ -269,7 +278,20 @@ déroulé du jeu, ce qui le rend rejouable (voir [mecaniques.md](mecaniques.md))
 
 **Hélène Varenne**, la grand-mère. Géniale, têtue, tendre. Disparue depuis un an. On la découvre
 à travers les **pages de son journal**, dispersées sur l'île. Elle n'est pas morte : elle s'est
-**scellée dans l'ambre**, au cœur du cratère, pour garder le Souverain endormi (voir la chronologie).
+**scellée dans l'ambre**, au cœur du cratère, pour garder le Souverain endormi (voir la chronologie) ; au
+bord du cratère, elle a compris trop tard qu'il n'avait jamais dormi : « il a les yeux ouverts ; il a peur, et
+il attend que ça passe » (page 39), et elle est descendue « lui tenir compagnie », assise contre son flanc, une
+main à plat sur lui « comme on calme un cheval ». Au chapitre 9, Isaure la sort de l'ambre d'une goutte d'ambre
+noir (mal), et le Souverain apaisé fend d'un souffle ce qui en restait. Elle ouvre les yeux, regarde le
+Souverain d'abord, puis le dino de départ (« Le petit de Griffe-Grise. Il a ses yeux. Et deux dents de plus. »)
+: « Tu as grandi. » Elle est drôle dans la minute où elle se réveille (« Tu as attaché tes cheveux. — Tu as un an
+de retard pour le remarquer. »), ferme les yeux pendant tout le vol du Roi (« Ne le dis pas à Anselme. »), et
+reprend son fauteuil au Cabinet. Elle ne pardonne pas Isaure « aujourd'hui » : elle sort la **tasse bleue**, dit
+ce qu'Isaure fera (les forges, avec ses mains ; puis des gens, en barque), et fonde la **Réserve d'Ambrelune**
+(« Cette île est à ceux qui y dorment. Elle ne se vend pas, pas un galet. Mais elle se montre. »). Un chapeau
+neuf, en paille : « pas de feutre, Cheminée aime le feutre ». La page 40, écrite le matin de la jetée : « Fais
+confiance comme les dinos : à qui reste. » Elle n'écrit pas « je t'aime » ; elle écrit « tu as mes yeux : lis
+entre les lignes ».
 
 **Professeur Anselme Roc**, ancien assistant d'Hélène et gardien du Cabinet. Bougon, maladroit,
 bienveillant. Il cache des choses : il s'absente la nuit, garde de l'ambre noir dans un tiroir
@@ -302,7 +324,15 @@ de la mer : sa barque est à Chloé. À l'Arche du Vent (chapitre 7), elle se me
 (« Maman. Arrête. »), devine ce que sa mère ne dit pas (elle va chercher Hélène), lui tend le masque en
 carton (« Pas aujourd'hui »)… et, quand Isaure s'en va, descend avec elle : « Je ne peux pas t'arrêter.
 Alors je ne te perds pas. » Elle confie Moustique et son masque en carton à Chloé (« fais-moi confiance.
-Comme avec les dinos »). Elle ne pleure pas : elle décide. Au chapitre 9, c'est elle qui protège sa mère.
+Comme avec les dinos »). Elle ne pleure pas : elle décide. Au chapitre 9, à l'aube, elle est « du côté de sa
+mère de la porte, pas contre Chloé » : « Je ne me bats pas. Je regarde. C'est le plus dur. » Au fond du
+cratère, quand le Souverain se lève et que sa queue balaie, c'est **Caillou** qui charge et tient, cornes contre
+queue, et c'est elle qui tire sa mère par le col, et Hélène avec : « Je te tiens. Je t'ai dit que je te
+tiendrais. » Pendant le combat, Caillou « tient la ligne ». Elle reprend Moustique et le masque en carton,
+tend celui-ci une seconde fois à sa mère (« Pas encore. — C'est mieux que « pas aujourd'hui ». On avance. »), et
+sur la jetée, quand Isaure le met enfin (« Bouh. »), elle rit : « C'est nul. C'est le meilleur « bouh » du
+monde. » Première gardienne de la Réserve avec Chloé (« Tu étais du côté de ta mère. C'est le plus difficile
+des deux. Et tu as tenu : la ligne, et elle. »). Elle garde le Grand Crâne, et trouve ça injuste.
 
 **Capitaine Isaure Kerval**, mère de Maïa, capitaine du port. Chaleureuse, respectée, épuisée par
 un port qui meurt. C'est elle qui amène Chloé sur l'île dans sa barque. Autrefois la **meilleure
@@ -310,7 +340,22 @@ amie d'Hélène** : c'est elle qui l'a conduite sur Ambrelune la première fois.
 de vendre l'ambre pour sauver le port, Isaure s'est sentie trahie. Elle est devenue le **Masque
 d'Obsidienne**, persuadée qu'en contrôlant le Souverain, elle pourrait tout exiger du monde pour
 son village. Ce n'est pas un monstre : c'est quelqu'un qui a fini par croire que la fin justifie
-les moyens.
+les moyens. Elle ne hausse jamais la voix (une seule fois, à l'Arche : « Non. »), appelle Chloé « moussaillon »
+et Maïa « ma tornade », et tient ses paris, « même les idiots ». Elle a **quatre dinos à elle**, qui suivent sa
+barque depuis la naissance de Maïa et qu'elle n'a **jamais forcés** (« Je n'ai jamais eu besoin. ») : **Hauban**,
+un Pteranodon au bec rayé de sel, « qui a pêché pour le port les hivers où personne ne pêchait » ; **Bouline**,
+une Baryonyx « qui fait couler tout ce qui flotte, et le regarde remonter » ; **Étrave**, un Suchomimus « qui n'a
+jamais perdu une course, ni compris pourquoi on courait » ; **Carène**, une Archelon « qui a l'âge de ma
+barque ». Elle a donc toujours eu le Lien ; elle s'est servie d'autre chose. C'est elle qui a volé le
+troisième œuf au Cabinet, « une nuit, avec ma clé », et l'a donné à Brac : elle l'avoue à l'aube du chapitre 9,
+avant le combat, « parce qu'on avoue avant ». Elle propose un pari de marin, le perd, le tient (elle rend les
+quatre Cœurs), refuse de promettre ce qu'elle ne sait pas tenir (« Je ne la toucherai pas tant qu'il y aura un
+autre moyen. Ça, je peux le tenir. »), et, au fond du cratère, verse une goutte d'ambre noir **sur l'ambre
+d'Hélène**, pas sur le Souverain (« J'ai tenu parole aussi longtemps que j'ai pu. Un an, c'est ce que
+j'avais. ») : la même erreur qu'Hélène, pour une autre raison. Elle reçoit Hélène « sans trembler ». À
+l'épilogue, elle vient au Cabinet (« Je suis à la porte, Anselme. »), boit dans la tasse bleue, démonte les
+forges avec ses mains (Roc tient l'échelle), et ses barques amènent les visiteurs de la Réserve, « tarif
+unique : rien ». Elle met le masque en carton de Maïa sur la jetée : « Bouh. »
 
 **Tante Sirocco**, vieille chasseuse de fossiles, vit sous une tente rapiécée au bord du Cimetière
 des Géants, dans le Désert. Foulard couleur de sable, lunettes de soudeur sur le front, pinceau
@@ -379,8 +424,15 @@ du Volcan** (ambre rouge sombre, une flamme, la fougère). Le masque d'obsidienn
 un éclat de ce sanctuaire, ramassé il y a vingt-cinq ans, « le dernier endroit où nous avons ri toutes les
 deux » (page 35).
 
-**Le Souverain**, l'Apex ancestral du cratère, immense, à la peau veinée d'ambre. Ni bon ni
-mauvais : c'est une force de la nature, qui a peur quand on le réveille de force.
+**Le Souverain**, l'Apex ancestral du cratère, immense, à la peau veinée d'ambre, « espèce inconnue »
+(allure à choisir : voir `chapitre-9-plan.md`, question 6). Ni bon ni mauvais : c'est une force de la nature,
+qui a peur quand on le réveille de force. Ce que personne n'avait compris avant la page 39 : **il a les yeux
+ouverts**. Il n'a jamais dormi dans son ambre : il a peur depuis vingt-cinq ans, et il attend que ça passe.
+Réveillé corrompu par la goutte d'Isaure, il **crie** (un cri, pas un rugissement), tremble, recule contre la
+paroi et « frappe en reculant, jamais en avançant ». Apaisé par Chloé et son dino de départ (le Lien à cinq
+cœurs, l'Ambre clair « quand il écoute »), il se couche, souffle sur Hélène et fend lui-même ce qui restait de
+son ambre. Il reste au centre du cratère, éveillé, couché, « les yeux ouverts, sans peur », gardien de la Terre
+des Apex ; du bout de la jetée, on voit sa forme sur le bord du volcan, qui regarde la mer. Le volcan s'est tu.
 
 ## Chronologie
 
@@ -395,11 +447,16 @@ mauvais : c'est une force de la nature, qui a peur quand on le réveille de forc
 | −12 ans | Isaure vole des notes d'Hélène sur « l'ambre forcé ». Naissance secrète de l'Ombre Noire. |
 | −1 an | L'Ombre Noire attaque le sceau à l'ambre noir. Le Souverain s'agite, le volcan gronde. Hélène écrit la lettre à Chloé, **laisse au Cabinet trois œufs** issus des Anciens, puis descend dans le cratère et se scelle dans l'ambre avec le Souverain pour le calmer de l'intérieur. |
 | Aujourd'hui | Chloé débarque à Port-Ambre. |
+| La fin (ch. 9) | À l'aube, Chloé ouvre elle-même la Terre des Apex ; Isaure sort Hélène de l'ambre d'une goutte d'ambre noir, le Souverain s'éveille corrompu et a peur ; Chloé et son dino de départ l'apaisent ; Hélène se réveille. Trois jours plus tard, la tasse bleue au Cabinet ; le lendemain, la **Réserve d'Ambrelune** est annoncée sur la jetée : l'île « ne se vend pas, pas un galet ; mais elle se montre ». Chloé et Maïa, gardiennes ; Isaure démonte les forges et ses barques amènent les visiteurs ; Brac, gardien de nuit ; le Souverain, éveillé et sans peur, garde le cratère. |
 
 ## Thèmes
 
 - **La confiance plutôt que la force** : le Lien contre l'ambre noir, apaiser plutôt que dominer.
 - **L'héritage** : Chloé marche littéralement dans les pas de sa grand-mère, page après page.
 - **Protéger ou exploiter** : Isaure n'a pas tort de vouloir sauver le port ; elle a tort sur la manière.
-  La fin trouve une troisième voie.
+  La fin trouve une troisième voie : la **Réserve d'Ambrelune**, qui ne vend rien et montre tout, « encadrés, à
+  pied, et ils repartent le soir avec rien dans les poches qui brille ».
+- **On ne réveille rien de force** (page 40) : « ni un dino, ni une amie, ni un port. On s'assoit à côté, et on
+  attend qu'il n'ait plus peur. » C'est la leçon qu'Hélène apprend en dernier, et la seule qu'elle corrige dans
+  sa lettre à Chloé : « fais confiance **comme** les dinos : à qui reste ».
 - **L'amitié qui survit aux désaccords** : Chloé et Maïa, comme Hélène et Isaure autrefois.
