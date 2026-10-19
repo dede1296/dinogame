@@ -36,15 +36,18 @@ static func _on_zone_entered(zone: StringName) -> void:
 			else:
 				await Plaines.back_to_port()
 				await clins().porte_cabinet()   # (out of the Cabinet: a raptor opens its door)
+				await Epilogue.port()   # (the epilogue: Maïa on the step, the jetty the next morning; who stays after)
 		&"cabinet":
 			await Prologue.cabinet()
 			await Plaines.empty_cabinet()
 			await ForetFin.cabinet()
 			await MaraisSuite.cabinet()
+			await Epilogue.cabinet()   # (the epilogue: the tea, the door, the blue cup; Hélène in her armchair after)
 		&"havre_dore":
 			await Havre.arrival()
 		&"plaines":
 			await visiteurs().plaines()   # (the sick Triceratops asleep, until Élise's berry)
+			ApexAutour.on_plaines()   # (after the epilogue: Maïa keeps the Grand Crâne)
 		&"grotte_echos":
 			await Grotte.arrival()
 		&"foret":
@@ -83,6 +86,10 @@ static func _on_zone_entered(zone: StringName) -> void:
 		# Chapter 8, the Plaine Volcanique (story/volcan*.gd)
 		&"champs_cendres", &"forges_ombre", &"coulees_lave", &"sanctuaire_magma", &"porte_cratere":
 			await Volcan.on_zone(zone)
+			await Apex.on_zone(zone)   # chapter 9: the door once open (Isaure, Maïa, Caillou have gone down)
+		# Chapter 9, the Terre des Apex (story/apex*.gd)
+		&"terre_apex", &"coeur_apex":
+			await Apex.on_zone(zone)
 
 
 ## The time of day changed while in zone `zone` (a scene that only happens at night…).
@@ -194,7 +201,8 @@ static func _run(event: StringName, who: Node) -> void:
 			if not await CoteFin.entrepot(who):   # chapter 5: Ferréol, once the cache's crates are read
 				await Dialogue.run(DialogueDB.lines(&"entrepot"))
 		&"griffe_grise":
-			await Foret.griffe_grise(who)
+			if not await ApexAutour.ancien(&"griffe_grise", who):   # (after the epilogue: « Il sait. », once)
+				await Foret.griffe_grise(who)
 		&"clairiere_vide":
 			await Foret.clairiere_vide(who)
 		&"sbire_camp_1":
@@ -219,7 +227,8 @@ static func _run(event: StringName, who: Node) -> void:
 		&"baryonyx_gilet":
 			await Marais.baryonyx(who)
 		&"voix_du_marais":
-			await Marais.voix(who)
+			if not await ApexAutour.ancien(&"voix_du_marais", who):   # (after the epilogue, once)
+				await Marais.voix(who)
 		&"dame_suie":
 			await MaraisSuite.dame_suie(who)
 		&"roc_marais":
@@ -236,7 +245,8 @@ static func _run(event: StringName, who: Node) -> void:
 		&"sirocco":
 			await Desert.sirocco(who)
 		&"vieux_rempart":
-			await Desert.vieux_rempart(who)
+			if not await ApexAutour.ancien(&"vieux_rempart", who):   # (after the epilogue, once)
+				await Desert.vieux_rempart(who)
 		&"maia_defi_4":
 			await Desert.maia(who)
 		&"brac_sanctuaire":
@@ -349,6 +359,10 @@ static func _run(event: StringName, who: Node) -> void:
 		&"triceratops_malade", &"crottes_triceratops":
 			await visiteurs().triceratops(who)
 		_:
+			# Chapter 9 and the epilogue first (story/apex*.gd): they take over some of chapter 8's events
+			# once their time comes (Isaure at the door at dawn; Brac and Léonce at the port after the end)
+			if await Apex.run(event, who):
+				return
 			# Chapter 8, the Plaine Volcanique (story/volcan*.gd): its events, by Volcan.run
 			if not await Volcan.run(event, who):
 				push_error("Scène inconnue : %s" % event)

@@ -305,6 +305,9 @@ static func bertille(who: Node) -> void:
 
 ## What she says now, before her questions: what changed, else the next of her pool.
 static func _again() -> String:
+	var apex := ApexAutour.bertille_line()   # chapter 9: Hélène came back up (once)
+	if apex != "":
+		return apex
 	var volcan := VolcanAutour.bertille_line()   # chapter 8: the fires gone out (once)
 	if volcan != "":
 		return volcan

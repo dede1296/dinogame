@@ -40,9 +40,8 @@ static func _add(out: Array[Dictionary], id: String, text: String, zone: StringN
 
 ## The main steps, the most advanced first (once masque_tombe).
 static func main(out: Array[Dictionary]) -> void:
-	if Game.flag(&"isaure_porte_vue") and Game.flag(&"maia_porte_vue"):
-		_add(out, "apex", "Isaure n'ouvrira pas avant l'aube. Soigne tes dinos, et reviens avec ton équipe au complet. (La suite de l'aventure arrive bientôt !)",
-			V.PORTE, _at(V.PORTE, "PortailApex", V.place("PORTAIL")), true)
+	if ApexObjectives.active():   # chapter 9 and the epilogue (story/apex_objectives.gd)
+		ApexObjectives.main(out)
 		return
 	if Game.flag(&"porte_arrivee"):
 		_add(out, "isaure", "Isaure attend devant la porte du cratère, les quatre Cœurs dans sa sacoche de marin. Maïa est assise à côté.",

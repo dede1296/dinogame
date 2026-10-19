@@ -413,6 +413,8 @@ static func _side(out: Array[Dictionary]) -> void:
 		CieuxObjectives.side(out)   # chapter 7 (story/cieux_objectives.gd)
 	if Game.flag(&"masque_tombe"):
 		VolcanObjectives.side(out)   # chapter 8 (story/volcan_objectives.gd)
+	if ApexObjectives.active():
+		ApexObjectives.side(out)   # chapter 9 and after (story/apex_objectives.gd)
 	if Game.flag(&"havre_arrive") and not (Game.flag(&"gaspard_battu") and Game.flag(&"lilou_battu")):
 		_add(out, "relais", "Affronter les dresseurs du Relais : Gaspard (rang Bronze), puis Lilou (rang Argent).", &"havre_dore", RELAIS)
 	if Game.flag(&"boussole_volee") and not Game.flag(&"boussole_trouvee"):

@@ -377,6 +377,9 @@ static func lines(id: StringName) -> Array:
 				{"who": CHLOE, "text": "(« Je m'entraîne »… Elle s'entraînait déjà pour moi.)"},
 			]
 	# (chapter 6 first: its « monts_bloques » — the warm coat — replaces the Côte's once chapter 5 is over)
+	var apex: Array = DialogueApex.lines(id)   # chapter 9 (data/dialogue_apex.gd): page 39, the giants' blocks
+	if not apex.is_empty():
+		return apex
 	var volcan: Array = DialogueVolcan.lines(id)   # chapter 8 first (data/dialogue_volcan.gd): « volcan_bloque » is the Descente de Cendre once the mask has fallen
 	if not volcan.is_empty():
 		return volcan
@@ -626,6 +629,7 @@ static func chatter(who: StringName) -> Array:
 	pool = DialogueCote.chatter(who, pool)   # chapter 5 (data/dialogue_cote.gd)
 	pool = DialogueMonts.chatter(who, pool)   # chapter 6 (data/dialogue_monts.gd)
 	pool = DialogueCieux.chatter(who, pool)   # chapter 7 (data/dialogue_cieux.gd)
+	pool = DialogueApex.chatter(who, pool)   # after the epilogue (data/dialogue_apex.gd): Roc
 	if pool.is_empty():
 		return []
 	var n := int(Game.flag(StringName("bavard_%s" % who)))

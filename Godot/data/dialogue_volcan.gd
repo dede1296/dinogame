@@ -114,12 +114,10 @@ static func apex_bloque() -> Array:
 	var steps: Array = [
 		{"text": "Le portail de bois, à deux battants. Cerclé de fer, noirci par vingt-cinq ans de fumée. Cinq creux ronds dans le bois, à hauteur de main, en étoile. Quatre sont vides, pour l'instant. Le cinquième aussi."},
 		{"who": CHLOE, "text": "(Cinq creux. Elle a quatre Cœurs, j'en ai un. Et une fiole d'ambre noir pour « tenir ».)"},
-		{"who": CHLOE, "text": "(Demain, à l'aube.)"},
-		{"text": "(À suivre… La Terre des Apex.)"},
 		{"flag": &"apex_bloque"},
 	]
-	if not Game.flag(&"apex_ouvert"):
-		steps.insert(4, {"text": "La suite de l'aventure arrive bientôt !"})
+	if not Game.flag(&"apex_aube"):   # (chapter 9 is there: no « À suivre… »; dawn only before it comes)
+		steps.insert(2, {"who": CHLOE, "text": "(Demain, à l'aube.)"})
 	return steps
 
 

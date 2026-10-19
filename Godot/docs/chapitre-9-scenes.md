@@ -277,7 +277,7 @@ perché très haut sur le bord. Ambiance : un souffle grave et lent, comme une r
 
 ## Scène 3 — Le Cœur des Apex (`coeur_apex`)
 
-### 3 a — Le bloc (scène d'entrée `coeur_apex_arrivee`, `helene_vue`) : 9 bulles
+### 3 a — Le bloc (scène d'entrée `coeur_apex_arrivee`, `helene_vue`) : 10 bulles
 
 *Le fond du cratère : une salle ronde à ciel ouvert, les parois veinées d'ambre. Au centre, le bloc. Il bat,
 lentement. Dedans : le Souverain, couché, immense, la peau veinée d'ambre comme la roche ; **ses yeux sont
@@ -478,7 +478,7 @@ chaud, pas brûlant. Maïa, qui tient toujours sa mère par le col, lâche enfin
 
 Objets : `masque_carton` quitte le sac (`masque_carton_rendu`, `masque_carton_pris`) ; Moustique quitte
 l'équipe (ou la réserve) de Chloé (`moustique_rendu` ; il est à Maïa). Si Chloé n'avait pas le masque en carton
-(`masque_rendu` faux au ch. 6), les deux bulles du masque sautent et Isaure n'a rien dans sa veste jusqu'à la
+(`masque_rendu` faux au ch. 6), les trois bulles du masque sautent (et « Tu peux les reprendre » devient « Tu peux le reprendre ») et Isaure n'a rien dans sa veste jusqu'à la
 jetée (elle le sortira de la poche du manteau de Maïa : « Tu l'avais gardé ? — Depuis la Forêt. »).
 
 ### 3 j — Le Roi (`apex_fini`) : 3 bulles, puis fondu
@@ -509,7 +509,7 @@ du Souverain (un cri, pas un rugissement : grave et court), le souffle, le craqu
 
 ## Scène 4 — Épilogue : le Cabinet (trois jours plus tard)
 
-### 4 a — Le thé (scène d'entrée du Cabinet, dès `apex_fini` : `epilogue_cabinet`) : 11 bulles (10 sans les moufles)
+### 4 a — Le thé (scène d'entrée du Cabinet, dès `apex_fini` : `epilogue_cabinet`) : 11 bulles (9 sans les moufles)
 
 *Le Cabinet, de jour. Hélène dans le fauteuil de Roc, une couverture sur les genoux, le chapeau d'Hélène
 toujours à sa patère. La caisse des carnets sur le bureau. Roc, debout, une théière à la main. Le dino de
@@ -607,7 +607,7 @@ existe-t-elle ? sinon debout près de la table), Roc (debout ; sur une chaise : 
 
 ## Scène 5 — Épilogue : la jetée (`port_ambre`, le lendemain, dès `epilogue_cabinet`)
 
-### 5 a — La Réserve (`epilogue_port`, `reserve_annoncee`) : 9 bulles
+### 5 a — La Réserve (`epilogue_port`, `reserve_annoncee`) : 10 bulles
 
 *Sans texte : la jetée de Port-Ambre, de jour. Tout le village : Léonce, Gustave et Firmin (sans masques),
 Rosalie, Mémé Pervenche, Joss (arrivé par la barque de Maïa), M. Hamon et son chapeau de paille, et au fond,
