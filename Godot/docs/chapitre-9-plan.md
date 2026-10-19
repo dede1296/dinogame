@@ -3,7 +3,7 @@
 > Écrit d'après `histoire.md` (§ Ch. 7, 8, 9, Épilogue, Post-game, le journal), `chapitre-8-scenes.md`
 > (surtout la scène 9, la porte du cratère : le chapitre 9 en est la suite directe), `lore.md`,
 > `mecaniques.md` (Lien, Apaiser, règles `long_calm` / `antidote` / `starter` de `battle_engine.gd`),
-> `bestiaire.md` § Terre des Apex, `data/species/` (les huit Alphas existent : `triceratops`, `utahraptor`,
+> `bestiaire.md` § Terre des Apex, `data/species/` (les Alphas existent : `triceratops`, `utahraptor`,
 > `spinosaurus`, `carnotaurus`, `mosasaure_abyssal`, `cryolophosaure_titan`, `quetzalcoatlus`, `trex_magma`)
 > et, comme modèle de scène courte, `story/cieux_arche.gd`. **Rien n'est codé** : ce plan et
 > `chapitre-9-scenes.md` (texte complet) attendent Greg. `histoire.md` § Ch. 9 / Épilogue / Post-game et
@@ -37,11 +37,11 @@
    moyen : **lui**, apaisé, souffle sur l'ambre et l'ouvre « comme une noix ». Garder ce renversement ?
 4. **La mécanique du dernier combat.** Le Souverain (niv. 50, corrompu, apaisement **triple** : jauge 300),
    jamais capturé, jamais tué. (a) Une commande **« Sceaux »** à la place de Fuite : chaque Sceau que Chloé a
-   (**huit** : Plaines, Forêt, Marais, Désert, Côte, Monts, Cieux, Volcan) appelle son Alpha **une fois**, pour un
-   tour (table dans `chapitre-9-scenes.md` 3 f : le Tricératops fait mur, la meute étourdit, le Spinosaure
+   (**cinq**, décidé par Greg le 19/10 : les gardiens de Cœurs, Marais, Désert, Côte, Monts, Volcan) appelle son Alpha **une fois**, pour un
+   tour (table dans `chapitre-9-scenes.md` 3 f : le Spinosaure
    soigne, Piment rugit « sans peur » (+calme), Minuit chante par les veines d'ambre (coup adouci), Toupet gèle
-   la colère (le calme ne baisse plus), le Roi donne le vent (deux actions), Cheminée **se couche à côté de lui**
-   (+gros calme)). *Question : huit Alphas, ou seulement les cinq gardiens de Cœurs ?* (b) **Caillou tient la
+   la colère (le calme ne baisse plus), Cheminée **se couche à côté de lui**
+   (+gros calme)). *(Décidé par Greg, 19/10 : seulement les cinq gardiens de Cœurs ; le Tricératops, l'Utahraptor et le Roi des Cieux n'interviennent pas en combat.)* (b) **Caillou tient la
    ligne** : une fois par combat, il prend le coup qui mettrait le dino de Chloé au sol. (c) **L'Ambre clair**
    n'efface plus tout d'un coup (règle `antidote` actuelle) : sur une bête « grande comme une maison », la goutte
    n'agit que si le calme est **aux deux tiers** ; alors le **dernier geste** se joue : le dino de départ (passé
@@ -81,7 +81,7 @@ Souverain ; **aucune musique** au réveil d'Hélène), les images d'Hélène (de
 
 - Suite directe de la porte (ch. 8, scène 9) : **l'aube**, Isaure devant le portail, Maïa « de son côté de la
   porte, pas contre toi », Caillou qui éternue ; Chloé a le 5e Cœur, le Sceau du Volcan (sept Sceaux-objets
-  plus le drapeau `sceau_plaines` : **huit Alphas**), l'Ambre clair (une dose), Moustique (Dimorphodon 36) et le
+  plus le drapeau `sceau_plaines` : **cinq Alphas aident en combat** (les gardiens de Cœurs)), l'Ambre clair (une dose), Moustique (Dimorphodon 36) et le
   masque en carton ; Isaure a les quatre Cœurs, la fiole d'ambre noir « la plus pure » de Dame Suie, et la
   lettre d'Hélène (page 37), **non lue** (si Chloé l'a donnée ; sinon elle l'a encore : prévu).
 - Combat contre Isaure, équipe complète. Le Souverain s'éveille corrompu ; Maïa protège sa mère ; Chloé rend
@@ -188,7 +188,7 @@ Dossier `regions/apex/`, générées par `tools/zones/apex*.gd` comme les Cieux 
 | Perdu | le Souverain recule contre la paroi et attend ; les veines d'ambre du sol luisent, chaudes : l'équipe se relève ; Maïa : « Encore. Il ne part pas, et nous non plus. » ; on reprend sans recharger |
 
 Équilibrage à simuler (agent MÉCANIQUES) : équipe 48-50 ; sans les Sceaux, le combat doit rester possible mais
-long (15-25 tours) ; avec cinq à huit Sceaux bien placés, 8-12 tours ; jamais de défaite « sèche » (le
+long (15-25 tours) ; avec les cinq Sceaux bien placés, 8-12 tours ; jamais de défaite « sèche » (le
 Souverain ne vise pas Hélène ni Maïa : hors combat, c'est raconté, pas joué).
 
 ## Pages 39 et 40
@@ -209,7 +209,7 @@ Hélène (debout au bras de Roc avec chapeau de paille, assise au fauteuil, **da
 Isaure (prop)) ; le **Souverain** (espèce `souverain` : profil, face, dos, `_corrompu`, couché ; ×1,5 en scène) ;
 le grand bloc (entier, fendu, ouvert) ; trois à cinq blocs de géants ; sols `roche_apex`, `veines_ambre`
 (animées) ; `portail_ouvert` ; `isaure_masque_carton` ; `tasse_bleue` ; `insigne_gardienne` (UI) ; fond de
-combat `apex.jpg`. Les quatre dinos d'Isaure et les huit Alphas existent.
+combat `apex.jpg`. Les quatre dinos d'Isaure et les Alphas existent.
 
 ## Répartition des agents (une fois le plan validé ; modèle du ch. 8)
 

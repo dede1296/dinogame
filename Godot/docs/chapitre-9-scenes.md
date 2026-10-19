@@ -18,8 +18,8 @@
   `port_ambre` (l'épilogue). Ordre : l'aube → le duel → la porte → le cratère (page 39) → le fond (le bloc, la
   goutte, le combat, Hélène) → fondu → le Cabinet (trois jours plus tard) → la jetée (le lendemain) → fin.
 - Personnages : Chloé, le dino de départ (`Game.starter_dino()` : Vif / Bastion / Écho, **exigé dans l'équipe**),
-  Moustique (sur l'épaule), Isaure, Maïa, Caillou, les quatre dinos d'Isaure, le Souverain, Hélène, les huit
-  Alphas (en combat), le Roi des Cieux ; à l'épilogue : Roc, Léonce, Gustave, Firmin, Rosalie, Mémé Pervenche,
+  Moustique (sur l'épaule), Isaure, Maïa, Caillou, les quatre dinos d'Isaure, le Souverain, Hélène, les cinq
+  Alphas gardiens de Cœurs (en combat), le Roi des Cieux ; à l'épilogue : Roc, Léonce, Gustave, Firmin, Rosalie, Mémé Pervenche,
   Joss, M. Hamon, Dame Suie, Brac (et Mastoc, Cabosse, Grognon).
 - **Scènes courtes (Greg, 18/10)** : jamais plus d'environ **8 à 12 bulles d'affilée** sans que le joueur fasse
   quelque chose. Chaque scène est découpée en **moments**, séparés par un **temps regardé** (*sans texte*), un
@@ -373,7 +373,7 @@ Règles proposées (`Story.duel("", [[souverain, 50, "le Souverain", {...}]], ru
 
 > *intro* — Le Souverain. Il est trop grand pour l'écran, et il tremble de tout son corps. Ses veines sont
 > violettes jusqu'aux yeux. Il ne sait pas où il est.
-> *lesson* — Les Sceaux. Huit Alphas ont promis quelque chose à Hélène. Appelle-les, un par un. Et parle-lui :
+> *lesson* — Les Sceaux. Cinq Alphas ont promis quelque chose à Hélène : ceux qui gardaient un Cœur. Appelle-les, un par un. Et parle-lui :
 > il n'a jamais eu que ça, les mots d'Hélène.
 
 Ses attaques (il **frappe en reculant**, jamais en avançant) : *Coup de queue* (fort), *Tremblement* (le sol :
@@ -385,13 +385,10 @@ fois** par combat. L'Alpha apparaît à côté du dino de Chloé (image, cri), u
 
 | Sceau | Alpha | Ce qu'il fait (un tour) | Bulle |
 |---|---|---|---|
-| Plaines (`sceau_plaines`) | le Tricératops Alpha | **Mur de cornes** : aucun dégât à l'équipe ce tour | « Le premier Alpha arrive au trot et se plante devant. Le premier mur. » |
-| Forêt | l'Utahraptor Chef de Meute | **La meute** : des dizaines de cris ; le Souverain est étourdi un tour (il écoute) | « Un cri, puis des dizaines, de tous les côtés du cratère. Le Souverain tourne la tête. Il écoute. » |
 | Marais | le Spinosaure Ancestral | **L'eau du bassin** : toute l'équipe soignée | « Il n'y a pas d'eau ici. Il en apporte dans sa gueule, sans en perdre une goutte, et chacun boit. » |
 | Désert | le Carnotaurus Rouge | **Le vrai rugissement** : +40 de calme (il rugit à côté de lui, sans peur) | « Piment rugit. Pas contre lui : à côté de lui. Un rugissement sans peur. Le Souverain tremble moins. » |
 | Côte | le Mosasaure Abyssal | **Il écoute les cœurs** : le prochain coup du Souverain est deux fois plus doux (il n'entre pas : il n'a rien à faire sur la terre ; sa voix monte par les veines d'ambre) | « Très loin, sous l'île, Minuit chante. Le chant monte par les veines d'ambre. Le Souverain baisse la queue. » |
 | Monts | le Cryolophosaure Titan | **Le souffle de givre** : le calme ne redescend plus pendant trois tours | « Toupet souffle, et la cendre devient givre. La colère gèle. Pas lui. » |
-| Cieux | le Quetzalcoatlus Roi | **Le vent** : le dino de Chloé agit deux fois ce tour | « Le Roi descend. Le vent de ses ailes pousse le dino de Chloé en avant, et encore. » |
 | Volcan | le T-Rex de Magma | **Il se couche à côté de lui** : +60 de calme ; le Souverain s'arrête de trembler un instant | « Cheminée entre, et se couche à côté de lui, et fume. Le sol tremble. Le Souverain le regarde, et s'arrête. » |
 
 **Caillou** (règle `caillou`, une fois) : le coup qui mettrait le dino de Chloé au sol est pris par Caillou.
@@ -504,7 +501,7 @@ d'examen : « Il dort les yeux ouverts. Il n'a plus peur. Il respire, et la cend
 Personnages/images de la scène 3 : `bloc_souverain` (entier avec les deux formes dedans ; fendu ; éclaté) ; le
 **Souverain** (espèce `souverain`, profil/face/dos, `_corrompu`, couché ; voir la question 6 du plan) ;
 `helene_ambre` (dans le bloc : fait partie du prop) ; `isaure_helene` (Isaure assise, Hélène contre elle :
-prop) ; `helene` (assise au sol, puis debout soutenue) ; Caillou cornes baissées ; les huit Alphas en combat
+prop) ; `helene` (assise au sol, puis debout soutenue) ; Caillou cornes baissées ; les cinq Alphas gardiens de Cœurs en combat
 (planches existantes) ; le Roi ; fond de combat `apex.jpg` (la salle ronde, les veines d'ambre). Sons : le cri
 du Souverain (un cri, pas un rugissement : grave et court), le souffle, le craquement de l'ambre.
 
@@ -782,7 +779,7 @@ lendemain) → fin. Post-game : « Les géants du cratère », « Le Dinodex »,
 
 **Équilibrage** (agent MÉCANIQUES ; équipe 48-50) : Isaure 47/47/48/49 (Carène hésite un tour) : 85-95 % avec
 une équipe de fin de Volcan, jamais un mur ; le Souverain 50, jauge 300 : sans Sceaux 15-25 tours, avec cinq à
-huit Sceaux 8-12 tours ; la défaite ne coûte rien (on reprend sur place) ; l'Ambre clair à deux tiers de calme.
+les cinq Sceaux 8-12 tours ; la défaite ne coûte rien (on reprend sur place) ; l'Ambre clair à deux tiers de calme.
 
 ---
 
@@ -799,7 +796,7 @@ huit Sceaux 8-12 tours ; la défaite ne coûte rien (on reprend sur place) ; l'A
 | Les dinos d'Isaure | `pteranodon`, `baryonyx`, `suchomimus`, `archelon` (existants) ; aucune planche nouvelle |
 | **Hélène** | **nouveau personnage** : `helene` (debout, chapeau de paille, canne ou au bras de Roc), `helene_assise` (fauteuil), `helene_sol` (assise au sol, soutenue), plus les props `helene_ambre` (dans le bloc) et `isaure_helene` (Isaure assise, Hélène contre elle) ; cheveux gris, mains abîmées (visibles de près : bandes ou rougeurs, rien d'effrayant), 1,60 m |
 | **Le Souverain** | **nouvelle espèce** `souverain` : profil, face, dos, `_corrompu`, couché ; environ 12 m (×1,5 en scène, « trop grand pour l'écran ») ; peau veinée d'ambre, yeux ambrés ; voir la question 6 du plan pour l'allure |
-| Les huit Alphas | planches existantes (`triceratops`, `utahraptor`, `spinosaurus`, `carnotaurus`, `mosasaure_abyssal` : seulement sa voix, pas d'image, ou une onde sur le sol, `cryolophosaure_titan`, `quetzalcoatlus`, `trex_magma`) ; apparition en combat : fondu, cri, effet |
+| Les cinq Alphas gardiens de Cœurs (Marais, Désert, Côte, Monts, Volcan) | planches existantes (`triceratops`, `utahraptor`, `spinosaurus`, `carnotaurus`, `mosasaure_abyssal` : seulement sa voix, pas d'image, ou une onde sur le sol, `cryolophosaure_titan`, `quetzalcoatlus`, `trex_magma`) ; apparition en combat : fondu, cri, effet |
 | Props | `bloc_souverain` (entier / fendu / éclaté, avec les deux formes dedans), `bloc_geant_1..4`, `cairn_helene`, `portail_apex_ouvert`, torches éteintes, `tasse_bleue`, `caisse_carnets`, `insigne_gardienne` (UI) |
 | Sols | `roche_apex`, `veines_ambre` (animées : blanches pendant l'éveil, or après) |
 | Fond de combat | `assets/art/battle/apex.jpg` (la salle ronde, les veines d'ambre) ; le fond de la porte pour Isaure : `volcan.jpg` existant, ou un `porte.jpg` à l'aube |
@@ -837,5 +834,5 @@ d'Isaure est bien celle que Dame Suie lui a donnée à l'aube du ch. 8 ; le Roi 
 regardait « longtemps en bas » depuis le ch. 7). Rythme : aucun bloc ne dépasse **11 bulles** (le plus long : le
 thé, 11 avec les moufles ; la tasse bleue, 10 ; Hélène, 10 ; Moustique et le masque, 10) ; entre deux blocs, le joueur choisit (sept choix en tout, un seul
 vrai dilemme), regarde (l'éveil, la porte, les essais, « Bouh »), marche (le cratère) ou combat (deux fois).
-Faiblesses connues : la commande « Sceaux » est du code nouveau (huit effets : à simplifier en cinq si Greg le
+Faiblesses connues : la commande « Sceaux » est du code nouveau (cinq effets, décidé par Greg le 19/10 ; ancienne note : « à simplifier en cinq si Greg le
 veut) ; le « réveil doux » des géants du post-game n'est qu'esquissé ; l'allure du Souverain reste à choisir.

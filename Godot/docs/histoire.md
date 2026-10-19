@@ -1410,10 +1410,10 @@ jetée de Port-Ambre.
    « Va, moussaillon. Je ne peux pas. Je n'ai jamais pu : je faisais semblant, avec une fiole. » Le dino de
    départ se met entre Chloé et lui (**Lien 5**). « (Il a peur. Moi aussi. J'y vais.) »
 5. **Apaiser le Souverain** (niveau 50, corrompu, jauge de calme **triple**, jamais au sol, jamais capturé ; il
-   « frappe en reculant »). La commande **« Sceaux »** : chacun des **huit** Sceaux appelle son Alpha **une fois**
-   pour un tour : le Tricératops fait mur, la meute l'étourdit, le Spinosaure apporte l'eau « dans sa gueule,
+   « frappe en reculant »). La commande **« Sceaux »** : chacun des **cinq** Sceaux des gardiens de Cœurs appelle son Alpha **une fois**
+   pour un tour : le Spinosaure apporte l'eau « dans sa gueule,
    sans en perdre une goutte », Piment rugit « à côté de lui, sans peur », Minuit chante « par les veines
-   d'ambre » (il n'entre pas), Toupet gèle la colère, le Roi donne le vent, Cheminée **se couche à côté de lui**.
+   d'ambre » (il n'entre pas), Toupet gèle la colère, Cheminée **se couche à côté de lui**.
    **Caillou tient la ligne** (une fois, le coup qui mettrait un dino au sol). L'**Ambre clair** n'agit que quand
    le calme est aux deux tiers (« Il est trop grand pour une goutte. Il faut d'abord qu'il l'écoute. ») ; alors
    **le dernier geste** : Vif bondit jusqu'au front et **le gratte sous le menton** (Griffe-Grise) ; Bastion
