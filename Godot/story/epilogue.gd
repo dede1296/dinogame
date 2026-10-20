@@ -383,9 +383,7 @@ static func _watch_jetty() -> void:
 			return
 		var chloe := Stage.chloe() as Player
 		if chloe and chloe.can_move() and S.playing == 0 and chloe.global_position.distance_to(jetty) < 4.0 * S.CELL:
-			S.playing += 1
-			await ApexJetee.jetty()
-			S.playing -= 1
+			await S.hold(func() -> void: await ApexJetee.jetty())   # (a scene of its own: nothing else starts meanwhile, Scenes)
 			return
 
 

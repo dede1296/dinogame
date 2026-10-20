@@ -1,7 +1,7 @@
 ; Installateur d'Ambrelune (Inno Setup 6). Construit par build.ps1 : dist\Ambrelune-Installateur.exe
 [Setup]
 AppName=Ambrelune
-AppVersion=1.0
+AppVersion=1.0.0
 AppPublisher=Grégory Cuypers
 DefaultDirName={autopf}\Ambrelune
 DefaultGroupName=Ambrelune

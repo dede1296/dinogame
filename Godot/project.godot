@@ -40,7 +40,7 @@ curved_lines_2d/fill_in_parent_shape_with_brush=false
 
 config/name="Ambrelune"
 config/description="Ambrelune — aventure et collection de dinosaures (Godot, Android d'abord)"
-config/version="0.1.0"
+config/version="1.0.0"
 run/main_scene="res://scenes/boot/boot.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 boot_splash/bg_color=Color(0.105882, 0.121569, 0.156863, 1)

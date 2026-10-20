@@ -108,6 +108,7 @@ func _ready() -> void:
 		Game.new_game()
 		Game.give_starter(&"velociraptor")
 		Game.set_flag(&"prologue_done")
+	_forget_scenes()
 	player = PLAYER.instantiate()
 	player.stepped.connect(_on_player_stepped)
 	companion = COMPANION.instantiate()
@@ -160,9 +161,18 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	_forget_scenes()   # (back to the title: no scene of this world may hold the next one)
 	Save.enabled = false
 	Audio.play_weather(null, 0.8)
 	Audio.play_ambience(&"")   # (back to the title screen: the places' sounds go too)
+
+
+## No scene of a world before this one (the title in between) still holds the lock or waits (Scenes).
+static func _forget_scenes() -> void:
+	Dialogue.skip_lines = false
+	Dialogue.abort()
+	Scenes.reset()
+	Scenes.forget_stale()
 
 
 # ------------------------------------------------------------------ zones
@@ -229,13 +239,18 @@ func _on_exit_taken(exit: ZoneExit) -> void:
 	if player.busy or _changing_zone:
 		return
 	if not exit.is_open():
+		if Scenes.busy():   # (a scene moves her: it says what it has to say)
+			return
+		var token := Scenes.begin()   # (its lines are a little scene: nothing else starts meanwhile)
 		player.busy = true
 		player.velocity = Vector2.ZERO
 		# Step back out of the exit, towards the middle of the zone.
 		var back := (region.bounds().get_center() - player.global_position).normalized() * 40.0
 		player.teleport(player.global_position + back)
 		await Dialogue.run(DialogueDB.lines(exit.blocked_dialogue))
-		player.busy = false
+		if Scenes.is_current(token):
+			player.busy = false
+		Scenes.finish(token)
 		return
 	goto_zone(exit.target_zone, exit.target_spawn, exit)
 
@@ -453,9 +468,10 @@ func _explore() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"menu"):
-		# Échap (or the pad's Start): the game menu, as the ☰ button opens it. Not while
-		# someone is talking — there, Échap belongs to the dialogue.
-		if not Dialogue.active:
+		# Échap (or the pad's Start): the game menu, as the ☰ button opens it — also during a line
+		# (its « Se débloquer », when a scene went wrong). Not over a question or a letter: there,
+		# Échap belongs to the dialogue.
+		if not Dialogue.wants_cancel():
 			get_viewport().set_input_as_handled()
 			SettingsMenu.open(hud, true)
 	elif event.is_action_pressed(&"map"):

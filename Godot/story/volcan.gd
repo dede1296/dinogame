@@ -638,7 +638,8 @@ static func watch_sightings(zone: StringName) -> void:
 		for row: Array in SIGHTINGS:
 			if _due(row, zone) and _in_sight(row[0], chloe):
 				Game.set_flag(row[1])
-				await S.say([{"who": CHLOE, "text": row[4]} if row[5] else {"text": row[4]}])
+				var thought := [{"who": CHLOE, "text": row[4]} if row[5] else {"text": row[4]}]
+				await S.hold(func() -> void: await S.say(thought))   # (a scene of its own: nothing else starts meanwhile, Scenes)
 				break
 
 

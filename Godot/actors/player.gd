@@ -141,8 +141,10 @@ func _ready() -> void:
 	add_child(heat)
 
 
+## Free to walk and to use things: no interaction, no line on screen, no scene playing (Scenes: one at
+## a time), no screen transition.
 func can_move() -> bool:
-	return not busy and not Dialogue.active and not Router.is_busy()
+	return not busy and not Dialogue.active and not Router.is_busy() and not Scenes.busy()
 
 
 func _physics_process(delta: float) -> void:
@@ -462,11 +464,11 @@ func _interact() -> void:
 	await _interact_with(best)
 
 
+## Uses `target` as a scene of its own (Scenes.interact): ignored while a scene plays; the scenes that
+## come meanwhile (the night falling, a zone's scene) wait for its end; Chloé is free again after it,
+## even if `target` is freed on the way.
 func _interact_with(target: Node2D) -> void:
-	busy = true
-	velocity = Vector2.ZERO
-	await target.interact(self)
-	busy = false
+	await Scenes.interact(target, self)
 
 
 ## A click on something usable (WorldView → ClickInteract): in reach, Chloé uses it at once; further

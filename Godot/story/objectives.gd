@@ -419,8 +419,13 @@ static func _side(out: Array[Dictionary]) -> void:
 		_add(out, "relais", "Affronter les dresseurs du Relais : Gaspard (rang Bronze), puis Lilou (rang Argent).", &"havre_dore", RELAIS)
 	if Game.flag(&"boussole_volee") and not Game.flag(&"boussole_trouvee"):
 		_add(out, "voleuse", "Rattraper la voleuse de boussole : elle file vers le petit bois, au nord-ouest du carrefour.", &"plaines", NEST)
-	if Game.flag(&"boussole_trouvee") and not Game.flag(&"boussole_rendue"):
-		_add(out, "boussole", "Rendre la boussole à Maïa, au carrefour.", &"plaines", MAIA_SPOT)
+	if Game.flag(&"boussole_trouvee") and not Game.flag(&"boussole_rendue"):   # (where Maïa is now: PlainesAnnexes.maia_elsewhere)
+		if not Game.flag(&"sceau_plaines"):
+			_add(out, "boussole", "Rendre la boussole à Maïa, au carrefour.", &"plaines", MAIA_SPOT)
+		elif not Game.flag(&"maia_defi_1"):
+			_add(out, "boussole", "Rendre la boussole à Maïa, au pied du Grand Crâne.", &"plaines", MAIA_DUEL)
+		else:
+			_add(out, "boussole", "Rendre la boussole à Maïa, au Havre.", &"havre_dore", spot(&"havre_dore", "Maia"))
 	if Game.flag(&"lunettes_trouvees") and not Game.flag(&"lunettes_rendues"):
 		_add(out, "lunettes", "Rapporter ses lunettes au Professeur Roc, au Cabinet de Port-Ambre.", &"port_ambre", CABINET_DOOR)
 	if Game.flag(&"boussole_rendue") and not Game.flag(&"found_journal_2"):

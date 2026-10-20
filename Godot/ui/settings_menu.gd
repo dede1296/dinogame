@@ -63,7 +63,10 @@ const SAMPLES := {
 const SAMPLE_WAIT_S := 0.25   # the slider still this long: its sample plays
 const SAMPLE_S := 2.5         # then stops (a voice: its first words)
 
-## Opened in game (the ☰ button): Reprendre and Retour au titre too.
+## How many of these menus are open (the dialogue box leaves the keys to the menu meanwhile).
+static var open_count := 0
+
+## Opened in game (the ☰ button): Reprendre, Se débloquer and Retour au titre too.
 var in_game := false
 var _was_paused := false
 var _page := ""
@@ -114,6 +117,14 @@ static func add_open_button(hud: CanvasLayer) -> Button:
 	button.get_viewport().size_changed.connect(place)
 	button.pressed.connect(func() -> void: SettingsMenu.open(hud, true))
 	return button
+
+
+func _enter_tree() -> void:
+	open_count += 1
+
+
+func _exit_tree() -> void:
+	open_count = maxi(open_count - 1, 0)
 
 
 func _ready() -> void:
@@ -168,6 +179,8 @@ func _show(page: String) -> void:
 			_display_page()
 		"titre":
 			_title_page()
+		"debloquer":
+			_unstick_page()
 		_:
 			_menu_page()
 	_focus_first()
@@ -187,6 +200,7 @@ func _menu_page() -> void:
 	if in_game:
 		if Save.slot_of_file(Save.path) > 0:   # (the game saves in a slot: not in the 3D's own file)
 			_rows.add_child(_save_row())
+		_rows.add_child(_button("Se débloquer", _show.bind("debloquer")))
 		_rows.add_child(_button("Retour au titre", _show.bind("titre")))
 	else:
 		_rows.add_child(_button("Fermer", _close))
@@ -540,7 +554,7 @@ func _title_page() -> void:
 	_rows.add_child(_label("Retour au titre", 40, GOLD))
 	var can_leave := not _scene_playing()
 	var text := "La partie est sauvegardée (emplacement %d) : « Continuer » la reprendra ici." % Save.slot if can_leave \
-		else "Une scène est en cours : attends qu'elle se termine pour revenir au titre."
+		else "Une scène est en cours : attends qu'elle se termine pour revenir au titre. Si rien ne bouge plus, « Se débloquer »."
 	var note := _label(text, 22, CREAM)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note.custom_minimum_size = Vector2(0, 70)
@@ -550,6 +564,24 @@ func _title_page() -> void:
 		_rows.add_child(_button("Non, continuer à jouer", _show.bind("menu")))
 	else:
 		_rows.add_child(_button("Retour", _show.bind("menu")))
+
+
+## Se débloquer (story/unstick.gd): a line saying what it does, then Oui / Non (Non first: a press too
+## many does nothing).
+func _unstick_page() -> void:
+	_rows.add_child(_label("Se débloquer", 40, GOLD))
+	var note := _label("Ferme la scène en cours et rend la main à Chloé, là où elle est. Rien n'est perdu.", 22, CREAM)
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note.custom_minimum_size = Vector2(0, 70)
+	_rows.add_child(note)
+	_rows.add_child(_button("Non, continuer", _show.bind("menu")))
+	_rows.add_child(_button("Oui, se débloquer", _unstick))
+
+
+func _unstick() -> void:
+	var tree := get_tree()
+	_close()
+	Unstick.run(tree)
 
 
 # ------------------------------------------------------------------ actions
@@ -573,7 +605,7 @@ func _level_hint(level: int) -> String:
 
 ## A scene or a dialogue is going on (Chloé is not free to move).
 func _scene_playing() -> bool:
-	if Dialogue.active:
+	if Dialogue.active or Scenes.busy():
 		return true
 	var player := get_tree().get_first_node_in_group(&"player")
 	return player != null and bool(player.get("busy"))

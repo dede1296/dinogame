@@ -14,23 +14,44 @@ const RESERVE_SHOWN := 6
 
 
 ## Scenes being played right now (entering a zone, a character, a trigger…): the live demo
-## (tools/capture.gd) waits until it is back to 0.
-static var playing := 0
+## (tools/capture.gd) waits until it is back to 0. Never below 0 (a scene let go by Se débloquer).
+static var playing := 0:
+	set(value):
+		playing = maxi(value, 0)
 
 
+## Entering zone `zone`: what is set up at once (the ways, the boat out at sea, the skulls), then the
+## zone's scene — now, or after the scene playing (Scenes.request: one scene at a time).
 static func on_zone_entered(zone: StringName) -> void:
-	playing += 1
-	await _on_zone_entered(zone)
-	playing -= 1
+	_zone_setup(zone)
+	Scenes.request("zone:%s" % zone, zone, func() -> void: await hold(func() -> void: await _on_zone_entered(zone)))
 
 
-static func _on_zone_entered(zone: StringName) -> void:
+static func _zone_setup(zone: StringName) -> void:
 	Monts.update_access()   # (the way up to the Monts: end of chapter 5 and a warm coat; old saves too)
 	Cieux.update_access()   # (the way up to the Cieux: the harness and a grown flyer; old saves too)
 	Volcan.update_access()   # (the way down to the volcano: open once the mask has fallen; old saves too)
 	Barque.landing(zone)    # (coming in by Maïa's boat: it waits out at sea, before the picture shows)
 	Fossiles.place(zone)   # (post-game: the two skulls one looks at, crater and reef; story/fossiles.gd)
-	Fossiles.place(zone)   # (post-game: the two skulls one looks at, crater and reef; story/fossiles.gd)
+
+
+## Plays `scene` (a coroutine) as a scene of the story: it holds the lock (Scenes) and counts in
+## `playing` until it is over. For a scene started by something else than Story (a watcher of a zone).
+static func hold(scene: Callable) -> void:
+	playing += 1
+	var token := Scenes.begin()
+	await scene.call()
+	_end(token)
+
+
+## A scene is over: no longer counted, the lock given back (a scene let go by Se débloquer: nothing).
+static func _end(token: int) -> void:
+	if Scenes.is_current(token):
+		playing -= 1
+	Scenes.finish(token)
+
+
+static func _on_zone_entered(zone: StringName) -> void:
 	match zone:
 		&"port_ambre":
 			if not Game.flag(&"prologue_arrived") and not Game.flag(&"prologue_done"):
@@ -95,15 +116,14 @@ static func _on_zone_entered(zone: StringName) -> void:
 			await Apex.on_zone(zone)
 
 
-## The time of day changed while in zone `zone` (a scene that only happens at night…).
+## The time of day changed while in zone `zone` (a scene that only happens at night…): now, or after
+## the scene playing (Scenes.request), its conditions checked then.
 static func on_phase_changed(zone: StringName) -> void:
-	playing += 1
-	await _on_phase_changed(zone)
-	playing -= 1
+	Plaines.morning()
+	Scenes.request("phase:%s" % zone, zone, func() -> void: await hold(func() -> void: await _on_phase_changed(zone)))
 
 
 static func _on_phase_changed(zone: StringName) -> void:
-	Plaines.morning()
 	if zone == &"havre_dore":
 		await Havre.night()
 	elif zone == &"marais":
@@ -116,11 +136,13 @@ static func _on_phase_changed(zone: StringName) -> void:
 		await Monts.on_phase(zone)   # the first night: the forges' red lights (page 30)
 
 
-## A scene started by talking to someone (`who` = the Npc or DinoNpc).
+## A scene started by talking to someone (`who` = the Npc or DinoNpc), by a trigger, or chained by
+## another scene (played inside it: Scenes counts the depth).
 static func run(event: StringName, who: Node) -> void:
 	playing += 1
+	var token := Scenes.begin()
 	await _run(event, who)
-	playing -= 1
+	_end(token)
 
 
 static func _run(event: StringName, who: Node) -> void:
@@ -155,7 +177,8 @@ static func _run(event: StringName, who: Node) -> void:
 		&"alpha_plaines":
 			await Plaines.alpha(who)
 		&"maia_defi":
-			await Plaines.maia_duel(who)
+			if not await PlainesAnnexes.maia_elsewhere(who):   # (the compass: stolen here if never yet, given back)
+				await Plaines.maia_duel(who)
 		&"shop_herboristerie":
 			await Havre.shop(&"herboristerie", who)
 		&"shop_mercerie":
@@ -184,6 +207,8 @@ static func _run(event: StringName, who: Node) -> void:
 		&"dresseur_lilou":
 			await Havre.trainer(&"lilou", who)
 		&"maia_havre":
+			if await PlainesAnnexes.maia_elsewhere(who, false):   # (her compass, found after she left the Prairie)
+				return
 			if Game.flag(&"maia_alliee"):   # chapter 6: they are a team now
 				await MontsFin.maia_havre(who)
 				return
@@ -510,8 +535,10 @@ static func at(x: float, y: float) -> Vector2:
 	return Vector2(x, y) * CELL
 
 
-## Takes control away from the player during a scene (or gives it back).
+## Takes control away from the player during a scene (or gives it back). Scenes gives it back when
+## the last scene ends, if a scene forgot to.
 static func lock(on: bool) -> void:
+	Scenes.note_lock(on)
 	var w = world()
 	if w == null:
 		return

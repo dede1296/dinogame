@@ -64,6 +64,13 @@ func end_transition(time := 0.3) -> void:
 	_busy = false
 
 
+## Se débloquer (story/unstick.gd): the screen back at once, nothing in transition any more.
+func clear() -> void:
+	_curtain.color = Color(_curtain.color, 0.0)
+	_curtain.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_busy = false
+
+
 func fade_out(time: float, color := Color(0.06, 0.05, 0.04)) -> void:
 	_curtain.color = Color(color, _curtain.color.a)
 	await create_tween().tween_property(_curtain, "color:a", 1.0, time).finished

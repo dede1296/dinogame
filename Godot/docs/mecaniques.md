@@ -166,6 +166,49 @@ dans la zone avec un `show_flag` : caché jusque-là, il apparaît dès que la s
 Les grands dinos à qui l'on parle (Voix du Marais, Spinosaure, Carnotaurus…) se parlent aussi
 depuis leur tête ou leur flanc : leur portée grandit avec leur taille (`DinoNpc`).
 
+### Une scène à la fois ✅ (20/10)
+
+Jamais deux scènes en même temps, jamais un dialogue dans un autre (bugs de Greg, 20/10 : au Havre,
+la nuit qui tombe pendant qu'on parle à Joss mêlait la barque d'Isaure à sa conversation, puis Chloé
+restait bloquée ; des événements se perdaient). Un seul verrou, `story/scenes.gd` (`Scenes`) :
+
+- **Toute scène le tient** tant qu'elle joue : parler, ramasser, lire un panneau (`Player._interact_with`
+  → `Scenes.interact`), une scène de l'histoire (`Story.run`, et celles qu'elle enchaîne, jouées
+  dedans), un déclencheur, les répliques d'une sortie fermée, une scène automatique.
+- **Ce que fait le joueur pendant une scène est ignoré** : « interagir », un clic sur quelqu'un ;
+  Chloé ne bouge pas (`Player.can_move`).
+- **Les scènes automatiques attendent leur tour** : l'entrée d'une zone (`Story.on_zone_entered` :
+  ce qui se pose tout de suite — les passages, la barque au large, les crânes — puis sa scène) et le
+  moment du jour (`Story.on_phase_changed` : la nuit au Havre, la lanterne de Roc…) vont dans une
+  file (`Scenes.request`) et se jouent dès que le verrou est libre, **leur condition vérifiée à ce
+  moment-là** (drapeaux, heure, zone) : jamais perdues, jamais jouées deux fois (la même attend une
+  seule fois ; celle d'une zone quittée entre-temps est abandonnée, y revenir la redemande). Une
+  zone où une scène emmène Chloé (la barque, le Grand Voyageur) joue sa scène après elle.
+- **La fin de la dernière scène rend toujours la main** : les commandes de Chloé si une scène les a
+  prises sans les rendre (sortie en avance), la caméra sur elle ; même quand le personnage d'où elle
+  est partie a été libéré en route.
+- **La boîte de dialogue sert une demande à la fois** (`ui/dialogue.gd`) : une réplique ou une question
+  demandée pendant qu'une autre est à l'écran attend la fin de la première, dans l'ordre.
+
+### Se débloquer ✅ (20/10)
+
+Dans le menu du jeu (☰, Échap ou Start, aussi pendant une réplique), **« Se débloquer »**, avec une
+ligne de confirmation (« Non, continuer » d'abord) : si une scène s'est mal passée et que Chloé ne peut
+plus bouger, le jeu est remis en état (`story/unstick.gd`) :
+
+1. toute réplique, question ou lettre se ferme ; les scènes en cours sont lâchées (leurs répliques
+   passent sans s'afficher ni poser leurs drapeaux, quatre secondes au plus), la file est vidée,
+   `Story.playing` revient à 0 ; l'écran revient (fondu au noir oublié), le jeu n'est plus en pause ;
+   Chloé et son dino sont libres, visibles, la caméra sur elle ;
+2. la zone est remise en place là où Chloé se tient : ses personnages et ses objets comme le disent les
+   drapeaux (ce qu'une scène avait caché revient, ce qu'elle avait amené s'en va) ; à l'entrée de la
+   zone si cet endroit n'est pas sûr (hors de la zone, dans l'eau sans nageur, sur la lave, dans un mur) ;
+3. la scène de la zone et celle du moment du jour se rejouent **si elles sont dues** : ce qui avait été
+   vu ne revient pas, ce qui avait été manqué se joue.
+
+Rien n'est sauvegardé par le déblocage lui-même (la prochaine sauvegarde le fera). Tests :
+`tests/scenes/` (GdUnit4) ; dans le jeu : `tools/scenarios/scenes_joss_nuit.gd`.
+
 ### Fouiller l'île ✅
 
 - **Secouer un arbre** (A devant lui) : il tremble, des feuilles tombent ; une fois par jour et par

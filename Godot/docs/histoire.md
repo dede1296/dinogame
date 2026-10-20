@@ -93,6 +93,9 @@ révèle le Masque ; ils préparent le chapitre 2.
    la porte d'ambre. « Maman ne s'en sépare jamais. Elle dit qu'on la lui a offerte quand elle savait
    encore où elle allait. » Maïa balaie la remarque de Chloé : « Plein de gens gravent des
    fougères. » *(Indice discret vers Isaure : elle et Hélène étaient proches.)*
+   *(20/10 : Maïa quitte le carrefour avec le Sceau. Si Chloé ne lui a jamais parlé avant, le vol
+   a lieu à leur première conversation au pied du Crâne ; et la boussole se rend à Maïa où elle est :
+   au carrefour, au pied du Crâne, puis au Havre.)*
 2. **Les lunettes de Roc.** Sans ses lunettes, Roc parle à la fougère en pot du Cabinet en la
    prenant pour Chloé. Les lui rendre : « Trois semaines ! J'ai rangé le sel dans la couveuse. »
    Il explique alors les **galets d'ambre**, qu'Hélène appelait **les larmes de l'île** : de

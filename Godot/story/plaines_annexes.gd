@@ -32,8 +32,11 @@ const LATCH := preload("res://assets/audio/sfx/latch.wav")
 const AMBER_TINT := Color(1.0, 0.8, 0.45)
 const AMBER_LIGHT := Color(1.0, 0.72, 0.3)
 const AMBER_FLASH := Color(1.0, 0.8, 0.4, 0.4)
-## Where Chipie hides in the tall grass before her theft (tiles).
+## Where Chipie hides in the tall grass before her theft (tiles). Maïa farther than FAR_FROM_HIDE
+## tiles from it (at the skull): Chipie hides NEAR_HIDE tiles from her instead.
 const CHIPIE_HIDE := Vector2(59.2, 47.2)
+const FAR_FROM_HIDE := 12.0
+const NEAR_HIDE := Vector2(-4.0, -3.0)
 ## In the Cabinet (tiles): the potted fern in the corner Roc talks to, the incubator, the
 ## drawer of his desk.
 const FERN := Vector2(0.9, 9.6)
@@ -59,7 +62,7 @@ static func maia(who: Node) -> void:
 		await _theft(who)
 		return
 	if Game.flag(&"boussole_trouvee") and not Game.flag(&"boussole_rendue"):
-		await _compass_back()
+		await _compass_back(who)
 		return
 	if not Game.flag(&"boussole_volee"):   # games saved before the compass went missing
 		await _theft(who)
@@ -67,25 +70,48 @@ static func maia(who: Node) -> void:
 	await S.say(DialogueDB.lines(&"maia"))
 
 
-## A Compsognathus darts out of the grass and snatches the compass off Maïa's belt.
+## Maïa elsewhere than at the crossroads (she leaves it with the Sceau: at the foot of the skull, then
+## at the Havre). The compass Chloé found still goes back to her there; and at the skull, when Chloé had
+## never talked to her at the crossroads, her compass is snatched there (`theft_here`). True when one
+## of them played (her own lines wait for the next time).
+static func maia_elsewhere(who: Node, theft_here := true) -> bool:
+	if Game.flag(&"boussole_trouvee") and not Game.flag(&"boussole_rendue"):
+		await _compass_back(who)
+		return true
+	if theft_here and not Game.flag(&"boussole_volee") and S.actor("Chipie") != null:
+		Game.set_flag(&"met_maia")
+		await _theft(who)
+		return true
+	return false
+
+
+## A Compsognathus darts out of the grass and snatches the compass off Maïa's belt. Far from the
+## crossroads (Maïa at the skull), Chipie hides in the grass near her, then runs off out of sight and
+## is back on her own path (FleeingDino), at the crossroads.
 static func _theft(maia_npc: Node) -> void:
 	S.lock(true)
 	var chipie = S.actor("Chipie")
+	var hide := S.at(CHIPIE_HIDE.x, CHIPIE_HIDE.y)
+	var far := maia_npc is Node2D and (maia_npc as Node2D).global_position.distance_to(hide) > FAR_FROM_HIDE * S.CELL
+	if far:
+		hide = S.ground_near((maia_npc as Node2D).global_position + NEAR_HIDE * S.CELL, 3)
 	# The grass stirs where she hides, then her mocking little cry.
 	await S.say([_cue({"text": "Un froissement dans les herbes hautes… puis un petit cri moqueur."},
-		func() -> void: _rustle(chipie))])
+		func() -> void: _rustle(chipie, hide))])
 	Game.set_flag(&"chipie_etape", 0)
 	Game.set_flag(&"boussole_volee")   # Chipie appears (FleeingDino)
 	if chipie and maia_npc:
 		var start: Vector2 = chipie.global_position
-		chipie.global_position = S.at(CHIPIE_HIDE.x, CHIPIE_HIDE.y)
+		chipie.global_position = hide
 		await chipie.walk_to(maia_npc.global_position + Vector2(-26, 14), 260.0)
 		chipie.cry(&"attaque")
 		# Snatched! Maïa jumps.
 		Stage.emote(maia_npc as Node2D, "!")
 		Stage.hop(maia_npc, 1, 10.0)
 		await S.wait(0.2)
-		await chipie.walk_to(start, 260.0)
+		await chipie.walk_to(hide if far else start, 260.0)
+		if far and is_instance_valid(chipie):   # (off she goes, out of sight: back on her own path)
+			chipie.global_position = start
 		chipie.sprite.flip_h = false
 	await S.say([
 		_cue({"who": MAIA, "text": "Hé ! HÉ ! Ma boussole ! Enfin… la boussole de maman. Elle va me tuer."},
@@ -160,9 +186,10 @@ static func nest(bush: Node) -> void:
 	S.lock(false)
 
 
-static func _compass_back() -> void:
+## `who`: the Maïa talked to (at the crossroads, the skull, the Havre).
+static func _compass_back(who: Node = null) -> void:
 	S.lock(true)
-	var maia_npc = S.actor("Maia")
+	var maia_npc = who if is_instance_valid(who) else S.actor("Maia")
 	await S.say([
 		_cue({"who": MAIA, "text": "Tu l'as ?! Tu l'as ! Je t'aurais bien fait un câlin, mais j'ai une réputation."},
 			func() -> void: Stage.hop(maia_npc, 2, 10.0)),
@@ -178,7 +205,7 @@ static func _compass_back() -> void:
 		{"flag": &"boussole_rendue"},
 	])
 	Game.give_item("collier", 3)
-	Toast.say(S.world().get_tree(), "+3 colliers d'ambre")
+	Toast.say(Engine.get_main_loop() as SceneTree, "+3 colliers d'ambre")
 	Game.award_team_xp(XP_QUEST)
 	Save.save_game()
 	S.lock(false)
@@ -422,9 +449,8 @@ static func _sleeper_stirs(dino, line: int) -> void:
 
 # ------------------------------------------------------------------ what the lines show
 
-## The tall grass stirs where Chipie hides (leaves flying, a rustle), then her mocking cry.
-static func _rustle(chipie) -> void:
-	var at := S.at(CHIPIE_HIDE.x, CHIPIE_HIDE.y)
+## The tall grass stirs where Chipie hides (`at`, px: leaves flying, a rustle), then her mocking cry.
+static func _rustle(chipie, at: Vector2) -> void:
 	Audio.play_sfx(RUSTLE, -3.0)
 	var view := _view()
 	if view:

@@ -53,7 +53,28 @@ var path := "":
 var _timer := 0.0
 
 
+## Once per game version, in the installed game: the slots are copied to user://sauvegardes_avant_<old version>/
+## before the new version touches them (a game updated by reinstalling keeps its saves, and a copy of them).
+func backup_for_update() -> void:
+	var seen_file := PLAYER_DIR + "version_vue.txt"
+	var now := str(ProjectSettings.get_setting("application/config/version", ""))
+	var before := FileAccess.get_file_as_string(seen_file).strip_edges() if FileAccess.file_exists(seen_file) else ""
+	if before == now:
+		return
+	if before != "":
+		var folder := PLAYER_DIR + "sauvegardes_avant_" + before
+		DirAccess.make_dir_recursive_absolute(folder)
+		for file in DirAccess.get_files_at(PLAYER_DIR):
+			if file.begins_with("save") and (file.ends_with(".json") or file.ends_with(LEGACY_KEPT) or file.ends_with(OLD_COPY)):
+				DirAccess.copy_absolute(PLAYER_DIR + file, folder + "/" + file)
+	var out := FileAccess.open(seen_file, FileAccess.WRITE)
+	if out:
+		out.store_string(now)
+
+
 func _init() -> void:
+	if not OS.has_feature("editor"):   # (the installed game only: not the editor, not the tests)
+		backup_for_update()
 	path = path_for(slot)
 	var remembered := remembered_slot()
 	if remembered > 0:

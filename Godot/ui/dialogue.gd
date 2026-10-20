@@ -4,8 +4,13 @@ extends CanvasLayer
 ## A character's line is typed with its little voice (VoiceBlips), unless a recorded voice
 ## plays; a "letter" step shows a handwritten page (LetterView). A line too long for the box is
 ## cut into pages of MAX_LINES lines: « suite ▼ » until the last one.
+## One at a time (docs/mecaniques.md « Une scène à la fois ») : each run or choose takes its turn
+## (_take_turn), a second one waits for the end of the first — never two in the same box, never
+## `active` lost under a line still waiting. abort() closes everything at once (Se débloquer).
 
 signal finished
+## A run or a choose has ended: the next one waiting may go (see _take_turn).
+signal _turn_passed
 
 const CHARS_PER_SECOND := 48.0
 const MIN_ADVANCE_INTERVAL := 0.15   # a tap on the A button also sends a touch: count it once
@@ -15,6 +20,17 @@ const MORE := "suite ▼"
 const END := "▼"
 
 var active := false
+## While true (Se débloquer, as the scenes let go end), every run and choose returns at once: their
+## lines are not shown, their flags not set; a question answers its last option.
+var skip_lines := false
+
+## The turns: the ticket the next call takes, the one being served; bumped by abort().
+var _next_ticket := 0
+var _serving := 0
+var _generation := 0
+## The question on screen: its buttons, the option picked (-1: none yet).
+var _column: VBoxContainer = null
+var _picked := -1
 
 var _panel: PanelContainer
 var _name_tag: Label
@@ -44,12 +60,45 @@ func _ready() -> void:
 
 ## Asks a question: shows `text` said by `who`, then one button per option above the box.
 ## Returns the index of the chosen option (B / back = the last one, usually "Non" or "Annuler").
+## Waits for its turn when a line or another question is on screen (see _take_turn).
 func choose(who: String, text: String, options: Array) -> int:
+	var cancel := options.size() - 1
+	if skip_lines or options.is_empty():
+		return cancel
+	var gen := await _take_turn()
+	if gen < 0 or skip_lines:
+		_end_turn(gen)
+		return cancel
 	active = true
 	_panel.visible = true
 	_panel.modulate.a = 1.0
 	await _show_line(who, text, false)
+	if gen != _generation:
+		return cancel
 	_next_marker.visible = false
+	_column = _choice_column(options)
+	_picked = -1
+	(_column.get_child(0) as Button).grab_focus()
+	_choosing = true
+	while _picked < 0:
+		if _cancel_requested:
+			_picked = cancel
+		await get_tree().process_frame
+		if gen != _generation:   # (abort: the question is gone)
+			return cancel
+	var picked := _picked
+	_choosing = false
+	_cancel_requested = false
+	_column.queue_free()
+	_column = null
+	_panel.visible = false
+	active = false
+	_end_turn(gen)
+	return picked
+
+
+## The question's buttons, above the box (B / back: the last one).
+func _choice_column(options: Array) -> VBoxContainer:
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 8)
 	column.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -58,7 +107,6 @@ func choose(who: String, text: String, options: Array) -> int:
 	column.offset_right = -24
 	column.offset_bottom = -206
 	add_child(column)
-	var picked := [-1]
 	for i in options.size():
 		var b := Button.new()
 		b.text = options[i]
@@ -75,53 +123,133 @@ func choose(who: String, text: String, options: Array) -> int:
 			sb.content_margin_left = 18
 			sb.content_margin_right = 14
 			b.add_theme_stylebox_override(state, sb)
-		b.pressed.connect(func() -> void: picked[0] = i)
+		b.pressed.connect(func() -> void: _picked = i)
 		column.add_child(b)
-	(column.get_child(0) as Button).grab_focus()
-	_choosing = true
-	while picked[0] < 0:
-		if _cancel_requested:
-			picked[0] = options.size() - 1
-		await get_tree().process_frame
-	_choosing = false
-	_cancel_requested = false
-	column.queue_free()
-	_panel.visible = false
-	active = false
-	return picked[0]
+	return column
 
 
+## Shows `steps` (see DialogueDB), each line until a press; waits for its turn when another run or
+## question is on screen (see _take_turn).
 func run(steps: Array) -> void:
-	if steps.is_empty():
+	if steps.is_empty() or skip_lines:
+		return
+	var gen := await _take_turn()
+	if gen < 0 or skip_lines:
+		_end_turn(gen)
 		return
 	active = true
 	_panel.visible = true
 	_panel.modulate.a = 0.0
 	create_tween().tween_property(_panel, "modulate:a", 1.0, 0.15)
 	for step: Dictionary in steps:
-		if step.has("flag"):
-			Game.set_flag(step["flag"])
-		elif step.has("letter"):
-			_panel.visible = false
-			_in_letter = true
-			await LetterView.open(get_tree(), step["letter"], step.get("sign", ""), step.get("voice", ""))
-			_in_letter = false
-			_panel.visible = true
-		elif step.has("voice"):
-			_play_voice(step["voice"])
-		elif step.has("text"):
-			_face_speakers(step.get("who", ""))
-			await _show_line(step.get("who", ""), step["text"])
-		elif step.has("text_fn"):   # a line worked out when it is shown (a count…)
-			_face_speakers(step.get("who", ""))
-			await _show_line(step.get("who", ""), (step["text_fn"] as Callable).call())
+		if gen != _generation:   # (abort: the rest is not shown, nor set)
+			return
+		await _play_step(step)
+	if gen != _generation:
+		return
 	if _voice.playing:
 		_voice.stop()
 		Audio.duck(0.0)
 	await create_tween().tween_property(_panel, "modulate:a", 0.0, 0.12).finished
+	if gen != _generation:
+		return
 	_panel.visible = false
 	active = false
 	finished.emit()
+	_end_turn(gen)
+
+
+func _play_step(step: Dictionary) -> void:
+	if step.has("flag"):
+		Game.set_flag(step["flag"])
+	elif step.has("letter"):
+		_panel.visible = false
+		_in_letter = true
+		await LetterView.open(get_tree(), step["letter"], step.get("sign", ""), step.get("voice", ""))
+		_in_letter = false
+		_panel.visible = active
+	elif step.has("voice"):
+		_play_voice(step["voice"])
+	elif step.has("text"):
+		_face_speakers(step.get("who", ""))
+		await _show_line(step.get("who", ""), step["text"])
+	elif step.has("text_fn"):   # a line worked out when it is shown (a count…)
+		_face_speakers(step.get("who", ""))
+		await _show_line(step.get("who", ""), (step["text_fn"] as Callable).call())
+
+
+# ------------------------------------------------------------------ one at a time
+
+## Waits until it is this call's turn (the run or question before it is over). The generation it
+## plays in, or -1 when abort() closed everything meanwhile.
+func _take_turn() -> int:
+	var ticket := _next_ticket
+	_next_ticket += 1
+	var gen := _generation
+	while ticket > _serving:
+		await _turn_passed
+		if gen != _generation:
+			return -1
+	return gen
+
+
+## This call is over: the next one waiting goes (a call from before an abort: nothing to give back).
+func _end_turn(gen: int) -> void:
+	if gen != _generation:
+		return
+	_serving += 1
+	_turn_passed.emit()
+
+
+## How many runs and questions are on screen or waiting for their turn (the tests, the menu).
+func pending() -> int:
+	return maxi(_next_ticket - _serving, 0)
+
+
+## Closes the box at once (Se débloquer): the line or the question on screen and every one waiting
+## give up — not shown, their flags not set; a question answers its last option. Letters close too.
+func abort() -> void:
+	_generation += 1
+	_serving = _next_ticket
+	_choosing = false
+	_cancel_requested = false
+	_advance_requested = false
+	_typing = false
+	_in_letter = false
+	if is_instance_valid(_column):
+		_column.queue_free()
+	_column = null
+	for n in get_tree().root.get_children():
+		if n is LetterView:
+			(n as LetterView).call(&"_close")
+	if _voice.playing:
+		_voice.stop()
+		Audio.duck(0.0)
+	_panel.visible = false
+	_panel.modulate.a = 1.0
+	active = false
+	_turn_passed.emit()
+
+
+## As a press of the interact button would (the tests).
+func advance() -> void:
+	_advance_requested = true
+
+
+## Picks option `index` of the question on screen, as its button would (the tests).
+func answer(index: int) -> void:
+	if _choosing:
+		_picked = index
+
+
+## The line on screen (the tests).
+func shown_text() -> String:
+	return _text.text
+
+
+## Échap / B belong to the box right now (a question, a letter): not to the game's menu.
+func wants_cancel() -> bool:
+	return active and (_choosing or _in_letter)
 
 
 ## People who talk look at each other: the speaker of the line `who` signs turns towards the
@@ -179,7 +307,10 @@ func _play_voice(path: String) -> void:
 ## A long line comes in pages; each but the last waits for a press.
 func _show_line(who: String, text: String, wait := true) -> void:
 	var pages := _pages(text)
+	var gen := _generation
 	for i in pages.size():
+		if gen != _generation:   # (abort)
+			return
 		var last := i == pages.size() - 1
 		_next_marker.text = END if last else MORE
 		await _show_page(who, pages[i], wait or not last)
@@ -223,6 +354,7 @@ func _show_page(who: String, text: String, wait: bool) -> void:
 	var plain := _text.get_parsed_text()
 	var blip_every := VoiceBlips.every(who)
 	var last_blip := -blip_every
+	var gen := _generation
 	while shown < total:
 		if _advance_requested:   # tap while typing: show the whole line
 			_advance_requested = false
@@ -235,6 +367,8 @@ func _show_page(who: String, text: String, wait: bool) -> void:
 			last_blip = at
 			VoiceBlips.blip(who)
 		await get_tree().process_frame
+		if gen != _generation:   # (abort: the box is closed)
+			return
 	_text.visible_characters = -1
 	_typing = false
 	_next_marker.visible = true
@@ -242,6 +376,8 @@ func _show_page(who: String, text: String, wait: bool) -> void:
 		return
 	while not _advance_requested:
 		await get_tree().process_frame
+		if gen != _generation:
+			return
 	_advance_requested = false
 
 
@@ -250,7 +386,7 @@ static func _is_letter(c: String) -> bool:
 
 
 func _input(event: InputEvent) -> void:
-	if not active or _in_letter:
+	if not active or _in_letter or SettingsMenu.open_count > 0:   # (the game's menu over it: its keys are the menu's)
 		return
 	if _choosing:
 		# The buttons take the taps; B / back picks the last option.
