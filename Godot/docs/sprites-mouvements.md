@@ -23,7 +23,7 @@ la tête de profil. Une entité mobile a les vues dont ses mouvements ont besoin
 | **Faune** (`assets/art/fauna/`, 22 planches : libellule, grenouille, crabe…) | 1 vue, retournée | déplacement par code | à auditer : les bêtes qui vont vers le haut ou le bas de l'écran |
 | **Véhicules / embarcations** (`props/barque.png`, `chariot_cage.png`, `voiture_arbre.png`) | **1 image de profil** | la barque de Maïa glisse (`story/barque.gd`) ; le chariot de Brac est un décor | **c'est le cas qui a déclenché la demande** : une barque doit avoir un avant, un arrière et un dessus selon qu'elle part vers l'est, le nord ou le sud |
 | **Montures** (Chloé sur un dino, `chloe_selle*.png`) | profil + face/dos selon l'espèce | `RideButton` | à auditer |
-| **Volants / nageurs** (`ptero_vol.png`, `pteranodon_vol.png`, `chloe_nage.png`, dinos marins) | 1 vue | vol et nage par code | vols de face/dos, plongée sous l'eau |
+| **Volants / nageurs** (`ptero_vol.png`, `pteranodon_vol.png`, `chloe_nage.png`, dinos marins) | 1 vue | vol et nage par code (20/10 : nageur portant Chloé, `<id>_nage.png`, voir plus bas) | vols de face/dos, plongée sous l'eau |
 | **Décors animés** (feu, fumée, eau, drapeaux) | sans objet (sans direction) | shaders et planches | sans écart de direction |
 
 ## La règle technique (à tenir pour toute nouvelle image)
@@ -46,6 +46,19 @@ la tête de profil. Une entité mobile a les vues dont ses mouvements ont besoin
 - **Où** : seulement à pied, marche, course et attente (`Player._animate`) ; selle, nage, vol, lave, poses de scène et PNJ gardent leurs 4 sens. La direction regardée pour interagir (`facing`) ne change pas.
 - **Repli** : planche `_diag` absente (ou illisible) pour le look porté : l'axe dominant, comme avant (`SheetFrames.walk_dir`), sans erreur.
 - **Vérifié par** `tests/animations/test_trois_quarts.gd` (GdUnit4, sans fenêtre) et `tools/scenarios/diagonales_test.gd` (captures, 4 sens, arrêts, bottes).
+
+## Nageurs portant Chloé (20/10)
+
+- **Format** : à côté de la planche de profil d'une espèce nageuse `<id>.png`, `<id>_nage.png` : mêmes colonnes et lignes
+  (`sheet_columns` × `sheet_rows`), tournée vers la droite, Chloé couchée à plat ventre sur son dos (gilet, sac) ; toutes
+  les cases forment le cycle de nage (la 2e ligne le rejoue). Les cases peuvent être d'une autre taille que celles du
+  profil. Livrée : `kronosaurus_nage.png` (le Kronosaurus ressuscité : pas de cou derrière lequel s'asseoir).
+- **En jeu** (`actors/swim_rider.gd`, branché dans `Companion._carry`) : dans l'eau profonde, vu de profil, le nageur joue
+  cette planche (animation `swim_rider`, au tempo de sa nage de profil, ralentie à l'arrêt) et l'image de Chloé est
+  cachée (elle est dedans) ; la planche est mise à l'échelle et décalée pour garder la longueur, le ventre et le milieu
+  dessinés du profil (`SwimRider.fit`), donc la même ligne d'eau (`Swim.sink`). De face et de dos : la selle marine
+  (`Saddle`), comme les autres nageurs. Sans planche : rien ne change.
+- **Vérifié par** `tests/animations/test_nage_portee.gd` (GdUnit4, sans fenêtre).
 
 ## La règle artistique
 

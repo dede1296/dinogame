@@ -187,9 +187,13 @@ les Uniques), gabarits 2,34 / 2,00 / 3,30 / 3,80 m (le T-Rex ×1,2 en scène). C
   (région `apex`). Jamais sauvage. Combat : `docs/mecaniques.md` « Les deux derniers combats ».
 - **L'équipe d'Isaure** (« les miens », jamais corrompus) : Hauban (Pteranodon 47), Bouline (Baryonyx 47), Étrave
   (Suchomimus 48), Carène (Archelon 49) : espèces existantes, aucune planche nouvelle.
-- **Post-game** : les géants endormis du cratère, qui se réveillent un à un après la fin :
-  Giganotosaurus, Argentinosaurus, Therizinosaurus géant… Et les espèces ressuscitées grâce aux
-  fossiles complets, dont le **Titanosaure d'Or**.
+- **Post-game** : les quatre géants endormis du cratère, qui se réveillent un à un après la fin (Uniques du
+  Dinodex, région `apex`, jamais sauvages ni capturés ; `data/species/*.tres`, `story/apex_geants.gd`) :
+  **Deinocheirus** (Moufle : 11 m, bras de 2,4 m, bec de canard, bosse ; gabarit vu 4,4 m, ×1,3 en scène),
+  **Argentinosaurus** (Nuage : ~35 m, le plus grand du jeu ; 5,2 m vus, ×1,5), **Therizinosaurus géant** (Râteau :
+  10 m, griffes d'un mètre ; 4,4 m vus, ×1,3), **Dacentrurus** (Ronfleur : 8-9 m, le premier stégosaure décrit,
+  double rangée de plaques puis de pointes, quatre pointes au bout de la queue ; 3,2 m vus, ×1,4). Et les espèces
+  ressuscitées grâce aux fossiles complets, dont le **Titanosaure d'Or**.
 
 ## Compte
 

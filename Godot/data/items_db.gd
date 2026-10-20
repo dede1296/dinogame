@@ -33,6 +33,11 @@ const ITEMS := {
 		"desc": "Il bat doucement, comme un cœur. Confié par le Spinosaure Ancestral, au fond du temple englouti."},
 	"coeur_2": {"name": "Deuxième Cœur d'ambre", "icon": "coeur_ambre", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Encore chaud du soleil du désert. Remis par le Carnotaurus Rouge, libéré de l'ambre noir."},
+	# Prairie du Grand Crâne (chapitre 2, story/plaines.gd) : un drapeau, pas un objet du sac ; l'entrée donne son nom
+	# et son image aux listes des Sceaux (battle/apex_hud.gd, Sceaux libres). Icône : assets/art/ui/sceau_plaines.png
+	# (agent images ; l'ambre en attendant).
+	"sceau_plaines": {"name": "Sceau de la Prairie", "icon": "sceau_plaines", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Un disque d'ambre gravé de la fougère d'Hélène, posé au bout de la corne du Tricératops Alpha, au fond du Grand Crâne : sa confiance. Il ouvre la route côtière, vers le Havre."},
 	"sceau_foret": {"name": "Sceau de la Forêt", "icon": "sceau_foret", "kind": "cle", "price": 0, "sell": 0,
 		"desc": "Un disque d'ambre gravé de la fougère d'Hélène, remis par le chef de la meute d'Utahraptors. Il ouvre la route du Marais."},
 	"sceau_marais": {"name": "Sceau du Marais", "icon": "sceau_marais", "kind": "cle", "price": 0, "sell": 0,

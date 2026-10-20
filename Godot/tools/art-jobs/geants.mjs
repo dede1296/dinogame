@@ -19,8 +19,15 @@ const FRAME = 220;
 const GEN = "generated_imgs";
 const sourceOf = (id) => `${GEN}/${fs.readdirSync(GEN).find((n) => n.includes(id))}`;
 
-export default ({ sheet, props, sharp, OUT }) => {
+export default ({ sheet, props, icons, sharp, OUT }) => {
   const jobs = [];
+  // Blocs retouchés le 20/10 : tailles de l'ancien bloc [largeur, hauteur] par numéro.
+  const RETOUCHES = { 1: [null, [673, 850]], 3: [null, [670, 847]] };
+  const fitTo = async (file, [w, h]) => {
+    await sharp(file).resize(w, h, { fit: "fill" }).png({ compressionLevel: 9 }).toFile(`${file}.tmp`);
+    fs.renameSync(`${file}.tmp`, file);
+    return `${file} remis à ${w}x${h}`;
+  };
   /** Planche 3×3 (nano-banana dessine 9 poses au lieu de 6) -> 3×2 avec les cases choisies [rangée, colonne], sans déformation. */
   const recompose = (id, pick, derive = null) => async (out) => {
     const tmp = out.replace(/\.png$/, "_tmp9x9.png");
@@ -109,7 +116,7 @@ export default ({ sheet, props, sharp, OUT }) => {
     ["argentinosaurus", recompose("j3t7oa", [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [2, 2]]), "892rch", wipeGrid(4, 2), [], profile("y6qn9h")],
     ["dacentrurus", recompose("vfw1uh", [[0, 0], [0, 1], [0, 2], [1, 0], [2, 0], [2, 2]]), "ah3vox", null, [],
       recompose("uxamjb", [[0, 0], [0, 1], [0, 2], [1, 0], [2, 1], [2, 2]], wipeGrid(3, 3))],
-    ["deinocheirus", profile("57sy8p"), "4iam5b", null, [[0, 1, 0], [0, 3, 2], [1, 1, 0], [1, 3, 2]], profile("jaec96")],
+    ["deinocheirus", profile("0t8afo"), "4iam5b", null, [[0, 1, 0], [0, 3, 2], [1, 1, 0], [1, 3, 2]], profile("8ey7l5")],
   ];
   for (const [name, prof, fd, derive, swaps, leve] of species) {
     jobs.push([`${OUT}/dinos/${name}.png`, prof]);
@@ -118,11 +125,21 @@ export default ({ sheet, props, sharp, OUT }) => {
   }
 
   // Blocs d'ambre : un œil ambré ouvert (l'ambre luit) ; fendu en deux et vide. Échelle = taille des blocs existants.
-  const BLOCS = [["1", "bi74dj", "9k6cqk", 0.74], ["2", "cdpsju", "zrqzy3", 0.74], ["3", "krt2h8", "7uaesv", 0.74], ["4", "20q0rq", "sntz3g", 0.371, 0.335]];
+  const BLOCS = [["1", "npebbb", "9k6cqk", 0.74], ["2", "cdpsju", "zrqzy3", 0.74], ["3", "hi2ryc", "7uaesv", 0.74], ["4", "20q0rq", "sntz3g", 0.371, 0.335]];
   for (const [n, oeil, vide, scale, scaleVide = scale] of BLOCS) {
-    jobs.push([`${OUT}/props/bloc_geant_${n}_oeil.png`, () => props({ id: oeil, scale, gap: 40, outDir: `${OUT}/props`, names: [`bloc_geant_${n}_oeil`] })]);
+    jobs.push([`${OUT}/props/bloc_geant_${n}_oeil.png`, async () => {
+      const msg = await props({ id: oeil, scale, gap: 40, outDir: `${OUT}/props`, names: [`bloc_geant_${n}_oeil`] });
+      return RETOUCHES[n] ? `${msg} ; ${await fitTo(`${OUT}/props/bloc_geant_${n}_oeil.png`, RETOUCHES[n][1])}` : msg;
+    }]);
     jobs.push([`${OUT}/props/bloc_geant_${n}_vide.png`, () => props({ id: vide, scale: scaleVide, gap: 60, outDir: `${OUT}/props`, names: [`bloc_geant_${n}_vide`] })]);
   }
+
+  // Retouches 20/10 : bloc 3 refait en Dacentrurus (deux rangées de pointes étroites, 4 pointes de queue), œil fermé ; sceau du Tricératops.
+  jobs.push([`${OUT}/props/bloc_geant_3.png`, async () => {
+    const msg = await props({ id: "or54at", scale: 0.74, gap: 40, outDir: `${OUT}/props`, names: ["bloc_geant_3"] });
+    return `${msg} ; ${await fitTo(`${OUT}/props/bloc_geant_3.png`, [682, 848])}`;
+  }]);
+  jobs.push([`${OUT}/ui/sceau_plaines.png`, () => icons({ id: "tzeqks", cols: 1, rows: 1, size: 160, outDir: `${OUT}/ui`, names: ["sceau_plaines"] })]);
 
   // Lot E. Brac gardien de nuit (lanterne à la main, chapeau, pas de masque ; 4×4 : face, gauche, droite, dos). La lueur de la
   // lanterne sortait rose sur le magenta : les pixels roses sont repeints en magenta pur avant le détourage.

@@ -28,6 +28,8 @@ const REACTIONS := {&"water": ["~", 90.0], &"fire": ["♥", 110.0], &"cave": ["?
 ## The same kind of place does not make it react again before this long (s).
 const REACT_AGAIN_S := 40.0
 const SWIM := preload("res://world/swim.gd")
+## A swimmer drawn with Chloé lying on its back (the Kronosaurus: `dinos/<id>_nage.png`), seen from the side.
+const SWIM_RIDER := preload("res://actors/swim_rider.gd")
 
 var player: Player
 var dino: Dino
@@ -48,6 +50,8 @@ var _keep := 24.0     # px: it never stands closer to her feet than this (half i
 var _shown: Dino      # the dino it looks like (its size changes smoothly while it stays)
 var _resize: Tween
 var _size := 1.0           # its sprite scale (_set_size), before a flight view's own (Wings.face_back_scale)
+var _aboard_fit := {}      # swimming with her drawn on its back: SwimRider.fit ({}: the saddle, as for all the others)
+var _view_k := 1.0         # × its size while those pictures show (_aboard), 1 otherwise
 ## Its shadow in flight, at the highest: this part of its size, this part of its opacity.
 const SHADOW_SMALLEST := 0.55
 const SHADOW_FAINTEST := 0.4
@@ -112,6 +116,10 @@ func refresh() -> void:
 		Wings.add_to(sprite.sprite_frames, species)
 	var h := species.sheet.get_height() / float(species.sheet_rows)
 	sprite.offset = Vector2(0, -h * 0.46)
+	_aboard_fit = {}
+	if swimming() and SWIM_RIDER.drawn(species):
+		SWIM_RIDER.add_to(sprite.sprite_frames, species)
+		_aboard_fit = SWIM_RIDER.fit(species, sprite.offset)
 	_shadow_width = species.sheet.get_width() / float(species.sheet_columns) * 0.55
 	if dino != _shown:
 		_set_size(walking)   # another dino (the mount of the party taking her): from its own size
@@ -133,16 +141,17 @@ func keep_px() -> float:
 func _resize_to(size: float, smooth: bool) -> void:
 	if _resize and _resize.is_valid():
 		_resize.kill()
-	if not smooth or is_equal_approx(sprite.scale.y, size):
+	var from := sprite.scale.y / _view_k   # (its size, without its swim view's own)
+	if not smooth or is_equal_approx(from, size):
 		_set_size(size)
 		return
 	_resize = create_tween()
-	_resize.tween_method(_set_size, sprite.scale.y, size, RESIZE_S).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_resize.tween_method(_set_size, from, size, RESIZE_S).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _set_size(size: float) -> void:
 	_size = size
-	sprite.scale = Vector2.ONE * size
+	sprite.scale = Vector2.ONE * size * _view_k
 	Shadow.fit(_shadow, _shadow_width * size)
 	if sprite.has_meta(&"stage_scale"):   # (a scene's move puts it back to this size)
 		sprite.set_meta(&"stage_scale", sprite.scale)
@@ -215,6 +224,10 @@ func _seat_rider(species: DinoSpecies) -> void:
 	var was_riding := _saddle != null
 	if _saddle:
 		_saddle.release()   # (her size on foot: the next saddle measures it from there)
+	player.sprite.visible = true   # (her own picture, hidden while she is drawn on her swimmer's: _aboard)
+	if _view_k != 1.0:   # (its walking view again before it is measured; _aboard sets its swim view anew)
+		_view_k = 1.0
+		sprite.scale = Vector2.ONE * _size
 	_saddle = Saddle.new(species, player.sprite, flying()) if carrying() else null
 	# Both cut out (WorldView._sync): sorted by depth, never blended with what stands behind.
 	set_meta(&"cut_out", carrying())
@@ -238,19 +251,39 @@ func _carry(_delta: float) -> void:
 	var v := player.velocity
 	if absf(v.x) > 8.0:
 		sprite.flip_h = v.x < 0.0
-	if v.length() > 12.0:
+	var moving := v.length() > 12.0
+	var anim := _idle_anim
+	if moving:
 		var anims: Array = SheetFrames.dino_anims(sprite.sprite_frames, v)
 		_idle_anim = anims[1]
-		sprite.play(anims[0])
+		anim = anims[0]
+	var size := sprite.scale.y if _aboard_fit.is_empty() else _size   # (before _aboard changes it)
+	var aboard := _aboard(anim)
+	sprite.play(SWIM_RIDER.SWIM if aboard else anim)
+	if moving:
 		sprite.speed_scale = clampf(v.length() / 180.0, 0.8, 1.6)
 	else:
-		sprite.play(_idle_anim)
-		sprite.speed_scale = 1.0
+		sprite.speed_scale = SWIM_RIDER.IDLE_SPEED if aboard else 1.0
 	# Also when it turns to look at something.
-	var seat := _saddle.place(sprite.animation, sprite.flip_h, sprite.scale.y)
+	var seat := _saddle.place(anim, sprite.flip_h, size)
 	global_position = player.global_position + Vector2(0, seat["depth"])
 	player.sprite.position = seat["at"]
 	player.sprite.play(seat["pose"])
+
+
+## Swimming seen from the side, on a swimmer drawn with Chloé lying on its back (SwimRider): its SWIM pictures at
+## the size and the place of its walking ones (SwimRider.fit), hers hidden (she is in them); from the front or the
+## back, the saddle as for the others. Nothing changes for a swimmer without them. True when it shows SWIM.
+func _aboard(anim: StringName) -> bool:
+	if _aboard_fit.is_empty():
+		return false
+	var aboard := SWIM_RIDER.side_view(anim)
+	var shift: Vector2 = _aboard_fit["shift"] if aboard else Vector2.ZERO
+	_view_k = float(_aboard_fit["scale"]) if aboard else 1.0
+	sprite.scale = Vector2.ONE * _size * _view_k
+	sprite.position = Vector2(-shift.x if sprite.flip_h else shift.x, shift.y) * _size
+	player.sprite.visible = not aboard
+	return aboard
 
 
 ## In the air (Vol): its wings beat (faster as it goes faster), seen the way it flies (Wings), both

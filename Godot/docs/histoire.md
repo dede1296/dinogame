@@ -1493,14 +1493,19 @@ Drapeaux (détail dans `chapitre-9-scenes.md`) : `apex_aube`, `isaure_pari`, `is
 
 ## Post-game
 
-- **La Terre des Apex** s'explore : les quatre blocs des géants (Giganotosaurus, Argentinosaurus, un
-  Therizinosaurus géant, un « petit » géant au marque-page) se réveillent **un à un**, par un **réveil doux**
-  (sans rien forcer : on s'assoit à côté, avec Hélène qui dit comment, et un Lien qui monte) ; le Souverain,
-  couché au centre, respire, et la cendre bouge.
-- **Les fossiles légendaires** (Titanosaure d'Or…) à ressusciter au Cabinet, avec Hélène.
+- **La Terre des Apex** s'explore : les quatre blocs des géants (le « petit » géant au marque-page, un
+  Deinocheirus ; l'Argentinosaurus au cou qui fait deux fois le tour ; un Therizinosaurus géant ; le Dacentrurus
+  qui ronfle) se réveillent **un à un**, par un **réveil doux** (sans rien forcer : l'œil s'ouvre à son heure,
+  Hélène dit avec quel dino s'asseoir à côté, on s'assoit, et un Lien qui monte : `post-game-scenes.md` § G,
+  `story/apex_geants.gd`) ; le Souverain, couché au centre, respire, et la cendre bouge.
+- **Les fossiles légendaires** (Titanosaure d'Or, Kronosaurus, Gigantoraptor : cinq os chacun, `story/fossiles.gd`)
+  à ressusciter au Cabinet, avec Hélène. Sur le dos du Kronosaurus, Chloé nage à plat ventre (sa planche de nage,
+  `dinos/kronosaurus_nage.png`).
 - **Le Dinodex** à compléter, habitat par habitat, de jour, de nuit et à la pleine lune.
-- **Revanches** : Maïa (niveau 50, défi n° 6 au Grand Crâne, « pour voir », une fois par jour), les Alphas (qui
-  peuvent rejoindre Chloé une fois affrontés à nouveau : « les gardiens connaissent la gardienne »).
+- **Revanches** : Maïa (niveau 50, défi n° 6 au Grand Crâne, « pour voir », une fois par jour), les sept Alphas
+  chez eux (`story/revanches.gd`) : un Alpha ne rejoint pas l'équipe ; la première revanche gagnée **éveille son
+  Sceau** (« les gardiens connaissent la gardienne »), qui l'appelle ensuite dans tous les combats, une fois par
+  jour (les Sceaux libres : [mecaniques.md](mecaniques.md)). Et le pari d'Isaure, sur le quai.
 - **Hélène au Cabinet** : de nouvelles conversations (les géants, les Anciens, Isaure et les forges, « ma
   recette pour un Alpha qui boude : trois semaines sur une pierre chaude, prévois deux chapeaux »), et des œufs
   d'ambre rares, « les derniers que je réveillerai. Les autres, c'est toi. Doucement. »

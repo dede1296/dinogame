@@ -74,9 +74,19 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
 5. **La page « Pour Chloé »** (page 6) existe en trois versions, une par œuf.
 6. **La fin** : le dernier geste d'apaisement du Souverain revient à ton dino de départ, avec sa
    propre animation et sa propre réplique d'Hélène.
-7. **Nouvelle partie+** : après la fin, on recommence avec un autre œuf en gardant le Dinodex, les
+7. **Nouvelle partie+** ✅ : après la fin, on recommence avec un autre œuf en gardant le Dinodex, les
    fossiles et le mur du journal (les pages déjà lues sont marquées). Les adversaires sont un peu
-   plus forts.
+   plus forts. *Dans le jeu (20/10)* : sous une partie finie (« Partie terminée »), à l'écran des emplacements
+   (« Charger » ou « Nouvelle partie »), le bouton **« Nouvelle partie+ »** demande où recommencer (tout emplacement
+   sauf la partie finie, jamais touchée ; écraser une partie est demandé d'abord), puis l'intro et le quai
+   (`ui/save_slots.gd`, `scenes/boot/boot.gd`, `Save.start_new_game_plus`). Ce qui passe (`core/ng_plus.gd`,
+   `KEEP`) : le Dinodex (vues, possédées, carnet), les os des squelettes légendaires (objets et drapeaux `os_*`),
+   les fossiles du Désert, les récompenses du Dinodex déjà données, l'intro et le tutoriel vus, et les pages
+   trouvées (grises sur le mur tant qu'elles ne sont pas retrouvées). Le reste recommence : l'équipe, la réserve,
+   les Liens, les autres objets, l'histoire, les géants, les revanches, l'insigne. Les dresseurs et les Alphas ont
+   **+2 niveaux**, les dinos sauvages **+1** (`Game.strengthen`, une seule fois par adversaire) ; l'œuf déjà choisi
+   dans une partie d'avant le dit (« Celui-là, tu le connais. », on peut le reprendre) ; une espèce possédée avant
+   et pas encore reprise : « Possédé à la partie précédente. » dans sa fiche. Essais : `tests/sauvegarde/`.
 
 ## Exploration
 
@@ -636,11 +646,22 @@ jamais sous 1 PV, *Cri* : peur), et « *Il ne bouge pas* » de plus en plus souv
 **Le sac** (`actors/apex_bag.gd`, `ApexBag`) : les Cœurs 1-4 rendus par Isaure, puis les cinq posés dans la porte
 (les drapeaux `coeur_n` restent), le dino de départ monté à Lien 5, Moustique rendu à Maïa (équipe ou réserve), le
 masque, les moufles, la lettre, l'insigne de gardienne (`insigne_gardienne`).
-**Les géants du cratère** (post-game, `actors/apex_giants.gd`, `ApexGiants`) : dès `post_game`, un à la fois, dans
-l'ordre ; Chloé s'assoit à côté du bloc une fois par jour du jeu (+60 points de Lien au dino de tête) ; au 3e jour,
-il ouvre l'œil (`geant_<n>_eveille`).
+**Les géants du cratère** (post-game, `story/apex_geants.gd`, `ApexGeants` ; les mots : `data/dialogue_geants.gd`) :
+dès `post_game`, un à la fois, dans l'ordre 4 → 2 → 1 → 3 ; l'œil s'ouvre à son heure (le 4 tout de suite, le 2 à la
+pleine lune, le 1 au crépuscule, le 3 la nuit), Hélène dit avec quel dino s'asseoir à côté (Nage, herbivore,
+Tranche, Résonance en tête), on s'assoit : +1 cœur, le géant au Dinodex (Unique), puis il reste près de son bloc.
+Ni combat ni capture. Détail : `docs/post-game-scenes.md` § G ; essais : `tests/apex/geants/`.
+**Les revanches et les Sceaux libres** (post-game, `story/revanches.gd`, `battle/revanche_battles.gd`,
+`ApexEngine.LIBRES`) : les sept Alphas se réaffrontent chez eux (niveau 50 à 53, ni collier ni fuite, plus forts
+chez eux) ; un Alpha ne rejoint jamais l'équipe : la première revanche gagnée **éveille son Sceau**
+(`<sceau>_eveille`). Avec l'insigne de gardienne, un Sceau éveillé répond ensuite dans tous les combats (pas au
+Relais, pas contre son propre Alpha), **une fois par jour**, sans coûter le tour : le Tricératops double le
+prochain coup, le Chef de Meute fait agir deux fois, le Spinosaure soigne l'équipe, Piment baisse l'attaque,
+Minuit adoucit le prochain coup, Toupet baisse la vitesse, Cheminée immobilise une action. Dans un combat sans
+fuite, la commande « Sceaux » prend la place de Fuir ; dans un combat sauvage, les Sceaux sont au Sac. Essais :
+`tests/apex/revanches/`.
 
-Essais (GdUnit4, sans fenêtre) : `tests/apex/mecaniques/` (34 cas) ; à l'écran :
+Essais (GdUnit4, sans fenêtre) : `tests/apex/mecaniques/` (33 cas) ; à l'écran :
 `tests/apex/mecaniques/fenetre_combat_souverain.gd`.
 
 ## Les dinos
@@ -764,9 +785,24 @@ chapitre.
 - **Fragments d'ambre** : chacun renferme un dino endormi. Roc sait maintenant le **réveiller** :
   on obtient un **œuf**, qui éclôt après un certain nombre de pas. Ce sont des individus spéciaux :
   une espèce rare, ou une espèce commune avec une attaque unique et un Lien de départ.
-- **Fossiles** : chaque squelette complet (crâne, colonne, côtes, pattes, queue), retrouvé grâce à
-  Flair, fait revivre une **espèce disparue de l'île** (les légendaires du post-game en font partie).
-- **Le mur du journal** : les pages trouvées, rangées dans l'ordre, relisibles avec la voix d'Hélène.
+- **Fossiles** ✅ (post-game, `story/fossiles.gd`) : chaque squelette complet (crâne, colonne, côtes, pattes,
+  queue), retrouvé grâce à Flair, fait revivre une **espèce disparue de l'île** : le **Titanosaure d'Or**
+  (Saltasaurus), le **Kronosaurus**, le **Gigantoraptor**. Cinq os chacun (objets `os_<bête>`, jamais vendus),
+  dans neuf zones : treize enfouis (un dino au Flair les trouve), deux crânes qu'on regarde (le cratère, le sable
+  du récif). Le carnet de Tante Sirocco (`carnet_os`) dit où chercher sur terre ; la page d'Isaure (son pari
+  gagné), en mer : les os d'une bête ne se montrent qu'une fois sa page donnée. Au Cabinet, Hélène réveille le
+  squelette complet dans la couveuse (vingt larmes d'ambre, un œuf à la fois) : un œuf (Doré, Cronos, Plume) qui
+  éclôt après 300 pas, niveau 45. La fiche du Dinodex allume une case du squelette par os trouvé. Le Kronosaurus
+  nage (Nage) et ne porte pas sur terre : dans l'eau profonde, vu de profil, Chloé est couchée à plat ventre
+  sur son dos (sa planche de nage `dinos/<espèce>_nage.png`, `actors/swim_rider.gd`) ; de face et de dos, la
+  selle marine habituelle. Essais : `tests/apex/fossiles/`, `tests/animations/test_nage_portee.gd`.
+- **Le mur du journal** ✅ (`ui/journal_wall.gd`) : les pages trouvées (les quarante d'Hélène et celles des
+  Anciens), rangées dans l'ordre, relisibles avec la voix d'Hélène quand elle est enregistrée. On l'ouvre par le
+  **menu du jeu** (bouton ☰, Échap ou Start) : la ligne « Journal d'Hélène », dès qu'une page est trouvée (ou
+  lue dans une partie d'avant). Une case par page : trouvée, son numéro en or (A, Entrée ou un clic la relit) ;
+  jamais trouvée, son numéro pâle ; en Nouvelle partie+, lue avant et pas encore retrouvée : grise, cochée,
+  « déjà lue », et elle ne se relit qu'une fois retrouvée. Souris, clavier et manette ; le jeu est en pause.
+  Essais : `tests/sauvegarde/test_mur_du_journal.gd`.
 
 ## Progression
 
@@ -789,9 +825,10 @@ chapitre.
 - **Ouvrir** : le bouton rond au livre (sous la carte) ou la touche **X** (manette : gâchette haute
   droite), partout sauf en combat et pendant une scène. Le jeu est en pause. Il s'ouvre sur la
   région où est Chloé. `ui/dex_screen.gd` (écran), `ui/dex_entry.gd` (fiche), `ui/dex_tiles.gd`.
-- **Onglets** : Tous (#001 à #039, ordre de l'île), une page par région (« ??? » tant que Chloé n'y
-  est pas allée ; compteurs vues / possédées et leur barre), **★ Uniques** à part (les Alphas et les
-  Anciens : « rencontrés », jamais capturés), **Réserve**.
+- **Onglets** : Tous (#001 à #049, ordre de l'île : les 65 espèces de `SpeciesDB` moins les 16 Uniques,
+  `DexDB.order`), une page par région (« ??? » tant que Chloé n'y est pas allée ; compteurs vues / possédées et
+  leur barre), **★ Uniques** à part (★1 à ★16 : les Alphas, les Anciens, le Souverain et les quatre géants du
+  cratère, `DexFacts.UNIQUES` : « rencontrés », jamais capturés), **Réserve**.
 - **Trois états** : *pas encore vu* (ombre noire, « ??? », seulement une rumeur de région — et
   seulement si Chloé connaît cette région) ; *vu* (images de profil et de face, nom, type, famille,
   taille, description, chaque lieu avec ses moments — soleil, lune, aube, pleine lune, météo — et

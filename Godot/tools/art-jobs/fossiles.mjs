@@ -17,7 +17,7 @@ const MAGENTA = { r: 255, g: 0, b: 255 };
 // [nom, id du profil 3×2, id face/dos, hauteur de cadre du profil]
 const SPECIES = [
   ["saltasaurus", "br1u7k", null, 190],       // face/dos composé (voir FACE_DOS_COMPOSED)
-  ["kronosaurus", "xp3unx", "tpxgcr", 170],
+  ["kronosaurus", "cf3719", "y9pd3n", 170],
   ["gigantoraptor", "8m0hl2", "8zc0tn", 230],
 ];
 // Saltasaurus : la 1re planche face/dos (nayuwo) a la face juste mais le dos recopié de profil dans 2 colonnes ;
@@ -87,7 +87,7 @@ export default ({ sheet, props, icons, sharp, OUT }) => {
     }]);
   }
   // Kronosaurus en nage, Chloé à plat ventre sur son dos (3×2 : cycle de nage haut/bas/milieu, deux fois).
-  jobs.push([`${OUT}/dinos/kronosaurus_nage.png`, (out) => sheet({ id: "35x4os", rows: 2, cols: 3, frameHeight: 200, align: "bottom", isolate: true, out })]);
+  jobs.push([`${OUT}/dinos/kronosaurus_nage.png`, (out) => sheet({ id: "bk7t6v", rows: 2, cols: 3, frameHeight: 200, align: "bottom", isolate: true, out })]);
   jobs.push([`${OUT}/props/crane_titanosaure_paroi.png`, () => props({ id: "x3fzbh", scale: 0.4, outDir: `${OUT}/props`, names: ["crane_titanosaure_paroi"] })]);
   jobs.push([`${OUT}/props/crane_kronosaurus_sable.png`, () => props({ id: "z14x8r", scale: 0.4, outDir: `${OUT}/props`, names: ["crane_kronosaurus_sable"] })]);
   jobs.push([`${OUT}/ui/os_icones`, () => icons({

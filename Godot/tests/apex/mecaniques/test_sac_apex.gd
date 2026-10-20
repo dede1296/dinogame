@@ -1,8 +1,8 @@
 extends GdUnitTestSuite
-## Ce qui entre et sort du sac et de l'équipe au chapitre 9 (ApexBag), et le réveil des géants au post-game
-## (ApexGiants), sans fenêtre : les Cœurs rendus puis posés dans la porte (les drapeaux restent), le dino de départ à
-## Lien 5, Moustique rendu à Maïa (de l'équipe ou de la réserve, jamais en laissant Chloé seule), le masque, les
-## moufles, la lettre, l'insigne ; les géants, un à un, un jour à la fois.
+## Ce qui entre et sort du sac et de l'équipe au chapitre 9 (ApexBag), sans fenêtre : les Cœurs rendus puis posés
+## dans la porte (les drapeaux restent), le dino de départ à Lien 5, Moustique rendu à Maïa (de l'équipe ou de la
+## réserve, jamais en laissant Chloé seule), le masque, les moufles, la lettre, l'insigne. (Le réveil des géants du
+## post-game : story/apex_geants.gd, tests/apex/geants/.)
 
 const SAVE_PATH := "user://test_gdunit_apex_sac_save.json"
 
@@ -76,30 +76,3 @@ func test_masque_moufles_lettre_insigne() -> void:
 	ApexBag.give_insigne()
 	ApexBag.give_insigne()
 	assert_int(Game.item_count("insigne_gardienne")).override_failure_message("deux insignes").is_equal(1)
-
-
-func test_les_geants_se_reveillent_un_a_un() -> void:
-	assert_int(ApexGiants.current()).override_failure_message("un géant se réveille avant la fin").is_equal(0)
-	assert_bool(ApexGiants.sit(1)["ok"]).is_false()
-	Game.set_flag(&"post_game")
-	assert_int(ApexGiants.current()).is_equal(1)
-	assert_str(String(ApexGiants.state(2))).override_failure_message("le 2e attend avant le 1er").is_equal(String(ApexGiants.ASLEEP))
-	assert_bool(ApexGiants.sit(2)["ok"]).is_false()
-	var vif := Game.lead_dino()
-	var points := vif.bond_points
-	for day in ApexGiants.SITS_TO_WAKE:
-		Game.day = 10 + day
-		var r := ApexGiants.sit(1)
-		assert_bool(r["ok"]).override_failure_message("jour %d : Chloé ne s'assoit pas" % day).is_true()
-		assert_bool(ApexGiants.sit(1)["ok"]).override_failure_message("deux fois le même jour").is_false()
-		assert_bool(r["woke"]).is_equal(day == ApexGiants.SITS_TO_WAKE - 1)
-	assert_bool(ApexGiants.awake(1)).is_true()
-	assert_bool(vif.bond > 1 or vif.bond_points > points).override_failure_message("le Lien ne monte pas à côté du géant").is_true()
-	assert_int(ApexGiants.current()).is_equal(2)
-	assert_str(String(ApexGiants.state(1))).is_equal(String(ApexGiants.AWAKE))
-	for n in range(2, ApexGiants.COUNT + 1):
-		for day in ApexGiants.SITS_TO_WAKE:
-			Game.day += 1
-			ApexGiants.sit(n)
-	assert_int(ApexGiants.awake_count()).is_equal(ApexGiants.COUNT)
-	assert_int(ApexGiants.current()).is_equal(0)
