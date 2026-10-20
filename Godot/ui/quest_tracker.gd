@@ -1,8 +1,10 @@
 class_name QuestTracker
 extends Control
-## The objective being followed, always in view under the party bar, as short as can be: its
-## title only. A tap opens it: the details, an arrow turning towards the place and how far it
-## is (or the zone to go to when it is elsewhere); another tap, or a few seconds, closes it.
+## The objective being followed, always in view under the party bar: its title and, small under it,
+## the way to go — a little arrow turning towards the place and how far it is; when the objective is in
+## another zone, towards the way out to take, named (ZoneRoutes.heading : « 18 m · sortie : Havre-Doré »).
+## That line can be hidden (Paramètres → Affichage : « Direction de l'objectif ») ; it then shows only
+## with the details. A click (or a tap) unrolls the details; another click, or a few seconds, rolls them up.
 ## The one followed: the one picked on the map, else the nearest (Objectives.followed).
 
 const TOP := 104.0
@@ -13,19 +15,57 @@ const GOLD := Color(0.95, 0.76, 0.31)
 const BLUE := Color(0.45, 0.75, 0.98)
 const CREAM := Color(1, 0.97, 0.9)
 const TILE := 48.0
+const HERE_TILES := 3.0
+const ARROW_PX := 16.0
+const TURN_REDRAW := 0.03   # the arrow is drawn again when the angle moved this much (radians)
+const PREF_SECTION := "hud"
+const PREF_DIRECTION := "direction"
 
 var player: Node2D
 var zone: StringName
+## The zone's scene (world.gd): where its ways out are.
+var region: Region
 var _goal: Dictionary = {}
+var _heading: Dictionary = {}
 var _panel: PanelContainer
 var _title: Label
 var _detail: Label
-var _pointer: VBoxContainer
+var _way: HBoxContainer
 var _distance: Label
 var _arrow: Control
 var _angle := 0.0
+var _drawn_angle := INF
 var _timer := 0.0
 var _open_left := 0.0
+
+
+## Is the direction line shown (Paramètres → Affichage)? Yes by default.
+static func direction_shown() -> bool:
+	return bool(Quality.pref(PREF_SECTION, PREF_DIRECTION, true))
+
+
+static func set_direction_shown(on: bool, save := true) -> void:
+	Quality.set_pref(PREF_SECTION, PREF_DIRECTION, on, save)
+
+
+static func distance_text(tiles: float) -> String:
+	return "ici" if tiles < HERE_TILES else "%d m" % roundi(tiles)
+
+
+## The direction line for `h` (ZoneRoutes.heading), Chloé at `here`: « 42 m », « 18 m · sortie :
+## Havre-Doré », « vers Côte Préhistorique » (no way known), or "" (nothing to point to).
+static func direction_text(h: Dictionary, here: Vector2) -> String:
+	if h.is_empty():
+		return ""
+	var tile: Vector2 = h.get("tile", Vector2.INF)
+	var via: StringName = h.get("via", &"")
+	var where: String = ZoneMap.ZONE_NAMES.get(via, String(via))
+	if tile == Vector2.INF:
+		return "" if via == &"" else "vers %s" % where
+	var dist := distance_text(here.distance_to(tile))
+	if via == &"":
+		return dist
+	return "%s · %s : %s" % [dist, h.get("kind", "sortie"), where]
 
 
 func _ready() -> void:
@@ -44,43 +84,44 @@ func _ready() -> void:
 	_panel.add_theme_stylebox_override("panel", box)
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_panel)
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_panel.add_child(row)
-	_pointer = VBoxContainer.new()
-	_pointer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_pointer.add_theme_constant_override("separation", 0)
-	row.add_child(_pointer)
-	_arrow = Control.new()
-	_arrow.custom_minimum_size = Vector2(34, 30)
-	_arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_arrow.draw.connect(_draw_arrow)
-	_pointer.add_child(_arrow)
-	_distance = Label.new()
-	_distance.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_distance.add_theme_font_size_override("font_size", 12)
-	_distance.add_theme_color_override("font_color", Color(CREAM, 0.8))
-	_pointer.add_child(_distance)
 	var text := VBoxContainer.new()
-	text.add_theme_constant_override("separation", 2)
+	text.add_theme_constant_override("separation", 1)
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(text)
-	_title = Label.new()
-	_title.add_theme_font_size_override("font_size", 15)
-	_title.add_theme_color_override("font_color", CREAM)
-	_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_panel.add_child(text)
+	_title = _label(15, CREAM)
 	text.add_child(_title)
-	_detail = Label.new()
-	_detail.custom_minimum_size = Vector2(WIDTH - 70.0, 0)
+	text.add_child(_way_line())
+	_detail = _label(13, Color(CREAM, 0.8))
+	_detail.custom_minimum_size = Vector2(WIDTH - 24.0, 0)
 	_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_detail.add_theme_font_size_override("font_size", 13)
-	_detail.add_theme_color_override("font_color", Color(CREAM, 0.8))
-	_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.add_child(_detail)
 	get_viewport().size_changed.connect(_place)
 	_place()
 	_refresh()
+
+
+## Under the title, small: the arrow and the words (distance, way out).
+func _way_line() -> HBoxContainer:
+	_way = HBoxContainer.new()
+	_way.add_theme_constant_override("separation", 5)
+	_way.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_arrow = Control.new()
+	_arrow.custom_minimum_size = Vector2(ARROW_PX, ARROW_PX)
+	_arrow.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_arrow.draw.connect(_draw_arrow)
+	_way.add_child(_arrow)
+	_distance = _label(12, Color(CREAM, 0.82))
+	_way.add_child(_distance)
+	return _way
+
+
+func _label(font_size: int, colour: Color) -> Label:
+	var l := Label.new()
+	l.add_theme_font_size_override("font_size", font_size)
+	l.add_theme_color_override("font_color", colour)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return l
 
 
 func _place() -> void:
@@ -97,7 +138,20 @@ func _process(delta: float) -> void:
 	if _timer <= 0.0:
 		_timer = CHECK_S
 		_refresh()
-	_arrow.queue_redraw()
+	_turn_arrow()
+
+
+## The arrow follows Chloé's steps at once (the words, every CHECK_S).
+func _turn_arrow() -> void:
+	if player == null or not _way.visible:
+		return
+	var tile: Vector2 = _heading.get("tile", Vector2.INF)
+	if tile == Vector2.INF:
+		return
+	_angle = MinimapMath.angle_to(player.global_position / TILE, tile)
+	if absf(angle_difference(_angle, _drawn_angle)) > TURN_REDRAW or _drawn_angle == INF:
+		_drawn_angle = _angle
+		_arrow.queue_redraw()
 
 
 func _refresh() -> void:
@@ -110,47 +164,37 @@ func _refresh() -> void:
 		return
 	var open := _open_left > 0.0
 	var colour := GOLD if _goal["main"] else BLUE
-	_title.text = ("◆ " if not open else "") + String(_goal["title"])
+	_title.text = "◆ " + String(_goal["title"])
 	_title.add_theme_color_override("font_color", colour.lerp(CREAM, 0.35))
 	_detail.visible = open
-	_pointer.visible = open
 	_detail.text = _goal["text"]
-	if _goal["zone"] != zone and _goal["zone"] != &"":
-		_distance.text = ZoneMap.ZONE_NAMES.get(_goal["zone"], "")
-	elif _goal["tile"] != Vector2.INF:
-		var to: Vector2 = (_goal["tile"] as Vector2) - here
-		_angle = to.angle()
-		_distance.text = "ici" if to.length() < 3.0 else "%d m" % roundi(to.length())
-	else:
-		_distance.text = ""
+	_heading = ZoneRoutes.heading(_goal, zone, region, here)
+	var words := direction_text(_heading, here)
+	_way.visible = words != "" and (open or direction_shown())
+	_distance.text = words
+	_arrow.visible = _heading.get("tile", Vector2.INF) != Vector2.INF
 	_panel.get_theme_stylebox("panel").set("border_color", colour)
+	_panel.reset_size()
 	size = _panel.get_combined_minimum_size()
 	_panel.size = size
 
 
-## An arrow towards the objective (the map's north is up, as on screen), or a door when the
-## objective is in another zone, or a dot when it has no place.
+## A small arrow towards the place, or the way out (north up, as on the map and on screen).
 func _draw_arrow() -> void:
 	if _goal.is_empty():
 		return
-	var c := Vector2(17, 15)
 	var colour := GOLD if _goal["main"] else BLUE
-	if _goal["zone"] != zone and _goal["zone"] != &"":
-		_arrow.draw_rect(Rect2(c + Vector2(-8, -11), Vector2(16, 22)), colour, false, 2.5)
-		_arrow.draw_circle(c + Vector2(4, 1), 2.0, colour)
-		return
-	if _goal["tile"] == Vector2.INF:
-		_arrow.draw_circle(c, 7.0, colour)
-		return
-	var bob := 1.5 * sin(Time.get_ticks_msec() / 200.0)
+	if _heading.get("via", &"") != &"":
+		colour = ZoneMap.CHLOE.lerp(CREAM, 0.15)   # (the colour of the ways out on the map)
+	var c := Vector2.ONE * ARROW_PX / 2.0
 	var d := Vector2.from_angle(_angle)
-	var tip := c + d * (11.0 + bob)
-	var side := d.orthogonal() * 7.0
-	_arrow.draw_colored_polygon(PackedVector2Array([tip, c - d * 6.0 + side, c - d * 2.0, c - d * 6.0 - side]), colour)
+	var side := d.orthogonal() * 4.5
+	_arrow.draw_colored_polygon(PackedVector2Array([c + d * 7.5, c - d * 5.0 + side, c - d * 2.0, c - d * 5.0 - side]), colour)
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
+	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed \
+			and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		_open_left = 0.0 if _open_left > 0.0 else OPEN_S
 		_refresh()
 		accept_event()

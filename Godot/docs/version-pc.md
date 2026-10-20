@@ -61,7 +61,9 @@ manette). Ce que l'audit a trouvé et corrigé :
   destination, croix, A, B ; à la souris, un clic sur la barque y mène Chloé, un clic sur une ligne
   choisit (`tools/test_barque.gd`).
 
-Croix de la manette : ↑ Dinodex, ◀ équipe ; Retour (Select) la carte ; Start le menu ; Y monter.
+Croix de la manette : ↑ Dinodex, ◀ équipe, ↓ mini-carte (petite → grande → masquée) ; gâchettes : zoom de
+la mini-carte ; Retour (Select) la carte ; Start le menu ; Y monter. Au clavier : Tab la mini-carte, + / − son
+zoom ; à la souris : un clic l'agrandit, la molette sur elle zoome (voir mecaniques.md « La mini-carte »).
 
 ## Le tutoriel des commandes (11/10)
 

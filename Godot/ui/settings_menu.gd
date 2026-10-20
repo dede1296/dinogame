@@ -11,6 +11,7 @@ signal closed
 
 const LAYER := 80
 const ROW_HEIGHT := 68.0
+const HUD_ROW_HEIGHT := 56.0   # Affichage: the direction line and the minimap, side by side
 const SLIDER_ROW := 54.0
 const PANEL_WIDTH := 640.0
 const AMBER := Color(0.79, 0.54, 0.16)
@@ -37,6 +38,8 @@ const CONTROLS := [
 	["Revenir, fermer, refuser", "B", "Échap ou Retour arrière", [&"cancel"]],
 	["Monter sur un dino, descendre", "Le bouton de selle, en bas à droite", "R", [&"ride"]],
 	["La carte de l'île", "Le bouton carte, en haut à droite", "M", [&"map"]],
+	["La mini-carte : l'agrandir, la masquer", "Paramètres → Affichage", "Tab", [&"minimap"]],
+	["Zoomer la mini-carte", "—", "+ et −, la molette sur elle, les gâchettes"],
 	["Le Dinodex", "Le bouton Dinodex, en haut à droite", "X", [&"dex"]],
 	["Ce menu", "Le bouton ☰, en haut à droite", "Échap (ou Start)", [&"menu"]],
 	["Plein écran, fenêtre", "—", "F11 (ou Alt + Entrée)"],
@@ -528,10 +531,36 @@ func _display_page() -> void:
 	_rows.add_child(zoom)
 	var how := "(ou la molette de la souris)" if Screen.on_computer() 		else "(ou pincer l'écran avec deux doigts)"
 	_rows.add_child(_label(how, 16, Color(CREAM, 0.6)))
+	_rows.add_child(_hud_row())
 	if Screen.on_computer():
 		_rows.add_child(_label("Fenêtre", 24, CREAM))
 		_rows.add_child(_fullscreen_row())
 	_rows.add_child(_button("Retour", _show.bind("menu")))
+
+
+## The quest tracker's direction line (QuestTracker) and the minimap (Minimap), side by side: each
+## button says what is on and switches it (remembered in settings.cfg). A little lower than the other
+## rows: the page must still fit a phone's 720 px.
+func _hud_row() -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.name = "HudRow"
+	row.add_theme_constant_override("separation", 8)
+	var direction := _button("", func() -> void: QuestTracker.set_direction_shown(not QuestTracker.direction_shown()))
+	var minimap := _button("", func() -> void:
+		var hidden: bool = Minimap.pref_mode() == MinimapMath.Mode.HIDDEN
+		Minimap.set_pref_mode(MinimapMath.Mode.SMALL if hidden else MinimapMath.Mode.HIDDEN))
+	var say := func() -> void:
+		direction.text = "Direction de l'objectif : %s" % ("oui" if QuestTracker.direction_shown() else "non")
+		minimap.text = "Mini-carte : %s" % ("masquée" if Minimap.pref_mode() == MinimapMath.Mode.HIDDEN else "visible")
+	for button: Button in [direction, minimap]:
+		button.name = "Direction" if button == direction else "MinimapToggle"
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.custom_minimum_size = Vector2(0, HUD_ROW_HEIGHT)
+		button.add_theme_font_size_override("font_size", 19)
+		button.pressed.connect(say)   # (after the switch itself: connected second)
+		row.add_child(button)
+	say.call()
+	return row
 
 
 ## Full screen or a window, remembered (Screen). F11 and Alt + Entrée do the same thing.

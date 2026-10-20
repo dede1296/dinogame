@@ -17,6 +17,7 @@ const ACTIONS := [
 	[&"ride", "Monter"],
 	[&"fly", "Voler"],
 	[&"map", "Carte"],
+	[&"minimap", "Mini-carte"],
 	[&"dex", "Dinodex"],
 	[&"menu", "Menu"],
 	[&"cancel", "Revenir"],

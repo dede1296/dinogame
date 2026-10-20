@@ -5,6 +5,9 @@ extends Control
 ## whole zone asks for the island: `zoomed_out`). Marks, at a fixed size whatever the zoom:
 ## Chloé, the objectives (numbered), the places found (habitats), the ways out, the people,
 ## the places to rest (fires, benches). What has not been seen yet stays blank paper.
+## `compact` (the minimap, Minimap): the marks smaller (`mark_scale`) and without names, nothing
+## animated, no north nor frame (the minimap has its own), the view free to go past the zone's edges;
+## drawn again only when asked (refresh: what was seen since, the people, the objectives).
 
 signal zoomed_out
 
@@ -44,7 +47,10 @@ var chloe := Vector2.INF                 # tiles; INF: she is not in this zone
 
 var zoom := 1.0        # 1 = the whole zone fits
 var centre := Vector2.ZERO   # the tile at the middle of the view
+var compact := false   # (set before setup)
+var mark_scale := 1.0
 var _paper: ColorRect
+var _fog: ImageTexture
 var _marks: Control
 var _seen: PackedByteArray
 var _cells := Vector2i.ONE
@@ -67,15 +73,10 @@ func setup(r: Region, id: StringName, layers: Dictionary, goals: Array[Dictionar
 	_cells = Game.explore_cells(r.map_size())
 	_seen = Game.explored_mask(id, r.map_size())
 	centre = chloe if chloe != Vector2.INF else _size / 2.0
-	for n in r.entities.get_children():
-		if n is Npc and (n as Npc).present():
-			_people.append([n.position / TILE, (n as Npc).display_name])
-		elif n is Prop and (n as Prop).kind in Rest.KINDS:
-			_rests.append(n.position / TILE)
-		elif n is CaveMouth:
-			_caves.append(n.position / TILE)
+	_collect_marks()
 	clip_contents = true
-	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_filter = Control.MOUSE_FILTER_IGNORE if compact else Control.MOUSE_FILTER_STOP
+	set_process(not compact)
 	_paper = ColorRect.new()
 	_paper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_paper.material = _material(layers)
@@ -95,9 +96,34 @@ func _material(layers: Dictionary) -> ShaderMaterial:
 		mat.set_shader_parameter(key, layers[key])
 	mat.set_shader_parameter("noise_tex", WorldNoise.texture())
 	var fog := Image.create_from_data(_cells.x, _cells.y, false, Image.FORMAT_L8, _seen)
-	mat.set_shader_parameter("fog", ImageTexture.create_from_image(fog))
+	_fog = ImageTexture.create_from_image(fog)
+	mat.set_shader_parameter("fog", _fog)
 	mat.set_shader_parameter("fog_scale", _size / Vector2(_cells * Game.EXPLORE_CELL))
 	return mat
+
+
+## The people, the places to rest, the cave mouths of the zone (where they are now).
+func _collect_marks() -> void:
+	_people.clear()
+	_rests.clear()
+	_caves.clear()
+	for n in region.entities.get_children():
+		if n is Npc and (n as Npc).present():
+			_people.append([n.position / TILE, (n as Npc).display_name])
+		elif n is Prop and (n as Prop).kind in Rest.KINDS:
+			_rests.append(n.position / TILE)
+		elif n is CaveMouth:
+			_caves.append(n.position / TILE)
+
+
+## Drawn again with what changed since (the minimap): the ground seen, the people, the objectives.
+func refresh() -> void:
+	_seen = Game.explored_mask(zone_id, region.map_size())
+	if _fog:
+		_fog.update(Image.create_from_data(_cells.x, _cells.y, false, Image.FORMAT_L8, _seen))
+	_collect_marks()
+	_place()
+	_marks.queue_redraw()
 
 
 func _process(delta: float) -> void:
@@ -119,9 +145,12 @@ func to_screen(tile: Vector2) -> Vector2:
 
 func _place() -> void:
 	var k := scale_px()
-	# Keep the zone on screen: centred when smaller than the view, never scrolled off.
+	# Keep the zone on screen: centred when smaller than the view, never scrolled off (not the
+	# minimap's: Chloé stays in its middle, by an edge too).
 	var half := size / 2.0 / k
 	for i in 2:
+		if compact:
+			break
 		if _size[i] <= half[i] * 2.0:
 			centre[i] = _size[i] / 2.0
 		else:
@@ -208,22 +237,42 @@ func _middle() -> Vector2:
 
 func _draw_marks() -> void:
 	var font := get_theme_default_font()
-	# The places found, by name.
+	if not compact:
+		_draw_places(font)
+	_draw_rests_and_caves()
+	_draw_exits(font)
+	_draw_people(font)
+	_draw_objectives(font)
+	if chloe != Vector2.INF:
+		_draw_chloe()
+	_marks.draw_set_transform(Vector2.ZERO)
+	if not compact:
+		_draw_north_and_frame(font)
+
+
+## The places found, by name.
+func _draw_places(font: Font) -> void:
 	for h in region.habitats():
 		var c := h.area().get_center() / TILE
 		if h.label != "" and _seen_at(c) >= NAME_SEEN:
 			_text(font, to_screen(c), h.label, 17, INK, PAPER_LIGHT)
-	# Places to rest (a fire, a bench), once seen.
+
+
+## Places to rest (a fire, a bench) and cave mouths, once seen (drawn `mark_scale` large).
+func _draw_rests_and_caves() -> void:
 	for t in _rests:
 		if _seen_at(t) >= NAME_SEEN:
-			_rest_icon(to_screen(t))
-	# Cave mouths.
+			_at(to_screen(t))
+			_rest_icon()
 	for t in _caves:
 		if _seen_at(t) >= NAME_SEEN:
-			var p := to_screen(t)
-			_marks.draw_circle(p, 7.0, Color(0.08, 0.06, 0.05))
-			_marks.draw_rect(Rect2(p + Vector2(-7, 0), Vector2(14, 6)), Color(0.08, 0.06, 0.05))
-	# The ways out, once seen.
+			_at(to_screen(t))
+			_marks.draw_circle(Vector2.ZERO, 7.0, Color(0.08, 0.06, 0.05))
+			_marks.draw_rect(Rect2(Vector2(-7, 0), Vector2(14, 6)), Color(0.08, 0.06, 0.05))
+
+
+## The ways out, once seen: an arrow on an edge, with the zone's name beside it (not on the minimap).
+func _draw_exits(font: Font) -> void:
 	for e in region.exits():
 		var at := region.exit_rect(e).get_center() / TILE
 		if _seen_at(at) < NAME_SEEN:
@@ -231,57 +280,84 @@ func _draw_marks() -> void:
 		var where: String = ZONE_NAMES.get(e.target_zone, "")
 		if region.exit_on_edge(e):
 			var dir := region.exit_edge(e)
-			var tip := to_screen(at) - dir * 4.0
+			var tip := to_screen(at) - dir * 4.0 * mark_scale
+			_at(tip)
 			var side := dir.orthogonal() * 7.0
-			_marks.draw_colored_polygon(PackedVector2Array([tip, tip - dir * 11.0 + side, tip - dir * 11.0 - side]), CHLOE)
+			_marks.draw_colored_polygon(PackedVector2Array([Vector2.ZERO, -dir * 11.0 + side, -dir * 11.0 - side]), CHLOE)
+			if compact:
+				continue
+			_marks.draw_set_transform(Vector2.ZERO)
 			# Beside the arrow, whole inside the map (under it on a side edge, clear of whoever stands there).
 			var w := font.get_string_size(where, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
 			var label_at := tip - dir * 26.0
 			if absf(dir.x) > 0.5:
 				label_at = tip - dir * (w / 2.0 + 6.0) + Vector2(0, 22)
 			_text(font, label_at, where, 15, Color(SettingsMenu.CREAM), Color(0.1, 0.07, 0.04, 0.9))
-		elif where != "":   # a door or a cave inside the zone: its name over it
+		elif where != "" and not compact:   # a door or a cave inside the zone: its name over it
+			_marks.draw_set_transform(Vector2.ZERO)
 			_text(font, to_screen(at) + Vector2(0, -18), where, 15, Color(SettingsMenu.CREAM), Color(0.1, 0.07, 0.04, 0.9))
-	# People.
+
+
+## The people met, once seen: a blue dot (and their name, not on the minimap).
+func _draw_people(font: Font) -> void:
 	for p: Array in _people:
-		if _seen_at(p[0]) >= NAME_SEEN:
-			var s := to_screen(p[0])
-			_marks.draw_circle(s, 7.5, Color.WHITE)
-			_marks.draw_circle(s, 5.5, PEOPLE)
+		if _seen_at(p[0]) < NAME_SEEN:
+			continue
+		var s := to_screen(p[0])
+		_at(s)
+		_marks.draw_circle(Vector2.ZERO, 7.5, Color.WHITE)
+		_marks.draw_circle(Vector2.ZERO, 5.5, PEOPLE)
+		if not compact:
+			_marks.draw_set_transform(Vector2.ZERO)
 			_text(font, s + Vector2(0, 17), p[1], 14, Color.WHITE, Color(0.08, 0.12, 0.2, 0.9))
-	# The objectives: a numbered, pulsing marker.
-	var pulse := 0.5 + 0.5 * sin(_time * 4.0)
+
+
+## The objectives: a numbered marker, pulsing on the big map.
+func _draw_objectives(font: Font) -> void:
+	var pulse := 0.0 if compact else 0.5 + 0.5 * sin(_time * 4.0)
+	var number_size := 15 if not compact else maxi(10, roundi(16.0 * mark_scale))
 	var i := 0
 	for o in objectives:
 		i += 1
 		if o["tile"] == Vector2.INF:
 			continue
 		var s := to_screen(o["tile"])
+		_at(s)
 		var r := 12.0 + 2.0 * pulse
-		var diamond := PackedVector2Array([s + Vector2(0, -r), s + Vector2(r, 0), s + Vector2(0, r), s + Vector2(-r, 0)])
+		var diamond := PackedVector2Array([Vector2(0, -r), Vector2(r, 0), Vector2(0, r), Vector2(-r, 0)])
 		_marks.draw_colored_polygon(diamond, Color(GOAL, 0.95) if o["main"] else Color(0.35, 0.72, 0.95, 0.95))
 		_marks.draw_polyline(diamond + PackedVector2Array([diamond[0]]), INK, 2.0)
-		_text(font, s + Vector2(0, 1), str(i), 15, INK, Color(0, 0, 0, 0))
-	# Chloé: a dot, and a ring spreading from it.
-	if chloe != Vector2.INF:
-		var me := to_screen(chloe)
-		var ring := fmod(_time, PULSE_S) / PULSE_S
-		_marks.draw_arc(me, 8.0 + ring * 16.0, 0.0, TAU, 32, Color(CHLOE, 1.0 - ring), 3.0)
-		_marks.draw_circle(me, 9.0, Color.WHITE)
-		_marks.draw_circle(me, 6.5, CHLOE)
-	# North, and the frame.
+		_marks.draw_set_transform(Vector2.ZERO)
+		_text(font, s + Vector2(0, 1), str(i), number_size, INK, Color(0, 0, 0, 0))
+
+
+## Chloé: a dot, and a ring spreading from it.
+func _draw_chloe() -> void:
+	_at(to_screen(chloe))
+	var ring := fmod(_time, PULSE_S) / PULSE_S
+	_marks.draw_arc(Vector2.ZERO, 8.0 + ring * 16.0, 0.0, TAU, 32, Color(CHLOE, 1.0 - ring), 3.0)
+	_marks.draw_circle(Vector2.ZERO, 9.0, Color.WHITE)
+	_marks.draw_circle(Vector2.ZERO, 6.5, CHLOE)
+
+
+func _draw_north_and_frame(font: Font) -> void:
 	var n := Vector2(size.x - 26.0, 30.0)
 	_marks.draw_colored_polygon(PackedVector2Array([n + Vector2(0, -14), n + Vector2(7, 6), n + Vector2(-7, 6)]), INK)
 	_text(font, n + Vector2(0, 22), "N", 16, INK, PAPER_LIGHT)
 	_marks.draw_rect(Rect2(Vector2.ZERO, size), Color(SettingsMenu.AMBER, 0.9), false, 2.0)
 
 
-## A little campfire: three flames on logs.
-func _rest_icon(p: Vector2) -> void:
-	_marks.draw_line(p + Vector2(-8, 6), p + Vector2(8, 2), Color(0.35, 0.2, 0.1), 3.0)
-	_marks.draw_line(p + Vector2(-8, 2), p + Vector2(8, 6), Color(0.35, 0.2, 0.1), 3.0)
-	_marks.draw_colored_polygon(PackedVector2Array([p + Vector2(-6, 3), p + Vector2(0, -12), p + Vector2(6, 3)]), REST)
-	_marks.draw_colored_polygon(PackedVector2Array([p + Vector2(-3, 3), p + Vector2(0, -5), p + Vector2(3, 3)]), Color(1, 0.85, 0.3))
+## The next shapes are drawn around `p`, `mark_scale` large.
+func _at(p: Vector2) -> void:
+	_marks.draw_set_transform(p, 0.0, Vector2.ONE * mark_scale)
+
+
+## A little campfire: three flames on logs (around the origin: see _at).
+func _rest_icon() -> void:
+	_marks.draw_line(Vector2(-8, 6), Vector2(8, 2), Color(0.35, 0.2, 0.1), 3.0)
+	_marks.draw_line(Vector2(-8, 2), Vector2(8, 6), Color(0.35, 0.2, 0.1), 3.0)
+	_marks.draw_colored_polygon(PackedVector2Array([Vector2(-6, 3), Vector2(0, -12), Vector2(6, 3)]), REST)
+	_marks.draw_colored_polygon(PackedVector2Array([Vector2(-3, 3), Vector2(0, -5), Vector2(3, 3)]), Color(1, 0.85, 0.3))
 
 
 func _text(font: Font, at: Vector2, text: String, font_size: int, colour: Color, outline: Color) -> void:

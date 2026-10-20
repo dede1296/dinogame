@@ -24,7 +24,10 @@ const CREAM := Color(1, 0.97, 0.9)
 const MOVE := &"@move"            # the four directions on a keyboard, the left stick on a pad
 const MENUS := &"@menus"          # the arrows on a keyboard, the D-pad on a pad
 const CLICK := &"@click"          # the mouse's left click: a keyboard-and-mouse row, hidden on a pad
-## [title, [[words, [what is drawn…]], …]]
+const ZOOM := &"@minimap_zoom"    # + and − on a keyboard, the triggers on a pad
+## The triggers' pictures, by pad family (Prompts.family).
+const TRIGGERS := {&"xbox": ["lt", "rt"], &"ps5": ["l2", "r2"], &"switch": ["zl", "zr"]}
+## [title, [[words, [what is drawn…], words on a pad (optional)], …]]
 const PAGES := [
 	["Se déplacer et agir", [
 		["Se déplacer", [MOVE]],
@@ -37,6 +40,8 @@ const PAGES := [
 		["Ton équipe : dino de tête, baies, fiche", [&"team"]],
 		["Le Dinodex", [&"dex"]],
 		["La carte de l'île", [&"map"]],
+		["La mini-carte : plus grande, masquée, petite", [&"minimap"]],
+		["Zoomer la mini-carte (ou la molette dessus)", [&"@minimap_zoom"], "Zoomer la mini-carte"],
 		["Monter sur ton dino, descendre", [&"ride"]],
 		["Voler sur un grand ptérosaure, se poser", [&"fly"]],
 		["Le menu et les réglages", [&"menu"]],
@@ -158,7 +163,8 @@ func _show_page() -> void:
 	for row: Array in page[1]:
 		if row[1] == [CLICK] and Prompts.family != Prompts.KEYBOARD:
 			continue   # (a pad has no click)
-		_body.add_child(_row(row[0], row[1]))
+		var pad_words: bool = row.size() > 2 and Prompts.family != Prompts.KEYBOARD
+		_body.add_child(_row(row[2] if pad_words else row[0], row[1]))
 	for child in _dots.get_children():
 		child.queue_free()
 	for i in PAGES.size():
@@ -222,6 +228,9 @@ func _textures(what: StringName) -> Array[Texture2D]:
 		&"@fullscreen":
 			if not pad:
 				found.append(Prompts.named("f11"))
+		ZOOM:
+			for file: String in (TRIGGERS.get(Prompts.family, TRIGGERS[&"xbox"]) if pad else ["minus", "plus"]):
+				found.append(Prompts.named(file))
 		_:
 			found.append(Prompts.texture(what))
 	return found.filter(func(t: Texture2D) -> bool: return t != null)

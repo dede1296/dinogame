@@ -123,6 +123,30 @@ Ce choix change le déroulé, sans multiplier l'histoire par trois :
   vers le volcan, celles déjà visitées en couleur et nommées (un toucher ouvre leur carte), les
   autres dans la brume (« ??? »), Chloé et les régions où il y a quelque chose à faire.
 
+### La mini-carte ✅ (20/10)
+
+- **En bas à droite**, une fenêtre ronde sur la carte de la zone (le même dessin que la grande carte,
+  `ui/zone_map.gd` en version compacte : sol, relief, objectifs numérotés, sorties, personnages, feux ; le
+  **papier blanc** là où Chloé n'est pas allée), **centrée sur Chloé** et qui la suit. Le **nord en haut**
+  (un « N » sur le bord), comme la grande carte et comme l'écran : la caméra inclinée regarde toujours vers
+  le nord. Un **trapèze clair** montre le sol que l'écran voit (plus large au nord : la perspective) ; Chloé
+  est une pastille avec une pointe dans le sens de sa marche.
+- L'**objectif suivi** est entouré ; les objectifs **hors de la fenêtre** sont des pointes sur le bord, dans
+  leur direction (or : histoire, bleu : annexe ; plus grande pour le suivi). Quand l'objectif suivi est
+  **dans une autre zone**, la sortie à prendre est entourée d'orange (ou une pointe orange sur le bord).
+- **Commandes** : Tab (croix ↓ de la manette, remappable dans Touches) : petite → grande → masquée → petite ;
+  un **clic** : petite ↔ grande ; **zoom** par paliers (+ / −, les gâchettes, la molette sur la mini-carte).
+  Mode et zoom sont retenus (`settings.cfg`, section `hud`) ; **Paramètres → Affichage** : « Mini-carte :
+  visible / masquée ». Par défaut visible sur ordinateur, masquée sur téléphone (ses boutons A / B sont là).
+- **Jamais sur le reste du HUD** : sous la colonne des boutons ronds de droite (la grande se réduit s'il le
+  faut), loin de l'équipe, de l'aide de quête, de l'horloge, des messages. **Masquée** dans les zones
+  fermées (grottes, maisons, Cabinet, temples : `Region.indoor`), pendant les scènes (`Story.playing`,
+  `Scenes`), les dialogues, les combats et les menus (jeu en pause).
+- **Coût** (mesuré, `tools/scenarios/minimap_perf.gd`) : la carte est dessinée dans une texture (un
+  SubViewport) une fois par seconde ou après quelques pas (~0,8 ms) ; entre deux, la texture glisse sous la
+  fenêtre (shader). Le reste n'est redessiné que s'il a bougé : ~50 µs par image à l'arrêt, ~70-90 µs en
+  marchant (≈ 0,5 % d'une image à 60 i/s). Les chemins entre zones sont gardés par zone (`ZoneRoutes`).
+
 ### Voyage rapide ✅
 
 Deux façons de revenir vite là où Chloé est déjà allée ; le temps passe pendant le trajet, et la
@@ -929,10 +953,15 @@ Le reste ci-dessous (tenues, friandises, pension…) viendra avec les chapitres.
 
 ## Aide de quête ✅
 
-Sous la barre d'équipe, un encart montre l'objectif suivi : ce qu'il faut faire, une **flèche** qui
-pointe vers le lieu et la distance, ou la zone où aller quand c'est ailleurs. Par défaut, l'objectif
-le plus proche ; on en choisit un autre dans la liste de la carte (« ▶ » = suivi). Un toucher sur
-l'encart ouvre la carte.
+Sous la barre d'équipe, un encart montre l'objectif suivi : son titre et, **toujours visible** dessous en
+petit (20/10 ; avant, il fallait toucher l'encart, ce qu'on ne fait jamais sur ordinateur), une **flèche** qui
+tourne vers le lieu et la **distance** (« 42 m », « ici »). Quand l'objectif est **dans une autre zone** :
+la flèche vise la **sortie à prendre**, nommée — « 23 m · sortie : Havre-Doré », « entrée : Cabinet du Pr
+Roc » pour une porte ou une grotte, « plongée » pour un passage sous l'eau ; plusieurs zones plus loin, la
+première sortie du plus court chemin (`ui/zone_routes.gd` : la table des liens entre zones, vérifiée contre
+les scènes par `tests/ui/test_zone_routes.gd`). Paramètres → Affichage : « Direction de l'objectif : non »
+la masque (elle reste alors dans le détail). Par défaut, l'objectif le plus proche ; on en choisit un autre
+dans la liste de la carte (« ▶ » = suivi). Un clic (ou un toucher) sur l'encart déroule le détail.
 
 ## Objets
 

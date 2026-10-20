@@ -89,6 +89,7 @@ var _banner: ZoneBanner
 var _map_button: Button
 var _ride_button: RideButton
 var _tracker: QuestTracker
+var _minimap: Minimap
 var _explore_timer := 0.0
 ## Tiles Chloé can get to in this zone (see _reachable_tiles): roaming dinos appear only there.
 var _reachable := {}
@@ -128,6 +129,7 @@ func _ready() -> void:
 	hint.attach(_map_button, "Carte de l'île", &"map")
 	DexScreen.ensure_action()
 	Vol.ensure_action()   # (le Vol, ch. 7 : F, X de la manette ; avant le remappage des touches)
+	Minimap.ensure_action()   # (Tab, la croix ↓ ; + et −, les gâchettes)
 	KeyRemap.apply_saved()
 	hint.attach(DexScreen.add_open_button(hud, _open_dex), "Dinodex", DexScreen.ACTION)
 	Game.party_changed.connect(_on_party_changed)
@@ -150,7 +152,10 @@ func _ready() -> void:
 	_tracker = QuestTracker.new()
 	_tracker.player = player
 	_tracker.zone = region.region_id
+	_tracker.region = region
 	hud.add_child(_tracker)
+	_minimap = Minimap.install(hud, hint)   # (bottom right, under the column of round buttons)
+	_minimap.show_zone(region, player, _view)
 	Save.enabled = true
 	Save.before_save = _store_position
 	ControlsTutorial.offer(self)   # the controls, once, as soon as Chloé is free (computer only)
@@ -223,6 +228,9 @@ func _enter_zone(id: StringName, spawn: StringName, pos := Vector2.INF, story :=
 	_view.show_zone(region, player, ZONES)
 	if _tracker:
 		_tracker.zone = id
+		_tracker.region = region
+	if _minimap:
+		_minimap.show_zone(region, player, _view)
 	_explore()
 	# The story may have something to play here (the prologue…).
 	if story:
