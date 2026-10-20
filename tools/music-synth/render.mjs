@@ -188,15 +188,26 @@ async function encodeOgg(ch, sr, file) {
  * (export_midi.mjs) : on garde le second passage, qui commence avec les queues du premier.
  */
 async function fromFluidWav(file, spec) {
-  const { compileScore } = await import("./engine/compile.js");
-  const sc = (await import(pathToFileURL(path.join(HERE, "scores", `${spec.name ?? name}.js`)).href)).default;
-  const length = compileScore(sc, { reverb: sc.reverb }).length;
+  const { compileScore, compileTheme } = await import("./engine/compile.js");
+  let length, loop, tailS = 0;
+  if (isTheme) {
+    // Un thème d'origine : une boucle = THEME_PASSES passes (jouée deux fois, on garde la seconde) ; un jingle : la passe 0 et sa queue.
+    const { THEMES } = await import("./synth/data/musicThemes.js");
+    const { THEME_PASSES } = await import("./engine/stats.js");
+    const once = flag("--once");
+    length = compileTheme(id, THEMES[id], 1, 1).length * (once ? 1 : (THEME_PASSES[id] ?? 1));
+    loop = !once; tailS = once ? 2.5 : 0;
+  } else {
+    const sc = (await import(pathToFileURL(path.join(HERE, "scores", `${id}.js`)).href)).default;
+    length = compileScore(sc, { reverb: sc.reverb }).length;
+    loop = !!sc.loop;
+  }
   // Plusieurs WAV séparés par des virgules (partitions de plus de 15 instruments) : additionnés.
   const bufs = file.split(",").map((f) => fs.readFileSync(f));
   const buf = bufs[0];
   const sr = buf.readUInt32LE(24), data = buf.indexOf("data") + 8, n = Math.floor((buf.length - data) / 4);
-  const from = sc.loop ? Math.round(length * sr) : 0;
-  const to = sc.loop ? from + Math.round(length * sr) : n;
+  const from = loop ? Math.round(length * sr) : 0;
+  const to = loop ? from + Math.round(length * sr) : Math.min(n, Math.round((length + tailS) * sr));
   const ch = [new Float32Array(to - from), new Float32Array(to - from)];
   for (let i = from; i < to; i++) {
     for (const b of bufs) {
@@ -206,7 +217,7 @@ async function fromFluidWav(file, spec) {
       ch[1][i - from] += b.readInt16LE(o + 2) / 32768;
     }
   }
-  return { info: { sampleRate: sr, loop: !!sc.loop, length: to - from, events: 0, sections: [], rotationSeconds: 0 }, ch };
+  return { info: { sampleRate: sr, loop, length: to - from, events: 0, sections: [], rotationSeconds: 0 }, ch };
 }
 
 // ---------------------------------------------------------------- main
