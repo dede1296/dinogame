@@ -36,7 +36,7 @@ const LIN = (d) => 10 ** (d / 20);
 const args = process.argv.slice(2);
 const flag = (n) => args.includes(n);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
-const name = args.find((a, i) => !a.startsWith("--") && !(i > 0 && args[i - 1].startsWith("--") && ["--out", "--passes", "--ceiling", "--seed", "--cycles"].includes(args[i - 1])));
+const name = args.find((a, i) => !a.startsWith("--") && !(i > 0 && args[i - 1].startsWith("--") && ["--out", "--passes", "--ceiling", "--seed", "--cycles", "--from-wav"].includes(args[i - 1])));
 if (!name) { console.error("Usage : node render.mjs <partition | theme:<id>> [--out f.ogg] [--force] [--passes n] [--once] [--raw] [--stats]"); process.exit(2); }
 const isTheme = name.startsWith("theme:");
 const id = isTheme ? name.slice(6) : name;
@@ -183,6 +183,32 @@ async function encodeOgg(ch, sr, file) {
   fs.writeFileSync(file, Buffer.concat(parts));
 }
 
+/**
+ * Rendu FluidSynth (tools/music-sf) : un WAV 16 bits stéréo déjà joué. Une boucle a été jouée deux fois
+ * (export_midi.mjs) : on garde le second passage, qui commence avec les queues du premier.
+ */
+async function fromFluidWav(file, spec) {
+  const { compileScore } = await import("./engine/compile.js");
+  const sc = (await import(pathToFileURL(path.join(HERE, "scores", `${spec.name ?? name}.js`)).href)).default;
+  const length = compileScore(sc, { reverb: sc.reverb }).length;
+  // Plusieurs WAV séparés par des virgules (partitions de plus de 15 instruments) : additionnés.
+  const bufs = file.split(",").map((f) => fs.readFileSync(f));
+  const buf = bufs[0];
+  const sr = buf.readUInt32LE(24), data = buf.indexOf("data") + 8, n = Math.floor((buf.length - data) / 4);
+  const from = sc.loop ? Math.round(length * sr) : 0;
+  const to = sc.loop ? from + Math.round(length * sr) : n;
+  const ch = [new Float32Array(to - from), new Float32Array(to - from)];
+  for (let i = from; i < to; i++) {
+    for (const b of bufs) {
+      const o = b.indexOf("data") + 8 + 4 * i;
+      if (o + 4 > b.length) continue;
+      ch[0][i - from] += b.readInt16LE(o) / 32768;
+      ch[1][i - from] += b.readInt16LE(o + 2) / 32768;
+    }
+  }
+  return { info: { sampleRate: sr, loop: !!sc.loop, length: to - from, events: 0, sections: [], rotationSeconds: 0 }, ch };
+}
+
 // ---------------------------------------------------------------- main
 const outDir = path.join(HERE, "out");
 fs.mkdirSync(outDir, { recursive: true });
@@ -227,7 +253,7 @@ if (flag("--seamcheck")) {
 if (fs.existsSync(out) && !flag("--force")) { console.error(`${out} existe déjà : rien n'est écrasé (--force pour le remplacer).`); process.exit(1); }
 
 const t0 = Date.now();
-const { info, ch: raw } = await renderInBrowser(spec);
+const { info, ch: raw } = opt("--from-wav") ? await fromFluidWav(opt("--from-wav"), spec) : await renderInBrowser(spec);
 const sr = info.sampleRate;
 let ch = raw, gainDb = 0, limiter = null;
 const ceiling = LIN(Number(opt("--ceiling", "-1.0")));

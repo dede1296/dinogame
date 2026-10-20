@@ -311,3 +311,18 @@ Second lot :
 - **`arche_du_vent`** : le début (le vent seul, -19 dB par tranche) peut se perdre sous l'ambiance de la zone.
 - **`nids_geants`** : le choral de cors tenu (B) ne doit pas sonner « orgue » ; il bouge à chaque mesure, mais c'est à vérifier.
 - **`jetee`** : la plus claire des musiques (accordéon, violon, guitare) ; le violon pousse le limiteur (0,7 s, 3,2 dB au plus).
+
+## Rendu avec une SoundFont (20/10)
+
+Les 13 partitions composées ont été rendues une seconde fois avec de vrais timbres d'orchestre (Greg : « c'est bien mieux »),
+et ces rendus remplacent les `.ogg` du synthétiseur d'origine (qui restent dans l'historique git). Même composition, mêmes
+niveaux (RMS actif -14,5 dB), mêmes boucles.
+
+- Chaîne : `tools/music-sf/export_midi.mjs` (partition → MIDI, instruments → programmes General MIDI) → FluidSynth 2.6.1 →
+  `tools/music-synth/render.mjs --from-wav` (second passage d'une boucle, niveau, limiteur, ogg). Tout en une commande :
+  `sh tools/music-sf/rendre.sh <piste> …` (sortie dans `tools/music-sf/ogg/`, à copier dans `Godot/assets/audio/music/`).
+- Au-delà de 15 instruments mélodiques, la partition est rendue en plusieurs MIDI additionnés.
+- FluidSynth (`tools/music-sf/bin/`) et la SoundFont (`tools/music-sf/sf/GeneralUser-GS.sf2`, 32 Mo) ne sont pas dans git :
+  GeneralUser GS v2.0.3 (S. Christian Collins), https://github.com/mrbumpy409/GeneralUser-GS (licence : usage libre, y compris
+  commercial ; voir `documentation/LICENSE.txt` du dépôt) ; FluidSynth : LGPL.
+- Pour retoucher un instrument : `PROG` / `PERC` dans `export_midi.mjs`.
