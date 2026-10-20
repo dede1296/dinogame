@@ -1,7 +1,7 @@
 # Ambrelune pour Windows : copie propre du projet (sans addons, outils, tests, 3D), export, puis installateur si Inno Setup est là.
 #   powershell -ExecutionPolicy Bypass -File tools\build-windows\build.ps1 [-SansInstallateur]
 param([switch]$SansInstallateur)
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 $repo = (Resolve-Path "$PSScriptRoot\..\..").Path
 $src = Join-Path $repo "Godot"
 $stage = Join-Path $env:TEMP "ambrelune_stage"
@@ -9,7 +9,7 @@ $godot = "C:\Program Files\Godot\Godot_v4.7.2-stable_win64_console.exe"
 $out = Join-Path $repo "dist"
 
 Write-Host "1/4 Copie du projet dans $stage"
-robocopy $src $stage /MIR /NFL /NDL /NJH /NJS /NP /XD addons world3d demo tools .godot build reports tests gddraw .git /XF *.lnk .mcp.json | Out-Null
+robocopy $src $stage /MIR /NFL /NDL /NJH /NJS /NP /XD addons world3d models3d demo tools .godot build reports tests gddraw .git /XF *.lnk .mcp.json | Out-Null
 if ($LASTEXITCODE -ge 8) { throw "robocopy a échoué ($LASTEXITCODE)" }
 
 Write-Host "2/4 project.godot sans les extensions de l'éditeur"
