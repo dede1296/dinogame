@@ -616,8 +616,10 @@ func _on_player_stepped(surface: StringName) -> void:
 
 
 ## Plays a wild battle over the paused world, then applies its outcome.
-## `rules`: see BattleScene.run (an Alpha: no collar, no running away).
+## `rules`: see BattleScene.run (an Alpha: no collar, no running away). In a Nouvelle partie+, the foe is
+## made stronger first (Game.strengthen: trainers and Alphas +2 levels, wild dinos +1; never twice).
 func _battle(wild: Dino, rules := {}) -> String:
+	Game.strengthen(wild, Game.foe_kind(rules))
 	dismount()
 	if region and region.cave and not rules.has("cave"):
 		rules = rules.merged({"cave": true})

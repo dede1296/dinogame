@@ -875,3 +875,58 @@ Cellules de la planche de base (123×184, 122×185, 143×184), 4 colonnes (cycle
 pied avant en balancement) × 2 lignes : 0 = bas-gauche (trois-quarts face), 1 = haut-gauche (trois-quarts dos). Les diagonales droites
 sont affichées en miroir horizontal. Hauteur dessinée ≈ 175 px, pieds 4 px au-dessus du bas de la cellule. Méthode : `tools/art-jobs/diagonales_chloe.mjs`.
 À refaire avec nano-banana si le pas inverse (autre jambe devant) est jugé nécessaire.
+
+## Post-game
+
+### Fossiles (lot B', 20/10)
+
+Jobs `tools/art-jobs/fossiles.mjs` (images) et `tools/audio-jobs/os_trouve.mjs` (son). **Tout nano-banana, aucun repli ComfyUI.**
+
+| Quoi | Fichiers | Format |
+|---|---|---|
+| Titanosaure d'Or (`saltasaurus` : quadrupède, 4 pattes en colonnes, plaques rondes ambre-or sur le dos, cou moyen, petite tête) | `dinos/saltasaurus.png`, `_face_dos.png` | profil 3×2 cellules 241×198 ; face/dos 4×2 même cellule |
+| Kronosaurus (marin : 4 nageoires, tête = ¼ du corps, quasi pas de cou, queue courte à petit aileron ; poses de NAGE, jamais de marche) | `dinos/kronosaurus.png`, `_face_dos.png` | profil 3×2 cellules 293×178 (ligne 2 : 2 glissades + attaque) ; face/dos 4×2 (le « dos » est vu d'au-dessus, comme la caméra) |
+| Kronosaurus portant Chloé (à plat ventre sur son dos, gilet, sac) | `dinos/kronosaurus_nage.png` | 3×2 cellules 318×208, mêmes poses de nage que le profil (la 2e ligne rejoue le cycle) ; en jeu la selle marine superpose déjà Chloé : cette planche sert aux scènes (os du récif, plongée) |
+| Gigantoraptor (bipède : 2 pattes à 3 doigts, 2 bras emplumés à 3 griffes, bec sans dents, petite crête, queue en éventail de plumes) | `dinos/gigantoraptor.png`, `_face_dos.png` | profil 3×2 cellules 273×238 ; face/dos 4×2 |
+| Crânes à examiner | `props/crane_titanosaure_paroi.png` (354×324, crâne pris dans la roche, éclats d'or), `crane_kronosaurus_sable.png` (383×263, mâchoires ouvertes sur le sable, coquillages) | style de `crane_geant_desert.png` |
+| Icônes | `ui/os_titanosaure.png` (os ambre doré), `os_kronosaurus.png` (os bleu), `os_gigantoraptor.png` (os + plume), `carnet_os.png` (carnet de cuir, os et fougère gaufrés) | 160×160 |
+| Planches du squelette (fiche du Dinodex) | `ui/squelette_{saltasaurus,kronosaurus,gigantoraptor}.png` | UNE rangée de 5 cellules égales (181×216, 165×216, 126×216 : cellule = largeur ÷ 5) : crâne, colonne, côtes, pattes (nageoires pour le Kronosaurus), queue ; le jeu allume une cellule par os trouvé |
+| Son | `audio/sfx/os-trouve.ogg` | « toc » sec + carillon de trois notes, 1,6 s, synthétisé puis calé sur le RMS actif médian des sfx (−21,1 dB) ; **non écouté**, à valider à l'oreille |
+
+Méthode : nano-banana édite une planche voisine (Brachiosaurus ; Plesiosaurus puis Ankylosaurus pour la grille ; Oviraptor) avec l'anatomie réelle dans le prompt ; face/dos : la planche de profil de l'espèce + la grille d'un voisin en référence ; membres comptés image par image sur chaque planche.
+
+| À refaire avec nano-banana (repli ou défaut) | Détail |
+|---|---|
+| Saltasaurus face/dos : planche composée | la 1re planche avait deux dos recopiés de profil ; rangée « face » de la 1re + rangée « dos » (4 dos justes) de la 2e, composées par `fossiles.mjs` |
+| Kronosaurus : 3×3 recomposé | nano-banana dessinait 9 poses ; le bon essai (3×2) a été retouché une fois (pose haut-droite : dorsale en trop retirée, nageoire lointaine levée) |
+| Kronosaurus de face | la gueule est grande ouverte sur les 4 images (le profil l'a fermée sauf pose d'attaque) ; vue « dos » d'au-dessus, queue en éventail de baleine |
+| Kronosaurus, pose 5 du profil | la queue a un aileron vertical (type baleine) : à revoir si on la juge trop cétacé |
+| Squelette du Kronosaurus | l'image source avait des fantômes roses en haut : recadrage par pièce dans `fossiles.mjs` ; pièces alignées en haut, non en bas |
+| os-trouve.ogg | synthèse de code, pas Stable Audio : à écouter |
+
+### Lot A' — les géants du cratère, les blocs, Brac gardien, panneau BARC, sandwich (20/10)
+
+Tout est fait avec nano-banana (aucun repli ComfyUI). Job : `tools/art-jobs/geants.mjs` (`node Godot/tools/process-art.mjs <nom>` depuis la racine ; filtrer par nom de fichier : le filtre `_face_dos` régénère aussi les planches des autres lots). Sons : `tools/audio-jobs/geants_sons.mjs`.
+
+| Quoi | Fichiers | Format / méthode |
+|---|---|---|
+| 4 espèces, profil | `dinos/{therizinosaurus_geant,argentinosaurus,dacentrurus,deinocheirus}.png` | 3×2 (3 pas, repos, repos 2 ou broute, cri), hauteur d'image 220 + 8 ; cellules 228×228, 263×228 (Argentinosaurus : ~272), 339×228, 286×228. Argentinosaurus et Dacentrurus : nano-banana a dessiné 3×3, recomposé en 3×2 |
+| face/dos | `dinos/<id>_face_dos.png` | 4×2, cellule de la planche de profil. Therizinosaurus géant et Deinocheirus : nano-banana a dessiné certaines images en trois-quarts, remplacées par le miroir d'une image bien de face/dos (cycle = deux images réellement différentes seulement pour Argentinosaurus et Dacentrurus) |
+| lever | `dinos/<id>_leve.png` | 3×2 : couché ou assis, yeux fermés -> yeux ouverts -> se redresse -> bâillement -> debout. Seule planche « couchée » des géants : elle ne sert qu'au réveil |
+| blocs | `props/bloc_geant_{1..4}_oeil.png` (œil ambré ouvert) et `_vide.png` (fendu en deux, vide, éclats dorés) | tailles des blocs existants (671×848, 682×848, 342×413 ; `_vide` du 4 : 292×369, sans plume : Hélène l'a prise) |
+| Lot E | `characters/brac_gardien.png` (4×4, 124×184 : lanterne, chapeau, pas de masque), `props/panneau_barc.png` (163×225, « Gardien : BARC », trace de charbon effacée), `props/sandwich.png` (49×44) | Brac : lueur rose détourée à la main (pixels roses repeints) |
+| Sons | `cries/geant-baillement.ogg` (cale sur la médiane des cris, limiteur : -15,8 dB RMS, pic -0,5), `sfx/geant-pas.ogg` (-21,1 dB), `ambience/geant-ronfle.ogg` (boucle 8,5 s, -23,3 dB) | Stable Audio Open 1.0 local, normalisés par catégorie ; **non écoutés** (mesures seulement) |
+
+À savoir pour le code : les planches sont normalisées à la **même hauteur d'image** (220) ; l'échelle en jeu (×1,3 à ×1,5, Argentinosaurus 5,2 m) se règle côté espèce, pas dans la planche. Les planches n'ont pas été importées par Godot (`--import` sous verrou : à faire par le chef).
+
+À refaire avec nano-banana (si jugé nécessaire) :
+
+| Quoi | Remarque |
+|---|---|
+| `bloc_geant_3` (existant, lot Apex) | le dinosaure du bloc a de larges plaques de Stegosaurus ; le Dacentrurus du jeu a des pointes : le bloc devrait montrer des pointes |
+| `bloc_geant_1_oeil` | le bloc montre une grosse tête et un œil énorme au lieu du seul œil ambré : lisible, mais plus « tête » qu'« œil » |
+| `bloc_geant_2_vide` | un reste pâle d'empreinte ronde dans la moitié gauche (lu comme un creux) |
+| Therizinosaurus géant, pose 6 du profil | cri de face, bras écartés (les autres poses sont de profil) |
+| Deinocheirus | « bosse » dessinée comme une voile dorsale haute (plus proche d'un Spinosaure que d'une simple bosse) ; face/dos : un seul vrai point de vue par ligne (images 2 et 4 = miroirs de 1 et 3) |
+| Dacentrurus | grosse touffe d'herbe sous le bec dans la pose « broute » non gardée ; pointes de queue : plus de quatre dessinées |
+| Sons | à écouter ; le bâillement n'atteint pas la médiane des cris (limiteur) |

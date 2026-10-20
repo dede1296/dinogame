@@ -8,6 +8,7 @@ extends RefCounted
 
 const PATH := "res://regions/havre/havre_dore.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const CHARS := "res://assets/art/characters/%s.png"
 const STORY_PROP := "res://world/story_prop.gd"
 const FLAGGED_PROP := "res://world/flagged_prop.gd"
@@ -85,6 +86,7 @@ static func build() -> Region:
 	# (story/havre.gd), and from the fisherman, the nets and the Grand Voyageur's stop, so that
 	# « interact » there means the boat.
 	B.maias_boat(root, Vector2(14.2, 27.4), Vector2(12.5, 27.4))
+	OSSEMENTS.bury(root, &"havre_dore")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root
 
 
@@ -161,7 +163,8 @@ static func _people(root: Region) -> void:
 	B.npc(root, "Rosalie", "Rosalie", CHARS % "rosalie", 13.5, 9.5, {"facing": "down", "event": &"shop_mercerie"})
 	B.npc(root, "Ferreol", "Maître Ferréol", CHARS % "ferreol", 33.0, 9.6, {"facing": "down", "event": &"ferreol"})
 	B.npc(root, "Joss", "Joss", CHARS % "joss", 42.0, 9.6, {"facing": "down", "event": &"joss"})
-	B.npc(root, "Maia", "Maïa", CHARS % "maia", 24.6, 9.9, {"facing": "down", "event": &"maia_havre"})
+	# (gone once the mask has fallen, chapter 7: set by hand on 11/10, kept here since)
+	B.npc(root, "Maia", "Maïa", CHARS % "maia", 24.6, 9.9, {"facing": "down", "event": &"maia_havre", "hide_flag": &"masque_tombe"})
 	B.npc(root, "Gaspard", "Gaspard", CHARS % "gaspard", 19.6, 11.2, {"facing": "right", "event": &"dresseur_gaspard"})
 	B.npc(root, "Lilou", "Lilou", CHARS % "lilou", 26.4, 11.2, {"facing": "left", "event": &"dresseur_lilou"})
 	B.npc(root, "Marchande", "La marchande", CHARS % "marchande", 27.6, 15.0, {"facing": "down", "event": &"marchande"})

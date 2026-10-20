@@ -388,6 +388,9 @@ static func pending_rewards() -> Array[Dictionary]:
 		if counts(r["species"]).y >= r["species"].size():
 			out.append(_reward(StringName("dex_region_%s" % r["id"]), REGION_GIFT,
 				"Toutes les espèces qui vivent %s sont dans ton Dinodex ! Voilà de quoi fêter ça." % r["in"]))
+	if _uniques_seen(&"apex"):   # (post-game : les quatre géants debout, et le Souverain ; story/apex_geants.gd)
+		out.append(_reward(&"dex_region_apex", REGION_GIFT,
+			"Les quatre géants du cratère, et le Souverain : toute la Terre des Apex est dans ton Dinodex ! Hélène m'avait prévenu. Je n'arrive jamais à cacher une récompense. Tiens."))
 	if caught >= order().size():
 		out.append(_reward(&"dex_complet", COMPLETE_GIFT, "Toutes les espèces de l'île… Tu as rempli le Dinodex ! Hélène n'y était jamais arrivée."))
 	var pending: Array[Dictionary] = []
@@ -395,6 +398,13 @@ static func pending_rewards() -> Array[Dictionary]:
 		if not Game.flag(r["flag"]):
 			pending.append(r)
 	return pending
+
+
+## All the uniques of `region` (DexFacts, registered or not) are in the Dinodex, and there are some: the Terre
+## des Apex, whose only species are its uniques (the Souverain, the four giants of the post-game).
+static func _uniques_seen(region: StringName) -> bool:
+	var ids: Array = DexFacts.UNIQUES.filter(func(u: Dictionary) -> bool: return u["region"] == region).map(func(u: Dictionary) -> StringName: return u["id"])
+	return not ids.is_empty() and ids.all(func(id: StringName) -> bool: return status(id) != UNSEEN)
 
 
 static func _reward(flag: StringName, def: Dictionary, text: String) -> Dictionary:

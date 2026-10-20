@@ -6,6 +6,7 @@ extends RefCounted
 
 const PATH := "res://regions/plaines/grotte_echos.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const CHARS := "res://assets/art/characters/%s.png"
 
 const PLAN := [
@@ -89,4 +90,5 @@ static func build() -> Region:
 	B.habitat(root, "Salle haute", Rect2(4, 1, 17, 4), [[&"troodon", 6, 8, 10, "toujours", false],
 		[&"anurognathus", 6, 8, 10, "toujours", false]], 1)
 	B.habitat(root, "Le passage", Rect2(4, 5, 4, 4), [[&"anurognathus", 6, 7, 10, "toujours", false]], 1)
+	OSSEMENTS.bury(root, &"grotte_echos")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root

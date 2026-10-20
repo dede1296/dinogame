@@ -25,6 +25,7 @@
 [ext_resource type="Script" path="res://world/flagged_prop.gd" id="23_fa6rc"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/hamon.png" id="24_4knct"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/malcombe.png" id="25_am6s4"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="26_bhdmq"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="26_xomxs"]
 [ext_resource type="Script" path="res://world/dock.gd" id="27_702fg"]
 
@@ -672,6 +673,13 @@ script = ExtResource("8_25u0t")
 event = &"barque_maia"
 show_flag = &"maia_alliee"
 kind = "barque"
+
+[node name="EnfouiOsKronosaurus5" type="Node2D" parent="Entities" unique_id=1747245637]
+position = Vector2(2616, 940.80005)
+script = ExtResource("26_bhdmq")
+show_flag = &"isaure_pari_gagne"
+pebble = &"os_kronosaurus_5"
+item_id = "os_kronosaurus"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=1821621276]
 

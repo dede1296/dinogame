@@ -118,6 +118,9 @@ static func arrival() -> void:
 ## Afterwards, a line at each visit.
 static func mosasaure(who: Node) -> void:
 	if Game.flag(&"coeur_3"):
+		if Revanches.open():   # (after the end: « pour voir », story/revanches.gd)
+			await Revanches.alpha(&"cote", who)
+			return
 		await S.say([_again(who)])
 		return
 	if not Game.flag(&"mosasaure_battu"):

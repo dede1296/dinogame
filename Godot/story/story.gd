@@ -29,6 +29,8 @@ static func _on_zone_entered(zone: StringName) -> void:
 	Cieux.update_access()   # (the way up to the Cieux: the harness and a grown flyer; old saves too)
 	Volcan.update_access()   # (the way down to the volcano: open once the mask has fallen; old saves too)
 	Barque.landing(zone)    # (coming in by Maïa's boat: it waits out at sea, before the picture shows)
+	Fossiles.place(zone)   # (post-game: the two skulls one looks at, crater and reef; story/fossiles.gd)
+	Fossiles.place(zone)   # (post-game: the two skulls one looks at, crater and reef; story/fossiles.gd)
 	match zone:
 		&"port_ambre":
 			if not Game.flag(&"prologue_arrived") and not Game.flag(&"prologue_done"):
@@ -58,6 +60,7 @@ static func _on_zone_entered(zone: StringName) -> void:
 			await Marais.arrival()
 		&"temple_englouti":
 			await MaraisTemple.arrival()
+			Revanches.on_zone(zone)   # (after the end: the Spinosaure back in his temple, « pour voir »)
 		&"desert":
 			await Desert.arrival()
 		&"sanctuaire_vents":
@@ -342,6 +345,9 @@ static func _run(event: StringName, who: Node) -> void:
 			await clins().chevre(who)
 		&"chevre_partie":
 			await clins().chevre_partie()
+		# Post-game, the legendary fossils (story/fossiles.gd): the two skulls one looks at
+		&"crane_titanosaure", &"crane_kronosaurus":
+			await Fossiles.crane(event, who)
 		# Le voyage rapide (story/voyage.gd), la barque de Maïa (story/barque.gd)
 		&"grand_voyageur":
 			await Voyage.talk(who)

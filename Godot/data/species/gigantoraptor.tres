@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/gigantoraptor.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/gigantoraptor_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"gigantoraptor"
+display_name = "Gigantoraptor"
+family = &"raptor"
+description = "Le cousin géant de l'Oviraptor : huit mètres, un bec sans dents, une petite crête, des plumes aux bras et une queue courte en éventail. Il a le nez de sa famille : ce qui est enfoui, il le sent."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.585
+battle_scale = 0.661
+walk_fps = 8.0
+cry_prefix = "raptor"
+head_size = 4
+head_bite = 6
+teeth_sharp = 0
+teeth_count = 0
+front_power = 8
+front_reach = 8
+back_legs_power = 9
+back_legs_speed = 8
+back_armor = 3
+back_spikes = 0
+tail_power = 4
+tail_length = 4
+rarity = "legendary"

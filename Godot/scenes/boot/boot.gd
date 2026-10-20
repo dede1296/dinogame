@@ -22,6 +22,8 @@ var load_button: Button
 ## Under « Continuer »: « Prairie du Grand Crâne · 3 h 12 ».
 var continue_info: Label
 var _continue_slot := 0
+## « Nouvelle partie+ » (ui/save_slots.gd): the finished game's slot the last slots screen started one from (0: none).
+var _plus_from := 0
 
 
 func _ready() -> void:
@@ -105,9 +107,13 @@ func _on_continue() -> void:
 		continue_button.disabled = true
 
 
-## The three slots: the one picked is loaded (back: the menu again, a slot may have been deleted).
+## The three slots: the one picked is loaded (back: the menu again, a slot may have been deleted); under a
+## finished game, « Nouvelle partie+ » and the slot to start it in (_start_plus).
 func _on_load() -> void:
 	var n := await _choose_slot(SaveSlots.Mode.LOAD)
+	if n > 0 and _plus_from > 0:
+		await _start_plus(n)
+		return
 	if n > 0 and Save.load_slot(n):
 		Router.go_to(WORLD)
 		return
@@ -118,10 +124,14 @@ func _on_load() -> void:
 ## overwriting a game), then the intro (story/cinematiques.gd), which ends on black: then the quay
 ## of Port-Ambre.
 func _on_new_game() -> void:
+	_plus_from = 0
 	# No game saved yet: nothing to choose or overwrite, the first slot (Greg, 19/10: « au mieux »).
 	var n := 1 if not Save.has_save() else await _choose_slot(SaveSlots.Mode.NEW)
 	if n <= 0:
 		_back_to_menu(new_button)
+		return
+	if _plus_from > 0:   # (« Nouvelle partie+ » under a finished game)
+		await _start_plus(n)
 		return
 	Game.new_game()
 	if not Save.start_new_game(n, true):   # (save_slots.gd asked before overwriting a game)
@@ -132,11 +142,24 @@ func _on_new_game() -> void:
 	Router.go_to(WORLD)
 
 
+## Nouvelle partie+ (docs/post-game-plan.md § 4; ui/save_slots.gd: « Nouvelle partie+ » under a finished game, then
+## the slot `n` to start it in): the island again with what was learned (Save.start_new_game_plus: the Dinodex, the
+## bones, the pages read; the finished game is not touched), the intro (it plays again: Greg, 19/10), the quay.
+func _start_plus(n: int) -> void:
+	if not Save.start_new_game_plus(_plus_from, n, true):   # (save_slots.gd asked before overwriting a game)
+		new_button.text = "Sauvegarde impossible"
+		_back_to_menu(new_button)
+		return
+	await Cinematiques.new_game_intro(self, true)
+	Router.go_to(WORLD)
+
+
 ## The slots screen over the title (its menu hidden meanwhile: the pad stays on the cards).
 func _choose_slot(mode: SaveSlots.Mode) -> int:
 	menu.visible = false
 	var screen := SaveSlots.open(self, mode) as SaveSlots
 	var n: int = await screen.chosen
+	_plus_from = screen.plus_from   # (« Nouvelle partie+ »: the finished game it starts from; 0: none)
 	return n
 
 

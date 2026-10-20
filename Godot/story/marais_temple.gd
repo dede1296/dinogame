@@ -332,6 +332,8 @@ static func _frescoes_seen() -> int:
 ## Sceau du Marais, then pushes the first Heart of amber to her from the altar.
 static func spinosaure(who: Node) -> void:
 	if Game.flag(&"sceau_marais"):
+		if Revanches.open():   # (after the end: « pour voir », story/revanches.gd)
+			await Revanches.alpha(&"marais", who)
 		return
 	if not Game.flag(&"spinosaure_battu"):
 		if not Game.flag(&"spinosaure_parle"):

@@ -360,13 +360,15 @@ static func on_zone(zone: StringName) -> void:
 			await ApexAube.on_porte()
 		&"terre_apex":
 			await arrival()
+			ApexGeants.on_terre()   # (post-game : les géants réveillés, l'œil des blocs, les fougères d'ambre)
 		&"coeur_apex":
 			await ApexCoeur.arrival()
 
 
 ## The chapter's scenes started by talking to someone or something (one branch of Story._run,
 ## asked BEFORE Volcan.run). False when `event` is not the chapter's, or not yet (Isaure at the door
-## is chapter 8's until the dawn can come; Brac and Léonce at the port until the epilogue).
+## is chapter 8's until the dawn can come; Léonce at the port until the epilogue). Brac on the jetty
+## is story/brac_jetee.gd's from the day he left the forges.
 ## One short line in their own voice when Chloé talks to them during the big scenes (the Souverain awake,
 ## the arrival in the crater): no new scene, just a reason to wait (they were « Scène inconnue »).
 const NOT_NOW := {
@@ -395,10 +397,12 @@ static func run(event: StringName, who: Node) -> bool:
 		&"hauban", &"bouline", &"etrave", &"carene":
 			await ApexAube.sea_dino(who)
 		# The crater (this file)
-		&"bloc_geant_1", &"bloc_geant_2", &"bloc_geant_3", &"bloc_geant_4":
-			await bloc(int(String(event).right(1)), who)
-		&"bloc_geant":
-			await bloc(_index_of(who), who)
+		&"bloc_geant_1", &"bloc_geant_2", &"bloc_geant_3", &"bloc_geant_4", &"bloc_geant":
+			var n := _index_of(who) if event == &"bloc_geant" else int(String(event).right(1))
+			if not await ApexGeants.bloc(n, who):   # (post-game : l'œil, Hélène, « S'asseoir à côté »)
+				await bloc(n, who)
+		&"geant_1", &"geant_2", &"geant_3", &"geant_4":   # (post-game : les géants réveillés, résidents du cratère)
+			await ApexGeants.resident(int(String(event).right(1)), who)
 		&"roi_apex":
 			await roi(who)
 		# The bottom (story/apex_coeur.gd, apex_helene.gd)
@@ -420,7 +424,7 @@ static func run(event: StringName, who: Node) -> bool:
 		&"joss_jetee":
 			await ApexAutour.joss(who)
 		# The epilogue's people (the CARTE agent's nodes): the jetty, the step, the Cabinet
-		&"helene_jetee", &"roc_jetee", &"maia_jetee", &"hamon_jetee", &"gustave_jetee", &"firmin_jetee", &"rosalie_jetee", &"pervenche_jetee", &"caillou_jetee", &"mastoc_jetee", &"cabosse_jetee", &"grognon_jetee", &"isaure_jetee", &"suie_jetee":
+		&"helene_jetee", &"roc_jetee", &"maia_jetee", &"hamon_jetee", &"gustave_jetee", &"firmin_jetee", &"rosalie_jetee", &"pervenche_jetee", &"caillou_jetee", &"isaure_jetee", &"suie_jetee":
 			await Epilogue.jetty_event(event, who)
 		&"maia_marche", &"caillou_ruelle":
 			await Epilogue.step_event(event, who)
@@ -429,10 +433,10 @@ static func run(event: StringName, who: Node) -> bool:
 		# The people standing in the crater and at the bottom: nothing to ask them in the middle of the scene
 		&"isaure_coeur", &"maia_coeur", &"caillou_coeur", &"isaure_abri", &"helene_abri", &"maia_abri", &"caillou_rempart", &"isaure_apex", &"maia_apex", &"caillou_apex":
 			await _not_now(event)
-		&"brac_jetee":
-			if not Game.flag(&"epilogue_fini"):
-				return false
-			await ApexAutour.brac(who)
+		# Brac on the jetty from brac_parti on, his three, the BARC sign (story/brac_jetee.gd; the
+		# morning of the jetty, it hands over to Epilogue.jetty_event like the others)
+		&"brac_jetee", &"panneau_barc", &"mastoc_jetee", &"cabosse_jetee", &"grognon_jetee":
+			await BracJetee.run(event, who)
 		&"leonce_port":
 			if not Game.flag(&"epilogue_fini"):
 				return false

@@ -17,6 +17,7 @@ extends RefCounted
 const PATH := "res://regions/cieux/cieux.tscn"
 const RES_DIR := "res://regions/cieux"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const C := preload("res://tools/zones/cieux_canvas.gd")
 const D := preload("res://tools/zones/cieux_decor.gd")
 const F := preload("res://tools/zones/cieux_pieds.gd")
@@ -144,6 +145,7 @@ static func build() -> Region:
 	# Every prop on the ground (none floating over a drop, by a bridge's edge or a piton's rim).
 	_check(root, F.settle_all(root))
 	D.ropes(root, ropes)
+	OSSEMENTS.bury(root, &"cieux")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root
 
 

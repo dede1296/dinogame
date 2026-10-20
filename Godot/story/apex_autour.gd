@@ -28,8 +28,15 @@ static func helene(who: Node) -> void:
 	if not Game.flag(&"epilogue_fini"):   # (the epilogue's own scene plays on entering the Cabinet)
 		Stage.emote(who, "…")
 		return
+	if await Fossiles.helene(who):   # (post-game, the legendary fossils: story/fossiles.gd, F3-F5)
+		return
+	if await ApexGeants.helene(who):   # (post-game, les géants : son conseil, l'après, « Quatre. »)
+		return
+	if await Revanches.helene(who):   # (the first Sceau woken: once, before her pool)
+		return
 	var pool: Array = DialogueApex.HELENE_CABINET.duplicate()
 	pool[1] = DialogueApex.HELENE_ANCIEN.get(A.starter_species(), DialogueApex.HELENE_ANCIEN[&"parasaurolophus"])
+	pool = ApexGeants.helene_pool(pool)   # (après les quatre : « Les quatre font du bruit la nuit… »)
 	await S.say([{"who": HELENE, "text": ForetCamp.next_line(&"helene_cabinet_n", pool)}])
 
 
@@ -38,6 +45,8 @@ static func helene(who: Node) -> void:
 static func isaure(who: Node) -> void:
 	_faces(who)
 	await S.say([{"who": ISAURE, "text": ForetCamp.next_line(&"isaure_barque_n", DialogueApex.ISAURE_BARQUE)}])
+	if await Revanches.isaure(who):   # (her bet, once a day: played, the boat stays)
+		return
 	var boat = S.actor(Barque.BOAT)
 	var known: Array = Barque.known_quays()
 	if boat == null or known.size() < 2:
@@ -56,15 +65,7 @@ static func isaure(who: Node) -> void:
 static func maia(who: Node) -> void:
 	_faces(who)
 	await S.say([{"who": MAIA, "text": ForetCamp.next_line(&"maia_gardienne_n", DialogueApex.MAIA_GARDIENNE)}])
-	var team = A.from_battles(&"maia_team", [], null)
-	if not team is Array or int(Game.flag(&"maia_defi_6_jour")) == Game.day:
-		return
-	if await Dialogue.choose("", "Le défi n° 6 de Maïa : « pour voir ».", ["Le relever", "Pas aujourd'hui"]) != 0:
-		return
-	Game.set_flag(&"maia_defi_6_jour", Game.day)
-	if await S.duel(MAIA, team, A.battles_const("MAIA_RULES", {})):
-		Game.set_flag(&"maia_defi_6")
-	Save.save_game()
+	await Revanches.maia(who)   # (her challenge n° 6, once a day: story/revanches.gd, ApexBattles.maia_team)
 
 
 ## On entering the Plaines after the epilogue: Maïa keeps the Grand Crâne.

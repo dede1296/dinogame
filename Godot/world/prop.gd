@@ -297,6 +297,19 @@ const KINDS := {
 	"bloc_geant_2": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
 	"bloc_geant_3": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
 	"bloc_geant_4": {"scale": 0.436, "foot": 0.03, "solid": Vector2(140, 48), "sway": 0.0, "shadow": 0.0, "light": true},
+	# Post-game, les géants (lot A' ; posés par le code, story/apex_geants.gd) : l'œil ouvert, puis fendu et vide ;
+	# mêmes échelles que les blocs (mêmes images, à 2 px près ; le 4 vide est plus petit : 292×369, l'ambre tombé).
+	"bloc_geant_1_oeil": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_2_oeil": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_3_oeil": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_4_oeil": {"scale": 0.436, "foot": 0.03, "solid": Vector2(140, 48), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_1_vide": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_2_vide": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_3_vide": {"scale": 0.345, "foot": 0.03, "solid": Vector2(220, 60), "sway": 0.0, "shadow": 0.0, "light": true},
+	"bloc_geant_4_vide": {"scale": 0.436, "foot": 0.03, "solid": Vector2(120, 44), "sway": 0.0, "shadow": 0.0, "light": true},
+	# La fougère d'ambre (posée par le code dès le post-game, ~1 m) : l'échelle de fougere_cendre (356 px de large) ;
+	# à recaler sur l'image du lot A' si sa largeur diffère (≈ 52 px de large à l'écran).
+	"fougere_ambre": {"scale": 0.147, "foot": 0.12, "solid": 0.0, "sway": 2.0, "shadow": 0.0, "light": true},
 	"cairn_helene": {"scale": 0.667, "foot": 0.08, "solid": Vector2(40, 14), "sway": 0.0, "shadow": 40.0},
 	"portail_apex_ouvert": {"scale": 0.741, "foot": 0.01, "solid": Vector2(330, 40), "sway": 0.0, "shadow": 0.0, "light": true},
 	"torche_eteinte": {"scale": 0.72, "foot": 0.03, "solid": 6.0, "sway": 0.0, "shadow": 20.0},
@@ -304,6 +317,16 @@ const KINDS := {
 	"tasse_bleue": {"scale": 0.069, "foot": -5.7, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	"caisse_carnets": {"scale": 0.149, "foot": -2.3, "solid": 0.0, "sway": 0.0, "shadow": 0.0},
 	"masque_carton_sol": {"scale": 0.216, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 14.0},
+	# Post-game, Brac sur la jetée (lot E ; images du lot A', 20/10) : posés par le code (story/brac_jetee.gd,
+	# Stage.show_thing). Le panneau « Gardien : BARC » planté dans la jetée (~1,1 m, comme « panneau ») ; le
+	# sandwich par terre à côté de sa cage (~20 cm de large), jusqu'au partage.
+	"panneau_barc": {"scale": 0.217, "foot": 0.04, "solid": 5.6, "sway": 0.0, "shadow": 25.2},
+	"sandwich": {"scale": 0.18, "foot": 0.1, "solid": 0.0, "sway": 0.0, "shadow": 9.0},
+	# Post-game, les fossiles légendaires (lot B ; images du lot B') : posés par le code (story/fossiles.gd place).
+	# Le crâne du Titanosaure d'Or dans sa dalle de roche (~1,3 m), au pied de la paroi du cratère ; celui du
+	# Kronosaurus sur le sable du récif (2,3 m de crâne, « grand comme une barque »).
+	"crane_titanosaure_paroi": {"scale": 0.176, "foot": 0.05, "solid": Vector2(50, 18), "sway": 0.0, "shadow": 50.0},
+	"crane_kronosaurus_sable": {"scale": 0.313, "foot": 0.08, "solid": Vector2(90, 26), "sway": 0.0, "shadow": 60.0},
 	# Passe de finition (29/09, tools/art-jobs/finition.mjs): objects held during a scene (small,
 	# readable, real size noted here though the integrator spawns them, not a zone), and the
 	# missing fixed scenery of chapters 1-5.
@@ -446,7 +469,7 @@ const KINDS := {
 	"pont_lianes_rompu", "rochers_cieux",
 	"vieux_harnais", "masque_obsidienne", "nuage_bas_1", "nuage_bas_2", "nuage_bas_3", "nuage_bas_4", "arche_vent_loin",
 	"forge_allumee", "forge_eteinte", "forge_eteinte_2", "forge_eteinte_3", "grande_forge_allumee", "grande_forge_eteinte", "cage_fermee", "cage_ouverte", "cage_grande", "barricade", "barricade_tombee", "fut_ambre_noir", "enclume", "auvent", "soufflet", "marmite", "etabli_suie", "gants_gris", "traineau_roues", "masque_os_sol", "pierre_plate_volcan", "vasque_source", "autel_magma", "autel_magma_fendu", "coque_lave", "lave_paroi", "torche", "plaque_fer", "portail_apex", "camp_helene",
-	"bloc_souverain", "bloc_souverain_fendu", "bloc_souverain_eclate", "bloc_geant_1", "bloc_geant_2", "bloc_geant_3", "bloc_geant_4", "cairn_helene", "portail_apex_ouvert", "torche_eteinte", "isaure_helene", "tasse_bleue", "caisse_carnets", "masque_carton_sol")
+	"bloc_souverain", "bloc_souverain_fendu", "bloc_souverain_eclate", "bloc_geant_1", "bloc_geant_2", "bloc_geant_3", "bloc_geant_4", "cairn_helene", "portail_apex_ouvert", "torche_eteinte", "isaure_helene", "tasse_bleue", "caisse_carnets", "masque_carton_sol", "bloc_geant_1_oeil", "bloc_geant_2_oeil", "bloc_geant_3_oeil", "bloc_geant_4_oeil", "bloc_geant_1_vide", "bloc_geant_2_vide", "bloc_geant_3_vide", "bloc_geant_4_vide", "fougere_ambre", "panneau_barc", "sandwich", "crane_titanosaure_paroi", "crane_kronosaurus_sable")
 var kind := "arbre_rond":
 	set(value):
 		kind = value

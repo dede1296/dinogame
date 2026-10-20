@@ -329,11 +329,10 @@ static func run(event: StringName, who: Node) -> bool:
 			await VolcanPorte.caillou(who)
 		&"portail_apex":
 			await VolcanPorte.portail(who)
-		# Around (story/volcan_autour.gd): Léonce on the pontoon of Port-Ambre, Brac at the end of it
+		# Around (story/volcan_autour.gd): Léonce on the pontoon of Port-Ambre (Brac at the end of it:
+		# story/brac_jetee.gd, by Apex.run)
 		&"leonce_port":
 			await VolcanAutour.leonce_port(who)
-		&"brac_jetee":
-			await VolcanAutour.brac_jetee(who)
 		_:
 			return false
 	return true

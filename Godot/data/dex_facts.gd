@@ -199,6 +199,29 @@ const INFO := {
 	&"souverain": {"size": "Environ 12 m de long", "diet": "omnivore", "era": "Personne ne le sait", "from": "nulle part ailleurs qu'au cratère d'Ambrelune",
 		"trait": "Bas et massif, la tête longue, le dos cuirassé de plaques veinées d'ambre.",
 		"fact": "« Archosaure » veut dire « reptile dominant » : c'est la grande famille des dinosaures, des oiseaux et des crocodiles. Leurs plus vieux ancêtres vivaient il y a 250 millions d'années."},
+	# Post-game, les quatre géants du cratère (docs/post-game-plan.md § 1) : des Uniques, réveillés un à un.
+	&"deinocheirus": {"size": "11 m de long, 6 tonnes", "diet": "omnivore", "era": "Crétacé, il y a 70 millions d'années", "from": "en Mongolie",
+		"trait": "Des bras de 2,4 m, un bec de canard sans dents et une bosse sur le dos.",
+		"fact": "Pendant presque 50 ans, on n'a connu que ses deux bras géants, trouvés en 1965 : personne ne savait à quoi ressemblait le reste ! Son nom veut dire « main terrible »… mais il mangeait des plantes et des poissons."},
+	&"argentinosaurus": {"size": "environ 35 m de long, 70 tonnes", "diet": "herbivore", "era": "Crétacé, il y a 95 millions d'années", "from": "en Argentine",
+		"trait": "L'un des plus grands animaux qui aient jamais marché sur Terre.",
+		"fact": "Une seule de ses vertèbres est plus haute qu'un enfant de 8 ans ! On n'a retrouvé que quelques-uns de ses os : sa taille exacte reste un mystère."},
+	&"therizinosaurus_geant": {"size": "10 m de long, 5 tonnes", "diet": "herbivore", "era": "Crétacé, il y a 70 millions d'années", "from": "en Mongolie",
+		"trait": "Le plus grand des Therizinosaurus, aux griffes de main longues d'un mètre.",
+		"fact": "Avec leur gaine de corne, ses griffes pouvaient atteindre un mètre. Quand on a trouvé les premières, on a cru qu'elles venaient d'une tortue géante !"},
+	&"dacentrurus": {"size": "8 à 9 m de long, 5 tonnes", "diet": "herbivore", "era": "Jurassique, il y a 150 millions d'années", "from": "en Angleterre, en France et au Portugal",
+		"trait": "Deux rangées de pointes sur le dos et quatre longues pointes au bout de la queue.",
+		"fact": "C'est le premier stégosaure jamais décrit, en 1875, avant même le Stegosaurus ! Sa tête était minuscule pour un animal aussi grand."},
+	# Post-game, les fossiles légendaires (lot B) : ressuscités au Cabinet, dans la liste de l'île (pas des Uniques).
+	&"saltasaurus": {"size": "12 m de long, 7 tonnes", "diet": "herbivore", "era": "Crétacé, il y a 70 millions d'années", "from": "en Argentine",
+		"trait": "Un Saltasaurus, le titanosaure à armure : des plaques d'os rondes et de petits boutons d'os sur le dos.",
+		"fact": "C'est le premier sauropode qu'on a découvert avec une armure, en Argentine. Avant lui, personne ne croyait qu'un dinosaure à long cou pouvait être cuirassé comme un ankylosaure !"},
+	&"kronosaurus": {"size": "10 m de long, environ 11 tonnes", "diet": "carnivore", "era": "Crétacé, il y a 110 millions d'années", "from": "en Australie",
+		"trait": "Une tête énorme de plus de 2 m, un cou très court et quatre nageoires.",
+		"fact": "Ce n'est pas un dinosaure mais un pliosaure, un reptile marin. Son nom vient de Cronos, un géant des légendes grecques. Dans le ventre d'un de ses fossiles, on a trouvé les os d'un plésiosaure : son dernier repas !"},
+	&"gigantoraptor": {"size": "8 m de long, 1,5 tonne", "diet": "omnivore", "era": "Crétacé, il y a 70 à 90 millions d'années", "from": "en Mongolie-Intérieure, en Chine",
+		"trait": "Un bec sans dents, une petite crête et des plumes : le cousin géant de l'Oviraptor.",
+		"fact": "On l'a découvert par hasard en 2005, pendant le tournage d'un film documentaire. Son nom veut dire « voleur géant » : c'est le plus grand des oviraptors connus."},
 }
 
 ## The characters of the story, one of a kind, in their order in the Dinodex. `role`: who
@@ -241,4 +264,17 @@ const UNIQUES := [
 	{"id": &"souverain", "role": "Le Souverain, l'Apex ancestral", "region": &"apex",
 		"rumour": "Hélène a écrit qu'au fond du cratère, quelque chose de très grand garde les yeux ouverts.",
 		"where": "Au Cœur des Apex, tout au fond du cratère. Il ne dort plus dans l'ambre : il est couché, et il regarde la mer. Il n'a plus peur."},
+	# Les géants du cratère, dans l'ordre de leur réveil (story/apex_geants.gd).
+	{"id": &"deinocheirus", "role": "Moufle, le géant du petit bloc", "region": &"apex",
+		"rumour": "Dans le cratère, un bloc d'ambre plus petit que les autres garde une plume d'Hélène dans une fissure, comme un marque-page.",
+		"where": "Dans la Terre des Apex, près de son bloc fendu. Il fait semblant de pêcher dans la cendre, avec ses grandes mains."},
+	{"id": &"argentinosaurus", "role": "Nuage, le géant au long cou", "region": &"apex",
+		"rumour": "Dans un bloc d'ambre du cratère, un cou fait deux fois le tour. On ne voit pas la tête.",
+		"where": "Dans la Terre des Apex, près de son bloc fendu. Il mange des fougères d'ambre, la tête tout là-haut."},
+	{"id": &"therizinosaurus_geant", "role": "Râteau, le géant aux griffes", "region": &"apex",
+		"rumour": "Dans un bloc d'ambre du cratère dort une bête aux griffes comme des faux.",
+		"where": "Dans la Terre des Apex, près de son bloc fendu. Il range ses griffes contre son ventre, comme des ciseaux."},
+	{"id": &"dacentrurus", "role": "Ronfleur, le géant aux pointes", "region": &"apex",
+		"rumour": "Dans le cratère, un bloc d'ambre ronfle. Dedans : des plaques, des pointes, et une queue qu'on ne voudrait pas croiser.",
+		"where": "Dans la Terre des Apex, près de son bloc fendu. Il ne ronfle plus : il chantonne, un peu faux."},
 ]

@@ -379,7 +379,7 @@ func _fill_wheel() -> void:
 	var corrupted := engine.foe.corrupted
 	collar_button.visible = rules.get("catch", true) and not corrupted
 	calm_button.visible = corrupted
-	sceaux_button.visible = APEX_HUD.has_sceaux(engine)   # (in Fuir's place)
+	sceaux_button.visible = APEX_HUD.on_wheel(engine, rules)   # (in Fuir's place; in a wild battle, in the Sac)
 	sceaux_button.enable(APEX_HUD.can_call_any(engine))
 	run_button.visible = rules.get("run", true) and not sceaux_button.visible
 	collar_button.badge = Game.item_count("collier")
@@ -390,7 +390,7 @@ func _fill_wheel() -> void:
 	if APEX_HUD.antidote_shown(engine):   # the last battle: the « Ambre clair » is in the bag too
 		heals += 1
 	bag_button.badge = heals
-	bag_button.enable(heals > 0)
+	bag_button.enable(heals > 0 or (APEX_HUD.in_bag(engine, rules) and APEX_HUD.can_call_any(engine)))
 	var others := 0
 	for i in engine.team.size():
 		if engine.can_switch_to(i):
@@ -546,6 +546,8 @@ func _fill_list(which: String) -> void:
 			for id: String in BattleEngine.HEAL_ITEMS:
 				if Game.item_count(id) > 0:
 					grid.add_child(_item_card(id))
+			if APEX_HUD.in_bag(engine, rules):   # (after the end, a wild battle: the Sceaux, after the heals)
+				grid.add_child(APEX_HUD.bag_card(self))
 		"team", "relief", "heal":
 			panel.get_meta(&"title").text = {"team": "Changer de dino", "relief": "Qui prend le relais ?"}.get(which,
 				HEAL_TITLES.get(_heal_item, "À qui le donner ?"))

@@ -25,7 +25,7 @@ const DEFS := {
 	&"resonance": {"name": "Résonance", "icon": "notes", "part": &"head", "families": [&"hadrosaur"],
 		"desc": "Sa crête chante : l'ambre endormi s'éveille et les portes d'ambre s'ouvrent."},
 	&"flair": {"name": "Flair", "icon": "paw", "part": &"head", "species": [&"compsognathus", &"troodon", &"oviraptor",
-		&"leaellynasaura"],
+		&"leaellynasaura", &"gigantoraptor"],
 		"desc": "Un nez infaillible : sent ce qui est enfoui et le déterre."},
 	&"coup_crane": {"name": "Coup de crâne", "icon": "dome", "part": &"head", "species": [&"pachycephalosaurus", &"stygimoloch"],
 		"desc": "Un crâne en dôme : enfonce les murs fissurés."},

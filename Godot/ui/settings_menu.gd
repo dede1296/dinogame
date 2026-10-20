@@ -177,6 +177,8 @@ func _menu_page() -> void:
 	_rows.add_child(_label("Menu" if in_game else "Paramètres", 40, GOLD))
 	if in_game:
 		_rows.add_child(_button("Reprendre", _close))
+		if JournalWall.available():   # (a page found, or read in a game before: the journal wall)
+			_rows.add_child(_button("Journal d'Hélène", _open_journal))
 	_rows.add_child(_button("Commandes", _show.bind("commandes")))
 	_rows.add_child(_button("Touches", _show.bind("touches")))
 	_rows.add_child(_button("Sons", _show.bind("sons")))
@@ -284,6 +286,13 @@ func _replay_tutorial() -> void:
 	var root := get_tree().root
 	_close()
 	ControlsTutorial.open.call_deferred(root)
+
+
+## Closes the menu, then opens the journal wall: the pages found, read again (grey: those of a game before).
+func _open_journal() -> void:
+	var root := get_tree().root
+	_close()
+	JournalWall.open.call_deferred(root)
 
 
 ## Touches: the gamepad drawn, each button with the action it does (tap it, then press the new

@@ -9,6 +9,7 @@ extends RefCounted
 
 const PATH := "res://regions/plaines/plaines.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const BORDERS := preload("res://tools/zones/borders.gd")
 const MAPS := "res://tools/maps/plaines_%s.png"
 const CHARS := "res://assets/art/characters/%s.png"
@@ -71,6 +72,7 @@ static func build() -> Region:
 	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 53.4, 49.0, {"event": &"grand_voyageur", "size": 1.6})
 	B.spawn(root, "Voyageur", 56.2, 48.4)
 	B.sign(entities, B.cell(57.0, 50.0), &"panneau_escale")
+	OSSEMENTS.bury(root, &"plaines")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root
 
 

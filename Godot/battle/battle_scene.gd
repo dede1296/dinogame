@@ -129,6 +129,11 @@ func run(wild: Dino, rules := {}) -> String:
 	for key: String in APEX_ENGINE.RULES:   # (chapter 9: Isaure, the Souverain)
 		if rules.has(key):
 			engine_rules[key] = rules[key]
+	for key: String in ["foe_faint", "foe_stages", "alpha"]:   # (after the end: an Alpha's rematch, RevancheBattles)
+		if rules.has(key):
+			engine_rules[key] = rules[key]
+	if APEX_ENGINE.libres_ok(rules):   # (after the end: the Sceaux woken by the rematches, in any battle but the Relais)
+		engine_rules["sceaux_libres"] = true
 	if rules.get("underwater", false):   # under the sea: the water's rules, the water all around
 		engine = UNDERWATER_ENGINE.new(Game.party, wild, engine_rules)
 		UNDERWATER_LOOK.apply(self)
@@ -258,7 +263,10 @@ func _play(events: Array) -> void:
 				if e.has("text"):
 					await _say(e["text"])
 			"faint":
-				await _faint(e["side"])
+				if e["side"] == "foe" and engine.foe_faint != "":   # (an Alpha's rematch: he stops, he does not fall)
+					await _stops(_foe_sprite)
+				else:
+					await _faint(e["side"])
 				await _say(e["text"])
 			"item":   # Chloé gives it to a dino of the party ("heal" follows)
 				_hud.say(e["text"])
@@ -430,6 +438,13 @@ func _dodge(attacker_side: String) -> void:
 	t.tween_property(s, "position:x", home.x + 40, 0.12).set_trans(Tween.TRANS_SINE)
 	t.tween_property(s, "position:x", home.x, 0.2).set_trans(Tween.TRANS_SINE)
 	await t.finished
+
+
+## An Alpha's rematch won (rule "foe_faint", « Il s'arrête. Il a vu. »): he stops, lowers his head a little, and stays.
+func _stops(s: AnimatedSprite2D) -> void:
+	_cry_of(engine.foe, "neutre")
+	_jelly(s, JELLY_FAINT * 0.4)
+	await create_tween().tween_property(s, "position:y", s.position.y + 12.0, 0.4).set_trans(Tween.TRANS_QUAD).finished
 
 
 func _faint(side: String) -> void:

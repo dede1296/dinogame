@@ -20,6 +20,12 @@ const STATS := [["attaque", "Attaque", Color(0.92, 0.45, 0.35)], ["defense", "D�
 ## Part stats go from 0 to about 10.
 const STAT_MAX := 10.0
 const DAWN_TINT := Color(1.0, 0.62, 0.38)
+## The legendary fossils of the post-game (story/fossiles.gd): their skeleton, piece by piece, on its
+## picture (assets/art/ui/squelette_<species>.png: the five pieces side by side, head to tail).
+const FOSSILES := preload("res://story/fossiles.gd")
+const SKELETON_ART := "res://assets/art/ui/squelette_%s.png"
+const PIECE_NAMES := ["Crâne", "Colonne", "Côtes", "Pattes", "Queue"]
+const BONE_SHADOW := Color(0.1, 0.1, 0.14, 0.8)
 
 var id: StringName
 var screen: DexScreen
@@ -134,10 +140,14 @@ func _pictures() -> Control:
 # ------------------------------------------------------------------ right: what is known
 
 func _fill(col: VBoxContainer) -> void:
+	var legendary: bool = FOSSILES.beast_of_species(id) != &""
 	if not _seen:
 		_section(col, "Où le trouver")
-		for h in DexDB.hints(id):
+		var hints: Array = [FOSSILES.dex_hint(id)] if legendary else Array(DexDB.hints(id))
+		for h: String in hints:
 			col.add_child(DexScreen.ui_wrapped("• " + h, 17, CREAM))
+		if legendary:
+			_skeleton(col)
 		return
 	_section(col, "Fiche d'identité")
 	var facts := DexDB.facts(id)
@@ -148,6 +158,8 @@ func _fill(col: VBoxContainer) -> void:
 		col.add_child(_info_row("Fossiles", "trouvés %s" % facts.get("from", "") if facts.get("from", "") != "" else "?"))
 		col.add_child(_info_row("Signe particulier", facts.get("trait", "")))
 	_where(col)
+	if legendary:
+		_skeleton(col)
 	if not DexDB.is_unique(id) and _status == DexDB.CAUGHT:
 		_my_dinos(col)
 	_matchups(col)
@@ -171,6 +183,9 @@ func _where(col: VBoxContainer) -> void:
 	_section(col, "Où le trouver")
 	if DexDB.is_unique(id):
 		col.add_child(DexScreen.ui_wrapped(DexDB.unique_info(id)["where"], 17, CREAM))
+		return
+	if FOSSILES.beast_of_species(id) != &"":   # (a legendary: nowhere any more, its bones)
+		col.add_child(DexScreen.ui_wrapped(FOSSILES.dex_where(id), 17, CREAM))
 		return
 	var elsewhere := false   # (a region Chloé has not been to: not named)
 	for p in DexDB.places(id):
@@ -370,6 +385,47 @@ func _stats(col: VBoxContainer) -> void:
 		col.add_child(row)
 
 
+## A legendary's skeleton (once its page of the notebook is given, or a bone found): its picture, each
+## piece lit once found, dark until then; under it, each piece with its riddle (when its page is known).
+func _skeleton(col: VBoxContainer) -> void:
+	var beast: StringName = FOSSILES.beast_of_species(id)
+	var have: Array[bool] = FOSSILES.pieces(beast)
+	var known: bool = FOSSILES.page_known(beast)
+	if not known and not have.has(true):
+		return
+	_section(col, "Le squelette complet" if have.count(true) == 5 else "Le squelette : %d / 5" % have.count(true))
+	var path := SKELETON_ART % id
+	if ResourceLoader.exists(path):
+		col.add_child(_skeleton_picture(load(path), have))
+	for i in 5:
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 10)
+		var piece: String = "Nageoires" if beast == &"kronosaurus" and i == 3 else PIECE_NAMES[i]
+		var pill := _pill(piece, GOLD if have[i] else Color(0.3, 0.33, 0.4), Color(0.1, 0.08, 0.05) if have[i] else CREAM)
+		pill.custom_minimum_size = Vector2(118, 0)
+		row.add_child(pill)
+		var text: String = FOSSILES.riddle(beast, i) if known else "Une devinette du carnet des os… qui n'est pas encore à toi."
+		row.add_child(DexScreen.ui_wrapped(("Trouvé. " if have[i] else "") + text, 15, Color(CREAM, 0.55 if have[i] else 0.85)))
+		col.add_child(row)
+
+
+## The skeleton's picture, its five fifths (head, back, ribs, legs, tail) lit or in shadow.
+func _skeleton_picture(tex: Texture2D, have: Array[bool]) -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(0, 130)
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.draw.connect(func() -> void:
+		var k := minf(c.size.x / tex.get_width(), c.size.y / tex.get_height())
+		var drawn := Vector2(tex.get_width(), tex.get_height()) * k
+		var at := (c.size - drawn) / 2.0
+		var fifth := tex.get_width() / 5.0
+		for i in 5:
+			var src := Rect2(i * fifth, 0, fifth, tex.get_height())
+			var dst := Rect2(at + Vector2(i * fifth * k, 0), Vector2(fifth * k, drawn.y))
+			c.draw_texture_rect_region(tex, dst, src, Color.WHITE if have[i] else BONE_SHADOW))
+	return c
+
+
 ## When it was first seen (and where), when first caught.
 func _diary(col: VBoxContainer) -> void:
 	_section(col, "Carnet")
@@ -380,7 +436,10 @@ func _diary(col: VBoxContainer) -> void:
 	col.add_child(DexScreen.ui_wrapped("Vu pour la première fois %s%s." % [seen if seen != "" else "il y a longtemps", " (" + place + ")" if place != "" else ""],
 		16, Color(CREAM, 0.8)))
 	var caught := DexDB.date_text(Game.dex_caught.get(key))
-	if caught != "":
+	if Game.owned_before(id):   # (Nouvelle partie+: owned in a game before, not caught again in this one)
+		var before := "Possédé à la partie précédente." if Game.ng_plus() <= 1 else "Possédé à une partie précédente."
+		col.add_child(DexScreen.ui_wrapped(before, 16, Color(CREAM, 0.8)))
+	elif caught != "":
 		col.add_child(DexScreen.ui_wrapped("Dans ton équipe pour la première fois %s." % caught, 16, Color(CREAM, 0.8)))
 
 

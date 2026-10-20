@@ -72,6 +72,35 @@ const FULL_MOON_FIRST := 2
 var egg: Dictionary = {}
 ## Typical level of the current zone (set by the world): behind it, dinos learn faster.
 var zone_level := 0
+## Nouvelle partie+ (docs/post-game-plan.md § 4): a finished game (fin_vue) starts the island again. What
+## it passes on (new_game_plus, plus_carry); everything else starts again as in new_game():
+## - the Dinodex as it is (seen, caught, where);
+## - "flags", "flag_prefixes": these flags as they are: the intro and the controls tutorial seen
+##   (ControlsTutorial.FLAG), Roc's Dinodex rewards (given for this very Dinodex: reset, they would all
+##   come again at once), the bones of the legendary skeletons (os_*: their objects and their flags);
+## - "items", "item_prefixes": these objects, with their count: the fossils, the bones (os_*);
+## - "read_prefixes": the pages found, remembered in journal_lu (grey on the wall until found again).
+## Not kept, on purpose: fin_vue (the new game is not finished: its own end plays, with its own egg),
+## ressuscite_* (the resurrected species stay in the Dinodex; their egg is to be made again), the party,
+## the reserve, the Liens, the other objects, the story, the clock, the giants, the rematches, the badge.
+const NG_PLUS_KEEP := {
+	"flags": ["intro_vue", "tuto_commandes", "dex_complet"],
+	"flag_prefixes": ["os_", "dex_palier_", "dex_region_"],
+	"items": ["fossile"],
+	"item_prefixes": ["os_"],
+	"read_prefixes": ["found_journal_"],
+}
+## The Nouvelle partie+'s own flags (saved with the others; absent from the saves before it: 0, []): how many
+## times the island was started again; the pages found in the games before; the hatchlings chosen before
+## (« Celui-là, tu le connais. »); the species owned before and not caught again yet (the Dinodex).
+const NG_PLUS := &"ng_plus"
+const JOURNAL_READ := &"journal_lu"
+const EGGS_KNOWN := &"oeufs_connus"
+const OWNED_BEFORE := &"dex_partie_precedente"
+## Levels a foe gets on top of its own in a Nouvelle partie+ (foe_kind): trainers and Alphas, wild dinos.
+const PLUS_LEVELS := {&"trainer": 2, &"alpha": 2, &"wild": 1}
+## Set on a foe once made stronger (strengthen): never twice.
+const PLUS_META := &"ng_plus_levels"
 ## Old zone ids of the Plaines (before it became one open map) -> arrival point in it.
 const OLD_ZONES := {"plaines_debarcadere": "Debarcadere", "plaines_sud": "Carrefour", "plaines_falaises": "Falaises", "plaines_crane": "Crane"}
 ## Where to arrive in the zone when there is no saved position (&"" = its start).
@@ -394,6 +423,128 @@ func new_game() -> void:
 	party_changed.emit()
 
 
+## A Nouvelle partie+ from `previous` (a finished game's to_dict(): its slot's file, Save.start_new_game_plus):
+## new_game(), then what it passes on (NG_PLUS_KEEP, plus_carry). False, and nothing changed, when that game
+## is not finished.
+func new_game_plus(previous: Dictionary) -> bool:
+	var carry := plus_carry(previous)
+	if carry.is_empty():
+		return false
+	new_game()
+	dex_seen = carry["dex_seen"]
+	dex_caught = carry["dex_caught"]
+	dex_where = carry["dex_where"]
+	flags = carry["flags"]
+	items = START_ITEMS.duplicate()
+	items.merge(carry["items"], true)
+	party_changed.emit()
+	return true
+
+
+## What a finished game (`previous`, its to_dict()) passes on to a Nouvelle partie+: {dex_seen, dex_caught,
+## dex_where, flags, items} (new copies), the flags with the Nouvelle partie+'s own (ng_plus + 1, the pages
+## found, the eggs chosen, the species owned: each added to those of the games before); {} when it is not
+## finished (fin_vue) or not a game.
+static func plus_carry(previous: Dictionary) -> Dictionary:
+	var old_flags := _dict(previous.get("flags"))
+	if not _is_true(old_flags.get("fin_vue")):
+		return {}
+	var kept := {}
+	for k in old_flags:
+		if _kept(String(k), NG_PLUS_KEEP["flags"], NG_PLUS_KEEP["flag_prefixes"]):
+			kept[String(k)] = old_flags[k]
+	var old_items := _dict(previous.get("items"))
+	var bag := {}
+	for k in old_items:
+		var n := int(_number(old_items[k]))
+		if n > 0 and _kept(String(k), NG_PLUS_KEEP["items"], NG_PLUS_KEEP["item_prefixes"]):
+			bag[String(k)] = n
+	var read: Array = old_flags.keys().filter(func(k) -> bool:
+		return _is_true(old_flags[k]) and _kept(String(k), [], NG_PLUS_KEEP["read_prefixes"]))
+	var caught := _dict(previous.get("dex_caught"))
+	var starter = old_flags.get("starter")
+	kept[String(NG_PLUS)] = int(_number(old_flags.get(String(NG_PLUS)))) + 1
+	kept[String(JOURNAL_READ)] = _joined(old_flags.get(String(JOURNAL_READ)), read)
+	kept[String(EGGS_KNOWN)] = _joined(old_flags.get(String(EGGS_KNOWN)), [starter] if starter is String else [])
+	kept[String(OWNED_BEFORE)] = _joined(old_flags.get(String(OWNED_BEFORE)), caught.keys())
+	return {"dex_seen": _dict(previous.get("dex_seen")).duplicate(true), "dex_caught": caught.duplicate(true),
+		"dex_where": _dict(previous.get("dex_where")).duplicate(true), "flags": kept, "items": bag}
+
+
+## How many times the island was started again (0: the first game).
+func ng_plus() -> int:
+	return int(_number(flags.get(String(NG_PLUS))))
+
+
+## The pages found in the games before (their found_journal_* flags): grey on the wall until found again.
+func pages_read_before() -> Array:
+	return _joined(flags.get(String(JOURNAL_READ)), [])
+
+
+## Was this hatchling Chloé's in a game before? (the prologue: « Celui-là, tu le connais. »)
+func egg_known(species: StringName) -> bool:
+	return _joined(flags.get(String(EGGS_KNOWN)), []).has(String(species))
+
+
+## Owned in a game before and not caught again in this one (the Dinodex: « Possédé à la partie précédente »).
+func owned_before(species: StringName) -> bool:
+	return _joined(flags.get(String(OWNED_BEFORE)), []).has(String(species))
+
+
+## The levels a foe of `kind` (foe_kind) gets on top of its own: PLUS_LEVELS in a Nouvelle partie+, else 0.
+func level_bonus(kind: StringName) -> int:
+	return int(PLUS_LEVELS.get(kind, 0)) if ng_plus() > 0 else 0
+
+
+## What a battle's foe is, from the battle's rules (World._battle): a trainer's dino (« trainer »: Story.duel,
+## the Relais, Isaure), an Alpha or a guardian (no collar: « catch » false), else a wild dino.
+func foe_kind(rules: Dictionary) -> StringName:
+	if rules.has("trainer"):
+		return &"trainer"
+	if rules.get("catch", true) == false:
+		return &"alpha"
+	return &"wild"
+
+
+## A battle's foe made stronger in a Nouvelle partie+ (level_bonus): its level, the moves of that level, the
+## same share of its HP. Changed in place — the scene that made it keeps it (to name it, to take it after a
+## capture) — and once only (PLUS_META), however many times it is fought.
+func strengthen(foe: Dino, kind: StringName) -> void:
+	var bonus := level_bonus(kind)
+	if foe == null or bonus <= 0 or foe.has_meta(PLUS_META):
+		return
+	var share := float(foe.hp) / float(maxi(1, foe.max_hp()))
+	foe.set_meta(PLUS_META, bonus)
+	foe.level += bonus
+	foe.moves = foe._moves_at_level()
+	foe.hp = clampi(roundi(foe.max_hp() * share), 1 if foe.hp > 0 else 0, foe.max_hp())
+
+
+static func _kept(key: String, names: Array, prefixes: Array) -> bool:
+	return names.has(key) or prefixes.any(func(p: String) -> bool: return key.begins_with(p))
+
+
+static func _is_true(value: Variant) -> bool:
+	return value is bool and value
+
+
+static func _dict(value: Variant) -> Dictionary:
+	return value if value is Dictionary else {}
+
+
+static func _number(value: Variant) -> float:
+	return float(value) if value is int or value is float else 0.0
+
+
+## The strings of `list` (a saved list: anything else counts as empty), then those of `more` not in it.
+static func _joined(list: Variant, more: Array) -> Array:
+	var out: Array = []
+	for v in (list if list is Array else []) + more:
+		if (v is String or v is StringName) and not out.has(String(v)):
+			out.append(String(v))
+	return out
+
+
 ## Chloé takes one of the three hatchlings (the prologue; or directly, for tests).
 func give_starter(species: StringName) -> Dino:
 	var d := Dino.create(species, STARTER_LEVEL, STARTERS.get(species, ""))
@@ -465,6 +616,8 @@ func mark_seen(species_id: StringName) -> bool:
 func mark_caught(species_id: StringName) -> bool:
 	mark_seen(species_id)
 	var key := String(species_id)
+	if owned_before(species_id):   # (Nouvelle partie+: owned again, in this game too)
+		flags[String(OWNED_BEFORE)] = _joined(flags[String(OWNED_BEFORE)], []).filter(func(s: String) -> bool: return s != key)
 	if dex_caught.has(key):
 		return false
 	dex_caught[key] = int(Time.get_unix_time_from_system())

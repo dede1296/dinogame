@@ -13,6 +13,7 @@ extends RefCounted
 
 const PATH := "res://regions/marais/marais.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const BORDERS := preload("res://tools/zones/borders.gd")
 const MAPS := "res://tools/maps/marais_%s.png"
 const PICKUP := "res://world/pickup.gd"
@@ -122,6 +123,7 @@ static func build() -> Region:
 	# Débarcadère, along the north side of its boardwalk, east of the lantern (Joss's own boat
 	# is on the south side); Chloé lands on the planks beside it.
 	B.maias_boat(root, Vector2(114.2, 67.9), Vector2(114.8, 69.6))
+	OSSEMENTS.bury(root, &"marais")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root
 
 

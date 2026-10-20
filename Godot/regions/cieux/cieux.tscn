@@ -21,6 +21,7 @@
 [ext_resource type="Script" path="res://world/story_trigger.gd" id="19_0bmjj"]
 [ext_resource type="Script" path="res://world/sign.gd" id="20_o3by4"]
 [ext_resource type="Script" path="res://world/dig_spot.gd" id="21_vu65y"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="22_ww5fe"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="22_xjnak"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="23_f8uiu"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="24_qwrou"]
@@ -957,6 +958,13 @@ position = Vector2(4492.8, 1708.7999)
 script = ExtResource("18_ppf4i")
 taken_flag = &"galet_cieux_15"
 kind = "galet"
+
+[node name="EnfouiOsGigantoraptor3" type="Node2D" parent="Entities" unique_id=1067048252]
+position = Vector2(3240, 3624)
+script = ExtResource("22_ww5fe")
+show_flag = &"carnet_terre"
+pebble = &"os_gigantoraptor_3"
+item_id = "os_gigantoraptor"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=1842512687]
 

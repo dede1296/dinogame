@@ -80,8 +80,22 @@ const ITEMS := {
 		"desc": "Un galet d'ambre trouvé dans les racines d'une vieille souche de la Forêt. Dedans, un moustique figé depuis des millions d'années. Il a l'air très surpris."},
 	# The warm coat: without it, no going up into the cold regions (the Monts, later the Cieux).
 	# Priced for what a player has at the end of chapter 5 (docs/mecaniques.md, « Les régions froides »).
+	# Post-game, les géants (story/apex_geants.gd) : ramassée au réveil du petit bloc ; Hélène la laisse à Chloé (G4).
+	# Icône : assets/art/ui/plume_helene.png (lot A' : une plume à écrire taillée, l'encre au bout ; l'ambre en attendant).
+	"plume_helene": {"name": "Plume d'Hélène", "icon": "plume_helene", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "La plume avec laquelle Hélène écrivait son journal, coincée dans la fissure du petit bloc comme un marque-page. « Garde-la. Il reste des pages blanches dans ce journal, et ce n'est plus moi qui les écris. »"},
 	"manteau_duvet": {"name": "Manteau de duvet", "icon": "manteau_duvet", "kind": "cle", "price": 300, "sell": 0,
 		"desc": "Cousu par Rosalie avec le duvet que les dinos à plumes perdent à la mue. Une capuche bordée de duvet, des bottes chaudes : de quoi monter là où il neige."},
+	# Post-game, les fossiles légendaires (lot B, story/fossiles.gd) : les os des trois squelettes (0 à 5
+	# chacun, jamais vendus ; la Nouvelle partie+ les garde) et le carnet de Tante Sirocco.
+	"os_titanosaure": {"name": "Os du Titanosaure d'Or", "icon": "os_titanosaure", "kind": "quete", "price": 0, "sell": 0,
+		"desc": "Un os doré, léger comme s'il attendait qu'on le porte. Cinq font un squelette : Hélène et la couveuse du Cabinet sauront quoi en faire."},
+	"os_kronosaurus": {"name": "Os du Kronosaurus", "icon": "os_kronosaurus", "kind": "quete", "price": 0, "sell": 0,
+		"desc": "Un os bleu de sel, lourd comme une ancre. Cinq font un squelette : Hélène et la couveuse du Cabinet sauront quoi en faire."},
+	"os_gigantoraptor": {"name": "Os du Gigantoraptor", "icon": "os_gigantoraptor", "kind": "quete", "price": 0, "sell": 0,
+		"desc": "Un os creux, léger comme un os d'oiseau, d'une bête de huit mètres. Cinq font un squelette : Hélène et la couveuse du Cabinet sauront quoi en faire."},
+	"carnet_os": {"name": "Carnet des os", "icon": "carnet_os", "kind": "cle", "price": 0, "sell": 0,
+		"desc": "Trois feuilles pliées : les devinettes de Tante Sirocco, cinq os par bête. La troisième, celle de la mer, c'est Isaure qui l'a remplie. Elles se relisent au mur du journal et dans la fiche de chaque bête, au Dinodex."},
 }
 
 ## shop id -> {name, keeper, stock: [item ids], sells: can Chloé sell here, tears: buys amber tears}

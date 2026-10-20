@@ -25,6 +25,7 @@ extends BattleEngine
 ## PV des autres, jamais sous 1 PV). Il ne tombe jamais sous 1 PV (corrompu), ne se capture pas, ne se fuit pas.
 ## Événements en plus (BattleApex les joue) : "sceau" (l'Alpha paraît : id, alpha), "sceau_end" (il s'efface),
 ## "caillou", "gesture" (variant), "quake", "fear" (son calme retombe : calm), "rally".
+## Après la fin : les Sceaux libres (LIBRES, Libres), dans tous les combats ; voir plus bas.
 
 const RULES := ["hesitates", "calm_factor", "sceaux", "caillou", "antidote_min_calm", "rally"]
 const SOUVERAIN := &"souverain"
@@ -201,6 +202,11 @@ func can_call(id: String) -> bool:
 
 func can_call_any() -> bool:
 	return owned_sceaux().any(func(s: Dictionary) -> bool: return can_call(s["id"]))
+
+
+## Le dessous de sa carte quand il ne peut pas venir (battle/apex_hud.gd ; Libres a le même).
+func why_not(_id: String) -> String:
+	return "Déjà venu"
 
 
 func _call_sceau(id: String) -> Array:
@@ -474,3 +480,173 @@ func _rally(ev: Array) -> void:
 	ev.append({"type": "text", "text": RALLY[1]})
 	ev.append({"type": "switch", "side": "player", "text": "Vas-y, %s !" % player().nickname})
 	ev.append({"type": "text", "text": RALLY[2]})
+
+
+# ------------------------------------------------------------------ après la fin : les Sceaux libres
+
+## Après la fin (docs/post-game-plan.md § 3 ; Greg : les Sceaux plutôt que « rejoindre Chloé ») : la première revanche
+## gagnée contre un Alpha (story/revanches.gd) éveille son Sceau (drapeau `<sceau>_eveille`) ; il répond alors dans tous
+## les combats (règle « sceaux_libres » de BattleEngine, que BattleScene pose quand libres_ok), sauf au Relais (règle
+## « sceaux_libres » : false), au dernier combat (il a les siens) et contre lui-même (règle « alpha » : son Sceau) ; un
+## appel par Alpha et par JOUR (`<sceau>_jour` = Game.day). L'appel ne coûte pas le tour (comme au dernier combat). Loin
+## du Souverain, chacun fait ce qu'il sait faire (« effect ») : "double" le prochain coup du dino de Chloé compte double ;
+## "twice" il agit deux fois à son prochain coup ; "heal" toute l'équipe remise d'aplomb (ceux au sol aussi : chacun
+## boit) ; "atk", "spd" : l'attaque, la vitesse de l'adversaire baissent beaucoup (LIBRE_STAGE) ; "soften" son prochain
+## coup deux fois plus doux ; "still" à sa prochaine action, il ne bouge pas. Dans les textes : {me} le dino de Chloé,
+## {de_foe} « du Tricératops sauvage », {Foe} « Le Tricératops sauvage ». BattleEngine.libres : un Libres.
+const LIBRES := [
+	{"id": "sceau_plaines", "alpha": &"triceratops", "name": "Tricératops", "what": "Coup suivant doublé", "effect": "double",
+		"text": "Le Tricératops passe en trombe : le prochain coup de {me} compte double."},
+	{"id": "sceau_foret", "alpha": &"utahraptor", "name": "Chef de Meute", "what": "Agit deux fois", "effect": "twice",
+		"text": "Le Chef de Meute siffle : {me} agit deux fois ce tour."},
+	{"id": "sceau_marais", "alpha": &"spinosaurus", "name": "Spinosaure", "what": "Soigne toute l'équipe", "effect": "heal",
+		"text": "Le Spinosaure Ancestral entre, de l'eau plein la gueule, sans en perdre une goutte. Chacun boit.",
+		"after": "Toute l'équipe a bu : chacun est remis d'aplomb !"},
+	{"id": "sceau_desert", "alpha": &"carnotaurus", "name": "Piment", "what": "Son attaque baisse", "effect": "atk",
+		"text": "Piment rugit. Pas contre Chloé : à côté d'elle. Le vrai rugissement."},
+	{"id": "sceau_cote", "alpha": &"mosasaure_abyssal", "name": "Minuit", "what": "Coup suivant adouci", "effect": "soften",
+		"text": "Très loin, sous l'île, Minuit chante. Le chant monte par les veines d'ambre.",
+		"after": "Le prochain coup {de_foe} sera deux fois plus doux."},
+	{"id": "sceau_monts", "alpha": &"cryolophosaure_titan", "name": "Toupet", "what": "Sa vitesse baisse", "effect": "spd",
+		"text": "Toupet souffle. Le givre se pose sur les pattes {de_foe}."},
+	{"id": "sceau_volcan", "alpha": &"trex_magma", "name": "Cheminée", "what": "Il ne bouge pas", "effect": "still",
+		"text": "Cheminée entre, se couche à côté {de_foe}, et fume. Le sol tremble.",
+		"after": "{Foe} le regarde. À sa prochaine action, il ne bougera pas."},
+]
+## « Il regarde Cheminée » : l'action de l'adversaire qui ne vient pas.
+const LIBRE_STILL := "{Foe} regarde Cheminée, et ne bouge pas."
+## L'attaque (Piment), la vitesse (Toupet) : de combien de crans elles baissent.
+const LIBRE_STAGE := -2
+const INSIGNE := "insigne_gardienne"
+## Le dessous de la carte d'un Sceau qui ne peut pas venir.
+const NOT_HIMSELF := "Pas contre lui-même"
+const TOMORROW := "Revient demain"
+
+
+static func woken_flag(id: String) -> StringName:
+	return StringName(id + "_eveille")
+
+
+static func day_flag(id: String) -> StringName:
+	return StringName(id + "_jour")
+
+
+## Ce Sceau s'est-il éveillé (une revanche gagnée contre son Alpha) ?
+static func woken(id: String) -> bool:
+	return Game.flag(woken_flag(id)) == true
+
+
+## Son Alpha est-il déjà venu aujourd'hui ?
+static func used_today(id: String) -> bool:
+	return int(Game.flag(day_flag(id))) == Game.day
+
+
+static func libre(id: String) -> Dictionary:
+	for s: Dictionary in LIBRES:
+		if s["id"] == id:
+			return s
+	return {}
+
+
+## BattleScene : ce combat a-t-il les Sceaux libres ? L'insigne de gardienne et au moins un Sceau éveillé ; jamais au
+## dernier combat (règle « sceaux » : les siens), ni là où la règle « sceaux_libres » est false (le Relais).
+static func libres_ok(rules: Dictionary) -> bool:
+	if rules.get("sceaux", false) or not rules.get("sceaux_libres", true) or Game.item_count(INSIGNE) <= 0:
+		return false
+	return LIBRES.any(func(s: Dictionary) -> bool: return woken(s["id"]))
+
+
+## BattleEngine (règle « sceaux_libres ») : les Sceaux libres de `battle` ; `alpha` : le Sceau de l'Alpha combattu.
+static func libres_for(battle: BattleEngine, alpha := "") -> Libres:
+	return Libres.new(battle, alpha)
+
+
+## Les Sceaux libres d'un combat (BattleEngine.libres) : la carte de chacun (owned_sceaux, can_call, why_not : comme
+## ApexEngine, pour battle/apex_hud.gd), l'appel (call_sceau, le tour gardé) et ce qui attend son moment (scale dans
+## _damage, holds dans _use_move, twice dans turn).
+class Libres extends RefCounted:
+	var engine: BattleEngine
+	## Le Sceau de l'Alpha combattu : il ne vient pas contre lui-même.
+	var against := ""
+	var _double := false
+	var _twice := false
+	var _soften := false
+	var _still := false
+
+	func _init(battle: BattleEngine, alpha := "") -> void:
+		engine = battle
+		against = alpha
+
+	## Les Sceaux éveillés, dans l'ordre de l'île.
+	func owned_sceaux() -> Array:
+		return ApexEngine.LIBRES.filter(func(s: Dictionary) -> bool: return ApexEngine.woken(s["id"]))
+
+	func can_call(id: String) -> bool:
+		return not engine.over and not engine.must_switch and ApexEngine.woken(id) and id != against \
+			and not ApexEngine.used_today(id) and not ApexEngine.libre(id).is_empty()
+
+	func can_call_any() -> bool:
+		return owned_sceaux().any(func(s: Dictionary) -> bool: return can_call(s["id"]))
+
+	func why_not(id: String) -> String:
+		return ApexEngine.NOT_HIMSELF if id == against else ApexEngine.TOMORROW
+
+	## L'Alpha paraît, fait ce qu'il sait faire, et s'efface ; le tour de Chloé est gardé (l'adversaire n'agit pas).
+	func call_sceau(id: String) -> Array:
+		var ev: Array = []
+		if not can_call(id):
+			return ev
+		Game.set_flag(ApexEngine.day_flag(id), Game.day)
+		var s := ApexEngine.libre(id)
+		var names := _names()
+		ev.append({"type": "sceau", "id": id, "alpha": s["alpha"], "text": String(s["text"]).format(names)})
+		match s["effect"]:
+			"double":
+				_double = true
+			"twice":
+				_twice = true
+			"heal":
+				for d in engine.team:
+					d.hp = d.max_hp()
+					d.status = ""
+				ev.append({"type": "heal", "side": "player", "amount": 0, "hp": engine.player().hp,
+					"max_hp": engine.player().max_hp(), "text": s["after"]})
+			"atk", "spd":
+				engine._change_stage("foe", s["effect"], ApexEngine.LIBRE_STAGE, ev)
+			"soften", "still":
+				if s["effect"] == "soften":
+					_soften = true
+				else:
+					_still = true
+				ev.append({"type": "text", "text": String(s["after"]).format(names)})
+		ev.append({"type": "sceau_end", "id": id, "alpha": s["alpha"]})
+		return ev
+
+	## Les dégâts d'un coup qui porte : le prochain de Chloé compte double (Tricératops), le prochain de l'adversaire est
+	## deux fois plus doux (Minuit). Chacun une fois.
+	func scale(side: String, damage: int) -> int:
+		if side == "player" and _double:
+			_double = false
+			return damage * 2
+		if side == "foe" and _soften:
+			_soften = false
+			return maxi(1, roundi(damage * 0.5))
+		return damage
+
+	## L'action de `side` n'a pas lieu (Cheminée : l'adversaire le regarde, et ne bouge pas) ? Une fois.
+	func holds(side: String, ev: Array) -> bool:
+		if side != "foe" or not _still:
+			return false
+		_still = false
+		ev.append({"type": "text", "text": ApexEngine.LIBRE_STILL.format(_names())})
+		return true
+
+	## Le dino de Chloé agit-il deux fois à ce coup-ci (la meute) ? Une fois.
+	func twice() -> bool:
+		var now := _twice
+		_twice = false
+		return now
+
+	func _names() -> Dictionary:
+		var foe := engine.name_of("foe")
+		return {"me": engine.player().nickname, "de_foe": French.de(foe), "Foe": BattleEngine._cap(foe)}

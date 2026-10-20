@@ -54,7 +54,10 @@ func test_isaure_reste_au_chapitre_8_avant_maia() -> void:
 
 func test_apex_run_laisse_les_evenements_du_chapitre_8() -> void:
 	assert_bool(await A.run(&"isaure_porte", null)).override_failure_message("avant l'aube, isaure_porte est au ch. 8").is_false()
-	assert_bool(await A.run(&"brac_jetee", null)).override_failure_message("avant l'épilogue, Brac est au ch. 8").is_false()
+	# Brac sur la jetée est au post-game (story/brac_jetee.gd) dès brac_parti : Apex.run le prend toujours ;
+	# ici il n'a pas encore quitté les forges, rien ne joue.
+	assert_bool(await A.run(&"brac_jetee", null)).override_failure_message("Brac sur la jetée : BracJetee").is_true()
+	assert_str(String(BracJetee.moment())).override_failure_message("Brac pas encore parti : rien ne joue").is_empty()
 	assert_bool(await A.run(&"leonce_port", null)).override_failure_message("avant l'épilogue, Léonce est au ch. 8").is_false()
 	assert_bool(await A.run(&"evenement_inconnu", null)).is_false()
 

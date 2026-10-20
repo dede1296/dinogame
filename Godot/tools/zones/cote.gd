@@ -16,6 +16,7 @@ extends RefCounted
 
 const PATH := "res://regions/cote/cote.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const P := preload("res://story/cote_places.gd")
 const MAPS := "res://tools/maps/cote_%s.png"
 const PICKUP := "res://world/pickup.gd"
@@ -130,6 +131,7 @@ static func build() -> Region:
 	# the nests one can look at (« interact » there means the boat); Chloé lands on the sand of the
 	# beach below it.
 	B.maias_boat(root, Vector2(11.4, 73.0), Vector2(12.2, 74.6))
+	OSSEMENTS.bury(root, &"cote")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root
 
 

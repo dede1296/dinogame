@@ -1137,6 +1137,9 @@ static func _guard_home(guard: DinoNpc, door: Vector2) -> Array:
 ## The Carnotaurus home again, by the open door (optional DinoNpc « CarnoGardien », there once
 ## the Sceau du Désert is Chloé's, event « carno_gardien »): a line at each visit.
 static func gardien(who: Node) -> void:
+	if Revanches.open():   # (after the end: « pour voir », story/revanches.gd)
+		await Revanches.alpha(&"desert", who)
+		return
 	if Game.phase() == &"night":
 		await S.say([{"text": "Le Carnotaurus dort devant la porte, la tête posée sur ses pattes. Même endormi, il garde le passage."}])
 		return

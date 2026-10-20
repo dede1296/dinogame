@@ -18,6 +18,7 @@ extends RefCounted
 
 const PATH := "res://regions/monts/monts.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const P := preload("res://story/monts_places.gd")
 const MAPS := "res://tools/maps/monts_%s.png"
 const PICKUP := "res://world/pickup.gd"
@@ -121,6 +122,7 @@ static func build() -> Region:
 	B.dino_npc(root, "GrandVoyageur", &"brachiosaurus", 3.9, 28.3, {"event": &"grand_voyageur", "size": 1.6})
 	B.spawn(root, "Voyageur", 6.6, 29.2)
 	B.sign(entities, B.cell(1.4, 28.8), &"panneau_escale")
+	OSSEMENTS.bury(root, &"monts")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root
 
 
@@ -386,11 +388,13 @@ static func _story(root: Region, entities: Node2D) -> void:
 	B.dino_npc(root, "GrelotVallee", &"pachyrhinosaurus", P.GRELOT_VALLEE.x, P.GRELOT_VALLEE.y, {"event": &"grelot", "level": 5,
 		"show_flag": &"grelot_rentre", "flip": true})
 	# Maïa back on the col once the fourth Cœur is found, Caillou beside her, in her own coat
-	# (29/09, demande de l'utilisateur : le vêtement chaud des régions froides) once drawn.
+	# (29/09, demande de l'utilisateur : le vêtement chaud des régions froides) once drawn; gone once
+	# the mask has fallen (chapter 7: she left with Isaure; set by hand on 11/10, kept here since).
 	var maia_drawn := ResourceLoader.exists(CHARS % "maia_manteau")
 	B.npc(root, "MaiaMonts", "Maïa", CHARS % ("maia_manteau" if maia_drawn else "maia"), P.MAIA_RETOUR.x, P.MAIA_RETOUR.y, {"facing": "down", "event": &"maia_monts",
-		"show_flag": &"coeur_4"})
-	B.dino_npc(root, "CaillouMonts", &"triceratops", P.MAIA_RETOUR.x + 1.6, P.MAIA_RETOUR.y + 0.3, {"size": 0.95, "show_flag": &"coeur_4"})
+		"show_flag": &"coeur_4", "hide_flag": &"masque_tombe"})
+	B.dino_npc(root, "CaillouMonts", &"triceratops", P.MAIA_RETOUR.x + 1.6, P.MAIA_RETOUR.y + 0.3, {"size": 0.95, "show_flag": &"coeur_4",
+		"hide_flag": &"masque_tombe"})
 	B.trigger(root, P.GLACIER.x, P.GLACIER.y, 3.5, &"glacier_arrivee", {"once_flag": &"glacier_arrivee", "name": "DeclencheurGlacier"})
 	B.trigger(root, 97.5, 37.5, 3.0, &"blizzard_col", {"required_flag": &"suie_monts_battue", "once_flag": &"blizzard_col",
 		"name": "DeclencheurCol"})

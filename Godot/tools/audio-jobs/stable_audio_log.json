@@ -1073,5 +1073,62 @@
   },
   "chosen": "a",
   "chosenFile": "assets/audio/music/terre_apex.ogg"
+ },
+ "geant-baillement": {
+  "kind": "sfx",
+  "takes": {
+   "a": {
+    "ok": true,
+    "seed": 4101,
+    "seconds": 5.02,
+    "category": "cries",
+    "mode": "rms-actif",
+    "limited": true,
+    "gainDb": 39,
+    "targetRmsDb": -11.2,
+    "capPeakDb": -0.5,
+    "peakDb": -0.5,
+    "activeRmsDb": -15.8
+   }
+  },
+  "chosenFile": "assets/audio/cries/geant-baillement.ogg"
+ },
+ "geant-pas": {
+  "kind": "sfx",
+  "takes": {
+   "a": {
+    "ok": true,
+    "seed": 4202,
+    "seconds": 2.97,
+    "category": "sfx",
+    "mode": "rms-actif",
+    "limited": false,
+    "gainDb": 8.2,
+    "targetRmsDb": -21.1,
+    "capPeakDb": -0.5,
+    "peakDb": -3.3,
+    "activeRmsDb": -21.1
+   }
+  },
+  "chosenFile": "assets/audio/sfx/geant-pas.ogg"
+ },
+ "geant-ronfle": {
+  "kind": "sfx",
+  "takes": {
+   "a": {
+    "ok": true,
+    "seed": 4303,
+    "seconds": 8.53,
+    "category": "ambience-bed",
+    "mode": "rms-actif",
+    "limited": false,
+    "gainDb": 0.5,
+    "targetRmsDb": -23.3,
+    "capPeakDb": -1.9,
+    "peakDb": -9.2,
+    "activeRmsDb": -23.3
+   }
+  },
+  "chosenFile": "assets/audio/ambience/geant-ronfle.ogg"
  }
 }

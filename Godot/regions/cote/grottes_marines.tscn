@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" path="res://assets/art/characters/sbire.png" id="14_st7p3"]
 [ext_resource type="Script" path="res://world/story_trigger.gd" id="15_shhui"]
 [ext_resource type="Script" path="res://world/nook_find.gd" id="16_05j32"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="17_4y8kb"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="17_pnb6n"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="18_pgf6s"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="19_ssve5"]
@@ -289,6 +290,13 @@ metadata/recoin = "RecoinCache"
 position = Vector2(444, 237.6)
 script = ExtResource("9_tx0k7")
 kind = "creme_raser"
+
+[node name="EnfouiOsKronosaurus3" type="Node2D" parent="Entities" unique_id=983879814]
+position = Vector2(604.80005, 163.20001)
+script = ExtResource("17_4y8kb")
+show_flag = &"isaure_pari_gagne"
+pebble = &"os_kronosaurus_3"
+item_id = "os_kronosaurus"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=1090248034]
 

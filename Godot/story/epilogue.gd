@@ -72,6 +72,7 @@ static func port() -> void:
 	if Game.flag(&"epilogue_fini"):
 		port_residents()
 		return
+	BracJetee.on_port()   # (from brac_parti: his three and the sandwich round him; nothing the morning of the jetty)
 	if Game.flag(&"epilogue_cabinet") and not Game.flag(&"epilogue_port"):
 		await ApexJetee.jetty()
 		return
@@ -388,17 +389,20 @@ static func _watch_jetty() -> void:
 			return
 
 
-## After the epilogue, in Port-Ambre: Isaure at her boat, Dame Suie on the quay, to be talked to.
+## After the epilogue, in Port-Ambre: Isaure at her boat, Dame Suie on the quay, to be talked to; Brac
+## night watchman (BracJetee: the BARC sign, Mastoc by the lantern, his night look).
 static func port_residents() -> void:
 	A.resident(["IsaureJetee", "IsaureBarque"], A.ISAURE_SHEETS, A.spot("JETEE_ISAURE", Vector2(200.0, 30.0)), ISAURE, &"isaure_barque", "left")
 	A.resident(["SuieJetee", "SuiePort"], ["dame_suie_sans_lunettes", "dame_suie"], A.spot("JETEE_SUIE", Vector2(-180.0, -240.0)), "Dame Suie", &"suie_port")
+	BracJetee.on_port()
 
 
 # ------------------------------------------------------------------ the people of the epilogue, talked to
 
 ## Someone of the jetty (the CARTE agent's nodes, events « <who>_jetee »): before the jetty's scene,
 ## talking to them starts it (the next morning); after it, Isaure at her boat and Dame Suie on the
-## quay have their lines (ApexAutour); Brac's dinos cry.
+## quay have their lines (ApexAutour). (Brac and his three: BracJetee, which calls this the morning of
+## the jetty.)
 static func jetty_event(event: StringName, who: Node) -> void:
 	if Game.flag(&"epilogue_cabinet") and not Game.flag(&"epilogue_port"):
 		await ApexJetee.jetty()

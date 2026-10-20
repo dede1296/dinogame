@@ -29,6 +29,7 @@
 [ext_resource type="Script" path="res://regions/marais/porte_temple.gd" id="27_8yvvb"]
 [ext_resource type="Script" path="res://world/sign.gd" id="28_lgwp5"]
 [ext_resource type="Script" path="res://world/dig_spot.gd" id="29_tbxjo"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="30_aij0y"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="30_b7o3p"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="31_yqai4"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="32_5f2f6"]
@@ -4290,6 +4291,13 @@ script = ExtResource("15_fqu1m")
 event = &"barque_maia"
 show_flag = &"maia_alliee"
 kind = "barque"
+
+[node name="EnfouiOsKronosaurus4" type="Node2D" parent="Entities" unique_id=1871480486]
+position = Vector2(2928, 2515.2002)
+script = ExtResource("30_aij0y")
+show_flag = &"isaure_pari_gagne"
+pebble = &"os_kronosaurus_4"
+item_id = "os_kronosaurus"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=1979539497]
 

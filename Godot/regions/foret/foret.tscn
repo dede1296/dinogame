@@ -27,6 +27,7 @@
 [ext_resource type="Script" path="res://world/story_trigger.gd" id="25_k6j0m"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="26_6gpun"]
 [ext_resource type="Script" path="res://world/dig_spot.gd" id="27_v2r17"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="28_blqw4"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="28_2xjbx"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="29_hpaf2"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="30_q3x7x"]
@@ -5047,6 +5048,20 @@ position = Vector2(5587.2, 2803.2)
 script = ExtResource("19_fj46d")
 dialogue_id = &"panneau_escale"
 kind = "panneau"
+
+[node name="EnfouiOsGigantoraptor2" type="Node2D" parent="Entities" unique_id=2021085917]
+position = Vector2(3331.2002, 4032)
+script = ExtResource("28_blqw4")
+show_flag = &"carnet_terre"
+pebble = &"os_gigantoraptor_2"
+item_id = "os_gigantoraptor"
+
+[node name="EnfouiOsGigantoraptor5" type="Node2D" parent="Entities" unique_id=1766980844]
+position = Vector2(1075.2, 3926.4001)
+script = ExtResource("28_blqw4")
+show_flag = &"carnet_terre"
+pebble = &"os_gigantoraptor_5"
+item_id = "os_gigantoraptor"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=345138984]
 

@@ -6,11 +6,16 @@ extends CanvasLayer
 ## - NEW: « Nouvelle partie »: where to create it;
 ## - SAVE_TO: in game (Paramètres): where the game saves from now on (it is copied there at once).
 ## Overwriting a game and deleting one are always asked first (« Annuler » has the focus).
+## Under a finished game (LOAD and NEW), « Nouvelle partie+ » (docs/post-game-scenes.md § N1): the cards
+## then ask where to start the island again (any slot but the finished one, which is never touched), asked
+## first too; B / Échap comes back to the cards.
 ## Mouse, keys and pad alike (PadFocus): the arrows or the cross from card to card, A / Entrée picks,
 ## B / Échap goes back; on a computer the keys are drawn (Prompts). Says `chosen` once: the slot (its
-## overwriting confirmed), or 0 (back). No class_name: the openers preload it —
+## overwriting confirmed), or 0 (back); `plus_from` then says the finished game a Nouvelle partie+ starts
+## from (0: none). No class_name: the openers preload it —
 ##   var screen := SaveSlots.open(self, SaveSlots.Mode.LOAD)
 ##   var n: int = await screen.chosen
+##   if n > 0 and screen.plus_from > 0: Save.start_new_game_plus(screen.plus_from, n, true)
 
 signal chosen(slot: int)
 
@@ -41,16 +46,29 @@ const HINTS := {
 ## What an empty or damaged card invites to, in each mode.
 const FREE_ACTION := {Mode.LOAD: "", Mode.NEW: "Commencer ici", Mode.SAVE_TO: "Sauvegarder ici"}
 const MOVES: Array[StringName] = [&"ui_left", &"ui_right", &"ui_up", &"ui_down"]
+## Nouvelle partie+ (docs/post-game-scenes.md § N1; « avec l'œuf de ton choix »: Greg, 20/10, the egg
+## already played can be chosen again).
+const PLUS_BUTTON := "Nouvelle partie+"
+const PLUS_HINT := "Recommencer l'île depuis le début, avec l'œuf de ton choix. Le Dinodex, les os et les pages déjà lues restent. Les adversaires sont un peu plus forts.\nChoisis l'emplacement de la nouvelle partie."
+const PLUS_FREE := "Recommencer ici"
+const PLUS_SOURCE := "On repart d'elle : elle n'est pas touchée."
+const PLUS_UNTOUCHED := "La partie finie de l'emplacement %d n'est pas touchée."
 
 var mode: Mode = Mode.LOAD
 ## True while a question (overwrite, delete) is on screen instead of the cards.
 var asking := false
+## Once `chosen` is said: the finished game's slot a Nouvelle partie+ starts from (0: not one).
+var plus_from := 0
 var _done := false
 var _page: VBoxContainer
 var _keys: HBoxContainer
+var _title: Label
+var _hint: Label
 var _summaries: Array[Dictionary] = []
 var _asked_slot := 0
 var _default_focus: Control
+## While the cards ask where a Nouvelle partie+ goes: the finished game's slot (0: the cards of `mode`).
+var _plus_source := 0
 
 
 ## Opens the screen over everything, in `how` mode; `await screen.chosen` gives the slot (0: back).
@@ -83,8 +101,12 @@ func _build() -> void:
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 14)
 	panel.add_child(col)
-	col.add_child(_label(TITLES[mode], 38, GOLD))
-	col.add_child(_label(HINTS[mode], 19, Color(CREAM, 0.8)))
+	_title = _label(TITLES[mode], 38, GOLD)
+	col.add_child(_title)
+	_hint = _label(HINTS[mode], 19, Color(CREAM, 0.8))
+	_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # (as wide as the cards: the long Nouvelle partie+ line wraps)
+	_hint.custom_minimum_size = Vector2(Save.SLOTS * CARD_SIZE.x + (Save.SLOTS - 1) * GAP, 0)
+	col.add_child(_hint)
 	_page = VBoxContainer.new()
 	_page.add_theme_constant_override("separation", 16)
 	col.add_child(_page)
@@ -111,7 +133,7 @@ func show_cards(focus_slot := 0) -> void:
 		_summaries.append(summary)
 		row.add_child(_slot_column(summary))
 	_page.add_child(row)
-	var leave := _button("Retour", _finish.bind(0))
+	var leave := _button("Retour", back)
 	leave.name = "Back"
 	leave.custom_minimum_size = Vector2(260, BUTTON_H)
 	leave.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -129,8 +151,14 @@ func card_of(n: int) -> Button:
 	return _page.find_child("Slot%d" % n, true, false) as Button
 
 
-## The card to start on: the slot being played (in game), else the last one played.
+## The card to start on: the slot being played (in game); for a Nouvelle partie+, the first free slot;
+## else the last one played.
 func _home_slot() -> int:
+	if _plus_source > 0:
+		for summary in _summaries:
+			if summary["state"] == Save.EMPTY:
+				return int(summary["slot"])
+		return 0
 	return Save.slot if mode == Mode.SAVE_TO else Save.remembered_slot()
 
 
@@ -142,13 +170,20 @@ func _first_card() -> Button:
 	return null
 
 
-## A card and, under it, « Supprimer » (or the room it takes, so the cards stay level).
+## A card and, under it, « Nouvelle partie+ » on a finished game, and « Supprimer » (or the room it takes,
+## so the cards stay level). While a Nouvelle partie+ looks for its slot, neither.
 func _slot_column(summary: Dictionary) -> VBoxContainer:
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 8)
 	column.add_child(_card(summary))
 	var n := int(summary["slot"])
-	if summary["state"] != Save.EMPTY and not (mode == Mode.SAVE_TO and n == Save.slot):
+	if offers_plus(summary):
+		var plus := _button(PLUS_BUTTON, show_plus_cards.bind(n), 18)
+		plus.name = "Plus%d" % n
+		plus.custom_minimum_size = Vector2(0, SMALL_BUTTON_H)
+		plus.add_theme_color_override("font_color", GOLD)
+		column.add_child(plus)
+	if summary["state"] != Save.EMPTY and _plus_source == 0 and not (mode == Mode.SAVE_TO and n == Save.slot):
 		var delete := _button("Supprimer", _ask_delete.bind(n), 18)
 		delete.name = "Delete%d" % n
 		delete.custom_minimum_size = Vector2(0, SMALL_BUTTON_H)
@@ -184,14 +219,17 @@ func _card(summary: Dictionary) -> Button:
 	body.add_child(_line(head, 19, GOLD))
 	if summary["state"] == Save.READY:
 		_ready_lines(body, summary)
+		if n == _plus_source:   # (not pickable: why)
+			body.add_child(_line(PLUS_SOURCE, 16, Color(CREAM, 0.75)))
 	elif summary["state"] == Save.UNREADABLE:
 		body.add_child(_line("Illisible", 30, DAMAGED))
 		body.add_child(_line("Cette sauvegarde est abîmée : on peut la remplacer ou la supprimer.", 16, Color(CREAM, 0.75)))
 	else:
 		body.add_child(_spacer(40))
 		body.add_child(_line("Vide", 34, Color(CREAM, 0.55), true))
-		if FREE_ACTION[mode] != "":
-			body.add_child(_line(FREE_ACTION[mode], 17, Color(CREAM, 0.75), true))
+		var invite: String = PLUS_FREE if _plus_source > 0 else FREE_ACTION[mode]
+		if invite != "":
+			body.add_child(_line(invite, 17, Color(CREAM, 0.75), true))
 	card.disabled = not can_pick(summary)
 	card.pressed.connect(_pick.bind(n))
 	return card
@@ -215,8 +253,10 @@ func _ready_lines(body: VBoxContainer, summary: Dictionary) -> void:
 
 
 ## Can this card be picked in this mode? A game to load; any slot for a new game; any other slot
-## than the current one to save in.
+## than the current one to save in; for a Nouvelle partie+, any slot but the finished game's.
 func can_pick(summary: Dictionary) -> bool:
+	if _plus_source > 0:
+		return int(summary["slot"]) != _plus_source
 	if mode == Mode.LOAD:
 		return summary["state"] == Save.READY
 	if mode == Mode.SAVE_TO:
@@ -224,8 +264,33 @@ func can_pick(summary: Dictionary) -> bool:
 	return true
 
 
+## « Nouvelle partie+ » is offered under a finished game, on the title (LOAD, NEW), not in game.
+func offers_plus(summary: Dictionary) -> bool:
+	return _plus_source == 0 and mode != Mode.SAVE_TO and summary["state"] == Save.READY and summary.get("finished", false) == true
+
+
+## « Nouvelle partie+ » under slot `from`: the cards now ask where to start the island again.
+func show_plus_cards(from: int) -> void:
+	_plus_source = from
+	_title.text = PLUS_BUTTON
+	_hint.text = PLUS_HINT
+	show_cards()
+
+
+## Back from the Nouvelle partie+'s cards to those of `mode` (on the finished game's card).
+func _leave_plus() -> void:
+	var from := _plus_source
+	_plus_source = 0
+	_title.text = TITLES[mode]
+	_hint.text = HINTS[mode]
+	show_cards(from)
+
+
 func _pick(n: int) -> void:
 	var summary: Dictionary = _summaries[n - 1]
+	if _plus_source > 0:
+		_ask_plus(n, summary)
+		return
 	if mode == Mode.LOAD or summary["state"] == Save.EMPTY:
 		_finish(n)
 		return
@@ -235,6 +300,23 @@ func _pick(n: int) -> void:
 	var after := "Elle sera remplacée par la nouvelle partie." if mode == Mode.NEW \
 		else "La partie en cours la remplacera."
 	_ask(n, question, "%s\n%s" % [short_line(summary), after], "Oui, écraser", _finish.bind(n))
+
+
+## Where the Nouvelle partie+ goes, asked even on a free slot (the finished game said untouched); a game
+## there: the overwriting question.
+func _ask_plus(n: int, summary: Dictionary) -> void:
+	var untouched := PLUS_UNTOUCHED % _plus_source
+	var finish := func() -> void:
+		plus_from = _plus_source
+		_finish(n)
+	if summary["state"] == Save.EMPTY:
+		_ask(n, "Recommencer dans l'emplacement %d ?" % n, untouched, "Oui, recommencer", finish)
+		return
+	var question := "Écraser la partie de l'emplacement %d ?" % n
+	if summary["state"] == Save.UNREADABLE:
+		question = "Remplacer la sauvegarde abîmée de l'emplacement %d ?" % n
+	_ask(n, question, "%s\nElle sera remplacée par la Nouvelle partie+. %s" % [short_line(summary), untouched],
+		"Oui, écraser", finish)
 
 
 func _ask_delete(n: int) -> void:
@@ -291,10 +373,13 @@ func _notification(what: int) -> void:
 		back()
 
 
-## B / Échap: from a question back to the cards, from the cards out (0).
+## B / Échap: from a question back to the cards, from a Nouvelle partie+'s cards back to the others,
+## from the cards out (0).
 func back() -> void:
 	if asking:
 		show_cards(_asked_slot)
+	elif _plus_source > 0:
+		_leave_plus()
 	else:
 		_finish(0)
 

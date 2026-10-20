@@ -29,6 +29,8 @@ static func lines(id: StringName) -> Array:
 		&"bloc_geant_1", &"bloc_geant_2", &"bloc_geant_3", &"bloc_geant_4":
 			return [bloc_geant(int(String(id).right(1))), {"flag": &"bloc_geant_vu"}]
 		&"souverain_couche":
+			if Game.flag(&"geants_reveilles"):   # (post-game : les quatre géants debout, G5)
+				return [{"text": DialogueGeants.SOUVERAIN_APRES}]
 			return [{"text": "Il dort les yeux ouverts. Il n'a plus peur. Il respire, et la cendre bouge."}]
 	return []
 
@@ -157,7 +159,7 @@ static func suie_helene() -> Array:
 ## Brac at the end of the jetty, at night, a lantern (brac_jetee_n).
 const BRAC_JETEE := [
 	"Gardien de nuit. Je surveille la mer. De loin. Rien ne bouge. C'est le meilleur boulot du monde.",
-	"Mastoc a peur du noir. Je lui laisse la lanterne. Moi, j'ai pas peur. J'ai l'habitude d'avoir peur, c'est pas pareil.",
+	"Mastoc a peur du noir. Je lui laisse la grande lanterne, je prends la petite. Moi, j'ai pas peur. J'ai l'habitude d'avoir peur, c'est pas pareil.",
 	"Il m'a fait un panneau, le vieux : « Gardien : BRAC ». Avec les lunettes, il a écrit « BARC ». Je garde.",
 ]
 ## Léonce, on the pontoon.

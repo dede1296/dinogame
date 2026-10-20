@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/argentinosaurus.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/argentinosaurus_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"argentinosaurus"
+display_name = "Argentinosaurus"
+family = &"sauropod"
+description = "L'un des plus grands animaux qui aient jamais marché : un cou immense, une toute petite tête, quatre pattes comme des colonnes et une longue queue en fouet. Celui du cratère écoute avec ses pieds, et il a l'air de sourire."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 1.284
+battle_scale = 1.072
+walk_fps = 3.0
+cry_prefix = "sauropode"
+head_size = 3
+head_bite = 2
+teeth_sharp = 1
+teeth_count = 3
+front_power = 9
+front_reach = 4
+back_legs_power = 10
+back_legs_speed = 2
+back_armor = 6
+back_spikes = 0
+tail_power = 9
+tail_length = 10
+rarity = "legendary"

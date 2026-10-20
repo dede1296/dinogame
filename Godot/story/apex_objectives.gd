@@ -80,10 +80,13 @@ static func side(out: Array[Dictionary]) -> void:
 			A.TERRE, _at(A.TERRE, "Page39", A.place("CAIRN")))
 	if not Game.flag(&"post_game"):
 		return
-	_add(out, "geants", "Les géants du cratère se réveillent un à un, à leur heure. Les blocs d'ambre de la Terre des Apex.", A.TERRE)
+	if not Game.flag(&"geants_reveilles"):   # (post-game, lot A : lequel ouvre l'œil, Hélène, avec qui s'asseoir)
+		var g := ApexGeants.objective()
+		_add(out, "geants", g["text"], g["zone"], _at(g["zone"], g["node"], g["tile"]))
 	_add(out, "dinodex", "Le Dinodex : toutes les espèces de l'île. Roc compte avec toi.", A.CABINET, Objectives.spot(A.CABINET, "Roc"))
-	_add(out, "fossiles", "Les fossiles de l'île, et ce que l'ambre garde encore.", &"")
-	_add(out, "revanches", "Les revanches : Maïa au Grand Crâne, les dresseurs du Relais.", &"plaines", Vector2(100.8, 65.2))
+	var fossils := Fossiles.objective()   # (Sirocco, puis les os, puis Hélène ; story/fossiles.gd)
+	_add(out, "fossiles", fossils["text"], fossils["zone"])
+	_add(out, "revanches", Revanches.objective_text(), &"plaines", Vector2(100.8, 65.2))
 	_add(out, "helene_cabinet", "Hélène au Cabinet, dans son fauteuil. Elle a des choses à t'apprendre.", A.CABINET, Objectives.spot(A.CABINET, "Fauteuil"))
 	_add(out, "nouvelle_partie", "Nouvelle partie+ : recommencer l'île avec ce qu'on sait.", &"")
 

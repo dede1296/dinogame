@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://actors/npc.gd" id="11_fg5ah"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/sbire.png" id="12_tvxnr"]
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="13_6i7vj"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="14_hicqt"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="14_wa8cu"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="15_26b0b"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="16_nceiu"]
@@ -185,6 +186,13 @@ event = &"proto_corrompu"
 flip = true
 hide_flag = &"proto_apaise"
 corrupted = true
+
+[node name="EnfouiOsGigantoraptor1" type="Node2D" parent="Entities" unique_id=631075395]
+position = Vector2(936, 187.20001)
+script = ExtResource("14_hicqt")
+show_flag = &"carnet_terre"
+pebble = &"os_gigantoraptor_1"
+item_id = "os_gigantoraptor"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=47135946]
 

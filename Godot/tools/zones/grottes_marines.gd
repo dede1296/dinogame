@@ -12,6 +12,7 @@ extends RefCounted
 
 const PATH := "res://regions/cote/grottes_marines.tscn"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const P := preload("res://story/cote_places.gd")
 const PICKUP := "res://world/pickup.gd"
 const STORY_PROP := "res://world/story_prop.gd"
@@ -139,6 +140,7 @@ static func build() -> Region:
 	# before moves): among the smugglers' crates, a dented tin of shaving cream… hiding three vials.
 	if Prop.KINDS.has("creme_raser"):
 		B.prop(entities, "creme_raser", B.cell(9.25, 4.95))
+	OSSEMENTS.bury(root, &"grottes_marines")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root
 
 

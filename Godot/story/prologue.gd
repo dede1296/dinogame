@@ -23,6 +23,11 @@ const HATCHLINGS := {
 	&"ankylosaurus": "Un petit Ankylosaurus tout en carapace, calme et solide comme un rocher. Sa tête et sa massue enfoncent les obstacles (Charge). Type Pierre.",
 	&"parasaurolophus": "Un petit Parasaurolophus à la crête corail, doux et curieux. Quand il chante, l'ambre lui répond (Résonance). Type Nature.",
 }
+## Nouvelle partie+ (docs/post-game-scenes.md § N2): the hatchling Chloé had in a game before
+## (Game.egg_known) says so; it can be chosen all the same (Greg, 20/10: no other egg forced). Chloé
+## does not know why (nobody in the story knows it is a second game): a feeling, not a memory.
+const KNOWN_HATCHLING := "Celui-là, tu le connais."
+const KNOWN_AGAIN := "(On dirait que je le connais déjà. … Oui. C'est lui.)"
 ## The name Maïa gives hers.
 const MAIA_NAMES := {&"velociraptor": "Flèche", &"ankylosaurus": "Boulet", &"parasaurolophus": "Clairon"}
 ## Where Caillou, Maïa's Protoceratops, naps on the quay during the arrival; the Cabinet's door
@@ -203,16 +208,16 @@ static func choose_starter(baby: Node) -> void:
 		return
 	var id: StringName = baby.species_id
 	var nickname: String = Game.STARTERS[id]
-	var pick := await Dialogue.choose("", HATCHLINGS[id] + " Il s'appelle %s." % nickname,
-		["Je choisis %s !" % nickname, "Je regarde les autres"])
+	var pick := await Dialogue.choose("", hatchling_text(id), ["Je choisis %s !" % nickname, "Je regarde les autres"])
 	if pick != 0:
 		return
 	S.lock(true)
 	var w = S.world()
 	w.companion.teleport(baby.global_position)
+	var lines := chosen_again_lines(id)   # (before give_starter: a hatchling of a game before)
 	Game.give_starter(id)
 	baby.queue_free()
-	await S.say([
+	await S.say(lines + [
 		_cue({"text": "%s se blottit contre Chloé. On dirait qu'il l'a choisie, lui aussi." % nickname},
 			func() -> void:
 				Stage.companion_joy()
@@ -221,6 +226,18 @@ static func choose_starter(baby: Node) -> void:
 	])
 	Save.save_game()
 	await _after_choice()
+
+
+## What Chloé learns about a hatchling before choosing it; « Celui-là, tu le connais. » when it was hers in a
+## game before (Nouvelle partie+).
+static func hatchling_text(id: StringName) -> String:
+	var text: String = HATCHLINGS[id] + " Il s'appelle %s." % Game.STARTERS[id]
+	return text + " " + KNOWN_HATCHLING if Game.egg_known(id) else text
+
+
+## Chloé's thought when she takes a hatchling she had in a game before (else nothing).
+static func chosen_again_lines(id: StringName) -> Array:
+	return [{"who": CHLOE, "text": KNOWN_AGAIN}] if Game.egg_known(id) else []
 
 
 ## Maïa takes hers and leaves with Isaure; then the night, then the morning.

@@ -23,6 +23,7 @@
 [ext_resource type="Script" path="res://world/fleeing_dino.gd" id="21_mv7ho"]
 [ext_resource type="Script" path="res://world/sleeper.gd" id="22_58stl"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/elise.png" id="23_ntipu"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="24_fdno2"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="24_6tmuj"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="25_31uri"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="26_i6agv"]
@@ -4456,6 +4457,13 @@ position = Vector2(2736, 2400)
 script = ExtResource("14_2hwxb")
 dialogue_id = &"panneau_escale"
 kind = "panneau"
+
+[node name="EnfouiOsTitanosaure3" type="Node2D" parent="Entities" unique_id=141493328]
+position = Vector2(4848, 1891.2001)
+script = ExtResource("24_fdno2")
+show_flag = &"carnet_terre"
+pebble = &"os_titanosaure_3"
+item_id = "os_titanosaure"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=1899495963]
 

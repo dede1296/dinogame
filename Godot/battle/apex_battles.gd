@@ -12,8 +12,16 @@ extends RefCounted
 ##   Sceaux, Caillou, l'Ambre clair à deux tiers, sa musique (souverain.ogg, sinon celle des Alphas), et pas de défaite (« rally » : on reprend sur
 ##   place, rien à recharger : pas de « lose_spawn »). Story.duel compte « calmed » comme gagné.
 ## Équilibrage : EQUILIBRAGE (et docs/mecaniques.md).
+## - Après la fin, le défi n° 6 de Maïa au Grand Crâne (`Story.duel(MAIA, maia_team(), MAIA_RULES)`, story/revanches.gd,
+##   une fois par jour ; docs/post-game-scenes.md R1) : son œuf, Pouce, Moustique, puis Caillou ; niveaux MAIA_LEVELS
+##   (équilibrés avec les revanches : RevancheBattles.EQUILIBRAGE).
 
 const ISAURE := "Isaure"
+const MAIA := "Maïa"
+## Le défi n° 6 : « Niveau cinquante, tous les trois. Caillou, cinquante et un » (sa réplique d'avant).
+const MAIA_LEVELS := {"starter": 50, "pouce": 50, "moustique": 50, "caillou": 51}
+## Ses règles (en plus de celles de Story.duel) : on revient au pied du Crâne ; sa musique, celle des rivales.
+const MAIA_RULES := {"lose_spawn": &"Crane", "music": preload("res://assets/audio/music/rivale.ogg")}
 const LEVELS := {"hauban": 47, "bouline": 47, "etrave": 48, "carene": 49, "souverain": 50}
 ## Le dino d'Isaure qui hésite (règle « hesitates » d'ApexEngine).
 const HESITANT := "Carène"
@@ -52,6 +60,19 @@ static func isaure_team() -> Array:
 ## Ses règles (en plus de celles de Story.duel : pas de collier, pas de fuite) : pas de musique, Carène hésite.
 static func isaure_rules() -> Dictionary:
 	return {"music": null, "hesitates": HESITANT}
+
+
+## Le défi n° 6 de Maïa (format Story.duel) : son œuf (l'espèce qu'elle a prise au prologue, son nom de Prologue), Pouce
+## l'Iguanodon, Moustique le Dimorphodon (rendu au chapitre 9), puis Caillou le Tricératops, le dernier, comme toujours.
+static func maia_team() -> Array:
+	var team: Array = []
+	var mine := StringName(str(Game.flag(&"maia_starter")))
+	if SpeciesDB.PATHS.has(mine):
+		team.append([mine, MAIA_LEVELS["starter"], Prologue.MAIA_NAMES.get(mine, "Flèche")])
+	team.append([&"iguanodon", MAIA_LEVELS["pouce"], "Pouce"])
+	team.append([&"dimorphodon", MAIA_LEVELS["moustique"], "Moustique", {"intro": "Maïa envoie Moustique ! Il saute de son épaule."}])
+	team.append([&"triceratops", MAIA_LEVELS["caillou"], "Caillou", {"intro": "Maïa envoie Caillou… Le sol tremble un peu."}])
+	return team
 
 
 ## Le Souverain, prêt pour son combat (corrompu).

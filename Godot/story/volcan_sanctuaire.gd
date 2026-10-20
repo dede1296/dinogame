@@ -248,6 +248,9 @@ static func _comes_in(guardian, wall: Vector2) -> void:
 ## 8 b to 8 d, the guardian (DinoNpc « TrexMagma », event « trex_magma »): the Sceaux and the
 ## bag, the hands, the roar; a battle of honour; won, the Cœur and the Sceau. Asleep afterwards.
 static func trex(who: Node) -> void:
+	if Game.flag(&"sceau_volcan") and Revanches.open():   # (after the end: he gets up « pour voir », story/revanches.gd)
+		await Revanches.alpha(&"volcan", who)
+		return
 	if Game.flag(&"sceau_volcan"):
 		await S.say([{"text": "Le T-Rex de Magma dort, et il fume. Hélène l'avait écrit. Chloé ne le réveille pas." if Game.flag(&"found_journal_35")
 			else "Le T-Rex de Magma dort, et il fume. Chloé ne le réveille pas."}])

@@ -29,6 +29,8 @@ const PEOPLE := {
 	# Chapitre 9 (19/10) : Hélène (1,60 m, docs/chapitre-9-scenes.md ; son chapeau compte dans l'union),
 	# Isaure sans masque et avec le masque en carton à la main (Outfits.LOOKS), à la taille d'« isaure ».
 	"helene": [1.60, 175.5], "isaure_sans_masque": [1.70, 173.0], "isaure_masque_carton": [1.70, 173.0],
+	# Post-game (lot E) : Brac gardien de nuit (Outfits.LOOKS), à la taille de « brac ».
+	"brac_gardien": [2.00, 171.0],
 }
 ## Someone not in the table yet.
 const DEFAULT := [1.70, 174.0]

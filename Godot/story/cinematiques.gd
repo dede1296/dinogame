@@ -99,7 +99,7 @@ static func play_credits(parent: Node) -> Cinematic:
 
 ## Can this film be replayed from Paramètres? The end only once the game has been finished (no spoiler before).
 static func replay_available(what: String) -> bool:
-	return what != "end" or Game.flag(END_FLAG)
+	return what != "end" or Game.flag(END_FLAG) or Game.ng_plus() > 0   # (Nouvelle partie+: seen in a game before) or Game.ng_plus() > 0   # (Nouvelle partie+: seen in a game before) or Game.ng_plus() > 0   # (Nouvelle partie+: seen in a game before)
 
 
 ## « Revoir l'intro » / « Revoir la fin » / « Crédits » from Paramètres: the film over the screen, then back to it

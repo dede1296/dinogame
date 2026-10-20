@@ -240,7 +240,8 @@ static func joss() -> void:
 static func relais() -> void:
 	var lines: Array = [{"text": "Le Relais des Dresseurs. Au mur, un grand tableau : « Gaspard, rang Bronze — Lilou, rang Argent. Challengers bienvenus. »"}]
 	if Game.flag(&"gaspard_battu") and Game.flag(&"lilou_battu"):
-		lines.append({"text": "Quelqu'un a ajouté à la craie, en bas : « Chloé V., rang Argent. » Maïa a barré et écrit « pour l'instant » à côté."})
+		var chalk := Revanches.relais_line()   # (after Maïa's challenge n° 6: « pour l'instant » chalked again, bigger)
+		lines.append({"text": chalk if chalk != "" else "Quelqu'un a ajouté à la craie, en bas : « Chloé V., rang Argent. » Maïa a barré et écrit « pour l'instant » à côté."})
 	await S.say(lines)
 
 
@@ -261,7 +262,7 @@ static func trainer(id: StringName, who: Node) -> void:
 		var pick := await Dialogue.choose(t["name"], "%s Prime du Relais : %d pièces." % [t["hello"], prize], ["Combattre", "Plus tard"])
 		if pick != 0:
 			return
-	if not await S.duel(t["name"], t["team"]):
+	if not await S.duel(t["name"], t["team"], {"sceaux_libres": false}):   # (no Sceaux at the Relais: ApexEngine.libres_ok)
 		return
 	Game.set_flag(t["flag"])
 	if rematch:

@@ -13,6 +13,7 @@ extends RefCounted
 const PATH := "res://regions/volcan/champs_cendres.tscn"
 const RES_DIR := "res://regions/volcan"
 const B := preload("res://tools/zone_builder.gd")
+const OSSEMENTS := preload("res://tools/zones/os_legendaires.gd")
 const C := preload("res://tools/zones/volcan_canvas.gd")
 const D := preload("res://tools/zones/volcan_decor.gd")
 const V := preload("res://tools/zones/volcan_verif.gd")
@@ -67,6 +68,7 @@ static func build() -> Region:
 	# Every prop on the ground (none floating by a swell's side or on the hillside).
 	var floating := V.settle_all(root)
 	V.check(root, "Champs de Cendre", Vector2i(P.ENTREE_ARCHE.floor()), _on_foot(), {}, floating)
+	OSSEMENTS.bury(root, &"champs_cendres")   # (post-game, lot B: the legendary bones of this zone, story/fossiles.gd BONES)
 	return root
 
 

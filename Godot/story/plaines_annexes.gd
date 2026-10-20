@@ -347,6 +347,9 @@ static func _next_goal(count: int) -> bool:
 
 ## The egg hatches (world.gd, when its last step is walked).
 static func hatch() -> void:
+	if Fossiles.is_fossil_egg(Game.egg):   # (post-game: an egg of the bones hatches at level 45, story/fossiles.gd)
+		await Fossiles.hatch()
+		return
 	var egg := Game.egg
 	Game.egg = {}
 	S.lock(true)

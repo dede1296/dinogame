@@ -54,6 +54,9 @@ const ROC_PATH_MIDDLE := Vector2(34.2, 6.4)
 
 static func grand_crane() -> void:
 	if Game.flag(&"sceau_plaines"):
+		if Revanches.open():   # (after the end: he comes out « pour voir », story/revanches.gd)
+			await Revanches.alpha(&"plaines", null)
+			return
 		await S.say([{"text": "Le crâne est silencieux. Quelque part dans l'ombre, le gardien de la Prairie veille."}])
 		return
 	if Game.flag(&"crane_ouvert"):

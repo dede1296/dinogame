@@ -68,6 +68,15 @@ const PATHS := {
 	&"trex_magma": "res://data/species/trex_magma.tres",
 	# Terre des Apex (chapitre 9) : le Souverain, jamais sauvage, jamais capturé (battle/apex_engine.gd).
 	&"souverain": "res://data/species/souverain.tres",
+	# Post-game, les géants du cratère (story/apex_geants.gd) : Uniques, jamais sauvages, jamais capturés.
+	&"deinocheirus": "res://data/species/deinocheirus.tres",
+	&"argentinosaurus": "res://data/species/argentinosaurus.tres",
+	&"therizinosaurus_geant": "res://data/species/therizinosaurus_geant.tres",
+	&"dacentrurus": "res://data/species/dacentrurus.tres",
+	# Post-game, les fossiles légendaires (lot B) : ressuscités au Cabinet, jamais sauvages ; dans la liste de l'île.
+	&"saltasaurus": "res://data/species/saltasaurus.tres",
+	&"kronosaurus": "res://data/species/kronosaurus.tres",
+	&"gigantoraptor": "res://data/species/gigantoraptor.tres",
 }
 
 static var _cache: Dictionary = {}

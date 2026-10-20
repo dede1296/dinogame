@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" path="res://assets/art/characters/maia.png" id="22_kmidj"]
 [ext_resource type="Script" path="res://world/sign.gd" id="23_t6kgs"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/granit.png" id="24_pvw7x"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="25_uvlg0"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="25_o83aw"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="26_vwm6l"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="27_oiwbx"]
@@ -2137,6 +2138,13 @@ position = Vector2(5040, 4032)
 script = ExtResource("23_t6kgs")
 dialogue_id = &"panneau_escale"
 kind = "panneau"
+
+[node name="EnfouiOsTitanosaure2" type="Node2D" parent="Entities" unique_id=973446347]
+position = Vector2(3801.5999, 3715.2002)
+script = ExtResource("25_uvlg0")
+show_flag = &"carnet_terre"
+pebble = &"os_titanosaure_2"
+item_id = "os_titanosaure"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=1599457726]
 

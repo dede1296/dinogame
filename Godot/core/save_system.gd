@@ -171,6 +171,26 @@ func start_new_game(n: int, confirmed := false) -> bool:
 	return save_game()
 
 
+## A Nouvelle partie+ (Game.new_game_plus, docs/post-game-plan.md § 4) from the finished game of slot `from`,
+## created in slot `to`, saved there at once, the active slot from now on. Slot `from` is never touched (nor
+## chosen as `to`). Refused (false, nothing changed) when `from` is not a finished game, when `to` is `from`,
+## or when `to` holds a game unless `confirmed` (the player said « Écraser »: its game is put aside).
+func start_new_game_plus(from: int, to: int, confirmed := false) -> bool:
+	if not _valid(from) or not _valid(to) or from == to or not _may_overwrite(to, confirmed):
+		return false
+	if slot_summary(from).get("finished", false) != true or not Game.new_game_plus(game_of(from)):
+		return false
+	return start_new_game(to, true)
+
+
+## The game saved in slot `n` (its Game.to_dict()), read without loading it; {} when empty or unreadable.
+func game_of(n: int) -> Dictionary:
+	if not _valid(n) or slot_summary(n)["state"] != READY:
+		return {}
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path_for(n)))
+	return data["game"] if data is Dictionary and data.get("game") is Dictionary else {}
+
+
 ## In game: from now on, everything saves in slot `n`; the game being played is copied there at once.
 ## Refused (false) when the slot holds another game, unless `confirmed`.
 func switch_slot(n: int, confirmed := false) -> bool:

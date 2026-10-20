@@ -23,6 +23,7 @@
 [ext_resource type="Script" path="res://world/story_trigger.gd" id="21_mrk5p"]
 [ext_resource type="Script" path="res://world/sign.gd" id="22_nxd5v"]
 [ext_resource type="Script" path="res://world/dig_spot.gd" id="23_w3l6j"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="24_8yiqo"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="24_w7i4v"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="25_ngos8"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="26_lcpcr"]
@@ -2180,6 +2181,20 @@ position = Vector2(67.2, 1382.4)
 script = ExtResource("22_nxd5v")
 dialogue_id = &"panneau_escale"
 kind = "panneau"
+
+[node name="EnfouiOsTitanosaure4" type="Node2D" parent="Entities" unique_id=1287058278]
+position = Vector2(3955.2002, 1027.2)
+script = ExtResource("24_8yiqo")
+show_flag = &"carnet_terre"
+pebble = &"os_titanosaure_4"
+item_id = "os_titanosaure"
+
+[node name="EnfouiOsGigantoraptor4" type="Node2D" parent="Entities" unique_id=1456481152]
+position = Vector2(984, 2702.4)
+script = ExtResource("24_8yiqo")
+show_flag = &"carnet_terre"
+pebble = &"os_gigantoraptor_4"
+item_id = "os_gigantoraptor"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=740751042]
 

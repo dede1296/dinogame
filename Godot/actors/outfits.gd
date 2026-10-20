@@ -106,6 +106,7 @@ const LOOKS := {
 	"joss": {&"bocal": "joss_bocal"},
 	"dame_suie": {&"sans_lunettes": "dame_suie_sans_lunettes"},
 	"isaure_sans_masque": {&"masque_carton": "isaure_masque_carton"},
+	"brac": {&"gardien": "brac_gardien"},   # (post-game, la nuit : gardien de nuit, sa petite lanterne ; story/brac_jetee.gd)
 }
 const DIRS := ["down", "left", "right", "up"]
 ## Npc metas: whose poses it wears (person()); a pose it holds from the start, in its zone (Npc._ready:

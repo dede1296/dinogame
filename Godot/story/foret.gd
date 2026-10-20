@@ -705,7 +705,10 @@ static func _sniffs_then_looks_behind(griffe: Node, chloe: Player) -> void:
 
 ## The clearing of the giant ferns, where the pack's leader lived: empty, and the Ombre Noire's
 ## marks everywhere. A hook towards step 2.
-static func clairiere_vide(_who: Node) -> void:
+static func clairiere_vide(who: Node) -> void:
+	if Revanches.open():   # (after the end: the Chef de Meute « pour voir », story/revanches.gd)
+		await Revanches.alpha(&"foret", who)
+		return
 	if Game.flag(&"clairiere_vue"):
 		var n := int(Game.flag(&"clairiere_n"))
 		Game.set_flag(&"clairiere_n", n + 1)

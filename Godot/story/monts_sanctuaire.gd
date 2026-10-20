@@ -143,6 +143,9 @@ static func _puddle_px(chloe: Player) -> Vector2:
 ## the altar. Afterwards, a line at each visit.
 static func titan(who: Node) -> void:
 	if Game.flag(&"coeur_4"):
+		if Revanches.open():   # (after the end: « pour voir », story/revanches.gd)
+			await Revanches.alpha(&"monts", who)
+			return
 		await S.say([_again(who)])
 		return
 	if not Game.flag(&"titan_battu"):

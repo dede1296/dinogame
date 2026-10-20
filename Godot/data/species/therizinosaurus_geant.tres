@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DinoSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/dino_species.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/therizinosaurus_geant.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dinos/therizinosaurus_geant_face_dos.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"therizinosaurus_geant"
+display_name = "Therizinosaurus géant"
+family = &"raptor"
+description = "Un Therizinosaurus plus grand et plus massif que ceux du Marais, aux griffes de main longues d'un mètre, droites comme des faux. Il ne s'en sert que pour tirer les branches : un herbivore avec des sabres, qui a peur qu'on ait peur de lui."
+sheet = ExtResource("2")
+face_back_sheet = ExtResource("3")
+world_scale = 0.94
+battle_scale = 0.935
+walk_fps = 4.0
+cry_prefix = "sauropode"
+head_size = 4
+head_bite = 3
+teeth_sharp = 2
+teeth_count = 4
+front_power = 10
+front_reach = 10
+back_legs_power = 8
+back_legs_speed = 3
+back_armor = 5
+back_spikes = 4
+tail_power = 5
+tail_length = 4
+rarity = "legendary"

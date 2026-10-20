@@ -20,6 +20,7 @@
 [ext_resource type="Script" path="res://actors/dino_npc.gd" id="18_3go4a"]
 [ext_resource type="Script" path="res://world/dig_spot.gd" id="19_qixfj"]
 [ext_resource type="Script" path="res://world/pickup.gd" id="20_rsl2i"]
+[ext_resource type="Script" path="res://world/os_enfoui.gd" id="21_gf6mj"]
 [ext_resource type="Script" path="res://world/habitat.gd" id="21_u8f07"]
 [ext_resource type="Script" path="res://data/encounter.gd" id="22_gvqgx"]
 [ext_resource type="Script" path="res://world/zone_exit.gd" id="23_fl46q"]
@@ -844,6 +845,13 @@ position = Vector2(2808, 1276.8)
 script = ExtResource("20_rsl2i")
 taken_flag = &"galet_champs_cendres_10"
 kind = "galet"
+
+[node name="EnfouiOsTitanosaure5" type="Node2D" parent="Entities" unique_id=1893556316]
+position = Vector2(2284.7998, 326.40002)
+script = ExtResource("21_gf6mj")
+show_flag = &"carnet_terre"
+pebble = &"os_titanosaure_5"
+item_id = "os_titanosaure"
 
 [node name="Spawns" type="Node2D" parent="." unique_id=170266642]
 

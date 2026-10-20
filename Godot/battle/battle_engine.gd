@@ -67,6 +67,12 @@ var trainer := ""
 ## The last battle (rule "antidote"): the « Ambre clair » may be poured on the corrupted foe.
 var antidote_allowed := false
 const ANTIDOTE := "antidote_ambre"
+## After the end (rule "sceaux_libres", set by BattleScene: ApexEngine.libres_ok): the Sceaux woken by the Alphas'
+## rematches answer in any battle (ApexEngine.Libres: the cards, the call — the turn is kept —, what waits for its
+## moment; rule "alpha": the Sceau of the Alpha fought, who never comes against himself). Null otherwise.
+var libres: RefCounted = null
+## What is said when the foe falls (rule "foe_faint"; an Alpha's rematch: « Il s'arrête. Il a vu. »), else « K.O. ».
+var foe_faint := ""
 const CALM_FULL := 100
 const CALM_STEP := 30        # a calm action that works
 const CALM_KIN_BONUS := 15   # …by a dino of the foe's family
@@ -110,6 +116,12 @@ func _init(player_team: Array[Dino], wild: Dino, rules := {}) -> void:
 	antidote_allowed = rules.get("antidote", false)
 	if long_calm:
 		calm_full = roundi(CALM_FULL * LONG_CALM_FACTOR)
+	foe_faint = String(rules.get("foe_faint", ""))
+	var home: Dictionary = rules.get("foe_stages", {})
+	for stat: String in home:   # (an Alpha at home, RevancheBattles « home »: it starts higher)
+		stages["foe"][stat] = clampi(int(home[stat]), -4, 4)
+	if rules.get("sceaux_libres", false):
+		libres = load("res://battle/apex_engine.gd").libres_for(self, String(rules.get("alpha", "")))
 
 
 func player() -> Dino:
@@ -167,6 +179,8 @@ func turn(action: Dictionary) -> Array:
 			if can_use_antidote():
 				_pour_antidote(ev)
 			return ev
+		"sceau":   # (after the end: an Alpha called by its Sceau, ApexEngine.Libres; the turn is kept)
+			return libres.call_sceau(String(action.get("id", ""))) if libres != null else ev
 	var foe_move := _choose_foe_move()
 	match action["type"]:
 		"run":
@@ -190,6 +204,9 @@ func turn(action: Dictionary) -> Array:
 	order.append({"side": "foe", "move": foe_move})
 	if order.size() == 2 and _foe_goes_first(action["index"], foe_move):
 		order.reverse()
+	if action["type"] == "move" and libres != null and libres.twice():   # (the pack: Chloé's dino acts twice)
+		var mine := order.find_custom(func(o: Dictionary) -> bool: return o["side"] == "player")
+		order.insert(mine + 1, {"side": "player", "move": action["index"]})
 	for o: Dictionary in order:
 		if over:
 			break
@@ -233,6 +250,8 @@ func _choose_foe_move() -> int:
 
 
 func _use_move(side: String, index: int, ev: Array) -> void:
+	if libres != null and libres.holds(side, ev):   # (Cheminée: the foe looks at him, and does not move)
+		return
 	var other := "foe" if side == "player" else "player"
 	var user := dino(side)
 	var target := dino(other)
@@ -300,6 +319,8 @@ func _damage(side: String, other: String, move: Dictionary) -> Dictionary:
 	if side == "foe" and foe.corrupted:
 		soft = (1.0 - CALM_SOFTENS * calm / float(calm_full)) * (1.0 - CALM_HESITATES if _calming else 1.0)
 	var total := maxi(1, int(dmg * stab * eff * soft * (1.5 if crit else 1.0) * (0.85 + rng.randf() * 0.15)))
+	if libres != null:   # (the Tricératops: Chloé's next blow counts double; Minuit: the foe's next one, half)
+		total = libres.scale(side, total)
 	return {"damage": total, "crit": crit, "eff": eff}
 
 
@@ -319,7 +340,7 @@ func _struggle_recoil(side: String, ev: Array) -> void:
 func _change_stage(side: String, stat: String, delta: int, ev: Array) -> void:
 	var before: int = stages[side][stat]
 	stages[side][stat] = clampi(before + delta, -4, 4)
-	var who := _cap(name_of(side))
+	var who := name_of(side)   # (« du Tricératops sauvage » : French.de wants « le … », not « Le … »)
 	if stages[side][stat] == before:
 		ev.append({"type": "text", "text": "%s %s ne peut plus changer !" % [STAT_NAMES[stat], French.de(who)]})
 		return
@@ -349,7 +370,7 @@ func _end_of_turn(ev: Array) -> void:
 
 func _check_faints(ev: Array) -> bool:
 	if foe.hp <= 0:
-		ev.append({"type": "faint", "side": "foe", "text": "%s est K.O. !" % _cap(name_of("foe"))})
+		ev.append({"type": "faint", "side": "foe", "text": foe_faint if foe_faint != "" else "%s est K.O. !" % _cap(name_of("foe"))})
 		_give_xp(ev)
 		_finish("win", ev)
 		return true
